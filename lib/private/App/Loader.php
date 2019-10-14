@@ -94,6 +94,7 @@ class Loader implements ILoader {
             "about"
             , "account"
             , "apps"
+            , "forgot_password"
             , "general_api"
             , "install"
             , "install_instance"
