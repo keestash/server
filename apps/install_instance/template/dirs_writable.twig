@@ -1,0 +1,21 @@
+<form id="dirs__writable">
+    {% if writableSize > 0 %}
+        <div class="ui container">
+            <h1>{{ writableHeader }}</h1>
+            {% for key, value in dirsWritable %}
+                <p>{{ value }}</p>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+    {% if readableSize > 0 %}
+        <div class="ui container">
+            <h1>{{ readableHeader }}</h1>
+            {% for key, value in dirsReadable %}
+                <p>{{ value }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <button class="ui button" type="submit">{{ submit }}</button>
+</form>

@@ -1,0 +1,12 @@
+{
+  "namespace": "Users",
+  "id": "users",
+  "name": "users",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 19,
+  "show-icon": 0,
+  "base_route": "users",
+  "version": 1,
+  "version_string": "1.0.0"
+}

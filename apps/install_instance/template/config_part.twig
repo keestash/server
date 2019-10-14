@@ -1,0 +1,71 @@
+<div class="ui container">
+    <h1>{{ header }}</h1>
+    <form class="ui form" id="ii__config__form">
+        {% for key, value in instructions %}
+
+            {% if key =='db_host' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ dbHostLabel }}</label>
+                    <input type="text" name="ii__db__host" id="ii__db__host" placeholder="{{ dbHostPlaceholder }}">
+                    <p>{{ dbHostDescription }}</p>
+                </div>
+            {% endif %}
+
+            {% if key =='db_user' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ dbUserLabel }}</label>
+                    <input type="text" name="ii__db__user" id="ii__db__user" placeholder="{{ dbUserPlaceholder }}">
+                    <p>{{ dbUserDescription }}</p>
+                </div>
+            {% endif %}
+
+            {% if key =='db_password' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ dbPasswordLabel }}</label>
+                    <input type="text" name="ii__db__password" id="ii__db__password"
+                           placeholder="{{ dbPasswordPlaceholder }}">
+                    <p>{{ dbPasswordDescription }}</p>
+                </div>
+            {% endif %}
+
+            {% if key =='db_name' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ dbNameLabel }}</label>
+                    <input type="text" name="ii__db__name" id="ii__db__name" placeholder="{{ dbNamePlaceholder }}">
+                    <p>{{ dbNameDescription }}</p>
+                </div>
+            {% endif %}
+
+            {% if key =='db_port' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ dbPortLabel }}</label>
+                    <input type="text" name="ii__db__port" id="ii__db__port" placeholder="{{ dbPortPlaceholder }}">
+                    <p>{{ dbPortDescription }}</p>
+                </div>
+            {% endif %}
+
+            {% if key =='db_charset' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ dbCharsetLabel }}</label>
+                    <input type="text" name="ii__db__charset" id="ii__db__charset"
+                           placeholder="{{ dbCharsetPlaceholder }}">
+                    <p>{{ dbCharsetDescription }}</p>
+                </div>
+            {% endif %}
+
+            {% if key =='log_requests' or key =='config_match' %}
+                <div class="field">
+                    <label>{{ logRequestsLabel }}</label>
+                    <select class="ui fluid dropdown" name="ii__log__requests" id="ii__log__requests">
+                        <option value=""></option>
+                        <option value="{{ enabledValue }}">{{ enabled }}</option>
+                        <option value="{{ disabledValue }}">{{ disabled }}</option>
+                    </select>
+                    <p>{{ dbLogRequestsDescription }}</p>
+                </div>
+            {% endif %}
+
+        {% endfor %}
+        <button class="ui button" type="submit">{{ submit }}</button>
+    </form>
+</div>

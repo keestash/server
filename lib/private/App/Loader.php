@@ -91,8 +91,18 @@ class Loader implements ILoader {
 
     public function loadCoreApps(): void {
         $coreApps = [
-            "install_instance"
+            "about"
+            , "account"
+            , "general_api"
             , "install"
+            , "install_instance"
+            , "login"
+            , "logout"
+            , "maintenance"
+            , "promotion"
+            , "register"
+            , "tnc"
+            , "users"
         ];
 
         foreach ($coreApps as $coreApp) {

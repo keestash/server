@@ -1,0 +1,12 @@
+{
+  "namespace": "InstallInstance",
+  "id": "install_instance",
+  "name": "install_instance",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 9,
+  "show-icon": 0,
+  "base_route": "install_instance",
+  "version": 1,
+  "version_string": "1.0.0"
+}
