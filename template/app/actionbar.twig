@@ -1,0 +1,23 @@
+<button class="circular large ui icon button dropdown" id="{{ buttonId }}">
+    <i class="{{ iconClass }}"></i>
+
+    <div class="menu">
+        {% for key, value in elements %}
+            {% if value is not null %}
+                <div class="item"
+                        {% if value.getId() is not null %}
+                            id="{{ value.getId() }}"
+                        {% endif %}
+                >
+                    {% if value.getHref() is not null %}
+                        <a href="{{ value.getHref() }}">
+                            {{ value.getDescription() }}
+                        </a>
+                    {% else %}
+                        {{ value.getDescription() }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div>
+</button>
