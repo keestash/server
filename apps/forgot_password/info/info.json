@@ -1,0 +1,12 @@
+{
+  "namespace": "ForgotPassword",
+  "id": "forgot_password",
+  "name": "forgot_password",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 6,
+  "show-icon": 0,
+  "base_route": "forgot_password",
+  "version": 1,
+  "version_string": "1.0.0"
+}

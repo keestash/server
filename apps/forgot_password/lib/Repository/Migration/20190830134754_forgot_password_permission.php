@@ -21,10 +21,10 @@ declare(strict_types=1);
  */
 
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
-use KSA\Apps\Application\Application;
+use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Permission\IRole;
 
-class AppsPermission extends KeestashMigration {
+class ForgotPasswordPermission extends KeestashMigration {
 
     /**
      * Change Method.
@@ -54,7 +54,17 @@ class AppsPermission extends KeestashMigration {
     public function change() {
 
         $this->addPermission(
-            Application::PERMISSION_READ_APPS
+            Application::PERMISSION_FORGOT_PASSWORD
+            , IRole::ID_PUBLIC
+        );
+
+        $this->addPermission(
+            Application::PERMISSION_RESET_PASSWORD
+            , IRole::ID_PUBLIC
+        );
+
+        $this->addPermission(
+            Application::PERMISSION_FORGOT_PASSWORD_SUBMIT
             , IRole::ID_APP_USER
         );
 
