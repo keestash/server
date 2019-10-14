@@ -1,0 +1,33 @@
+<div class="ui container">
+    <div class="ui one column centered grid">
+        <div class="center aligned column">
+            <img id="tl__login__image" src="{{ logoPath }}">
+        </div>
+        <div class="six wide column centered">
+            <form class="ui form" id="login">
+                {% if registeringEnabled %}
+                    <h4 class="ui center aligned top attached header"><a href="{{ newAccountLink }}">{{ text }}</a></h4>
+                    <div id="bl__response__div"></div>
+                {% endif %}
+                <div class="ui center aligned attached segment" id="form-segment">
+                    <div class="field">
+                        <label for="username">{{ usernameLabel }}</label>
+                        <input id="username" name="username" placeholder="{{ userPlaceholder }}"
+                               type="text">
+                    </div>
+                    <div class="field">
+                        <label for="password">{{ passwordLabel }}</label>
+                        <input id="password" name="password" placeholder="{{ passwordPlaceholder }}"
+                               type="password">
+                    </div>
+                </div>
+                <button class="ui bottom attached fluid button" id="tl__login__button" type="submit">{{ signIn }}
+                </button>
+            </form>
+            <div class="six wide column centered">
+                <div class="ui basic right floated segment"><a href="{{ forgotPasswordLink }}">{{ forgotPassword }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
