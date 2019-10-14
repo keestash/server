@@ -1,0 +1,12 @@
+{
+  "namespace": "Apps",
+  "id": "apps",
+  "name": "apps",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 5,
+  "show-icon": 0,
+  "base_route": "apps",
+  "version": 1,
+  "version_string": "1.0.0"
+}
