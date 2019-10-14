@@ -93,6 +93,7 @@ class Loader implements ILoader {
         $coreApps = [
             "about"
             , "account"
+            , "apps"
             , "general_api"
             , "install"
             , "install_instance"
