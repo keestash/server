@@ -1,0 +1,276 @@
+html {
+    height: 100vh;
+}
+
+body {
+    height: 100%;
+}
+
+#app-navigation {
+    border-right: 1px solid #EDEDED;
+    padding-right: 0 !important;
+    margin: 0 !important;
+}
+
+.ui.menu {
+    border-radius: 0 !important;
+}
+
+#main-container {
+    height: 90vh;
+    margin-top: 0;
+}
+
+#app-navigation-element {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    align-items: center;
+    flex-grow: 1;
+}
+
+#navigation_wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+#top-menu {
+    background-color: #269dff;
+    color: white;
+    margin-bottom: 0;
+    max-height: 5vh;
+}
+
+#top-menu div > a {
+    color: white;
+    position: static;
+}
+
+.tl__custom__item {
+    color: white !important;
+}
+
+#app-navigation-id {
+    border-right: 1px solid #EDEDED
+}
+
+#body-content {
+    min-height: 95vh;
+}
+
+#app-title {
+    color: white;
+}
+
+#app-content {
+    padding-right: 5px;
+    padding-top: 5px;
+}
+
+#top-navigation {
+    margin-bottom: 70px
+}
+
+.theme-blue {
+    color: #1D72BC;
+}
+
+.theme-blue-background {
+    background-color: #1D72BC;
+}
+
+.theme-white {
+    color: white;
+}
+
+.site {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.site-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#tl__main__content {
+    flex: 1 1 auto;
+    height: calc(100%);
+}
+
+#tl__app__navigation {
+    display: flex;
+    flex-direction: column;
+    height: calc(100%);
+    overflow-y: auto;
+}
+
+#tl__app__content__row {
+    height: calc(100%);
+}
+
+#tl__app__content {
+    height: calc(100%);
+    overflow-y: auto;
+}
+
+.tl-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    text-align: center;
+}
+
+#tl__submit__button {
+    background-color: #269dff;
+    color: #ffffff;
+}
+
+#tl__app__navigation__ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.tl__app__navigation__ul__li {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1vh;
+    justify-content: space-between;
+    height: 40px;
+    align-items: center;
+}
+
+
+#tl__navigation__icon {
+    margin-right: 1vh;
+}
+
+#tl__navigation__name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#tl__upload__pp {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+}
+
+#tl__pp_top__wraper {
+    margin: 0;
+    padding: 0;
+}
+
+
+#tl__done__list__header__value {
+    text-decoration: line-through;
+}
+
+.tl__app__navigation__ul__li__icon__and__name {
+    display: flex;
+    flex-direction: row;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#tl__left__menu {
+    box-shadow: 0 0 0 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 0;
+    border-top: 0;
+}
+
+.ui.sidebar.visible ~ .pusher {
+    width: calc(100% - 260px);
+}
+
+
+#tl__register__email__taken__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__password__repeat__invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+.invalid__text__init {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__email__invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__password__invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__login__image {
+    width: 30%;
+}
+
+#tl__login__button {
+    background: #26A6F6;
+    color: white;
+}
+
+
+#tl__app__navigation__part__two {
+    margin: 1vh;
+}
+
+#upper__navigation__wrapper {
+    height: 90%;
+    margin: 0;
+}
+
+@media only screen and (max-width: 768px) {
+    #upper__navigation__wrapper {
+        height: auto;
+    }
+
+    body {
+        height: auto;
+    }
+
+    html {
+        height: auto;
+    }
+
+    #main-container {
+        height: auto;
+    }
+}
+
+.tl__no__content__available {
+    align-items: center;
+    color: grey;
+}
+
+.action-bar {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-bottom: 1px solid #EDEDED !important;
+}

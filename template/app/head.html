@@ -1,0 +1,30 @@
+<head>
+    <!-- Standard Meta -->
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0" name="viewport">
+
+    <link href="{{faviconPath}}" rel="shortcut icon">
+
+    {% block stylesheets %}
+    <link href="{{stylecss}}" rel="stylesheet"/>
+    <link href="{{fontAwesomeCss}}" rel="stylesheet"/>
+    <link href="{{semanticUiCss}}" rel="stylesheet">
+    {%for key, value in stylesheets%}
+    <link href="{{value}}" rel="stylesheet"/>
+    {% endfor %}
+    {% endblock %}
+
+    {% block scripts %}
+    <script src="{{baseJs}}" type="application/javascript"></script>
+    <script src="{{semanticJs}}" type="application/javascript"></script>
+    {%for key, value in scripts%}
+    <script src="{{app_asset('')}}{{key}}" type="{{value}}"></script>
+    {% endfor %}
+    {%for key, value in appScripts%}
+    <script src="{{app_asset(key)}}" type="{{value}}"></script>
+    {% endfor %}
+    {% endblock %}
+
+    <title>{{title}}</title>
+</head>

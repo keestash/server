@@ -1,0 +1,42 @@
+{
+  "name": "keestash",
+  "version": "0.0.1",
+  "description": "Open Source Password Safe",
+  "main": "lib/js/base.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build-dev": "webpack --env dev",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doganoo/todolist.git"
+  },
+  "author": "Dogan Ucar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/doganoo/todolist/issues"
+  },
+  "homepage": "https://github.com/doganoo/todolist#readme",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "babel-loader": "^8.0.0",
+    "npm-watch": "^0.6.0",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "form-data": "^2.5.1",
+    "glob": "latest",
+    "handlebars": "^4.3.3",
+    "install": "^0.13.0",
+    "jquery": "^3.4.1",
+    "npm": "^6.11.0",
+    "semantic-ui-css": "^2.4.1",
+    "twig": "^1.13.3",
+    "webpack-merge": "^4.2.1"
+  }
+}
