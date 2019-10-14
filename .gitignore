@@ -269,3 +269,19 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/node,linux,macos,vagrant,windows,composer,phpstorm
+
+apps/*
+!/apps/about
+!/apps/account
+!/apps/apps
+!/apps/forgot_password
+!/apps/general_api
+!/apps/install
+!/apps/install_instance
+!/apps/login
+!/apps/logout
+!/apps/maintenance
+!/apps/promotion
+!/apps/register
+!/apps/tnc
+!/apps/users
