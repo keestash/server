@@ -1,7 +1,6 @@
 const glob = require("glob");
 const webpack = require("webpack");
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
-const baseModules = glob.sync("./lib/private/Core/App/*/Asset/js/webpack.config.js");
 
 const baseModule = {
     entry: {
@@ -35,7 +34,6 @@ const baseModule = {
 
 const webpackConfig = [].concat(
     baseModule
-    , toConfig(baseModules)
     , toConfig(appModules)
 );
 

@@ -88,7 +88,7 @@ class InstallerService {
     public function updateInstaller(string $key, $value = null): bool {
         $array = $this->getInstaller();
         if (null === $array) return false;
-        if (false === isset($array[$key])) return false;
+        if (false === isset($array[$key])) return true;
 
         if (null === $value) {
             unset($array[$key]);

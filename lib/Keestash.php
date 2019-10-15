@@ -415,26 +415,26 @@ class Keestash {
     }
 
     private static function setExceptionHandler(): void {
-//        set_error_handler(function ($error) {
-//
-//            if (is_int($error)) {
-//                FileLogger::error(json_encode($error));
-//            }
-//
-//            if ($error instanceof Error) {
-//                FileLogger::error(json_encode($error->__toString()));
-//            }
-//
-//        });
-//        set_exception_handler(function ($exception) {
-//            if (is_int($exception)) {
-//                FileLogger::error(json_encode($exception));
-//            }
-//
-//            if ($exception instanceof Exception) {
-//                FileLogger::error(json_encode($exception->__toString()));
-//            }
-//        });
+        set_error_handler(function ($error) {
+
+            if (is_int($error)) {
+                FileLogger::error(json_encode($error));
+            }
+
+            if ($error instanceof Error) {
+                FileLogger::error(json_encode($error->__toString()));
+            }
+
+        });
+        set_exception_handler(function ($exception) {
+            if (is_int($exception)) {
+                FileLogger::error(json_encode($exception));
+            }
+
+            if ($exception instanceof Exception) {
+                FileLogger::error(json_encode($exception->__toString()));
+            }
+        });
     }
 
     private static function initDevHandler(): void {
