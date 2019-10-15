@@ -32,7 +32,6 @@ $files = [
 ];
 
 foreach ($files as $index => $file) {
-
     if (true === is_file($file)) {
         unset($files[$index]);
     }

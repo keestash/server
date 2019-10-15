@@ -36,14 +36,16 @@ class System {
         /** @noinspection PhpIncludeInspection */
         require Keestash::getServer()->getConfigfilePath();
 
+        $table = new HashTable();
+
         foreach ($CONFIG as $key => $value) {
-            $map->put($key, $value);
+            $table->put($key, $value);
         }
 
         Keestash::getServer()->register(
             Server::CONFIG
-            , function () use ($map) {
-            return $map;
+            , function () use ($table) {
+            return $table;
         });
 
         $this->configCreated = true;

@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Phinx;
 
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\InstallerService;
 use Phinx\Console\PhinxApplication;
@@ -41,6 +42,8 @@ class Migrator {
         $phinxTextWrapper->setOption('environment', $phinxEnv);
 
         $log = $phinxTextWrapper->getMigrate();
+
+        FileLogger::debug($log);
 
         // TODO log $log
         return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;

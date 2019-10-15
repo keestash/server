@@ -15,11 +15,11 @@
     "url": "git+https://github.com/doganoo/todolist.git"
   },
   "author": "Dogan Ucar",
-  "license": "ISC",
+  "license": "GPLv3",
   "bugs": {
-    "url": "https://github.com/doganoo/todolist/issues"
+    "url": "https://github.com/keestash/server/issues"
   },
-  "homepage": "https://github.com/doganoo/todolist#readme",
+  "homepage": "https://keestash.com",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
