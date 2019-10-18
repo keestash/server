@@ -272,6 +272,7 @@ $RECYCLE.BIN/
 
 apps/*
 !/apps/about
+
 !/apps/account
 !/apps/apps
 !/apps/forgot_password
@@ -285,3 +286,10 @@ apps/*
 !/apps/register
 !/apps/tnc
 !/apps/users
+
+
+*.bundle.js
+config/sys_config/*
+config/sys_config
+data/*
+data
