@@ -51,7 +51,6 @@ use Keestash\View\Navigation\Part;
 use KSP\Api\IResponse;
 use KSP\App\IApp;
 use KSP\Core\Manager\AssetManager\IAssetManager;
-use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
@@ -419,21 +418,29 @@ class Keestash {
 
             if (is_int($error)) {
                 FileLogger::error(json_encode($error));
+                return;
             }
 
             if ($error instanceof Error) {
                 FileLogger::error(json_encode($error->__toString()));
+                return;
             }
+
+            FileLogger::error((string) $error);
 
         });
         set_exception_handler(function ($exception) {
             if (is_int($exception)) {
                 FileLogger::error(json_encode($exception));
+                return;
             }
 
             if ($exception instanceof Exception) {
                 FileLogger::error(json_encode($exception->__toString()));
+                return;
             }
+
+            FileLogger::error((string) $exception);
         });
     }
 

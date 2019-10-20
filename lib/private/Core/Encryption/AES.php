@@ -25,6 +25,7 @@ use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\Encryption\ICredential;
 use KSP\Core\Encryption\IEncryption;
 
+// TODO move to service
 class AES implements IEncryption {
 
     public const METHOD         = "AES-256-CBC";
