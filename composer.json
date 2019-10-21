@@ -38,12 +38,8 @@
     }
   },
   "scripts": {
-    "pm-instance-dev": "./vendor/bin/phinx migrate -c config/phinx/instance.php -e development",
-    "pm-instance-testing": "./vendor/bin/phinx migrate -c config/phinx/instance.php -e testing",
-    "pm-instance-production": "./vendor/bin/phinx migrate -c config/phinx/instance.php -e production",
-    "pm-apps-dev": "./vendor/bin/phinx migrate -c config/phinx/apps.php -e development",
-    "pm-apps-testing": "./vendor/bin/phinx migrate -c config/phinx/apps.php -e testing",
-    "pm-apps-production": "./vendor/bin/phinx migrate -c config/phinx/apps.php -e production",
+    "migrate-apps": "./bin/migration/migrate.php -m=app",
+    "migrate-instance": "./bin/migration/migrate.php -m=instance",
     "phpstan": "./vendor/bin/phpstan analyse lib/ test/"
   },
   "require-dev": {

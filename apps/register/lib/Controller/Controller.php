@@ -86,7 +86,7 @@ class Controller extends StaticAppController {
             , "backToLogin"                 => $this->translator->translate("Back To Login")
             , "termsConditionsLink"         => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::PERMISSION_TNC
             , "backToLoginLink"             => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
-            , "logoPath"                    => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+            , "logoPath"                    => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
         ]);
 
         parent::setAppContent($this->templateManager->render("register.html"));
