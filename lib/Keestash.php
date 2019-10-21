@@ -225,7 +225,7 @@ class Keestash {
         self::$server->getTemplateManager()->replace("navigation.html",
             [
                 "appName"     => $legacy->getVendor()->get("name")
-                , "logopath"  => self::getBaseURL(false) . "/asset/img/logo.png"
+                , "logopath"  => self::getBaseURL(false) . "/asset/img/logo_no_name.png"
                 , "logoutURL" => self::getBaseURL() . "logout"
                 , "userImage" => $userImage
             ]);
