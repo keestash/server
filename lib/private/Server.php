@@ -149,7 +149,7 @@ class Server {
             /** @var IUser $user */
             foreach ($users as $user) {
                 $this->userHashes->put(
-                    $userService->hashUserId($user)
+                    $user->getHash()
                     , $user->getId()
                 );
             }

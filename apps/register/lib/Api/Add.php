@@ -187,6 +187,7 @@ class Add extends AbstractApi {
         $user->seKSAstName($lastName);
         $user->setPhone("");
         $user->setWebsite("");
+        $user->setHash($this->userService->getRandomHash());
 
         $userId = $this->userManager->insert($user);
 

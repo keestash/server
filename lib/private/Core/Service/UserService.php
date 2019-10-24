@@ -75,4 +75,8 @@ class UserService {
         return hash("sha256", (string) $user->getId());
     }
 
+    public function getRandomHash():string{
+        return hash("sha256", uniqid("", true));
+    }
+
 }
