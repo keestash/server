@@ -54,4 +54,6 @@ interface IUser extends JsonSerializable {
 
     public function getLastLogin(): ?DateTime;
 
+    public function getHash(): string;
+
 }

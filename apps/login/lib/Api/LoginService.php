@@ -122,7 +122,7 @@ class LoginService extends AbstractApi {
                 );
                 $response->addHeader(
                     'user_hash'
-                    , $this->userService->hashUserId($user)
+                    , $user->getHash()
                 );
                 $this->tokenManager->add($token);
                 $this->sessionManager->setId($user->getId());

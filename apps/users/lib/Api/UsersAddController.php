@@ -76,6 +76,7 @@ class UsersAddController extends AbstractApi {
         $user->setPassword($password);
         $user->setCreateTs(DateTimeUtil::getUnixTimestamp());
         $user->setWebsite($website);
+        $user->setHash($this->userService->getRandomHash());
 
         return $user;
     }
