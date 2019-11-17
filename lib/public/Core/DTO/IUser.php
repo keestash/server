@@ -30,7 +30,7 @@ use JsonSerializable;
  *
  * TODO move to right place
  */
-interface IUser extends JsonSerializable {
+interface IUser extends KSObject {
 
     public function getId(): int;
 

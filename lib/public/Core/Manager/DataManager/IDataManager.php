@@ -19,20 +19,28 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\Manager\DataManager;
 
-use DateTime;
+use Keestash\Core\DTO\File\FileList;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\Manager\IManager;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends KSObject {
+interface IDataManager extends IManager {
 
-    public function getId(): int;
+    public function __construct(string $appId, ?string $context = null);
 
-    public function getValue(): string;
+    public function store(IFile $file): bool;
 
-    public function getCreateTs(): DateTime;
+    public function storeAll(FileList $fileList): bool;
+
+    public function get(IFile $file): IFile;
+
+    public function getAll(FileList $fileList): FileList;
+
+    public function remove(IFile $file): bool;
+
+    public function removeAll(FileList $fileList): bool;
+
+    public function getPath(): string;
 
 }

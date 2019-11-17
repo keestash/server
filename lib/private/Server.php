@@ -54,6 +54,7 @@ use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
+use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
@@ -63,6 +64,7 @@ use Keestash\Core\Service\HTTPService;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\UserService;
@@ -88,6 +90,7 @@ use KSP\Core\Permission\IDataProvider;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
+use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
@@ -198,16 +201,35 @@ class Server {
             );
         });
         $this->register(IRouterManager::class, function () {
-            $routerManager = new RouterManager(null, null);
-            $loggerManager = $this->query(IApiLogRepository::class);
-            $routerManager->add(RouterManager::HTTP_ROUTER, new HTTPRouter($loggerManager));
-            $routerManager->add(RouterManager::API_ROUTER, new APIRouter($loggerManager));
+            $routerManager     = new RouterManager(null, null);
+            $loggerManager     = $this->query(IApiLogRepository::class);
+            $reflectionService = $this->query(ReflectionService::class);
+
+            $routerManager->add(
+                RouterManager::HTTP_ROUTER
+                , new HTTPRouter(
+                    $loggerManager
+                    , $reflectionService
+                )
+            );
+
+            $routerManager->add(
+                RouterManager::API_ROUTER
+                , new APIRouter(
+                    $loggerManager
+                    , $reflectionService
+                )
+            );
+
             return $routerManager;
         });
         $this->register(IApiLogRepository::class, function () {
             return new ApiLogRepository(
                 $this->query(IBackend::class)
             );
+        });
+        $this->register(ReflectionService::class, function () {
+            return new ReflectionService();
         });
         $this->register(ILoader::class, function () {
             return new Loader(
@@ -230,6 +252,10 @@ class Server {
             return new DateTimeService();
         });
 
+        $this->register("test", function () {
+
+        });
+
         $this->register(HTTPService::class, function () {
             return new HTTPService();
         });
@@ -241,6 +267,14 @@ class Server {
                 , $this->query(IUserRepository::class)
             );
         });
+
+        $this->register(IFileRepository::class, function () {
+            return new FileRepository(
+                $this->query(IBackend::class)
+                , $this->query(IUserRepository::class)
+            );
+        });
+
         $this->register(UserSessionManager::class, function () {
             $backend = $this->query(IBackend::class);
             return new UserSessionManager($backend, null);
@@ -472,8 +506,12 @@ class Server {
 
     }
 
-    public function getAppRoot(): string {
+    public function getServerRoot(): string {
         return $this->appRoot;
+    }
+
+    public function getAppRoot(): string {
+        return $this->appRoot . "/apps/";
     }
 
     public function getTemplateManager(): ITemplateManager {

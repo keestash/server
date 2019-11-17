@@ -19,38 +19,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO;
+namespace Keestash\Core\DTO\File;
 
-/**
- * Class HTTP
- * @package Keestash\Core\DTO
- * @deprecated remove
- */
-class HTTP {
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use KSP\Core\DTO\File\IFile;
 
-    // Success
-    public const OK = 200;
+class FileList extends ArrayList {
 
-    // Client
-    public const BAD_REQUEST = 400;
-    public const NOT_FOUND   = 404;
+    public function add($item): bool {
 
-    private function __construct() {
+        if ($item instanceof IFile) {
+            return parent::add($item);
+        }
+
+        return false;
     }
 
-    public static function getDescriptionByCode(int $code): ?string {
-        if ($code === HTTP::OK) {
-            return "OK";
-        } else {
-            if ($code === HTTP::BAD_REQUEST) {
-                return "BAD REQUEST";
-            } else {
-                if ($code === HTTP::NOT_FOUND) {
-                    return "NOT FOUND";
-                }
-            }
+    public function addAll(ArrayList $arrayList): bool {
+        if ($arrayList instanceof FileList) {
+            return parent::addAll($arrayList);
         }
-        return null;
+        return false;
+    }
+
+    public function addAllArray(array $array): bool {
+        return false;
+    }
+
+    public function addToIndex(int $index, $item): bool {
+        if ($item instanceof IFile) {
+            return parent::addToIndex($index, $item);
+        }
+        return false;
     }
 
 }

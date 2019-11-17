@@ -25,10 +25,21 @@ use Closure;
 use Keestash;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\RouterManager;
+use KSP\App\IApp;
 use KSP\App\IApplication;
 use KSP\Core\View\Navigation\Factory\NavigationFactory;
 
 abstract class Application implements IApplication {
+
+    private $app = null;
+
+    public function __construct(IApp $app) {
+        $this->app = $app;
+    }
+
+    protected function getApp(): IApp {
+        return $this->app;
+    }
 
     public abstract function register(): void;
 

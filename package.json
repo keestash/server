@@ -35,7 +35,6 @@
     "install": "^0.13.0",
     "jquery": "^3.4.1",
     "npm": "^6.11.0",
-    "semantic-ui-css": "^2.4.1",
     "twig": "^1.13.3",
     "webpack-merge": "^4.2.1"
   }

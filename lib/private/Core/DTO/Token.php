@@ -99,8 +99,11 @@ class Token implements IToken {
      */
     public function jsonSerialize() {
         return [
-            "value"       => $this->getValue()
+            "id"          => $this->getId()
+            , "value"     => $this->getValue()
             , "create_ts" => $this->getCreateTs()
+            , "name"      => $this->getName()
+            , "user"      => $this->getUser()
         ];
     }
 

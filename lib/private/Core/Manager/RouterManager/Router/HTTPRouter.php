@@ -25,6 +25,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
+use Keestash\Core\Service\ReflectionService;
 use Keestash\Exception\NoControllerFoundException;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Controller\IAppController;
@@ -41,9 +42,15 @@ class HTTPRouter extends Router {
 
     private $routeType = null;
 
-    public function __construct(IApiLogRepository $loggerManager) {
+    public function __construct(
+        IApiLogRepository $loggerManager
+        , ReflectionService $reflectionService
+    ) {
         $this->routeType = IAppController::CONTROLLER_TYPE_NORMAL;
-        parent::__construct($loggerManager);
+        parent::__construct(
+            $loggerManager
+            , $reflectionService
+        );
     }
 
     public function route(?IToken $token): void {
@@ -76,7 +83,7 @@ class HTTPRouter extends Router {
                 }
             }
 
-            /** @var \KSP\Core\Controller\AppController $controller */
+            /** @var AppController $controller */
             $controller = $instance->newInstanceArgs($constructorArgs);
 
             $parentClasses    = parent::getParentClasses($controller);
@@ -110,21 +117,21 @@ class HTTPRouter extends Router {
                 return;
             }
 
-        } catch (DependencyException $exception) {
-            FileLogger::error($exception->getMessage());
-        } catch (NotFoundException $exception) {
-            FileLogger::error($exception->getMessage());
-        } catch (ReflectionException $exception) {
-            FileLogger::error($exception->getMessage());
         } catch (ResourceNotFoundException $exception) {
             FileLogger::error($exception->getMessage());
-            if (Keestash::getMode() === Keestash::MODE_WEB) {
-                $this->routeTo("/");
-            }
         }
 
-        //TODO make this to an ErrorView / a 404 catcher
-        throw new NoControllerFoundException();
+        $defaultApp = Keestash::getServer()->getAppLoader()->getDefaultApp();
+
+        if (null !== $defaultApp) {
+            $this->routeTo(
+                $defaultApp->getBaseRoute()
+            );
+            exit();
+            die();
+        }
+
+        $this->routeTo("error_view");
     }
 
     public function routeTo(string $url): void {

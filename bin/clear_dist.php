@@ -19,20 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../config/config.php";
+require_once __DIR__ . "/../lib/Keestash.php";
 
-use DateTime;
+Keestash::init();
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends KSObject {
+$appRoot  = Keestash::getServer()->getServerRoot();
+$baseDist = "$appRoot/lib/js/dist/base.bundle.js";
 
-    public function getId(): int;
+$appRoot = Keestash::getServer()->getAppRoot();
 
-    public function getValue(): string;
+$files   = glob($appRoot . "/*/js/dist/*.js");
+$files[] = $baseDist;
 
-    public function getCreateTs(): DateTime;
-
+foreach ($files as $file) {
+    if (true === is_file($file)) {
+        unlink($file);
+    }
 }
