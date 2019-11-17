@@ -66,12 +66,12 @@ class UpdatePassword extends AbstractApi {
         $this->permissionManager = $permissionManager;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(array $parameters): void {
 
-        $this->userId            = $params[0];
-        $this->currentPassword   = $params[1];
-        $this->newPassword       = $params[2];
-        $this->newPasswordRepeat = $params[3];
+        $this->userId            = $parameters["user_id"];
+        $this->currentPassword   = $parameters["current_password"];
+        $this->newPassword       = $parameters["password"];
+        $this->newPasswordRepeat = $parameters["password_repeat"];
         $user                    = $this->userManager->getUserById((string) $this->userId);
         $this->currentUser       = $user;
         // mission critical!!

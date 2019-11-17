@@ -57,8 +57,8 @@ class DeleteProfileImage extends AbstractApi {
 
     }
 
-    public function onCreate(...$params): void {
-        $userId     = $params[0];
+    public function onCreate(array $parameters): void {
+        $userId     = $parameters["user_id"];
         $user       = $this->userManager->getUserById($userId);
         $permission = $this->preparePermission($user);
         parent::setPermission($permission);

@@ -36,12 +36,12 @@ class DirsWritable extends AbstractApi {
         IL10N $l10n
         , InstallerService $installerService
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->installerService = $installerService;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(array $parameters): void {
         $this->parameters = $params[0];
 
         parent::setPermission(

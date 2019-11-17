@@ -58,9 +58,9 @@ class UpdateProfileImage extends AbstractApi {
         parent::__construct($l10n);
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
-        $userId           = $params[1] ?? null;
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
+        $userId           = $params["user_id"] ?? null;
         $this->user       = $this->userManager->getUserById((string) $userId);
 
         parent::setPermission(

@@ -41,14 +41,14 @@ class ProfilePicture extends AbstractApi {
         , AssetService $assetService
         , IUserRepository $userRepository
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->assetService   = $assetService;
         $this->userRepository = $userRepository;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params[0];
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
 
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
@@ -71,7 +71,7 @@ class ProfilePicture extends AbstractApi {
             return;
         }
 
-        $picture = $this->assetService->getUserProfilePicture($user);
+        $picture = $this->assetService->getUserProfileForRestApi($user);
 
         if (null === $picture) {
             $response = parent::createResponse(
@@ -85,8 +85,6 @@ class ProfilePicture extends AbstractApi {
         }
 
         $defaultResponse = new PlainResponse();
-        $picture = str_replace(" ","", $picture);
-//        $picture = base64_decode($picture);
         $defaultResponse->addHeader("Content-Type", "image/jpeg");
         $defaultResponse->setMessage($picture);
 
