@@ -19,19 +19,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\File;
 
 use DateTime;
+use KSA\PasswordManager\Object\Node;
+use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\KSObject;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends KSObject {
+interface IFile extends KSObject {
 
     public function getId(): int;
 
-    public function getValue(): string;
+    public function getName(): string;
+
+    public function getPath(): string;
+
+    public function getTemporaryPath(): ?string;
+
+    public function getMimeType(): string;
+
+    public function getHash(): string;
+
+    public function getExtension(): string;
+
+    public function getSize(): int;
+
+    public function getOwner(): IUser;
+
+    public function getFullPath(): string;
+
+    public function getNode(): Node;
+
+    public function getContent(): ?string;
 
     public function getCreateTs(): DateTime;
 

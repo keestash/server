@@ -19,20 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace Keestash\Exception;
 
-use DateTime;
-
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends KSObject {
-
-    public function getId(): int;
-
-    public function getValue(): string;
-
-    public function getCreateTs(): DateTime;
+class FolderNotCreatedException extends KSException {
 
 }

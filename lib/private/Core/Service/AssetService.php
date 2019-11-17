@@ -34,13 +34,24 @@ class AssetService {
         $this->assetManager = $assetManager;
     }
 
-    public function getUserProfilePicture(IUser $user): ?string {
+    private function getUri(IUser $user): ?string {
         $picture = $this->assetManager->getProfilePicture($user);
         if (null === $picture) {
             $picture = $this->assetManager->getDefaultImage();
         }
+        return $picture;
+    }
 
-        return $this->assetManager->uriToBase64($picture);
+    public function getUserProfilePicture(?IUser $user, bool $rawBase64 = false): ?string {
+        if (null === $user) return null;
+        $picture = $this->getUri($user);
+        return $this->assetManager->uriToBase64($picture, $rawBase64);
+    }
+
+    public function getUserProfileForRestApi(IUser $user): ?string {
+        $picture = $this->getUri($user);
+        if (null === $picture) return null;
+        return file_get_contents($picture);
     }
 
 }

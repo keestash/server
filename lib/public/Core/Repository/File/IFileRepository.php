@@ -19,20 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\Repository\File;
 
-use DateTime;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use Keestash\Core\DTO\File\FileList;
+use KSA\PasswordManager\Object\Node;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\Repository\IRepository;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends KSObject {
+interface IFileRepository extends IRepository {
 
-    public function getId(): int;
+    public function add(IFile $file): ?int;
 
-    public function getValue(): string;
+    public function addAll(FileList &$files): bool;
 
-    public function getCreateTs(): DateTime;
+    public function remove(IFile $file): bool;
+
+    public function removeAll(FileList $files): bool;
+
+    public function get(int $id): ?IFile;
+
+    public function getAll(ArrayList $fileIds, Node $node): FileList;
 
 }

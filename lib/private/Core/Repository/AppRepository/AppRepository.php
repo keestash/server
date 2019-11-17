@@ -45,7 +45,7 @@ class AppRepository extends AbstractRepository implements IAppRepository {
         $statement = parent::prepareStatement($sql);
 
         if (null === $statement) {
-            return $tree;
+            return $map;
         }
         $statement->execute();
 

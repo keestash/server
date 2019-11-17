@@ -24,6 +24,7 @@ namespace Keestash\Core\Repository\User;
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
+use Exception;
 use Keestash\Core\DTO\User;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
@@ -87,7 +88,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
@@ -138,9 +139,9 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setId($id);
             $user->setName($name);
             $user->setPassword($password);
-            $user->setCreateTs($createTs);
+            $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
@@ -153,6 +154,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         return $user;
     }
 
+    /**
+     * @return ArrayList|null
+     * @throws Exception
+     *
+     * TODO exclude users that did not log in for a certain amount of time
+     */
     public function getAll(): ?ArrayList {
         $list      = new ArrayList();
         $sql       = "select 
@@ -166,7 +173,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , u.`phone`
                       , u.`email`
                       , u.`hash`
-                from `user` u;"; //TODO add email
+                from `user` u;";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $executed = $statement->execute();
@@ -191,7 +198,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
@@ -363,7 +370,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
@@ -416,7 +423,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
@@ -473,7 +480,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
