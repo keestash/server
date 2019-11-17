@@ -37,13 +37,13 @@ class UpdateApp extends AbstractApi {
         IL10N $l10n
         , IAppRepository $appRepository
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->appRepository = $appRepository;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params[0];
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
 
         parent::setPermission(
             PermissionFactory::getDefaultPermission()

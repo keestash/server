@@ -75,16 +75,17 @@ class LoginService extends AbstractApi {
         parent::__construct($translator);
     }
 
-    public function onCreate(...$params): void {
-        $this->params = $params;
+    public function onCreate(array $parameters): void {
+        $this->params = $parameters;
+
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_LOGIN_SUBMIT)
         );
     }
 
     public function create(): void {
-        $userName = $this->params[0] ?? "";
-        $password = $this->params[1] ?? "";
+        $userName = $this->params["user"] ?? "";
+        $password = $this->params["password"] ?? "";
 
         $user = $this->userManager->getUser($userName);
 
