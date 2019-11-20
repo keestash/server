@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO;
 
-interface IAPIRequest {
+interface IAPIRequest extends KSObject {
 
     public function getToken(): IToken;
 

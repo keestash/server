@@ -61,8 +61,8 @@ class Add extends AbstractApi {
     }
 
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
         parent::setPermission(
             Keestash\Core\Permission\PermissionFactory::getDefaultPermission()
         );
@@ -74,13 +74,13 @@ class Add extends AbstractApi {
         $responseCode = IResponse::RESPONSE_CODE_OK;
         $message      = $this->translator->translate("User successfully registered");
 
-        $firstName          = $this->parameters[0] ?? null;
-        $lastName           = $this->parameters[1] ?? null;
-        $userName           = $this->parameters[2] ?? null;
-        $email              = $this->parameters[3] ?? null;
-        $password           = $this->parameters[4] ?? null;
-        $passwordRepeat     = $this->parameters[5] ?? null;
-        $termsAndConditions = $this->parameters[6] ?? null;
+        $firstName          = $this->parameters["first_name"] ?? null;
+        $lastName           = $this->parameters["last_name"] ?? null;
+        $userName           = $this->parameters["user_name"] ?? null;
+        $email              = $this->parameters["email"] ?? null;
+        $password           = $this->parameters["password"] ?? null;
+        $passwordRepeat     = $this->parameters["password_repeat"] ?? null;
+        $termsAndConditions = $this->parameters["terms_and_conditions"] ?? null;
 
         if (null === $firstName || "" === $firstName) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
@@ -184,9 +184,10 @@ class Add extends AbstractApi {
         $user->setEmail($email);
         $user->setPassword($password);
         $user->setFirstName($firstName);
-        $user->seKSAstName($lastName);
+        $user->setLastName($lastName);
         $user->setPhone("");
         $user->setWebsite("");
+        $user->setHash($this->userService->getRandomHash());
 
         $userId = $this->userManager->insert($user);
 

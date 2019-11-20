@@ -25,7 +25,7 @@ use KSP\Core\Permission\IPermission;
 
 interface IApi {
 
-    public function onCreate(...$params): void;
+    public function onCreate(array $parameters): void;
 
     public function create(): void;
 

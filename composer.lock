@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "542f4d56b0c97e2e73394614b60e4447",
-    "content-hash": "c3619c4fc89cb1c3d2e56d1c8aa5c683",
+    "content-hash": "9eeeba5903e49eb85aa3fa94f8afbb6c",
     "packages": [
         {
             "name": "apache/log4php",
@@ -41,7 +40,7 @@
                 "logging",
                 "php"
             ],
-            "time": "2012-10-26 09:13:25"
+            "time": "2012-10-26T09:13:25+00:00"
         },
         {
             "name": "cakephp/cache",
@@ -85,7 +84,7 @@
                 "caching",
                 "cakephp"
             ],
-            "time": "2019-10-30 04:06:05"
+            "time": "2019-10-30T04:06:05+00:00"
         },
         {
             "name": "cakephp/collection",
@@ -131,7 +130,7 @@
                 "collections",
                 "iterators"
             ],
-            "time": "2019-10-30 04:06:05"
+            "time": "2019-10-30T04:06:05+00:00"
         },
         {
             "name": "cakephp/core",
@@ -181,7 +180,7 @@
                 "core",
                 "framework"
             ],
-            "time": "2019-10-30 04:06:05"
+            "time": "2019-10-30T04:06:05+00:00"
         },
         {
             "name": "cakephp/database",
@@ -229,7 +228,7 @@
                 "database abstraction",
                 "pdo"
             ],
-            "time": "2019-10-21 08:26:32"
+            "time": "2019-10-21T08:26:32+00:00"
         },
         {
             "name": "cakephp/datasource",
@@ -279,7 +278,7 @@
                 "entity",
                 "query"
             ],
-            "time": "2019-10-30 09:41:00"
+            "time": "2019-10-30T09:41:00+00:00"
         },
         {
             "name": "cakephp/log",
@@ -324,7 +323,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2019-10-30 04:06:05"
+            "time": "2019-10-30T04:06:05+00:00"
         },
         {
             "name": "cakephp/utility",
@@ -377,7 +376,7 @@
                 "string",
                 "utility"
             ],
-            "time": "2019-10-30 04:06:05"
+            "time": "2019-10-30T04:06:05+00:00"
         },
         {
             "name": "doganoo/php-algorithms",
@@ -425,7 +424,7 @@
                 "algorithms",
                 "data structures"
             ],
-            "time": "2019-09-28 08:43:35"
+            "time": "2019-09-28T08:43:35+00:00"
         },
         {
             "name": "doganoo/php-util",
@@ -469,7 +468,7 @@
                 }
             ],
             "description": "A collection of common classes and methods that I am usually working with",
-            "time": "2019-10-10 19:38:13"
+            "time": "2019-10-10T19:38:13+00:00"
         },
         {
             "name": "doganoo/simple-rbac",
@@ -511,7 +510,7 @@
                 }
             ],
             "description": "Simple leightweight PHP Role Based Access Control library",
-            "time": "2019-08-30 12:42:49"
+            "time": "2019-08-30T12:42:49+00:00"
         },
         {
             "name": "filp/whoops",
@@ -572,7 +571,7 @@
                 "throwable",
                 "whoops"
             ],
-            "time": "2018-10-23 09:00:00"
+            "time": "2018-10-23T09:00:00+00:00"
         },
         {
             "name": "jeremeamia/superclosure",
@@ -630,7 +629,7 @@
                 "serialize",
                 "tokenizer"
             ],
-            "time": "2018-03-21 22:21:57"
+            "time": "2018-03-21T22:21:57+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -682,7 +681,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-11-08 13:50:10"
+            "time": "2019-11-08T13:50:10+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -732,7 +731,7 @@
                 }
             ],
             "description": "Composer plugin that provides efficient querying for installed package versions (no runtime IO)",
-            "time": "2019-02-21 12:16:21"
+            "time": "2019-02-21T12:16:21+00:00"
         },
         {
             "name": "php-di/invoker",
@@ -775,7 +774,7 @@
                 "invoke",
                 "invoker"
             ],
-            "time": "2017-03-20 19:28:22"
+            "time": "2017-03-20T19:28:22+00:00"
         },
         {
             "name": "php-di/php-di",
@@ -838,7 +837,7 @@
                 "ioc",
                 "psr11"
             ],
-            "time": "2019-03-07 20:02:32"
+            "time": "2019-03-07T20:02:32+00:00"
         },
         {
             "name": "php-di/phpdoc-reader",
@@ -875,7 +874,7 @@
                 "phpdoc",
                 "reflection"
             ],
-            "time": "2019-09-26 11:24:58"
+            "time": "2019-09-26T11:24:58+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -941,7 +940,7 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
-            "time": "2019-11-13 20:09:28"
+            "time": "2019-11-13T20:09:28+00:00"
         },
         {
             "name": "psr/container",
@@ -990,7 +989,7 @@
                 "container-interop",
                 "psr"
             ],
-            "time": "2017-02-14 16:28:37"
+            "time": "2017-02-14T16:28:37+00:00"
         },
         {
             "name": "psr/log",
@@ -1037,7 +1036,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2019-11-01 11:05:21"
+            "time": "2019-11-01T11:05:21+00:00"
         },
         {
             "name": "psr/simple-cache",
@@ -1085,7 +1084,7 @@
                 "psr-16",
                 "simple-cache"
             ],
-            "time": "2017-10-23 01:57:42"
+            "time": "2017-10-23T01:57:42+00:00"
         },
         {
             "name": "robmorgan/phinx",
@@ -1162,7 +1161,7 @@
                 "migrations",
                 "phinx"
             ],
-            "time": "2019-08-28 12:24:19"
+            "time": "2019-08-28T12:24:19+00:00"
         },
         {
             "name": "symfony/asset",
@@ -1218,7 +1217,7 @@
             ],
             "description": "Symfony Asset Component",
             "homepage": "https://symfony.com",
-            "time": "2019-08-03 21:50:52"
+            "time": "2019-08-03T21:50:52+00:00"
         },
         {
             "name": "symfony/config",
@@ -1282,7 +1281,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-08 08:31:27"
+            "time": "2019-11-08T08:31:27+00:00"
         },
         {
             "name": "symfony/console",
@@ -1357,7 +1356,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-13 07:29:07"
+            "time": "2019-11-13T07:29:07+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -1407,7 +1406,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2019-08-20 14:07:54"
+            "time": "2019-08-20T14:07:54+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -1461,7 +1460,66 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2019-03-30 15:58:42"
+            "time": "2019-03-30T15:58:42+00:00"
+        },
+        {
+            "name": "symfony/mime",
+            "version": "v4.3.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/mime.git",
+                "reference": "22aecf6b11638ef378fab25d6c5a2da8a31a1448"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/22aecf6b11638ef378fab25d6c5a2da8a31a1448",
+                "reference": "22aecf6b11638ef378fab25d6c5a2da8a31a1448",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1.3",
+                "symfony/polyfill-intl-idn": "^1.10",
+                "symfony/polyfill-mbstring": "^1.0"
+            },
+            "require-dev": {
+                "egulias/email-validator": "^2.1.10",
+                "symfony/dependency-injection": "~3.4|^4.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mime\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "A library to manipulate MIME messages",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "mime",
+                "mime-type"
+            ],
+            "time": "2019-11-12T13:10:02+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -1519,7 +1577,69 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2019-08-06 08:03:45"
+            "time": "2019-08-06T08:03:45+00:00"
+        },
+        {
+            "name": "symfony/polyfill-intl-idn",
+            "version": "v1.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-intl-idn.git",
+                "reference": "6af626ae6fa37d396dc90a399c0ff08e5cfc45b2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-idn/zipball/6af626ae6fa37d396dc90a399c0ff08e5cfc45b2",
+                "reference": "6af626ae6fa37d396dc90a399c0ff08e5cfc45b2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/polyfill-mbstring": "^1.3",
+                "symfony/polyfill-php72": "^1.9"
+            },
+            "suggest": {
+                "ext-intl": "For best performance"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.12-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Laurent Bassin",
+                    "email": "laurent@bassin.info"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill for intl's idn_to_ascii and idn_to_utf8 functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "idn",
+                "intl",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2019-08-06T08:03:45+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1578,7 +1698,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2019-08-06 08:03:45"
+            "time": "2019-08-06T08:03:45+00:00"
         },
         {
             "name": "symfony/polyfill-php56",
@@ -1634,7 +1754,62 @@
                 "portable",
                 "shim"
             ],
-            "time": "2019-08-06 08:03:45"
+            "time": "2019-08-06T08:03:45+00:00"
+        },
+        {
+            "name": "symfony/polyfill-php72",
+            "version": "v1.12.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php72.git",
+                "reference": "04ce3335667451138df4307d6a9b61565560199e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/04ce3335667451138df4307d6a9b61565560199e",
+                "reference": "04ce3335667451138df4307d6a9b61565560199e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.12-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php72\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 7.2+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2019-08-06T08:03:45+00:00"
         },
         {
             "name": "symfony/polyfill-php73",
@@ -1692,7 +1867,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2019-08-06 08:03:45"
+            "time": "2019-08-06T08:03:45+00:00"
         },
         {
             "name": "symfony/polyfill-util",
@@ -1744,7 +1919,7 @@
                 "polyfill",
                 "shim"
             ],
-            "time": "2019-08-06 08:03:45"
+            "time": "2019-08-06T08:03:45+00:00"
         },
         {
             "name": "symfony/routing",
@@ -1820,7 +1995,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2019-03-30 15:58:42"
+            "time": "2019-03-30T15:58:42+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -1878,7 +2053,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2019-10-14 12:27:06"
+            "time": "2019-10-14T12:27:06+00:00"
         },
         {
             "name": "symfony/webpack-encore-pack",
@@ -1910,7 +2085,7 @@
             ],
             "description": "A pack for Symfony Encore",
             "abandoned": "symfony/webpack-encore-bundle",
-            "time": "2018-07-16 10:15:28"
+            "time": "2018-07-16T10:15:28+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1969,7 +2144,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2019-10-30 12:58:49"
+            "time": "2019-10-30T12:58:49+00:00"
         },
         {
             "name": "twig/twig",
@@ -2036,7 +2211,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-11-11 16:52:09"
+            "time": "2019-11-11T16:52:09+00:00"
         },
         {
             "name": "xobotyi/php-mime-type",
@@ -2092,7 +2267,7 @@
                 "type",
                 "util"
             ],
-            "time": "2019-01-23 14:25:50"
+            "time": "2019-01-23T14:25:50+00:00"
         }
     ],
     "packages-dev": [
@@ -2138,7 +2313,7 @@
                 "Xdebug",
                 "performance"
             ],
-            "time": "2019-11-06 16:40:04"
+            "time": "2019-11-06T16:40:04+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -2194,7 +2369,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2019-10-21 16:45:58"
+            "time": "2019-10-21T16:45:58+00:00"
         },
         {
             "name": "jean85/pretty-package-versions",
@@ -2245,7 +2420,7 @@
                 "release",
                 "versions"
             ],
-            "time": "2018-06-13 13:22:40"
+            "time": "2018-06-13T13:22:40+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2293,7 +2468,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2019-08-09 12:45:53"
+            "time": "2019-08-09T12:45:53+00:00"
         },
         {
             "name": "nette/bootstrap",
@@ -2369,7 +2544,7 @@
                 "configurator",
                 "nette"
             ],
-            "time": "2019-09-30 08:19:38"
+            "time": "2019-09-30T08:19:38+00:00"
         },
         {
             "name": "nette/di",
@@ -2442,7 +2617,7 @@
                 "nette",
                 "static"
             ],
-            "time": "2019-08-07 12:11:33"
+            "time": "2019-08-07T12:11:33+00:00"
         },
         {
             "name": "nette/finder",
@@ -2504,7 +2679,7 @@
                 "iterator",
                 "nette"
             ],
-            "time": "2019-07-11 18:02:17"
+            "time": "2019-07-11T18:02:17+00:00"
         },
         {
             "name": "nette/neon",
@@ -2565,7 +2740,7 @@
                 "nette",
                 "yaml"
             ],
-            "time": "2019-02-05 21:30:40"
+            "time": "2019-02-05T21:30:40+00:00"
         },
         {
             "name": "nette/php-generator",
@@ -2624,7 +2799,7 @@
                 "php",
                 "scaffolding"
             ],
-            "time": "2019-07-05 13:01:56"
+            "time": "2019-07-05T13:01:56+00:00"
         },
         {
             "name": "nette/robot-loader",
@@ -2686,7 +2861,7 @@
                 "nette",
                 "trait"
             ],
-            "time": "2019-03-08 21:57:24"
+            "time": "2019-03-08T21:57:24+00:00"
         },
         {
             "name": "nette/schema",
@@ -2743,7 +2918,7 @@
                 "config",
                 "nette"
             ],
-            "time": "2019-10-31 20:52:19"
+            "time": "2019-10-31T20:52:19+00:00"
         },
         {
             "name": "nette/utils",
@@ -2820,7 +2995,7 @@
                 "utility",
                 "validation"
             ],
-            "time": "2019-10-21 20:40:16"
+            "time": "2019-10-21T20:40:16+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -2875,7 +3050,7 @@
                 }
             ],
             "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
-            "time": "2018-07-08 19:23:20"
+            "time": "2018-07-08T19:23:20+00:00"
         },
         {
             "name": "phar-io/version",
@@ -2922,7 +3097,7 @@
                 }
             ],
             "description": "Library for handling version information and constraints",
-            "time": "2018-07-08 19:19:57"
+            "time": "2018-07-08T19:19:57+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -2974,7 +3149,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2018-08-07 13:53:10"
+            "time": "2018-08-07T13:53:10+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -3025,7 +3200,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2019-09-12 14:27:41"
+            "time": "2019-09-12T14:27:41+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -3072,7 +3247,7 @@
                 }
             ],
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
-            "time": "2019-08-22 18:11:29"
+            "time": "2019-08-22T18:11:29+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -3135,7 +3310,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2019-10-03 11:07:50"
+            "time": "2019-10-03T11:07:50+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
@@ -3182,7 +3357,7 @@
                 "MIT"
             ],
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
-            "time": "2019-06-07 19:13:52"
+            "time": "2019-06-07T19:13:52+00:00"
         },
         {
             "name": "phpstan/phpstan",
@@ -3257,7 +3432,7 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2019-10-22 20:20:22"
+            "time": "2019-10-22T20:20:22+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -3320,7 +3495,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-10-31 16:06:48"
+            "time": "2018-10-31T16:06:48+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3370,7 +3545,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2018-09-13 20:33:42"
+            "time": "2018-09-13T20:33:42+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -3411,7 +3586,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -3460,7 +3635,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2019-06-07 04:22:29"
+            "time": "2019-06-07T04:22:29+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -3509,7 +3684,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2019-09-17 06:23:10"
+            "time": "2019-09-17T06:23:10+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -3593,7 +3768,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-10-28 10:37:36"
+            "time": "2019-10-28T10:37:36+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -3638,7 +3813,7 @@
             ],
             "description": "Looks up which function or method a line of code belongs to",
             "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
-            "time": "2017-03-04 06:30:41"
+            "time": "2017-03-04T06:30:41+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -3702,7 +3877,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2018-07-12 15:12:46"
+            "time": "2018-07-12T15:12:46+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -3758,20 +3933,20 @@
                 "unidiff",
                 "unified diff"
             ],
-            "time": "2019-02-04 06:01:07"
+            "time": "2019-02-04T06:01:07+00:00"
         },
         {
             "name": "sebastian/environment",
-            "version": "4.2.2",
+            "version": "4.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "f2a2c8e1c97c11ace607a7a667d73d47c19fe404"
+                "reference": "464c90d7bdf5ad4e8a6aea15c091fec0603d4368"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/f2a2c8e1c97c11ace607a7a667d73d47c19fe404",
-                "reference": "f2a2c8e1c97c11ace607a7a667d73d47c19fe404",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/464c90d7bdf5ad4e8a6aea15c091fec0603d4368",
+                "reference": "464c90d7bdf5ad4e8a6aea15c091fec0603d4368",
                 "shasum": ""
             },
             "require": {
@@ -3811,7 +3986,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2019-05-05 09:05:15"
+            "time": "2019-11-20T08:46:58+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -3878,7 +4053,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2019-09-14 09:02:43"
+            "time": "2019-09-14T09:02:43+00:00"
         },
         {
             "name": "sebastian/global-state",
@@ -3929,7 +4104,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2017-04-27 15:39:26"
+            "time": "2017-04-27T15:39:26+00:00"
         },
         {
             "name": "sebastian/object-enumerator",
@@ -3976,7 +4151,7 @@
             ],
             "description": "Traverses array structures and object graphs to enumerate all referenced objects",
             "homepage": "https://github.com/sebastianbergmann/object-enumerator/",
-            "time": "2017-08-03 12:35:26"
+            "time": "2017-08-03T12:35:26+00:00"
         },
         {
             "name": "sebastian/object-reflector",
@@ -4021,7 +4196,7 @@
             ],
             "description": "Allows reflection of object attributes, including inherited and non-public ones",
             "homepage": "https://github.com/sebastianbergmann/object-reflector/",
-            "time": "2017-03-29 09:07:27"
+            "time": "2017-03-29T09:07:27+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -4074,7 +4249,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2017-03-03 06:23:57"
+            "time": "2017-03-03T06:23:57+00:00"
         },
         {
             "name": "sebastian/resource-operations",
@@ -4116,7 +4291,7 @@
             ],
             "description": "Provides a list of PHP built-in functions that operate on resources",
             "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
-            "time": "2018-10-04 04:07:39"
+            "time": "2018-10-04T04:07:39+00:00"
         },
         {
             "name": "sebastian/version",
@@ -4159,7 +4334,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2016-10-03 07:35:21"
+            "time": "2016-10-03T07:35:21+00:00"
         },
         {
             "name": "symfony/finder",
@@ -4208,7 +4383,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2019-10-30 12:53:54"
+            "time": "2019-10-30T12:53:54+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -4248,7 +4423,7 @@
                 }
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
-            "time": "2019-06-13 22:48:21"
+            "time": "2019-06-13T22:48:21+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -4298,7 +4473,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2019-08-24 08:43:50"
+            "time": "2019-08-24T08:43:50+00:00"
         }
     ],
     "aliases": [],

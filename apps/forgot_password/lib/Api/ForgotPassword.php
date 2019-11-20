@@ -64,8 +64,8 @@ class ForgotPassword extends AbstractApi {
         $this->permissionManager = $permissionManager;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_FORGOT_PASSWORD_SUBMIT)
         );
@@ -73,7 +73,7 @@ class ForgotPassword extends AbstractApi {
 
     public function create(): void {
 
-        $usernameOrEmail = $this->parameters[0] ?? null;
+        $usernameOrEmail = $this->parameters["username_or_email"] ?? null;
         $response        = new DefaultResponse();
         $response->setCode(HTTP::OK);
 

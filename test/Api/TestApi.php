@@ -27,8 +27,8 @@ class TestApi extends AbstractApi {
 
     private $parameters = null;
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
     }
 
     public function create(): void {

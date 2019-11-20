@@ -57,9 +57,9 @@ class UpdateUserData extends AbstractApi {
         parent::__construct($l10n);
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(array $parameters): void {
         /** @var User $user */
-        $user = $this->userManager->getUserById($params[2] ?? "");
+        $user = $this->userManager->getUserById($parameters["user_id"] ?? "");
         if (null === $user) {
             $this->prepareResponse(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -67,11 +67,11 @@ class UpdateUserData extends AbstractApi {
             );
             return;
         }
-        $user->setFirstName($params[0] ?? "");
-        $user->seKSAstName($params[1] ?? "");
-        $user->setEmail($params[3] ?? "");
-        $user->setPhone($params[4] ?? "");
-        $user->setWebsite($params[5] ?? "");
+        $user->setFirstName($parameters["first_name"] ?? "");
+        $user->setLastName($parameters["last_name"] ?? "");
+        $user->setEmail($parameters["email"] ?? "");
+        $user->setPhone($params["phone"] ?? "");
+        $user->setWebsite($parameters["website"] ?? "");
         $this->user = $user;
 
         $this->preparePermission(

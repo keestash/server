@@ -1,7 +1,7 @@
 <div class="ui menu" id="top-menu">
     <div class="ui fluid container">
         <a class="header item" href="{{href}}">
-            <img class="logo" src="{{logopath}}">
+            <img class="logo" id="main-logo" src="{{logopath}}">
         </a>
         {% for partId, partEntry in parts %}
         {{partEntry.getName()}}

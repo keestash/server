@@ -78,7 +78,6 @@ class PersonalInfo {
                 , "defaultImage"         => $defaultImage
                 , "lastName"             => $this->l10n->translate("Last Name")
                 , "userHash"             => $this->l10n->translate("User Hash")
-                , "userHashValue"        => $this->userService->hashUserId($this->user)
             ]
         );
         return $this->templateManager->render("personal_info.html");

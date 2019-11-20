@@ -30,7 +30,7 @@ use JsonSerializable;
  *
  * TODO move to right place
  */
-interface IUser extends JsonSerializable {
+interface IUser extends KSObject {
 
     public function getId(): int;
 
@@ -53,5 +53,7 @@ interface IUser extends JsonSerializable {
     public function getWebsite(): string;
 
     public function getLastLogin(): ?DateTime;
+
+    public function getHash(): string;
 
 }

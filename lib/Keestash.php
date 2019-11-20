@@ -20,8 +20,6 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use DI\DependencyException;
-use DI\NotFoundException;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Log\Logger;
@@ -30,7 +28,6 @@ use Keestash\Api\Response\NeedsUpgrade;
 use Keestash\Api\Response\SessionExpired;
 use Keestash\App\Config\Diff;
 use Keestash\App\Helper;
-use Keestash\Core\Manager\AssetManager\AssetManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\Route;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
@@ -38,19 +35,18 @@ use Keestash\Core\Manager\RouterManager\Router\Helper as RouterHelper;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\UserSessionManager;
+use Keestash\Core\Service\AssetService;
 use Keestash\Core\Service\HTTPService;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\System\Installation\LockHandler;
-use Keestash\Exception\NotInstalledException;
 use Keestash\Server;
 use Keestash\View\Navigation\Entry;
 use Keestash\View\Navigation\Navigation;
 use Keestash\View\Navigation\Part;
 use KSP\Api\IResponse;
 use KSP\App\IApp;
-use KSP\Core\Manager\AssetManager\IAssetManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
@@ -74,12 +70,9 @@ class Keestash {
 
     }
 
+
     /**
      * @return bool
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws ReflectionException
-     * @throws NotInstalledException
      */
     public static function requestWeb(): bool {
         Keestash::$mode = Keestash::MODE_WEB;
@@ -97,16 +90,7 @@ class Keestash {
             $router->routeTo("login");
         }
 
-        if (in_array($router->getRouteType(),
-            [
-                Route::ROUTE_TYPE_CONTROLLER
-                , Route::ROUTE_TYPE_CONTROLLER_NO_APP_NAVIGATION
-                , Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS
-            ]
-        )
-        ) {
-            Keestash::renderTemplates();
-        }
+        Keestash::renderTemplates();
         Keestash::flushOutput();
         return true;
     }
@@ -213,19 +197,14 @@ class Keestash {
 
         $userImage = "";
 
-        if (null !== $user) {
-            /** @var AssetManager $assetManager */
-            $assetManager = self::getServer()->query(IAssetManager::class);
-            $defaultImage = Keestash::getBaseURL(false) . "/asset/img/profile-picture.png";
-            $profileImage = $assetManager->getProfilePicture($user);
-            $image        = null !== $profileImage ? $profileImage : $defaultImage;
-            $userImage    = $assetManager->uriToBase64($image);
-        }
+        /** @var AssetService $assetService */
+        $assetService = Keestash::getServer()->query(AssetService::class);
+        $userImage    = $assetService->getUserProfilePicture($user);
 
         self::$server->getTemplateManager()->replace("navigation.html",
             [
                 "appName"     => $legacy->getVendor()->get("name")
-                , "logopath"  => self::getBaseURL(false) . "/asset/img/logo.png"
+                , "logopath"  => self::getBaseURL(false) . "/asset/img/logo_no_name.png"
                 , "logoutURL" => self::getBaseURL() . "logout"
                 , "userImage" => $userImage
             ]);
@@ -277,6 +256,11 @@ class Keestash {
     }
 
     private static function isInstalled(): void {
+        Keestash::isInstanceInstalled();
+        Keestash::areAppsInstalled();
+    }
+
+    private static function isInstanceInstalled(): void {
         $lockHandler          = Keestash::getServer()->getInstanceLockHandler();
         $isLocked             = $lockHandler->isLocked();
         $routesToInstallation = RouterHelper::routesToInstallation();
@@ -288,16 +272,12 @@ class Keestash {
             return;
         }
 
-        Keestash::isInstanceInstalled();
-        Keestash::areAppsInstalled();
-    }
-
-    private static function isInstanceInstalled(): void {
         /** @var HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
         /** @var InstallerService $installer */
         $installer   = Keestash::getServer()->query(InstallerService::class);
         $isInstalled = $installer->isInstalled();
+
 
         if (false === $isInstalled) {
             FileLogger::debug("The whole application is not installed. Please install");
@@ -309,7 +289,8 @@ class Keestash {
     }
 
     private static function areAppsInstalled(): void {
-
+        // TODO we need to route to install apps if the current
+        //  route is going to another target
         // We only check loadedApps if the system is
         // installed
         $loadedApps    = Keestash::getServer()->getAppLoader()->getApps();
@@ -414,6 +395,7 @@ class Keestash {
     }
 
     private static function setExceptionHandler(): void {
+
         set_error_handler(function ($error) {
 
             if (is_int($error)) {
@@ -504,7 +486,7 @@ class Keestash {
 
         if (true === $debug) return;
         if (null !== $callable) $callable(ob_get_contents());
-        ob_end_clean();
+//        ob_end_clean();
     }
 
 
@@ -696,6 +678,7 @@ class Keestash {
                     Keestash::getServer()->getL10N()
                 )
             );
+
         }
 
         Keestash::validateApi();
@@ -706,6 +689,7 @@ class Keestash {
         $responses = self::$server->getResponseManager()->getResponses();
         /** @var IResponse $response */
         $response = $responses->get(0);
+
 
         header('Access-Control-Allow-Origin: *');
         header("HTTP/1.1 {$response->getCode()} {$response->getDescription()}");

@@ -24,8 +24,9 @@ namespace Keestash\Core\DTO;
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
 use KSP\Core\DTO\IUser;
+use KSP\Core\Permission\IUser as PermissionUser;
 
-class User implements IUser, \KSP\Core\Permission\IUser {
+class User implements IUser, PermissionUser {
 
     /** @var int $id */
     private $id;
@@ -51,6 +52,8 @@ class User implements IUser, \KSP\Core\Permission\IUser {
     private $roles = null;
     /** @var null|DateTime */
     private $lastLogin = null;
+    /** @var string $hash */
+    private $hash = null;
 
     /**
      * @return string
@@ -75,19 +78,12 @@ class User implements IUser, \KSP\Core\Permission\IUser {
     }
 
     /**
-     * @param string $displayName
-     * @deprecated
-     */
-    public function setDisplayName(string $displayName): void {
-        $this->displayName = $displayName;
-    }
-
-    /**
      * @param string $lastName
      */
-    public function seKSAstName(string $lastName): void {
+    public function setLastName(string $lastName): void {
         $this->lastName = $lastName;
     }
+
     /**
      * @return int
      */
@@ -222,6 +218,13 @@ class User implements IUser, \KSP\Core\Permission\IUser {
         return $this->lastLogin;
     }
 
+    public function setHash(string $hash): void {
+        $this->hash = $hash;
+    }
+
+    public function getHash(): string {
+        return $this->hash;
+    }
 
     /**
      * Specify data which should be serialized to JSON
@@ -242,6 +245,7 @@ class User implements IUser, \KSP\Core\Permission\IUser {
                 , 'phone'      => $this->getPhone()
                 , 'website'    => $this->getWebsite()
                 , "roles"      => $this->getRoles()
+                , "hash"       => $this->getHash()
             ];
     }
 

@@ -41,13 +41,13 @@ class EndUpdate extends AbstractApi {
         , InstallerService $installerService
         , HealthCheck $healthCheck
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->installerService = $installerService;
         $this->healthCheck      = $healthCheck;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(array $parameters): void {
         $this->parameters = $params[0];
 
         parent::setPermission(
