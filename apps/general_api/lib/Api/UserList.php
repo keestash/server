@@ -23,7 +23,10 @@ namespace KSA\general_api\lib\Api;
 
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\AssetManager\AssetManager;
+use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Permission\PermissionFactory;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\AssetManager\IAssetManager;
@@ -38,17 +41,26 @@ class UserList extends AbstractApi {
     private $parameters     = null;
     private $userRepository = null;
     /** @var IAssetManager|null|AssetManager $assetManager */
-    private $assetManager = null;
+    private $assetManager   = null;
+    private $fileService    = null;
+    private $rawFileService = null;
+    private $fileManager    = null;
 
     public function __construct(
         IL10N $l10n
         , IUserRepository $userRepository
         , IAssetManager $assetManager
+        , FileService $fileService
+        , RawFileService $rawFileService
+        , FileManager $fileManager
     ) {
         parent::__construct($l10n, true);
 
         $this->userRepository = $userRepository;
         $this->assetManager   = $assetManager;
+        $this->rawFileService = $rawFileService;
+        $this->fileService    = $fileService;
+        $this->fileManager    = $fileManager;
     }
 
     public function onCreate(...$params): void {
@@ -70,12 +82,17 @@ class UserList extends AbstractApi {
                 $all->remove($key);
             }
 
-            $picture = $this->assetManager->getProfilePicture($user);
+            $picture = $this->fileManager->read(
+                $this->rawFileService->stringToUri(
+                    $this->fileService->getProfileImagePath($user)
+                )
+            );
 
             if (null === $picture) {
                 $picture = $this->assetManager->getDefaultImage();
             }
-            $picture = $this->assetManager->uriToBase64($picture);
+
+            $picture = $this->rawFileService->stringToBase64($picture);
 
             $pictureTable[$user->getId()] = $picture;
         }

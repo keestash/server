@@ -19,20 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\File\Asset;
 
-use DateTime;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends IObject {
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
 
-    public function getId(): int;
+interface IAsset extends IFile {
 
-    public function getValue(): string;
-
-    public function getCreateTs(): DateTime;
+    public function getURL(): IUniformResourceLocator;
 
 }

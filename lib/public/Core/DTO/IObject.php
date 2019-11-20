@@ -21,18 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO;
 
-use DateTime;
+use JsonSerializable;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends IObject {
-
-    public function getId(): int;
-
-    public function getValue(): string;
-
-    public function getCreateTs(): DateTime;
+interface IObject extends JsonSerializable {
 
 }

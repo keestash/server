@@ -19,20 +19,28 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace Keestash\Core\Manager\FileManager\AssetManager;
 
-use DateTime;
+use Keestash\Core\Manager\FileManager\FileManager;
+use KSP\Core\DTO\File\Asset\IAsset;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\Manager\FileManager\AssetManager\IAssetManager;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends IObject {
+class AssetManager extends FileManager implements IAssetManager {
 
-    public function getId(): int;
+    public function write(IFile $file): bool {
+        if ($file instanceof IAsset) {
+            return parent::write($file);
+        }
+        return false;
+    }
 
-    public function getValue(): string;
+    public function verifyFile(IFile $file): bool {
+        if ($file instanceof IAsset) {
+            return parent::verifyFile($file);
+        }
+        return false;
+    }
 
-    public function getCreateTs(): DateTime;
 
 }
