@@ -21,14 +21,19 @@ declare(strict_types=1);
 
 namespace KSA\Account\Api;
 
+use DateTime;
 use doganoo\SimpleRBAC\Test\DataProvider\Context;
+use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
+use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\HTTP;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\Account\Application\Application;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IUser;
-use KSP\Core\Manager\AssetManager\IAssetManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -36,24 +41,31 @@ use KSP\L10N\IL10N;
 
 class UpdateProfileImage extends AbstractApi {
 
-    private $l10n        = null;
-    private $userManager = null;
-    /** @var IAssetManager $assetManager */
-    private $assetManager      = null;
+    private $l10n              = null;
+    private $userManager       = null;
     private $permissionManager = null;
-    private $user              = null;
-    private $parameters        = null;
+    /** @var IUser $user */
+    private $user           = null;
+    private $base64Image    = null;
+    private $parameters     = null;
+    private $rawFileService = null;
+    private $fileManager    = null;
+    private $fileService    = null;
 
     public function __construct(
         IL10N $l10n
         , IUserRepository $userManager
-        , IAssetManager $assetManager
+        , IFileManager $fileManager
         , IPermissionRepository $permissionManager
+        , RawFileService $rawFileService
+        , FileService $fileService
     ) {
         $this->l10n              = $l10n;
         $this->userManager       = $userManager;
-        $this->assetManager      = $assetManager;
+        $this->fileManager       = $fileManager;
         $this->permissionManager = $permissionManager;
+        $this->rawFileService    = $rawFileService;
+        $this->fileService       = $fileService;
 
         parent::__construct($l10n);
     }
@@ -91,12 +103,66 @@ class UpdateProfileImage extends AbstractApi {
 
         }
 
-        $put = $this->assetManager->writeProfilePicture(
-            $this->parameters[0]
-            , $this->user
-        );
+        if (null === $this->base64Image) {
+
+            parent::setResponse(
+                $this->prepareResponse(
+                    IResponse::RESPONSE_CODE_NOT_OK
+                    , "no image fiven"
+                )
+            );
+            return;
+
+        }
+
+        $raw = base64_decode($this->base64Image);
+
+        if (false === $raw) {
+            parent::setResponse(
+                $this->prepareResponse(
+                    IResponse::RESPONSE_CODE_NOT_OK
+                    , "image is not base64 decoded"
+                )
+            );
+            return;
+        }
+
+        $name = $this->fileService->getProfileImageName($this->user);
+        $tmppName = sys_get_temp_dir() . $name;
+        $put      = @file_put_contents($tmppName, $raw);
 
         if (false === $put) {
+            parent::setResponse(
+                $this->prepareResponse(
+                    IResponse::RESPONSE_CODE_NOT_OK
+                    , "could not write in temp dir"
+                )
+            );
+            return;
+        }
+
+        $extensions = $this->rawFileService->getFileExtensions($tmppName);
+        $mimeType   = $this->rawFileService->getMimeType($tmppName);
+
+        $file = new File();
+        $file->setOwner($this->user);
+        $file->setSize(
+            filesize($tmppName)
+        );
+        $file->setExtension(
+            $extensions[0]
+        );
+        $file->setPath(Keestash::getServer()->getImageRoot());
+        $file->setHash(md5_file($tmppName));
+        $file->setMimeType($mimeType);
+        $file->setName($name);
+        $file->setTemporaryPath($tmppName);
+        $file->setCreateTs(new DateTime());
+        $file->setContent($raw);
+
+        $written = $this->fileManager->write($file);
+
+        if (false === $written) {
             parent::setResponse(
                 $this->prepareResponse(
                     IResponse::RESPONSE_CODE_NOT_OK

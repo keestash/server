@@ -24,7 +24,7 @@ namespace KSP\Core\DTO;
 use DateTime;
 use JsonSerializable;
 
-interface IToken extends JsonSerializable {
+interface IToken extends IObject {
 
     public function getId(): int;
 

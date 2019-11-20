@@ -19,20 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\Manager\FileManager;
 
-use DateTime;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
+use KSP\Core\Manager\IManager;
+use KSP\Core\Repository\File\IFileRepository;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends IObject {
+interface IFileManager extends IManager {
 
-    public function getId(): int;
+    public const FILE_PERMISSION = 0770;
 
-    public function getValue(): string;
+    public function __construct(IFileRepository $fileRepository);
 
-    public function getCreateTs(): DateTime;
+    public function write(IFile $file): bool;
+
+    public function remove(IFile $file): bool;
+
+    public function verifyFile(IFile $file): bool;
+
+    public function read(IUniformResourceIdentifier $uri): ?IFile;
+
 
 }

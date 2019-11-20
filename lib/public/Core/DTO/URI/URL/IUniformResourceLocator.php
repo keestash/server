@@ -19,20 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\URI\URL;
 
-use DateTime;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 
-/**
- * Interface IKey
- * @package KSP\Core\DTO
- */
-interface IKey extends IObject {
-
-    public function getId(): int;
-
-    public function getValue(): string;
-
-    public function getCreateTs(): DateTime;
+interface IUniformResourceLocator extends IUniformResourceIdentifier {
 
 }

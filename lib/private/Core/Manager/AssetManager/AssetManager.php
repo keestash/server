@@ -30,53 +30,6 @@ use xobotyi\MimeType;
 
 class AssetManager implements IAssetManager {
 
-    private const PERMISSION = 0777;
-
-    public function writeProfilePicture(string $base64, IUser $user): bool {
-        $data    = explode(',', $base64);
-        $base64  = $data[1];
-        $decoded = base64_decode($base64);
-        if (false === $decoded) return false;
-
-        $allowedImages = Keestash::getServer()->query(Server::ALLOWED_IMAGE_MIME_TYPES);
-        $f             = finfo_open();
-        $mimeType      = finfo_buffer($f, $decoded, FILEINFO_MIME_TYPE);
-        $extensions    = MimeType::getExtensions($mimeType);
-        $extension     = $extensions[1];
-
-        if (!in_array($mimeType, $allowedImages)) return false;
-
-        $dir = Keestash::getServer()->getImageRoot();
-
-        if (false === is_dir($dir)) {
-            $created = mkdir($dir, AssetManager::PERMISSION, true);
-            if (false === $created) return false;
-        }
-
-        $filename = $dir . "{$user->getId()}.$extension";
-        $put      = file_put_contents($filename, $decoded);
-        chmod($filename, AssetManager::PERMISSION);
-
-        if (false === $put) return false;
-
-        return true;
-
-    }
-
-    public function removeProfilePicture(IUser $user): bool {
-        $dir = Keestash::getServer()->getImageRoot();
-
-        foreach (new DirectoryIterator($dir) as $fileInfo) {
-            if ($fileInfo->isDot()) continue;
-            if (false !== strpos($fileInfo->getFilename(), (string) $user->getId())) {
-                return unlink($fileInfo->getRealPath());
-            }
-        }
-
-        return false;
-
-    }
-
     public function getProfilePicture(IUser $user): ?string {
         $dir = Keestash::getServer()->getImageRoot();
 
