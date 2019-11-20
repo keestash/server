@@ -23,9 +23,7 @@ namespace KSA\Users\Api;
 
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\Base64Response;
-use Keestash\Api\Response\DefaultResponse;
 use Keestash\Api\Response\PlainResponse;
-use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\AssetService;
 use KSP\Api\IResponse;
@@ -43,14 +41,14 @@ class ProfilePicture extends AbstractApi {
         , AssetService $assetService
         , IUserRepository $userRepository
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->assetService   = $assetService;
         $this->userRepository = $userRepository;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params[0];
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
 
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
@@ -58,9 +56,9 @@ class ProfilePicture extends AbstractApi {
     }
 
     public function create(): void {
-        $userId = $this->parameters['user_id'] ?? null;
+        $userHash = $this->parameters['user_hash'] ?? null;
 
-        $user = $this->userRepository->getUserById((string) $userId);
+        $user = $this->userRepository->getUserByHash($userHash);
 
         if (null === $user) {
             $response = parent::createResponse(
@@ -73,7 +71,7 @@ class ProfilePicture extends AbstractApi {
             return;
         }
 
-        $picture = $this->assetService->getUserProfilePicture($user);
+        $picture = $this->assetService->getUserProfileForRestApi($user);
 
         if (null === $picture) {
             $response = parent::createResponse(
@@ -87,6 +85,7 @@ class ProfilePicture extends AbstractApi {
         }
 
         $defaultResponse = new PlainResponse();
+        $defaultResponse->addHeader("Content-Type", "image/jpeg");
         $defaultResponse->setMessage($picture);
 
         parent::setResponse($defaultResponse);

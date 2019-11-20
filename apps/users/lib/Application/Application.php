@@ -34,7 +34,7 @@ class Application extends Keestash\App\Application {
     public const APP_ID                 = "users";
     public const USERS_ADD              = "users/add";
     public const USERS                  = "users";
-    public const USERS_PROFILE_PICTURES = "users/profile_pictures/{user_id}/{token}/{user_hash}/";
+    public const USERS_PROFILE_PICTURES = "users/profile_pictures/{token}/{user_hash}/";
 
     public function register(): void {
 
@@ -49,11 +49,11 @@ class Application extends Keestash\App\Application {
             , [RouterManager::POST]
         );
 
-//        parent::registerApiRoute(
-//            Application::USERS_PROFILE_PICTURES
-//            , ProfilePicture::class
-//            , [RouterManager::GET]
-//        );
+        parent::registerApiRoute(
+            Application::USERS_PROFILE_PICTURES
+            , ProfilePicture::class
+            , [RouterManager::GET]
+        );
 
         parent::addJavascript(self::USERS);
 

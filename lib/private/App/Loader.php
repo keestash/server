@@ -31,8 +31,26 @@ use Keestash;
 use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
+use RecursiveDirectoryIterator;
+use SplFileInfo;
 
 class Loader implements ILoader {
+
+    public const APP_NAME_ABOUT            = "about";
+    public const APP_NAME_ACCOUNT          = "account";
+    public const APP_NAME_APPS             = "apps";
+    public const APP_NAME_FORGOT_PASSWORD  = "forgot_password";
+    public const APP_NAME_GENERAL_API      = "general_api";
+    public const APP_NAME_GENERAL_VIEW     = "general_view";
+    public const APP_NAME_INSTALL          = "install";
+    public const APP_NAME_INSTALL_INSTANCE = "install_instance";
+    public const APP_NAME_LOGIN            = "login";
+    public const APP_NAME_LOGOUT           = "logout";
+    public const APP_NAME_MAINTENANCE      = "maintenance";
+    public const APP_NAME_PROMOTION        = "promotion";
+    public const APP_NAME_REGISTER         = "register";
+    public const APP_NAME_TNC              = "tnc";
+    public const APP_NAME_USERS            = "users";
 
     private $classLoader = null;
     private $appRoot     = null;
@@ -91,20 +109,21 @@ class Loader implements ILoader {
 
     public function loadCoreApps(): void {
         $coreApps = [
-            "about"
-            , "account"
-            , "apps"
-            , "forgot_password"
-            , "general_api"
-            , "install"
-            , "install_instance"
-            , "login"
-            , "logout"
-            , "maintenance"
-            , "promotion"
-            , "register"
-            , "tnc"
-            , "users"
+            Loader::APP_NAME_ABOUT
+            , Loader::APP_NAME_ACCOUNT
+            , Loader::APP_NAME_APPS
+            , Loader::APP_NAME_FORGOT_PASSWORD
+            , Loader::APP_NAME_GENERAL_API
+            , Loader::APP_NAME_GENERAL_VIEW
+            , Loader::APP_NAME_INSTALL
+            , Loader::APP_NAME_INSTALL_INSTANCE
+            , Loader::APP_NAME_LOGIN
+            , Loader::APP_NAME_LOGOUT
+            , Loader::APP_NAME_MAINTENANCE
+            , Loader::APP_NAME_PROMOTION
+            , Loader::APP_NAME_REGISTER
+            , Loader::APP_NAME_TNC
+            , Loader::APP_NAME_USERS
         ];
 
         foreach ($coreApps as $coreApp) {
@@ -217,11 +236,22 @@ class Loader implements ILoader {
     }
 
     private function loadTemplate(IApp $app) {
-        if (false === is_dir($app->getTemplatePath())) return;
-        Keestash::getServer()->getTemplateManager()
-            ->addPath(
-                realpath($app->getTemplatePath())
-            );
+        $dir = $app->getTemplatePath();
+        if (false === is_dir($dir)) return;
+        $dirsToAdd   = [];
+        $dirsToAdd[] = $dir;
+        $iterator    = new RecursiveDirectoryIterator($dir);
+
+        /** @var SplFileInfo $info */
+        foreach ($iterator as $info) {
+            if (false === $info->isDir()) continue;
+
+            Keestash::getServer()->getTemplateManager()
+                ->addPath(
+                    $info->getRealPath()
+                );
+        }
+
     }
 
     public function getApps(): HashTable {

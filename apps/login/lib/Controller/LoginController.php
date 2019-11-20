@@ -76,7 +76,7 @@ class LoginController extends StaticAppController {
                 , "invalidCredentials"  => $this->translator->translate("Please enter valid credentials")
                 , "newAccountLink"      => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"  => Keestash::getBaseURL(true) . "/forgot_password"
-                , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+                , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "registeringEnabled"  => $this->loader->hasApp(Application::APP_NAME_REGISTER)
             ]
         );

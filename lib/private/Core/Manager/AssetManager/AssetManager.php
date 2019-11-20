@@ -93,11 +93,11 @@ class AssetManager implements IAssetManager {
     }
 
     public function getDefaultImage(): string {
-        return Keestash::getBaseURL(false, true) . "/asset/img/profile-picture.png";
+        return Keestash::getServer()->getServerRoot() . "/asset/img/profile-picture.png";
     }
 
 
-    public function uriToBase64(string $uri): ?string {
+    public function uriToBase64(string $uri, bool $rawBase64 = false): ?string {
 
         $content = @file_get_contents($uri);
         if (false === $content) return null;
@@ -105,9 +105,11 @@ class AssetManager implements IAssetManager {
         $put     = file_put_contents($tempNae, $content);
         if (false === $put) return null;
 
-        $imgData = base64_encode($content);
+        $base64 = $imgData = base64_encode($content);
 
-        $base64 = 'data: ' . mime_content_type($tempNae) . ';base64,' . $imgData;
+        if (false === $rawBase64) {
+            $base64 = 'data: ' . mime_content_type($tempNae) . ';base64,' . $imgData;
+        }
 
         return $base64;
 

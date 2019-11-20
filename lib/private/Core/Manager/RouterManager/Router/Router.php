@@ -23,8 +23,8 @@ namespace Keestash\Core\Manager\RouterManager\Router;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
+use Keestash\Core\Service\ReflectionService;
 use KSP\Core\DTO\IAPIRequest;
 use KSP\Core\DTO\IToken;
 use KSP\Core\Manager\RouterManager\IRouter;
@@ -39,15 +39,22 @@ use Symfony\Component\Routing\RouteCollection;
 
 abstract class Router implements IRouter {
 
-    protected $routes           = null;
-    private   $allowedRoutes    = null;
-    private   $apiLoggerManager = null;
+    public const FIELD_NAME_CONTROLLER = "controller";
 
-    public function __construct(IApiLogRepository $apiLoggerManager) {
+    protected $routes            = null;
+    private   $allowedRoutes     = null;
+    private   $apiLoggerManager  = null;
+    private   $reflectionService = null;
+
+    public function __construct(
+        IApiLogRepository $apiLoggerManager
+        , ReflectionService $reflectionService
+    ) {
         $this->routes           = new RouteCollection();
         $this->allowedRoutes    = new HashTable();
         $this->apiLoggerManager = $apiLoggerManager;
         $this->registerPublicRoute("/");
+        $this->reflectionService = $reflectionService;
     }
 
     public function registerPublicRoute(string $name): bool {
@@ -93,18 +100,46 @@ abstract class Router implements IRouter {
     }
 
     public function getParameter(string $name): ?string {
-
-        $parameters = array_merge(
-            $_GET
-            , $_POST
-            , $_COOKIE
-            , $_FILES
-            , $_SERVER
-        );
-
-        return $parameters[$name] ?? null;
+        $allParameters = $this->getAllParameters();
+        return $allParameters[$name] ?? null;
     }
 
+    protected function getAllParameters(): array {
+        $globals = $this->getParametersFromGlobals();
+        $route   = $this->getRouteParameters();
+
+        return array_merge(
+            $globals
+            , $route
+        );
+
+    }
+
+    protected function getControllerName(): string {
+        return $this->getParameter(Router::FIELD_NAME_CONTROLLER);
+    }
+
+    protected function getParametersFromGlobals(): array {
+        $globals = array_merge(
+            $_GET ?? []
+            , $_POST ?? []
+            , $_FILES ?? []
+            , $_SERVER ?? []
+            , $_SESSION ?? []
+            , $_COOKIE ?? []
+        );
+
+        return $globals;
+    }
+
+    protected function getRouteParameters(): array {
+        $context = new RequestContext();
+        $request = Request::createFromGlobals();
+        $context->fromRequest($request);
+        $matcher    = new UrlMatcher($this->routes, $context);
+        $parameters = $matcher->match($context->getPathInfo());
+        return $parameters;
+    }
 
     public function getRoutes(): ?HashTable {
         if (null === $this->routes) return null;
@@ -153,30 +188,14 @@ abstract class Router implements IRouter {
         return $list;
     }
 
+    protected function getReflectionService(): ReflectionService {
+        return $this->reflectionService;
+    }
+
     protected function hasPermission(?IPermission $permission) {
         return true;
         $permissionHandler = Keestash::getServer()->getPermissionHandler();
         return $permissionHandler->hasPermission($permission);
-    }
-
-    protected function getHttpParameters(): array {
-        $request = Request::createFromGlobals();
-        return $request->request->all();
-    }
-
-    protected function getUrlParameter(): array {
-        $context = new RequestContext();
-        $context->fromRequest(
-            Request::createFromGlobals()
-        );
-        $matcher = new UrlMatcher($this->routes, $context);
-        return $matcher->match($context->getPathInfo());
-    }
-
-    protected function handleParameters(): array {
-        $parameters = $this->getUrlParameter();
-        $httpParams = $this->getHttpParameters();
-        return $httpParams + $parameters;
     }
 
 }

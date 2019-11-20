@@ -45,14 +45,14 @@ class UserList extends AbstractApi {
         , IUserRepository $userRepository
         , IAssetManager $assetManager
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->userRepository = $userRepository;
         $this->assetManager   = $assetManager;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params[0];
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
 
         parent::setPermission(
             PermissionFactory::getDefaultPermission()

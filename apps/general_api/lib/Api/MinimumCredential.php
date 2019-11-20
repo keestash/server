@@ -47,15 +47,15 @@ class MinimumCredential extends AbstractApi {
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
         parent::setPermission(
             $this->permissionRepository->getPermission('Public Permission')
         );
     }
 
     public function create(): void {
-        $password = $this->parameters[0] ?? null;
+        $password = $this->parameters["password"] ?? null;
         $message  = null;
 
         if (null === $password) {
