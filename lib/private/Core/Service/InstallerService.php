@@ -23,6 +23,7 @@ namespace Keestash\Core\Service;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\System\Installation\Instance\HealthCheck;
 use Keestash\Core\System\Installation\Instance\LockHandler;
@@ -42,72 +43,45 @@ class InstallerService {
     private $messages      = null;
     private $lockHandler   = null;
     private $migrator      = null;
+    private $instanceDB    = null;
 
     public function __construct(
         LockHandler $lockHandler
         , Migrator $migrator
+        , InstanceDB $instanceDB
     ) {
         $this->installerFile = Keestash::getServer()->getInstallerRoot() . "instance.installation";
         $this->healthCheck   = new HealthCheck();
         $this->messages      = [];
         $this->lockHandler   = $lockHandler;
         $this->migrator      = $migrator;
+        $this->instanceDB    = $instanceDB;
     }
 
     public function removeInstaller(): bool {
-        $deleted = unlink($this->installerFile);
-        if (false === $deleted) return false;
         $unlocked = $this->lockHandler->unlock();
         if (false === $unlocked) return false;
         return true;
     }
 
-    public function getInstaller(): ?array {
-        if (false === is_file($this->installerFile)) return null;
-
-        $content = file_get_contents(
-            $this->installerFile
-        );
-        if (false === $content) return null;
-
-        $array = json_decode(
-            $content
-            , true
-        );
-
-        if (null === $array) return null;
-
-        return $array;
-    }
-
     public function isEmpty(): bool {
-        $array = $this->getInstaller();
+        $array = $this->instanceDB->getAll();
         return null === $array || (is_array($array) && 0 === count($array));
     }
 
-    public function updateInstaller(string $key, $value = null): bool {
-        $array = $this->getInstaller();
-        if (null === $array) return false;
-        if (false === isset($array[$key])) return true;
-
-        if (null === $value) {
-            unset($array[$key]);
-        } else {
-            $array[$key] = $value;
-        }
-
-        return $this->writeInstaller($array);
+    public function updateInstaller(string $key, string $value): bool {
+        return $array = $this->instanceDB->updateOption($key, $value);
     }
 
     public function writeInstaller(array $messages): bool {
-        $put = file_put_contents(
-            $this->installerFile
-            , json_encode(
-                $messages
-                , JSON_PRETTY_PRINT
-            )
-        );
-        return false !== $put;
+        $insertedAll = false;
+
+        foreach ($messages as $key => $value) {
+            $inserted    = $this->instanceDB->addOption($key, json_encode($value));
+            $insertedAll = $insertedAll || $inserted;
+        }
+
+        return $insertedAll;
     }
 
     public function isInstalled(): bool {

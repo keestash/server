@@ -19,16 +19,3 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-$CONFIG = 
-array (
-  'show_errors' => false,
-  'debug' => false,
-  'db_host' => '127.0.0.1',
-  'db_user' => 'keestash',
-  'db_password' => 'keestash',
-  'db_name' => 'keestash',
-  'db_port' => '3306',
-  'db_charset' => 'utf8',
-  'log_requests' => true,
-);

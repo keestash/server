@@ -28,9 +28,6 @@ require realpath(__DIR__ . '/../config.php');
 $dirname = __DIR__ . '/../../';
 $dirname = realpath($dirname);
 
-\doganoo\PHPUtil\Log\FileLogger::debug("instance.php");
-\doganoo\PHPUtil\Log\FileLogger::debug(json_encode($CONFIG));
-
 $pdo = new PDO(
     "mysql:host=" . $CONFIG['db_host'] . ";dbname=" . $CONFIG['db_name']
     , $CONFIG['db_user']

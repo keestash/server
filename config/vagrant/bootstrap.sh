@@ -16,5 +16,9 @@ sudo apt-get install php7.1
 sudo apt-get install php7.1-mysql
 sudo phpenmod pdo_mysql
 sudo apt-get install php-xdebug
+sudo apt-get install composer
+sudo apt-get install php7.1-mbstring
+sudo apt-get install php7.1-dom
+sudo apt-get install php7.1-sqlite
 
 sudo service apache2 restart

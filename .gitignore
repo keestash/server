@@ -288,5 +288,7 @@ apps/*
 *.bundle.js
 config/sys_config/*
 config/sys_config
+config/config.php
 data/*
 data
+.instance.sqlite

@@ -27,7 +27,8 @@
     "ext-openssl": "*",
     "phpmailer/phpmailer": "^6.0",
     "ext-posix": "*",
-    "ocramius/package-versions": "1.4.0"
+    "ocramius/package-versions": "1.4.0",
+    "ext-sqlite3": "*"
   },
   "autoload": {
     "psr-4": {

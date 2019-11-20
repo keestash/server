@@ -36,7 +36,7 @@ $keestash = realpath($keestash);
 /** @noinspection PhpIncludeInspection */
 require_once $keestash;
 
-//Keestash::init();
+Keestash::init();
 
 $pdo = new PDO(
     "mysql:host=" . $CONFIG['db_host'] . ";dbname=" . $CONFIG['db_name']
