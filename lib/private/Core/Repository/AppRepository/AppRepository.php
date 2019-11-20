@@ -34,7 +34,6 @@ class AppRepository extends AbstractRepository implements IAppRepository {
     public function getAllApps(): HashTable {
         $map = new HashTable();
 
-        $tree = null;
         $sql  = "select 
                         `app_id`
                         , `enabled`
@@ -45,7 +44,7 @@ class AppRepository extends AbstractRepository implements IAppRepository {
         $statement = parent::prepareStatement($sql);
 
         if (null === $statement) {
-            return $tree;
+            return $map;
         }
         $statement->execute();
 

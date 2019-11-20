@@ -54,6 +54,7 @@ use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
@@ -230,6 +231,10 @@ class Server {
             return new DateTimeService();
         });
 
+        $this->register(InstanceDB::class, function () {
+            return new InstanceDB();
+        });
+
         $this->register(HTTPService::class, function () {
             return new HTTPService();
         });
@@ -332,6 +337,7 @@ class Server {
             return new InstallerService(
                 $this->getInstanceLockHandler()
                 , $this->query(Migrator::class)
+                , $this->query(InstanceDB::class)
             );
         });
 

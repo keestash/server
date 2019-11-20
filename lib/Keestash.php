@@ -210,6 +210,7 @@ class Keestash {
         if (self::$mode === Keestash::MODE_API) return;
         $legacy    = self::getServer()->getLegacy();
         $user      = self::getServer()->getUserFromSession();
+
         $userImage = "";
 
         if (null !== $user) {
@@ -219,7 +220,6 @@ class Keestash {
             $profileImage = $assetManager->getProfilePicture($user);
             $image        = null !== $profileImage ? $profileImage : $defaultImage;
             $userImage    = $assetManager->uriToBase64($image);
-
         }
 
         self::$server->getTemplateManager()->replace("navigation.html",
