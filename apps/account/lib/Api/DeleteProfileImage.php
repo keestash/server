@@ -62,8 +62,8 @@ class DeleteProfileImage extends AbstractApi {
 
     }
 
-    public function onCreate(...$params): void {
-        $userId     = $params[0];
+    public function onCreate(array $parameters): void {
+        $userId     = $parameters["user_id"];
         $user       = $this->userManager->getUserById($userId);
         $permission = $this->preparePermission($user);
         parent::setPermission($permission);
@@ -77,7 +77,7 @@ class DeleteProfileImage extends AbstractApi {
         }
 
         $file = new File();
-        $file->setPath(Keestash::getServer()->getImageRoot());
+        $file->setDirectory(Keestash::getServer()->getImageRoot());
         $file->setName($this->fileService->getProfileImageName($user));
 
         $removed = $this->fileManager->remove($file);

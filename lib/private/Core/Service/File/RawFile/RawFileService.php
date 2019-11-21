@@ -42,11 +42,10 @@ class RawFileService {
         return MimeType::getExtensions($mimeType);
     }
 
-    public function stringToUri(string $path, bool $strict = false): IUniformResourceIdentifier {
+    public function stringToUri(string $path, bool $strict = true): IUniformResourceIdentifier {
 
         if (true === $strict) {
             $path = realpath($path);
-
             if (false === $path) return null;
 
         }

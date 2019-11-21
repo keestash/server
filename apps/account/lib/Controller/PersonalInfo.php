@@ -25,7 +25,6 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\UserService;
 use KSP\Core\DTO\IUser;
-use KSP\Core\Manager\AssetManager\IAssetManager;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\L10N\IL10N;
@@ -35,11 +34,10 @@ class PersonalInfo {
     private $templateManager = null;
     private $l10n            = null;
     private $user            = null;
-    /** @var IAssetManager $assetManager */
-    private $userService    = null;
-    private $fileManager    = null;
-    private $rawFileService = null;
-    private $fileService    = null;
+    private $userService     = null;
+    private $fileManager     = null;
+    private $rawFileService  = null;
+    private $fileService     = null;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -61,14 +59,14 @@ class PersonalInfo {
 
     public function handle() {
         $defaultImage = $this->fileService->getDefaultProfileImage();
-        $file         = $this->fileManager->read(
+
+        $file = $this->fileManager->read(
             $this->rawFileService->stringToUri(
                 $this->fileService->getProfileImagePath($this->user)
             )
         );
 
-        $image = null !== $file && null !== $file->getFullPath() ? $file->getFullPath() : $defaultImage;
-        $src   = $this->rawFileService->stringToBase64($image);
+        $src = $this->rawFileService->stringToBase64($file->getFullPath());
 
         $this->templateManager->replace("personal_info.html",
             [
@@ -91,7 +89,6 @@ class PersonalInfo {
                 , "defaultImage"         => $defaultImage
                 , "lastName"             => $this->l10n->translate("Last Name")
                 , "userHash"             => $this->l10n->translate("User Hash")
-                , "userHashValue"        => $this->userService->hashUserId($this->user)
             ]
         );
         return $this->templateManager->render("personal_info.html");

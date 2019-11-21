@@ -24,19 +24,21 @@ namespace Keestash\Core\Repository\Instance;
 use DateTime;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
-use SQLite3;
+use PDO;
 
 class InstanceDB {
+
+    public const FIELD_NAME_INSTANCE_HASH = "instance_hash";
+    public const FIELD_NAME_INSTANCE_ID   = "instance_id";
+    public const FIELD_NAME_IS_INSTALLED  = "instance_is_installed";
 
     private $path     = null;
     private $database = null;
 
     public function __construct() {
-        $this->path     = Keestash::getServer()->getAppRoot() . "/.instance.sqlite";
-        $this->database = new SQLite3(
-            $this->path
-            , SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE
-        );
+        $this->path = Keestash::getServer()->getConfigRoot() . "/.instance.sqlite";
+
+        $this->database = new PDO("sqlite:{$this->path}");
 
         $this->createTable();
 
@@ -97,13 +99,13 @@ class InstanceDB {
                                                         , `create_ts`
                                                       FROM `instance`;');
 
-        $result = $statement->execute();
+        $statement->execute();
 
         $array = [];
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        while ($row = $statement->fetch(SQLITE3_ASSOC)) {
             $array[] = $row;
         }
-        $result->finalize();
+
         if (false === $array) return null;
         return $array;
     }
@@ -120,9 +122,9 @@ class InstanceDB {
                                                       WHERE `name` = ?;');
 
         $statement->bindValue(1, $name);
-        $result = $statement->execute();
-        $array  = $result->fetchArray(SQLITE3_ASSOC);
-        $result->finalize();
+        $statement->execute();
+        $array = $statement->fetch(SQLITE3_ASSOC);
+
         if (false === $array) return null;
         return $array['value'] ?? null;
     }
@@ -131,16 +133,14 @@ class InstanceDB {
         if (false === $this->isValid()) return false;
         $statement = $this->database->prepare('DELETE FROM `instance` WHERE `name` = :name;');
         $statement->bindParam("name", $name);
-        $result = $statement->execute();
-        $result->finalize();
+        $statement->execute();
         return true;
     }
 
     public function clear(): bool {
         if (false === $this->isValid()) return false;
         $statement = $this->database->prepare('DELETE FROM `instance`;');
-        $result    = $statement->execute();
-        $result->finalize();
+        $statement->execute();
         return true;
     }
 
@@ -148,4 +148,5 @@ class InstanceDB {
         if (true === is_file($this->path)) return true;
         return false;
     }
+
 }

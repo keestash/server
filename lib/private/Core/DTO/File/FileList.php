@@ -19,28 +19,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service;
+namespace Keestash\Core\DTO\File;
 
-use Keestash\Core\Manager\AssetManager\AssetManager;
-use KSP\Core\DTO\IUser;
-use KSP\Core\Manager\AssetManager\IAssetManager;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use KSP\Core\DTO\File\IFile;
 
-class AssetService {
+class FileList extends ArrayList {
 
-    /** @var IAssetManager|null|AssetManager */
-    private $assetManager = null;
+    public function add($item): bool {
 
-    public function __construct(IAssetManager $assetManager) {
-        $this->assetManager = $assetManager;
-    }
-
-    public function getUserProfilePicture(IUser $user): ?string {
-        $picture = $this->assetManager->getProfilePicture($user);
-        if (null === $picture) {
-            $picture = $this->assetManager->getDefaultImage();
+        if ($item instanceof IFile) {
+            return parent::add($item);
         }
 
-        return $this->assetManager->uriToBase64($picture);
+        return false;
+    }
+
+    public function addAll(ArrayList $arrayList): bool {
+        if ($arrayList instanceof FileList) {
+            return parent::addAll($arrayList);
+        }
+        return false;
+    }
+
+    public function addAllArray(array $array): bool {
+        return false;
+    }
+
+    public function addToIndex(int $index, $item): bool {
+        if ($item instanceof IFile) {
+            return parent::addToIndex($index, $item);
+        }
+        return false;
     }
 
 }

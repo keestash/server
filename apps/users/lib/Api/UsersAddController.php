@@ -53,8 +53,8 @@ class UsersAddController extends AbstractApi {
         $this->userManager = $userManager;
     }
 
-    public function onCreate(...$params): void {
-        $this->passwordRepeat = $params[6];
+    public function onCreate(array $parameters): void {
+        $this->passwordRepeat = $parameters["password_repeat"];
         $this->user           = $this->toUser($params);
     }
 
@@ -70,12 +70,13 @@ class UsersAddController extends AbstractApi {
         $user = new User();
         $user->setName($userName);
         $user->setFirstName($firstName);
-        $user->seKSAstName($lastName);
+        $user->setLastName($lastName);
         $user->setEmail($email);
         $user->setPhone($phone);
         $user->setPassword($password);
         $user->setCreateTs(DateTimeUtil::getUnixTimestamp());
         $user->setWebsite($website);
+        $user->setHash($this->userService->getRandomHash());
 
         return $user;
     }

@@ -36,6 +36,10 @@ body {
     height: 100%;
 }
 
+#main-logo {
+    width: 3.5em;
+}
+
 #top-menu {
     background-color: #269dff;
     color: white;

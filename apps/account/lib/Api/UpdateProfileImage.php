@@ -70,9 +70,9 @@ class UpdateProfileImage extends AbstractApi {
         parent::__construct($l10n);
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
-        $userId           = $params[1] ?? null;
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
+        $userId           = $params["user_id"] ?? null;
         $this->user       = $this->userManager->getUserById((string) $userId);
 
         parent::setPermission(
@@ -152,7 +152,7 @@ class UpdateProfileImage extends AbstractApi {
         $file->setExtension(
             $extensions[0]
         );
-        $file->setPath(Keestash::getServer()->getImageRoot());
+        $file->setDirectory(Keestash::getServer()->getImageRoot());
         $file->setHash(md5_file($tmppName));
         $file->setMimeType($mimeType);
         $file->setName($name);

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\RouterManager\Router;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\ClassUtil;
 use Exception;
 use Keestash;
@@ -32,6 +31,7 @@ class Helper {
     private const ROUTE_INSTALL_INSTANCE               = "install_instance";
     private const ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG = "install_instance/update_config/";
     private const ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE = "install_instance/dirs_writable/";
+    private const ROUTE_INSTALL_INSTANCE_CONFIG_DATA   = "install_instance/config_data/";
     private const ROUTE_INSTALL_INSTANCE_END_UPDATE    = "install_instance/end_update/";
     private const ROUTE_LOGIN_SUBMIT                   = "login/submit";
 
@@ -73,6 +73,7 @@ class Helper {
                 , [
                     Helper::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
                     , Helper::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
+                    , Helper::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
                     , Helper::ROUTE_INSTALL_INSTANCE_END_UPDATE
                     , Helper::ROUTE_LOGIN_SUBMIT
                 ]

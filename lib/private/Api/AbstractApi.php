@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Api;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
 use KSP\Api\IApi;
@@ -31,12 +30,12 @@ use KSP\L10N\IL10N;
 
 abstract class AbstractApi implements IApi {
 
-    private $response           = null;
-    private $permission         = null;
-    private $translator         = null;
-    private $associativeIndices = false;
+    private $response   = null;
+    private $permission = null;
+    private $translator = null;
+    private $parameters = null;
 
-    public function __construct(IL10N $l10n, bool $associativeIndices = false) {
+    public function __construct(IL10N $l10n) {
         $defaultResponse = $this->createResponse(
             IResponse::RESPONSE_CODE_NOT_OK
             , [
@@ -44,13 +43,9 @@ abstract class AbstractApi implements IApi {
             ]
         );
 
-        $this->response           = $defaultResponse;
-        $this->translator         = $l10n;
-        $this->associativeIndices = $associativeIndices;
-
-        if (false === $associativeIndices) {
-            FileLogger::warn(static::class . " does not has associative arrays");
-        }
+        $this->response   = $defaultResponse;
+        $this->translator = $l10n;
+        $this->parameters = [];
     }
 
     public function getResponse(): IResponse {
@@ -73,6 +68,14 @@ abstract class AbstractApi implements IApi {
         return $this->translator;
     }
 
+    protected function setParameters(array $parameters): void {
+        $this->parameters = $parameters;
+    }
+
+    protected function getParameters(): array {
+        return $this->parameters;
+    }
+
     protected function createResponse(int $code, array $messages): IResponse {
         $defaultResponse = new DefaultResponse();
         $defaultResponse->setCode(HTTP::OK);
@@ -85,10 +88,6 @@ abstract class AbstractApi implements IApi {
         );
 
         return $defaultResponse;
-    }
-
-    public function hasAssociativeIndices(): bool {
-        return $this->associativeIndices;
     }
 
     public function createAndSetResponse(int $code, array $messages): void {

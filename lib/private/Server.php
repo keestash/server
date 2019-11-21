@@ -37,6 +37,7 @@ use Keestash\Core\Encryption\Base\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\AssetManager\AssetManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
+use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
 use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
 use Keestash\Core\Manager\HookManager\RegistrationHookManager;
@@ -54,16 +55,20 @@ use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
+use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Service\DateTimeService;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTPService;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\UserService;
@@ -78,8 +83,8 @@ use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
-use KSP\Core\Manager\AssetManager\IAssetManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\HookManager\IHookManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
@@ -89,6 +94,7 @@ use KSP\Core\Permission\IDataProvider;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
+use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
@@ -150,7 +156,7 @@ class Server {
             /** @var IUser $user */
             foreach ($users as $user) {
                 $this->userHashes->put(
-                    $userService->hashUserId($user)
+                    $user->getHash()
                     , $user->getId()
                 );
             }
@@ -161,6 +167,12 @@ class Server {
             return new Verification(
                 Keestash::getServer()->getTokenManager()
                 , Keestash::getServer()->getUserHashes()
+            );
+        });
+
+        $this->register(IFileManager::class, function () {
+            return new FileManager(
+                $this->query(IFileRepository::class)
             );
         });
 
@@ -176,9 +188,7 @@ class Server {
         $this->register(PasswordChangedHookManager::class, function () {
             return new PasswordChangedHookManager(null);
         });
-        $this->register(IAssetManager::class, function () {
-            return new AssetManager(null, null);
-        });
+
         $this->register(TokenService::class, function () {
             return new TokenService();
         });
@@ -199,16 +209,35 @@ class Server {
             );
         });
         $this->register(IRouterManager::class, function () {
-            $routerManager = new RouterManager(null, null);
-            $loggerManager = $this->query(IApiLogRepository::class);
-            $routerManager->add(RouterManager::HTTP_ROUTER, new HTTPRouter($loggerManager));
-            $routerManager->add(RouterManager::API_ROUTER, new APIRouter($loggerManager));
+            $routerManager     = new RouterManager(null, null);
+            $loggerManager     = $this->query(IApiLogRepository::class);
+            $reflectionService = $this->query(ReflectionService::class);
+
+            $routerManager->add(
+                RouterManager::HTTP_ROUTER
+                , new HTTPRouter(
+                    $loggerManager
+                    , $reflectionService
+                )
+            );
+
+            $routerManager->add(
+                RouterManager::API_ROUTER
+                , new APIRouter(
+                    $loggerManager
+                    , $reflectionService
+                )
+            );
+
             return $routerManager;
         });
         $this->register(IApiLogRepository::class, function () {
             return new ApiLogRepository(
                 $this->query(IBackend::class)
             );
+        });
+        $this->register(ReflectionService::class, function () {
+            return new ReflectionService();
         });
         $this->register(ILoader::class, function () {
             return new Loader(
@@ -231,6 +260,16 @@ class Server {
             return new DateTimeService();
         });
 
+        $this->register(RawFileService::class, function () {
+            return new RawFileService();
+        });
+
+        $this->register(FileService::class, function () {
+            return new FileService(
+                $this->query(RawFileService::class)
+            );
+        });
+
         $this->register(InstanceDB::class, function () {
             return new InstanceDB();
         });
@@ -246,6 +285,14 @@ class Server {
                 , $this->query(IUserRepository::class)
             );
         });
+
+        $this->register(IFileRepository::class, function () {
+            return new FileRepository(
+                $this->query(IBackend::class)
+                , $this->query(IUserRepository::class)
+            );
+        });
+
         $this->register(UserSessionManager::class, function () {
             $backend = $this->query(IBackend::class);
             return new UserSessionManager($backend, null);
@@ -371,11 +418,15 @@ class Server {
         });
 
         $this->register(AppLockHandler::class, function () {
-            return new AppLockHandler();
+            return new AppLockHandler(
+                $this->query(InstanceDB::class)
+            );
         });
 
         $this->register(InstanceLockHandler::class, function () {
-            return new InstanceLockHandler();
+            return new InstanceLockHandler(
+                $this->query(InstanceDB::class)
+            );
         });
 
         $this->register(IBreadCrumbManager::class, function () {
@@ -440,6 +491,10 @@ class Server {
         return $this->getDataRoot() . "image/";
     }
 
+    public function getAssetRoot(): string {
+        return $this->getServerRoot() . "asset/";
+    }
+
     public function getDataRoot(): string {
         return $this->appRoot . "data/";
     }
@@ -478,8 +533,12 @@ class Server {
 
     }
 
-    public function getAppRoot(): string {
+    public function getServerRoot(): string {
         return $this->appRoot;
+    }
+
+    public function getAppRoot(): string {
+        return $this->appRoot . "/apps/";
     }
 
     public function getTemplateManager(): ITemplateManager {
@@ -559,6 +618,10 @@ class Server {
 
     public function getAppLoader(): ILoader {
         return $this->query(ILoader::class);
+    }
+
+    public function getInstanceDB(): InstanceDB {
+        return $this->query(InstanceDB::class);
     }
 
     public function getPermissionHandler(): PermissionHandler {

@@ -21,48 +21,36 @@ declare(strict_types=1);
 
 namespace Keestash\Core\System\Installation;
 
-use doganoo\PHPUtil\FileSystem\DirHandler;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
+use Keestash\Core\Repository\Instance\InstanceDB;
 
-abstract class LockHandler extends DirHandler {
+abstract class LockHandler {
 
-    public function __construct() {
-        parent::__construct(
-            Keestash::getServer()->getLockRoot()
-        );
+    private $instanceDb = null;
+
+    public function __construct(InstanceDB $instanceDB) {
+        $this->instanceDb = $instanceDB;
     }
 
     public function isLocked(): bool {
-        return parent::hasFile(
-            $this->getFileName()
-        );
+        return (bool) $this->instanceDb->getOption($this->getDomain());
     }
 
     public function lock(): bool {
         if (true === $this->isLocked()) return true;
-        return parent::createFile(
-            $this->getFileName()
-            , false
+
+        return $this->instanceDb->addOption(
+            $this->getDomain()
             , (string) getmypid()
         );
+
     }
 
     public function unlock(): bool {
         if (false === $this->isLocked()) return true;
-
-        $fileDeleted = parent::deleteFile(
-            $this->getFileName()
-        );
-
-        if (false === $fileDeleted) return false;
-
-        return parent::rmdir(
-            $this->getPath()
-        );
-
+        return $this->instanceDb->removeOption($this->getDomain());
     }
 
-    public abstract function getFileName(): string;
+    public abstract function getDomain(): string;
 
 }

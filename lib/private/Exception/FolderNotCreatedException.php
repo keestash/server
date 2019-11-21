@@ -19,10 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\AssetManager;
+namespace Keestash\Exception;
 
-use KSP\Core\Manager\IManager;
-
-interface IAssetManager extends IManager {
+class FolderNotCreatedException extends KSException {
 
 }

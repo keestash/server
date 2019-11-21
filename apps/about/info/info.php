@@ -22,5 +22,5 @@ declare(strict_types=1);
 
 use KSA\About\Application\Application;
 
-$application = new Application();
+$application = new Application($app);
 $application->register();

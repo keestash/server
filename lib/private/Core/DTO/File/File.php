@@ -29,7 +29,7 @@ class File implements IFile {
 
     private $id            = null;
     private $name          = null;
-    private $path          = null;
+    private $directory     = null;
     private $temporaryPath = null;
     private $mimeType      = null;
     private $hash          = null;
@@ -63,19 +63,19 @@ class File implements IFile {
         return $this->temporaryPath;
     }
 
-    public function setPath(string $path): void {
-        $this->path = $path;
+    public function setDirectory(string $directory): void {
+        $this->directory = $directory;
     }
 
-    public function getPath(): string {
-        return $this->path;
+    public function getDirectory(): string {
+        return $this->directory;
     }
 
     public function getFullPath(): string {
         $name = str_replace("/", "", $this->getName());
         $name = str_replace(" ", "_", $name);
 
-        $path = $this->getPath() . "/" .
+        $path = $this->getDirectory() . "/" .
             $name . "." .
             str_replace("/", "", $this->getExtension());
 
@@ -152,7 +152,7 @@ class File implements IFile {
             "id"          => $this->getId()
             , "name"      => $this->getName()
             , "tmp_path"  => $this->getTemporaryPath()
-            , "path"      => $this->getPath()
+            , "directory" => $this->getDirectory()
             , "mime_type" => $this->getMimeType()
             , "hash"      => $this->getHash()
             , "extension" => $this->getExtension()

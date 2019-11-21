@@ -24,6 +24,7 @@ namespace Keestash\Core\Repository\User;
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
+use Exception;
 use Keestash\Core\DTO\User;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
@@ -57,6 +58,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , u.`email`
                       , u.`phone`
                       , u.`website`
+                      , u.`hash`
                 from `user` u 
                   where `name` = :name;";
 
@@ -78,6 +80,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $email     = $row[6];
             $phone     = $row[7];
             $website   = $row[8];
+            $hash      = $row[9];
 
             $user = new User();
             $user->setId($id);
@@ -85,10 +88,11 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
+            $user->setHash($hash);
             $user->setLastLogin(new DateTime()); // TODO implement
             $roles = $this->roleManager->getRolesByUser($user);
             $user->setRoles($roles);
@@ -108,6 +112,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `email`
                       , `phone`
                       , `website`
+                      , `hash`
                 from `user` u 
                   where `email` = :email;";
         $statement = parent::prepareStatement($sql);
@@ -128,18 +133,20 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $email     = $row[6];
             $phone     = $row[7];
             $website   = $row[8];
+            $hash      = $row[9];
 
             $user = new User();
             $user->setId($id);
             $user->setName($name);
             $user->setPassword($password);
-            $user->setCreateTs($createTs);
+            $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
+            $user->setHash($hash);
             $roles = $this->roleManager->getRolesByUser($user);
             $user->setRoles($roles);
         }
@@ -147,6 +154,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         return $user;
     }
 
+    /**
+     * @return ArrayList|null
+     * @throws Exception
+     *
+     * TODO exclude users that did not log in for a certain amount of time
+     */
     public function getAll(): ?ArrayList {
         $list      = new ArrayList();
         $sql       = "select 
@@ -159,7 +172,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , u.`email`
                       , u.`phone`
                       , u.`email`
-                from `user` u;"; //TODO add email
+                      , u.`hash`
+                from `user` u;";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $executed = $statement->execute();
@@ -176,6 +190,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $email     = $row[6];
             $phone     = $row[7];
             $website   = $row[8];
+            $hash      = $row[9];
 
             $user = new User();
             $user->setId((int) $id);
@@ -183,11 +198,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
+            $user->setHash($hash);
             $roles = $this->roleManager->getRolesByUser($user);
             $user->setRoles($roles);
 
@@ -212,6 +228,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                   , `phone`
                   , `password`
                   , `website`
+                  , `hash`
                   )
                   values (
                           :first_name
@@ -221,6 +238,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                           , :phone
                           , :password
                           , :website
+                          , :hash
                           );";
 
         $statement = parent::prepareStatement($sql);
@@ -232,6 +250,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $phone     = $user->getPhone();
         $password  = $user->getPassword();
         $website   = $user->getWebsite();
+        $hash      = $user->getHash();
 
         $statement->bindParam("first_name", $firstName);
         $statement->bindParam("last_name", $lastName);
@@ -240,6 +259,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $statement->bindParam("phone", $phone);
         $statement->bindParam("password", $password);
         $statement->bindParam("website", $website);
+        $statement->bindParam("hash", $hash);
 
         if (false === $statement->execute()) return null;
 
@@ -267,6 +287,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `phone`      = :phone
                       , `password`   = :password
                       , `website`    = :website
+                      , `hash`       = :hash
                     where `id` = :id;
         ";
 
@@ -284,6 +305,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $password  = $user->getPassword();
             $id        = $user->getId();
             $website   = $user->getWebsite();
+            $hash      = $user->getHash();
 
             $statement->bindParam(":id", $id);
             $statement->bindParam(":first_name", $firstName);
@@ -293,6 +315,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $statement->bindParam(":phone", $phone);
             $statement->bindParam(":password", $password);
             $statement->bindParam(":website", $website);
+            $statement->bindParam(":hash", $hash);
 
             $executed = $statement->execute();
         } catch (PDOException $e) {
@@ -318,6 +341,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `email`
                       , `phone`
                       , `website`
+                      , `hash`
                 from `user` u 
                   where `id` = :id;;";
         $statement = parent::prepareStatement($sql);
@@ -338,6 +362,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $email     = $row[6];
             $phone     = $row[7];
             $website   = $row[8];
+            $hash      = $row[9];
 
             $user = new User();
             $user->setId($id);
@@ -345,11 +370,65 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
+            $user->setHash($hash);
+            $roles = $this->roleManager->getRolesByUser($user);
+            $user->setRoles($roles);
+        }
+
+        return $user;
+    }
+
+    public function getUserByHash(string $hash): ?IUser {
+        $sql       = "select 
+                      `id`
+                      , `name`
+                      , `password`
+                      , `create_ts`
+                      , `first_name`
+                      , `last_name`
+                      , `email`
+                      , `phone`
+                      , `website`
+                      , `hash`
+                from `user` u 
+                  where `hash` = :hash;";
+        $statement = parent::prepareStatement($sql);
+        if (null === $statement) return null;
+        $statement->bindParam("hash", $hash);
+        $executed = $statement->execute();
+        if (!$executed) return null;
+        if ($statement->rowCount() === 0) return null;
+
+        $user = null;
+        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+            $id        = $row[0];
+            $name      = $row[1];
+            $password  = $row[2];
+            $createTs  = $row[3];
+            $firstName = $row[4];
+            $lastName  = $row[5];
+            $email     = $row[6];
+            $phone     = $row[7];
+            $website   = $row[8];
+            $hash      = $row[9];
+
+            $user = new User();
+            $user->setId($id);
+            $user->setName($name);
+            $user->setPassword($password);
+            $user->setCreateTs((int) $createTs);
+            $user->setFirstName($firstName);
+            $user->setLastName($lastName);
+            $user->setEmail($email);
+            $user->setPhone($phone);
+            $user->setWebsite($website);
+            $user->setLastLogin(new DateTime()); // TODO implement
+            $user->setHash($hash);
             $roles = $this->roleManager->getRolesByUser($user);
             $user->setRoles($roles);
         }
@@ -372,6 +451,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `email`
                       , `phone`
                       , `website`
+                      , `hash`
                 from `user` u 
                   where `name` = :name;";
         $statement = parent::prepareStatement($sql);
@@ -392,6 +472,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $email     = $row[6];
             $phone     = $row[7];
             $website   = $row[8];
+            $hash      = $row[9];
 
             $user = new User();
             $user->setId($id);
@@ -399,10 +480,11 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setPassword($password);
             $user->setCreateTs((int) $createTs);
             $user->setFirstName($firstName);
-            $user->seKSAstName($lastName);
+            $user->setLastName($lastName);
             $user->setEmail($email);
             $user->setPhone($phone);
             $user->setWebsite($website);
+            $user->setHash($hash);
             $user->setLastLogin(new DateTime()); // TODO implement
             $roles = $this->roleManager->getRolesByUser($user);
             $user->setRoles($roles);

@@ -73,6 +73,10 @@ class InstallerService {
         return $array = $this->instanceDB->updateOption($key, $value);
     }
 
+    public function removeOption(string $key):bool {
+        return $this->instanceDB->removeOption($key);
+    }
+
     public function writeInstaller(array $messages): bool {
         $insertedAll = false;
 
@@ -82,6 +86,24 @@ class InstallerService {
         }
 
         return $insertedAll;
+    }
+
+    public function verifyConfigurationFile(bool $force = false): array {
+        $isInstalled = $this->instanceDB->getOption(InstanceDB::FIELD_NAME_IS_INSTALLED);
+
+        if (true === $isInstalled && false === $force) return [];
+
+        $verifier = new ConfigFileReadable();
+        $verifier->hasProperty();
+        $messages     = $verifier->getMessages();
+        $messagesSize = count($messages);
+
+        if (0 !== $messagesSize) {
+            $this->updateInstaller(ConfigFileReadable::class, json_encode($messages));
+            return $messages;
+        }
+
+        return [];
     }
 
     public function isInstalled(): bool {
@@ -125,11 +147,5 @@ class InstallerService {
         return false === $hasErrors;
     }
 
-    public function runCoreMigrations(): bool {
-        $path = Keestash::getServer()->getConfigRoot() . "phinx/instance.php";
-        $path = realpath($path);
-        return $this->migrator->run($path);
-
-    }
 
 }

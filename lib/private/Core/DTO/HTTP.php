@@ -21,6 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO;
 
+/**
+ * Class HTTP
+ * @package Keestash\Core\DTO
+ * @deprecated remove
+ */
 class HTTP {
 
     // Success
