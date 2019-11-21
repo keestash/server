@@ -1,23 +1,32 @@
-    <div class="ui container" id="install__instance__container">
-        <div class="ui text container">
-            <h1>{{ installationHeader }}</h1>
-            <span>{{ installInstruction }}</span>
+<div class="ui container" id="install__instance__container">
+    <div class="ui text container">
+        <h1>{{ installationHeader }}</h1>
+        <span>{{ installInstruction }}</span>
+
+        <div class="ui segment" id="ii__config__segment">
+            <h4 class="ui header">{{ configurationPartHeader }}</h4>
+            <div class="ui active inverted dimmer" id="ii__config__segment__dimmer">
+                <div class="ui text loader"></div>
+            </div>
         </div>
-        <div class="ui text container" id="config__part">
-            {{ configPart|raw }}
-        </div>
-        <div class="ui text container" id="dirs__writable__part">
-            {{ dirsWritablePart|raw }}
-        </div>
-        <div class="ui text container">
-            {{ hasDataDirs|raw }}
-        </div>
-        <div class="ui text container">
-            {{ databaseReachable|raw }}
-        </div>
-        <button class="ui primary button" id="ii__main__button">{{ endUpdate }}</button>
     </div>
+
+    <div class="ui text container" id="config__part">
+        {{ configPart|raw }}
+    </div>
+    <div class="ui text container" id="dirs__writable__part">
+        {{ dirsWritablePart|raw }}
+    </div>
+    <div class="ui text container">
+        {{ hasDataDirs|raw }}
+    </div>
+    <div class="ui text container">
+        {{ databaseReachable|raw }}
+    </div>
+    <button class="ui primary button" id="ii__main__button">{{ endUpdate }}</button>
+</div>
 <data-node
         id="install__instance__data__node"
         data-strings="{{ strings }}"
+        data-config-template="{{ config_template }}"
 ></data-node>

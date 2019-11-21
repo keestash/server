@@ -25,17 +25,10 @@ use Keestash\Core\System\Installation\LockHandler as BaseLockHandler;
 
 class LockHandler extends BaseLockHandler {
 
-    public function __construct() {
-        parent::__construct();
+    private const DOMAIN_NAME = "instance.lock";
 
-        if (false === parent::exists()) {
-            parent::mkdir();
-        }
-
-    }
-
-    public function getFileName(): string {
-        return "instance.lock";
+    public function getDomain(): string {
+        return LockHandler::DOMAIN_NAME;
     }
 
 }

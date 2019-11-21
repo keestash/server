@@ -29,7 +29,6 @@ use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
 use Keestash\Core\System\Installation\Verification\DatabaseReachable;
-use Keestash\Core\System\System;
 use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
 use KSP\L10N\IL10N;
@@ -48,13 +47,13 @@ class UpdateConfig extends AbstractApi {
         IL10N $l10n
         , InstallerService $installerService
     ) {
-        parent::__construct($l10n, true);
+        parent::__construct($l10n);
 
         $this->installerService = $installerService;
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params[0];
+    public function onCreate(array $parameters): void {
+        $this->parameters = $parameters;
 
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
@@ -86,16 +85,14 @@ class UpdateConfig extends AbstractApi {
             parent::createAndSetResponse(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => [
-                        'invalid options' => [
-                            "host"           => $host
-                            , "user"         => $user
-                            , "password"     => $password
-                            , "schema_name"  => $schemaName
-                            , "port"         => $port
-                            , "charset"      => $charSet
-                            , "log_requests" => $logRequests
-                        ]
+                    'invalid options' => [
+                        "host"           => $host
+                        , "user"         => $user
+                        , "password"     => $password
+                        , "schema_name"  => $schemaName
+                        , "port"         => $port
+                        , "charset"      => $charSet
+                        , "log_requests" => $logRequests
                     ]
                 ]
             );
@@ -183,24 +180,7 @@ class UpdateConfig extends AbstractApi {
         }
 
 
-        $ran = $this->installerService->runCoreMigrations();
-
-        FileLogger::debug("is there an db connection: $databaseConnection");
-        FileLogger::debug("migrations ran: $ran");
-
-        if (false === $ran) {
-
-            parent::createAndSetResponse(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "could not create dataabases"
-                ]
-            );
-            return;
-
-        }
-
-        $updated = $this->installerService->updateInstaller(DatabaseReachable::class);
+        $updated = $this->installerService->removeOption(DatabaseReachable::class);
 
         if (false === $updated) {
 
@@ -215,7 +195,7 @@ class UpdateConfig extends AbstractApi {
             return;
         }
 
-        $updated = $this->installerService->updateInstaller(ConfigFileReadable::class);
+        $updated = $this->installerService->removeOption(ConfigFileReadable::class);
 
         if (false === $updated) {
             parent::createAndSetResponse(

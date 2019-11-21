@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Login\Controller;
 
 use Keestash;
+use Keestash\Core\Permission\PermissionFactory;
 use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
@@ -57,7 +58,7 @@ class LoginController extends StaticAppController {
 
     public function onCreate(...$params): void {
         parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_LOGIN)
+            PermissionFactory::getDefaultPermission()
         );
     }
 
@@ -76,7 +77,7 @@ class LoginController extends StaticAppController {
                 , "invalidCredentials"  => $this->translator->translate("Please enter valid credentials")
                 , "newAccountLink"      => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"  => Keestash::getBaseURL(true) . "/forgot_password"
-                , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+                , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "registeringEnabled"  => $this->loader->hasApp(Application::APP_NAME_REGISTER)
             ]
         );

@@ -21,15 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Controller;
 
-use doganoo\PHPUtil\FileSystem\FileHandler;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
+use Keestash\Core\Service\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
-use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
-use Keestash\Core\System\Installation\Verification\DatabaseReachable;
-use Keestash\Core\System\Installation\Verification\DirsWritable;
-use Keestash\Core\System\Installation\Verification\HasDataDirs;
-use KSA\InstallInstance\Application\Application;
 use KSP\Core\Controller\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -46,12 +42,14 @@ class Controller extends FullscreenAppController {
     private $permissionManager = null;
     private $templateManager   = null;
     private $lockHandler       = null;
+    private $installerService  = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IPermissionRepository $permissionManager
         , IL10N $l10n
         , LockHandler $lockHandler
+        , InstallerService $installerService
     ) {
         parent::__construct(
             $templateManager
@@ -61,6 +59,7 @@ class Controller extends FullscreenAppController {
         $this->templateManager   = $templateManager;
         $this->permissionManager = $permissionManager;
         $this->lockHandler       = $lockHandler;
+        $this->installerService  = $installerService;
 
     }
 
@@ -73,161 +72,58 @@ class Controller extends FullscreenAppController {
     }
 
     public function create(): void {
-        $fileHandler = new FileHandler(
-            Keestash::getServer()->getInstallerRoot() . "instance.installation"
-        );
-        $content     = $fileHandler->getContent() ?? null;
 
-        if (null === $content) {
-            Keestash::getServer()->getHTTPRouter()->routeTo("login");
-            return;
+        $locked = $this->lockHandler->isLocked();
+
+        if (false === $locked) {
+            FileLogger::info("The isntallation routine was not locked. However, we are in this class and lock the installation until we are finished");
         }
-
-        $content = json_decode($content, true);
-        $legacy  = Keestash::getServer()->getLegacy();
-
-        $notWritableDirs   = $this->handleDirsWritable($content);
-        $config            = $this->handleConfig($content);
-        $hasDataDir        = $this->handleHasDataDirs($content);
-        $databaseReachable = $this->hasDatabaseReachable($content);
-        $this->getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME_INSTALL_INSTANCE
-            , [
-                "installationHeader"   => $this->getL10N()->translate("Installation")
-                , "installInstruction" => $this->getL10N()->translate("Your {$legacy->getApplication()->get('name')} instance seems to be incomplete. Please follow the instructions below:")
-                , "endUpdate"          => $this->getL10N()->translate("End Update")
-                , "header"             => ($content)
-                , "configPart"         => $config
-                , "dirsWritablePart"   => $notWritableDirs
-                , "hasDataDirs"        => $hasDataDir
-                , "databaseReachable"  => $databaseReachable
-            ]
-        );
-        parent::render(Controller::TEMPLATE_NAME_INSTALL_INSTANCE);
-
-    }
-
-    private function hasDatabaseReachable(?array $content): ?string {
-        if (null === $content) return null;
-        $databaseReachable = $content[DatabaseReachable::class] ?? null;
-
-        if (null === $databaseReachable) return null;
-
-        $this->getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME_DATABASE_REACHABLE
-            , [
-                "header"                      => $this->getL10N()->translate("The database is not reachable. Please edit the config file and try it again")
-                , "databaseReachable"         => $databaseReachable
-                , "dbNotReachableLabel"       => $this->getL10N()->translate("Database is not reachable")
-                , "dbNotReachableDescription" => $this->getL10N()->translate("Please insert the correct values and try it again")
-            ]
-        );
-
-        return $this->getTemplateManager()->render(Controller::TEMPLATE_NAME_DATABASE_REACHABLE);
-    }
-
-    private function handleHasDataDirs(?array $content): ?string {
-        if (null === $content) return null;
-        $hasDataDirs = $content[HasDataDirs::class] ?? null;
-
-        if (null === $hasDataDirs) return null;
-
-        $this->getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME_HAS_DATA_DIRS
-            , [
-                "header"     => $this->getL10N()->translate("There are some files and/or dirs which are missing in your instance. Please add the following files")
-                , "dataDirs" => $hasDataDirs
-            ]
-        );
-
-        return $this->getTemplateManager()->render(Controller::TEMPLATE_NAME_HAS_DATA_DIRS);
-    }
-
-    private function handleDirsWritable(?array $content): ?string {
-        if (null === $content) return null;
-        $notWritableDirs = $content[DirsWritable::class] ?? null;
-        if (null === $notWritableDirs) return null;
-
-        $dirWritable = $notWritableDirs['dir_writable'] ?? null;
-        $dirReadable = $notWritableDirs['dir_readable'] ?? null;
-
-
-        $this->getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME_DIRS_WRITABLE_PART
-            , [
-                "writableSize"     => count($dirWritable)
-                , "readableSize"   => count($dirReadable)
-                , "writableHeader" => $this->getL10N()->translate("The following files are not writable by the webserver user. Please change the permissions and try it again")
-                , "readableHeader" => $this->getL10N()->translate("The following files are not readable by the webserver user. Please change the permissions and try it again")
-                , "dirsWritable"   => $dirWritable
-                , "dirsReadable"   => $dirReadable
-                , "submit"         => $this->getL10N()->translate("Check Again")
-            ]
-        );
-        return $this->getTemplateManager()->render(self::TEMPLATE_NAME_DIRS_WRITABLE_PART);
-    }
-
-    private function handleConfig(?array $content): ?string {
-        if (null === $content) return null;
-        $config = $content[ConfigFileReadable::class] ?? null;
-
-        if (null === $config) return null;
 
         $legacy = Keestash::getServer()->getLegacy();
 
         $this->getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME_CONFIG_PART
+            Controller::TEMPLATE_NAME_INSTALL_INSTANCE
             , [
-                "header"                     => $this->getL10N()->translate("Config Parameters")
-                , "dbHostLabel"              => $this->getL10N()->translate("Database Host")
-                , "dbHostPlaceholder"        => $this->getL10N()->translate("Database Host")
-                , "dbUserLabel"              => $this->getL10N()->translate("Database User")
-                , "dbUserPlaceholder"        => $this->getL10N()->translate("Database User")
-                , "dbPasswordLabel"          => $this->getL10N()->translate("Database Password")
-                , "dbPasswordPlaceholder"    => $this->getL10N()->translate("Database Password")
-                , "dbNameLabel"              => $this->getL10N()->translate("Database Name")
-                , "dbNamePlaceholder"        => $this->getL10N()->translate("Database Name")
-                , "dbPortLabel"              => $this->getL10N()->translate("Database Port")
-                , "dbPortPlaceholder"        => $this->getL10N()->translate("Database Port")
-                , "dbCharsetLabel"           => $this->getL10N()->translate("Database Charset")
-                , "dbCharsetPlaceholder"     => $this->getL10N()->translate("Database Charset")
-                , "logRequestsLabel"         => $this->getL10N()->translate("Log Requests")
-                , "logRequestsPlaceholder"   => $this->getL10N()->translate("Log Requests")
-                , "submit"                   => $this->getL10N()->translate("Save")
-                , "enabled"                  => $this->getL10N()->translate("Enabled")
-                , "disabled"                 => $this->getL10N()->translate("Disabled")
-                , "dbHostDescription"        => $this->getL10N()->translate(
-                    "Please enter the database host where "
-                    . $legacy->getApplication()->get("name")
-                    . " is hosted. "
-                )
-                , "dbUserDescription"        => $this->getL10N()->translate(
-                    "Please enter the user name for the database host where "
-                    . $legacy->getApplication()->get("name")
-                    . " is hosted. "
-                )
-                , "dbPasswordDescription"    => $this->getL10N()->translate(
-                    "Please enter the password for the user name given above"
-                )
-                , "dbNameDescription"        => $this->getL10N()->translate(
-                    "Please enter the database name"
-                )
-                , "dbPortDescription"        => $this->getL10N()->translate(
-                    "Please enter the database port"
-                )
-                , "dbCharsetDescription"     => $this->getL10N()->translate(
-                    "Please enter the database charset"
-                )
-                , "dbLogRequestsDescription" => $this->getL10N()->translate(
-                    "Please sepcify whether API requests should be logged"
-                )
+                "installationHeader"        => $this->getL10N()->translate("Installation")
+                , "installInstruction"      => $this->getL10N()->translate("Your {$legacy->getApplication()->get('name')} instance seems to be incomplete. Please follow the instructions below:")
+                , "endUpdate"               => $this->getL10N()->translate("End Update")
+                , "configurationPartHeader" => $this->getL10N()->translate("Configuration File")
+                , "config_template"         => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_CONFIG_PART)
+                , "strings"                 => json_encode([
+                    "config" => [
+                        "dbHostLabel"                => $this->getL10N()->translate("Host")
+                        , "dbHostPlaceholder"        => $this->getL10N()->translate("Host")
+                        , "dbHostDescription"        => $this->getL10N()->translate("The server address where the database is hosted")
+                        , "dbUserLabel"              => $this->getL10N()->translate("User")
+                        , "dbUserPlaceholder"        => $this->getL10N()->translate("User")
+                        , "dbUserDescription"        => $this->getL10N()->translate("The username used to connect to the database")
+                        , "dbPasswordLabel"          => $this->getL10N()->translate("Password")
+                        , "dbPasswordPlaceholder"    => $this->getL10N()->translate("Password")
+                        , "dbPasswordDescription"    => $this->getL10N()->translate("The usernames password used to connect to the database")
+                        , "dbNameLabel"              => $this->getL10N()->translate("Database")
+                        , "dbNamePlaceholder"        => $this->getL10N()->translate("Database")
+                        , "dbNameDescription"        => $this->getL10N()->translate("The database name")
+                        , "dbPortLabel"              => $this->getL10N()->translate("Port")
+                        , "dbPortPlaceholder"        => $this->getL10N()->translate("Port")
+                        , "dbPortDescription"        => $this->getL10N()->translate("The port used to connect to the database")
+                        , "dbCharsetLabel"           => $this->getL10N()->translate("Charset")
+                        , "dbCharsetPlaceholder"     => $this->getL10N()->translate("Charset")
+                        , "dbCharsetDescription"     => $this->getL10N()->translate("The databases charset")
+                        , "logRequestsLabel"         => $this->getL10N()->translate("Log Requests")
+                        , "enabledValue"             => $this->getL10N()->translate("enabled")
+                        , "enabled"                  => $this->getL10N()->translate("enabled")
+                        , "disabledValue"            => $this->getL10N()->translate("disabled")
+                        , "disabled"                 => $this->getL10N()->translate("disabled")
+                        , "dbLogRequestsDescription" => $this->getL10N()->translate("Whether API logs should be logged")
+                        , "submit"                   => $this->getL10N()->translate("Save")
+                        , "nothingToUpdate"          => $this->getL10N()->translate("Nothing To Update")
+                    ]
+                ])
 
-                , "enabledValue"             => Application::LOG_REQUESTS_ENABLED
-                , "disabledValue"            => Application::LOG_REQUESTS_DISABLED
-                , "instructions"             => $config
             ]
         );
-        return $this->getTemplateManager()->render(Controller::TEMPLATE_NAME_CONFIG_PART);
+        parent::render(Controller::TEMPLATE_NAME_INSTALL_INSTANCE);
+
     }
 
 

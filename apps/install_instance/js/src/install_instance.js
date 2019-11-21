@@ -27,8 +27,7 @@ import {Main} from "./Main";
 
     }
 
-})
-();
+})();
 
 $(document).ready(function () {
     Keestash.Apps.InstallInstance.init();

@@ -23,16 +23,14 @@ namespace Keestash\Core\Service\File;
 
 use Keestash;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\IUser;
-use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 
 class FileService {
 
-    private $rawFileServie = null;
+    private $rawFileService = null;
 
     public function __construct(RawFileService $rawFileService) {
-        $this->rawFileServie = $rawFileService;
+        $this->rawFileService = $rawFileService;
     }
 
     public function getProfileImageName(IUser $user): string {
@@ -40,17 +38,30 @@ class FileService {
     }
 
     public function getDefaultProfileImage(): string {
-        return Keestash::getBaseURL(false) . "/asset/img/profile-picture.PNG";
+        $image = Keestash::getServer()->getAssetRoot() . "/img/profile-picture.PNG";
+        return str_replace("//", "/", $image);
     }
 
-    public function getProfileImagePath(IUser $user): string {
+    public function getProfileImage(IUser $user): string {
         $name = $this->getProfileImageName($user);
         $path = Keestash::getServer()->getImageRoot() . "/" . $name;
         return str_replace("//", "/", $path);
     }
 
-    public function fileToUri(IFile $file, bool $strict = false): ?IUniformResourceIdentifier {
-        return $this->rawFileServie->stringToUri($file->getFullPath());
+    public function getProfileImagePath(?IUser $user): string {
+
+        if (null === $user) {
+            return $this->getDefaultProfileImage();
+        }
+
+        $imagePath = $this->getProfileImage($user);
+        $imagePath = realpath($imagePath);
+
+        if (false === $imagePath) {
+            return $this->getDefaultProfileImage();
+        }
+
+        return $imagePath;
     }
 
 }

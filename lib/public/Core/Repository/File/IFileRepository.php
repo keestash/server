@@ -23,7 +23,6 @@ namespace KSP\Core\Repository\File;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash\Core\DTO\File\FileList;
-use KSA\PasswordManager\Object\Node;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\IRepository;
@@ -40,8 +39,8 @@ interface IFileRepository extends IRepository {
 
     public function get(int $id): ?IFile;
 
-    public function getByUri(IUniformResourceIdentifier $identifier): ?IFile;
+    public function getByUri(IUniformResourceIdentifier $uri): ?IFile;
 
-    public function getAll(ArrayList $fileIds, Node $node): FileList;
+    public function getAll(ArrayList $fileIds): FileList;
 
 }

@@ -41,7 +41,7 @@ class DirsWritable extends AbstractVerification {
     ];
 
     public function hasProperty(): bool {
-        $appRoot   = Keestash::getServer()->getAppRoot();
+        $appRoot   = Keestash::getServer()->getServerRoot();
         $directory = new RecursiveDirectoryIterator($appRoot);
         $iterator  = new RecursiveIteratorIterator($directory);
         $valid     = true;

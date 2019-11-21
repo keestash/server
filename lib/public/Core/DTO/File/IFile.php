@@ -31,7 +31,7 @@ interface IFile extends IObject {
 
     public function getName(): string;
 
-    public function getPath(): string;
+    public function getDirectory(): string;
 
     public function getTemporaryPath(): ?string;
 

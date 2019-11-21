@@ -136,8 +136,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
 
     public function get(int $id): ?IFile {
 
-        $tree = null;
-        $sql  = "select 
+        $sql = "select 
                         `id`
                         , `name`
                         , `path`
@@ -175,7 +174,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             $file = new File();
             $file->setId((int) $id);
             $file->setName($name);
-            $file->setPath($path);
+            $file->setDirectory($path);
             $file->setMimeType($mimeType);
             $file->setHash($hash);
             $file->setExtension($extension);
@@ -191,23 +190,79 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return $file;
     }
 
-    public function getAll(ArrayList $fileIds, Node $node): FileList {
+    public function getAll(ArrayList $fileIds): FileList {
 
         $fileList = new FileList();
 
         foreach ($fileIds as $id) {
             /** @var IFile $file */
             $file = $this->get($id);
-            $file->setNode($node);
             $fileList->add($file);
         }
 
         return $fileList;
     }
 
-    public function getByUri(IUniformResourceIdentifier $identifier): ?IFile {
-        // TODO implement
-        return null;
+    public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
+        $name = basename($uri->getIdentifier());
+        $path = substr($uri->getIdentifier(), 0, strpos($uri->getIdentifier(), $name));
+
+        $sql = "select 
+                        `id`
+                        , `name`
+                        , `path`
+                        , `mime_type`
+                        , `hash`
+                        , `extension`
+                        , `size`
+                        , `user_id`
+                        , `create_ts`
+                 from `file`
+                    where `path` = :path
+                    and `name` = :name
+                 ";
+
+        $statement = parent::prepareStatement($sql);
+
+        if (null === $statement) {
+            return null;
+        }
+
+        $statement->bindParam("path", $path);
+        $statement->bindParam("name", $name);
+
+        $statement->execute();
+
+        $file = null;
+        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+            $id        = $row[0];
+            $name      = $row[1];
+            $path      = $row[2];
+            $mimeType  = $row[3];
+            $hash      = $row[4];
+            $extension = $row[5];
+            $size      = $row[6];
+            $userId    = $row[7];
+            $createTs  = $row[8];
+
+            $file = new File();
+            $file->setId((int) $id);
+            $file->setName($name);
+            $file->setDirectory($path);
+            $file->setMimeType($mimeType);
+            $file->setHash($hash);
+            $file->setExtension($extension);
+            $file->setSize((int) $size);
+            $file->setOwner(
+                $this->userRepository->getUserById((string) $userId)
+            );
+            $file->setCreateTs(
+                DateTimeUtil::fromMysqlDateTime($createTs)
+            );
+
+        }
+
+        return $file;
     }
 
 }
