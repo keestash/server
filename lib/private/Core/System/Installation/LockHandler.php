@@ -37,7 +37,6 @@ abstract class LockHandler {
     }
 
     public function lock(): bool {
-        if (true === $this->isLocked()) return true;
 
         return $this->instanceDb->addOption(
             $this->getDomain()
@@ -47,7 +46,6 @@ abstract class LockHandler {
     }
 
     public function unlock(): bool {
-        if (false === $this->isLocked()) return true;
         return $this->instanceDb->removeOption($this->getDomain());
     }
 

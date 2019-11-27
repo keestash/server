@@ -9,24 +9,27 @@
                 <div class="ui text loader"></div>
             </div>
         </div>
+
+        <div class="ui segment" id="ii__dirs__writable__segment">
+            <h4 class="ui header">{{ dirsWritablePartHeader }}</h4>
+            <div class="ui active inverted dimmer" id="ii__dirs__writable__segment__dimmer">
+                <div class="ui text loader"></div>
+            </div>
+        </div>
+
+        <div class="ui segment" id="ii__has__data__dirs__segment">
+            <h4 class="ui header">{{ hasDataDirsPartHeader }}</h4>
+            <div class="ui active inverted dimmer" id="ii__has__data__dirs__segment__dimmer">
+                <div class="ui text loader"></div>
+            </div>
+        </div>
+
+        <button class="ui disabled primary button" id="ii__main__button">{{ endUpdate }}</button>
     </div>
 
-    <div class="ui text container" id="config__part">
-        {{ configPart|raw }}
-    </div>
-    <div class="ui text container" id="dirs__writable__part">
-        {{ dirsWritablePart|raw }}
-    </div>
-    <div class="ui text container">
-        {{ hasDataDirs|raw }}
-    </div>
-    <div class="ui text container">
-        {{ databaseReachable|raw }}
-    </div>
-    <button class="ui primary button" id="ii__main__button">{{ endUpdate }}</button>
 </div>
 <data-node
         id="install__instance__data__node"
         data-strings="{{ strings }}"
-        data-config-template="{{ config_template }}"
+        data-templates="{{ templates }}"
 ></data-node>

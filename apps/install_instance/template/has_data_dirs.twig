@@ -1,6 +1,11 @@
-<div class="ui container">
-    <h1>{{ header }}</h1>
-    {% for key, value in dataDirs %}
-        <p>{{ value }}</p>
-    {% endfor %}
-</div>
+<form id="ii__has__data__dirs__form">
+    <div class="ui container">
+        <span>{{ readableDescription }}</span>
+        {% for key, value in objectData %}
+            {% if key != 'size' %}
+                <li>{{ value }}</li>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <button class="ui disabled button" type="submit" id="ii__has__data__dirs__submit">{{ submitText }}</button>
+</form>

@@ -41,25 +41,16 @@ require_once __DIR__ . "/../../config/config.php";
 require_once __DIR__ . "/../../lib/Keestash.php";
 
 Keestash::init();
-
-$instanceFile = Keestash::getServer()->getPhinxRoot() . "/instance.php";
-
-if ($mode === MODE_APP) {
-    $instanceFile = Keestash::getServer()->getPhinxRoot() . "/apps.php";
-}
-
-if (false === is_file($instanceFile)) {
-    echo "The phinx file located at $instanceFile is missing. Please add this file and run again." . PHP_EOL;
-    echo "Check our docs for further information: https://keestash.com" . PHP_EOL;
-    exit();
-    die();
-}
-
-$instanceFile = realpath($instanceFile);
-
 /** @var Migrator $migrator */
 $migrator = Keestash::getServer()->query(Migrator::class);
-$migrator->run($instanceFile);
+
+if ($mode === MODE_INSTANCE) {
+    $migrator->runCore();
+}
+
+if ($mode === MODE_APP) {
+    $migrator->runApps();
+}
 
 function isValidOption(?string $mode): bool {
     if (null === $mode) return false;

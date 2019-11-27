@@ -31,6 +31,19 @@ abstract class AbstractVerification {
         $this->messages[static::class][$key][] = $message;
     }
 
+    protected function countMessages(string $key, bool $force = false): void {
+
+        $count = 0;
+        if (true === array_key_exists($key, $this->messages[static::class] ?? [])) {
+            $count = count($this->messages[static::class][$key]);
+        }
+
+        if (true === $force || $count > 0) {
+            $this->messages[static::class][$key]["size"] = $count;
+        }
+
+    }
+
     public function getMessages(): array {
         return $this->messages;
     }

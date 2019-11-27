@@ -43,7 +43,7 @@ abstract class Router implements IRouter {
     public const FIELD_NAME_CONTROLLER = "controller";
 
     protected $routes            = null;
-    private   $allowedRoutes     = null;
+    private   $publicRoutes      = null;
     private   $apiLoggerManager  = null;
     private   $reflectionService = null;
 
@@ -52,15 +52,15 @@ abstract class Router implements IRouter {
         , ReflectionService $reflectionService
     ) {
         $this->routes           = new RouteCollection();
-        $this->allowedRoutes    = new HashTable();
+        $this->publicRoutes     = new HashTable();
         $this->apiLoggerManager = $apiLoggerManager;
         $this->registerPublicRoute("/");
         $this->reflectionService = $reflectionService;
     }
 
     public function registerPublicRoute(string $name): bool {
-        $this->allowedRoutes->put($name, true);
-        $this->allowedRoutes->put("$name/", true);
+        $this->publicRoutes->put($name, true);
+        $this->publicRoutes->put("$name/", true);
         return true;
     }
 
@@ -153,9 +153,13 @@ abstract class Router implements IRouter {
 
 
     public function isPublicRoute(): bool {
-        return $this->allowedRoutes->containsKey(
+        return $this->getPublicRoutes()->containsKey(
             $this->getRouteName()
         );
+    }
+
+    public function getPublicRoutes(): HashTable {
+        return $this->publicRoutes;
     }
 
     public function getRouteName(): ?string {
@@ -168,7 +172,7 @@ abstract class Router implements IRouter {
             $parameters = $matcher->match($context->getPathInfo());
             $route      = $parameters["_route"];
         } catch (ResourceNotFoundException $exception) {
-            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
+//            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
             return null;
         }
         return $route;

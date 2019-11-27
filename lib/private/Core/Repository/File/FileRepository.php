@@ -22,11 +22,12 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\File;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
+use Exception;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
-use KSA\PasswordManager\Object\Node;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
@@ -204,10 +205,11 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
-        $name = basename($uri->getIdentifier());
-        $path = substr($uri->getIdentifier(), 0, strpos($uri->getIdentifier(), $name));
+        try {
+            $name = basename($uri->getIdentifier());
+            $path = substr($uri->getIdentifier(), 0, strpos($uri->getIdentifier(), $name));
 
-        $sql = "select 
+            $sql = "select 
                         `id`
                         , `name`
                         , `path`
@@ -222,47 +224,51 @@ class FileRepository extends AbstractRepository implements IFileRepository {
                     and `name` = :name
                  ";
 
-        $statement = parent::prepareStatement($sql);
+            $statement = parent::prepareStatement($sql);
 
-        if (null === $statement) {
-            return null;
+            if (null === $statement) {
+                return null;
+            }
+
+            $statement->bindParam("path", $path);
+            $statement->bindParam("name", $name);
+
+            $statement->execute();
+
+            $file = null;
+            while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+                $id        = $row[0];
+                $name      = $row[1];
+                $path      = $row[2];
+                $mimeType  = $row[3];
+                $hash      = $row[4];
+                $extension = $row[5];
+                $size      = $row[6];
+                $userId    = $row[7];
+                $createTs  = $row[8];
+
+                $file = new File();
+                $file->setId((int) $id);
+                $file->setName($name);
+                $file->setDirectory($path);
+                $file->setMimeType($mimeType);
+                $file->setHash($hash);
+                $file->setExtension($extension);
+                $file->setSize((int) $size);
+                $file->setOwner(
+                    $this->userRepository->getUserById((string) $userId)
+                );
+                $file->setCreateTs(
+                    DateTimeUtil::fromMysqlDateTime($createTs)
+                );
+
+            }
+
+            return $file;
+        } catch (Exception $e) {
+            FileLogger::debug($e->getTraceAsString());
         }
-
-        $statement->bindParam("path", $path);
-        $statement->bindParam("name", $name);
-
-        $statement->execute();
-
-        $file = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $path      = $row[2];
-            $mimeType  = $row[3];
-            $hash      = $row[4];
-            $extension = $row[5];
-            $size      = $row[6];
-            $userId    = $row[7];
-            $createTs  = $row[8];
-
-            $file = new File();
-            $file->setId((int) $id);
-            $file->setName($name);
-            $file->setDirectory($path);
-            $file->setMimeType($mimeType);
-            $file->setHash($hash);
-            $file->setExtension($extension);
-            $file->setSize((int) $size);
-            $file->setOwner(
-                $this->userRepository->getUserById((string) $userId)
-            );
-            $file->setCreateTs(
-                DateTimeUtil::fromMysqlDateTime($createTs)
-            );
-
-        }
-
-        return $file;
+        return null;
     }
 
 }

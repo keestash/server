@@ -1,7 +1,7 @@
 <div class="ui container">
     <h1>{{ header }}</h1>
     <form class="ui form" id="ii__config__form">
-        {% for key, value in instructions %}
+        {% for key, value in objectData %}
 
             {% if key =='db_host' or key =='config_match' %}
                 <div class="field">
@@ -48,7 +48,7 @@
                 <div class="field">
                     <label>{{ dbCharsetLabel }}</label>
                     <input type="text" name="ii__db__charset" id="ii__db__charset"
-                           placeholder="{{ dbCharsetPlaceholder }}">
+                           placeholder="{{ dbCharsetPlaceholder }}" value="{{ utf8 }}">
                     <p>{{ dbCharsetDescription }}</p>
                 </div>
             {% endif %}
@@ -66,6 +66,6 @@
             {% endif %}
 
         {% endfor %}
-        <button class="ui button" type="submit">{{ submit }}</button>
+        <button class="ui button" type="submit" id="ii__config__part__submit">{{ submit }}</button>
     </form>
 </div>

@@ -37,7 +37,6 @@ class Controller extends FullscreenAppController {
     public const TEMPLATE_NAME_CONFIG_PART        = "config_part.twig";
     public const TEMPLATE_NAME_DIRS_WRITABLE_PART = "dirs_writable.twig";
     public const TEMPLATE_NAME_HAS_DATA_DIRS      = "has_data_dirs.twig";
-    public const TEMPLATE_NAME_DATABASE_REACHABLE = "database_reachable.twig";
 
     private $permissionManager = null;
     private $templateManager   = null;
@@ -74,12 +73,15 @@ class Controller extends FullscreenAppController {
     public function create(): void {
 
         $locked = $this->lockHandler->isLocked();
+        $legacy = Keestash::getServer()->getLegacy();
 
         if (false === $locked) {
             FileLogger::info("The isntallation routine was not locked. However, we are in this class and lock the installation until we are finished");
         }
 
-        $legacy = Keestash::getServer()->getLegacy();
+        if (true === $this->installerService->hasIdAndHash()) {
+            Keestash::getServer()->getHTTPRouter()->routeTo("login");
+        }
 
         $this->getTemplateManager()->replace(
             Controller::TEMPLATE_NAME_INSTALL_INSTANCE
@@ -88,35 +90,16 @@ class Controller extends FullscreenAppController {
                 , "installInstruction"      => $this->getL10N()->translate("Your {$legacy->getApplication()->get('name')} instance seems to be incomplete. Please follow the instructions below:")
                 , "endUpdate"               => $this->getL10N()->translate("End Update")
                 , "configurationPartHeader" => $this->getL10N()->translate("Configuration File")
-                , "config_template"         => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_CONFIG_PART)
+                , "dirsWritablePartHeader"  => $this->getL10N()->translate("Files and Directories that are not Writable")
+                , "hasDataDirsPartHeader"   => $this->getL10N()->translate("Data Directories that are missing")
+                , "templates"               => json_encode([
+                    "config_template"          => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_CONFIG_PART)
+                    , "dirs_writable_template" => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_DIRS_WRITABLE_PART)
+                    , "has_data_dirs_template" => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_HAS_DATA_DIRS)
+                ])
                 , "strings"                 => json_encode([
-                    "config" => [
-                        "dbHostLabel"                => $this->getL10N()->translate("Host")
-                        , "dbHostPlaceholder"        => $this->getL10N()->translate("Host")
-                        , "dbHostDescription"        => $this->getL10N()->translate("The server address where the database is hosted")
-                        , "dbUserLabel"              => $this->getL10N()->translate("User")
-                        , "dbUserPlaceholder"        => $this->getL10N()->translate("User")
-                        , "dbUserDescription"        => $this->getL10N()->translate("The username used to connect to the database")
-                        , "dbPasswordLabel"          => $this->getL10N()->translate("Password")
-                        , "dbPasswordPlaceholder"    => $this->getL10N()->translate("Password")
-                        , "dbPasswordDescription"    => $this->getL10N()->translate("The usernames password used to connect to the database")
-                        , "dbNameLabel"              => $this->getL10N()->translate("Database")
-                        , "dbNamePlaceholder"        => $this->getL10N()->translate("Database")
-                        , "dbNameDescription"        => $this->getL10N()->translate("The database name")
-                        , "dbPortLabel"              => $this->getL10N()->translate("Port")
-                        , "dbPortPlaceholder"        => $this->getL10N()->translate("Port")
-                        , "dbPortDescription"        => $this->getL10N()->translate("The port used to connect to the database")
-                        , "dbCharsetLabel"           => $this->getL10N()->translate("Charset")
-                        , "dbCharsetPlaceholder"     => $this->getL10N()->translate("Charset")
-                        , "dbCharsetDescription"     => $this->getL10N()->translate("The databases charset")
-                        , "logRequestsLabel"         => $this->getL10N()->translate("Log Requests")
-                        , "enabledValue"             => $this->getL10N()->translate("enabled")
-                        , "enabled"                  => $this->getL10N()->translate("enabled")
-                        , "disabledValue"            => $this->getL10N()->translate("disabled")
-                        , "disabled"                 => $this->getL10N()->translate("disabled")
-                        , "dbLogRequestsDescription" => $this->getL10N()->translate("Whether API logs should be logged")
-                        , "submit"                   => $this->getL10N()->translate("Save")
-                        , "nothingToUpdate"          => $this->getL10N()->translate("Nothing To Update")
+                    "has_data_dirs" => [
+                        "nothingToUpdate" => $this->getL10N()->translate("Nothing To Update")
                     ]
                 ])
 

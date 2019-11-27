@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Api;
+namespace KSA\InstallInstance\Api\DirsWritable;
 
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
@@ -27,9 +27,8 @@ use Keestash\Core\Service\InstallerService;
 use KSP\Api\IResponse;
 use KSP\L10N\IL10N;
 
-class DirsWritable extends AbstractApi {
+class Get extends AbstractApi {
 
-    private $parameters       = null;
     private $installerService = null;
 
     public function __construct(
@@ -42,35 +41,26 @@ class DirsWritable extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-
-        parent::setPermission(
+        $this->setPermission(
             PermissionFactory::getDefaultPermission()
         );
     }
 
     public function create(): void {
-        $dirsWritable = new \Keestash\Core\System\Installation\Verification\DirsWritable();
-        $writable     = $dirsWritable->hasProperty();
+        $writableDirs = $this->installerService->verifyWritableDirs();
 
-        $messages = $dirsWritable->getMessages();
-        $messages = $messages[\Keestash\Core\System\Installation\Verification\DirsWritable::class];
-
-        if (false === $writable) {
-
-            $this->installerService->updateInstaller(\Keestash\Core\System\Installation\Verification\DirsWritable::class);
-
-            parent::createAndSetResponse(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , $messages
-            );
-            return;
-        }
-
-        parent::createAndSetResponse(
+        $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [
-                "messages" => "Ok"
+                "writable_dirs" => json_encode($writableDirs)
+                , "strings"     => json_encode([
+                    "nothingToUpdate"       => $this->getL10N()->translate("Nothing To Update")
+                    , "updated"             => $this->getL10N()->translate("updated")
+                    , "submitText"          => $this->getL10N()->translate("Try Again")
+                    , "writableHeader"      => $this->getL10N()->translate("Files / Directories that are not writable")
+                    , "writableDescription" => $this->getL10N()->translate("The following files are not writable")
+                ])
+
             ]
         );
     }

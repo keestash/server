@@ -1,21 +1,25 @@
-<form id="dirs__writable">
-    {% if writableSize > 0 %}
+<form id="ii__dirs__writable">
+    {% if objectData.dir_writable.size > 0 %}
         <div class="ui container">
-            <h1>{{ writableHeader }}</h1>
-            {% for key, value in dirsWritable %}
-                <p>{{ value }}</p>
+            <span>{{ writableDescription }}</span>
+            {% for key, value in objectData.dir_writable %}
+                {% if key != 'size' %}
+                    <li>{{ value }}</li>
+                {% endif %}
             {% endfor %}
         </div>
 
     {% endif %}
 
-    {% if readableSize > 0 %}
+    {% if objectData.dir_readable.size > 0 %}
         <div class="ui container">
-            <h1>{{ readableHeader }}</h1>
-            {% for key, value in dirsReadable %}
-                <p>{{ value }}</p>
+            <span>{{ readableDescription }}</span>
+            {% for key, value in objectData.dir_readable %}
+                {% if key != 'size' %}
+                    <li>{{ value }}</li>
+                {% endif %}
             {% endfor %}
         </div>
     {% endif %}
-    <button class="ui button" type="submit">{{ submit }}</button>
+    <button class="ui disabled button" type="submit" id="ii__dirs__writable__submit">{{ submitText }}</button>
 </form>

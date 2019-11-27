@@ -57,6 +57,36 @@ class Get extends AbstractApi {
             IResponse::RESPONSE_CODE_OK
             , [
                 "config_data" => json_encode($data)
+                , "strings"   => json_encode([
+                    "dbHostLabel"                => $this->getL10N()->translate("Host")
+                    , "dbHostPlaceholder"        => $this->getL10N()->translate("Host")
+                    , "dbHostDescription"        => $this->getL10N()->translate("The server address where the database is hosted")
+                    , "dbUserLabel"              => $this->getL10N()->translate("User")
+                    , "dbUserPlaceholder"        => $this->getL10N()->translate("User")
+                    , "dbUserDescription"        => $this->getL10N()->translate("The username used to connect to the database")
+                    , "dbPasswordLabel"          => $this->getL10N()->translate("Password")
+                    , "dbPasswordPlaceholder"    => $this->getL10N()->translate("Password")
+                    , "dbPasswordDescription"    => $this->getL10N()->translate("The usernames password used to connect to the database")
+                    , "dbNameLabel"              => $this->getL10N()->translate("Database")
+                    , "dbNamePlaceholder"        => $this->getL10N()->translate("Database")
+                    , "dbNameDescription"        => $this->getL10N()->translate("The database name")
+                    , "dbPortLabel"              => $this->getL10N()->translate("Port")
+                    , "dbPortPlaceholder"        => $this->getL10N()->translate("Port")
+                    , "dbPortDescription"        => $this->getL10N()->translate("The port used to connect to the database")
+                    , "dbCharsetLabel"           => $this->getL10N()->translate("Charset")
+                    , "dbCharsetPlaceholder"     => $this->getL10N()->translate("Charset")
+                    , "dbCharsetDescription"     => $this->getL10N()->translate("The databases charset")
+                    , "logRequestsLabel"         => $this->getL10N()->translate("Log Requests")
+                    , "enabledValue"             => $this->getL10N()->translate("enabled")
+                    , "enabled"                  => $this->getL10N()->translate("enabled")
+                    , "disabledValue"            => $this->getL10N()->translate("disabled")
+                    , "disabled"                 => $this->getL10N()->translate("disabled")
+                    , "dbLogRequestsDescription" => $this->getL10N()->translate("Whether API logs should be logged")
+                    , "submit"                   => $this->getL10N()->translate("Save")
+                    , "nothingToUpdate"          => $this->getL10N()->translate("Nothing To Update")
+                    , "updated"                  => $this->getL10N()->translate("Updated Successfully")
+                    , "utf8"                     => "utf8"
+                ])
             ]
         );
 
