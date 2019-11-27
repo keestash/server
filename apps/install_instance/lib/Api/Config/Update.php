@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Api;
+namespace KSA\InstallInstance\Api\Config;
 
 use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
@@ -38,7 +38,7 @@ use PDO;
  * Class UpdateConfig
  * @package KSA\InstallInstance\Api
  */
-class UpdateConfig extends AbstractApi {
+class Update extends AbstractApi {
 
     private $parameters       = null;
     private $installerService = null;
@@ -137,10 +137,9 @@ class UpdateConfig extends AbstractApi {
         ];
 
         $configRoot = Keestash::getServer()->getConfigRoot();
-        $content    = '<?php' . PHP_EOL;
-        $content    .= 'declare(strict_types=1);' . PHP_EOL;
-        $content    .= '
-        /**
+        $content    = '<?php' . "\n";
+        $content    .= 'declare(strict_types=1);' . "\n";
+        $content    .= '/**
  * Keestash
  *
  * Copyright (C) <2019> <Dogan Ucar>
@@ -158,8 +157,8 @@ class UpdateConfig extends AbstractApi {
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-' . PHP_EOL;
-        $content    .= '$CONFIG = ' . PHP_EOL;
+' . "\n\n\n";
+        $content    .= '$CONFIG = ' . "\n";
         $content    .= var_export($config, true);
         $content    .= ';';
         $configFile = realpath($configRoot . "/config.php");
@@ -178,7 +177,6 @@ class UpdateConfig extends AbstractApi {
             );
             return;
         }
-
 
         $updated = $this->installerService->removeOption(DatabaseReachable::class);
 
@@ -238,7 +236,7 @@ class UpdateConfig extends AbstractApi {
         , string $port
     ): bool {
         try {
-            $pdo = new PDO("mysql:host=$host;port=$port;dbname=$schemaName", $user, $password);
+            new PDO("mysql:host=$host;port=$port;dbname=$schemaName", $user, $password);
             return true;
         } catch (Exception $e) {
             FileLogger::info("test database connection is false {$e->getTraceAsString()}");

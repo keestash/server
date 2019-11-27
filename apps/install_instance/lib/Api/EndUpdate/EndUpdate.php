@@ -19,36 +19,34 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Api;
+namespace KSA\InstallInstance\Api\EndUpdate;
 
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\RouterManager\Router\Helper;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\InstallerService;
-use Keestash\Core\System\Installation\Instance\HealthCheck;
+use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
 use KSP\L10N\IL10N;
 
 class EndUpdate extends AbstractApi {
 
-    private $parameters       = null;
     private $installerService = null;
-    private $healthCheck      = null;
+    private $lockHandler      = null;
 
     public function __construct(
         IL10N $l10n
         , InstallerService $installerService
-        , HealthCheck $healthCheck
+        , LockHandler $lockHandler
     ) {
         parent::__construct($l10n);
 
         $this->installerService = $installerService;
-        $this->healthCheck      = $healthCheck;
+        $this->lockHandler      = $lockHandler;
     }
 
     public function onCreate(array $parameters): void {
-        $this->parameters = $params[0];
 
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
@@ -56,35 +54,55 @@ class EndUpdate extends AbstractApi {
     }
 
     public function create(): void {
-        $isInstalled = $this->installerService->isEmpty();
 
-        if (true === $isInstalled) {
-            $this->installerService->removeInstaller();
-            $this->healthCheck->storeInstallation();
+        $isInstalled = $this->installerService->isInstalled();
 
-            parent::createAndSetResponse(
-                IResponse::RESPONSE_CODE_OK
+        if (false === $isInstalled) {
+            $this->createAndSetResponse(
+                IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message"    => "Ok"
-                    , "route_to" => Helper::buildWebRoute(
-                        Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
-                    )
+                    "message" => $this->getL10N()->translate("The instance is not finally installed. Aborting (2)")
                 ]
             );
             return;
         }
 
+        $ran     = $this->installerService->runCoreMigrations();
+        $removed = $this->installerService->removeInstaller();
+        $added   = false;
+
+        if (true === $ran && true === $removed) {
+            $added = $this->installerService->writeIdAndHash();
+        }
+
+        if (false === $added) {
+            $this->createAndSetResponse(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "message" => $this->getL10N()->translate("Could not do final steps")
+                ]
+            );
+            return;
+        }
+
+
+        $this->lockHandler->unlock();
+
         parent::createAndSetResponse(
-            IResponse::RESPONSE_CODE_NOT_OK
+            IResponse::RESPONSE_CODE_OK
             , [
-                "message" => "is still not installed"
+                "message"    => "Ok"
+                , "route_to" => Helper::buildWebRoute(
+                    Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
+                )
             ]
         );
+        return;
 
     }
 
     public function afterCreate(): void {
-        // TODO: Implement afterCreate() method.
+
     }
 
 }

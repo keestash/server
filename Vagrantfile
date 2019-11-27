@@ -8,9 +8,10 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: "192.168.68.8"
 
   config.vm.synced_folder "./", "/var/www/html", owner: "www-data", group: "www-data"
-  # config.vm.provider "virtualbox" do |vb|
-    # vb.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
-  # end
+  config.vm.provider "virtualbox" do |vb|
+        vb.memory = 16384
+        vb.cpus = 1
+  end
 
   config.ssh.insert_key = false
 

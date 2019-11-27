@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\System\Installation\Verification;
 
 use doganoo\PHPUtil\Datatype\StringClass;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -30,7 +29,9 @@ use SplFileInfo;
 
 class DirsWritable extends AbstractVerification {
 
-    private const EXCLUDES = [
+    public const KEY_DIR_WRITABLE = "dir_writable";
+    public const KEY_DIR_READABLE = "dir_readable";
+    private const EXCLUDES         = [
         "node_modules"
         , "vendor"
         , ".gitignore"
@@ -56,6 +57,9 @@ class DirsWritable extends AbstractVerification {
             $valid        = $valid && $validElement;
         }
 
+        $this->countMessages(DirsWritable::KEY_DIR_WRITABLE);
+        $this->countMessages(DirsWritable::KEY_DIR_READABLE);
+
         return $valid;
     }
 
@@ -72,18 +76,31 @@ class DirsWritable extends AbstractVerification {
     }
 
     private function handleDir(SplFileInfo $info): bool {
+
         if (false === $info->isReadable()) {
-            parent::addMessage("dir_readable", $info->getRealPath());
-            FileLogger::debug("{$info->getRealPath()} is not readable");
+
+            parent::addMessage(
+                DirsWritable::KEY_DIR_READABLE
+                , $info->getRealPath()
+            );
+
             return false;
+
         }
 
         if (false === $info->isWritable()) {
-            parent::addMessage("dir_writable", $info->getRealPath());
-            FileLogger::debug("{$info->getRealPath()} is not writable");
+
+            parent::addMessage(
+                DirsWritable::KEY_DIR_WRITABLE
+                , $info->getRealPath()
+            );
+
             return false;
+
         }
+
         return true;
+
     }
 
 }

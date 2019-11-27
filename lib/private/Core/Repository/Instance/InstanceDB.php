@@ -30,7 +30,6 @@ class InstanceDB {
 
     public const FIELD_NAME_INSTANCE_HASH = "instance_hash";
     public const FIELD_NAME_INSTANCE_ID   = "instance_id";
-    public const FIELD_NAME_IS_INSTALLED  = "instance_is_installed";
 
     private $path     = null;
     private $database = null;
@@ -58,8 +57,8 @@ class InstanceDB {
     public function addOption(string $name, string $value): bool {
 
         $option = $this->getOption($name);
-
         if (null === $option) {
+
             return $this->insertOption($name, $value);
         }
         return $this->updateOption($name, $value);
@@ -98,11 +97,10 @@ class InstanceDB {
                                                         , `value`
                                                         , `create_ts`
                                                       FROM `instance`;');
-
         $statement->execute();
 
         $array = [];
-        while ($row = $statement->fetch(SQLITE3_ASSOC)) {
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $array[] = $row;
         }
 
@@ -123,7 +121,7 @@ class InstanceDB {
 
         $statement->bindValue(1, $name);
         $statement->execute();
-        $array = $statement->fetch(SQLITE3_ASSOC);
+        $array = $statement->fetch(PDO::FETCH_ASSOC);
 
         if (false === $array) return null;
         return $array['value'] ?? null;

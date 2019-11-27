@@ -25,7 +25,6 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Phinx\Migrator;
-use Keestash\Core\System\Installation\Instance\HealthCheck;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Core\System\Installation\Verification\AbstractVerification;
 use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
@@ -38,24 +37,20 @@ class InstallerService {
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
-    private $installerFile = null;
-    private $healthCheck   = null;
-    private $messages      = null;
-    private $lockHandler   = null;
-    private $migrator      = null;
-    private $instanceDB    = null;
+    private $messages    = null;
+    private $lockHandler = null;
+    private $migrator    = null;
+    private $instanceDB  = null;
 
     public function __construct(
         LockHandler $lockHandler
         , Migrator $migrator
         , InstanceDB $instanceDB
     ) {
-        $this->installerFile = Keestash::getServer()->getInstallerRoot() . "instance.installation";
-        $this->healthCheck   = new HealthCheck();
-        $this->messages      = [];
-        $this->lockHandler   = $lockHandler;
-        $this->migrator      = $migrator;
-        $this->instanceDB    = $instanceDB;
+        $this->messages    = [];
+        $this->lockHandler = $lockHandler;
+        $this->migrator    = $migrator;
+        $this->instanceDB  = $instanceDB;
     }
 
     public function removeInstaller(): bool {
@@ -64,16 +59,16 @@ class InstallerService {
         return true;
     }
 
-    public function isEmpty(): bool {
-        $array = $this->instanceDB->getAll();
-        return null === $array || (is_array($array) && 0 === count($array));
+
+    public function getAll(): ?array {
+        return $this->instanceDB->getAll();
     }
 
     public function updateInstaller(string $key, string $value): bool {
         return $array = $this->instanceDB->updateOption($key, $value);
     }
 
-    public function removeOption(string $key):bool {
+    public function removeOption(string $key): bool {
         return $this->instanceDB->removeOption($key);
     }
 
@@ -88,29 +83,55 @@ class InstallerService {
         return $insertedAll;
     }
 
-    public function verifyConfigurationFile(bool $force = false): array {
-        $isInstalled = $this->instanceDB->getOption(InstanceDB::FIELD_NAME_IS_INSTALLED);
+    public function hasIdAndHash(): bool {
+        $hash = $this->instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
+        $id   = $this->instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
 
-        if (true === $isInstalled && false === $force) return [];
+        return true === is_string($hash) && true === is_int((int) $id);
+    }
 
-        $verifier = new ConfigFileReadable();
+    public function writeIdAndHash(): bool {
+        $addedId   = $this->instanceDB->addOption(InstanceDB::FIELD_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
+        $addedHash = $this->instanceDB->addOption(InstanceDB::FIELD_NAME_INSTANCE_HASH, md5(uniqid()));
+
+        return true === $addedId && true === $addedHash;
+    }
+
+    private function verifyField(string $name, bool $force = false): array {
+        $isInstalled = $this->hasIdAndHash();
+        $messages = [];
+
+        if (true === $isInstalled && false === $force) return $messages;
+
+        /** @var AbstractVerification $verifier */
+        $verifier = new $name();
         $verifier->hasProperty();
         $messages     = $verifier->getMessages();
         $messagesSize = count($messages);
 
-        if (0 !== $messagesSize) {
-            $this->updateInstaller(ConfigFileReadable::class, json_encode($messages));
-            return $messages;
+        if (0 === $messagesSize) {
+            return [];
         }
 
-        return [];
+        $this->updateInstaller($name, json_encode($messages));
+        return $messages;
+    }
+
+    public function verifyConfigurationFile(bool $force = false): array {
+        return $this->verifyField(ConfigFileReadable::class, $force);
+    }
+
+    public function verifyWritableDirs(bool $force = false): array {
+        return $this->verifyField(DirsWritable::class, $force);
+    }
+
+    public function verifyHasDataDirs(bool $force = false): array {
+        return $this->verifyField(HasDataDirs::class, $force);
     }
 
     public function isInstalled(): bool {
-        // if the instance is installed, we have
-        // stored the information into a install
-        // file. We do not need to check again
-        if (true === $this->healthCheck->readInstallation()) return true;
+        $isInstalled = $this->hasIdAndHash();
+        if (true === $isInstalled) return true;
 
 
         $list = new ArrayList();
@@ -140,12 +161,11 @@ class InstallerService {
             );
         }
 
-        if (false === $hasErrors) {
-            $this->healthCheck->storeInstallation();
-        }
-
         return false === $hasErrors;
     }
 
+    public function runCoreMigrations(): bool {
+        return $this->migrator->runCore();
+    }
 
 }

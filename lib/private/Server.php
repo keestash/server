@@ -73,7 +73,6 @@ use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\UserService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
-use Keestash\Core\System\Installation\Instance\HealthCheck;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
 use Keestash\L10N\GetText;
@@ -139,8 +138,10 @@ class Server {
         });
 
         $this->register(Server::USER_HASH_MAP, function () {
-            $healthCheck = new HealthCheck();
-            if (false === $healthCheck->readInstallation()) return null;
+            /** @var InstallerService $installerService */
+            $installerService = $this->query(InstallerService::class);
+
+            if (false === $installerService->hasIdAndHash()) return null;
             if (null !== $this->userHashes) return $this->userHashes;
 
             $this->userHashes = new HashTable();
@@ -431,10 +432,6 @@ class Server {
 
         $this->register(IBreadCrumbManager::class, function () {
             return new BreadCrumbManager();
-        });
-
-        $this->register(HealthCheck::class, function () {
-            return new HealthCheck();
         });
 
     }

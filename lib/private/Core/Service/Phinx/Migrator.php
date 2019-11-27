@@ -29,7 +29,40 @@ use Phinx\Wrapper\TextWrapper;
 
 class Migrator {
 
-    public function run(string $configPath) {
+    private $phinxRoot = null;
+
+    public function __construct() {
+        $this->phinxRoot = Keestash::getServer()->getPhinxRoot();
+    }
+
+    public function runCore() {
+        $file   = $this->phinxRoot . "/instance.php";
+        $exists = $this->checkFile($file);
+        if (false === $exists) {
+            FileLogger::debug("file $file does not exist");
+            return false;
+        }
+        return $this->run($file);
+    }
+
+    public function runApps() {
+        $file   = $this->phinxRoot . "/apps.php";
+        $exists = $this->checkFile($file);
+        if (false === $exists) {
+            return false;
+        }
+        return $this->run($file);
+    }
+
+    private function checkFile(string $path): bool {
+        if (false === is_file($path)) {
+            FileLogger::debug("The phinx file located at $path is missing. Please add this file and run again.");
+            return false;
+        }
+        return true;
+    }
+
+    private function run(string $configPath): bool {
 
         $config   = Keestash::getServer()->getConfig();
         $phinxEnv = (true === $config->get("debug")) ? "development" : "production";
@@ -45,7 +78,6 @@ class Migrator {
 
         FileLogger::debug($log);
 
-        // TODO log $log
         return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;
     }
 

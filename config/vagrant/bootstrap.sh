@@ -22,3 +22,5 @@ sudo apt-get install php7.1-dom
 sudo apt-get install php7.1-sqlite
 
 sudo service apache2 restart
+
+composer install

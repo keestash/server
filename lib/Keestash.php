@@ -31,9 +31,11 @@ use Keestash\App\Helper;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\Route;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
+use Keestash\Core\Manager\RouterManager\Router\Helper as RouterHelper;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\UserSessionManager;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTPService;
@@ -123,7 +125,7 @@ class Keestash {
 
         //step 2: check for is installed
         Keestash::isInstanceInstalled();
-//        Keestash::areAppsInstalled();
+        Keestash::areAppsInstalled();
 
         //step 4: load apps
         Keestash::getServer()
@@ -193,7 +195,6 @@ class Keestash {
         if (self::$mode === Keestash::MODE_API) return;
 
         $legacy = self::getServer()->getLegacy();
-        $user   = self::getServer()->getUserFromSession();
 
         /** @var IFileManager $fileManager */
         $fileManager = Keestash::getServer()->query(IFileManager::class);
@@ -273,16 +274,16 @@ class Keestash {
     private static function isInstanceInstalled(): void {
         $lockHandler          = Keestash::getServer()->getInstanceLockHandler();
         $instanceDB           = Keestash::getServer()->getInstanceDB();
-        $instanceHash         = $instanceDB->getOption("instance_hash");
-        $instanceId           = $instanceDB->getOption("instance_id");
+        $instanceHash         = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
+        $instanceId           = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
         $isLocked             = $lockHandler->isLocked();
-        $routesToInstallation = \Keestash\Core\Manager\RouterManager\Router\Helper::routesToInstallation();
+        $routesToInstallation = RouterHelper::routesToInstallation();
 
+        // TODO we need to route to install apps if the current
+        //  route is going to another target
         if (true === $isLocked && true === $routesToInstallation) {
             return;
         }
-
-        $lockHandler->lock();
 
         /** @var HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
@@ -297,7 +298,13 @@ class Keestash {
     }
 
     private static function areAppsInstalled(): void {
-        return;
+        $instanceLockHandler = Keestash::getServer()->getInstanceLockHandler();
+
+        // if we are actually installing the instance,
+        // we need to make sure that Keestash does not want
+        // to install the apps
+        if (true === $instanceLockHandler->isLocked()) return;
+
         // TODO we need to route to install apps if the current
         //  route is going to another target
         // We only check loadedApps if the system is

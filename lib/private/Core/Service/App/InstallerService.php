@@ -28,7 +28,7 @@ use Keestash\Core\Service\Phinx\Migrator;
 use KSP\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 
-class Installer {
+class InstallerService {
 
     private $migrator      = null;
     private $appRepository = null;
@@ -42,9 +42,7 @@ class Installer {
     }
 
     public function runMigrations(): bool {
-        $path = Keestash::getServer()->getConfigRoot() . "phinx/apps.php";
-        $path = realpath($path);
-        return $this->migrator->run($path);
+        return $this->migrator->runApps();
     }
 
     public function installAll(HashTable $apps): bool {

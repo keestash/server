@@ -40,5 +40,4 @@ interface IFileManager extends IManager {
 
     public function read(IUniformResourceIdentifier $uri): ?IFile;
 
-
 }
