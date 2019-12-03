@@ -14,7 +14,7 @@
     "doganoo/php-algorithms": "0.0.27",
     "doganoo/simple-rbac": "1.5.0",
     "symfony/routing": "4.2.5",
-    "symfony/http-foundation": "4.2.5",
+    "symfony/http-foundation": "4.2.12",
     "symfony/webpack-encore-pack": "1.0.3",
     "php-di/php-di": "6.0.7",
     "twig/twig": "^2.0",
