@@ -27,15 +27,15 @@ interface ISessionManager extends IManager {
 
     /**
      * @param string $name
-     * @param        $value
+     * @param string $value
      * @return bool
      */
-    public function set(string $name, $value): bool;
+    public function set(string $name, string $value): bool;
 
     /**
      * @param string $name
-     * @return mixed
+     * @return string|null
      */
-    public function get(string $name);
+    public function get(string $name): ?string;
 
 }

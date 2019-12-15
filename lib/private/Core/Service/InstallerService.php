@@ -24,6 +24,7 @@ namespace Keestash\Core\Service;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Core\System\Installation\Verification\AbstractVerification;
@@ -37,20 +38,23 @@ class InstallerService {
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
-    private $messages    = null;
-    private $lockHandler = null;
-    private $migrator    = null;
-    private $instanceDB  = null;
+    private $messages      = null;
+    private $lockHandler   = null;
+    private $migrator      = null;
+    private $instanceDB    = null;
+    private $configService = null;
 
     public function __construct(
         LockHandler $lockHandler
         , Migrator $migrator
         , InstanceDB $instanceDB
+        , ConfigService $configService
     ) {
-        $this->messages    = [];
-        $this->lockHandler = $lockHandler;
-        $this->migrator    = $migrator;
-        $this->instanceDB  = $instanceDB;
+        $this->messages      = [];
+        $this->lockHandler   = $lockHandler;
+        $this->migrator      = $migrator;
+        $this->instanceDB    = $instanceDB;
+        $this->configService = $configService;
     }
 
     public function removeInstaller(): bool {
@@ -99,7 +103,7 @@ class InstallerService {
 
     private function verifyField(string $name, bool $force = false): array {
         $isInstalled = $this->hasIdAndHash();
-        $messages = [];
+        $messages    = [];
 
         if (true === $isInstalled && false === $force) return $messages;
 

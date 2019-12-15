@@ -19,8 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\About\Application;
+namespace KSA\About\Controller;
 
+use KSA\About\Application\Application;
 use KSP\Core\Controller\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\System\Installation\Verification;
 
 use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -46,6 +47,7 @@ class DirsWritable extends AbstractVerification {
         $directory = new RecursiveDirectoryIterator($appRoot);
         $iterator  = new RecursiveIteratorIterator($directory);
         $valid     = true;
+        FileLogger::debug($appRoot);
 
         /** @var SplFileInfo $info */
         foreach ($iterator as $info) {

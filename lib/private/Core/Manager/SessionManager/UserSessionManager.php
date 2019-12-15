@@ -21,37 +21,76 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\SessionManager;
 
+use DateTime;
+use doganoo\PHPUtil\HTTP\Session;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
+use Keestash\Core\Service\Config\ConfigService;
 
 class UserSessionManager extends SessionManager {
 
-    public function setId(int $id): void {
-        parent::set("user_id", $id);
-    }
+    private const ONE_HOUR_IN_SECONDS   = 60 * 60;
+    private const FIELD_NAME_USER_ID    = "user_id";
+    private const FIELD_NAME_TIME_STAMP = "time_stamp";
 
-    public function updateTimestamp(): bool {
-        return parent::set("time_stamp", DateTimeUtil::getUnixTimestamp());
+    private $configService = null;
+
+    public function __construct(
+        Session $session
+        , ConfigService $configService
+    ) {
+        parent::__construct($session);
+
+        $this->configService = $configService;
     }
 
     public function isUserLoggedIn(): bool {
+        FileLogger::debug((string) $this->getUser());
+        FileLogger::debug((string) $this->getTimestamp());
         if (null === $this->getUser()) return false;
         if (null === $this->getTimestamp()) return false;
 
-        $now = DateTimeUtil::subtractHours(1);
+        $now      = new DateTime();
+        $lifeTime = $this->configService->getValue(
+            "user_lifetime"
+            , UserSessionManager::ONE_HOUR_IN_SECONDS
+        );
 
+        FileLogger::debug("est");
         $ts = $this->getTimestamp();
 
-        return $now->getTimestamp() < $ts;
+        return ($now->getTimestamp() - $lifeTime) < $ts;
     }
 
     public function getUser(): ?string {
-        $userId = parent::get("user_id");
-        if (is_int($userId) && intval($userId) > 0) return (string) $userId;
-        return null;
+        FileLogger::debug(json_encode(parent::getAll()));
+        return parent::get(
+            UserSessionManager::FIELD_NAME_USER_ID
+            , null
+        );
     }
 
     public function getTimestamp(): ?int {
-        return parent::get("time_stamp");
+        $timeStamp = parent::get(
+            UserSessionManager::FIELD_NAME_TIME_STAMP
+            , null
+        );
+        if (null !== $timeStamp) return (int) $timeStamp;
+        return $timeStamp;
+    }
+
+    public function setUserId(int $id): bool {
+        return parent::set(
+            UserSessionManager::FIELD_NAME_USER_ID
+            , (string) $id
+        );
+    }
+
+    public function updateTimestamp(): bool {
+        return parent::set(
+            UserSessionManager::FIELD_NAME_TIME_STAMP
+            , (string) DateTimeUtil::getUnixTimestamp()
+        );
     }
 
 }

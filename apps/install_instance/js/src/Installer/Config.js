@@ -78,7 +78,7 @@ export class Config extends Base {
 
                         console.log(object);
                         if (RESPONSE_CODE_OK in object) {
-                            _this.form.remove().fadeOut(3000);
+                            _this.parent.remove().fadeOut(3000);
                             _this.parent.append(strings.updated);
                             _this.triggerEvent();
                         }

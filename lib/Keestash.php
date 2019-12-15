@@ -20,7 +20,6 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Log\Logger;
 use Keestash\Api\Response\MaintenanceResponse;
@@ -36,6 +35,7 @@ use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\UserSessionManager;
 use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTPService;
@@ -72,7 +72,6 @@ class Keestash {
 
     }
 
-
     /**
      * @return bool
      */
@@ -99,6 +98,11 @@ class Keestash {
 
     private static function initRequest() {
         Keestash::init();
+
+        set_time_limit(0);
+        session_set_save_handler(
+            Keestash::getServer()->query(SessionHandlerInterface::class)
+        );
 
         // step3 has to be: is configured!
         //      this contains stuff like is writable,
@@ -281,7 +285,7 @@ class Keestash {
 
         // TODO we need to route to install apps if the current
         //  route is going to another target
-        if (true === $isLocked && true === $routesToInstallation) {
+        if (true === $isLocked || true === $routesToInstallation) {
             return;
         }
 
@@ -290,6 +294,7 @@ class Keestash {
 
         if ((null === $instanceHash || null === $instanceId)) {
             FileLogger::debug("The whole application is not installed. Please install");
+            $lockHandler->lock();
             $httpService->routeToInstallInstance();
             exit();
             die();
@@ -344,9 +349,8 @@ class Keestash {
             return;
         }
 
-        $lockHandler->lock();
-
         if (Keestash::getMode() === Keestash::MODE_WEB) {
+            $lockHandler->lock();
             // in this case, we redirect to the install page
             // since the user is logged in and is in web mode
             Keestash::getServer()
@@ -411,7 +415,6 @@ class Keestash {
     }
 
     private static function setExceptionHandler(): void {
-
         set_error_handler(function ($error) {
 
             if (is_int($error)) {
@@ -443,40 +446,47 @@ class Keestash {
     }
 
     private static function initDevHandler(): void {
-        /** @var HashTable $config */
-        $config = Keestash::getServer()->query(Server::CONFIG);
-        if (false === $config->get("debug")) return;
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
+        if (false === $isDebug) return;
         Keestash::installWhoops();
     }
 
     private static function installWhoops(): void {
-
         if (self::$mode === Keestash::MODE_API) return;
-        $config     = self::getServer()->getConfig();
-        $showErrors = $config->get("show_errors");
-        if (true === $showErrors) {
-            $whoops = new Run();
-            $whoops->pushHandler(new PrettyPageHandler());
-            $whoops->register();
-        }
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $showErrors    = $configService->getValue("show_errors", false);
+
+        if (false === $showErrors) return;
+
+        $whoops = new Run();
+        $whoops->pushHandler(new PrettyPageHandler());
+        $whoops->register();
+
     }
 
     private static function initProductionHandler(): void {
-        /** @var HashTable $config */
-        $config = Keestash::getServer()->query(Server::CONFIG);
-        if (true === $config->get("debug")) return;
+        if (self::$mode === Keestash::MODE_API) return;
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
+
+        if (true === $isDebug) return;
         Keestash::hideErrors();
         Keestash::hideOutput();
     }
 
     private static function hideErrors() {
-        $config     = self::getServer()->getConfig();
-        $showErrors = $config->get("show_errors");
-        $debug      = $config->get("debug");
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
+        $showErrors    = $configService->getValue("show_errors", false);
 
         error_reporting(E_ALL | E_STRICT);
-        @ini_set('display_errors', $showErrors && $debug ? '1' : '0');
-        @ini_set('log_errors', $showErrors && $debug ? '1' : '0');
+        @ini_set('display_errors', $showErrors && $isDebug ? '1' : '0');
+        @ini_set('log_errors', $showErrors && $isDebug ? '1' : '0');
     }
 
     private static function hideOutput() {
@@ -496,11 +506,11 @@ class Keestash {
     }
 
     private static function flushOutput(callable $callable = null) {
-        /** @var HashTable $config */
-        $config = Keestash::getServer()->query(Server::CONFIG);
-        $debug  = $config->get("debug");
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
 
-        if (true === $debug) return;
+        if (true === $isDebug) return;
         if (null !== $callable) $callable(ob_get_contents());
 //        ob_end_clean();
     }

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Instance;
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
 use PDO;
@@ -129,10 +130,12 @@ class InstanceDB {
 
     public function removeOption(string $name): bool {
         if (false === $this->isValid()) return false;
-        $statement = $this->database->prepare('DELETE FROM `instance` WHERE `name` = :name;');
-        $statement->bindParam("name", $name);
+        $sql       = 'DELETE FROM `instance` WHERE `name` = :the_name';
+        $statement = $this->database->prepare($sql);
+        $statement->bindValue(':the_name', $name);
+        FileLogger::debug(json_encode($statement->errorInfo()));
         $statement->execute();
-        return true;
+        return $statement->rowCount() > 0;
     }
 
     public function clear(): bool {

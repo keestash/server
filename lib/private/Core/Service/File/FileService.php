@@ -21,8 +21,12 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\File;
 
+use DateTime;
 use Keestash;
+use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\File\RawFile\RawFileService;
+use KSP\Core\DTO\File\IExtension;
+use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\IUser;
 
 class FileService {
@@ -37,9 +41,32 @@ class FileService {
         return "profile_image_{$user->getId()}";
     }
 
+    /**
+     * @return string
+     * @deprecated
+     */
     public function getDefaultProfileImage(): string {
-        $image = Keestash::getServer()->getAssetRoot() . "/img/profile-picture.PNG";
-        return str_replace("//", "/", $image);
+        return $this->defaultProfileImage()->getFullPath();
+    }
+
+    public function defaultProfileImage(): IFile {
+        $dir  = Keestash::getServer()->getAssetRoot() . "/img/";
+        $dir  = str_replace("//", "/", $dir);
+        $path = "$dir/profile-picture.PNG";
+
+        $file = new File();
+        $file->setContent(
+            file_get_contents($path)
+        );
+        $file->setCreateTs(new DateTime());
+        $file->setDirectory($dir);
+        $file->setExtension(IExtension::PNG);
+        $file->setHash(md5_file($path));
+        $file->setMimeType($this->rawFileService->getMimeType($path));
+        $file->setName("profile-picture.PNG");
+//        $file->setOwner();
+        $file->setSize(filesize($path));
+        return $file;
     }
 
     public function getProfileImage(IUser $user): string {

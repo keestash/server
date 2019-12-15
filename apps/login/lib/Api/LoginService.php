@@ -126,7 +126,7 @@ class LoginService extends AbstractApi {
                     , $user->getHash()
                 );
                 $this->tokenManager->add($token);
-                $this->sessionManager->setId($user->getId());
+                $this->sessionManager->setUserId($user->getId());
                 $this->sessionManager->updateTimestamp();
             }
         }

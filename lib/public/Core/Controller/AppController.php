@@ -28,6 +28,7 @@ use KSP\Core\Permission\IPermission;
 use KSP\Core\View\Navigation\INavigation;
 use KSP\Core\View\Navigation\IPart;
 use KSP\L10N\IL10N;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AppController implements IAppController {
 
@@ -47,8 +48,8 @@ abstract class AppController implements IAppController {
         ITemplateManager $templateManager
         , IL10N $l10n
     ) {
-        $this->templateManager = $templateManager;
-        $this->l10n            = $l10n;
+        $this->templateManager  = $templateManager;
+        $this->l10n             = $l10n;
     }
 
     public function setAppNavigationTitle(string $title): void {
