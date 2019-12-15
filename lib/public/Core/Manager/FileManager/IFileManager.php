@@ -38,6 +38,6 @@ interface IFileManager extends IManager {
 
     public function verifyFile(IFile $file): bool;
 
-    public function read(IUniformResourceIdentifier $uri): ?IFile;
+    public function read(?IUniformResourceIdentifier $uri): ?IFile;
 
 }

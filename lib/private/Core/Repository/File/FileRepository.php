@@ -58,6 +58,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
                   , `size`
                   , `user_id`
                   , `create_ts`
+                  , `directory`
                   )
                   values (
                           :name
@@ -68,6 +69,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
                           , :size
                           , :user_id
                           , :create_ts
+                          , :directory
                           );";
 
         $statement = parent::prepareStatement($sql);
@@ -81,6 +83,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $userId    = $file->getOwner()->getId();
         $createTs  = $file->getCreateTs();
         $createTs  = DateTimeUtil::formatMysqlDateTime($createTs);
+        $directory = $file->getDirectory();
 
         $statement->bindParam("name", $name);
         $statement->bindParam("path", $path);
@@ -90,6 +93,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $statement->bindParam("size", $size);
         $statement->bindParam("user_id", $userId);
         $statement->bindParam("create_ts", $createTs);
+        $statement->bindParam("directory", $directory);
 
         if (false === $statement->execute()) return null;
 

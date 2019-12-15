@@ -21,17 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\SessionManager;
 
-use Keestash\Core\Service\DateTimeService;
-use KSP\Core\Backend\IBackend;
+use doganoo\PHPUtil\HTTP\Session;
 use KSP\Core\Manager\SessionManager\ISessionManager;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class SessionManager implements ISessionManager {
 
     private $session = null;
 
-    public function __construct(?IBackend $backend, ?DateTimeService $dateTimeService = null) {
-        $this->session = new Session();
+    public function __construct(Session $session) {
+        $this->session = $session;
     }
 
     /**
@@ -39,21 +37,35 @@ class SessionManager implements ISessionManager {
      * @param        $value
      * @return bool
      */
-    public function set(string $name, $value): bool {
+    public function set(string $name, string $value): bool {
+        $this->session->start();
         $this->session->set($name, $value);
         return true;
     }
 
     /**
      * @param string $name
-     * @return mixed
+     * @param mixed  $default
+     * @return string|null
      */
-    public function get(string $name) {
-        return $this->session->get($name, null);
+    public function get(string $name, $default = null): ?string {
+        $this->session->start();
+        return $this->session->get($name, $default);
     }
 
-    public function destroy() {
-        $this->session->clear();
+    public function getAll(): array {
+        $this->session->start();
+        return $this->session->getAll();
+    }
+
+    public function destroy(): void {
+        $this->session->start();
+        $this->session->destroy();
+    }
+
+    public function killAll(): void {
+        $this->session->start();
+        $this->destroy();
     }
 
 }

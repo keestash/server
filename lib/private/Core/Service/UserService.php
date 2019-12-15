@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service;
 
+use DateTime;
+use Keestash;
+use Keestash\Core\DTO\User;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use function password_verify;
@@ -75,8 +78,31 @@ class UserService {
         return hash("sha256", (string) $user->getId());
     }
 
-    public function getRandomHash():string{
+    public function getRandomHash(): string {
         return hash("sha256", uniqid("", true));
+    }
+
+    /**
+     * @return IUser
+     * @TODO urgent: this user has to be locked out (no login possible)
+     */
+    public function getSystemUser(): IUser {
+        $user = new User();
+        $user->setName((string) Keestash::getServer()->getLegacy()->getApplication()->get("name"));
+        $user->setId(IUser::SYSTEM_USER_ID);
+        $user->setHash(
+            $this->getRandomHash()
+        );
+        $user->setCreateTs((new DateTime())->getTimestamp());
+        $user->setEmail((string) Keestash::getServer()->getLegacy()->getApplication()->get("email"));
+        $user->setFirstName((string) Keestash::getServer()->getLegacy()->getApplication()->get("name"));
+        $user->setLastName((string) Keestash::getServer()->getLegacy()->getApplication()->get("name"));
+        $user->setPhone((string) Keestash::getServer()->getLegacy()->getApplication()->get("phone"));
+        $user->setWebsite((string) Keestash::getServer()->getLegacy()->getApplication()->get("web"));
+        $user->setPassword(
+            $this->hashPassword($user->getName())
+        );
+        return $user;
     }
 
 }

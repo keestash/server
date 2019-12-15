@@ -27,8 +27,6 @@ use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\InstallerService;
-use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
-use Keestash\Core\System\Installation\Verification\DatabaseReachable;
 use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
 use KSP\L10N\IL10N;
@@ -39,6 +37,8 @@ use PDO;
  * @package KSA\InstallInstance\Api
  */
 class Update extends AbstractApi {
+
+    private const DEFAULT_USER_LIFETIME = 15 * 24 * 60 * 60;
 
     private $parameters       = null;
     private $installerService = null;
@@ -125,15 +125,16 @@ class Update extends AbstractApi {
         }
 
         $config = [
-            'show_errors'    => false
-            , 'debug'        => false
-            , 'db_host'      => $host
-            , 'db_user'      => $user
-            , 'db_password'  => $password
-            , 'db_name'      => $schemaName
-            , 'db_port'      => $port
-            , 'db_charset'   => $charSet
-            , 'log_requests' => $logRequests === Application::LOG_REQUESTS_ENABLED ? true : false
+            'show_errors'     => false
+            , 'debug'         => false
+            , 'db_host'       => $host
+            , 'db_user'       => $user
+            , 'db_password'   => $password
+            , 'db_name'       => $schemaName
+            , 'db_port'       => $port
+            , 'db_charset'    => $charSet
+            , 'log_requests'  => $logRequests === Application::LOG_REQUESTS_ENABLED ? true : false
+            , "user_lifetime" => Update::DEFAULT_USER_LIFETIME
         ];
 
         $configRoot = Keestash::getServer()->getConfigRoot();
@@ -173,33 +174,6 @@ class Update extends AbstractApi {
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "could not create config file. Please check permissiosn and try again"
-                ]
-            );
-            return;
-        }
-
-        $updated = $this->installerService->removeOption(DatabaseReachable::class);
-
-        if (false === $updated) {
-
-            FileLogger::debug("could not update installer file");
-
-            parent::createAndSetResponse(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "could not update installer file. Please try again (2)"
-                ]
-            );
-            return;
-        }
-
-        $updated = $this->installerService->removeOption(ConfigFileReadable::class);
-
-        if (false === $updated) {
-            parent::createAndSetResponse(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "could not update installer file. Please try again"
                 ]
             );
             return;

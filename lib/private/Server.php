@@ -35,7 +35,6 @@ use Keestash\Core\DTO\User;
 use Keestash\Core\Encryption\Base\BaseEncryption;
 use Keestash\Core\Encryption\Base\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
-use Keestash\Core\Manager\AssetManager\AssetManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
@@ -59,19 +58,21 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
+use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\DateTimeService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTPService;
 use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Log\LoggerService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\TokenService;
-use Keestash\Core\Service\UserService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
@@ -96,11 +97,15 @@ use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
+use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
+use SessionHandlerInterface;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use xobotyi\MimeType;
 
 class Server {
@@ -147,8 +152,6 @@ class Server {
             $this->userHashes = new HashTable();
             /** @var IUserRepository $userManager */
             $userManager = $this->getUserRepository();
-            /** @var UserService $userService */
-            $userService = $this->query(UserService::class);
 
             $users = $userManager->getAll();
 
@@ -295,18 +298,41 @@ class Server {
         });
 
         $this->register(UserSessionManager::class, function () {
-            $backend = $this->query(IBackend::class);
-            return new UserSessionManager($backend, null);
+            return new UserSessionManager(
+                new \doganoo\PHPUtil\HTTP\Session()
+                , $this->query(ConfigService::class)
+            );
         });
 
         $this->register(ISessionManager::class, function () {
-            $backend = $this->query(IBackend::class);
-            return new SessionManager($backend, null);
+            return new SessionManager(
+                $this->query(Session::class)
+            );
+        });
+
+        $this->register(ISessionRepository::class, function () {
+            return new SessionRepository(
+                $this->query(IBackend::class)
+            );
+        });
+
+        $this->register(SessionHandlerInterface::class, function () {
+            return new Keestash\Core\Manager\SessionManager\SessionHandler(
+                $this->query(ISessionRepository::class)
+            );
         });
 
         $this->register(IResponseManager::class, function () {
             $backend = $this->query(IBackend::class);
             return new JSONResponseManager($backend, null);
+        });
+
+        $this->register(Session::class, function () {
+            return $this->query(SessionInterface::class);
+        });
+
+        $this->register(SessionInterface::class, function () {
+            return new Session();
         });
 
         $this->register(System::class, function () {
@@ -386,7 +412,12 @@ class Server {
                 $this->getInstanceLockHandler()
                 , $this->query(Migrator::class)
                 , $this->query(InstanceDB::class)
+                , $this->query(ConfigService::class)
             );
+        });
+
+        $this->register(LoggerService::class, function () {
+            return new LoggerService();
         });
 
         $this->register(Migrator::class, function () {
@@ -432,6 +463,12 @@ class Server {
 
         $this->register(IBreadCrumbManager::class, function () {
             return new BreadCrumbManager();
+        });
+
+        $this->register(ConfigService::class, function () {
+            return new ConfigService(
+                $this->query(Server::CONFIG)
+            );
         });
 
     }

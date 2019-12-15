@@ -77,12 +77,11 @@ class FileManager implements IFileManager {
 
     }
 
-    public function read(IUniformResourceIdentifier $uri): ?IFile {
+    public function read(?IUniformResourceIdentifier $uri): ?IFile {
+        if (null === $uri) return null;
         $path = $uri->getIdentifier();
         if (false === is_file($path)) return null;
-
-        $file = $this->fileRepository->getByUri($uri);
-        return $file;
+        return $this->fileRepository->getByUri($uri);
     }
 
     public function remove(IFile $file): bool {
@@ -91,7 +90,7 @@ class FileManager implements IFileManager {
         if (false === $path) return false;
         $uri = new URI(); // TODO make better
         $uri->setIdentifier($path);;
-        $file = $this->fileRepository->getByUri($uri);
+        $file     = $this->fileRepository->getByUri($uri);
         $unlinked = unlink($path);
         $removed  = $this->fileRepository->remove($file);
 

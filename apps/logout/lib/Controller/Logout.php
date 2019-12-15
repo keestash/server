@@ -19,11 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Logout\Application;
+namespace KSA\Logout\Controller;
 
 use doganoo\PHPUtil\HTTP\Session;
 use Keestash;
 use Keestash\Core\Manager\RouterManager\RouterManager;
+use Keestash\Core\Manager\SessionManager\SessionManager;
+use KSA\Logout\Application\Application;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -36,7 +38,7 @@ class Logout extends StaticAppController {
 
     public function __construct(
         ITemplateManager $templateManager
-        , Session $session
+        , SessionManager $session
         , IPermissionRepository $permissionManager
         , IL10N $l10n
     ) {
@@ -55,7 +57,7 @@ class Logout extends StaticAppController {
     }
 
     public function create(): void {
-        $this->session->clear();
+        $this->session->killAll();
     }
 
     public function afterCreate(): void {

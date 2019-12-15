@@ -19,40 +19,28 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\Repository\Session;
 
-use DateTime;
+use KSP\Core\Repository\IRepository;
 
 /**
- * Interface IUser
- * @package KSP\Core\DTO
- *
- * TODO move to right place
+ * Interface ISessionRepository
+ * @package KSP\Core\Repository\Session
  */
-interface IUser extends IObject {
+interface ISessionRepository extends IRepository {
 
-    public const SYSTEM_USER_ID = 1;
+    public function open(): bool;
 
-    public function getId(): int;
+    public function get(string $id): ?string;
 
-    public function getName(): string;
+    public function getAll(): ?array;
 
-    public function getPassword(): string;
+    public function replace(string $id, string $data): bool;
 
-    public function getCreateTs(): DateTime;
+    public function deleteById(string $id): bool;
 
-    public function getDisplayName(): string;
+    public function deleteByLastUpdate(int $maxLifeTime): bool;
 
-    public function getFirstName(): string;
-
-    public function geKSAstName(): string;
-
-    public function getEmail(): string;
-
-    public function getPhone(): string;
-
-    public function getWebsite(): string;
-
-    public function getLastLogin(): ?DateTime;
+    public function close(): bool;
 
 }

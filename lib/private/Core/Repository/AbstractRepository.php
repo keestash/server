@@ -87,4 +87,8 @@ class AbstractRepository implements IRepository {
         return $row;
     }
 
+    protected function hasErrors(string $errorCode): bool {
+        return $errorCode !== "00000";
+    }
+
 }

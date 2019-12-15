@@ -19,13 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Service;
+namespace KSP\Core\DTO\File;
 
-use Keestash;
-use Phinx\Console\PhinxApplication;
-use Phinx\Wrapper\TextWrapper;
+use KSP\Core\DTO\IObject;
 
-class UpdateConfigService {
+interface IExtension extends IObject {
 
+    public const PNG = "png";
 
 }

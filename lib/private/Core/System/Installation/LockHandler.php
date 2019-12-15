@@ -49,6 +49,14 @@ abstract class LockHandler {
         return $this->instanceDb->removeOption($this->getDomain());
     }
 
+    public function getAll(): ?array {
+        return $this->instanceDb->getAll();
+    }
+
+    public function getData(): ?string {
+        return $this->instanceDb->getOption($this->getDomain());
+    }
+
     public abstract function getDomain(): string;
 
 }

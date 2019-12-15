@@ -30,5 +30,6 @@ interface IRole extends \doganoo\SimpleRBAC\Common\IRole {
     public const ID_PUBLIC   = 1;
     public const ID_ADMIN    = 2;
     public const ID_APP_USER = 3;
+    public const ID_SYSTEM   = 4;
 
 }
