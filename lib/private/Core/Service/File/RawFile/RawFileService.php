@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\File\RawFile;
 
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\DTO\URI\URI;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
@@ -66,7 +67,7 @@ class RawFileService {
         $base64 = $imgData = base64_encode($content);
 
         if (false === $rawBase64) {
-            $base64 = 'data: ' . mime_content_type($tempNae) . ';base64,' . $imgData;
+            $base64 = 'data: ' . mime_content_type($tempNae) . ';base64, ' . $imgData;
         }
 
         return $base64;

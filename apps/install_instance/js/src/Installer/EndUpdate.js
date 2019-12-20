@@ -52,7 +52,6 @@ export class EndUpdate {
         const _this = this;
         _this.button.click(function (e) {
             e.preventDefault();
-            console.log("ending");
 
             window.setTimeout(
                 function () {

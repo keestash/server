@@ -19,34 +19,46 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\SessionManager;
+namespace KSP\Core\Manager\CookieManager;
 
 use KSP\Core\Manager\IManager;
 
-interface ISessionManager extends IManager {
+/**
+ * Interface ICookieManager
+ * @package KSP\Core\Manager\CookieManager
+ */
+interface ICookieManager extends IManager {
+
+    public const PATH_ENTIRE_DOMAIN = "/";
 
     /**
-     * @param string $name
+     * @param string $key
      * @param string $value
+     * @param int    $expireTs
      * @return bool
      */
-    public function set(string $name, string $value): bool;
+    public function set(string $key, string $value, int $expireTs = 0): bool;
 
     /**
-     * @param string      $name
+     * @param string      $key
      * @param string|null $default
      * @return string|null
      */
-    public function get(string $name, ?string $default = null): ?string;
+    public function get(string $key, ?string $default = null): ?string;
 
     /**
-     * @param string $name
-     * @return void
+     * @return array
      */
-    public function kill(string $name): void;
+    public function getAll(): array;
 
     /**
-     * @return void
+     * @param string $key
+     * @return bool
+     */
+    public function kill(string $key): bool;
+
+    /**
+     *
      */
     public function killAll(): void;
 

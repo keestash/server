@@ -23,12 +23,13 @@ namespace KSP\Core\Controller;
 
 use Keestash;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
+use KSP\Core\Manager\CookieManager\ICookieManager;
+use KSP\Core\Manager\SessionManager\ISessionManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\View\Navigation\INavigation;
 use KSP\Core\View\Navigation\IPart;
 use KSP\L10N\IL10N;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 abstract class AppController implements IAppController {
 
@@ -48,8 +49,8 @@ abstract class AppController implements IAppController {
         ITemplateManager $templateManager
         , IL10N $l10n
     ) {
-        $this->templateManager  = $templateManager;
-        $this->l10n             = $l10n;
+        $this->templateManager = $templateManager;
+        $this->l10n            = $l10n;
     }
 
     public function setAppNavigationTitle(string $title): void {
@@ -125,6 +126,14 @@ abstract class AppController implements IAppController {
         $this->templateManager->replace("app-content.html",
             ["appContent" => $content]
         );
+    }
+
+    protected function getCookieManager(): ICookieManager {
+        return Keestash::getServer()->query(ICookieManager::class);
+    }
+
+    protected function getSessionManager(): ISessionManager {
+        return Keestash::getServer()->query(ISessionManager::class);
     }
 
     protected function getTemplateManager(): ITemplateManager {

@@ -27,6 +27,7 @@ use Keestash\Core\DTO\HTTP;
 use Keestash\Core\DTO\User;
 use KSA\Account\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -48,13 +49,14 @@ class UpdateUserData extends AbstractApi {
         , IUserRepository $userManager
         , IL10N $l10n
         , IPermissionRepository $permissionManager
+        , ?IToken $token = null
     ) {
         $this->userService       = $userService;
         $this->userManager       = $userManager;
         $this->l10n              = $l10n;
         $this->permissionManager = $permissionManager;
 
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
     }
 
     public function onCreate(array $parameters): void {

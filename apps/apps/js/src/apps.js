@@ -34,7 +34,6 @@ import routes from "../../../../lib/js/src/Backend/routes";
 ();
 
 $(document).ready(function () {
-    console.log("test");
     Keestash.AppsApp.listen();
 });
 

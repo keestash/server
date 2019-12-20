@@ -53,6 +53,8 @@ interface IUser extends IObject {
 
     public function getWebsite(): string;
 
+    public function getHash(): string;
+
     public function getLastLogin(): ?DateTime;
 
 }

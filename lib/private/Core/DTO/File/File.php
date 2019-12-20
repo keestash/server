@@ -72,14 +72,11 @@ class File implements IFile {
     }
 
     public function getFullPath(): string {
-        $name = str_replace("/", "", $this->getName());
-        $name = str_replace(" ", "_", $name);
-
-        $path = $this->getDirectory() . "/" .
-            $name . "." .
-            str_replace("/", "", $this->getExtension());
-
-        $path = str_replace("//", "/", $path);
+        $name      = $this->getName();
+        $dir       = $this->getDirectory();
+        $extension = $this->getExtension();
+        $path      = "$dir/$name.$extension";
+        $path      = str_replace("//", "/", $path);
         return $path;
 
     }
