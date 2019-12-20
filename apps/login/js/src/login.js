@@ -3,6 +3,7 @@ import AppStorage from "../../../../lib/js/src/AppStorage";
 import Router from "../../../../lib/js/src/Router";
 import modal from "../../../../lib/js/src/UI/modal";
 import Input from "../../../../lib/js/src/UI/Input";
+import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../lib/js/src/UI/ModalHandler";
 
 (function () {
     if (!Keestash.Login) {
@@ -49,11 +50,12 @@ import Input from "../../../../lib/js/src/UI/Input";
                         let object = JSON.parse(html);
                         let result_object = null;
 
-                        if (1000 in object) {
-                            result_object = object[1000];
+                        if (RESPONSE_CODE_OK in object) {
+                            result_object = object[RESPONSE_CODE_OK];
                             let routeTo = result_object['routeTo'];
                             let token = xhr.getResponseHeader('api_token');
                             let userHash = xhr.getResponseHeader('user_hash');
+
 
                             appStorage.storeAPICredentials(
                                 token
@@ -61,13 +63,14 @@ import Input from "../../../../lib/js/src/UI/Input";
                             );
 
                             appStorage.logCredentials();
-
+                            that.changeButtonState(true);
                             router.routeTo(routeTo);
                             return;
-                        } else if (2000 in object) {
-                            result_object = object[2000];
+                        } else if (RESPONSE_CODE_NOT_OK in object) {
+                            result_object = object[RESPONSE_CODE_NOT_OK];
                             modal.miniModal(result_object['message']);
                             appStorage.clearAPICredentials();
+                            that.changeButtonState(true);
                         }
 
                         if (result_object === null) {
@@ -79,7 +82,7 @@ import Input from "../../../../lib/js/src/UI/Input";
                     , function (html, status, xhr) {
                         modal.miniModal("There was an error. Please try again or contact our support")
                         appStorage.clearAPICredentials();
-                        that.changeButtonState(false);
+                        that.changeButtonState(true);
                     }
                 );
             });

@@ -55,7 +55,7 @@ class MySQLBackend implements ISQLBackend {
 
             $this->connected = true;
         } catch (PDOException $exception) {
-//            FileLogger::error($exception->getMessage());
+            FileLogger::error($exception->getMessage());
             return false;
         }
         return true;

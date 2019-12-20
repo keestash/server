@@ -22,21 +22,23 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Instance;
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
-use SQLite3;
+use PDO;
 
 class InstanceDB {
+
+    public const FIELD_NAME_INSTANCE_HASH = "instance_hash";
+    public const FIELD_NAME_INSTANCE_ID   = "instance_id";
 
     private $path     = null;
     private $database = null;
 
     public function __construct() {
-        $this->path     = Keestash::getServer()->getAppRoot() . "/.instance.sqlite";
-        $this->database = new SQLite3(
-            $this->path
-            , SQLITE3_OPEN_CREATE | SQLITE3_OPEN_READWRITE
-        );
+        $this->path = Keestash::getServer()->getConfigRoot() . "/.instance.sqlite";
+
+        $this->database = new PDO("sqlite:{$this->path}");
 
         $this->createTable();
 
@@ -56,8 +58,8 @@ class InstanceDB {
     public function addOption(string $name, string $value): bool {
 
         $option = $this->getOption($name);
-
         if (null === $option) {
+
             return $this->insertOption($name, $value);
         }
         return $this->updateOption($name, $value);
@@ -96,14 +98,13 @@ class InstanceDB {
                                                         , `value`
                                                         , `create_ts`
                                                       FROM `instance`;');
-
-        $result = $statement->execute();
+        $statement->execute();
 
         $array = [];
-        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $array[] = $row;
         }
-        $result->finalize();
+
         if (false === $array) return null;
         return $array;
     }
@@ -120,27 +121,27 @@ class InstanceDB {
                                                       WHERE `name` = ?;');
 
         $statement->bindValue(1, $name);
-        $result = $statement->execute();
-        $array  = $result->fetchArray(SQLITE3_ASSOC);
-        $result->finalize();
+        $statement->execute();
+        $array = $statement->fetch(PDO::FETCH_ASSOC);
+
         if (false === $array) return null;
         return $array['value'] ?? null;
     }
 
     public function removeOption(string $name): bool {
         if (false === $this->isValid()) return false;
-        $statement = $this->database->prepare('DELETE FROM `instance` WHERE `name` = :name;');
-        $statement->bindParam("name", $name);
-        $result = $statement->execute();
-        $result->finalize();
-        return true;
+        $sql       = 'DELETE FROM `instance` WHERE `name` = :the_name';
+        $statement = $this->database->prepare($sql);
+        $statement->bindValue(':the_name', $name);
+        FileLogger::debug(json_encode($statement->errorInfo()));
+        $statement->execute();
+        return $statement->rowCount() > 0;
     }
 
     public function clear(): bool {
         if (false === $this->isValid()) return false;
         $statement = $this->database->prepare('DELETE FROM `instance`;');
-        $result    = $statement->execute();
-        $result->finalize();
+        $statement->execute();
         return true;
     }
 
@@ -148,4 +149,5 @@ class InstanceDB {
         if (true === is_file($this->path)) return true;
         return false;
     }
+
 }

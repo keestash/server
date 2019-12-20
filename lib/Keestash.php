@@ -20,7 +20,6 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Log\Logger;
 use Keestash\Api\Response\MaintenanceResponse;
@@ -34,10 +33,12 @@ use Keestash\Core\Manager\RouterManager\Router\APIRouter;
 use Keestash\Core\Manager\RouterManager\Router\Helper as RouterHelper;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\RouterManager;
-use Keestash\Core\Manager\SessionManager\UserSessionManager;
-use Keestash\Core\Service\AssetService;
-use Keestash\Core\Service\HTTPService;
-use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\System\Installation\LockHandler;
@@ -47,6 +48,8 @@ use Keestash\View\Navigation\Navigation;
 use Keestash\View\Navigation\Part;
 use KSP\Api\IResponse;
 use KSP\App\IApp;
+use KSP\Core\DTO\IToken;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
@@ -70,7 +73,6 @@ class Keestash {
 
     }
 
-
     /**
      * @return bool
      */
@@ -78,14 +80,15 @@ class Keestash {
         Keestash::$mode = Keestash::MODE_WEB;
         Keestash::initRequest();
 
-        /** @var UserSessionManager $sessionManager */
-        $sessionManager = self::$server->query(UserSessionManager::class);
+        /** @var PersistenceService $persistenceService */
+        $persistenceService = Keestash::getServer()->query(PersistenceService::class);
+        $persisted          = $persistenceService->isPersisted("user_id");
+
         /** @var HTTPRouter $router */
         $router = Keestash::getServer()->getHTTPRouter();
 
-        if ($sessionManager->isUserLoggedIn() || $router->isPublicRoute()) {
+        if (true === $persisted || $router->isPublicRoute()) {
             $router->route(null);
-            $sessionManager->updateTimestamp();
         } else {
             $router->routeTo("login");
         }
@@ -97,6 +100,11 @@ class Keestash {
 
     private static function initRequest() {
         Keestash::init();
+
+        set_time_limit(0);
+        session_set_save_handler(
+            Keestash::getServer()->query(SessionHandlerInterface::class)
+        );
 
         // step3 has to be: is configured!
         //      this contains stuff like is writable,
@@ -122,7 +130,8 @@ class Keestash {
             ->loadCoreAppsAndFlush();
 
         //step 2: check for is installed
-        Keestash::isInstalled();
+        Keestash::isInstanceInstalled();
+        Keestash::areAppsInstalled();
 
         //step 4: load apps
         Keestash::getServer()
@@ -159,8 +168,6 @@ class Keestash {
         FileLogger::setPath($logPath);
         Logger::setLogLevel((int) $logLevel);
 
-        Keestash::loadTemplates();
-        Keestash::initTemplates();
         return true;
     }
 
@@ -192,15 +199,27 @@ class Keestash {
 
     private static function initTemplates() {
         if (self::$mode === Keestash::MODE_API) return;
-        $legacy    = self::getServer()->getLegacy();
-        $user      = self::getServer()->getUserFromSession();
 
-        $userImage = "";
+        $legacy = self::getServer()->getLegacy();
 
-        /** @var AssetService $assetService */
-        $assetService = Keestash::getServer()->query(AssetService::class);
-        $userImage    = $assetService->getUserProfilePicture($user);
+        /** @var IFileManager $fileManager */
+        $fileManager = Keestash::getServer()->query(IFileManager::class);
+        /** @var RawFileService $rawFileService */
+        $rawFileService = Keestash::getServer()->query(RawFileService::class);
+        /** @var FileService $fileService */
+        $fileService = Keestash::getServer()->query(FileService::class);
 
+        $file = $fileManager->read(
+            $rawFileService->stringToUri(
+                $fileService->getProfileImagePath(Keestash::getServer()->getUserFromSession())
+            )
+        );
+
+        if (null === $file) {
+            $file = $fileService->defaultProfileImage();
+        }
+
+        $userImage = $rawFileService->stringToBase64($file->getFullPath());
         self::$server->getTemplateManager()->replace("navigation.html",
             [
                 "appName"     => $legacy->getVendor()->get("name")
@@ -255,32 +274,26 @@ class Keestash {
         }
     }
 
-    private static function isInstalled(): void {
-        Keestash::isInstanceInstalled();
-        Keestash::areAppsInstalled();
-    }
-
     private static function isInstanceInstalled(): void {
         $lockHandler          = Keestash::getServer()->getInstanceLockHandler();
+        $instanceDB           = Keestash::getServer()->getInstanceDB();
+        $instanceHash         = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
+        $instanceId           = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
         $isLocked             = $lockHandler->isLocked();
         $routesToInstallation = RouterHelper::routesToInstallation();
 
-        // The app is locked and is possibly going to
-        // install_instance route. Therefore, we can simply
-        // return
-        if (true === $isLocked && true === $routesToInstallation) {
+        // TODO we need to route to install apps if the current
+        //  route is going to another target
+        if (true === $isLocked || true === $routesToInstallation) {
             return;
         }
 
-        /** @var HTTPService $httpService */
+        /** @var \Keestash\Core\Service\HTTP\HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
-        /** @var InstallerService $installer */
-        $installer   = Keestash::getServer()->query(InstallerService::class);
-        $isInstalled = $installer->isInstalled();
 
-
-        if (false === $isInstalled) {
+        if ((null === $instanceHash || null === $instanceId)) {
             FileLogger::debug("The whole application is not installed. Please install");
+            $lockHandler->lock();
             $httpService->routeToInstallInstance();
             exit();
             die();
@@ -289,6 +302,13 @@ class Keestash {
     }
 
     private static function areAppsInstalled(): void {
+        $instanceLockHandler = Keestash::getServer()->getInstanceLockHandler();
+
+        // if we are actually installing the instance,
+        // we need to make sure that Keestash does not want
+        // to install the apps
+        if (true === $instanceLockHandler->isLocked()) return;
+
         // TODO we need to route to install apps if the current
         //  route is going to another target
         // We only check loadedApps if the system is
@@ -328,9 +348,8 @@ class Keestash {
             return;
         }
 
-        $lockHandler->lock();
-
         if (Keestash::getMode() === Keestash::MODE_WEB) {
+            $lockHandler->lock();
             // in this case, we redirect to the install page
             // since the user is logged in and is in web mode
             Keestash::getServer()
@@ -395,7 +414,6 @@ class Keestash {
     }
 
     private static function setExceptionHandler(): void {
-
         set_error_handler(function ($error) {
 
             if (is_int($error)) {
@@ -427,40 +445,47 @@ class Keestash {
     }
 
     private static function initDevHandler(): void {
-        /** @var HashTable $config */
-        $config = Keestash::getServer()->query(Server::CONFIG);
-        if (false === $config->get("debug")) return;
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
+        if (false === $isDebug) return;
         Keestash::installWhoops();
     }
 
     private static function installWhoops(): void {
-
         if (self::$mode === Keestash::MODE_API) return;
-        $config     = self::getServer()->getConfig();
-        $showErrors = $config->get("show_errors");
-        if (true === $showErrors) {
-            $whoops = new Run();
-            $whoops->pushHandler(new PrettyPageHandler());
-            $whoops->register();
-        }
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $showErrors    = $configService->getValue("show_errors", false);
+
+        if (false === $showErrors) return;
+
+        $whoops = new Run();
+        $whoops->pushHandler(new PrettyPageHandler());
+        $whoops->register();
+
     }
 
     private static function initProductionHandler(): void {
-        /** @var HashTable $config */
-        $config = Keestash::getServer()->query(Server::CONFIG);
-        if (true === $config->get("debug")) return;
+        if (self::$mode === Keestash::MODE_API) return;
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
+
+        if (true === $isDebug) return;
         Keestash::hideErrors();
         Keestash::hideOutput();
     }
 
     private static function hideErrors() {
-        $config     = self::getServer()->getConfig();
-        $showErrors = $config->get("show_errors");
-        $debug      = $config->get("debug");
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
+        $showErrors    = $configService->getValue("show_errors", false);
 
         error_reporting(E_ALL | E_STRICT);
-        @ini_set('display_errors', $showErrors && $debug ? '1' : '0');
-        @ini_set('log_errors', $showErrors && $debug ? '1' : '0');
+        @ini_set('display_errors', $showErrors && $isDebug ? '1' : '0');
+        @ini_set('log_errors', $showErrors && $isDebug ? '1' : '0');
     }
 
     private static function hideOutput() {
@@ -480,11 +505,11 @@ class Keestash {
     }
 
     private static function flushOutput(callable $callable = null) {
-        /** @var HashTable $config */
-        $config = Keestash::getServer()->query(Server::CONFIG);
-        $debug  = $config->get("debug");
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $isDebug       = $configService->getValue("debug", false);
 
-        if (true === $debug) return;
+        if (true === $isDebug) return;
         if (null !== $callable) $callable(ob_get_contents());
 //        ob_end_clean();
     }
@@ -514,6 +539,8 @@ class Keestash {
 
     private static function renderTemplates() {
         if (self::$mode === Keestash::MODE_API) return;
+        Keestash::loadTemplates();
+        Keestash::initTemplates();
         Keestash::addTopNavigation();
 
         $legacy = self::getServer()->getLegacy();
@@ -661,6 +688,7 @@ class Keestash {
     public static function requestApi(): void {
         Keestash::$mode = Keestash::MODE_API;
         Keestash::initRequest();
+
         /** @var APIRouter $router */
         $router    = Keestash::getServer()->getRouterManager()->get(RouterManager::API_ROUTER);
         $parameter = $router->getRequiredParameter();

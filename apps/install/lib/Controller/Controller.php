@@ -25,7 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\App\Config\Diff;
 use Keestash\Core\Permission\PermissionFactory;
-use Keestash\Core\Service\App\Installer;
+use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSA\Install\Application\Application;
 use KSP\Core\Controller\FullscreenAppController;
@@ -45,7 +45,7 @@ class Controller extends FullscreenAppController {
         , IPermissionRepository $permissionManager
         , IL10N $l10n
         , LockHandler $lockHandler
-        , Installer $installer
+        , InstallerService $installer
     ) {
         parent::__construct(
             $templateManager

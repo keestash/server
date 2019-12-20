@@ -30,7 +30,9 @@ use SplFileInfo;
 
 class DirsWritable extends AbstractVerification {
 
-    private const EXCLUDES = [
+    public const KEY_DIR_WRITABLE = "dir_writable";
+    public const KEY_DIR_READABLE = "dir_readable";
+    private const EXCLUDES         = [
         "node_modules"
         , "vendor"
         , ".gitignore"
@@ -45,6 +47,7 @@ class DirsWritable extends AbstractVerification {
         $directory = new RecursiveDirectoryIterator($appRoot);
         $iterator  = new RecursiveIteratorIterator($directory);
         $valid     = true;
+        FileLogger::debug($appRoot);
 
         /** @var SplFileInfo $info */
         foreach ($iterator as $info) {
@@ -55,6 +58,9 @@ class DirsWritable extends AbstractVerification {
             $validElement = $this->handleDir($info);
             $valid        = $valid && $validElement;
         }
+
+        $this->countMessages(DirsWritable::KEY_DIR_WRITABLE);
+        $this->countMessages(DirsWritable::KEY_DIR_READABLE);
 
         return $valid;
     }
@@ -72,18 +78,31 @@ class DirsWritable extends AbstractVerification {
     }
 
     private function handleDir(SplFileInfo $info): bool {
+
         if (false === $info->isReadable()) {
-            parent::addMessage("dir_readable", $info->getRealPath());
-            FileLogger::debug("{$info->getRealPath()} is not readable");
+
+            parent::addMessage(
+                DirsWritable::KEY_DIR_READABLE
+                , $info->getRealPath()
+            );
+
             return false;
+
         }
 
         if (false === $info->isWritable()) {
-            parent::addMessage("dir_writable", $info->getRealPath());
-            FileLogger::debug("{$info->getRealPath()} is not writable");
+
+            parent::addMessage(
+                DirsWritable::KEY_DIR_WRITABLE
+                , $info->getRealPath()
+            );
+
             return false;
+
         }
+
         return true;
+
     }
 
 }

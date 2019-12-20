@@ -27,7 +27,6 @@ export class Main {
                         }
                         , function (x, y, z) {
                             console.log(x);
-                            console.log("teststseasdfa")
                         }
                     );
                 }, 500

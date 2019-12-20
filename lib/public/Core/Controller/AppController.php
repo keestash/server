@@ -23,6 +23,8 @@ namespace KSP\Core\Controller;
 
 use Keestash;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
+use KSP\Core\Manager\CookieManager\ICookieManager;
+use KSP\Core\Manager\SessionManager\ISessionManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\View\Navigation\INavigation;
@@ -124,6 +126,14 @@ abstract class AppController implements IAppController {
         $this->templateManager->replace("app-content.html",
             ["appContent" => $content]
         );
+    }
+
+    protected function getCookieManager(): ICookieManager {
+        return Keestash::getServer()->query(ICookieManager::class);
+    }
+
+    protected function getSessionManager(): ISessionManager {
+        return Keestash::getServer()->query(ISessionManager::class);
     }
 
     protected function getTemplateManager(): ITemplateManager {

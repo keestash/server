@@ -20,5 +20,11 @@ sudo apt-get install composer
 sudo apt-get install php7.1-mbstring
 sudo apt-get install php7.1-dom
 sudo apt-get install php7.1-sqlite
+sudo apt-get install zip
+sudo apt-get install unzip
+sudo apt-get install php7.1-zip
+sudo apt-get install php7.1-curl
 
 sudo service apache2 restart
+
+composer install

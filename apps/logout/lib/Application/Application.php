@@ -23,6 +23,7 @@ namespace KSA\Logout\Application;
 
 use Keestash;
 use Keestash\Core\Manager\RouterManager\RouterManager;
+use KSA\Logout\Controller\Logout;
 
 class Application extends Keestash\App\Application {
 

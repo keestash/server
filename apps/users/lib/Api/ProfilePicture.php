@@ -22,29 +22,38 @@ declare(strict_types=1);
 namespace KSA\Users\Api;
 
 use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\Base64Response;
 use Keestash\Api\Response\PlainResponse;
+use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Permission\PermissionFactory;
-use Keestash\Core\Service\AssetService;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
 class ProfilePicture extends AbstractApi {
 
-    private $assetService   = null;
     private $parameters     = null;
     private $userRepository = null;
+    private $fileService    = null;
+    private $rawFileService = null;
+    private $fileManager    = null;
 
     public function __construct(
         IL10N $l10n
-        , AssetService $assetService
         , IUserRepository $userRepository
+        , FileService $fileService
+        , RawFileService $rawFileService
+        , FileManager $fileManager
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
-        $this->assetService   = $assetService;
         $this->userRepository = $userRepository;
+        $this->fileService    = $fileService;
+        $this->fileManager    = $fileManager;
+        $this->rawFileService = $rawFileService;
     }
 
     public function onCreate(array $parameters): void {
@@ -71,9 +80,13 @@ class ProfilePicture extends AbstractApi {
             return;
         }
 
-        $picture = $this->assetService->getUserProfileForRestApi($user);
+        $file = $this->fileManager->read(
+            $this->rawFileService->stringToUri(
+                $this->fileService->getProfileImagePath($user)
+            )
+        );
 
-        if (null === $picture) {
+        if (null === $file) {
             $response = parent::createResponse(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -85,8 +98,11 @@ class ProfilePicture extends AbstractApi {
         }
 
         $defaultResponse = new PlainResponse();
-        $defaultResponse->addHeader("Content-Type", "image/jpeg");
-        $defaultResponse->setMessage($picture);
+        $defaultResponse->addHeader(
+            IResponse::HEADER_CONTENT_TYPE
+            , $file->getMimeType()
+        );
+        $defaultResponse->setMessage(file_get_contents($file->getFullPath()));
 
         parent::setResponse($defaultResponse);
     }

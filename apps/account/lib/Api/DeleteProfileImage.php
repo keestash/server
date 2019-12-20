@@ -22,13 +22,17 @@ declare(strict_types=1);
 namespace KSA\Account\Api;
 
 use doganoo\SimpleRBAC\Test\DataProvider\Context;
+use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
+use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\HTTP;
+use Keestash\Core\Service\File\FileService;
 use KSA\Account\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
-use KSP\Core\Manager\AssetManager\IAssetManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -36,24 +40,27 @@ use KSP\L10N\IL10N;
 
 class DeleteProfileImage extends AbstractApi {
 
-    /** @var IAssetManager $assetManager */
-    private $assetManager      = null;
     private $userManager       = null;
     private $l10n              = null;
     private $permissionManager = null;
+    private $fileManager       = null;
+    private $fileService       = null;
 
     public function __construct(
-        IAssetManager $assetManager
+        IFileManager $fileManager
         , IUserRepository $userManager
         , IL10N $l10n
         , IPermissionRepository $permissionManager
+        , FileService $fileService
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
-        $this->assetManager      = $assetManager;
+        $this->fileManager       = $fileManager;
         $this->userManager       = $userManager;
         $this->l10n              = $l10n;
         $this->permissionManager = $permissionManager;
+        $this->fileService       = $fileService;
 
     }
 
@@ -70,7 +77,13 @@ class DeleteProfileImage extends AbstractApi {
             );
             return;
         }
-        $removed = $this->assetManager->removeProfilePicture($user);
+
+        $file = new File();
+        $file->setDirectory(Keestash::getServer()->getImageRoot());
+        $file->setName($this->fileService->getProfileImageName($user));
+
+        $removed = $this->fileManager->remove($file);
+
         if (false === $removed) {
             $this->prepareResponse(
                 IResponse::RESPONSE_CODE_NOT_OK

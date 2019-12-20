@@ -14,7 +14,6 @@ import Router from "../../../../../lib/js/src/Router";
 
             Keestash.Main.setAppNavigationItemClickListener(
                 function (id) {
-                    console.log("test");
                     id = parseInt(id);
                     let router = new Router();
                     if (id === 1)

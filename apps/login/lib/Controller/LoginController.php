@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\Login\Controller;
 
 use Keestash;
+use Keestash\Core\Permission\PermissionFactory;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
@@ -33,21 +35,24 @@ class LoginController extends StaticAppController {
 
     public const TEMPLATE_NAME_LOGIN = "login.twig";
 
-    private $templateManager   = null;
-    private $translator        = null;
-    private $permissionManager = null;
-    private $loader            = null;
+    private $templateManager    = null;
+    private $translator         = null;
+    private $permissionManager  = null;
+    private $loader             = null;
+    private $persistenceService = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
         , IPermissionRepository $permissionManager
         , ILoader $loader
+        , PersistenceService $persistenceService
     ) {
-        $this->templateManager   = $templateManager;
-        $this->translator        = $translator;
-        $this->permissionManager = $permissionManager;
-        $this->loader            = $loader;
+        $this->templateManager    = $templateManager;
+        $this->translator         = $translator;
+        $this->permissionManager  = $permissionManager;
+        $this->loader             = $loader;
+        $this->persistenceService = $persistenceService;
 
         parent::__construct(
             $templateManager
@@ -57,12 +62,21 @@ class LoginController extends StaticAppController {
 
     public function onCreate(...$params): void {
         parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_LOGIN)
+            PermissionFactory::getDefaultPermission()
         );
     }
 
     public function create(): void {
 
+        $userId = $this->persistenceService->getValue("user_id", null);
+        $hashes = Keestash::getServer()->getUserHashes();
+
+        if (null !== $userId && $hashes->containsValue((int)$userId)) {
+            Keestash::getServer()->getHTTPRouter()->routeTo(
+                Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
+            );
+            exit();
+        }
         $this->templateManager->replace(
             LoginController::TEMPLATE_NAME_LOGIN
             , [

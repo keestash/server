@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSP\Core\DTO;
 
 use DateTime;
-use JsonSerializable;
 
 /**
  * Interface IUser
@@ -30,7 +29,9 @@ use JsonSerializable;
  *
  * TODO move to right place
  */
-interface IUser extends KSObject {
+interface IUser extends IObject {
+
+    public const SYSTEM_USER_ID = 1;
 
     public function getId(): int;
 
@@ -52,8 +53,8 @@ interface IUser extends KSObject {
 
     public function getWebsite(): string;
 
-    public function getLastLogin(): ?DateTime;
-
     public function getHash(): string;
+
+    public function getLastLogin(): ?DateTime;
 
 }

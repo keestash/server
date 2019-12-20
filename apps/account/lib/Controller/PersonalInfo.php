@@ -21,10 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\Account\Controller;
 
-use Keestash;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\UserService;
 use KSP\Core\DTO\IUser;
-use KSP\Core\Manager\AssetManager\IAssetManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\L10N\IL10N;
 
@@ -33,29 +34,39 @@ class PersonalInfo {
     private $templateManager = null;
     private $l10n            = null;
     private $user            = null;
-    /** @var IAssetManager $assetManager */
-    private $assetManager = null;
-    private $userService  = null;
+    private $userService     = null;
+    private $fileManager     = null;
+    private $rawFileService  = null;
+    private $fileService     = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $l10n
         , IUser $user
-        , IAssetManager $assetManager
         , UserService $userService
+        , IFileManager $fileManager
+        , RawFileService $rawFileService
+        , FileService $fileService
     ) {
         $this->templateManager = $templateManager;
         $this->l10n            = $l10n;
         $this->user            = $user;
-        $this->assetManager    = $assetManager;
         $this->userService     = $userService;
+        $this->fileManager     = $fileManager;
+        $this->rawFileService  = $rawFileService;
+        $this->fileService     = $fileService;
     }
 
     public function handle() {
-        $defaultImage = Keestash::getBaseURL(false) . "/asset/img/profile-picture.PNG";
-        $profileImage = $this->assetManager->getProfilePicture($this->user);
-        $image        = null !== $profileImage ? $profileImage : $defaultImage;
-        $src          = $this->assetManager->uriToBase64($image);
+        $defaultImage = $this->fileService->getDefaultProfileImage();
+
+        $file = $this->fileManager->read(
+            $this->rawFileService->stringToUri(
+                $this->fileService->getProfileImagePath($this->user)
+            )
+        );
+
+        $src = $this->rawFileService->stringToBase64($file->getFullPath());
 
         $this->templateManager->replace("personal_info.html",
             [

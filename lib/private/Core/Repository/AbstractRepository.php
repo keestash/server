@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository;
 
+use Doctrine\DBAL\Connection;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
 use PDO;
@@ -84,6 +85,10 @@ class AbstractRepository implements IRepository {
         if (0 === count($row)) return null;
 
         return $row;
+    }
+
+    protected function hasErrors(string $errorCode): bool {
+        return $errorCode !== "00000";
     }
 
 }

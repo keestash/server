@@ -29,27 +29,24 @@ class HasDataDirs extends AbstractVerification {
     private const PERMISSION = 0777;
 
     public function hasProperty(): bool {
-        $dataRoot      = Keestash::getServer()->getDataRoot();
-        $imageRoot     = Keestash::getServer()->getImageRoot();
-        $lockRoot      = Keestash::getServer()->getLockRoot();
-        $installerRoot = Keestash::getServer()->getInstallerRoot();
+        $dataRoot  = Keestash::getServer()->getDataRoot();
+        $imageRoot = Keestash::getServer()->getImageRoot();
 
         $dirHandler = new DirHandler($dataRoot);
 
         if (false === $dirHandler->exists()) {
-            parent::addMessage("data_root", "{$dirHandler->getPath()} does not exist");;
+            parent::addMessage("data_root", "{$dirHandler->getPath()}");
             return false;
         }
 
-        $imageRootCreated     = $this->checkAndCreateDirIfNecessary($imageRoot);
-        $lockRootCreated      = $this->checkAndCreateDirIfNecessary($lockRoot);
-        $installerRootCreated = $this->checkAndCreateDirIfNecessary($installerRoot);
+        $imageRootCreated = $this->checkAndCreateDirIfNecessary($imageRoot);
 
-        return $imageRootCreated && $lockRootCreated && $installerRootCreated;
+        return $imageRootCreated;
 
     }
 
     private function checkAndCreateDirIfNecessary(string $path): bool {
+
         $dirHandler = new DirHandler($path);
         $valid      = true;
 

@@ -23,6 +23,7 @@ namespace Keestash\Core\Manager\RouterManager\Router;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\DTO\IAPIRequest;
@@ -42,7 +43,7 @@ abstract class Router implements IRouter {
     public const FIELD_NAME_CONTROLLER = "controller";
 
     protected $routes            = null;
-    private   $allowedRoutes     = null;
+    private   $publicRoutes      = null;
     private   $apiLoggerManager  = null;
     private   $reflectionService = null;
 
@@ -51,15 +52,15 @@ abstract class Router implements IRouter {
         , ReflectionService $reflectionService
     ) {
         $this->routes           = new RouteCollection();
-        $this->allowedRoutes    = new HashTable();
+        $this->publicRoutes     = new HashTable();
         $this->apiLoggerManager = $apiLoggerManager;
         $this->registerPublicRoute("/");
         $this->reflectionService = $reflectionService;
     }
 
     public function registerPublicRoute(string $name): bool {
-        $this->allowedRoutes->put($name, true);
-        $this->allowedRoutes->put("$name/", true);
+        $this->publicRoutes->put($name, true);
+        $this->publicRoutes->put("$name/", true);
         return true;
     }
 
@@ -152,9 +153,13 @@ abstract class Router implements IRouter {
 
 
     public function isPublicRoute(): bool {
-        return $this->allowedRoutes->containsKey(
+        return $this->getPublicRoutes()->containsKey(
             $this->getRouteName()
         );
+    }
+
+    public function getPublicRoutes(): HashTable {
+        return $this->publicRoutes;
     }
 
     public function getRouteName(): ?string {
