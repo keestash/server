@@ -47,6 +47,15 @@ class MinimalApp extends AbstractMigration {
                 ]
             )
             ->addColumn(
+                "hash"
+                , "text"
+                , [
+                    "comment" => "The user's hash"
+                    , "null"  => false
+                    , "after" => "name"
+                ]
+            )
+            ->addColumn(
                 "password"
                 , "string"
                 , [
@@ -288,6 +297,12 @@ class MinimalApp extends AbstractMigration {
                 [
                     "id"     => IRole::ID_APP_USER
                     , "name" => "Regular logged in App User Role"
+                ]
+            )
+            ->insert(
+                [
+                    "id"     => IRole::ID_SYSTEM
+                    , "name" => "System User, for System related tasks"
                 ]
             )
             ->save();

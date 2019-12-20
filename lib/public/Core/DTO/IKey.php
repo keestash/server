@@ -27,7 +27,7 @@ use DateTime;
  * Interface IKey
  * @package KSP\Core\DTO
  */
-interface IKey extends KSObject {
+interface IKey extends IObject {
 
     public function getId(): int;
 

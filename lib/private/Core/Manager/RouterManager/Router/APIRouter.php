@@ -46,7 +46,7 @@ class APIRouter extends Router {
             /** @var array $allParameters */
             $allParameters = $this->getAllParameters();
             /** @var AbstractApi $service */
-            $service       = $this->getReflectionService()->createObject($this->getControllerName());
+            $service       = $this->getReflectionService()->createObject($this->getControllerName(), $token);
             /** @var ArrayList $parentClasses */
             $parentClasses = $this->getReflectionService()->getParentClasses($service);
 

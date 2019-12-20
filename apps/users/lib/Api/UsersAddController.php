@@ -29,6 +29,7 @@ use Keestash\Core\DTO\HTTP;
 use Keestash\Core\DTO\User;
 use Keestash\Core\Service\UserService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -46,8 +47,9 @@ class UsersAddController extends AbstractApi {
         IL10N $l10n
         , UserService $userService
         , IUserRepository $userManager
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
         $this->userService = $userService;
         $this->userManager = $userManager;

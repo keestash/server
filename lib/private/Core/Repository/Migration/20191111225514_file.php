@@ -37,7 +37,15 @@ class File extends KeestashMigration {
                 , "string"
                 , [
                     "null"      => false
-                    , "comment" => "the attachments name"
+                    , "comment" => "the files name"
+                ]
+            )
+            ->addColumn(
+                "directory"
+                , "text"
+                , [
+                    "null"      => false
+                    , "comment" => "The files directory in which the file lies"
                 ]
             )
             ->addColumn(
@@ -45,7 +53,7 @@ class File extends KeestashMigration {
                 , "text"
                 , [
                     "null"      => false
-                    , "comment" => "The attachments full path on the server"
+                    , "comment" => "The files full path"
                 ]
             )
             ->addColumn(

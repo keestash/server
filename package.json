@@ -36,6 +36,7 @@
     "jquery": "^3.4.1",
     "npm": "^6.13.4",
     "twig": "^1.13.3",
-    "webpack-merge": "^4.2.1"
+    "webpack-merge": "^4.2.1",
+    "serialize-javascript": ">=2.1.1"
   }
 }

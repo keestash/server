@@ -4,7 +4,7 @@
   "name": "general_api",
   "type": "app",
   "fa-icon-class": "fas fa-key",
-  "order":7,
+  "order": 7,
   "show-icon": 0,
   "base_route": "general_api",
   "version": 1,

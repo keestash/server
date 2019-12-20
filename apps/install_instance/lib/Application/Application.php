@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Application;
 
 use Keestash\Core\Manager\RouterManager\RouterManager;
-use KSA\InstallInstance\Api\DirsWritable;
-use KSA\InstallInstance\Api\EndUpdate;
-use KSA\InstallInstance\Api\UpdateConfig;
+use KSA\InstallInstance\Api\Config\Get;
+use KSA\InstallInstance\Api\Config\Update;
+use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
 use KSA\InstallInstance\Controller\Controller;
 
 class Application extends \Keestash\App\Application {
@@ -34,8 +34,9 @@ class Application extends \Keestash\App\Application {
     public const ROUTE_INSTALL_INSTANCE               = "install_instance";
     public const ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG = "install_instance/update_config/";
     public const ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE = "install_instance/dirs_writable/";
+    public const ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS = "install_instance/has_data_dirs/";
+    public const ROUTE_INSTALL_INSTANCE_CONFIG_DATA   = "install_instance/config_data/";
     public const ROUTE_INSTALL_INSTANCE_END_UPDATE    = "install_instance/end_update/";
-
 
     public const LOG_REQUESTS_ENABLED  = "enabled";
     public const LOG_REQUESTS_DISABLED = "disabled";
@@ -48,14 +49,26 @@ class Application extends \Keestash\App\Application {
 
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
-            , UpdateConfig::class
+            , Update::class
             , [RouterManager::POST]
         );
 
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
-            , DirsWritable::class
-            , [RouterManager::POST]
+            , \KSA\InstallInstance\Api\DirsWritable\Get::class
+            , [RouterManager::GET]
+        );
+
+        parent::registerApiRoute(
+            Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
+            , Get::class
+            , [RouterManager::GET]
+        );
+
+        parent::registerApiRoute(
+            Application::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
+            , \KSA\InstallInstance\Api\DataDirs\Get::class
+            , [RouterManager::GET]
         );
 
         parent::registerApiRoute(
@@ -74,7 +87,13 @@ class Application extends \Keestash\App\Application {
             Application::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
         );
         parent::registerPublicApiRoute(
+            Application::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
+        );
+        parent::registerPublicApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_END_UPDATE
+        );
+        parent::registerPublicApiRoute(
+            Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
         );
 
         parent::addJavaScript(Application::APP_ID);

@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\File;
 
 use DateTime;
-use KSA\PasswordManager\Object\Node;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\IUser;
 
@@ -30,7 +29,7 @@ class File implements IFile {
 
     private $id            = null;
     private $name          = null;
-    private $path          = null;
+    private $directory     = null;
     private $temporaryPath = null;
     private $mimeType      = null;
     private $hash          = null;
@@ -38,7 +37,6 @@ class File implements IFile {
     private $size          = null;
     private $content       = null;
     private $owner         = null;
-    private $node          = null;
     private $createTs      = null;
 
     public function setId(int $id): void {
@@ -65,23 +63,20 @@ class File implements IFile {
         return $this->temporaryPath;
     }
 
-    public function setPath(string $path): void {
-        $this->path = $path;
+    public function setDirectory(string $directory): void {
+        $this->directory = $directory;
     }
 
-    public function getPath(): string {
-        return $this->path;
+    public function getDirectory(): string {
+        return $this->directory;
     }
 
     public function getFullPath(): string {
-        $name = str_replace("/", "", $this->getName());
-        $name = str_replace(" ", "_", $name);
-
-        $path = $this->getPath() . "/" .
-            $name . "." .
-            str_replace("/", "", $this->getExtension());
-
-        $path = str_replace("//", "/", $path);
+        $name      = $this->getName();
+        $dir       = $this->getDirectory();
+        $extension = $this->getExtension();
+        $path      = "$dir/$name.$extension";
+        $path      = str_replace("//", "/", $path);
         return $path;
 
     }
@@ -126,14 +121,6 @@ class File implements IFile {
         return $this->owner;
     }
 
-    public function setNode(Node $node): void {
-        $this->node = $node;
-    }
-
-    public function getNode(): Node {
-        return $this->node;
-    }
-
     public function setContent(?string $content): void {
         $this->content = $content;
     }
@@ -162,13 +149,12 @@ class File implements IFile {
             "id"          => $this->getId()
             , "name"      => $this->getName()
             , "tmp_path"  => $this->getTemporaryPath()
-            , "path"      => $this->getPath()
+            , "directory" => $this->getDirectory()
             , "mime_type" => $this->getMimeType()
             , "hash"      => $this->getHash()
             , "extension" => $this->getExtension()
             , "size"      => $this->getSize()
             , "owner"     => $this->getOwner()
-            , "node"      => $this->getNode()
             , "content"   => $this->getContent()
             , "create_ts" => $this->getCreateTs()
         ];

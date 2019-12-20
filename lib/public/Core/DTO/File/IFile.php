@@ -22,17 +22,16 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\File;
 
 use DateTime;
-use KSA\PasswordManager\Object\Node;
 use KSP\Core\DTO\IUser;
-use KSP\Core\DTO\KSObject;
+use KSP\Core\DTO\IObject;
 
-interface IFile extends KSObject {
+interface IFile extends IObject {
 
     public function getId(): int;
 
     public function getName(): string;
 
-    public function getPath(): string;
+    public function getDirectory(): string;
 
     public function getTemporaryPath(): ?string;
 
@@ -47,8 +46,6 @@ interface IFile extends KSObject {
     public function getOwner(): IUser;
 
     public function getFullPath(): string;
-
-    public function getNode(): Node;
 
     public function getContent(): ?string;
 

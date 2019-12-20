@@ -120,7 +120,6 @@ import modal from "../../../../lib/js/src/UI/modal";
                     Keestash.Main.getApiHost() + "/password_requirements/"
                     , {'password': value}
                     , function (response, status, xhr) {
-                        console.log(response);
                         let obj = JSON.parse(response);
 
                         let validPazzword = false;

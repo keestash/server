@@ -32,7 +32,9 @@ class Helper {
     private const ROUTE_INSTALL_INSTANCE               = "install_instance";
     private const ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG = "install_instance/update_config/";
     private const ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE = "install_instance/dirs_writable/";
+    private const ROUTE_INSTALL_INSTANCE_CONFIG_DATA   = "install_instance/config_data/";
     private const ROUTE_INSTALL_INSTANCE_END_UPDATE    = "install_instance/end_update/";
+    private const ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS = "install_instance/has_data_dirs/";
     private const ROUTE_LOGIN_SUBMIT                   = "login/submit";
 
     private function __construct() {
@@ -42,20 +44,22 @@ class Helper {
     }
 
     public static function routesToInstallation(): bool {
-        $router    = Keestash::getServer()->getRouter();
-        $className = ClassUtil::getClassName($router);
+        $router               = Keestash::getServer()->getRouter();
+        $className            = ClassUtil::getClassName($router);
+        $routesToInstallation = false;
 
         switch ($className) {
             case HTTPRouter::class:
-                return Helper::handleHttp($router);
+                $routesToInstallation = Helper::handleHttp($router);
                 break;
             case APIRouter::class:
-                return Helper::handleApi($router);
+                $routesToInstallation = Helper::handleApi($router);
                 break;
             default:
                 throw new KSException("could not identify class");
         }
-        return false;
+
+        return $routesToInstallation;
     }
 
     private static function handleHttp(HTTPRouter $router): bool {
@@ -73,7 +77,9 @@ class Helper {
                 , [
                     Helper::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
                     , Helper::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
+                    , Helper::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
                     , Helper::ROUTE_INSTALL_INSTANCE_END_UPDATE
+                    , Helper::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
                     , Helper::ROUTE_LOGIN_SUBMIT
                 ]
             );
@@ -81,6 +87,7 @@ class Helper {
             // we do not do anything here
             // we know that there is no route and
             // return false
+            FileLogger::debug($e->getTraceAsString());
             return false;
         }
 

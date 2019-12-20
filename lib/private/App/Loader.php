@@ -151,9 +151,10 @@ class Loader implements ILoader {
     private function loadInfo(IApp $app): ?array {
         $file = "{$this->appRoot}/apps/{$app->getId()}/info/info.json";
         if (is_file($file) && is_readable($file)) {
-            $file  = file_get_contents($file);
-            $array = json_decode($file, true);
-            return $array;
+            return json_decode(
+                file_get_contents($file)
+                , true
+            );
         }
         return null;
     }
@@ -169,7 +170,7 @@ class Loader implements ILoader {
         $faIconClass   = $info[IApp::FIELD_FA_ICON_CLASS] ?? null;
         $version       = (int) ($info[IApp::FIELD_VERSION] ?? null);
         $versionString = $info[IApp::FIELD_VERSION_STRING] ?? null;
-        $tye           = $info[IApp::FIELD_TYPE] ?? null;
+        $type          = $info[IApp::FIELD_TYPE] ?? null;
 
         if (null === $id) return false;
         if (null === $namespace) return false;
@@ -179,7 +180,7 @@ class Loader implements ILoader {
         if (null === $order || $order <= 0) return false;
         if (null === $version || $version <= 0) return false;
         if (null === $versionString) return false;
-        if (null === $tye) return false;
+        if (null === $type) return false;
 
         return true;
     }

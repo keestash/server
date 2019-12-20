@@ -21,13 +21,16 @@ declare(strict_types=1);
 
 namespace KSA\Account\Controller;
 
+use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\UserService;
-use Keestash\Core\Task\Part;
+use Keestash\View\Navigation\Part;
 use KSA\Account\Application\Application;
 use KSP\Core\Controller\AppController;
 use KSP\Core\DTO\IUser;
-use KSP\Core\Manager\AssetManager\IAssetManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -41,25 +44,31 @@ class AccountController extends AppController {
     private $templateManager   = null;
     private $id                = null;
     private $user              = null;
-    private $assetManager      = null;
     private $userService       = null;
     private $permissionManager = null;
+    private $fileService       = null;
+    private $fileManager       = null;
+    private $rawFileService    = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $l10n
         , IUser $user
-        , IAssetManager $assetManager
         , UserService $userService
         , IPermissionRepository $permissionManager
+        , FileService $fileService
+        , IFileManager $fileManager
+        , RawFileService $rawFileService
     ) {
         $this->l10n              = $l10n;
         $this->templateManager   = $templateManager;
         $this->user              = $user;
-        $this->assetManager      = $assetManager;
         $this->userService       = $userService;
         $this->id                = AccountController::ACCOUNT_ROUTE_ID;
         $this->permissionManager = $permissionManager;
+        $this->fileService       = $fileService;
+        $this->fileManager       = $fileManager;
+        $this->rawFileService    = $rawFileService;
 
         parent::__construct(
             $templateManager
@@ -99,8 +108,10 @@ class AccountController extends AppController {
                 $this->templateManager
                 , $this->l10n
                 , $this->user
-                , $this->assetManager
                 , $this->userService
+                , $this->fileManager
+                , $this->rawFileService
+                , $this->fileService
             );
 
             $content = $info->handle();
@@ -123,11 +134,11 @@ class AccountController extends AppController {
     }
 
     private function getPart(string $name, int $id) {
-        $x = new \Keestash\View\Navigation\Part();
+        $x = new Part();
         $x->setId($id);
         $x->setName($name);
         $x->setColorCode("");
-        $x->setHref(\Keestash::getBaseURL() . "/" . Application::APP_ID . "/list/" . $id . "/");
+        $x->setHref(Keestash::getBaseURL() . "/" . Application::APP_ID . "/list/" . $id . "/");
         return $x;
     }
 

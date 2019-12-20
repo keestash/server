@@ -27,6 +27,7 @@ use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use doganoo\PHPUtil\HTTP\Session;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
@@ -35,8 +36,9 @@ use Keestash\Core\DTO\User;
 use Keestash\Core\Encryption\Base\BaseEncryption;
 use Keestash\Core\Encryption\Base\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
-use Keestash\Core\Manager\AssetManager\AssetManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
+use Keestash\Core\Manager\CookieManager\CookieManager;
+use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
 use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
 use Keestash\Core\Manager\HookManager\RegistrationHookManager;
@@ -49,28 +51,32 @@ use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
-use Keestash\Core\Manager\SessionManager\UserSessionManager;
 use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
-use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\File\FileRepository;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
+use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\DateTimeService;
-use Keestash\Core\Service\HTTPService;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\PublicFile\PublicFileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Log\LoggerService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\TokenService;
-use Keestash\Core\Service\UserService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
-use Keestash\Core\System\Installation\Instance\HealthCheck;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
 use Keestash\L10N\GetText;
@@ -80,8 +86,9 @@ use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
-use KSP\Core\Manager\AssetManager\IAssetManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
+use KSP\Core\Manager\CookieManager\ICookieManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\HookManager\IHookManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
@@ -94,11 +101,14 @@ use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
+use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
+use SessionHandlerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use xobotyi\MimeType;
 
 class Server {
@@ -136,15 +146,15 @@ class Server {
         });
 
         $this->register(Server::USER_HASH_MAP, function () {
-            $healthCheck = new HealthCheck();
-            if (false === $healthCheck->readInstallation()) return null;
+            /** @var InstallerService $installerService */
+            $installerService = $this->query(InstallerService::class);
+
+            if (false === $installerService->hasIdAndHash()) return null;
             if (null !== $this->userHashes) return $this->userHashes;
 
             $this->userHashes = new HashTable();
             /** @var IUserRepository $userManager */
             $userManager = $this->getUserRepository();
-            /** @var UserService $userService */
-            $userService = $this->query(UserService::class);
 
             $users = $userManager->getAll();
 
@@ -167,6 +177,12 @@ class Server {
             );
         });
 
+        $this->register(IFileManager::class, function () {
+            return new FileManager(
+                $this->query(IFileRepository::class)
+            );
+        });
+
         $this->register(ControllerHookManager::class, function () {
             return new ControllerHookManager(null);
         });
@@ -179,9 +195,7 @@ class Server {
         $this->register(PasswordChangedHookManager::class, function () {
             return new PasswordChangedHookManager(null);
         });
-        $this->register(IAssetManager::class, function () {
-            return new AssetManager(null, null);
-        });
+
         $this->register(TokenService::class, function () {
             return new TokenService();
         });
@@ -253,6 +267,16 @@ class Server {
             return new DateTimeService();
         });
 
+        $this->register(RawFileService::class, function () {
+            return new RawFileService();
+        });
+
+        $this->register(FileService::class, function () {
+            return new FileService(
+                $this->query(RawFileService::class)
+            );
+        });
+
         $this->register(InstanceDB::class, function () {
             return new InstanceDB();
         });
@@ -276,19 +300,39 @@ class Server {
             );
         });
 
-        $this->register(UserSessionManager::class, function () {
-            $backend = $this->query(IBackend::class);
-            return new UserSessionManager($backend, null);
+        $this->register(ISessionManager::class, function () {
+            return new SessionManager(
+                $this->query(Session::class)
+            );
         });
 
-        $this->register(ISessionManager::class, function () {
-            $backend = $this->query(IBackend::class);
-            return new SessionManager($backend, null);
+        $this->register(ICookieManager::class, function () {
+            return new CookieManager();
+        });
+
+        $this->register(ISessionRepository::class, function () {
+            return new SessionRepository(
+                $this->query(IBackend::class)
+            );
+        });
+
+        $this->register(SessionHandlerInterface::class, function () {
+            return new Keestash\Core\Manager\SessionManager\SessionHandler(
+                $this->query(ISessionRepository::class)
+            );
         });
 
         $this->register(IResponseManager::class, function () {
             $backend = $this->query(IBackend::class);
             return new JSONResponseManager($backend, null);
+        });
+
+        $this->register(Session::class, function () {
+            return $this->query(SessionInterface::class);
+        });
+
+        $this->register(SessionInterface::class, function () {
+            return new Session();
         });
 
         $this->register(System::class, function () {
@@ -368,7 +412,12 @@ class Server {
                 $this->getInstanceLockHandler()
                 , $this->query(Migrator::class)
                 , $this->query(InstanceDB::class)
+                , $this->query(ConfigService::class)
             );
+        });
+
+        $this->register(LoggerService::class, function () {
+            return new LoggerService();
         });
 
         $this->register(Migrator::class, function () {
@@ -401,19 +450,36 @@ class Server {
         });
 
         $this->register(AppLockHandler::class, function () {
-            return new AppLockHandler();
+            return new AppLockHandler(
+                $this->query(InstanceDB::class)
+            );
         });
 
         $this->register(InstanceLockHandler::class, function () {
-            return new InstanceLockHandler();
+            return new InstanceLockHandler(
+                $this->query(InstanceDB::class)
+            );
         });
 
         $this->register(IBreadCrumbManager::class, function () {
             return new BreadCrumbManager();
         });
 
-        $this->register(HealthCheck::class, function () {
-            return new HealthCheck();
+        $this->register(ConfigService::class, function () {
+            return new ConfigService(
+                $this->query(Server::CONFIG)
+            );
+        });
+
+        $this->register(PersistenceService::class, function () {
+            return new PersistenceService(
+                $this->query(ISessionManager::class)
+                , $this->query(ICookieManager::class)
+            );
+        });
+
+        $this->register(PublicFileService::class, function () {
+            return new PublicFileService();
         });
 
     }
@@ -457,17 +523,23 @@ class Server {
     }
 
     public function getUserFromSession(): ?IUser {
-        /** @var UserSessionManager $sessionManager */
-        $sessionManager = $this->query(UserSessionManager::class);
+        /** @var PersistenceService $persistenceService */
+        $persistenceService = $this->query(PersistenceService::class);
+        $userId             = $persistenceService->getValue("user_id", null);
+
+        if (null === $userId) return null;
+
         /** @var IUserRepository $userManager */
         $userManager = $this->query(IUserRepository::class);
-        $userId      = $sessionManager->getUser();
-        if (null === $userId) return null;
         return $userManager->getUserById($userId);
     }
 
     public function getImageRoot(): string {
         return $this->getDataRoot() . "image/";
+    }
+
+    public function getAssetRoot(): string {
+        return $this->getServerRoot() . "asset/";
     }
 
     public function getDataRoot(): string {
@@ -593,6 +665,10 @@ class Server {
 
     public function getAppLoader(): ILoader {
         return $this->query(ILoader::class);
+    }
+
+    public function getInstanceDB(): InstanceDB {
+        return $this->query(InstanceDB::class);
     }
 
     public function getPermissionHandler(): PermissionHandler {

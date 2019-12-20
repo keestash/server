@@ -23,15 +23,17 @@ namespace Keestash\Core\Service;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash;
+use KSP\Core\DTO\IToken;
 use ReflectionClass;
 
 class ReflectionService {
 
     /**
      * @param string $className
+     * @param IToken|null $token
      * @return object
      */
-    public function createObject(string $className) {
+    public function createObject(string $className, ?IToken $token = null) {
         $constructorArgs = [];
         $instance        = new ReflectionClass($className);
 
@@ -44,6 +46,7 @@ class ReflectionService {
             }
         }
 
+        $constructorArgs[] = $token;
         return $instance->newInstanceArgs($constructorArgs);
     }
 

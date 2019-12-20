@@ -28,6 +28,8 @@ interface IResponse {
     public const RESPONSE_CODE_SESSION_EXPIRED = 3000;
     public const RESPONSE_CODE_NEEDS_UPGRADE   = 4000;
 
+    public const HEADER_CONTENT_TYPE = "Content-Type";
+
     public function getCode(): int;
 
     public function getDescription(): string;
