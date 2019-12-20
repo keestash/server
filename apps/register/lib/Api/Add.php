@@ -31,6 +31,7 @@ use Keestash\Core\DTO\User;
 use Keestash\Core\Service\UserService;
 use KSA\Register\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -51,8 +52,9 @@ class Add extends AbstractApi {
         , UserService $userService
         , IUserRepository $userManager
         , IPermissionRepository $permissionManager
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
         $this->userService       = $userService;
         $this->userManager       = $userManager;

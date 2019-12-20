@@ -44,11 +44,11 @@ class SessionManager implements ISessionManager {
     }
 
     /**
-     * @param string $name
-     * @param mixed  $default
+     * @param string      $name
+     * @param string|null $default
      * @return string|null
      */
-    public function get(string $name, $default = null): ?string {
+    public function get(string $name, ?string $default = null): ?string {
         $this->session->start();
         return $this->session->get($name, $default);
     }
@@ -66,6 +66,14 @@ class SessionManager implements ISessionManager {
     public function killAll(): void {
         $this->session->start();
         $this->destroy();
+    }
+
+    /**
+     * @param string $name
+     */
+    public function kill(string $name): void {
+        $this->session->start();
+        $this->session->remove($name);
     }
 
 }

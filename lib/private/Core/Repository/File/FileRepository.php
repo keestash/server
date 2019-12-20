@@ -210,10 +210,10 @@ class FileRepository extends AbstractRepository implements IFileRepository {
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
         try {
-            $name = basename($uri->getIdentifier());
-            $path = substr($uri->getIdentifier(), 0, strpos($uri->getIdentifier(), $name));
 
-            $sql = "select 
+            $path = $uri->getIdentifier();
+
+            $sql = "SELECT 
                         `id`
                         , `name`
                         , `path`
@@ -223,9 +223,9 @@ class FileRepository extends AbstractRepository implements IFileRepository {
                         , `size`
                         , `user_id`
                         , `create_ts`
-                 from `file`
-                    where `path` = :path
-                    and `name` = :name
+                        , `directory`
+                 FROM `file`
+                    WHERE `path` = :path
                  ";
 
             $statement = parent::prepareStatement($sql);
@@ -235,7 +235,6 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             }
 
             $statement->bindParam("path", $path);
-            $statement->bindParam("name", $name);
 
             $statement->execute();
 
@@ -250,11 +249,12 @@ class FileRepository extends AbstractRepository implements IFileRepository {
                 $size      = $row[6];
                 $userId    = $row[7];
                 $createTs  = $row[8];
+                $directory = $row[9];
 
                 $file = new File();
                 $file->setId((int) $id);
                 $file->setName($name);
-                $file->setDirectory($path);
+                $file->setDirectory($directory);
                 $file->setMimeType($mimeType);
                 $file->setHash($hash);
                 $file->setExtension($extension);

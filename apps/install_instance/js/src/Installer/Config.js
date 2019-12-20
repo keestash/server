@@ -76,7 +76,6 @@ export class Config extends Base {
                     , function (x, y, z) {
                         const object = JSON.parse(x);
 
-                        console.log(object);
                         if (RESPONSE_CODE_OK in object) {
                             _this.parent.remove().fadeOut(3000);
                             _this.parent.append(strings.updated);

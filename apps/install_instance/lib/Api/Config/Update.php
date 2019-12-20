@@ -29,6 +29,7 @@ use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\InstallerService;
 use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\L10N\IL10N;
 use PDO;
 
@@ -46,8 +47,9 @@ class Update extends AbstractApi {
     public function __construct(
         IL10N $l10n
         , InstallerService $installerService
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
         $this->installerService = $installerService;
     }

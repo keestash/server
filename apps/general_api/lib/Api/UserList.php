@@ -27,6 +27,7 @@ use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -48,8 +49,9 @@ class UserList extends AbstractApi {
         , FileService $fileService
         , RawFileService $rawFileService
         , FileManager $fileManager
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
         $this->userRepository = $userRepository;
         $this->rawFileService = $rawFileService;

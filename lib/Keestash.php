@@ -33,12 +33,12 @@ use Keestash\Core\Manager\RouterManager\Router\APIRouter;
 use Keestash\Core\Manager\RouterManager\Router\Helper as RouterHelper;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\RouterManager;
-use Keestash\Core\Manager\SessionManager\UserSessionManager;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use Keestash\Core\Service\HTTPService;
+use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\System\Installation\LockHandler;
@@ -48,6 +48,7 @@ use Keestash\View\Navigation\Navigation;
 use Keestash\View\Navigation\Part;
 use KSP\Api\IResponse;
 use KSP\App\IApp;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\View\ActionBar\IActionBar;
@@ -79,14 +80,15 @@ class Keestash {
         Keestash::$mode = Keestash::MODE_WEB;
         Keestash::initRequest();
 
-        /** @var UserSessionManager $sessionManager */
-        $sessionManager = self::$server->query(UserSessionManager::class);
+        /** @var PersistenceService $persistenceService */
+        $persistenceService = Keestash::getServer()->query(PersistenceService::class);
+        $persisted          = $persistenceService->isPersisted("user_id");
+
         /** @var HTTPRouter $router */
         $router = Keestash::getServer()->getHTTPRouter();
 
-        if ($sessionManager->isUserLoggedIn() || $router->isPublicRoute()) {
+        if (true === $persisted || $router->isPublicRoute()) {
             $router->route(null);
-            $sessionManager->updateTimestamp();
         } else {
             $router->routeTo("login");
         }
@@ -213,14 +215,11 @@ class Keestash {
             )
         );
 
-        $path = $fileService->getDefaultProfileImage();
-        // TODO make better ?!
-        if (null !== $file) {
-            $path = $file->getFullPath();
+        if (null === $file) {
+            $file = $fileService->defaultProfileImage();
         }
 
-        $userImage = $rawFileService->stringToBase64($path);
-
+        $userImage = $rawFileService->stringToBase64($file->getFullPath());
         self::$server->getTemplateManager()->replace("navigation.html",
             [
                 "appName"     => $legacy->getVendor()->get("name")
@@ -289,7 +288,7 @@ class Keestash {
             return;
         }
 
-        /** @var HTTPService $httpService */
+        /** @var \Keestash\Core\Service\HTTP\HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
 
         if ((null === $instanceHash || null === $instanceId)) {
@@ -689,6 +688,7 @@ class Keestash {
     public static function requestApi(): void {
         Keestash::$mode = Keestash::MODE_API;
         Keestash::initRequest();
+
         /** @var APIRouter $router */
         $router    = Keestash::getServer()->getRouterManager()->get(RouterManager::API_ROUTER);
         $parameter = $router->getRequiredParameter();

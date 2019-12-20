@@ -21,10 +21,12 @@ declare(strict_types=1);
 
 namespace Keestash\Api;
 
+use Keestash;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
 use KSP\Api\IApi;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Permission\IPermission;
 use KSP\L10N\IL10N;
 
@@ -34,8 +36,12 @@ abstract class AbstractApi implements IApi {
     private $permission = null;
     private $translator = null;
     private $parameters = null;
+    private $token      = null;
 
-    public function __construct(IL10N $l10n) {
+    public function __construct(
+        IL10N $l10n
+        , ?IToken $token = null
+    ) {
         $defaultResponse = $this->createResponse(
             IResponse::RESPONSE_CODE_NOT_OK
             , [
@@ -46,6 +52,7 @@ abstract class AbstractApi implements IApi {
         $this->response   = $defaultResponse;
         $this->translator = $l10n;
         $this->parameters = [];
+        $this->token      = $token;
     }
 
     public function getResponse(): IResponse {
@@ -74,6 +81,10 @@ abstract class AbstractApi implements IApi {
 
     protected function getParameters(): array {
         return $this->parameters;
+    }
+
+    protected function getToken(): ?IToken {
+        return $this->token;
     }
 
     protected function createResponse(int $code, array $messages): IResponse {

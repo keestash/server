@@ -24,46 +24,48 @@ namespace KSA\InstallInstance\Api\EndUpdate;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\RouterManager\Router\Helper;
-use Keestash\Core\Manager\SessionManager\UserSessionManager;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\Service\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
 class EndUpdate extends AbstractApi {
 
-    private $installerService = null;
-    private $lockHandler      = null;
-    private $sessionManager   = null;
-    private $fileRepository   = null;
-    private $fileService      = null;
-    private $userService      = null;
-    private $userRepository   = null;
+    private $installerService   = null;
+    private $lockHandler        = null;
+    private $fileRepository     = null;
+    private $fileService        = null;
+    private $userService        = null;
+    private $userRepository     = null;
+    private $persistenceService = null;
 
     public function __construct(
         IL10N $l10n
         , InstallerService $installerService
         , LockHandler $lockHandler
-        , UserSessionManager $sessionManager
         , IFileRepository $fileRepository
         , FileService $fileService
         , UserService $userService
         , IUserRepository $userRepository
+        , PersistenceService $persistenceService
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
-        $this->installerService = $installerService;
-        $this->lockHandler      = $lockHandler;
-        $this->sessionManager   = $sessionManager;
-        $this->fileRepository   = $fileRepository;
-        $this->fileService      = $fileService;
-        $this->userService      = $userService;
-        $this->userRepository   = $userRepository;
+        $this->installerService   = $installerService;
+        $this->lockHandler        = $lockHandler;
+        $this->fileRepository     = $fileRepository;
+        $this->fileService        = $fileService;
+        $this->userService        = $userService;
+        $this->userRepository     = $userRepository;
+        $this->persistenceService = $persistenceService;
     }
 
     public function onCreate(array $parameters): void {
@@ -106,7 +108,7 @@ class EndUpdate extends AbstractApi {
         }
 
         $this->lockHandler->unlock();
-        $this->sessionManager->killAll();
+        $this->persistenceService->killAll();
         $systemUser = $this->userService->getSystemUser();
         $this->userRepository->insert(
             $systemUser

@@ -27,6 +27,7 @@ use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use doganoo\PHPUtil\HTTP\Session;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
@@ -36,6 +37,7 @@ use Keestash\Core\Encryption\Base\BaseEncryption;
 use Keestash\Core\Encryption\Base\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
+use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
 use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
@@ -49,7 +51,6 @@ use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
-use Keestash\Core\Manager\SessionManager\UserSessionManager;
 use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
@@ -64,8 +65,10 @@ use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\DateTimeService;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\PublicFile\PublicFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use Keestash\Core\Service\HTTPService;
+use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\Service\Log\LoggerService;
 use Keestash\Core\Service\MaintenanceService;
@@ -84,6 +87,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
+use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\HookManager\IHookManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
@@ -104,7 +108,6 @@ use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
 use SessionHandlerInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use xobotyi\MimeType;
 
@@ -297,17 +300,14 @@ class Server {
             );
         });
 
-        $this->register(UserSessionManager::class, function () {
-            return new UserSessionManager(
-                new \doganoo\PHPUtil\HTTP\Session()
-                , $this->query(ConfigService::class)
-            );
-        });
-
         $this->register(ISessionManager::class, function () {
             return new SessionManager(
                 $this->query(Session::class)
             );
+        });
+
+        $this->register(ICookieManager::class, function () {
+            return new CookieManager();
         });
 
         $this->register(ISessionRepository::class, function () {
@@ -471,6 +471,17 @@ class Server {
             );
         });
 
+        $this->register(PersistenceService::class, function () {
+            return new PersistenceService(
+                $this->query(ISessionManager::class)
+                , $this->query(ICookieManager::class)
+            );
+        });
+
+        $this->register(PublicFileService::class, function () {
+            return new PublicFileService();
+        });
+
     }
 
     public function register(string $name, Closure $closure): bool {
@@ -512,12 +523,14 @@ class Server {
     }
 
     public function getUserFromSession(): ?IUser {
-        /** @var UserSessionManager $sessionManager */
-        $sessionManager = $this->query(UserSessionManager::class);
+        /** @var PersistenceService $persistenceService */
+        $persistenceService = $this->query(PersistenceService::class);
+        $userId             = $persistenceService->getValue("user_id", null);
+
+        if (null === $userId) return null;
+
         /** @var IUserRepository $userManager */
         $userManager = $this->query(IUserRepository::class);
-        $userId      = $sessionManager->getUser();
-        if (null === $userId) return null;
         return $userManager->getUserById($userId);
     }
 

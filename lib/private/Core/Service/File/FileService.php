@@ -52,7 +52,7 @@ class FileService {
     public function defaultProfileImage(): IFile {
         $dir  = Keestash::getServer()->getAssetRoot() . "/img/";
         $dir  = str_replace("//", "/", $dir);
-        $path = "$dir/profile-picture.PNG";
+        $path = "$dir/profile-picture.png";
 
         $file = new File();
         $file->setContent(
@@ -63,8 +63,7 @@ class FileService {
         $file->setExtension(IExtension::PNG);
         $file->setHash(md5_file($path));
         $file->setMimeType($this->rawFileService->getMimeType($path));
-        $file->setName("profile-picture.PNG");
-//        $file->setOwner();
+        $file->setName("profile-picture");
         $file->setSize(filesize($path));
         return $file;
     }
@@ -78,14 +77,14 @@ class FileService {
     public function getProfileImagePath(?IUser $user): string {
 
         if (null === $user) {
-            return $this->getDefaultProfileImage();
+            return $this->defaultProfileImage()->getFullPath();
         }
 
         $imagePath = $this->getProfileImage($user);
         $imagePath = realpath($imagePath);
 
         if (false === $imagePath) {
-            return $this->getDefaultProfileImage();
+            return $this->defaultProfileImage()->getFullPath();
         }
 
         return $imagePath;

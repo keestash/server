@@ -32,6 +32,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\Account\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Permission\IPermission;
@@ -59,6 +60,7 @@ class UpdateProfileImage extends AbstractApi {
         , IPermissionRepository $permissionManager
         , RawFileService $rawFileService
         , FileService $fileService
+        , ?IToken $token = null
     ) {
         $this->l10n              = $l10n;
         $this->userManager       = $userManager;
@@ -67,7 +69,7 @@ class UpdateProfileImage extends AbstractApi {
         $this->rawFileService    = $rawFileService;
         $this->fileService       = $fileService;
 
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
     }
 
     public function onCreate(array $parameters): void {

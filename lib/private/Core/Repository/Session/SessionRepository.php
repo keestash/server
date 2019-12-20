@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Session;
 
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Repository\Session\ISessionRepository;
@@ -38,21 +37,15 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
         $sql       = "SELECT `data` FROM `session` WHERE `id` = :id";
         $statement = parent::prepareStatement($sql);
 
-        FileLogger::debug(__METHOD__);
         if (null === $statement) return null;
-        FileLogger::debug(__METHOD__);
         $statement->bindParam("id", $id);
         $executed = $statement->execute();
-        FileLogger::debug(__METHOD__);
 
         if (false === $executed) return null;
-        FileLogger::debug(__METHOD__);
         if (true === $this->hasErrors($statement->errorCode())) return null;
-        FileLogger::debug(__METHOD__);
 
         $row  = $statement->fetch(PDO::FETCH_BOTH);
         $data = $row["data"];
-        FileLogger::debug((string) $data);
         return (string) $data;
     }
 

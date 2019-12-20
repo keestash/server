@@ -21,22 +21,27 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
+use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\LoginResponse;
 use Keestash\App\Helper;
 use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Manager\SessionManager\SessionManager;
-use Keestash\Core\Manager\SessionManager\UserSessionManager;
+use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\UserService;
 use KSA\Login\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
 class LoginService extends AbstractApi {
+
+    private const DEFAULT_USER_LIFETIME = 60 * 60;
 
     /** @var IUserRepository|null $userManager */
     private $userManager = null;
@@ -46,33 +51,38 @@ class LoginService extends AbstractApi {
     private $translator = null;
     /** @var null|UserService $userService */
     private $userService = null;
-    /** @var null|SessionManager $sessionManager */
-    private $sessionManager = null;
     /** @var null|ITokenRepository $tokenManager */
     private $tokenManager = null;
     /** @var null|TokenService $tokenService */
     private $tokenService = null;
     /** @var null|IPermissionRepository $permissionManager */
     private $permissionManager = null;
+    /** @var PersistenceService $persistenceService */
+    private $persistenceService = null;
+    /** @var ConfigService $configService */
+    private $configService = null;
 
     public function __construct(
         IUserRepository $userManager
         , IL10N $translator
         , UserService $userService
-        , UserSessionManager $sessionManager
         , ITokenRepository $tokenManager
         , TokenService $tokenService
         , IPermissionRepository $permissionManager
+        , PersistenceService $persistenceService
+        , ConfigService $configService
+        , ?IToken $token = null
     ) {
-        $this->userManager       = $userManager;
-        $this->translator        = $translator;
-        $this->userService       = $userService;
-        $this->sessionManager    = $sessionManager;
-        $this->tokenManager      = $tokenManager;
-        $this->tokenService      = $tokenService;
-        $this->permissionManager = $permissionManager;
+        $this->userManager        = $userManager;
+        $this->translator         = $translator;
+        $this->userService        = $userService;
+        $this->tokenManager       = $tokenManager;
+        $this->tokenService       = $tokenService;
+        $this->permissionManager  = $permissionManager;
+        $this->persistenceService = $persistenceService;
+        $this->configService      = $configService;
 
-        parent::__construct($translator);
+        parent::__construct($translator, $token);
     }
 
     public function onCreate(array $parameters): void {
@@ -117,17 +127,30 @@ class LoginService extends AbstractApi {
                         , "routeTo" => Helper::getDefaultRoute()
                     ]
                 );
+
                 $response->addHeader(
                     "api_token"
                     , $token->getValue()
                 );
+
                 $response->addHeader(
                     'user_hash'
                     , $user->getHash()
                 );
+
                 $this->tokenManager->add($token);
-                $this->sessionManager->setUserId($user->getId());
-                $this->sessionManager->updateTimestamp();
+
+                $expireTs = DateTimeUtil::getUnixTimestamp() +
+                    $this->configService->getValue(
+                        "user_lifetime"
+                        , (string) LoginService::DEFAULT_USER_LIFETIME
+                    );
+                $this->persistenceService->setPersistenceValue(
+                    "user_id"
+                    , (string) $user->getId()
+                    , (int) $expireTs
+                );
+
             }
         }
 

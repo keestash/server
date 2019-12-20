@@ -30,6 +30,7 @@ use Keestash\Core\Service\EmailService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -53,8 +54,9 @@ class ForgotPassword extends AbstractApi {
         , ITemplateManager $templateManager
         , Legacy $legacy
         , IPermissionRepository $permissionManager
+        , ?IToken $token = null
     ) {
-        parent::__construct($l10n);
+        parent::__construct($l10n, $token);
 
         $this->translator        = $l10n;
         $this->userManager       = $userManager;
