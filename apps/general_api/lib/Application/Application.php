@@ -23,7 +23,7 @@ namespace KSA\GeneralApi\Application;
 
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\general_api\lib\Api\UserList;
-use KSA\GeneralApi\Api\Icon\File;
+use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Api\MinimumCredential;
 
 /**
