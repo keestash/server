@@ -84,6 +84,7 @@ use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
@@ -207,13 +208,16 @@ class Server {
         });
 
         $this->register(Server::ALLOWED_IMAGE_MIME_TYPES, function () {
-            $png = MimeType::getExtensionMimes("png");
-            $jpg = MimeType::getExtensionMimes("jpg");
+            $png = MimeType::getExtensionMimes(IExtension::PNG);
+            $jpg = MimeType::getExtensionMimes(IExtension::JPG);
+            $pdf = MimeType::getExtensionMimes(IExtension::PDF);
 
             return array_merge(
                 $png
                 , $jpg
+                , $pdf
             );
+
         });
         $this->register(IRouterManager::class, function () {
             $routerManager     = new RouterManager(null, null);
@@ -689,6 +693,10 @@ class Server {
 
     public function getBreadCrumbManager(): IBreadCrumbManager {
         return $this->query(IBreadCrumbManager::class);
+    }
+
+    public function wipeCache(): void {
+        $this->userHashes = null;
     }
 
 }

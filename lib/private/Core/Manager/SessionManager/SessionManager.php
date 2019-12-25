@@ -30,6 +30,10 @@ class SessionManager implements ISessionManager {
 
     public function __construct(Session $session) {
         $this->session = $session;
+        ini_set(
+            ISessionManager::SESSION_GC_MAX_LIFETIME_NAME
+            , (string) ISessionManager::SESSION_GC_MAX_LIFETIME
+        );
     }
 
     /**

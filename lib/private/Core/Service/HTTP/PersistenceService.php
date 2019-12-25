@@ -71,9 +71,9 @@ class PersistenceService {
     }
 
     public function isPersisted(string $key): bool {
-        $sessionPersisted = $this->getSessionValue($key, 'false');
-        $cookiePersisted  = $this->getCookieValue($key, 'false');
-        return 'false' !== $sessionPersisted || 'false' !== $cookiePersisted;
+        $sessionPersisted = $this->getSessionValue($key, null);
+        $cookiePersisted  = $this->getCookieValue($key, null);
+        return null !== $sessionPersisted || null !== $cookiePersisted;
     }
 
     public function killAll(): void {

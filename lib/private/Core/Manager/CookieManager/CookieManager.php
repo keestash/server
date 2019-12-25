@@ -55,7 +55,6 @@ class CookieManager implements ICookieManager {
             $this->kill($key);
         }
         $_COOKIE = [];
-        unset($_COOKIE);
     }
 
 }

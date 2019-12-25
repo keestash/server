@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\File\PublicFile;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\URI\URL\URL;
 use KSP\Core\DTO\IToken;
@@ -34,15 +33,22 @@ use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
  */
 class PublicFileService {
 
-    public function getPublicURL(IUser $user, ?IToken $token = null): ?IUniformResourceLocator {
-        FileLogger::debug("token is null: " . (null === $token));
+    public function getPublicProfilePictureURL(IUser $user, ?IToken $token = null): ?IUniformResourceLocator {
         if (null === $token) return null;
         $baseURL    = Keestash::getBaseURL(true, false);
         $identifier = "$baseURL/users/profile_pictures/{$token->getValue()}/{$user->getHash()}/";
 
         $url = new URL();
         $url->setIdentifier($identifier);
-        FileLogger::debug("identifier: $identifier");
+        return $url;
+    }
+
+    public function getPublicIconURL(string $extension): ?IUniformResourceLocator {
+        $baseURL    = Keestash::getBaseURL(true, false);
+        $identifier = "$baseURL/icon/file/get/$extension/";
+
+        $url = new URL();
+        $url->setIdentifier($identifier);
         return $url;
     }
 

@@ -25,6 +25,7 @@ use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
+use Keestash;
 use Keestash\Core\DTO\User;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
@@ -266,6 +267,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $lastInsertId = (int) parent::getLastInsertId();
 
         if (0 === $lastInsertId) return null;
+
         return $lastInsertId;
 
     }

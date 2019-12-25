@@ -23,6 +23,7 @@ namespace KSA\GeneralApi\Application;
 
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\general_api\lib\Api\UserList;
+use KSA\GeneralApi\Api\Icon\File;
 use KSA\GeneralApi\Api\MinimumCredential;
 
 /**
@@ -33,6 +34,7 @@ class Application extends \Keestash\App\Application {
 
     public const PASSWORD_REQUIREMENTS = "password_requirements/";
     public const ALL_USERS             = "users/all/{type}/";
+    public const FILE_ICONS            = "icon/file/get/{extension}/";
 
 
     public function register(): void {
@@ -49,8 +51,19 @@ class Application extends \Keestash\App\Application {
             , [RouterManager::GET]
         );
 
+
+        $this->registerApiRoute(
+            Application::FILE_ICONS
+            , File::class
+            , [RouterManager::GET]
+        );
+
         parent::registerPublicApiRoute(
             Application::PASSWORD_REQUIREMENTS
+        );
+
+        parent::registerPublicApiRoute(
+            Application::FILE_ICONS
         );
 
     }

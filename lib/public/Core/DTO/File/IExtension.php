@@ -26,5 +26,7 @@ use KSP\Core\DTO\IObject;
 interface IExtension extends IObject {
 
     public const PNG = "png";
+    public const JPG = "jpg";
+    public const PDF = "pdf";
 
 }
