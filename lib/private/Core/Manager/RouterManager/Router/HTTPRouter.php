@@ -91,8 +91,6 @@ class HTTPRouter extends Router {
                 $controller->onCreate(
                     $methodParameters
                 );
-                $onCreate = $instance->getMethod("onCreate");
-                $onCreate->invokeArgs($controller, $methodParameters);
 
                 $hasPermission = parent::hasPermission(
                     $controller->getPermission()
