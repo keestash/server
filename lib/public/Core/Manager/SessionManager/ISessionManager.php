@@ -25,6 +25,9 @@ use KSP\Core\Manager\IManager;
 
 interface ISessionManager extends IManager {
 
+    public const SESSION_GC_MAX_LIFETIME      = 3600;
+    public const SESSION_GC_MAX_LIFETIME_NAME = "session.gc_maxlifetime";
+
     /**
      * @param string $name
      * @param string $value

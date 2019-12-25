@@ -74,8 +74,8 @@ class UpdateProfileImage extends AbstractApi {
 
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
-        $userId           = $params["user_id"] ?? null;
-        $this->user       = $this->userManager->getUserById((string) $userId);
+        $userId           = $this->parameters["user_id"] ?? null;
+        $this->user       = $this->userManager->getUserById($userId);
 
         parent::setPermission(
             $this->preparePermission($this->user)
@@ -110,7 +110,7 @@ class UpdateProfileImage extends AbstractApi {
             parent::setResponse(
                 $this->prepareResponse(
                     IResponse::RESPONSE_CODE_NOT_OK
-                    , "no image fiven"
+                    , "no image given"
                 )
             );
             return;
@@ -129,7 +129,7 @@ class UpdateProfileImage extends AbstractApi {
             return;
         }
 
-        $name = $this->fileService->getProfileImageName($this->user);
+        $name     = $this->fileService->getProfileImageName($this->user);
         $tmppName = sys_get_temp_dir() . $name;
         $put      = @file_put_contents($tmppName, $raw);
 

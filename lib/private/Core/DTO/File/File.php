@@ -75,6 +75,7 @@ class File implements IFile {
         $name      = $this->getName();
         $dir       = $this->getDirectory();
         $extension = $this->getExtension();
+
         $path      = "$dir/$name.$extension";
         $path      = str_replace("//", "/", $path);
         return $path;

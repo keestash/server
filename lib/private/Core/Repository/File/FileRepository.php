@@ -144,13 +144,13 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $sql = "select 
                         `id`
                         , `name`
-                        , `path`
                         , `mime_type`
                         , `hash`
                         , `extension`
                         , `size`
                         , `user_id`
                         , `create_ts`
+                        , `directory`
                  from `file`
                     where `id` = :id
                  ";
@@ -168,18 +168,18 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
             $id        = $row[0];
             $name      = $row[1];
-            $path      = $row[2];
-            $mimeType  = $row[3];
-            $hash      = $row[4];
-            $extension = $row[5];
-            $size      = $row[6];
-            $userId    = $row[7];
-            $createTs  = $row[8];
+            $mimeType  = $row[2];
+            $hash      = $row[3];
+            $extension = $row[4];
+            $size      = $row[5];
+            $userId    = $row[6];
+            $createTs  = $row[7];
+            $directory = $row[8];
 
             $file = new File();
             $file->setId((int) $id);
             $file->setName($name);
-            $file->setDirectory($path);
+            $file->setDirectory($directory);
             $file->setMimeType($mimeType);
             $file->setHash($hash);
             $file->setExtension($extension);
