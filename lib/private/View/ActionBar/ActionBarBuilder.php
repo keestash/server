@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\View\ActionBar;
 
-
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use Exception;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarElement;
 
@@ -41,7 +41,7 @@ class ActionBarBuilder {
             if ($argument instanceof IActionBar) {
                 $this->actionBar = $argument;
             } else {
-                throw new \Exception("no arg");
+                throw new Exception("no arg");
             }
         }
 
