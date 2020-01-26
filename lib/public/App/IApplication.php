@@ -21,6 +21,14 @@ declare(strict_types=1);
 
 namespace KSP\App;
 
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+
 interface IApplication {
+
+    public function __construct(IApp $app);
+
+    public function register(): void;
+
+    public function getFrontendTemplates(): HashTable;
 
 }

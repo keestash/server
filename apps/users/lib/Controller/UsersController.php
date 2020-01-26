@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Users\Controller;
 
 use Keestash;
+use Keestash\Core\Permission\PermissionFactory;
 use Keestash\View\Navigation\Part;
 use KSA\Users\Application\Application;
 use KSP\Core\Controller\AppController;
@@ -61,15 +62,9 @@ class UsersController extends AppController {
     }
 
     public function onCreate(...$params): void {
-        $routeName = $params[0];
-
-        if ($routeName === Application::USERS) {
-            $this->id = UsersController::ALL_USERS;
-            parent::setPermission(
-                $this->permissionManager->getPermission(Application::PERMISSION_USERS)
-            );
-        }
-
+        $this->setPermission(
+            PermissionFactory::getDefaultPermission()
+        );
     }
 
     public function create(): void {

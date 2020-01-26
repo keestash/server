@@ -1,9 +1,30 @@
+/**
+ * Keestash
+ *
+ * Copyright (C) <2019> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
-import Router from "../../../../../lib/js/src/Router";
 
 export class EndUpdate {
 
-    constructor(formula, routes) {
+    constructor(
+        formula
+        , routes
+        , router
+    ) {
         this.allEvents = {
             "config_data": false
             , "writable_dirs": false
@@ -11,6 +32,7 @@ export class EndUpdate {
         };
         this.button = $("#ii__main__button");
         this.formula = formula;
+        this.router = router;
         this.routes = routes;
     }
 
@@ -63,9 +85,8 @@ export class EndUpdate {
                             console.log(object);
 
                             if (RESPONSE_CODE_OK in object) {
-                                const router = new Router();
                                 const routeTo = object[RESPONSE_CODE_OK]['messages']['route_to'];
-                                router.route(routeTo);
+                                _this.router.route(routeTo);
                             }
                         }
                         , function (x, y, z) {

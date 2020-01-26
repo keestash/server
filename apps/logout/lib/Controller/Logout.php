@@ -21,12 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\Logout\Controller;
 
-use doganoo\PHPUtil\HTTP\Session;
 use Keestash;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
 use KSA\Logout\Application\Application;
 use KSP\Core\Controller\StaticAppController;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -63,7 +62,7 @@ class Logout extends StaticAppController {
     public function afterCreate(): void {
         Keestash::getServer()
             ->getRouterManager()
-            ->get(RouterManager::HTTP_ROUTER)
+            ->get(IRouterManager::HTTP_ROUTER)
             ->routeTo(\KSA\Login\Application\Application::LOGIN);
     }
 

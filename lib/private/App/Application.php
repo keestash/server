@@ -21,24 +21,22 @@ declare(strict_types=1);
 
 namespace Keestash\App;
 
-use Closure;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSP\App\IApp;
 use KSP\App\IApplication;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\View\Navigation\Factory\NavigationFactory;
 
 abstract class Application implements IApplication {
 
-    private $app = null;
+    private $app               = null;
+    private $frontendTemplates = null;
 
     public function __construct(IApp $app) {
-        $this->app = $app;
-    }
-
-    protected function getApp(): IApp {
-        return $this->app;
+        $this->app               = $app;
+        $this->frontendTemplates = new HashTable();
     }
 
     public abstract function register(): void;
@@ -97,7 +95,7 @@ abstract class Application implements IApplication {
         if (Keestash::MODE_WEB !== Keestash::getMode()) return;
         Keestash::getServer()
             ->getRouterManager()
-            ->get(RouterManager::HTTP_ROUTER)
+            ->get(IRouterManager::HTTP_ROUTER)
             ->addRoute
             (
                 $name
@@ -112,7 +110,7 @@ abstract class Application implements IApplication {
         if (Keestash::MODE_API !== Keestash::getMode()) return;
         Keestash::getServer()
             ->getRouterManager()
-            ->get(RouterManager::API_ROUTER)
+            ->get(IRouterManager::API_ROUTER)
             ->addRoute(
                 $name
                 , ["controller" => $class]
@@ -122,20 +120,20 @@ abstract class Application implements IApplication {
 
     protected function registerPublicRoute(string $name): bool {
         if (Keestash::MODE_WEB !== Keestash::getMode()) return false;
-        return Keestash::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER)->registerPublicRoute($name);
+        return Keestash::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->registerPublicRoute($name);
     }
 
     protected function registerPublicApiRoute(string $name): bool {
         if (Keestash::MODE_API !== Keestash::getMode()) return false;
-        return Keestash::getServer()->getRouterManager()->get(RouterManager::API_ROUTER)->registerPublicRoute($name);
+        return Keestash::getServer()->getRouterManager()->get(IRouterManager::API_ROUTER)->registerPublicRoute($name);
     }
 
-    protected function registerService(string $name, Closure $closure): bool {
+    protected function addFrontendTemplate(string $name, string $value): bool {
+        return $this->frontendTemplates->add($name, $value);
+    }
 
-        return Keestash::getServer()->register(
-            $name
-            , $closure
-        );
+    public function getFrontendTemplates(): HashTable {
+        return $this->frontendTemplates;
     }
 
 }

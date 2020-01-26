@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Application;
 
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
 use KSA\InstallInstance\Controller\Controller;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends \Keestash\App\Application {
 
@@ -50,31 +50,31 @@ class Application extends \Keestash\App\Application {
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
             , Update::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
             , \KSA\InstallInstance\Api\DirsWritable\Get::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
             , Get::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
             , \KSA\InstallInstance\Api\DataDirs\Get::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
         parent::registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_END_UPDATE
             , EndUpdate::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerPublicRoute(

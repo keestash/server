@@ -29,13 +29,6 @@ use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class RouterManager implements IRouterManager {
 
-    public const GET  = "GET";
-    public const POST = "POST";
-    public const PUT  = "PUT";
-
-    public const HTTP_ROUTER = "router.http";
-    public const API_ROUTER  = "router.api";
-
     private $routers = null;
 
     public function __construct(?IBackend $backend, ?DateTimeService $dateTimeService = null) {

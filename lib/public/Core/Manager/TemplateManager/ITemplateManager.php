@@ -25,23 +25,11 @@ use KSP\Core\Manager\IManager;
 
 interface ITemplateManager extends IManager {
 
-    public function addStylesheet(string $href): void;
-
-    public function addScript(string $path, string $application): void;
-
-    public function addAppScript(string $path, string $route, string $application): void;
-
     public function addPath(string $path): void;
 
     public function render(string $name): string;
 
     public function replace(string $name, array $value): void;
-
-    public function getStylesheets(): array;
-
-    public function getScripts(): array;
-
-    public function getAppScripts(?string $route): array;
 
     public function getRawTemplate(string $name): string;
 

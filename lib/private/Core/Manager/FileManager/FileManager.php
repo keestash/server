@@ -43,9 +43,7 @@ class FileManager implements IFileManager {
 
         $put = file_put_contents(
             $file->getFullPath()
-            , file_get_contents(
-                $file->getFullPath()
-            )
+            , $file->getContent()
         );
 
         chmod(
@@ -54,26 +52,27 @@ class FileManager implements IFileManager {
         );
 
         $added = $this->fileRepository->add($file);
+
         return true === $put && true === $added;
 
     }
 
     public function verifyFile(IFile $file): bool {
-
         if ($file->getSize() <= 0) return false;
 
-        $allowedImages = Keestash::getServer()->query(Server::ALLOWED_IMAGE_MIME_TYPES);
-        $f             = finfo_open();
-        $content       = file_get_contents($file->getFullPath());
-        $mimeType      = finfo_buffer(
+        return true;
+
+        // TODO mime type returns always stream/octet - fix it!
+
+        $allowedMimeTypes = Keestash::getServer()->query(Server::ALLOWED_MIME_TYPES);
+        $f                = finfo_open();
+        $mimeType         = finfo_buffer(
             $f
-            , $content
+            , $file->getContent()
             , FILEINFO_MIME_TYPE
         );
 
-        if (!in_array($mimeType, $allowedImages)) return false;
-
-        return true;
+        return true === in_array($mimeType, $allowedMimeTypes);
 
     }
 

@@ -39,7 +39,7 @@ class GetText implements IL10N {
         return $text;
     }
 
-    public function geKSAnguageCode(): string {
+    public function getLanguageCode(): string {
         return "de-DE";
     }
 

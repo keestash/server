@@ -22,5 +22,6 @@ ij_php_align_phpdoc_param_names = true
 ij_php_import_sorting = alphabetic
 ij_php_blank_lines_after_class_header = 1
 ij_php_blank_lines_before_class_end = 1
-ij_php_else_if_style = combine
+ij_php_else_if_style = as_is
+ij_php_else_on_new_line = false
 ij_any_else_on_new_line = false

@@ -133,7 +133,6 @@ class InstanceDB {
         $sql       = 'DELETE FROM `instance` WHERE `name` = :the_name';
         $statement = $this->database->prepare($sql);
         $statement->bindValue(':the_name', $name);
-        FileLogger::debug(json_encode($statement->errorInfo()));
         $statement->execute();
         return $statement->rowCount() > 0;
     }

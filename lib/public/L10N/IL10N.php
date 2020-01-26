@@ -27,7 +27,7 @@ interface IL10N {
 
     public function localize(string $text): string;
 
-    public function geKSAnguageCode(): string;
+    public function getLanguageCode(): string;
 
     public function getLocaleCode(): string;
 

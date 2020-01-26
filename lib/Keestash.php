@@ -32,7 +32,6 @@ use Keestash\Core\Manager\RouterManager\Route;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
 use Keestash\Core\Manager\RouterManager\Router\Helper as RouterHelper;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\File\FileService;
@@ -42,14 +41,15 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\System\Installation\LockHandler;
+use Keestash\Exception\KSException;
 use Keestash\Server;
 use Keestash\View\Navigation\Entry;
 use Keestash\View\Navigation\Navigation;
 use Keestash\View\Navigation\Part;
 use KSP\Api\IResponse;
 use KSP\App\IApp;
-use KSP\Core\DTO\IToken;
 use KSP\Core\Manager\FileManager\IFileManager;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
@@ -96,6 +96,35 @@ class Keestash {
         Keestash::renderTemplates();
         Keestash::flushOutput();
         return true;
+    }
+
+    public static function requestApi(): void {
+        Keestash::$mode = Keestash::MODE_API;
+        Keestash::initRequest();
+        Keestash::renderTemplates();
+
+        /** @var APIRouter $router */
+        $router    = Keestash::getServer()->getRouterManager()->get(IRouterManager::API_ROUTER);
+        $parameter = $router->getRequiredParameter();
+
+        /** @var Verification $verification */
+        $verification = self::getServer()->query(Verification::class);
+        $token        = $verification->verifyToken($parameter);
+
+        if (null !== $token || $router->isPublicRoute()) {
+            $router->route($token);
+        } else {
+
+            self::getServer()->getResponseManager()->add(
+                new SessionExpired(
+                    Keestash::getServer()->getL10N()
+                )
+            );
+
+        }
+
+        Keestash::validateApi();
+        Keestash::flushOutput();
     }
 
     private static function initRequest() {
@@ -179,18 +208,48 @@ class Keestash {
         return self::$server;
     }
 
+    /**
+     * TODO exclude frontend paths in sub folder 'frontend'
+     */
     private static function loadTemplates() {
-        $appRoot = self::getAppRoot();
-        if (Keestash::getMode() === Keestash::MODE_WEB) {
-            $templatePath = $appRoot . "/template/app";
-        } else {
-            if (Keestash::MODE_API === Keestash::getMode()) {
+        $appRoot      = Keestash::getAppRoot();
+        $mode         = Keestash::getMode();
+        $templatePath = null;
+        $frontendPath = null;
+
+        Keestash::getServer()
+            ->getFrontendTemplateManager()
+            ->addPath(
+                realpath("$appRoot/template/app/frontend")
+            );
+
+        switch ($mode) {
+            case Keestash::MODE_WEB:
+                $templatePath = $appRoot . "/template/app";
+                $frontendPath = $templatePath . "/frontend";
+
+                Keestash::getServer()
+                    ->getTemplateManager()
+                    ->addPath($templatePath);
+
+                Keestash::getServer()
+                    ->getFrontendTemplateManager()
+                    ->addPath($frontendPath);
+
+                break;
+            case Keestash::MODE_API:
                 $templatePath = $appRoot . "/template/email";
-            } else {
-                return;
-            }
+
+                Keestash::getServer()
+                    ->getApiTemplateManager()
+                    ->addPath($templatePath);
+
+                break;
+            default:
+                throw new KSException();
         }
-        Keestash::getServer()->getTemplateManager()->addPath($templatePath);
+
+
     }
 
     public static function getMode(): int {
@@ -288,7 +347,7 @@ class Keestash {
             return;
         }
 
-        /** @var \Keestash\Core\Service\HTTP\HTTPService $httpService */
+        /** @var HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
 
         if ((null === $instanceHash || null === $instanceId)) {
@@ -398,7 +457,7 @@ class Keestash {
         if (false === $isMaintenance) return;
 
         /** @var HTTPRouter $router */
-        $router    = self::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER);
+        $router    = self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
         $routeName = $router->getRouteName();
         if ($routeName !== "maintenance") {
             $router->routeTo("maintenance");
@@ -538,14 +597,24 @@ class Keestash {
     }
 
     private static function renderTemplates() {
-        if (self::$mode === Keestash::MODE_API) return;
+        Keestash::renderWebTemplates();
+        Keestash::renderApiTemplates();
+    }
+
+    private static function renderApiTemplates() {
+        if (self::$mode !== Keestash::MODE_API) return;
+        Keestash::loadTemplates();
+    }
+
+    private static function renderWebTemplates() {
+        if (Keestash::getMode() !== Keestash::MODE_WEB) return;
         Keestash::loadTemplates();
         Keestash::initTemplates();
         Keestash::addTopNavigation();
 
         $legacy = self::getServer()->getLegacy();
 
-        if (!self::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER)->isPublicRoute()) {
+        if (!self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->isPublicRoute()) {
             self::$server->getTemplateManager()->replace("navigation.html",
                 [
                     "baseURL"    => self::getBaseURL()
@@ -564,7 +633,7 @@ class Keestash {
         $navigation = self::$server->getTemplateManager()->render("navigation.html");
         $appContent = self::$server->getTemplateManager()->render("app-content.html");
 
-        $routeName = self::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER)->getRouteName();
+        $routeName = self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteName();
 
         self::$server->getTemplateManager()->replace("head.html",
             [
@@ -574,8 +643,8 @@ class Keestash {
             ]);
 
         $head = self::$server->getTemplateManager()->render("head.html");
-        if (!self::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER)->isPublicRoute()) {
-            self::$server->getTemplateManager()->replace("app-navigation.html",
+        if (!self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->isPublicRoute()) {
+            self::$server->getTemplateManager()->replace(ITemplate::APP_NAVIGATION,
                 [
                     "appNavigation"                 => self::$server->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getAll()
                     , "hrefMain"                    => self::getBaseURL(true) . "/"
@@ -589,9 +658,9 @@ class Keestash {
                 ]
             );
         }
-        $appNavigation    = self::$server->getTemplateManager()->render("app-navigation.html");
-        $hasAppNavigation = (self::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER);
-        $noContext        = (self::getServer()->getRouterManager()->get(RouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
+        $appNavigation    = self::$server->getTemplateManager()->render(ITemplate::APP_NAVIGATION);
+        $hasAppNavigation = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER);
+        $noContext        = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
         $actionBar        = Keestash::renderActionBars(
             Keestash::getServer()->getActionBarManager()->get(IActionBarBag::ACTION_BAR_TOP)
         );
@@ -614,6 +683,8 @@ class Keestash {
                 , "appNavigationSize" => false === $hasAppNavigation ? "zero" : "two"
                 , "appContentSize"    => false === $hasAppNavigation ? "sixteen" : "fourteen"
                 , "hasAppNavigation"  => $hasAppNavigation
+                , "hasActionBars"     => Keestash::getServer()->getActionBarManager()->isVisible()
+                , "hasBreadcrumbs"    => Keestash::getServer()->getBreadCrumbManager()->isVisible()
             ]
         );
 
@@ -630,7 +701,7 @@ class Keestash {
         );
         $footer = self::$server->getTemplateManager()->render("footer.html");
 
-        self::$server->getTemplateManager()->replace(ITemplate::BODY_HTML,
+        self::$server->getTemplateManager()->replace(ITemplate::BODY,
             [
                 "navigation"  => $navigation
                 , "content"   => $content
@@ -639,12 +710,13 @@ class Keestash {
             ]
         );
 
-        $body = self::$server->getTemplateManager()->render(ITemplate::BODY_HTML);
+        $body = self::$server->getTemplateManager()->render(ITemplate::BODY);
 
         $partTemplate       = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::PART_TEMPLATE);
         $sideBar            = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::SIDE_BAR);
         $breadCrumbTemplate = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::BREADCRUMB);
-        self::$server->getTemplateManager()->replace(ITemplate::BASE_FILE_NAME,
+
+        self::$server->getTemplateManager()->replace(ITemplate::HTML,
             [
                 "head"                 => $head
                 , "host"               => Keestash::getBaseURL()
@@ -656,9 +728,10 @@ class Keestash {
                 , "breadcrumbTemplate" => $breadCrumbTemplate
             ]
         );
-        $html = self::$server->getTemplateManager()->render(ITemplate::BASE_FILE_NAME);
+        $html = self::$server->getTemplateManager()->render(ITemplate::HTML);
         echo $html;
     }
+
 
     private static function renderActionBars(IActionBarBag $actionBarBag): string {
         $rendered = "";
@@ -685,33 +758,6 @@ class Keestash {
         return str_replace("index.php", "api.php", $baseURL);
     }
 
-    public static function requestApi(): void {
-        Keestash::$mode = Keestash::MODE_API;
-        Keestash::initRequest();
-
-        /** @var APIRouter $router */
-        $router    = Keestash::getServer()->getRouterManager()->get(RouterManager::API_ROUTER);
-        $parameter = $router->getRequiredParameter();
-
-        /** @var Verification $verification */
-        $verification = self::getServer()->query(Verification::class);
-        $token        = $verification->verifyToken($parameter);
-
-        if (null !== $token || $router->isPublicRoute()) {
-            $router->route($token);
-        } else {
-
-            self::getServer()->getResponseManager()->add(
-                new SessionExpired(
-                    Keestash::getServer()->getL10N()
-                )
-            );
-
-        }
-
-        Keestash::validateApi();
-        Keestash::flushOutput();
-    }
 
     private static function validateApi() {
         $responses = self::$server->getResponseManager()->getResponses();

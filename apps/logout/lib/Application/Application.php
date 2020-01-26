@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace KSA\Logout\Application;
 
 use Keestash;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\Logout\Controller\Logout;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends Keestash\App\Application {
 
@@ -35,7 +35,7 @@ class Application extends Keestash\App\Application {
         parent::registerRoute(
             self::LOGOUT
             , Logout::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
         parent::registerPublicRoute(self::LOGOUT);

@@ -26,6 +26,24 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 
 interface ILoader {
 
+    public const APP_NAME_ACCOUNT          = "account";
+    public const APP_NAME_INSTALL          = "install";
+    public const APP_NAME_TNC              = "tnc";
+    public const APP_NAME_ABOUT            = "about";
+    public const APP_NAME_USERS            = "users";
+    public const APP_NAME_GENERAL_VIEW     = "general_view";
+    public const APP_NAME_LOGIN            = "login";
+    public const APP_NAME_MAINTENANCE      = "maintenance";
+    public const APP_NAME_PROMOTION        = "promotion";
+    public const APP_NAME_GENERAL_API      = "general_api";
+    public const APP_NAME_APPS             = "apps";
+    public const APP_NAME_LOGOUT           = "logout";
+    public const APP_NAME_INSTALL_INSTANCE = "install_instance";
+    public const APP_NAME_FORGOT_PASSWORD  = "forgot_password";
+    public const APP_NAME_REGISTER         = "register";
+
+    public const DIR_NAME_FRONTEND = "frontend";
+
     public function __construct(ClassLoader $classLoader, string $appRoot);
 
     public function loadApps(): void;

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\About\Application;
 
 use Keestash;
+use KSA\About\Controller\Controller;
 
 class Application extends Keestash\App\Application {
 

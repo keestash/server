@@ -29,7 +29,7 @@ use DateTime;
  *
  * TODO move to right place
  */
-interface IUser extends IObject {
+interface IUser extends IObject, IComparator {
 
     public const SYSTEM_USER_ID = 1;
 
@@ -45,7 +45,7 @@ interface IUser extends IObject {
 
     public function getFirstName(): string;
 
-    public function geKSAstName(): string;
+    public function getLastName(): string;
 
     public function getEmail(): string;
 
