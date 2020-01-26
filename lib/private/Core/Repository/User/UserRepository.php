@@ -245,7 +245,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $statement = parent::prepareStatement($sql);
 
         $firstName = $user->getFirstName();
-        $lastName  = $user->geKSAstName();
+        $lastName  = $user->getLastName();
         $name      = $user->getName();
         $email     = $user->getEmail();
         $phone     = $user->getPhone();
@@ -300,7 +300,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             }
 
             $firstName = $user->getFirstName();
-            $lastName  = $user->geKSAstName();
+            $lastName  = $user->getLastName();
             $name      = $user->getName();
             $email     = $user->getEmail();
             $phone     = $user->getPhone();

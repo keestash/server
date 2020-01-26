@@ -29,6 +29,7 @@ use KSP\Core\View\ActionBar\IActionBarBag;
 class ActionBarManager implements IActionBarManager {
 
     private $actionBarBag = null;
+    private $visible      = true;
 
     public function __construct() {
         $this->actionBarBag = new HashTable();
@@ -43,6 +44,14 @@ class ActionBarManager implements IActionBarManager {
 
         if (null === $bag) throw new Exception();
         return $bag;
+    }
+
+    public function setVisible(bool $visible): void {
+        $this->visible = $visible;
+    }
+
+    public function isVisible(): bool {
+        return true === $this->visible;
     }
 
 }

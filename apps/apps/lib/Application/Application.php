@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KSA\Apps\Application;
 
 use Keestash;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\Apps\Api\UpdateApp;
 use KSA\Apps\Controller\Controller;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends \Keestash\App\Application {
 
@@ -39,7 +39,7 @@ class Application extends \Keestash\App\Application {
         parent::registerApiRoute(
             Application::UPDATE_APPS
             , UpdateApp::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerRoute(Application::APPS, Controller::class);

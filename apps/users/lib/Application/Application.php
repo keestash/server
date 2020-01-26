@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KSA\Users\Application;
 
 use Keestash;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\Users\Api\ProfilePicture;
 use KSA\Users\Api\UsersAddController;
 use KSA\Users\Controller\UsersController;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends Keestash\App\Application {
 
@@ -46,13 +46,13 @@ class Application extends Keestash\App\Application {
         parent::registerRoute(
             Application::USERS_ADD
             , UsersAddController::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerApiRoute(
             Application::USERS_PROFILE_PICTURES
             , ProfilePicture::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
         parent::addJavascript(self::USERS);

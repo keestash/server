@@ -1,0 +1,8 @@
+<div class="ui breadcrumb" id="tl__breadcrumbs">
+    {% for key, value in bc %}
+        <a class="section" data-id="{{ value.getId() }}">{{ value.getName() }}</a>
+        {% if not loop.last %}
+            <i class="right angle icon divider"></i>
+        {% endif %}
+    {% endfor %}
+</div>

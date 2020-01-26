@@ -29,17 +29,17 @@ use KSP\Core\Repository\Token\ITokenRepository;
 
 class Verification {
 
-    /** @var ITokenRepository $tokenManager */
-    private $tokenManager = null;
+    /** @var ITokenRepository $tokenRepository */
+    private $tokenRepository = null;
     /** @var HashTable $userHashes */
     private $userHashes = null;
 
     public function __construct(
-        ITokenRepository $tokenManager
+        ITokenRepository $tokenRepository
         , ?HashTable $userHashes
     ) {
-        $this->tokenManager = $tokenManager;
-        $this->userHashes   = $userHashes;
+        $this->tokenRepository = $tokenRepository;
+        $this->userHashes      = $userHashes;
     }
 
     public function verifyToken(array $parameters): ?IToken {
@@ -53,7 +53,7 @@ class Verification {
         if (null === $userHash) return null;
 
         if (false === $this->userHashes->containsKey($userHash)) return null;
-        $token = $this->tokenManager->getByHash((string) $tokenString);
+        $token = $this->tokenRepository->getByHash((string) $tokenString);
 
         if (null === $token) return null;
         if ($token->getValue() !== $tokenString) return null;

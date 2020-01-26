@@ -30,4 +30,6 @@ interface IActionBarManager extends IManager {
 
     public function get(string $name): ?IActionBarBag;
 
+    public function isVisible(): bool;
+
 }

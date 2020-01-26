@@ -1,9 +1,29 @@
-import Formula from "../../../../lib/js/src/Formula";
-import AppStorage from "../../../../lib/js/src/AppStorage";
-import Router from "../../../../lib/js/src/Router";
-import modal from "../../../../lib/js/src/UI/modal";
-import Input from "../../../../lib/js/src/UI/Input";
-import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../lib/js/src/UI/ModalHandler";
+/**
+ * Keestash
+ *
+ * Copyright (C) <2019> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+import {Router} from "../../../../lib/js/src/Route/Router";
+import {Request} from "../../../../lib/js/src/Backend/Request";
+import {ConsoleLogger} from "../../../../lib/js/src/Log/ConsoleLogger";
+import {Routes} from "./Routes/Routes";
+import {Submit} from "./Login/Submit/Submit";
+import {Routes as GlobalRoutes} from "../../../../lib/js/src/Route/Routes";
+import {Host} from "../../../../lib/js/src/Backend/Host";
+import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
 
 (function () {
     if (!Keestash.Login) {
@@ -11,95 +31,35 @@ import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../lib/js/src/UI/
     }
 
     Keestash.Login = {
-        member: null,
-        handleSubmit: function () {
-            let that = this;
 
-            $("#login").submit(function (event) {
+        init: function () {
+            const router = new Router(
+                Keestash.Main.getHost()
+            );
+            const appStorage = new AppStorage();
 
-                event.preventDefault();
-                that.changeButtonState(false);
-                let formula = new Formula();
-                let appStorage = new AppStorage();
-
-                let user = $("#username").val();
-                let password = $("#password").val();
-                let router = new Router();
-
-                if (user === "") {
-                    Input.invalid("#username");
-                    that.changeButtonState(true);
-                    return;
-                }
-
-                if (password === "") {
-                    Input.invalid("#password");
-                    that.changeButtonState(true);
-                    return
-                }
-
-                let data = {
-                    'user': user
-                    , 'password': password
-                };
-
-                formula.post(
-                    Keestash.Main.getApiHost() + "/login/submit/"
-                    , data
-                    , function (html, status, xhr) {
-                        let object = JSON.parse(html);
-                        let result_object = null;
-
-                        if (RESPONSE_CODE_OK in object) {
-                            result_object = object[RESPONSE_CODE_OK];
-                            let routeTo = result_object['routeTo'];
-                            let token = xhr.getResponseHeader('api_token');
-                            let userHash = xhr.getResponseHeader('user_hash');
-
-
-                            appStorage.storeAPICredentials(
-                                token
-                                , userHash
-                            );
-
-                            appStorage.logCredentials();
-                            that.changeButtonState(true);
-                            router.routeTo(routeTo);
-                            return;
-                        } else if (RESPONSE_CODE_NOT_OK in object) {
-                            result_object = object[RESPONSE_CODE_NOT_OK];
-                            modal.miniModal(result_object['message']);
-                            appStorage.clearAPICredentials();
-                            that.changeButtonState(true);
-                        }
-
-                        if (result_object === null) {
-                            modal.miniModal("There was an error. Please try again or contact our support");
-                            appStorage.clearAPICredentials();
-                        }
-                        that.changeButtonState(true);
-                    }
-                    , function (html, status, xhr) {
-                        modal.miniModal("There was an error. Please try again or contact our support")
-                        appStorage.clearAPICredentials();
-                        that.changeButtonState(true);
-                    }
-                );
-            });
-        },
-        changeButtonState: function (enable) {
-
-            let button = $("#tl__login__button");
-
-            button.addClass("disabled");
-            if (true === enable) {
-                button.removeClass("disabled");
-            }
+            const submit = new Submit(
+                router
+                , new Request(
+                    new ConsoleLogger()
+                    , appStorage
+                    , new Router(
+                        Keestash.Main.getHost()
+                    )
+                )
+                , appStorage
+                , new Routes()
+                , new GlobalRoutes(
+                    new Host()
+                )
+            );
+            submit.handle();
         }
+
     }
 })();
 
 $(document).ready(function () {
-    Keestash.Login.handleSubmit();
+    Keestash.Login.init();
 });
 

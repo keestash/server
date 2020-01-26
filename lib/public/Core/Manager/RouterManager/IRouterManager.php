@@ -25,6 +25,14 @@ use KSP\Core\Manager\IManager;
 
 interface IRouterManager extends IManager {
 
+    public const DELETE      = "DELETE";
+    public const GET         = "GET";
+    public const POST        = "POST";
+    public const PUT         = "PUT";
+
+    public const API_ROUTER  = "router.api";
+    public const HTTP_ROUTER = "router.http";
+
     public function add(string $name, IRouter $router): bool;
 
     public function get(string $name): ?IRouter;

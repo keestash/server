@@ -31,4 +31,6 @@ interface IBreadCrumbManager {
 
     public function getAll(): ArrayList;
 
+    public function isVisible(): bool;
+
 }

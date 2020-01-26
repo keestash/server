@@ -21,10 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Application;
 
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\general_api\lib\Api\UserList;
-use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Api\MinimumCredential;
+use KSA\GeneralApi\Api\Template\GetAll;
+use KSA\GeneralApi\Api\Thumbnail\File;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 /**
  * Class Application
@@ -35,34 +36,39 @@ class Application extends \Keestash\App\Application {
     public const PASSWORD_REQUIREMENTS = "password_requirements/";
     public const ALL_USERS             = "users/all/{type}/";
     public const FILE_ICONS            = "icon/file/get/{extension}/";
-
+    public const FRONTEND_TEMPLATES    = "frontend_templates/all/";
 
     public function register(): void {
 
-        parent::registerApiRoute(
+        $this->registerApiRoute(
             Application::PASSWORD_REQUIREMENTS
             , MinimumCredential::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
-        parent::registerApiRoute(
+        $this->registerApiRoute(
             Application::ALL_USERS
             , UserList::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
+        $this->registerApiRoute(
+            Application::FRONTEND_TEMPLATES
+            , GetAll::class
+            , [IRouterManager::GET]
+        );
 
         $this->registerApiRoute(
             Application::FILE_ICONS
             , File::class
-            , [RouterManager::GET]
+            , [IRouterManager::GET]
         );
 
-        parent::registerPublicApiRoute(
+        $this->registerPublicApiRoute(
             Application::PASSWORD_REQUIREMENTS
         );
 
-        parent::registerPublicApiRoute(
+        $this->registerPublicApiRoute(
             Application::FILE_ICONS
         );
 

@@ -28,6 +28,7 @@ use KSP\Core\View\BreadCrumb\IBreadCrumb;
 class BreadCrumbManager implements IBreadCrumbManager {
 
     private $breadCrumbs = null;
+    private $visible     = true;
 
     public function __construct() {
         $this->breadCrumbs = new ArrayList();
@@ -39,6 +40,14 @@ class BreadCrumbManager implements IBreadCrumbManager {
 
     public function getAll(): ArrayList {
         return $this->breadCrumbs;
+    }
+
+    public function isVisible(): bool {
+        return $this->visible;
+    }
+
+    public function setVisible(bool $visible): void {
+        $this->visible = $visible;
     }
 
 }

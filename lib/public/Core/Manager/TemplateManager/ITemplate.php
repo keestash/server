@@ -23,12 +23,13 @@ namespace KSP\Core\Manager\TemplateManager;
 
 interface ITemplate {
 
-    public const BASE_FILE_NAME = "html.twig";
-    public const BREADCRUMB     = "breadcrumb.twig";
-    public const PART_TEMPLATE  = "part-template.twig";
     public const ACTION_BAR     = "actionbar.twig";
+    public const APP_NAVIGATION = "app-navigation.twig";
+    public const BODY           = "body.twig";
+    public const BREADCRUMB     = "breadcrumb.twig";
     public const CONTENT        = "content.twig";
+    public const HTML           = "html.twig";
     public const SIDE_BAR       = "side-bar.twig";
-    public const BODY_HTML      = "body.twig";
+    public const PART_TEMPLATE  = "part-template.twig";
 
 }

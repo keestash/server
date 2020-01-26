@@ -53,9 +53,6 @@ class PersistenceService {
         $sessionValue = $this->sessionManager->get($key, $default);
         $cookieValue  = $this->cookieManager->get($key, $default);
 
-        FileLogger::debug("session Value: $sessionValue");
-        FileLogger::debug("cookie Value: $cookieValue");
-
         return null === $cookieValue || $default === $cookieValue
             ? $sessionValue
             : $cookieValue;

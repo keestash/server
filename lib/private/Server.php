@@ -51,6 +51,8 @@ use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
+use Keestash\Core\Manager\TemplateManager\ApiManager;
+use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
@@ -112,13 +114,17 @@ use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use xobotyi\MimeType;
 
+/**
+ * Class Server
+ * @package Keestash
+ */
 class Server {
 
-    public const ALLOWED_IMAGE_MIME_TYPES = "types.mime.image.allowed";
-    public const USER_HASH_MAP            = 'map.hash.user';
-    public const CONFIG                   = 'config';
-    const        DEFAULT_ACTION_BARS      = "defaultActionBars";
-    const        DEFAULT_ACTION_BAR_BAGS  = "defaultActionBarBAgs";
+    public const ALLOWED_MIME_TYPES      = "types.mime.allowed";
+    public const USER_HASH_MAP           = 'map.hash.user';
+    public const CONFIG                  = 'config';
+    public const DEFAULT_ACTION_BARS     = "bars.action.default";
+    public const DEFAULT_ACTION_BAR_BAGS = "bags.bar.action.default";
 
     /** @var Container|null $container */
     private $container = null;
@@ -207,7 +213,7 @@ class Server {
             );
         });
 
-        $this->register(Server::ALLOWED_IMAGE_MIME_TYPES, function () {
+        $this->register(Server::ALLOWED_MIME_TYPES, function () {
             $png = MimeType::getExtensionMimes(IExtension::PNG);
             $jpg = MimeType::getExtensionMimes(IExtension::JPG);
             $pdf = MimeType::getExtensionMimes(IExtension::PDF);
@@ -225,7 +231,7 @@ class Server {
             $reflectionService = $this->query(ReflectionService::class);
 
             $routerManager->add(
-                RouterManager::HTTP_ROUTER
+                IRouterManager::HTTP_ROUTER
                 , new HTTPRouter(
                     $loggerManager
                     , $reflectionService
@@ -233,7 +239,7 @@ class Server {
             );
 
             $routerManager->add(
-                RouterManager::API_ROUTER
+                IRouterManager::API_ROUTER
                 , new APIRouter(
                     $loggerManager
                     , $reflectionService
@@ -261,10 +267,22 @@ class Server {
             return new MySQLBackend((string) self::getConfig()->get("db_name"));
         });
 
-        $this->register(ITemplateManager::class, function () {
+        $this->register(TwigManager::class, function () {
             $twigManager = new TwigManager();
             $twigManager->setUp(Keestash::getBaseURL(false));
             return $twigManager;
+        });
+
+        $this->register(ApiManager::class, function () {
+            return new ApiManager();
+        });
+
+        $this->register(FrontendManager::class, function () {
+            return new FrontendManager();
+        });
+
+        $this->register(ITemplateManager::class, function () {
+            return $this->query(TwigManager::class);
         });
 
         $this->register(DateTimeService::class, function () {
@@ -592,8 +610,16 @@ class Server {
         return $this->appRoot . "/apps/";
     }
 
-    public function getTemplateManager(): ITemplateManager {
-        return $this->query(ITemplateManager::class);
+    public function getTemplateManager(): TwigManager {
+        return $this->query(TwigManager::class);
+    }
+
+    public function getApiTemplateManager(): ApiManager {
+        return $this->query(ApiManager::class);
+    }
+
+    public function getFrontendTemplateManager(): FrontendManager {
+        return $this->query(FrontendManager::class);
     }
 
     public function getActionBarManager(): IActionBarManager {
@@ -618,11 +644,11 @@ class Server {
     }
 
     public function getHTTPRouter(): HTTPRouter {
-        return $this->getRouterManager()->get(RouterManager::HTTP_ROUTER);
+        return $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
     }
 
     public function getApiRouter(): APIRouter {
-        return $this->getRouterManager()->get(RouterManager::API_ROUTER);
+        return $this->getRouterManager()->get(IRouterManager::API_ROUTER);
     }
 
     public function getRouter(): Router {

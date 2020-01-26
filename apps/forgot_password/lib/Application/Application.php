@@ -22,9 +22,9 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Application;
 
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\ForgotPassword\Controller\ForgotPassword;
 use KSA\ForgotPassword\Controller\ResetPassword;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends \Keestash\App\Application {
 
@@ -51,7 +51,7 @@ class Application extends \Keestash\App\Application {
         parent::registerApiRoute(
             self::FORGOT_PASSWORD_SUBMIT
             , \KSA\ForgotPassword\Api\ForgotPassword::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerPublicApiRoute(

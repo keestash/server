@@ -21,9 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\File\RawFile;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\DTO\URI\URI;
-use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use xobotyi\MimeType;
 

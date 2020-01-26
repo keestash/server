@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace KSA\Register\Application;
 
 use Keestash;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Service\EmailService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\Add;
 use KSA\Register\Controller\Controller;
 use KSA\Register\Hook\EmailAfterRegistration;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\L10N\IL10N;
 
@@ -48,7 +48,7 @@ class Application extends Keestash\App\Application {
         parent::registerApiRoute(
             self::REGISTER_ADD
             , Add::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerPublicApiRoute(

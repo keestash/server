@@ -6,12 +6,16 @@
         </div>
 
         <div class="thirteen wide column">
-            <div id="breadcrumb__wrapper">
-                {{ breadcrumbs|raw }}
-            </div>
-            <div class="ui basic segment action-bar">
-                {{ actionBar|raw }}
-            </div>
+            {% if hasBreadcrumbs == true %}
+                <div id="breadcrumb__wrapper">
+                    {{ breadcrumbs|raw }}
+                </div>
+            {% endif %}
+            {% if hasActionBars == true %}
+                <div class="ui basic segment action-bar">
+                    {{ actionBar|raw }}
+                </div>
+            {% endif %}
 
 
             {{ appContent|raw }}

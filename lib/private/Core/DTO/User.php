@@ -146,7 +146,7 @@ class User implements IUser, PermissionUser {
     /**
      * @return string
      */
-    public function geKSAstName(): string {
+    public function getLastName(): string {
         return $this->lastName;
     }
 
@@ -226,6 +226,13 @@ class User implements IUser, PermissionUser {
         return $this->hash;
     }
 
+    public function equals($object): bool {
+        if ($object instanceof IUser) {
+            return $this->getId() === $object->getId();
+        }
+        return false;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -240,7 +247,7 @@ class User implements IUser, PermissionUser {
                 , 'name'       => $this->getName()
                 , 'create_ts'  => $this->getCreateTs()->getTimestamp()
                 , 'first_name' => $this->getFirstName()
-                , 'last_name'  => $this->geKSAstName()
+                , 'last_name'  => $this->getLastName()
                 , 'email'      => $this->getEmail()
                 , 'phone'      => $this->getPhone()
                 , 'website'    => $this->getWebsite()

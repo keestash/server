@@ -25,6 +25,7 @@ use Keestash;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
+use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\View\Navigation\INavigation;
@@ -53,13 +54,6 @@ abstract class AppController implements IAppController {
         $this->l10n            = $l10n;
     }
 
-    public function setAppNavigationTitle(string $title): void {
-        if (false === $this->isAppNavigationVisible()) return;
-        $this->templateManager->replace("app-navigation.html",
-            ["navigationTitle" => $title]
-        );
-    }
-
     public function isAppNavigationVisible(): bool {
         return $this->getControllerType() === IAppController::CONTROLLER_TYPE_NORMAL;
     }
@@ -79,14 +73,8 @@ abstract class AppController implements IAppController {
     }
 
     public function setHasAppNavigation(bool $hasAppNavigation): void {
-        $this->templateManager->replace("app-navigation.html",
+        $this->templateManager->replace(ITemplate::APP_NAVIGATION,
             ["hasAppNavigationInput" => $hasAppNavigation]
-        );
-    }
-
-    public function setAppContentTitle(string $title): void {
-        $this->templateManager->replace("content.html",
-            ["appTitle" => $title]
         );
     }
 

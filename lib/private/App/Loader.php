@@ -36,22 +36,6 @@ use SplFileInfo;
 
 class Loader implements ILoader {
 
-    public const APP_NAME_ABOUT            = "about";
-    public const APP_NAME_ACCOUNT          = "account";
-    public const APP_NAME_APPS             = "apps";
-    public const APP_NAME_FORGOT_PASSWORD  = "forgot_password";
-    public const APP_NAME_GENERAL_API      = "general_api";
-    public const APP_NAME_GENERAL_VIEW     = "general_view";
-    public const APP_NAME_INSTALL          = "install";
-    public const APP_NAME_INSTALL_INSTANCE = "install_instance";
-    public const APP_NAME_LOGIN            = "login";
-    public const APP_NAME_LOGOUT           = "logout";
-    public const APP_NAME_MAINTENANCE      = "maintenance";
-    public const APP_NAME_PROMOTION        = "promotion";
-    public const APP_NAME_REGISTER         = "register";
-    public const APP_NAME_TNC              = "tnc";
-    public const APP_NAME_USERS            = "users";
-
     private $classLoader = null;
     private $appRoot     = null;
     private $apps        = null;
@@ -109,28 +93,27 @@ class Loader implements ILoader {
 
     public function loadCoreApps(): void {
         $coreApps = [
-            Loader::APP_NAME_ABOUT
-            , Loader::APP_NAME_ACCOUNT
-            , Loader::APP_NAME_APPS
-            , Loader::APP_NAME_FORGOT_PASSWORD
-            , Loader::APP_NAME_GENERAL_API
-            , Loader::APP_NAME_GENERAL_VIEW
-            , Loader::APP_NAME_INSTALL
-            , Loader::APP_NAME_INSTALL_INSTANCE
-            , Loader::APP_NAME_LOGIN
-            , Loader::APP_NAME_LOGOUT
-            , Loader::APP_NAME_MAINTENANCE
-            , Loader::APP_NAME_PROMOTION
-            , Loader::APP_NAME_REGISTER
-            , Loader::APP_NAME_TNC
-            , Loader::APP_NAME_USERS
+            ILoader::APP_NAME_ABOUT
+            , ILoader::APP_NAME_ACCOUNT
+            , ILoader::APP_NAME_APPS
+            , ILoader::APP_NAME_FORGOT_PASSWORD
+            , ILoader::APP_NAME_GENERAL_API
+            , ILoader::APP_NAME_GENERAL_VIEW
+            , ILoader::APP_NAME_INSTALL
+            , ILoader::APP_NAME_INSTALL_INSTANCE
+            , ILoader::APP_NAME_LOGIN
+            , ILoader::APP_NAME_LOGOUT
+            , ILoader::APP_NAME_MAINTENANCE
+            , ILoader::APP_NAME_PROMOTION
+            , ILoader::APP_NAME_REGISTER
+            , ILoader::APP_NAME_TNC
+            , ILoader::APP_NAME_USERS
         ];
 
         foreach ($coreApps as $coreApp) {
             $this->loadApp($coreApp);
         }
     }
-
 
     public function loadCoreAppsAndFlush(): void {
         $this->loadCoreApps();
@@ -202,7 +185,10 @@ class Loader implements ILoader {
     }
 
     private function buildNamespaceAndRequire(IApp $app): bool {
-        $this->classLoader->setPsr4("KSA\\{$app->getNamespace()}\\", "{$this->appRoot}/apps/{$app->getId()}/lib/");
+        $this->classLoader->setPsr4(
+            "KSA\\{$app->getNamespace()}\\"
+            , "{$this->appRoot}/apps/{$app->getId()}/lib/"
+        );
         return true;
     }
 
@@ -246,11 +232,22 @@ class Loader implements ILoader {
         /** @var SplFileInfo $info */
         foreach ($iterator as $info) {
             if (false === $info->isDir()) continue;
+            $path = $info->getRealPath();
 
-            Keestash::getServer()->getTemplateManager()
-                ->addPath(
-                    $info->getRealPath()
-                );
+            if (ILoader::DIR_NAME_FRONTEND === $info->getBasename()) {
+                Keestash::getServer()
+                    ->getFrontendTemplateManager()
+                    ->addPath(
+                        $path
+                    );
+            } else {
+                Keestash::getServer()->getTemplateManager()
+                    ->addPath(
+                        $path
+                    );
+
+            }
+
         }
 
     }
