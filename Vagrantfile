@@ -14,6 +14,5 @@ Vagrant.configure("2") do |config|
 
   config.ssh.insert_key = false
 
-  #config.vm.provision :shell, :path => "config/vagrant/bootstrap.sh"
-
+  config.vm.provision :shell, path: "config/vagrant/bootstrap.sh"
 end
