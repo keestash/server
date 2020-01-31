@@ -19,6 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// we want to keep the global namespace clean.
+// Therefore, we call our framework within an
+// anonymous function.
 (function () {
 
     chdir(dirname(__DIR__));
