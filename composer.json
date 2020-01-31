@@ -29,8 +29,7 @@
     "ext-posix": "*",
     "symfony/mime": "^4.3",
     "ocramius/package-versions": "1.4.0",
-    "ext-sqlite3": "*",
-    "keepassphp/keepassphp": "v1.1.0-RC2"
+    "ext-sqlite3": "*"
   },
   "autoload": {
     "psr-4": {
