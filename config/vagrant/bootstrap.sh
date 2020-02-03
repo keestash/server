@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 
-sudo apt-get update
-sudo apt-get upgrade
+# Variables
+DBNAME=keestash
+DBUSER=keestash
+DBPASSWD=keestash
 
-sudo apt-get install apache2
-sudo apt-get install mysql-server
+apt-get -y install software-properties-common
+add-apt-repository -y ppa:ondrej/php
+apt-get update
 
-sudo apt-get install -y python-software-properties
-sudo add-apt-repository -y ppa:ondrej/php
 
-sudo apt-get update
-sudo apt-get upgrade
+apt-get update
 
-sudo apt-get install php7.1
-sudo apt-get install php7.1-mysql
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
+
+apt-get -y install mysql-server
+
+mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
+mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'"
+
+sudo apt-get -y install apache2 php7.1 php7.1-mysql php7.1-mbstring php7.1-dom php7.1-sqlite php7.1-zip php7.1-curl
+
+sudo apt-get -y install curl composer zip unzip
+
 sudo phpenmod pdo_mysql
-sudo apt-get install php-xdebug
-sudo apt-get install composer
-sudo apt-get install php7.1-mbstring
-sudo apt-get install php7.1-dom
-sudo apt-get install php7.1-sqlite
-sudo apt-get install zip
-sudo apt-get install unzip
-sudo apt-get install php7.1-zip
-sudo apt-get install php7.1-curl
-
 sudo service apache2 restart
-
-composer install
