@@ -1,7 +1,10 @@
 {
-  "name": "dogano/keestash",
+  "name": "keestash/server",
   "type": "project",
-  "license": "GNU Affero General Public License",
+  "homepage": "https://keestash.com",
+  "readme": "README.md",
+  "license": "AGPL-3.0-or-later",
+  "description": "Open Source Password Safe",
   "authors": [
     {
       "name": "Dogan Ucar",
@@ -40,11 +43,10 @@
       "KSA\\": "apps/"
     }
   },
-  "scripts": {
-    "migrate-apps": "./bin/migration/migrate.php -m=app",
-    "migrate-instance": "./bin/migration/migrate.php -m=instance",
-    "phpstan": "./vendor/bin/phpstan analyse lib/ test/",
-    "clear-dist": "php bin/clear_dist.php"
+  "support": {
+    "email": "dogan@dogan-ucar.de",
+    "issues": "https://github.com/keestash/server/issues",
+    "source": "https://github.com/keestash/server"
   },
   "require-dev": {
     "phpunit/phpunit": "^7.5",
