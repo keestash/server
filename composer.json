@@ -29,7 +29,8 @@
     "ext-posix": "*",
     "symfony/mime": "^4.3",
     "ocramius/package-versions": "1.4.0",
-    "ext-sqlite3": "*"
+    "ext-sqlite3": "*",
+    "ergebnis/composer-normalize": "^2.2"
   },
   "autoload": {
     "psr-4": {
