@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0f2ad78f19fb51357ce28efc5fcd72d",
+    "content-hash": "37b8f17405c7d74aa6e3568c4f1d041e",
     "packages": [
         {
             "name": "apache/log4php",
@@ -4782,10 +4782,10 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-json": "*",
-        "ext-pdo": "*",
         "ext-fileinfo": "*",
+        "ext-json": "*",
         "ext-openssl": "*",
+        "ext-pdo": "*",
         "ext-posix": "*",
         "ext-sqlite3": "*"
     },
