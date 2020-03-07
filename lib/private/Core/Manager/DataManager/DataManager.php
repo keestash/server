@@ -23,6 +23,7 @@ namespace Keestash\Core\Manager\DataManager;
 
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
+use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
@@ -94,9 +95,11 @@ class DataManager implements IDataManager {
     }
 
     public function get(IFile $file): IFile {
+        $file = new File();
         $isFile = is_file($file->getFullPath());
-        if (false === $isFile) return null;
-        return file_get_contents($file->getFullPath());
+        if (false === $isFile) return $file;
+        $file->setContent(file_get_contents($file->getFullPath()));
+        return $file;
     }
 
     public function storeAll(FileList $fileList): bool {

@@ -33,7 +33,7 @@ class SettingEntry implements IEntry {
     private $endDate;
 
     /**
-     * @param $object
+     * @param mixed $object
      * @return int
      */
     public function compareTo($object): int {

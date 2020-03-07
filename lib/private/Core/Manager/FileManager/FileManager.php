@@ -53,7 +53,7 @@ class FileManager implements IFileManager {
 
         $added = $this->fileRepository->add($file);
 
-        return true === $put && true === $added;
+        return false !== $put && null !== $added;
 
     }
 

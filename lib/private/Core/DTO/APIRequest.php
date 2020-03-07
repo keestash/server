@@ -52,7 +52,7 @@ class APIRequest implements IAPIRequest {
     }
 
     public function getDuration(): int {
-        return abs($this->getEnd() - $this->getStart());
+        return (int) abs($this->getEnd() - $this->getStart());
     }
 
     public function getEnd(): float {

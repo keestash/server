@@ -29,7 +29,7 @@ use PDOException;
 
 class MySQLBackend implements ISQLBackend {
 
-    /** @var PDO $pdo */
+    /** @var PDO|null $pdo */
     private $pdo = null;
 
     private $schemaName = null;

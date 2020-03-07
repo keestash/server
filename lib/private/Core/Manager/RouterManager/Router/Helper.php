@@ -50,9 +50,11 @@ class Helper {
 
         switch ($className) {
             case HTTPRouter::class:
+                /** @var HTTPRouter $router */
                 $routesToInstallation = Helper::handleHttp($router);
                 break;
             case APIRouter::class:
+                /** @var APIRouter $router */
                 $routesToInstallation = Helper::handleApi($router);
                 break;
             default:

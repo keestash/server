@@ -44,7 +44,10 @@
       "KSP\\": "lib/public/",
       "KST\\": "test/",
       "KSA\\": "apps/"
-    }
+    },
+    "files": [
+      "lib/Keestash.php"
+    ]
   },
   "minimum-stability": "stable",
   "support": {

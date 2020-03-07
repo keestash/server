@@ -37,12 +37,7 @@ class View extends AppController {
 
     private $parameters = null;
 
-    public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $l10n
-        , IFileManager $nodeFileManager
-        , IFileRepository $fileRepository
-    ) {
+    public function __construct(ITemplateManager $templateManager, IL10N $l10n) {
         parent::__construct($templateManager, $l10n);
     }
 

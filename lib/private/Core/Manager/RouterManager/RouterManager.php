@@ -31,7 +31,7 @@ class RouterManager implements IRouterManager {
 
     private $routers = null;
 
-    public function __construct(?IBackend $backend, ?DateTimeService $dateTimeService = null) {
+    public function __construct() {
         $this->routers = new HashTable();
     }
 

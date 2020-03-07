@@ -57,7 +57,7 @@ class UpdateApp extends AbstractApi {
         $activate = $this->parameters["activate"] ?? null;
 
 
-        if (null === $activate || false === is_bool((bool) $activate)) {
+        if (null === $activate || false === is_bool($activate)) {
             $response = parent::createResponse(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -81,7 +81,7 @@ class UpdateApp extends AbstractApi {
             return;
         }
 
-        /** @var IApp $app */
+        /** @var IApp|null $app */
         $app = $this->appRepository->getApp($appId);
 
         if (null === $app) {

@@ -46,7 +46,7 @@ class ApiLogRepository extends AbstractRepository implements IApiLogRepository {
 )";
         $statement = parent::prepareStatement($sql);
 
-        if (false === $statement) return null;
+        if (null === $statement) return null;
 
         $tokenName = $request->getToken()->getName();
         $token     = $request->getToken()->getValue();

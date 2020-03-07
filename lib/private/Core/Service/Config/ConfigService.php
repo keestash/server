@@ -39,8 +39,8 @@ class ConfigService {
     }
 
     /**
-     * @param string $key
-     * @param null   $default
+     * @param string     $key
+     * @param mixed|null $default
      * @return mixed|null
      * @throws InvalidKeyTypeException
      * @throws UnsupportedKeyTypeException

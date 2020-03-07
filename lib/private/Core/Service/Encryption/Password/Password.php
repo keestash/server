@@ -1,8 +1,7 @@
 <?php
-
+declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Password;
-
 
 use JsonSerializable;
 
@@ -54,7 +53,7 @@ class Password implements JsonSerializable {
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getEntropy(): float {
         return $this->entropy;

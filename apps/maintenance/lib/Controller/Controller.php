@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Maintenance\Application;
+namespace KSA\Maintenance\Controller;
 
 use KSP\Core\Controller\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;

@@ -76,7 +76,7 @@ class PasswordService {
      * @param bool $hasLowerCase
      * @param bool $hasDigits
      * @param bool $hasSpecialChars
-     * @return string
+     * @return Password
      * @throws KSException
      *
      * TODO pay credit to https://stackoverflow.com/questions/1837432/how-to-generate-random-password-with-php

@@ -86,7 +86,7 @@ class Permission implements IPermission {
     }
 
     /**
-     * @param $object
+     * @param mixed $object
      * @return int
      */
     public function compareTo($object): int {

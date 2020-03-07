@@ -31,10 +31,8 @@ class System {
 
     public function createConfig(): void {
         if (true === $this->configCreated) return;
-        $CONFIG = [];
-        $map    = new HashTable();
         /** @noinspection PhpIncludeInspection */
-        require Keestash::getServer()->getConfigfilePath();
+        $CONFIG = require Keestash::getServer()->getConfigfilePath();
 
         $table = new HashTable();
 

@@ -55,7 +55,6 @@ class HasMigrations extends AbstractVerification {
         $log = $phinxTextWrapper->getMigrate();
 
         print_r($log);
-        exit();
 
         // TODO log $log
         return $phinxTextWrapper->getExitCode() === Installer::PHINX_MIGRATION_EVERYTHING_WENT_FINE;

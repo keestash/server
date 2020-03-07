@@ -61,7 +61,7 @@ class Navigation implements INavigation {
         $added = false;
         foreach ($list as $item) {
             if ($item instanceof IPart) {
-                $added |= $this->addPart($item);
+                $this->addPart($item);
             }
         }
         return (bool) $added;

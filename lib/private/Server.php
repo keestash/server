@@ -191,16 +191,16 @@ class Server {
         });
 
         $this->register(ControllerHookManager::class, function () {
-            return new ControllerHookManager(null);
+            return new ControllerHookManager();
         });
         $this->register(SubmitHookManager::class, function () {
-            return new SubmitHookManager(null);
+            return new SubmitHookManager();
         });
         $this->register(RegistrationHookManager::class, function () {
-            return new RegistrationHookManager(null);
+            return new RegistrationHookManager();
         });
         $this->register(PasswordChangedHookManager::class, function () {
-            return new PasswordChangedHookManager(null);
+            return new PasswordChangedHookManager();
         });
 
         $this->register(TokenService::class, function () {
@@ -226,7 +226,7 @@ class Server {
 
         });
         $this->register(IRouterManager::class, function () {
-            $routerManager     = new RouterManager(null, null);
+            $routerManager     = new RouterManager();
             $loggerManager     = $this->query(IApiLogRepository::class);
             $reflectionService = $this->query(ReflectionService::class);
 
@@ -345,8 +345,7 @@ class Server {
         });
 
         $this->register(IResponseManager::class, function () {
-            $backend = $this->query(IBackend::class);
-            return new JSONResponseManager($backend, null);
+            return new JSONResponseManager();
         });
 
         $this->register(Session::class, function () {
@@ -587,8 +586,7 @@ class Server {
     }
 
     public function getConfigfilePath(): string {
-        $logFile = $this->getConfigRoot() . "config.php";
-        return $logFile;
+        return $this->getConfigRoot() . "config.php";
     }
 
     public function getBaseEncryption(?IUser $user = null) {
@@ -644,11 +642,15 @@ class Server {
     }
 
     public function getHTTPRouter(): HTTPRouter {
-        return $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
+        /** @var HTTPRouter $router */
+        $router = $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
+        return $router;
     }
 
     public function getApiRouter(): APIRouter {
-        return $this->getRouterManager()->get(IRouterManager::API_ROUTER);
+        /** @var APIRouter $router */
+        $router = $this->getRouterManager()->get(IRouterManager::API_ROUTER);
+        return $router;
     }
 
     public function getRouter(): Router {

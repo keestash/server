@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Api;
 
+use doganoo\PHPUtil\Util\StringUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
@@ -35,7 +36,6 @@ use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
-use Prophecy\Util\StringUtil;
 
 class ForgotPassword extends AbstractApi {
 
