@@ -160,8 +160,8 @@ class Loader implements ILoader {
         if (null === $name) return false;
         if (null === $baseRoot) return false;
         if (null === $faIconClass) return false;
-        if (null === $order || $order <= 0) return false;
-        if (null === $version || $version <= 0) return false;
+        if ($order <= 0) return false;
+        if ($version <= 0) return false;
         if (null === $versionString) return false;
         if (null === $type) return false;
 
@@ -206,7 +206,7 @@ class Loader implements ILoader {
 
     private function overrideDefaultApp(IApp $app): void {
         $currentAppKey = $this->lruAppCache->last();
-        /** @var IApp $currentApp */
+        /** @var IApp|null $currentApp */
         $currentApp = $this->lruAppCache->get($currentAppKey);
 
         if (null === $currentApp) {

@@ -65,11 +65,11 @@ class ForgotPassword extends StaticAppController {
                 , "usernameOrPasswordPlaceholder" => $this->translator->translate("Username or Email Address")
                 , "forgotPassword"                => $this->translator->translate("Forgot your password?")
                 , "invalidCredentials"            => $this->translator->translate("Please enter valid credentials")
-                , "newAccountLink"                => Keestash::getBaseURL(true) . "/" . Keestash\Core\App\Register\Application\Application::REGISTER
+                , "newAccountLink"                => Keestash::getBaseURL(true) . "/" . \KSA\Register\Application\Application::REGISTER
                 , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/" . Application::FORGOT_PASSWORD
                 , "logoPath"                      => Keestash::getBaseURL(false) . "/asset/img/logo.png"
                 , "backToLogin"                   => $this->translator->translate("Back To Login")
-                , "backToLoginLink"               => Keestash::getBaseURL(true) . "/" . Keestash\Core\App\Login\Application\Application::LOGIN
+                , "backToLoginLink"               => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
             ]
         );
 

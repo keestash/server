@@ -105,7 +105,8 @@ class InstanceDB {
             $array[] = $row;
         }
 
-        if (false === $array) return null;
+        if (0 === count($array)) return null;
+
         return $array;
     }
 

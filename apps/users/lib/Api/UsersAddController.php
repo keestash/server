@@ -57,7 +57,7 @@ class UsersAddController extends AbstractApi {
 
     public function onCreate(array $parameters): void {
         $this->passwordRepeat = $parameters["password_repeat"];
-        $this->user           = $this->toUser($params);
+        $this->user           = $this->toUser($parameters);
     }
 
     private function toUser($params): IUser {

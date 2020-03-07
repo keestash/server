@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Account\Api;
 
+use doganoo\SimpleRBAC\Test\DataProvider\Context;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
@@ -60,7 +61,7 @@ class UpdateUserData extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = $this->userManager->getUserById($parameters["user_id"] ?? "");
         if (null === $user) {
             $this->prepareResponse(
@@ -97,7 +98,7 @@ class UpdateUserData extends AbstractApi {
     private function preparePermission(IUser $contextUser): IPermission {
         /** @var IPermission $permission */
         $permission = $this->permissionManager->getPermission(Application::PERMISSION_UPDATE_PROFILE_IMAGE);
-        $context    = new \doganoo\SimpleRBAC\Test\DataProvider\Context();
+        $context    = new Context();
         $context->addUser($contextUser);
         $permission->setContext($context);
         return $permission;
@@ -120,7 +121,7 @@ class UpdateUserData extends AbstractApi {
 
     private function valid(): bool {
         if ("" === trim($this->user->getFirstName())) return false;
-        if ("" === trim($this->user->geKSAstName())) return false;
+        if ("" === trim($this->user->getLastName())) return false;
         if (false === $this->userService->validEmail($this->user->getEmail())) return false;
         if ("" === trim($this->user->getPhone())) return false;
         if ("" === trim($this->user->getWebsite())) return false;

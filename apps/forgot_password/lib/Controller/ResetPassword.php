@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -82,7 +81,7 @@ class ResetPassword extends StaticAppController {
                 , "usernamePlaceholder"          => $this->translator->translate("Username")
                 , "logoPath"                     => Keestash::getBaseURL(false) . "/asset/img/logo.png"
                 , "backToLogin"                  => $this->translator->translate("Back To Login")
-                , "backToLoginLink"              => Keestash::getBaseURL(true) . "/" . Keestash\Core\App\Login\Application\Application::LOGIN
+                , "backToLoginLink"              => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
             ]
         );
 

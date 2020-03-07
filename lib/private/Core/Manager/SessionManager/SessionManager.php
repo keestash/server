@@ -38,7 +38,7 @@ class SessionManager implements ISessionManager {
 
     /**
      * @param string $name
-     * @param        $value
+     * @param string $value
      * @return bool
      */
     public function set(string $name, string $value): bool {

@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Maintenance\Application;
 
+use KSA\Maintenance\Controller\Controller;
+
 class Application extends \Keestash\App\Application {
 
     public const  PERMISSION_MAINTENANCE = "maintenance";

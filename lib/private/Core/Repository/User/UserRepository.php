@@ -295,7 +295,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
 
             $statement = parent::prepareStatement($sql);
 
-            if (null === $statement || false === $statement) {
+            if (null === $statement) {
                 return false;
             }
 

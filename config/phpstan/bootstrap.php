@@ -19,33 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\ResponseManager;
+require_once __DIR__ . '/../../lib/versioncheck.php';
+require_once __DIR__ . '/../../lib/filecheck.php';
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../../lib/Keestash.php';
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
-use Keestash\Core\Service\DateTimeService;
-use KSP\Api\IResponse;
-use KSP\Core\Backend\IBackend;
-use KSP\Core\Manager\ResponseManager\IResponseManager;
-
-class JSONResponseManager implements IResponseManager {
-
-    public $responses = null;
-
-    public function __construct() {
-        $this->responses = new ArrayList();
-    }
-
-    public function add(IResponse $response): void {
-        $this->responses->add($response);
-    }
-
-    public function getResponses(): ArrayList {
-        return $this->responses;
-    }
-
-    public function unsetResponses(): bool {
-        $this->responses = new ArrayList();
-        return true;
-    }
-
-}
+Keestash::init();

@@ -35,10 +35,7 @@ class HookManager implements IHookManager {
     /** @var ArrayList $postController */
     private $postController = null;
 
-    public function __construct(
-        ?IBackend $backend
-        , ?DateTimeService $dateTimeService = null
-    ) {
+    public function __construct() {
         $this->preController  = new ArrayList();
         $this->postController = new ArrayList();
     }

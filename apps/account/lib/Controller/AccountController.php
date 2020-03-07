@@ -85,8 +85,6 @@ class AccountController extends AppController {
     }
 
     public function create(): void {
-        parent::setAppNavigationTitle($this->l10n->translate("Account"));
-        parent::setAppContentTitle($this->l10n->translate("Edit your Info here"));
 
         parent::addAppNavigation(
             $this->getPart(

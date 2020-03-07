@@ -65,7 +65,9 @@ class AbstractRepository implements IRepository {
 
     protected function prepareStatement(string $statement): ?PDOStatement {
         if (false === $this->backend->isConnected()) return null;
-        return $this->connection->prepare($statement);
+        $statement = $this->connection->prepare($statement);
+        if ($statement instanceof PDOStatement) return $statement;
+        return null;
     }
 
     protected function getSingle(string $sql, array $parameters = []): ?array {

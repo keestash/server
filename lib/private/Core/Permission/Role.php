@@ -36,7 +36,7 @@ class Role implements IRole {
     private $permissions = null;
 
     /**
-     * @param $object
+     * @param mixed $object
      * @return int
      */
     public function compareTo($object): int {
