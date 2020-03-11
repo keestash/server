@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Account\Api;
 
 use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\SimpleRBAC\Test\DataProvider\Context;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
@@ -35,7 +36,6 @@ use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
-use phpDocumentor\Reflection\Types\Context;
 
 class UpdatePassword extends AbstractApi {
 

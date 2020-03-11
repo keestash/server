@@ -21,7 +21,6 @@
     "doganoo/php-algorithms": "0.0.27",
     "doganoo/php-util": "0.3.12",
     "doganoo/simple-rbac": "1.5.0",
-    "ergebnis/composer-normalize": "^2.2",
     "filp/whoops": "2.3.1",
     "ocramius/package-versions": "1.4.0",
     "php-di/php-di": "6.0.7",
@@ -36,7 +35,8 @@
   },
   "require-dev": {
     "phpstan/phpstan": "^0.11.16",
-    "phpunit/phpunit": "^7.5"
+    "phpunit/phpunit": "^7.5",
+    "ergebnis/composer-normalize": "^2.2"
   },
   "autoload": {
     "psr-4": {
@@ -44,10 +44,7 @@
       "KSP\\": "lib/public/",
       "KST\\": "test/",
       "KSA\\": "apps/"
-    },
-    "files": [
-      "lib/Keestash.php"
-    ]
+    }
   },
   "minimum-stability": "stable",
   "support": {

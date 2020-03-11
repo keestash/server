@@ -1,7 +1,24 @@
+/**
+ * Keestash
+ *
+ * Copyright (C) <2019> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 import $ from 'jquery';
 import Formula from "../../../../../lib/js/src/Formula";
 import modal from "../../../../../lib/js/src/UI/modal";
-import Router from "../../../../../lib/js/src/Router";
 
 (function () {
     if (!Keestash.Account) {
@@ -11,18 +28,6 @@ import Router from "../../../../../lib/js/src/Router";
     Keestash.Account = {
         init: function () {
             let formula = new Formula();
-
-            Keestash.Main.setAppNavigationItemClickListener(
-                function (id) {
-                    id = parseInt(id);
-                    let router = new Router();
-                    if (id === 1)
-                        router.routeTo("/account");
-                    else if (id === 2)
-                        router.routeTo("/security");
-                }
-            );
-
 
             $("#tl__pi__picture").click(function (e) {
                 e.stopImmediatePropagation();
