@@ -22,77 +22,87 @@ declare(strict_types=1);
 namespace KSA\Account\Application;
 
 use Keestash;
-use Keestash\Core\Manager\RouterManager\RouterManager;
 use KSA\Account\Api\DeleteProfileImage;
 use KSA\Account\Api\UpdatePassword;
 use KSA\Account\Api\UpdateProfileImage;
 use KSA\Account\Api\UpdateUserData;
-use KSA\Account\Controller\AccountController;
+use KSA\Account\Controller\PersonalInformation\Controller;
+use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends Keestash\App\Application {
 
     public const APP_ID                          = "account";
+
     public const PERMISSION_ACCOUNT              = "account";
     public const PERMISSION_SECURITY             = "security";
     public const PERMISSION_DELETE_PROFILE_IMAGE = "delete_profile_image";
     public const PERMISSION_UPDATE_PASSWORD      = "update_password";
     public const PERMISSION_UPDATE_PROFILE_IMAGE = "update_profile_image";
     public const PERMISSION_UPDATE_USER_DATA     = "update_user_data";
-    public const ACCOUNT_PROFILE_UPDATE          = "account/profile/update/";
+
     public const ACCOUNT                         = "account";
+    public const ACCOUNT_PROFILE_UPDATE          = "account/profile/update/";
     public const ACCOUNT_PROFILE_IMAGE_DELETE    = "account/profile/image/delete/";
     public const ACCOUNT_PROFILE_IMAGE_UPDATE    = "account/profile/image/update/";
     public const ACCOUNT_SINGLE                  = "account/list/{id}/";
     public const SECURITY_PASSWORD_UPDATE        = "security/password/update/";
     public const SECURITY                        = "security";
 
+    public const ACCOUNT_PERSONAL_INFORMATION = "account/personal_information/";
+    public const ACCOUNT_SECURITY             = "account/security/";
+
     public function register(): void {
 
         parent::registerRoute(
-            self::ACCOUNT
-            , AccountController::class
+            Application::ACCOUNT_PERSONAL_INFORMATION
+            , Controller::class
         );
 
         parent::registerRoute(
-            self::SECURITY
-            , AccountController::class
+            Application::ACCOUNT
+            , Controller::class
+        );
+
+        parent::registerRoute(
+            Application::ACCOUNT_SECURITY
+            , \KSA\Account\Controller\Security\Controller::class
         );
 
         parent::registerApiRoute(
             self::ACCOUNT_SINGLE
-            , AccountController::class
-            , [RouterManager::GET]
+            , Controller::class
+            , [IRouterManager::GET]
         );
 
         parent::registerApiRoute(
             self::ACCOUNT_PROFILE_UPDATE
             , UpdateUserData::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerApiRoute(
             self::ACCOUNT_PROFILE_IMAGE_UPDATE
             , UpdateProfileImage::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerApiRoute(
             self::ACCOUNT_PROFILE_IMAGE_DELETE
             , DeleteProfileImage::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::registerApiRoute(
             self::SECURITY_PASSWORD_UPDATE
             , UpdatePassword::class
-            , [RouterManager::POST]
+            , [IRouterManager::POST]
         );
 
         parent::addJavascript(self::ACCOUNT);
         parent::addJavascriptFor(self::ACCOUNT, self::SECURITY, Application::SECURITY);
 
         parent::addSetting(
-            self::ACCOUNT
+            Application::ACCOUNT
             , Keestash::getServer()
             ->getL10N()
             ->translate("Account")

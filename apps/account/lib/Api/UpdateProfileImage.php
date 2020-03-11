@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Account\Api;
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\SimpleRBAC\Test\DataProvider\Context;
 use Keestash;
 use Keestash\Api\AbstractApi;
@@ -31,6 +32,7 @@ use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\Account\Application\Application;
+use KSA\PasswordManager\Service\Util;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
@@ -75,7 +77,30 @@ class UpdateProfileImage extends AbstractApi {
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
         $userId           = $this->parameters["user_id"] ?? null;
-        $this->user       = $this->userManager->getUserById($userId);
+        $base64           = $this->parameters["image"] ?? null;
+
+        if (true === Util::isEmpty($userId)) {
+            $this->createAndSetResponse(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "message" => $this->getL10N()->translate("User not found")
+                ]
+            );
+            return;
+        }
+
+        if (null === $base64) {
+            $this->createAndSetResponse(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "message" => $this->getL10N()->translate("User image")
+                ]
+            );
+            return;
+        }
+
+        $this->user        = $this->userManager->getUserById((string) $userId);
+        $this->base64Image = $base64;
 
         parent::setPermission(
             $this->preparePermission($this->user)
@@ -130,8 +155,8 @@ class UpdateProfileImage extends AbstractApi {
         }
 
         $name     = $this->fileService->getProfileImageName($this->user);
-        $tmppName = sys_get_temp_dir() . $name;
-        $put      = @file_put_contents($tmppName, $raw);
+        $tempName = sys_get_temp_dir() . "/" . $name;
+        $put      = @file_put_contents($tempName, $raw);
 
         if (false === $put) {
             parent::setResponse(
@@ -143,22 +168,24 @@ class UpdateProfileImage extends AbstractApi {
             return;
         }
 
-        $extensions = $this->rawFileService->getFileExtensions($tmppName);
-        $mimeType   = $this->rawFileService->getMimeType($tmppName);
+        $extensions = $this->rawFileService->getFileExtensions($tempName);
+        $mimeType   = $this->rawFileService->getMimeType($tempName);
+
+        FileLogger::debug($mimeType);
 
         $file = new File();
         $file->setOwner($this->user);
         $file->setSize(
-            filesize($tmppName)
+            filesize($tempName)
         );
         $file->setExtension(
             $extensions[0]
         );
         $file->setDirectory(Keestash::getServer()->getImageRoot());
-        $file->setHash(md5_file($tmppName));
+        $file->setHash(md5_file($tempName));
         $file->setMimeType($mimeType);
         $file->setName($name);
-        $file->setTemporaryPath($tmppName);
+        $file->setTemporaryPath($tempName);
         $file->setCreateTs(new DateTime());
         $file->setContent($raw);
 

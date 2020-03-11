@@ -19,35 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\System;
+namespace KSA\Account\Exception;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash;
-use Keestash\Server;
+use Keestash\Exception\KSException;
 
-class System {
-
-    private $configCreated = false;
-
-    public function createConfig(): void {
-        if (true === $this->configCreated) return;
-        $CONFIG = [];
-        /** @noinspection PhpIncludeInspection */
-        require Keestash::getServer()->getConfigfilePath();
-
-        $table = new HashTable();
-
-        foreach ($CONFIG as $key => $value) {
-            $table->put($key, $value);
-        }
-
-        Keestash::getServer()->register(
-            Server::CONFIG
-            , function () use ($table) {
-            return $table;
-        });
-
-        $this->configCreated = true;
-    }
+class ControllerNotFoundException extends KSException {
 
 }
