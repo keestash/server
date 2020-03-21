@@ -21,10 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Application;
 
+use Keestash;
+use Keestash\Core\Service\Phinx\Migrator;
 use KSA\general_api\lib\Api\UserList;
 use KSA\GeneralApi\Api\MinimumCredential;
 use KSA\GeneralApi\Api\Template\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\File;
+use KSA\GeneralApi\Command\Migration\MigrateApps;
+use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
+use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
 /**
@@ -70,6 +75,28 @@ class Application extends \Keestash\App\Application {
 
         $this->registerPublicApiRoute(
             Application::FILE_ICONS
+        );
+
+        $this->registerCommands();
+    }
+
+    private function registerCommands(): void {
+        $this->registerCommand(
+            new MigrateApps(
+                Keestash::getServer()->query(Migrator::class)
+            )
+        );
+        $this->registerCommand(
+            new PHPStan(
+                Keestash::getServer()->getServerRoot()
+            )
+        );
+
+        $this->registerCommand(
+            new ClearBundleJS(
+                Keestash::getServer()->getServerRoot()
+                , Keestash::getServer()->getAppRoot()
+            )
         );
 
     }

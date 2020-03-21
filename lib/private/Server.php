@@ -37,6 +37,7 @@ use Keestash\Core\Encryption\Base\BaseEncryption;
 use Keestash\Core\Encryption\Base\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
+use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
@@ -90,6 +91,7 @@ use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
+use KSP\Core\Manager\ConsoleManager\IConsoleManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\HookManager\IHookManager;
@@ -445,6 +447,10 @@ class Server {
             return new Migrator();
         });
 
+        $this->register(IConsoleManager::class, function () {
+            return new ConsoleManager();
+        });
+
         $this->register(IEncryptionKeyRepository::class, function () {
             return new EncryptionKeyRepository(
                 $this->query(IBackend::class)
@@ -639,6 +645,10 @@ class Server {
 
     public function getRouterManager(): RouterManager {
         return $this->query(IRouterManager::class);
+    }
+
+    public function getConsoleManager(): IConsoleManager {
+        return $this->query(IConsoleManager::class);
     }
 
     public function getHTTPRouter(): HTTPRouter {
