@@ -23,11 +23,13 @@ namespace Keestash\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
+use Keestash\Command\KeestashCommand;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use KSP\App\IApp;
 use KSP\App\IApplication;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\View\Navigation\Factory\NavigationFactory;
+use Symfony\Component\Console\Command\Command;
 
 abstract class Application implements IApplication {
 
@@ -116,6 +118,10 @@ abstract class Application implements IApplication {
                 , ["controller" => $class]
                 , $verbs
             );
+    }
+
+    protected function registerCommand(KeestashCommand $command): bool {
+        return Keestash::getServer()->getConsoleManager()->register($command);
     }
 
     protected function registerPublicRoute(string $name): bool {

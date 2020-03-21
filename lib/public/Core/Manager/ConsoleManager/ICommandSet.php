@@ -19,22 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once __DIR__ . "/../config/config.php";
-require_once __DIR__ . "/../lib/Keestash.php";
+namespace KSP\Core\Manager\ConsoleManager;
 
-Keestash::init();
+use doganoo\PHPAlgorithms\Common\Interfaces\ISet;
 
-$appRoot  = Keestash::getServer()->getServerRoot();
-$baseDist = "$appRoot/lib/js/dist/base.bundle.js";
+interface ICommandSet extends ISet {
 
-$appRoot = Keestash::getServer()->getAppRoot();
-
-$files   = glob($appRoot . "/*/js/dist/*.js");
-$files[] = $baseDist;
-
-foreach ($files as $file) {
-    if (true === is_file($file)) {
-        unlink($file);
-    }
 }

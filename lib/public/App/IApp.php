@@ -21,9 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\App;
 
-
-use doganoo\Backgrounder\BackgroundJob\JobList;
-
 interface IApp {
 
     public const FIELD_ID              = "id";

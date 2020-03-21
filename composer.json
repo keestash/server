@@ -26,6 +26,7 @@
     "php-di/php-di": "6.0.7",
     "phpmailer/phpmailer": "^6.0",
     "robmorgan/phinx": "0.11.1",
+    "symfony/console": "^4.4",
     "symfony/http-foundation": "4.2.12",
     "symfony/mime": "^4.3",
     "symfony/routing": "4.2.5",
@@ -35,8 +36,7 @@
   },
   "require-dev": {
     "phpstan/phpstan": "^0.11.16",
-    "phpunit/phpunit": "^7.5",
-    "ergebnis/composer-normalize": "^2.2"
+    "phpunit/phpunit": "^7.5"
   },
   "autoload": {
     "psr-4": {
