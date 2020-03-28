@@ -2,8 +2,8 @@
 <?php
 declare(strict_types=1);
 
+use Keestash\Command\KeestashCommand;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Command\Command;
 
 /**
  * Keestash
@@ -35,9 +35,14 @@ use Symfony\Component\Console\Command\Command;
     Keestash::init();
     $consoleManager = Keestash::getServer()->getConsoleManager();
     $commands       = $consoleManager->getSet();
+    $cliVersion     = "1.0.0";
 
-    $application = new Application();
-    /** @var Command $command */
+    $application = new Application(
+        Keestash::getServer()->getLegacy()->getApplication()->get("name") . " CLI Tools"
+        , $cliVersion
+    );
+
+    /** @var KeestashCommand $command */
     foreach ($commands->toArray() as $command) {
         $application->add($command);
     }

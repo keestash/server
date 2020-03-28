@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service;
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use function strtotime;
 
@@ -29,13 +30,22 @@ class DateTimeService {
 
     /**
      * @param string $dateTime
-     * @return DateTime
+     * @return DateTime|null
      * @throws Exception
      */
-    public function fromString(string $dateTime): DateTime {
+    public function fromString(string $dateTime): ?DateTime {
         $time = strtotime($dateTime);
-        $dt   = new DateTime();
-        $dt->setTimestamp($time);
+
+        if (false === $time) return null;
+
+        try {
+            $dt = new DateTime();
+            $dt = $dt->setTimestamp($time);
+        } catch (Exception $exception) {
+            FileLogger::error("could not parse $dateTime to \DateTime object");
+            return null;
+        }
+
         return $dt;
     }
 

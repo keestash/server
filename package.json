@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build-dev": "webpack --env dev",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "watch-dev": "webpack --env dev --watch"
   },
   "repository": {
     "type": "git",
