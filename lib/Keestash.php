@@ -41,7 +41,7 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\System\Installation\LockHandler;
-use Keestash\Exception\KSException;
+use Keestash\Exception\KeestashException;
 use Keestash\Server;
 use Keestash\View\Navigation\Entry;
 use Keestash\View\Navigation\Navigation;
@@ -250,7 +250,7 @@ class Keestash {
 
                 break;
             default:
-                throw new KSException();
+                throw new KeestashException();
         }
 
 

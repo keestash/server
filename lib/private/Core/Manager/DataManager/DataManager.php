@@ -81,11 +81,6 @@ class DataManager implements IDataManager {
             unlink($file->getFullPath());
         }
 
-
-        FileLogger::debug($file->getTemporaryPath());
-        FileLogger::debug(is_file($file->getTemporaryPath()));
-        FileLogger::debug($file->getFullPath());
-
         $copied = copy(
             $file->getTemporaryPath()
             , $file->getFullPath()

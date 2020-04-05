@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Formula from "../../../../lib/js/src/Formula";
-import routes from "../../../../lib/js/src/Backend/routes";
 
 (function () {
     if (!Keestash.AppsApp) {

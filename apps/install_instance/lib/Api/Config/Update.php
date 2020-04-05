@@ -82,8 +82,6 @@ class Update extends AbstractApi {
             false === $this->validLogRequestOption($logRequests)
         ) {
 
-            FileLogger::debug("there are invalid parameters. Aborting");
-
             parent::createAndSetResponse(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -110,11 +108,7 @@ class Update extends AbstractApi {
             , $port
         );
 
-        FileLogger::debug("database connection: $databaseConnection");
-
         if (false === $databaseConnection) {
-
-            FileLogger::debug("no database connected :(");
 
             parent::createAndSetResponse(
                 IResponse::RESPONSE_CODE_NOT_OK

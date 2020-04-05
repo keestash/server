@@ -25,7 +25,7 @@ use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\ClassUtil;
 use Exception;
 use Keestash;
-use Keestash\Exception\KSException;
+use Keestash\Exception\KeestashException;
 
 class Helper {
 
@@ -58,7 +58,7 @@ class Helper {
                 $routesToInstallation = Helper::handleApi($router);
                 break;
             default:
-                throw new KSException("could not identify class");
+                throw new KeestashException("could not identify class");
         }
 
         return $routesToInstallation;
