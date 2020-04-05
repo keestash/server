@@ -21,6 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Exception;
 
-class InvalidControllerException extends KSException {
+class InvalidControllerException extends KeestashException {
 
 }

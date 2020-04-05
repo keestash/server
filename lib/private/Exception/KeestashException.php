@@ -23,7 +23,7 @@ namespace Keestash\Exception;
 
 use Exception;
 
-class KSException extends Exception {
+class KeestashException extends Exception {
 
     protected $message = 'no message specified ¯\_(ツ)_/¯';
 

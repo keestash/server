@@ -26,7 +26,7 @@ use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\DTO\APIRequest;
-use Keestash\Exception\KSException;
+use Keestash\Exception\KeestashException;
 use Keestash\Exception\NoControllerFoundException;
 use KSP\Core\DTO\IToken;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -38,7 +38,7 @@ class APIRouter extends Router {
 
     /**
      * @param IToken|null $token
-     * @throws KSException
+     * @throws KeestashException
      * @throws NoControllerFoundException
      */
     public function route(?IToken $token): void {
@@ -55,7 +55,7 @@ class APIRouter extends Router {
             $parentClasses = $this->getReflectionService()->getParentClasses($service);
 
             if (false === $parentClasses->containsValue(AbstractApi::class)) {
-                throw new KSException("passed controller is not an instance of AbstractApi");
+                throw new KeestashException("passed controller is not an instance of AbstractApi");
             }
 
             $service->onCreate($allParameters);
@@ -63,8 +63,6 @@ class APIRouter extends Router {
             $hasPermission = $this->hasPermission(
                 $service->getPermission()
             );
-
-            FileLogger::debug("has permission $hasPermission");
 
             $start = microtime(true);
 
@@ -91,10 +89,6 @@ class APIRouter extends Router {
                 , $end
             );
 
-            FileLogger::debug("$start");
-            FileLogger::debug("$end");
-
-            FileLogger::debug("logged request: $logged");
             return;
 
         } catch (ResourceNotFoundException $exception) {

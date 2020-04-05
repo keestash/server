@@ -23,7 +23,7 @@ namespace Keestash\Core\Service\Encryption\Password;
 
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\Exception\KSException;
+use Keestash\Exception\KeestashException;
 
 class PasswordService {
 
@@ -65,7 +65,7 @@ class PasswordService {
 
     private function getCharacterSet(string $key): string {
         if (false === $this->characterTable->containsKey($key)) {
-            throw new KSException("no character set found for $key");
+            throw new KeestashException("no character set found for $key");
         }
         return (string) $this->characterTable->get($key);
     }
@@ -77,7 +77,7 @@ class PasswordService {
      * @param bool $hasDigits
      * @param bool $hasSpecialChars
      * @return Password
-     * @throws KSException
+     * @throws KeestashException
      *
      * TODO pay credit to https://stackoverflow.com/questions/1837432/how-to-generate-random-password-with-php
      */

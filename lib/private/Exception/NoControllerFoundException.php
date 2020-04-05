@@ -21,6 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Exception;
 
-class NoControllerFoundException extends KSException {
+class NoControllerFoundException extends KeestashException {
 
 }

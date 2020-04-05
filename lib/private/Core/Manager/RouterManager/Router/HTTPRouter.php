@@ -96,8 +96,6 @@ class HTTPRouter extends Router {
                     $controller->getPermission()
                 );
 
-                FileLogger::debug("has permission $hasPermission");
-
                 Keestash::getServer()
                     ->getControllerHookManager()
                     ->executePre();
