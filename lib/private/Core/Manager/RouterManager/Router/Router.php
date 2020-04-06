@@ -121,7 +121,7 @@ abstract class Router implements IRouter {
     }
 
     protected function getParametersFromGlobals(): array {
-        $globals = array_merge(
+        return array_merge(
             $_GET ?? []
             , $_POST ?? []
             , $_FILES ?? []
@@ -129,17 +129,14 @@ abstract class Router implements IRouter {
             , $_SESSION ?? []
             , $_COOKIE ?? []
         );
-
-        return $globals;
     }
 
     protected function getRouteParameters(): array {
         $context = new RequestContext();
         $request = Request::createFromGlobals();
         $context->fromRequest($request);
-        $matcher    = new UrlMatcher($this->routes, $context);
-        $parameters = $matcher->match($context->getPathInfo());
-        return $parameters;
+        $matcher = new UrlMatcher($this->routes, $context);
+        return $matcher->match($context->getPathInfo());
     }
 
     public function getRoutes(): ?HashTable {

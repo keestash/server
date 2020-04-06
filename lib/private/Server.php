@@ -71,6 +71,8 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\PublicFile\PublicFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
+use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\InstallerService;
 use Keestash\Core\Service\Log\LoggerService;
@@ -152,6 +154,14 @@ class Server {
 
         $this->register(IL10N::class, function () {
             return new GetText();
+        });
+
+        $this->register(InputSanitizer::class, function () {
+            return new InputSanitizer();
+        });
+
+        $this->register(OutputSanitizer::class, function () {
+            return new OutputSanitizer();
         });
 
         $this->register(Server::USER_HASH_MAP, function () {

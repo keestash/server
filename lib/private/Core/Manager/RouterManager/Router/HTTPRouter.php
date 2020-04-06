@@ -85,7 +85,6 @@ class HTTPRouter extends Router {
             $parentClasses    = parent::getParentClasses($controller);
             $methodParameters = $httpParams + $parameters;
 
-
             if ($parentClasses->containsValue(AppController::class)) {
 
                 $controller->onCreate(

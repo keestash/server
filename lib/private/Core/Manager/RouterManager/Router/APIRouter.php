@@ -58,6 +58,7 @@ class APIRouter extends Router {
                 throw new KeestashException("passed controller is not an instance of AbstractApi");
             }
 
+            $service->setParameters($allParameters);
             $service->onCreate($allParameters);
 
             $hasPermission = $this->hasPermission(
