@@ -78,7 +78,7 @@ class DataManager implements IDataManager {
 
         $isFile = is_file($file->getFullPath());
         if (true === $isFile) {
-            unlink($file->getFullPath());
+            $this->remove($file);
         }
 
         $copied = copy(
@@ -90,7 +90,7 @@ class DataManager implements IDataManager {
     }
 
     public function get(IFile $file): IFile {
-        $file = new File();
+        $file   = new File();
         $isFile = is_file($file->getFullPath());
         if (false === $isFile) return $file;
         $file->setContent(file_get_contents($file->getFullPath()));
@@ -121,11 +121,37 @@ class DataManager implements IDataManager {
     }
 
     public function remove(IFile $file): bool {
-        return false;
+
+        $fullPath   = $file->getFullPath();
+        $isFile     = is_file($fullPath);
+        $fileExists = is_file($fullPath);
+
+        if (false === $fileExists) {
+            FileLogger::debug("File does not exist, aborting with true for unlink file");
+            return true;
+        }
+        if (false === $isFile) {
+            FileLogger::debug("$fullPath is not a file");
+            return false;
+        }
+        $removed = @unlink($fullPath);
+
+        if (false === $removed) {
+            FileLogger::debug("could not remove file, unlink returned false");
+        }
+        return $removed;
     }
 
     public function removeAll(FileList $fileList): bool {
-        return false;
+        $removed = false;
+        /** @var IFile $file */
+        foreach ($fileList as $file) {
+
+            $removed = $this->remove($file);
+
+        }
+
+        return $removed;
     }
 
 }

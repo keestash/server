@@ -24,6 +24,8 @@ namespace Keestash\Api;
 use Keestash;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
+use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
+use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use KSP\Api\IApi;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
@@ -37,22 +39,49 @@ abstract class AbstractApi implements IApi {
     private $translator = null;
     private $parameters = null;
     private $token      = null;
+    /** @var InputSanitizer $inputSanitizer */
+    private $inputSanitizer = null;
+    /** @var OutputSanitizer $outputSanitizer */
+    private $outputSanitizer     = null;
+    private $parametersSanitized = false;
 
     public function __construct(
         IL10N $l10n
         , ?IToken $token = null
     ) {
-        $defaultResponse = $this->createResponse(
+
+        $this->translator = $l10n;
+        $this->token      = $token;
+        $this->setParameters([]);
+        // TODO inject via constructor once you are ready to adapt all extending classes
+        $this->inputSanitizer = Keestash::getServer()->query(InputSanitizer::class);
+        // TODO inject via constructor once you are ready to adapt all extending classes
+        $this->outputSanitizer = Keestash::getServer()->query(OutputSanitizer::class);
+
+        $this->response = $this->createResponse(
             IResponse::RESPONSE_CODE_NOT_OK
             , [
                 $l10n->translate("Could not run request")
             ]
         );
 
-        $this->response   = $defaultResponse;
-        $this->translator = $l10n;
-        $this->parameters = [];
-        $this->token      = $token;
+    }
+
+    public function setParameters(array $parameters): void {
+        $this->parameters          = $parameters;
+        $this->parametersSanitized = false;
+    }
+
+    protected function getParameters(): array {
+        if (false === $this->parametersSanitized) {
+            $this->parameters          = $this->inputSanitizer->sanitizeAll($this->parameters);
+            $this->parametersSanitized = true;
+        }
+        return $this->parameters;
+    }
+
+    protected function getParameter(string $name, ?string $default = null): ?string {
+        return $this->getParameters()[$name] ?? $default;
     }
 
     public function getResponse(): IResponse {
@@ -75,14 +104,6 @@ abstract class AbstractApi implements IApi {
         return $this->translator;
     }
 
-    protected function setParameters(array $parameters): void {
-        $this->parameters = $parameters;
-    }
-
-    protected function getParameters(): array {
-        return $this->parameters;
-    }
-
     protected function getToken(): ?IToken {
         return $this->token;
     }
@@ -94,7 +115,7 @@ abstract class AbstractApi implements IApi {
             $code
             , [
                 "code"       => $code
-                , "messages" => $messages
+                , "messages" => $this->outputSanitizer->sanitizeAll($messages)
             ]
         );
 
