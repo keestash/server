@@ -19,7 +19,7 @@
 import Input from "../../../../../../lib/js/src/UI/Input";
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../lib/js/src/UI/ModalHandler";
 import {Util} from "../../../../../../lib/js/src/Util/Util";
-import {TemplateStorage} from "../../../../../../lib/js/src/Storage/TemplateStorage";
+import {TemplateStorage} from "../../../../../../lib/js/src/Storage/TemplateStorage/TemplateStorage";
 import modal from "../../../../../../lib/js/src/UI/modal";
 
 export class Submit {

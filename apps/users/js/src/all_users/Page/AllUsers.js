@@ -28,16 +28,11 @@ export class AllUsers {
 
     handle() {
         this.handleAddNewUser();
-        console.log("handle :)")
     }
 
     handleAddNewUser() {
         const button = $("#tl__add__users__button");
-        const _this = this;
-
-        const template = _this.templates['new_user_add'];
-        console.log(_this.templates);
-        console.log(template);
+        const template = this.templates["new-user-add"];
 
         button.click(() => {
 

@@ -23,42 +23,53 @@ import {ConsoleLogger} from "../../../../../lib/js/src/Log/ConsoleLogger";
 import {AppStorage} from "../../../../../lib/js/src/Storage/AppStorage";
 import {Router} from "../../../../../lib/js/src/Route/Router";
 import {Host} from "../../../../../lib/js/src/Backend/Host";
-import {TemplateStorage} from "../../../../../lib/js/src/Storage/TemplateStorage";
+import {TemplateStorage} from "../../../../../lib/js/src/Storage/TemplateStorage/TemplateStorage";
+import {TemplateLoader} from "../../../../../lib/js/src/Storage/TemplateStorage/TemplateLoader";
+import {Routes as GlobalRoutes} from "../../../../../lib/js/src/Route/Routes";
 
 (function () {
-    if (!Keestash.AllUsers) {
-        Keestash.AllUsers = {};
+    if (!Keestash.Apps.AllUsers) {
+        Keestash.Apps.AllUsers = {};
     }
 
-    Keestash.AllUsers = {
+    Keestash.Apps.AllUsers = {
         init: function () {
-            const templateStorage = new TemplateStorage();
-            const _this = this;
 
-            templateStorage
-                .getAll()
-                .then((templates) => {
-                    _this.run(templates);
-                });
-        },
-
-        run: (templates) => {
-            const allUsers = new AllUsers(
-                new Request(
-                    new ConsoleLogger()
-                    , new AppStorage()
-                    , new Router(
-                        new Host()
-                    )
+            const host = new Host();
+            const request = new Request(
+                new ConsoleLogger()
+                , new AppStorage()
+                , new Router(
+                    host
                 )
-                , templates
             );
-            allUsers.handle();
+            const templateStorage = new TemplateStorage();
+            const templateLoader = new TemplateLoader(
+                request
+                , new GlobalRoutes(
+                    host
+                )
+            );
 
+            // TODO remove before going live
+            templateLoader.load(true)
+                .then(() => {
+                    templateStorage
+                        .getAll()
+                        .then((templates) => {
 
-        }
+                            const allUsers = new AllUsers(
+                                request
+                                , templates
+                            );
+                            allUsers.handle();
+                        });
+
+                })
+
+        },
     }
 })();
 $(document).ready(function () {
-    Keestash.AllUsers.init();
+    Keestash.Apps.AllUsers.init();
 });
