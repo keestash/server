@@ -171,8 +171,6 @@ class UpdateProfileImage extends AbstractApi {
         $extensions = $this->rawFileService->getFileExtensions($tempName);
         $mimeType   = $this->rawFileService->getMimeType($tempName);
 
-        FileLogger::debug($mimeType);
-
         $file = new File();
         $file->setOwner($this->user);
         $file->setSize(
