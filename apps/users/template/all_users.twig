@@ -1,0 +1,38 @@
+<table class="ui compact celled definition table">
+    <thead class="full-width">
+    <tr>
+        <th></th>
+        <th>{{ name }}</th>
+        <th>{{ firstName }}</th>
+        <th>{{ lastName }}</th>
+        <th>{{ email }}</th>
+        <th>{{ registerDate }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for id, user in users %}
+        <tr>
+            <td class="collapsing">
+                <div class="ui fitted slider checkbox">
+                    <input type="checkbox"> <label></label>
+                </div>
+            </td>
+            <td>{{ user.getName() }}</td>
+            <td>{{ user.getFirstName() }}</td>
+            <td>{{ user.getLastName() }}</td>
+            <td>{{ user.getEmail() }}</td>
+            <td>{{ user.getCreateTs().format('d.m.Y H:i:s') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot class="full-width">
+    <tr>
+        <th></th>
+        <th colspan="5">
+            <button class="ui right floated small primary labeled icon button" id="all__users__add__new__user">
+                <i class="user icon"></i> Add User
+            </button>
+        </th>
+    </tr>
+    </tfoot>
+</table>

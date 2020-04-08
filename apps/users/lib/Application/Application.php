@@ -31,6 +31,8 @@ class Application extends Keestash\App\Application {
 
     public const PERMISSION_USERS = "users";
 
+    public const TEMPLATE_NAME_ALL_USERS = "all_users.twig";
+
     public const APP_ID                 = "users";
     public const USERS_ADD              = "users/add";
     public const USERS                  = "users";
@@ -55,7 +57,14 @@ class Application extends Keestash\App\Application {
             , [IRouterManager::GET]
         );
 
-        parent::addJavascript(self::USERS);
+        parent::addJavascript("all_users");
+
+
+        $this->addJavaScriptFor(
+            Application::APP_ID
+            , "all_users"
+            , Application::USERS
+        );
 
         parent::addSetting(
             self::USERS

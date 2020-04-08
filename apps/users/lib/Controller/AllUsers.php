@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Users\Controller;
 
 use Keestash;
+use KSA\Users\Application\Application;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -44,8 +45,9 @@ class AllUsers {
 
     public function handle(): string {
 
-        $this->templateManager->replace("all_users.html",
-            [
+        $this->templateManager->replace(
+            Application::TEMPLATE_NAME_ALL_USERS
+            , [
                 "name"                        => $this->l10n->translate("Name")
                 , "firstName"                 => $this->l10n->translate("First Name")
                 , "lastName"                  => $this->l10n->translate("Last Name")
@@ -77,7 +79,7 @@ class AllUsers {
             ]
         );
 
-        return $this->templateManager->render("all_users.html");
+        return $this->templateManager->render(Application::TEMPLATE_NAME_ALL_USERS);
 
     }
 

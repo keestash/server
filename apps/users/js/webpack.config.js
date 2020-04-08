@@ -20,10 +20,12 @@ const glob = require("glob");
 const webpack = require("webpack");
 
 module.exports = {
-    entry: glob.sync(__dirname + "/src/*.js"),
+    entry: {
+        all_users: glob.sync(__dirname + "/src/all_users/*.js")
+    },
     output: {
         path: __dirname + "/dist/",
-        filename: 'users.bundle.js'
+        filename: '[name].bundle.js'
     },
     module: {
         rules: [{
