@@ -36,8 +36,6 @@ class User implements IUser, PermissionUser {
     private $password;
     /** @var \DateTime $createTs */
     private $createTs;
-    /** @var string $displayName */
-    private $displayName;
     /** @var string $firstName */
     private $firstName;
     /** @var string $lastName */
@@ -67,14 +65,6 @@ class User implements IUser, PermissionUser {
      */
     public function setPassword(string $password): void {
         $this->password = $password;
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getDisplayName(): string {
-        return $this->displayName;
     }
 
     /**

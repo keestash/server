@@ -41,8 +41,6 @@ interface IUser extends IObject, IComparator {
 
     public function getCreateTs(): DateTime;
 
-    public function getDisplayName(): string;
-
     public function getFirstName(): string;
 
     public function getLastName(): string;
