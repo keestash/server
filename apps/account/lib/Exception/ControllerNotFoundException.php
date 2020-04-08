@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Account\Exception;
 
-use Keestash\Exception\KSException;
+use Keestash\Exception\KeestashException;
 
-class ControllerNotFoundException extends KSException {
+class ControllerNotFoundException extends KeestashException {
 
 }
