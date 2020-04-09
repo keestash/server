@@ -38,16 +38,63 @@ export class AllUsers {
         await this.templateLoader.load(true);
         await this.addButtonListener();
 
-        this.t()
+        this.addEditableListener()
     }
 
-    t() {
-        $(".all__users__editable").each(
+    addEditableListener() {
+        const _this = this;
+
+        console.log(_this.routes.getEditUser())
+        $(".editable").each(
             (index, object) => {
-                $(object)
-                    .off("focusout")
-                    .focusout(() => {
-                        console.log("focus out");
+                const element = $(object);
+
+                const input = $(element.children()[0]);
+                const icon = $(element.children()[1]);
+
+                icon.off("click").click(() => {
+                    const type = input.attr("data-type");
+                    const edited = input.attr("data-edited");
+                    const userId = element
+                        .parent()
+                        .parent()
+                        .attr("data-id");
+
+                    const value = input.val();
+
+                    console.log(userId)
+                    // TODO validate input
+
+                    if ("false" === edited) {
+                        return;
+                    }
+
+                    _this.request.post(
+                        _this.routes.getEditUser()
+                        , {
+                            type: type
+                            , value: value
+                            , user_id: userId
+                        }
+                        , (x, y, z) => {
+                            console.log(x)
+                        }
+                        , (x, y, z) => {
+                            console.log(x)
+                        }
+                    );
+                });
+
+                input
+                    .off("change")
+                    .change(() => {
+                        const value = input.val();
+
+                        if ("" === value) {
+                            input.attr("data-edited", "false")
+                        }
+                        input.attr("data-edited", "true")
+
                     });
             }
         );

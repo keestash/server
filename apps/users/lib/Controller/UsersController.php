@@ -82,6 +82,7 @@ class UsersController extends AppController {
                 , "lastName"                  => $this->l10n->translate("Last Name")
                 , "hash"                      => $this->l10n->translate("Hash")
                 , "email"                     => $this->l10n->translate("Email")
+                , "website"                   => $this->l10n->translate("Website")
                 , "password"                  => $this->l10n->translate("Password")
                 , "addNewPasswordPlaceholder" => $this->l10n->translate("New Password")
                 , "phone"                     => $this->l10n->translate("Phone")
