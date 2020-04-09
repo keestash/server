@@ -23,6 +23,7 @@ namespace Keestash\Core\DTO;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
+use Exception;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Permission\IUser as PermissionUser;
 
@@ -34,7 +35,7 @@ class User implements IUser, PermissionUser {
     private $name;
     /** @var string $password */
     private $password;
-    /** @var \DateTime $createTs */
+    /** @var DateTime $createTs */
     private $createTs;
     /** @var string $firstName */
     private $firstName;
@@ -103,18 +104,18 @@ class User implements IUser, PermissionUser {
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getCreateTs(): \DateTime {
+    public function getCreateTs(): DateTime {
         return $this->createTs;
     }
 
     /**
      * @param int $createTs
-     * @throws \Exception
+     * @throws Exception
      */
     public function setCreateTs(int $createTs): void {
-        $dateTime = new \DateTime();
+        $dateTime = new DateTime();
         $dateTime->setTimestamp($createTs);
         $this->createTs = $dateTime;
     }

@@ -1,11 +1,13 @@
-<table class="ui compact celled definition table">
+<table class="ui compact celled definition table" id="all__users__table">
     <thead class="full-width">
     <tr>
         <th></th>
         <th>{{ name }}</th>
         <th>{{ firstName }}</th>
         <th>{{ lastName }}</th>
+        <th>{{ password }}</th>
         <th>{{ email }}</th>
+        <th>{{ phone }}</th>
         <th>{{ registerDate }}</th>
     </tr>
     </thead>
@@ -14,21 +16,47 @@
         <tr>
             <td class="collapsing">
                 <div class="ui fitted slider checkbox">
-                    <input type="checkbox"> <label></label>
+                    <input type="checkbox" checked> <label></label>
                 </div>
             </td>
             <td>{{ user.getName() }}</td>
-            <td>{{ user.getFirstName() }}</td>
-            <td>{{ user.getLastName() }}</td>
-            <td>{{ user.getEmail() }}</td>
-            <td>{{ user.getCreateTs().format('d.m.Y H:i:s') }}</td>
+            <td>
+                <div class="ui fluid transparent input">
+                    <input class="all__users__editable" data-type="firstname" type="text"
+                           value="{{ user.getFirstName() }}">
+                </div>
+            </td>
+            <td>
+                <div class="ui fluid transparent input">
+                    <input class="all__users__editable" data-type="lastname" type="text"
+                           value="{{ user.getLastName() }}">
+                </div>
+            </td>
+            <td>
+                <div class="ui fluid transparent input">
+                    <input class="all__users__editable" data-type="password" type="type" value=""
+                           placeholder="{{ addNewPasswordPlaceholder }}">
+                </div>
+            </td>
+            <td>
+                <div class="ui  transparent input">
+                    <input class="all__users__editable" data-type="email" type="text" value="{{ user.getEmail() }}">
+                </div>
+            </td>
+            <td>
+                <div class="ui  transparent input">
+                    <input class="all__users__editable" data-type="phone" type="text" value="{{ user.getPhone() }}">
+                </div>
+            </td>
+
+            <td>{{ user.getCreateTs()|date('d.m.Y') }}</td>
         </tr>
     {% endfor %}
     </tbody>
     <tfoot class="full-width">
     <tr>
         <th></th>
-        <th colspan="5">
+        <th colspan="8">
             <button class="ui right floated small primary labeled icon button" id="all__users__add__new__user">
                 <i class="user icon"></i> Add User
             </button>
