@@ -23,9 +23,11 @@ import {ConsoleLogger} from "../../../../../lib/js/src/Log/ConsoleLogger";
 import {AppStorage} from "../../../../../lib/js/src/Storage/AppStorage";
 import {Router} from "../../../../../lib/js/src/Route/Router";
 import {Host} from "../../../../../lib/js/src/Backend/Host";
-import {TemplateStorage} from "../../../../../lib/js/src/Storage/TemplateStorage/TemplateStorage";
 import {TemplateLoader} from "../../../../../lib/js/src/Storage/TemplateStorage/TemplateLoader";
 import {Routes as GlobalRoutes} from "../../../../../lib/js/src/Route/Routes";
+import {StringLoader} from "../../../../../lib/js/src/Storage/StringStorage/StringLoader";
+import {Parser} from "../../../../../lib/js/src/UI/Template/Parser/Parser";
+import {Routes} from "../Public/Routes";
 
 (function () {
     if (!Keestash.Apps.AllUsers) {
@@ -43,29 +45,30 @@ import {Routes as GlobalRoutes} from "../../../../../lib/js/src/Route/Routes";
                     host
                 )
             );
-            const templateStorage = new TemplateStorage();
-            const templateLoader = new TemplateLoader(
-                request
-                , new GlobalRoutes(
-                    host
-                )
+            const globalRoutes = new GlobalRoutes(
+                host
             );
 
-            // TODO remove before going live
-            templateLoader.load(true)
-                .then(() => {
-                    templateStorage
-                        .getAll()
-                        .then((templates) => {
+            const templateLoader = new TemplateLoader(
+                request
+                , globalRoutes
+            );
+            const stringLoader = new StringLoader(
+                request
+                , globalRoutes
+            );
+            const parser = new Parser();
+            const routes = new Routes();
 
-                            const allUsers = new AllUsers(
-                                request
-                                , templates
-                            );
-                            allUsers.handle();
-                        });
+            const allUsers = new AllUsers(
+                request
+                , stringLoader
+                , templateLoader
+                , parser
+                , routes
+            );
 
-                })
+            allUsers.handle();
 
         },
     }

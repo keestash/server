@@ -74,6 +74,12 @@ class Application extends Keestash\App\Application {
             , "fas fa-user-circle"
             , 1
         );
+
+        $this->addString(
+            Application::APP_ID
+            , "profileImage"
+            , Keestash::getBaseURL(false) . "/asset/img/profile-picture.png"
+        );
     }
 
 }

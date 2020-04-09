@@ -1,3 +1,5 @@
+<?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -16,25 +18,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Twig from '../../../../../node_modules/twig/twig';
 
-/**
- * @deprecated
- */
-export default {
+namespace Keestash\Core\Manager\StringManager;
 
-    /**
-     * @deprecated
-     * @param raw
-     * @param context
-     * @returns {*}
-     */
-    parse: function (raw, context) {
-        let template = Twig.twig({
-            // id: "list", // id is optional, but useful for referencing the template later
-            data: raw
-        });
-        return template.render(context);
-    }
+class FrontendManager extends StringManager {
 
 }

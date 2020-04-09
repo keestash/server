@@ -29,5 +29,6 @@ interface IExtension extends IObject {
     public const JPG  = "jpg";
     public const PDF  = "pdf";
     public const TWIG = "twig";
+    public const JSON = "json";
 
 }

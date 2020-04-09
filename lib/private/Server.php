@@ -52,6 +52,7 @@ use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
+use Keestash\Core\Manager\StringManager\FrontendManager as FrontendStringManager;
 use Keestash\Core\Manager\TemplateManager\ApiManager;
 use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use Keestash\Core\Manager\TemplateManager\TwigManager;
@@ -519,6 +520,10 @@ class Server {
             return new PublicFileService();
         });
 
+        $this->register(FrontendStringManager::class, function () {
+            return new FrontendStringManager();
+        });
+
     }
 
     public function register(string $name, Closure $closure): bool {
@@ -634,6 +639,10 @@ class Server {
 
     public function getFrontendTemplateManager(): FrontendManager {
         return $this->query(FrontendManager::class);
+    }
+
+    public function getFrontendStringManager(): FrontendStringManager {
+        return $this->query(FrontendStringManager::class);
     }
 
     public function getActionBarManager(): IActionBarManager {

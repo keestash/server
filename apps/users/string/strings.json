@@ -1,0 +1,9 @@
+{
+  "strings": {
+    "name": "Name",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "registerDate": "RegistrationDate"
+  }
+}

@@ -1,3 +1,5 @@
+<?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -16,25 +18,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Twig from '../../../../../node_modules/twig/twig';
 
-/**
- * @deprecated
- */
-export default {
+namespace KSP\Core\Manager\StringManager;
 
-    /**
-     * @deprecated
-     * @param raw
-     * @param context
-     * @returns {*}
-     */
-    parse: function (raw, context) {
-        let template = Twig.twig({
-            // id: "list", // id is optional, but useful for referencing the template later
-            data: raw
-        });
-        return template.render(context);
-    }
+use KSP\Core\Manager\IManager;
+
+interface IStringManager extends IManager {
+
+    public function addPath(string $key, string $path): void;
+
+    public function addString(string $appId, string $key, string $value): void;
+
+    public function load(?string $key = null): array;
 
 }

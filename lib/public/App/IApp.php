@@ -48,6 +48,8 @@ interface IApp {
 
     public function getTemplatePath(): string;
 
+    public function getStringPath(): string;
+
     public function getFAIconClass(): string;
 
     public function getBaseRoute(): string;

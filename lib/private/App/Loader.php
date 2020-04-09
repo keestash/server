@@ -127,6 +127,7 @@ class Loader implements ILoader {
             $this->buildNamespaceAndRequire($app);
             $this->requireInfoPhp($app);
             $this->loadTemplate($app);
+            $this->loadString($app);
 //        $this->loadJs($app);
         }
     }
@@ -176,6 +177,7 @@ class Loader implements ILoader {
         $app->setBaseRoute($info[IApp::FIELD_BASE_ROUTE]);
         $app->setAppPath("{$this->appRoot}/apps/{$app->getId()}");
         $app->setTemplatePath("{$app->getAppPath()}/template/");
+        $app->setStringPath("{$app->getAppPath()}/string/");
         $app->setFAIconClass($info[IApp::FIELD_FA_ICON_CLASS]);
         $app->setVersion((int) $info[IApp::FIELD_VERSION]);
         $app->setVersionString($info[IApp::FIELD_VERSION_STRING]);
@@ -246,6 +248,32 @@ class Loader implements ILoader {
                         $path
                     );
 
+            }
+
+        }
+
+    }
+
+    private function loadString(IApp $app) {
+
+        $dir = $app->getStringPath();
+        if (false === is_dir($dir)) return;
+        $dirsToAdd   = [];
+        $dirsToAdd[] = $dir;
+        $iterator    = new RecursiveDirectoryIterator($dir);
+
+        /** @var SplFileInfo $info */
+        foreach ($iterator as $info) {
+            if (false === $info->isDir()) continue;
+            $path = $info->getRealPath();
+
+            if (ILoader::DIR_NAME_FRONTEND === $info->getBasename()) {
+                Keestash::getServer()
+                    ->getFrontendStringManager()
+                    ->addPath(
+                        $app->getId()
+                        , $path
+                    );
             }
 
         }

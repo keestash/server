@@ -19,19 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\GeneralApi\Api\Template;
+namespace KSA\GeneralApi\Api\String;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Manager\TemplateManager\FrontendManager;
+use Keestash\Core\Manager\StringManager\FrontendManager;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
+use KSP\Core\Manager\StringManager\IStringManager;
 use KSP\L10N\IL10N;
 
 class GetAll extends AbstractApi {
 
-    private $frontendManager = null;
+    /** @var IStringManager $stringManager */
+    private $stringManager = null;
 
     public function __construct(
         IL10N $l10n
@@ -40,7 +41,7 @@ class GetAll extends AbstractApi {
     ) {
         parent::__construct($l10n, $token);
 
-        $this->frontendManager = $frontendManager;
+        $this->stringManager = $frontendManager;
     }
 
     public function onCreate(array $parameters): void {
@@ -51,22 +52,9 @@ class GetAll extends AbstractApi {
         $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [
-                "data" => $this->hashTableToArray(
-                    $this->frontendManager->getAllRaw()
-                )
+                "data" => $this->stringManager->load()
             ]
         );
-    }
-
-    private function hashTableToArray(HashTable $table): array {
-        $array = [];
-        foreach ($table->keySet() as $key) {
-            $name         = basename($key);
-            $name         = str_replace(".twig", "", $name);
-            $array[$name] =
-                ($table->get($key));
-        }
-        return $array;
     }
 
     public function create(): void {

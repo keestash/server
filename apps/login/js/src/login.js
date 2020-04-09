@@ -24,6 +24,7 @@ import {Submit} from "./Login/Submit/Submit";
 import {Routes as GlobalRoutes} from "../../../../lib/js/src/Route/Routes";
 import {Host} from "../../../../lib/js/src/Backend/Host";
 import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
+import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/TemplateLoader";
 
 (function () {
     if (!Keestash.Login) {
@@ -37,20 +38,26 @@ import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
                 Keestash.Main.getHost()
             );
             const appStorage = new AppStorage();
+            const request = new Request(
+                new ConsoleLogger()
+                , appStorage
+                , new Router(
+                    Keestash.Main.getHost()
+                )
+            );
+            const globalRoutes = new GlobalRoutes(
+                new Host()
+            );
 
             const submit = new Submit(
                 router
-                , new Request(
-                    new ConsoleLogger()
-                    , appStorage
-                    , new Router(
-                        Keestash.Main.getHost()
-                    )
-                )
+                , request
                 , appStorage
                 , new Routes()
-                , new GlobalRoutes(
-                    new Host()
+                , globalRoutes
+                , new TemplateLoader(
+                    request
+                    , globalRoutes
                 )
             );
             submit.handle();

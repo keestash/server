@@ -176,10 +176,6 @@ class Keestash {
 
     }
 
-    public static function initConsole():void {
-        Keestash::init();
-    }
-
     private static function initApp(): bool {
         $appRoot = self::getAppRoot();
 
