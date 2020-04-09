@@ -20,63 +20,80 @@ export class AllUsers {
 
     constructor(
         request
-        , templates
+        , stringLoader
+        , templateLoader
+        , parser
+        , routes
     ) {
         this.request = request;
-        this.templates = templates;
+        this.stringLoader = stringLoader;
+        this.templateLoader = templateLoader;
+        this.parser = parser;
+        this.routes = routes;
     }
 
-    handle() {
-        this.handleAddNewUser();
+    async handle() {
+        // TODO remove before going live
+        await this.stringLoader.load(true);
+        await this.templateLoader.load(true);
+        await this.addButtonListener();
     }
 
-    handleAddNewUser() {
-        const button = $("#tl__add__users__button");
-        const template = this.templates["new-user-add"];
+
+    async addButtonListener() {
+        const _this = this;
+        const button = $("#all__users__add__new__user");
+
+        const strings = await this.stringLoader.read();
+        const userStrings = JSON.parse(strings.users);
+        const templates = await this.templateLoader.read();
 
         button.click(() => {
 
+            const _this = this;
+            const p = _this.parser.parse(
+                templates["new-user-add"]
+                , userStrings.strings
+            );
 
-            $('.ui.modal')
-                .modal({
-                    inverted: true
-                    , onShow: function () {
-                    }
-                    , onApprove: function (element) {
-                        var userName = $("#tl__user__name").val();
-                        var firstName = $("#tl__first__name").val();
-                        var lastName = $("#tl__last__name").val();
-                        var email = $("#tl__email").val();
-                        var phone = $("#tl__phone").val();
-                        var password = $("#tl__password").val();
-                        var passwordRepeat = $("#tl__password__repeat").val();
-                        var website = $("#tl__website__name").val();
+            $(p).modal({
+                inverted: true
+                , onApprove: function (element) {
+                    const userName = $("#tl__user__name").val();
+                    const firstName = $("#tl__first__name").val();
+                    const lastName = $("#tl__last__name").val();
+                    const email = $("#tl__email").val();
+                    const phone = $("#tl__phone").val();
+                    const password = $("#tl__password").val();
+                    const passwordRepeat = $("#tl__password__repeat").val();
+                    const website = $("#tl__website__name").val();
 
-                        // TODO validate user input
+                    // TODO validate user input
 
-                        formula.post(
-                            Keestash.Main.getApiHost() + "/users/add"
-                            , {
-                                'user_name': userName
-                                , 'first_name': firstName
-                                , 'last_name': lastName
-                                , 'email': email
-                                , 'phone': phone
-                                , 'password': password
-                                , 'password_repeat': passwordRepeat
-                                , 'website': website
-                            }
-                            , function (response, status, xhr) {
-                                location.reload();
-                            }
-                            , function (response, status, xhr) {
-                                alert("error");
-                            }
-                        );
-                    }
-                })
+                    _this.request.post(
+                        _this.routes.getAddUser()
+                        , {
+                            'user_name': userName
+                            , 'first_name': firstName
+                            , 'last_name': lastName
+                            , 'email': email
+                            , 'phone': phone
+                            , 'password': password
+                            , 'password_repeat': passwordRepeat
+                            , 'website': website
+                        }
+                        , function (response, status, xhr) {
+                            location.reload();
+                        }
+                        , function (response, status, xhr) {
+                            alert("error");
+                        }
+                    );
+                }
+            })
                 .modal('show');
             ;
         });
     }
+
 }

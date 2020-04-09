@@ -1,0 +1,25 @@
+{
+  "strings": {
+    "modalTitle": "New User",
+    "header": "Add a New User By Using the Form below",
+    "userNameLabel": "User Name",
+    "userNamePlaceholder": "User Name",
+    "firstNameLabel": "First Name",
+    "firstNamePlaceholder": "First Name",
+    "lastNameLabel": "Last Name",
+    "lastNamePlaceholder": "Last Name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Email",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "Phone",
+    "passwordLabel": "Login",
+    "passwordPlaceholder": "Login",
+    "passwordRepeaKSAbel": "Login Repeat",
+    "passwordRepeatPlaceholder": "Login Repeat",
+    "websiteLabel": "Website",
+    "websitePlaceholder": "Website",
+    "imageDescription": "Change your profile image in the settings menu",
+    "cancel": "Cancel",
+    "addUser": "Add User"
+  }
+}

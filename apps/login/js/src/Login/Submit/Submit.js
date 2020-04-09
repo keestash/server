@@ -18,8 +18,6 @@
  */
 import Input from "../../../../../../lib/js/src/UI/Input";
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../lib/js/src/UI/ModalHandler";
-import {Util} from "../../../../../../lib/js/src/Util/Util";
-import {TemplateStorage} from "../../../../../../lib/js/src/Storage/TemplateStorage/TemplateStorage";
 import modal from "../../../../../../lib/js/src/UI/modal";
 
 export class Submit {
@@ -30,12 +28,14 @@ export class Submit {
         , appStorage
         , routes
         , globalRoutes
+        , templateLoader
     ) {
         this.router = router;
         this.request = request;
         this.appStorage = appStorage;
         this.routes = routes;
         this.globalRoutes = globalRoutes;
+        this.templateLoader = templateLoader;
     }
 
     handle() {
@@ -85,31 +85,35 @@ export class Submit {
 
                         _this.changeButtonState(true);
 
-                        _this.request.get(
-                            _this.globalRoutes.getAllTemplates()
-                            , {}
-                            , (x, y, z) => {
-                                const isJson = Util.isJson(x);
-                                if (true === isJson) {
-                                    const object = JSON.parse(x);
+                        _this.templateLoader.load(true).finally(() => {
+                            _this.router.routeTo(routeTo);
+                        });
 
-                                    if (RESPONSE_CODE_OK in object) {
-                                        const templateStorage = new TemplateStorage();
-                                        const templates = object[RESPONSE_CODE_OK]["messages"]["templates"];
-
-                                        templateStorage.addAll(templates)
-                                            .catch(() => {
-                                                console.log("error :(")
-                                            })
-                                            .finally(() => {
-                                                _this.router.routeTo(routeTo);
-                                            });
-
-                                    }
-                                }
-
-                            }
-                        );
+                        // _this.request.get(
+                        //     _this.globalRoutes.getAllTemplates()
+                        //     , {}
+                        //     , (x, y, z) => {
+                        //         const isJson = Util.isJson(x);
+                        //         if (true === isJson) {
+                        //             const object = JSON.parse(x);
+                        //
+                        //             if (RESPONSE_CODE_OK in object) {
+                        //                 const templateStorage = new TemplateStorage();
+                        //                 const templates = object[RESPONSE_CODE_OK]["messages"]["templates"];
+                        //
+                        //                 templateStorage.addAll(templates)
+                        //                     .catch(() => {
+                        //                         console.log("error :(")
+                        //                     })
+                        //                     .finally(() => {
+                        //
+                        //                     });
+                        //
+                        //             }
+                        //         }
+                        //
+                        //     }
+                        // );
                         return;
                     } else if (RESPONSE_CODE_NOT_OK in object) {
                         result_object = object[RESPONSE_CODE_NOT_OK];

@@ -26,12 +26,14 @@ use KSP\App\IApp;
 class App implements IApp {
 
     public const TYPE_APP = "app";
-    private $id            = null;
-    private $order         = 0;
-    private $name          = null;
-    private $namespace     = null;
-    private $appPath       = null;
-    private $templatePath  = null;
+    private $id           = null;
+    private $order        = 0;
+    private $name         = null;
+    private $namespace    = null;
+    private $appPath      = null;
+    private $templatePath = null;
+    /** @var string $stringPath */
+    private $stringPath;
     private $faIconClass   = null;
     private $baseRoot      = null;
     private $version       = null;
@@ -85,6 +87,14 @@ class App implements IApp {
 
     public function setTemplatePath(string $templatePath): void {
         $this->templatePath = $templatePath;
+    }
+
+    public function getStringPath(): string {
+        return (string) $this->stringPath;
+    }
+
+    public function setStringPath(string $stringPath): void {
+        $this->stringPath = $stringPath;
     }
 
     public function getFAIconClass(): string {

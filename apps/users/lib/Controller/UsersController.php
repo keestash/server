@@ -68,21 +68,27 @@ class UsersController extends AppController {
     }
 
     public function create(): void {
-        parent::addAppNavigation(
+        $this->addAppNavigation(
             $this->getPart(
                 $this->l10n->translate("All")
                 , UsersController::ALL_USERS)
         );
 
-        if ($this->id === UsersController::ALL_USERS) {
-            $allUsers = new AllUsers(
-                $this->templateManager
-                , $this->l10n
-                , $this->userManager
-            );
-            parent::setAppContent($allUsers->handle());
-        }
+        $this->getTemplateManager()->replace(
+            Application::TEMPLATE_NAME_ALL_USERS
+            , [
+                "name"           => $this->l10n->translate("Name")
+                , "firstName"    => $this->l10n->translate("First Name")
+                , "lastName"     => $this->l10n->translate("Last Name")
+                , "email"        => $this->l10n->translate("Email")
+                , "registerDate" => $this->l10n->translate("RegistrationDate")
+                , "users"        => $this->userManager->getAll()
+            ]
+        );
 
+        $this->setAppContent(
+            $this->templateManager->render(Application::TEMPLATE_NAME_ALL_USERS)
+        );
 
     }
 

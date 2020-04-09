@@ -42,6 +42,7 @@ class Application extends \Keestash\App\Application {
     public const ALL_USERS             = "users/all/{type}/";
     public const FILE_ICONS            = "icon/file/get/{extension}/";
     public const FRONTEND_TEMPLATES    = "frontend_templates/all/";
+    public const FRONTEND_STRINGS      = "frontend_strings/all/";
 
     public function register(): void {
 
@@ -64,6 +65,12 @@ class Application extends \Keestash\App\Application {
         );
 
         $this->registerApiRoute(
+            Application::FRONTEND_STRINGS
+            , \KSA\GeneralApi\Api\String\GetAll::class
+            , [IRouterManager::GET]
+        );
+
+        $this->registerApiRoute(
             Application::FILE_ICONS
             , File::class
             , [IRouterManager::GET]
@@ -71,6 +78,9 @@ class Application extends \Keestash\App\Application {
 
         $this->registerPublicApiRoute(
             Application::PASSWORD_REQUIREMENTS
+        );
+        $this->registerPublicApiRoute(
+            Application::FRONTEND_STRINGS
         );
 
         $this->registerPublicApiRoute(
