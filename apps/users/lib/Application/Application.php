@@ -23,6 +23,7 @@ namespace KSA\Users\Application;
 
 use Keestash;
 use KSA\Users\Api\ProfilePicture;
+use KSA\Users\Api\UserEdit;
 use KSA\Users\Api\UsersAddController;
 use KSA\Users\Controller\UsersController;
 use KSP\Core\Manager\RouterManager\IRouterManager;
@@ -35,6 +36,7 @@ class Application extends Keestash\App\Application {
 
     public const APP_ID                 = "users";
     public const USERS_ADD              = "users/add";
+    public const USERS_EDIT             = "users/edit";
     public const USERS                  = "users";
     public const USERS_PROFILE_PICTURES = "users/profile_pictures/{token}/{user_hash}/";
 
@@ -48,6 +50,12 @@ class Application extends Keestash\App\Application {
         parent::registerRoute(
             Application::USERS_ADD
             , UsersAddController::class
+            , [IRouterManager::POST]
+        );
+
+        parent::registerApiRoute(
+            Application::USERS_EDIT
+            , UserEdit::class
             , [IRouterManager::POST]
         );
 

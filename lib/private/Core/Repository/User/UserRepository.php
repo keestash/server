@@ -172,7 +172,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , u.`last_name`
                       , u.`email`
                       , u.`phone`
-                      , u.`email`
+                      , u.`website`
                       , u.`hash`
                 from `user` u;";
         $statement = parent::prepareStatement($sql);
