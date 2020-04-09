@@ -37,8 +37,23 @@ export class AllUsers {
         await this.stringLoader.load(true);
         await this.templateLoader.load(true);
         await this.addButtonListener();
+
+        this.t()
     }
 
+    t() {
+        $(".all__users__editable").each(
+            (index, object) => {
+                $(object)
+                    .off("focusout")
+                    .focusout(() => {
+                        console.log("focus out");
+                    });
+            }
+        );
+
+
+    }
 
     async addButtonListener() {
         const _this = this;

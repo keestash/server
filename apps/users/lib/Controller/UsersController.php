@@ -77,12 +77,16 @@ class UsersController extends AppController {
         $this->getTemplateManager()->replace(
             Application::TEMPLATE_NAME_ALL_USERS
             , [
-                "name"           => $this->l10n->translate("Name")
-                , "firstName"    => $this->l10n->translate("First Name")
-                , "lastName"     => $this->l10n->translate("Last Name")
-                , "email"        => $this->l10n->translate("Email")
-                , "registerDate" => $this->l10n->translate("RegistrationDate")
-                , "users"        => $this->userManager->getAll()
+                "name"                        => $this->l10n->translate("Name")
+                , "firstName"                 => $this->l10n->translate("First Name")
+                , "lastName"                  => $this->l10n->translate("Last Name")
+                , "hash"                      => $this->l10n->translate("Hash")
+                , "email"                     => $this->l10n->translate("Email")
+                , "password"                  => $this->l10n->translate("Password")
+                , "addNewPasswordPlaceholder" => $this->l10n->translate("New Password")
+                , "phone"                     => $this->l10n->translate("Phone")
+                , "registerDate"              => $this->l10n->translate("RegistrationDate")
+                , "users"                     => $this->userManager->getAll()
             ]
         );
 
