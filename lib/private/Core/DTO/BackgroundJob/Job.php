@@ -19,42 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace Keestash\Core\DTO\BackgroundJob;
 
-use DateTime;
+use doganoo\Backgrounder\BackgroundJob\Job as BackgrounderJob;
+use KSP\Core\DTO\BackgroundJob\IJob;
 
 /**
- * Interface IUser
- * @package KSP\Core\DTO
- *
- * TODO move to right place
+ * Class Job
+ * @package Keestash\Core\DTO\BackgroundJob
  */
-interface IUser extends IObject, IComparator {
-
-    public const SYSTEM_USER_ID = 1;
-
-    public function getId(): int;
-
-    public function getName(): string;
-
-    public function getPassword(): string;
-
-    public function getCreateTs(): DateTime;
-
-    public function getFirstName(): string;
-
-    public function getLastName(): string;
-
-    public function getEmail(): string;
-
-    public function getPhone(): string;
-
-    public function getWebsite(): string;
-
-    public function getHash(): string;
-
-    public function getLastLogin(): ?DateTime;
-
-    public function isDisabled(): bool;
+class Job extends BackgrounderJob implements IJob {
 
 }

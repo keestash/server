@@ -33,4 +33,6 @@ interface IRoleRepository extends IRepository {
 
     public function getRolesByUser(IUser $user): ?BinarySearchTree;
 
+    public function removeUserRoles(IUser $user): bool;
+
 }

@@ -22,35 +22,45 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\HookManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\Log\FileLogger;
-use Keestash\Core\Service\DateTimeService;
-use KSP\Core\Backend\IBackend;
 use KSP\Core\Manager\HookManager\IHookManager;
 use KSP\Hook\IHook;
 
 class HookManager implements IHookManager {
 
-    /** @var ArrayList $preController */
-    private $preController = null;
-    /** @var ArrayList $postController */
-    private $postController = null;
+    /** @var ArrayList $preHooks */
+    private $preHooks = null;
+    /** @var ArrayList $postHooks */
+    private $postHooks = null;
+    /** @var HashTable */
+    protected static $hookCache;
 
     public function __construct() {
-        $this->preController  = new ArrayList();
-        $this->postController = new ArrayList();
+        $this->preHooks    = new ArrayList();
+        $this->postHooks   = new ArrayList();
+        static::$hookCache = new HashTable();
     }
 
     public function addPre(IHook $hook): void {
-        $this->preController->add($hook);
+        $this->preHooks->add($hook);
     }
 
     public function addPost(IHook $hook): void {
-        $this->postController->add($hook);
+        $this->postHooks->add($hook);
+    }
+
+    public static function cache(string $key, $value): void {
+        static::$hookCache->put($key, $value);
+    }
+
+    public static function queryCache(string $key) {
+        return static::$hookCache->get($key);
     }
 
     public function executePre(...$parameters): bool {
         /** @var IHook $hook */
-        foreach ($this->preController as $hook) {
+        foreach ($this->preHooks as $hook) {
             $hook->performAction($parameters);
         }
         return true;
@@ -58,7 +68,7 @@ class HookManager implements IHookManager {
 
     public function executePost(...$parameters): bool {
         /** @var IHook $hook */
-        foreach ($this->postController as $hook) {
+        foreach ($this->postHooks as $hook) {
             $hook->performAction($parameters);
         }
         return true;

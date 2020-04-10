@@ -24,6 +24,7 @@ namespace KSP\Core\Repository\File;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\IUser;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\IRepository;
 
@@ -34,6 +35,8 @@ interface IFileRepository extends IRepository {
     public function addAll(FileList &$files): bool;
 
     public function remove(IFile $file): bool;
+
+    public function removeForUser(IUser $user): bool;
 
     public function removeAll(FileList $files): bool;
 

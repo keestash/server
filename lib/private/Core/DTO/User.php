@@ -53,6 +53,8 @@ class User implements IUser, PermissionUser {
     private $lastLogin = null;
     /** @var string $hash */
     private $hash = null;
+    /** @var bool $disabled */
+    private $disabled = true;
 
     /**
      * @return string
@@ -224,6 +226,14 @@ class User implements IUser, PermissionUser {
         return false;
     }
 
+    public function setDisabled(bool $disabled): void {
+        $this->disabled = $disabled;
+    }
+
+    public function isDisabled(): bool {
+        return $this->disabled;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -244,6 +254,7 @@ class User implements IUser, PermissionUser {
                 , 'website'    => $this->getWebsite()
                 , "roles"      => $this->getRoles()
                 , "hash"       => $this->getHash()
+                , "disabled"   => $this->isDisabled()
             ];
     }
 

@@ -19,42 +19,35 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace Keestash\BackgroundJob\Task;
 
-use DateTime;
+use doganoo\Backgrounder\Task\Task;
 
 /**
- * Interface IUser
- * @package KSP\Core\DTO
- *
- * TODO move to right place
+ * Class UserDeleteJob
+ * @package Keestash\BackgroundJob\Task
  */
-interface IUser extends IObject, IComparator {
+class UserDeleteJob extends Task {
 
-    public const SYSTEM_USER_ID = 1;
+    /**
+     * @inheritDoc
+     */
+    protected function onAction(): void {
+        // TODO: Implement onAction() method.
+    }
 
-    public function getId(): int;
+    /**
+     * @inheritDoc
+     */
+    protected function action(): bool {
+        // TODO: Implement action() method.
+    }
 
-    public function getName(): string;
-
-    public function getPassword(): string;
-
-    public function getCreateTs(): DateTime;
-
-    public function getFirstName(): string;
-
-    public function getLastName(): string;
-
-    public function getEmail(): string;
-
-    public function getPhone(): string;
-
-    public function getWebsite(): string;
-
-    public function getHash(): string;
-
-    public function getLastLogin(): ?DateTime;
-
-    public function isDisabled(): bool;
+    /**
+     * @inheritDoc
+     */
+    protected function onClose(): void {
+        // TODO: Implement onClose() method.
+    }
 
 }

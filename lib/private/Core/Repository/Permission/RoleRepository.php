@@ -83,4 +83,15 @@ class RoleRepository extends AbstractRepository implements IRoleRepository {
         return $tree;
     }
 
+    public function removeUserRoles(IUser $user): bool {
+        $sql       = "DELETE FROM `user_role` WHERE `user_id` = :user_id;";
+        $statement = $this->prepareStatement($sql);
+
+        if (null === $statement) return false;
+        $userId = $user->getId();
+        $statement->bindParam("user_id", $userId);
+        $statement->execute();
+        return false === $this->hasErrors($statement->errorCode());
+    }
+
 }

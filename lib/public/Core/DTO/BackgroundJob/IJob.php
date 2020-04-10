@@ -19,42 +19,46 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\BackgroundJob;
 
 use DateTime;
 
-/**
- * Interface IUser
- * @package KSP\Core\DTO
- *
- * TODO move to right place
- */
-interface IUser extends IObject, IComparator {
+interface IJob {
 
-    public const SYSTEM_USER_ID = 1;
 
+    /**
+     * @return int
+     */
     public function getId(): int;
 
+    /**
+     * @return string
+     */
     public function getName(): string;
 
-    public function getPassword(): string;
+    /**
+     * @return string
+     */
+    public function getType(): string;
 
+    /**
+     * @return int
+     */
+    public function getInterval(): int;
+
+    /**
+     * @return DateTime|null
+     */
+    public function getLastRun(): ?DateTime;
+
+    /**
+     * @return array|null
+     */
+    public function getInfo(): ?array;
+
+    /**
+     * @return DateTime
+     */
     public function getCreateTs(): DateTime;
-
-    public function getFirstName(): string;
-
-    public function getLastName(): string;
-
-    public function getEmail(): string;
-
-    public function getPhone(): string;
-
-    public function getWebsite(): string;
-
-    public function getHash(): string;
-
-    public function getLastLogin(): ?DateTime;
-
-    public function isDisabled(): bool;
 
 }

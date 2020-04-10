@@ -22,10 +22,13 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\ApiLog;
 
 use KSP\Core\DTO\IAPIRequest;
+use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IApiLogRepository extends IRepository {
 
     public function log(IAPIRequest $request): ?int;
+
+    public function removeForUser(IUser $user): bool;
 
 }

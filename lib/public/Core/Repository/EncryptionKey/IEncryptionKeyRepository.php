@@ -33,4 +33,6 @@ interface IEncryptionKeyRepository extends IRepository {
 
     public function getKey(IUser $user): ?IKey;
 
+    public function remove(IUser $user): bool;
+
 }

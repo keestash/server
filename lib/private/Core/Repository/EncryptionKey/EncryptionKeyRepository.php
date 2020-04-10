@@ -22,12 +22,14 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\EncryptionKey;
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\Key;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\IKey;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
+use PDO;
 
 class EncryptionKeyRepository extends AbstractRepository implements IEncryptionKeyRepository {
 
@@ -69,6 +71,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
     }
 
     public function getKey(IUser $user): ?IKey {
+        FileLogger::debug(json_encode($user));
         $sql = "select
                         k.`id`
                         , k.`value`
@@ -78,10 +81,11 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
                         on k.`id` = uk.`key_id`
                 where uk.`user_id` = :user_id
                 ";
+        $userId = $user->getId();
         $row = parent::getSingle(
             $sql
             , [
-                "user_id" => $user->getId()
+                "user_id" => $userId
             ]
         );
 
@@ -94,6 +98,31 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
         $dateTime->setTimestamp((int) $row[2]);
         $key->setCreateTs($dateTime);
         return $key;
+    }
+
+
+    public function remove(IUser $user): bool {
+        $key       = $this->getKey($user);
+        $sql       = "DELETE FROM `user_key` WHERE `key_id` = :key_id;";
+        $statement = $this->prepareStatement($sql);
+
+        if (null === $statement) return false;
+        $keyId = $key->getId();
+        $statement->bindParam("key_id", $keyId);
+        $statement->execute();
+
+        if (true === $this->hasErrors($statement->errorCode())) return false;
+
+        $sql       = "DELETE FROM `key` WHERE `id` = :id;";
+        $statement = $this->prepareStatement($sql);
+
+        if (null === $statement) return false;
+        $keyId = $key->getId();
+        $statement->bindParam("id", $keyId);
+        $statement->execute();
+
+        return false === $this->hasErrors($statement->errorCode());
+
     }
 
 }

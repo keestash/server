@@ -19,26 +19,72 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service;
+namespace Keestash\Core\Service\User;
+
 
 use DateTime;
 use Keestash;
 use Keestash\Core\DTO\User;
 use KSP\Core\DTO\IUser;
+use KSP\Core\Repository\ApiLog\IApiLogRepository;
+use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
+use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Repository\Permission\IPermissionRepository;
+use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use function password_verify;
 
-/**
- * Class UserService
- * @package Keestash\Core\Service
- * @deprecated use Keestash\Core\Service\User\UserService instead
- */
 class UserService {
 
-    private $userManager = null;
+    /** @var IApiLogRepository */
+    private $apiLogRepository;
 
-    public function __construct(IUserRepository $userManager) {
-        $this->userManager = $userManager;
+    /** @var IFileRepository */
+    private $fileRepository;
+
+    /** @var IEncryptionKeyRepository */
+    private $keyRepository;
+
+    /** @var IRoleRepository */
+    private $rolesRepository;
+
+    /** @var IUserRepository */
+    private $userRepository;
+
+    public function __construct(
+        IApiLogRepository $apiLogRepository
+        , IFileRepository $fileRepository
+        , IEncryptionKeyRepository $keyRepository
+        , IPermissionRepository $rolesRepository
+        , IUserRepository $userRepository
+    ) {
+        $this->apiLogRepository = $apiLogRepository;
+        $this->fileRepository   = $fileRepository;
+        $this->keyRepository    = $keyRepository;
+        $this->rolesRepository  = $rolesRepository;
+        $this->userRepository   = $userRepository;
+    }
+
+    public function removeUser(IUser $user): array {
+
+        $logsRemoved  = $this->apiLogRepository->removeForUser($user);
+        $filesRemoved = $this->fileRepository->removeForUser($user);
+        $keysRemoved  = $this->keyRepository->remove($user);
+        $rolesRemoved = $this->rolesRepository->removeUserRoles($user);
+        $userRemoved  = $this->userRepository->remove($user);
+
+        return [
+            "logs_removed"    => $logsRemoved
+            , "files_removed" => $filesRemoved
+            , "keys_removed"  => $keysRemoved
+            , "roles_removed" => $rolesRemoved
+            , "user_removed"  => $user
+            , "success"       =>
+                true === $logsRemoved
+                && true === $filesRemoved
+                && true === $keysRemoved
+                && true === $rolesRemoved
+                && true === $userRemoved
+        ];
     }
 
     public function validatePassword(string $password, string $hash): bool {

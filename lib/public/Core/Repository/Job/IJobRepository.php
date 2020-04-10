@@ -19,34 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Repository\User;
+namespace KSP\Core\Repository\Job;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
-use KSP\Core\DTO\IUser;
+use doganoo\Backgrounder\BackgroundJob\Job;
+use doganoo\Backgrounder\BackgroundJob\JobList;
+use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\IRepository;
 
-interface IUserRepository extends IRepository {
+interface IJobRepository extends IRepository {
 
-    public function getUser(string $name): ?IUser;
+    public function getJobList(): IJobList;
 
-    public function getUserByMail(string $email): ?IUser;
+    public function updateJobs(JobList $jobList): bool;
 
-    public function exists(string $id): bool;
-
-    public function nameExists(string $name): bool;
-
-    public function getUserById(string $id): ?IUser;
-
-    public function getUserByHash(string $hash): ?IUser;
-
-    public function getUserByName(string $name): ?IUser;
-
-    public function getAll(): ?ArrayList;
-
-    public function insert(IUser $user): ?int;
-
-    public function update(IUser $user): bool;
-
-    public function remove(IUser $user): bool;
+    public function updateJob(Job $job): bool;
 
 }

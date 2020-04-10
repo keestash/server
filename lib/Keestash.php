@@ -475,8 +475,10 @@ class Keestash {
     private static function setExceptionHandler(): void {
         set_error_handler(function ($error) {
 
+            $e = new \Exception();
+
             if (is_int($error)) {
-                FileLogger::error(json_encode($error));
+                FileLogger::error(json_encode([$error, $e->getTraceAsString()]));
                 return;
             }
 
