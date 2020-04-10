@@ -19,42 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace Keestash\Core\DTO\BackgroundJob;
 
-use DateTime;
+use Keestash;
 
 /**
- * Interface IUser
- * @package KSP\Core\DTO
- *
- * TODO move to right place
+ * Class Container
+ * @package Keestash\Core\DTO\BackgroundJob
  */
-interface IUser extends IObject, IComparator {
+class Container extends \doganoo\Backgrounder\Util\Container {
 
-    public const SYSTEM_USER_ID = 1;
-
-    public function getId(): int;
-
-    public function getName(): string;
-
-    public function getPassword(): string;
-
-    public function getCreateTs(): DateTime;
-
-    public function getFirstName(): string;
-
-    public function getLastName(): string;
-
-    public function getEmail(): string;
-
-    public function getPhone(): string;
-
-    public function getWebsite(): string;
-
-    public function getHash(): string;
-
-    public function getLastLogin(): ?DateTime;
-
-    public function isDisabled(): bool;
+    /**
+     * @param string $name
+     * @return mixed
+     * @throws \DI\DependencyException
+     * @throws \DI\NotFoundException
+     */
+    public function query(string $name) {
+        return Keestash::getServer()->query($name);
+    }
 
 }

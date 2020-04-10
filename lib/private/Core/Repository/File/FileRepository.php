@@ -30,6 +30,7 @@ use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\IUser;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -273,6 +274,17 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             FileLogger::debug($e->getTraceAsString());
         }
         return null;
+    }
+
+    public function removeForUser(IUser $user): bool {
+        $sql       = "DELETE FROM `file` WHERE `user_id` = :user_id;";
+        $statement = $this->prepareStatement($sql);
+
+        if (null === $statement) return false;
+        $userId = $user->getId();
+        $statement->bindParam("user_id", $userId);
+        $statement->execute();
+        return false === $this->hasErrors($statement->errorCode());
     }
 
 }

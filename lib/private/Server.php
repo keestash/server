@@ -26,6 +26,7 @@ use Composer\Autoload\ClassLoader;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
+use doganoo\Backgrounder\Backgrounder;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
@@ -41,6 +42,7 @@ use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
+use Keestash\Core\Manager\HookManager\DeletionHookManager;
 use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
 use Keestash\Core\Manager\HookManager\RegistrationHookManager;
 use Keestash\Core\Manager\HookManager\ServiceHookManager;
@@ -61,6 +63,7 @@ use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
 use Keestash\Core\Repository\Session\SessionRepository;
@@ -107,6 +110,7 @@ use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\Session\ISessionRepository;
@@ -214,6 +218,9 @@ class Server {
         });
         $this->register(PasswordChangedHookManager::class, function () {
             return new PasswordChangedHookManager();
+        });
+        $this->register(DeletionHookManager::class, function () {
+            return new DeletionHookManager();
         });
 
         $this->register(TokenService::class, function () {
@@ -524,6 +531,25 @@ class Server {
             return new FrontendStringManager();
         });
 
+        $this->register(Backgrounder::class, function () {
+
+            return new Backgrounder(
+                Keestash::getServer()->getJobRepository()->getJobList()
+                , Keestash::getServer()->query(Core\DTO\BackgroundJob\Container::class)
+            );
+
+        });
+
+        $this->register(Core\DTO\BackgroundJob\Container::class, function () {
+            return new Core\DTO\BackgroundJob\Container();
+        });
+
+        $this->register(IJobRepository::class, function () {
+            return new JobRepository(
+                Keestash::getServer()->query(IBackend::class)
+            );
+        });
+
     }
 
     public function register(string $name, Closure $closure): bool {
@@ -712,6 +738,10 @@ class Server {
         return $this->query(RegistrationHookManager::class);
     }
 
+    public function getUserDeletionHookManager(): IHookManager {
+        return $this->query(DeletionHookManager::class);
+    }
+
     public function getPasswordChangedHookManager(): IHookManager {
         return $this->query(PasswordChangedHookManager::class);
     }
@@ -750,6 +780,14 @@ class Server {
 
     public function getBreadCrumbManager(): IBreadCrumbManager {
         return $this->query(IBreadCrumbManager::class);
+    }
+
+    public function getBackgrounder(): Backgrounder {
+        return $this->query(Backgrounder::class);
+    }
+
+    public function getJobRepository(): IJobRepository {
+        return $this->query(IJobRepository::class);
     }
 
     public function wipeCache(): void {

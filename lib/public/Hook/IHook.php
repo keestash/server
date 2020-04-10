@@ -25,4 +25,6 @@ interface IHook {
 
     public function performAction(...$parameters): bool;
 
+    public function getHookCache(): ?IHookCache;
+
 }

@@ -28,6 +28,7 @@ use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Hook\IHook;
+use KSP\Hook\IHookCache;
 use KSP\L10N\IL10N;
 
 class EmailAfterRegistration implements IHook {
@@ -80,6 +81,10 @@ class EmailAfterRegistration implements IHook {
         $this->emailService->setSubject($this->translator->translate("You are registered for $appName"));
         $this->emailService->setBody($rendered);
         return $this->emailService->send();
+    }
+
+    public function getHookCache(): ?IHookCache {
+        return null;
     }
 
 }

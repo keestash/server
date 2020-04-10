@@ -1,5 +1,7 @@
+#!/usr/bin/env php
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,42 +21,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+use Keestash\Core\Service\Config\ConfigService;
 
-use DateTime;
+(function () {
 
-/**
- * Interface IUser
- * @package KSP\Core\DTO
- *
- * TODO move to right place
- */
-interface IUser extends IObject, IComparator {
+    chdir(dirname(__DIR__));
 
-    public const SYSTEM_USER_ID = 1;
+    require_once __DIR__ . '/../lib/versioncheck.php';
+    require_once __DIR__ . '/../lib/filecheck.php';
+    require_once __DIR__ . '/../config/config.php';
+    require_once __DIR__ . '/../lib/Keestash.php';
+    Keestash::init();
 
-    public function getId(): int;
+    $backgrounder  = Keestash::getServer()->getBackgrounder();
+    $jobRepository = Keestash::getServer()->getJobRepository();
+    /** @var ConfigService $configService */
+    $configService = Keestash::getServer()->query(ConfigService::class);
 
-    public function getName(): string;
+    $backgrounder->setDebug(
+        (bool) $configService->getValue("debug", false)
+    );
 
-    public function getPassword(): string;
-
-    public function getCreateTs(): DateTime;
-
-    public function getFirstName(): string;
-
-    public function getLastName(): string;
-
-    public function getEmail(): string;
-
-    public function getPhone(): string;
-
-    public function getWebsite(): string;
-
-    public function getHash(): string;
-
-    public function getLastLogin(): ?DateTime;
-
-    public function isDisabled(): bool;
-
-}
+    $jobRepository->updateJobs($backgrounder->run());
+})();

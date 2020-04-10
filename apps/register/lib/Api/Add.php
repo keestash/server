@@ -154,6 +154,13 @@ class Add extends AbstractApi {
                 $message      = $this->translator->translate("Could not register user. Please try again");
             }
 
+            Keestash::getServer()
+                ->getRegistrationHookManager()
+                ->executePost(
+                    $added
+                    , $this->user
+                );
+
         }
 
         $msg->addMessage(
@@ -203,10 +210,6 @@ class Add extends AbstractApi {
 
     public function afterCreate(): void {
         if (null === $this->user) return;
-
-        Keestash::getServer()
-            ->getRegistrationHookManager()
-            ->executePost($this->user);
     }
 
 }

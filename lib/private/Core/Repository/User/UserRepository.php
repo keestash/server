@@ -495,4 +495,17 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         return $user;
     }
 
+    public function remove(IUser $user): bool {
+        $sql       = "DELETE FROM `user` WHERE `id` = :id;";
+        $statement = $this->prepareStatement($sql);
+
+        if (null === $statement) return false;
+        $userId = $user->getId();
+        $statement->bindParam("id", $userId);
+        $statement->execute();
+
+        FileLogger::error(json_encode($statement->errorInfo()));
+        return false === $this->hasErrors($statement->errorCode());
+    }
+
 }
