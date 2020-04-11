@@ -34,7 +34,7 @@ use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\DTO\User\User;
-use Keestash\Core\Servicr\Encryption\Base\BaseEncryption;
+use Keestash\Core\Service\Encryption\Base\BaseEncryption;
 use Keestash\Core\DTO\Encryption\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
