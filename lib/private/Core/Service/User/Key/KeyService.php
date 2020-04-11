@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\User\Key;
 use DateTime;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Core\DTO\Key;
-use Keestash\Core\Encryption\Base\BaseEncryption;
+use Keestash\Core\Servicr\Encryption\Base\BaseEncryption;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
 use KSP\Core\DTO\User\IUser;
 

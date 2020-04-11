@@ -19,26 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\BackgroundJob;
+namespace KSP\Core\DTO\Encryption;
 
-use doganoo\PHPUtil\Log\FileLogger;
-use Keestash;
+interface ICredential {
 
-/**
- * Class Container
- * @package Keestash\Core\DTO\BackgroundJob
- */
-class Container extends \doganoo\Backgrounder\Util\Container {
-
-    /**
-     * @param string $name
-     * @return mixed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
-     */
-    public function query(string $name) {
-        FileLogger::debug($name);
-        return Keestash::getServer()->query($name);
-    }
+    public function getSecret(): string;
 
 }

@@ -71,7 +71,7 @@ import modal from "../../../../lib/js/src/UI/modal";
                 event.preventDefault();
 
                 if (true === that.registerButtonClicked) return;
-                that.disableForm();
+                // that.disableForm();
 
                 let firstName = $(that.SELECTORS.FIRST_NAME).val();
                 let lastName = $(that.SELECTORS.LAST_NAME).val();
@@ -104,14 +104,14 @@ import modal from "../../../../lib/js/src/UI/modal";
                         } else if (2000 in obj) {
                             json_object = obj[2000];
                             // 2000 means error!
-                            that.disableForm();
+                            // that.disableForm();
                         }
                         modal.miniModal(json_object['message']);
-                        that.enableForm();
+                        // that.enableForm();
                     }
                     , function (response, status, xhr) {
                         modal.miniModal("There was an error during the registration. Please try it again or reach us out!");
-                        that.disableForm();
+                        // that.disableForm();
                     }
                 );
 

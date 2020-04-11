@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Keestash\Core\Service\Encryption\Password;
+namespace Keestash\Core\DTO\Encryption\Password;
 
 use JsonSerializable;
 

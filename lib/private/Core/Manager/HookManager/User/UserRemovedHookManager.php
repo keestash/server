@@ -19,8 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\HookManager;
+namespace Keestash\Core\Manager\HookManager\User;
 
-class DeletionHookManager extends HookManager {
+use Keestash\Core\Manager\HookManager\HookManager;
+
+class UserRemovedHookManager extends HookManager {
 
 }
