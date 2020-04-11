@@ -33,4 +33,6 @@ interface IBackend {
 
     public function getConnection();
 
+    public function getSchemaName(): string;
+
 }

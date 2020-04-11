@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Instance;
 
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
 use PDO;
@@ -36,12 +35,13 @@ class InstanceDB {
     private $database = null;
 
     public function __construct() {
-        $this->path = Keestash::getServer()->getConfigRoot() . "/.instance.sqlite";
-
+        $this->path     = InstanceDB::getPath();
         $this->database = new PDO("sqlite:{$this->path}");
-
         $this->createTable();
+    }
 
+    public static function getPath(): string {
+        return Keestash::getServer()->getConfigRoot() . "/.instance.sqlite";
     }
 
     private function createTable(): void {

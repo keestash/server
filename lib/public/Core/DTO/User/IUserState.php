@@ -19,24 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\App\Config;
+namespace KSP\Core\DTO\User;
 
 use DateTime;
-use doganoo\Backgrounder\BackgroundJob\JobList;
+use KSP\Core\DTO\IUser;
 
-interface IApp {
+interface IUserState {
 
-    public const ENABLED_TRUE  = "true";
-    public const ENABLED_FALSE = "false";
+    /** @var string USER_STATE_DELETE */
+    public const USER_STATE_DELETE = "delete.state.user";
+    /** @var string USER_STATE_LOCK */
+    public const USER_STATE_LOCK = "lock.state.user";
 
-    public function getId(): string;
+    public function getId(): int;
 
-    public function isEnabled(): bool;
+    public function getUser(): IUser;
 
-    public function getVersion(): int;
+    public function getState(): string;
+
+    public function getValidFrom(): DateTime;
 
     public function getCreateTs(): DateTime;
-
-    public function getBackgroundJobs(): JobList;
 
 }

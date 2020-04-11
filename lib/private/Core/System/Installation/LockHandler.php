@@ -33,7 +33,7 @@ abstract class LockHandler {
     }
 
     public function isLocked(): bool {
-        return (bool) $this->instanceDb->getOption($this->getDomain());
+        return null !== $this->instanceDb->getOption($this->getDomain());
     }
 
     public function lock(): bool {

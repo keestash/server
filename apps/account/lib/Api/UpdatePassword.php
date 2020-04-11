@@ -27,7 +27,7 @@ use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
-use Keestash\Core\Service\UserService;
+use Keestash\Core\Service\User\UserService;
 use KSA\Account\Application\Application;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;

@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Keestash\App;
 
 use DateTime;
+use doganoo\Backgrounder\BackgroundJob\Job;
+use doganoo\Backgrounder\BackgroundJob\JobList;
 use KSP\App\IApp;
 
 class AppFactory {
@@ -32,7 +34,27 @@ class AppFactory {
         $configApp->setEnabled(true);
         $configApp->setCreateTs(new DateTime());
         $configApp->setVersion($app->getVersion());
+        $configApp->setBackgroundJobs(
+            AppFactory::buildBackgroundJobs(
+                $app->getBackgroundJobs()
+            )
+        );
         return $configApp;
+    }
+
+    private static function buildBackgroundJobs(array $backgroundJobs): JobList {
+        $jobList = new JobList();
+        foreach ($backgroundJobs as $jobName => $data) {
+            $job = new Job();
+            $job->setName($jobName);
+            $job->setCreateTs(new DateTime());
+            $job->setLastRun(null);
+            $job->setInfo(null);
+            $job->setInterval((int) $data["interval"]);
+            $job->setType((string) $data["type"]);
+            $jobList->add($job);
+        }
+        return $jobList;
     }
 
 }

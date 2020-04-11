@@ -21,8 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\ConsoleManager;
 
-use doganoo\PHPAlgorithms\Common\Interfaces\ISet;
+use Keestash\Command\KeestashCommand;
 
-interface ICommandSet extends ISet {
+interface ICommandSet {
+
+    public function add(KeestashCommand $element): bool;
+
+    public function getCommands(): array;
 
 }

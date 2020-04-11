@@ -22,23 +22,33 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\App\AppFactory;
 use Keestash\Core\Service\Phinx\Migrator;
 use KSP\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Repository\Job\IJobRepository;
 
 class InstallerService {
 
-    private $migrator      = null;
-    private $appRepository = null;
+    /** @var Migrator $migrator */
+    private $migrator;
+    /** @var IAppRepository $appRepository */
+    private $appRepository;
+    /** @var IJobRepository $jobRepository */
+    private $jobRepository;
+
+    public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
     public function __construct(
         Migrator $migrator
         , IAppRepository $appRepository
+        , IJobRepository $jobRepository
     ) {
         $this->migrator      = $migrator;
         $this->appRepository = $appRepository;
+        $this->jobRepository = $jobRepository;
     }
 
     public function runMigrations(): bool {
@@ -54,11 +64,14 @@ class InstallerService {
             $appInstalled = $this->install($configApp);
             $installed    = $installed && $appInstalled;
         }
+
         return $installed;
     }
 
     public function install(IApp $app): bool {
-        return $this->appRepository->replace($app);
+        $apps = $this->appRepository->replace($app);
+        if (false === $apps) return false;
+        return $this->jobRepository->replaceJobs($app->getBackgroundJobs());
     }
 
 }

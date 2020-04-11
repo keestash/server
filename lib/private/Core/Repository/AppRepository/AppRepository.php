@@ -132,8 +132,11 @@ class AppRepository extends AbstractRepository implements IAppRepository {
         $statement->bindParam("app_id", $appId);
         $statement->bindParam("enabled", $enabled);
         $statement->bindParam("version", $version);
+        $executed = $statement->execute();
 
-        return $statement->execute();
+        if (false === $executed) return false;
+
+        return false === $this->hasErrors($statement->errorCode());
     }
 
 }

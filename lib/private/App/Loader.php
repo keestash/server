@@ -40,6 +40,7 @@ class Loader implements ILoader {
     private $appRoot     = null;
     private $apps        = null;
     private $lruAppCache = null;
+    private $flushedApps = null;
 
     public function __construct(
         ClassLoader $classLoader
@@ -48,6 +49,7 @@ class Loader implements ILoader {
         $this->classLoader = $classLoader;
         $this->appRoot     = $appRoot;
         $this->apps        = new HashTable();
+        $this->flushedApps = new HashTable();
         $this->lruAppCache = new LRUCache();
     }
 
@@ -67,7 +69,6 @@ class Loader implements ILoader {
     }
 
     public function loadApp(string $appId): bool {
-//        if (true === $this->apps->containsKey($appId)) return true;
         $app = new App();
         $app->setId($appId);
         $info = $this->loadInfo($app);
@@ -124,11 +125,18 @@ class Loader implements ILoader {
         foreach ($this->apps->keySet() as $key) {
             /** @var IApp $app */
             $app = $this->apps->get($key);
+
+            if (true === $this->flushedApps->containsKey($app->getId())) {
+                FileLogger::debug("{$app->getId()} is flushed. Skipping");
+                continue;
+            }
+
             $this->buildNamespaceAndRequire($app);
             $this->requireInfoPhp($app);
             $this->loadTemplate($app);
             $this->loadString($app);
 //        $this->loadJs($app);
+            $this->flushedApps->put($app->getId(), $app);
         }
     }
 
@@ -146,15 +154,16 @@ class Loader implements ILoader {
     private function isValidInfo(?array $info): bool {
         if (null === $info) return false;
 
-        $id            = $info[IApp::FIELD_ID] ?? null;
-        $order         = (int) ($info[IApp::FIELD_ORDER] ?? null);
-        $namespace     = $info[IApp::FIELD_NAMESPACE] ?? null;
-        $name          = $info[IApp::FIELD_NAME] ?? null;
-        $baseRoot      = $info[IApp::FIELD_BASE_ROUTE] ?? null;
-        $faIconClass   = $info[IApp::FIELD_FA_ICON_CLASS] ?? null;
-        $version       = (int) ($info[IApp::FIELD_VERSION] ?? null);
-        $versionString = $info[IApp::FIELD_VERSION_STRING] ?? null;
-        $type          = $info[IApp::FIELD_TYPE] ?? null;
+        $id             = $info[IApp::FIELD_ID] ?? null;
+        $order          = (int) ($info[IApp::FIELD_ORDER] ?? null);
+        $namespace      = $info[IApp::FIELD_NAMESPACE] ?? null;
+        $name           = $info[IApp::FIELD_NAME] ?? null;
+        $baseRoot       = $info[IApp::FIELD_BASE_ROUTE] ?? null;
+        $faIconClass    = $info[IApp::FIELD_FA_ICON_CLASS] ?? null;
+        $version        = (int) ($info[IApp::FIELD_VERSION] ?? null);
+        $versionString  = $info[IApp::FIELD_VERSION_STRING] ?? null;
+        $type           = $info[IApp::FIELD_TYPE] ?? null;
+        $backgroundJobs = $info[IApp::FIELD_BACKGROUND_JOBS] ?? null;
 
         if (null === $id) return false;
         if (null === $namespace) return false;
@@ -166,6 +175,18 @@ class Loader implements ILoader {
         if (null === $versionString) return false;
         if (null === $type) return false;
 
+        if (null !== $backgroundJobs) {
+
+            if (false === is_array($backgroundJobs)) return false;
+
+            foreach ($backgroundJobs as $job) {
+                $interval = $job[IApp::FIELD_BACKGROUND_JOBS_INTERVAL] ?? null;
+                $type     = $job[IApp::FIELD_BACKGROUND_JOBS_TYPE] ?? null;
+                if (null === $interval) return false;
+                if (null === $type) return false;
+            }
+
+        }
         return true;
     }
 
@@ -184,6 +205,7 @@ class Loader implements ILoader {
         $app->setType($info[IApp::FIELD_TYPE]);
         $showIcon = $info[IApp::FIELD_SHOW_ICON] ?? 0;
         $app->setShowIcon($showIcon === 1);
+        $app->setBackgroundJobs($info[IApp::FIELD_BACKGROUND_JOBS] ?? []);
     }
 
     private function buildNamespaceAndRequire(IApp $app): bool {
@@ -265,14 +287,13 @@ class Loader implements ILoader {
         /** @var SplFileInfo $info */
         foreach ($iterator as $info) {
             if (false === $info->isDir()) continue;
-            $path = $info->getRealPath();
 
             if (ILoader::DIR_NAME_FRONTEND === $info->getBasename()) {
                 Keestash::getServer()
                     ->getFrontendStringManager()
                     ->addPath(
                         $app->getId()
-                        , $path
+                        , $info->getRealPath()
                     );
             }
 

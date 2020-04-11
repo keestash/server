@@ -69,7 +69,7 @@ class Diff {
         return $result;
     }
 
-    public function removeDisabledApps(HashTable $loadedApps, HashTable $installedApps) {
+    public function removeDisabledApps(HashTable $loadedApps, HashTable $installedApps): HashTable {
         foreach ($installedApps->keySet() as $key) {
             /** @var InstalledApp $app */
             $app = $installedApps->get($key);
@@ -79,6 +79,7 @@ class Diff {
                 $loadedApps->remove($key);
             }
         }
+        return $loadedApps;
     }
 
 }

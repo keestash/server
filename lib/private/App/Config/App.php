@@ -13,14 +13,21 @@ declare(strict_types=1);
 namespace Keestash\App\Config;
 
 use DateTime;
+use doganoo\Backgrounder\BackgroundJob\JobList;
 use KSP\App\Config\IApp;
 
 class App implements IApp {
 
-    private $id       = null;
-    private $enabled  = null;
-    private $version  = null;
-    private $createTs = null;
+    /** @var string $id */
+    private $id;
+    /** @var bool $enabled */
+    private $enabled;
+    /** @var int $version */
+    private $version;
+    /** @var DateTime $createTs */
+    private $createTs;
+    /** @var JobList $jobs */
+    private $jobs = null;
 
     public function getId(): string {
         return $this->id;
@@ -52,6 +59,14 @@ class App implements IApp {
 
     public function setCreateTs(DateTime $createTs): void {
         $this->createTs = $createTs;
+    }
+
+    public function getBackgroundJobs(): JobList {
+        return $this->jobs;
+    }
+
+    public function setBackgroundJobs(JobList $jobs): void {
+        $this->jobs = $jobs;
     }
 
 }

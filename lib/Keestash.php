@@ -378,13 +378,13 @@ class Keestash {
         $diff          = new Diff();
         $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
 
-        // Step 1: we disable all apps that are disabled in our db
-        $diff->removeDisabledApps($loadedApps, $installedApps);
-
-        // Step 2: we check if we have installed new apps
+        // Step 1: we check if we have new apps to install
         if ($appsToInstall->size() > 0) {
             Keestash::handleNeedsUpgrade();
         }
+
+        // Step 2: we remove all apps that are disabled in our db
+        $loadedApps = $diff->removeDisabledApps($loadedApps, $installedApps);
 
         // Step 3: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
@@ -473,36 +473,45 @@ class Keestash {
     }
 
     private static function setExceptionHandler(): void {
-        set_error_handler(function ($error) {
+        set_error_handler(
+            function (int $id
+                , string $message
+                , string $file
+                , int $line
+                , array $context
+            ) {
 
-            $e = new \Exception();
+                FileLogger::error(
+                    json_encode(
+                        [
+                            "id"        => $id
+                            , "message" => $message
+                            , "file"    => $file
+                            , "line"    => $line
+                        ]
+                    )
+                );
 
-            if (is_int($error)) {
-                FileLogger::error(json_encode([$error, $e->getTraceAsString()]));
-                return;
+            });
+
+        set_exception_handler(
+            function (Exception $exception) {
+
+                FileLogger::error(
+                    json_encode(
+                        [
+                            "id"                => $exception->getCode()
+                            , "message"         => $exception->getMessage()
+                            , "file"            => $exception->getFile()
+                            , "line"            => $exception->getLine()
+                            , "trace"           => json_encode($exception->getTrace())
+                            , "trace_as_string" => $exception->getTraceAsString()
+                        ]
+                    )
+                );
+
             }
-
-            if ($error instanceof Error) {
-                FileLogger::error(json_encode($error->__toString()));
-                return;
-            }
-
-            FileLogger::error((string) $error);
-
-        });
-        set_exception_handler(function ($exception) {
-            if (is_int($exception)) {
-                FileLogger::error(json_encode($exception));
-                return;
-            }
-
-            if ($exception instanceof Exception) {
-                FileLogger::error(json_encode($exception->__toString()));
-                return;
-            }
-
-            FileLogger::error((string) $exception);
-        });
+        );
     }
 
     private static function initDevHandler(): void {

@@ -26,7 +26,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class KeestashCommand extends Command {
+abstract class KeestashCommand extends Command {
 
     public const RETURN_CODE_NOT_RAN_SUCCESSFUL = 23456;
     public const RETURN_CODE_INVALID_ARGUMENT   = 12345;

@@ -19,24 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\App\Config;
+namespace Keestash\Exception;
 
-use DateTime;
-use doganoo\Backgrounder\BackgroundJob\JobList;
-
-interface IApp {
-
-    public const ENABLED_TRUE  = "true";
-    public const ENABLED_FALSE = "false";
-
-    public function getId(): string;
-
-    public function isEnabled(): bool;
-
-    public function getVersion(): int;
-
-    public function getCreateTs(): DateTime;
-
-    public function getBackgroundJobs(): JobList;
+class UserNotLockedException extends KeestashException {
 
 }

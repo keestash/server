@@ -142,13 +142,18 @@ abstract class Application implements IApplication {
         return $this->frontendTemplates;
     }
 
-    protected function addString(string $appId, string $name, string $value): void {
+    protected function addString(string $name, string $value): void {
         Keestash::getServer()
             ->getFrontendStringManager()
             ->addString(
-                $appId
+                $this->getApp()->getId()
                 , $name
                 , $value
             );
     }
+
+    protected function getApp(): IApp {
+        return $this->app;
+    }
+
 }

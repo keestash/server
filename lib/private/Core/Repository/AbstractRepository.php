@@ -93,4 +93,8 @@ class AbstractRepository implements IRepository {
         return $errorCode !== "00000";
     }
 
+    protected function getSchemaName(): string {
+        return $this->backend->getSchemaName();
+    }
+
 }

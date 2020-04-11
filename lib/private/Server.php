@@ -63,12 +63,14 @@ use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\Permission\PermissionRepository;
 use Keestash\Core\Repository\Permission\RoleRepository;
 use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
+use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\DateTimeService;
 use Keestash\Core\Service\File\FileService;
@@ -116,6 +118,7 @@ use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
@@ -546,6 +549,19 @@ class Server {
 
         $this->register(IJobRepository::class, function () {
             return new JobRepository(
+                Keestash::getServer()->query(IBackend::class)
+            );
+        });
+
+        $this->register(IUserStateRepository::class, function () {
+            return new UserStateRepository(
+                Keestash::getServer()->query(IBackend::class)
+                , Keestash::getServer()->getUserRepository()
+            );
+        });
+
+        $this->register(InstanceRepository::class, function () {
+            return new InstanceRepository(
                 Keestash::getServer()->query(IBackend::class)
             );
         });

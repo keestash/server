@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Application;
 
+use Keestash;
+use Keestash\Core\Repository\Instance\InstanceRepository;
+use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
@@ -98,6 +101,11 @@ class Application extends \Keestash\App\Application {
 
         parent::addJavaScript(Application::APP_ID);
 
+        $this->registerCommand(
+            new Uninstall(
+                Keestash::getServer()->query(InstanceRepository::class)
+            )
+        );
     }
 
 }

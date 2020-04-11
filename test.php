@@ -1,11 +1,5 @@
-#!/usr/bin/env php
 <?php
 declare(strict_types=1);
-
-use Keestash\Command\KeestashCommand;
-use KSP\Core\Manager\ConsoleManager\ICommandSet;
-use Symfony\Component\Console\Application;
-
 /**
  * Keestash
  *
@@ -25,28 +19,29 @@ use Symfony\Component\Console\Application;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// we want to keep the global namespace clean.
+// Therefore, we call our framework within an
+// anonymous function.
+use Keestash\App\AppFactory;
+use KSP\Core\Repository\Job\IJobRepository;
+
 (function () {
 
     chdir(dirname(__DIR__));
 
-    require_once __DIR__ . '/../lib/versioncheck.php';
-    require_once __DIR__ . '/../lib/filecheck.php';
-    require_once __DIR__ . '/../config/config.php';
-    require_once __DIR__ . '/../lib/Keestash.php';
+    require_once __DIR__ . '/lib/Keestash.php';
+
     Keestash::init();
-    $consoleManager = Keestash::getServer()->getConsoleManager();
-    $commands       = $consoleManager->getSet();
-    $cliVersion     = "1.0.0";
 
-    $application = new Application(
-        Keestash::getServer()->getLegacy()->getApplication()->get("name") . " CLI Tools"
-        , $cliVersion
+    Keestash::getServer()->getAppLoader()->loadApp('users');
+    $users = Keestash::getServer()->getAppLoader()->getApps()->get('users');
+    $app = AppFactory::toConfigApp($users);
+    /** @var IJobRepository $jobRepository */
+    $jobRepository = Keestash::getServer()->query(IJobRepository::class);
+
+    var_dump(
+        (new ReflectionClass($jobRepository))->getName()
     );
-
-    /** @var KeestashCommand $command */
-    foreach ($commands->getCommands() as $command) {
-        $application->add($command);
-    }
-
-    $application->run();
+    $jobRepository->replaceJobs($app->getBackgroundJobs());
+    return true;
 })();

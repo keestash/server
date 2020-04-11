@@ -23,18 +23,20 @@ namespace KSP\App;
 
 interface IApp {
 
-    public const FIELD_ID              = "id";
-    public const FIELD_ORDER           = "order";
-    public const FIELD_NAMESPACE       = "namespace";
-    public const FIELD_NAME            = "name";
-    public const FIELD_DISABLE         = "disable";
-    public const FIELD_BASE_ROUTE      = "base_route";
-    public const FIELD_FA_ICON_CLASS   = "fa-icon-class";
-    public const FIELD_VERSION         = "version";
-    public const FIELD_VERSION_STRING  = "version_string";
-    public const FIELD_TYPE            = "type";
-    public const FIELD_SHOW_ICON       = "show-icon";
-    public const FIELD_BACKGROUND_JOBS = "background_jobs";
+    public const FIELD_ID                       = "id";
+    public const FIELD_ORDER                    = "order";
+    public const FIELD_NAMESPACE                = "namespace";
+    public const FIELD_NAME                     = "name";
+    public const FIELD_DISABLE                  = "disable";
+    public const FIELD_BASE_ROUTE               = "base_route";
+    public const FIELD_FA_ICON_CLASS            = "fa-icon-class";
+    public const FIELD_VERSION                  = "version";
+    public const FIELD_VERSION_STRING           = "version_string";
+    public const FIELD_TYPE                     = "type";
+    public const FIELD_SHOW_ICON                = "show-icon";
+    public const FIELD_BACKGROUND_JOBS          = "background_jobs";
+    public const FIELD_BACKGROUND_JOBS_TYPE     = "type";
+    public const FIELD_BACKGROUND_JOBS_INTERVAL = "interval";
 
     public function getId(): string;
 
@@ -61,5 +63,7 @@ interface IApp {
     public function getType(): string;
 
     public function showIcon(): bool;
+
+    public function getBackgroundJobs(): array;
 
 }

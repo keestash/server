@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\System\Installation\Verification;
 
 use Keestash;
-use KSA\Install\Service\Installer;
+use Keestash\Core\Service\App\InstallerService;
 use Phinx\Console\PhinxApplication;
 use Phinx\Wrapper\TextWrapper;
 
@@ -57,7 +57,7 @@ class HasMigrations extends AbstractVerification {
         print_r($log);
 
         // TODO log $log
-        return $phinxTextWrapper->getExitCode() === Installer::PHINX_MIGRATION_EVERYTHING_WENT_FINE;
+        return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;
     }
 
 }
