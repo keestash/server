@@ -34,12 +34,13 @@ class App implements IApp {
     private $templatePath = null;
     /** @var string $stringPath */
     private $stringPath;
-    private $faIconClass   = null;
-    private $baseRoot      = null;
-    private $version       = null;
-    private $versionString = null;
-    private $type          = null;
-    private $showIcon      = null;
+    private $faIconClass    = null;
+    private $baseRoot       = null;
+    private $version        = null;
+    private $versionString  = null;
+    private $type           = null;
+    private $showIcon       = null;
+    private $backgroundJobs = [];
 
     public function getOrder(): int {
         return $this->order;
@@ -143,6 +144,14 @@ class App implements IApp {
 
     public function showIcon(): bool {
         return $this->showIcon;
+    }
+
+    public function getBackgroundJobs(): array {
+        return $this->backgroundJobs;
+    }
+
+    public function setBackgroundJobs(array $backgroundJobs): void {
+        $this->backgroundJobs = $backgroundJobs;
     }
 
 }

@@ -75,4 +75,8 @@ class MySQLBackend implements ISQLBackend {
         return $this->connected;
     }
 
+    public function getSchemaName(): string {
+        return $this->schemaName;
+    }
+
 }

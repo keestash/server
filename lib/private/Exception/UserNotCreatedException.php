@@ -19,35 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\BackgroundJob\Task;
+namespace Keestash\Exception;
 
-use doganoo\Backgrounder\Task\Task;
-
-/**
- * Class UserDeleteJob
- * @package Keestash\BackgroundJob\Task
- */
-class UserDeleteJob extends Task {
-
-    /**
-     * @inheritDoc
-     */
-    protected function onAction(): void {
-        // TODO: Implement onAction() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function action(): bool {
-        // TODO: Implement action() method.
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function onClose(): void {
-        // TODO: Implement onClose() method.
-    }
+class UserNotCreatedException extends KeestashException {
 
 }

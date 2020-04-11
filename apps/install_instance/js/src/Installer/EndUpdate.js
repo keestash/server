@@ -75,6 +75,8 @@ export class EndUpdate {
         _this.button.click(function (e) {
             e.preventDefault();
 
+            _this.button.addClass("loading");
+            _this.button.addClass("disabled");
             window.setTimeout(
                 function () {
                     _this.formula.post(
@@ -88,8 +90,12 @@ export class EndUpdate {
                                 const routeTo = object[RESPONSE_CODE_OK]['messages']['route_to'];
                                 _this.router.route(routeTo);
                             }
+                            _this.button.removeClass("loading");
+                            _this.button.removeClass("disabled");
                         }
                         , function (x, y, z) {
+                            _this.button.removeClass("loading");
+                            _this.button.removeClass("disabled");
                             console.log(x);
                         }
                     );

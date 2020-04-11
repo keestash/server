@@ -24,7 +24,7 @@ namespace KSA\Account\Controller\PersonalInformation;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use Keestash\Core\Service\UserService;
+use Keestash\Core\Service\User\UserService;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;

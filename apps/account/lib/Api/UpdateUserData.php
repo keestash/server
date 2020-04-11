@@ -21,13 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Account\Api;
 
-use doganoo\SimpleRBAC\Test\DataProvider\Context;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\DTO\User;
-use Keestash\Core\Permission\PermissionFactory;
-use Keestash\Core\Service\UserService;
-use KSA\PasswordManager\Service\Util;
-use KSP\Api\IResponse;
+use Keestash\Core\Service\User\UserService;
 use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;

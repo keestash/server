@@ -28,7 +28,7 @@ use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\InstallerService;
-use Keestash\Core\Service\UserService;
+use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
@@ -109,14 +109,9 @@ class EndUpdate extends AbstractApi {
 
         $this->lockHandler->unlock();
         $this->persistenceService->killAll();
-        $systemUser = $this->userService->getSystemUser();
-        $this->userRepository->insert(
-            $systemUser
-        );
-        $defaultImage = $this->fileService->defaultProfileImage();
-        $defaultImage->setOwner($systemUser);
-        $this->fileRepository->add(
-            $defaultImage
+
+        $this->userService->createSystemUser(
+            $this->userService->getSystemUser()
         );
 
         parent::createAndSetResponse(

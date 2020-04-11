@@ -22,10 +22,19 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Migration\Base;
 
 use DateTime;
+use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 
 abstract class KeestashMigration extends AbstractMigration {
 
+    // MySQL Column Types
+    public const INTEGER  = MysqlAdapter::PHINX_TYPE_INTEGER;
+    public const STRING   = MysqlAdapter::PHINX_TYPE_STRING;
+    public const ENUM     = MysqlAdapter::PHINX_TYPE_ENUM;
+    public const DATETIME = MysqlAdapter::PHINX_TYPE_DATETIME;
+
+    // MySQL Option Fields
+    public const OPTION_NAME_VALUES = "values";
 
     protected function addPermission(string $permissionName, int $roleId) {
         $this->table("permission")

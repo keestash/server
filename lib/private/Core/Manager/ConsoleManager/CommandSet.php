@@ -29,13 +29,18 @@ use KSP\Core\Manager\ConsoleManager\ICommandSet;
  * Class CommandSet
  * @package Keestash\Core\Manager\ConsoleManager
  */
-class CommandSet extends HashSet implements ICommandSet {
+class CommandSet implements ICommandSet {
 
-    public function add($element): bool {
-        if ($element instanceof KeestashCommand) {
-            return parent::add($element);
-        }
-        return false;
+    /** @var array $commands */
+    private $commands = [];
+
+    public function add(KeestashCommand $element): bool {
+        $this->commands[$element->getName()] = $element;
+        return true;
+    }
+
+    public function getCommands(): array {
+        return $this->commands;
     }
 
 }

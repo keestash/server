@@ -21,20 +21,24 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Job;
 
-use doganoo\Backgrounder\BackgroundJob\Job as BackgrounderJob;
-use doganoo\Backgrounder\BackgroundJob\JobList as BackgrounderJobList;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
-use Keestash\Core\DTO\BackgroundJob\Job;
-use Keestash\Core\DTO\BackgroundJob\JobList;
+use doganoo\Backgrounder\BackgroundJob\Job;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\BackgroundJob\IJob;
-use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\Job\IJobRepository;
 use PDO;
+use doganoo\Backgrounder\BackgroundJob\JobList;
 
 class JobRepository extends AbstractRepository implements IJobRepository {
 
-    public function getJobList(): IJobList {
+    /** @var JobList */
+    private $jobList = null;
+
+    public function getJobList(): JobList {
+
+        if (null !== $this->jobList) return $this->jobList;
+
         $list      = new JobList();
         $sql       = "SELECT
                     b.`id`
@@ -77,10 +81,11 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             );
             $list->add($job);
         }
+        $this->jobList = $list;
         return $list;
     }
 
-    public function updateJobs(BackgrounderJobList $jobList): bool {
+    public function updateJobs(JobList $jobList): bool {
         $updated = false;
 
         /** @var Job $job */
@@ -88,10 +93,11 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             $updated = $this->updateJob($job);
         }
 
+        $this->jobList = null;
         return $updated;
     }
 
-    public function updateJob(BackgrounderJob $job): bool {
+    public function updateJob(Job $job): bool {
         $sql = "
                 update `background_job`
                     set `name`      = :name
@@ -130,10 +136,95 @@ class JobRepository extends AbstractRepository implements IJobRepository {
 
         $statement->execute();
 
+        $this->jobList = null;
+
         return
             false === $this->hasErrors($statement->errorCode())
             && $statement->rowCount() > 0;
 
     }
+
+    public function replaceJobs(JobList $jobList): bool {
+        $inserted = true;
+
+        /** @var Job $job */
+        foreach ($jobList as $job) {
+            var_dump("sfsdfsdfsfd");
+            $inserted = $this->replaceJob($job);
+        }
+
+        return $inserted;
+    }
+
+    private function hasJob(Job $job): bool {
+
+        /** @var IJob $listJob */
+        foreach ($this->getJobList() as $listJob) {
+            if ($job->getName() === $listJob->getName()) return true;
+        }
+
+        return false;
+
+    }
+
+    public function replaceJob(Job $job): bool {
+        if (true === $this->hasJob($job)) {
+            return $this->updateJob($job);
+        }
+        return $this->insert($job);
+    }
+
+    private function insert(Job $job): bool {
+        $sql = "insert into `background_job` (
+                  `name`
+                  , `type`
+                  , `last_run`
+                  , `info`
+                  , `create_ts`
+                  , `interval`
+                  )
+                  values (
+                          :name
+                          , :type
+                          , :last_run
+                          , :info
+                          , :create_ts
+                          , :interval
+                          );";
+
+        $statement = parent::prepareStatement($sql);
+
+        $name     = $job->getName();
+        $type     = $job->getType();
+        $lastRun  = $job->getLastRun();
+        $lastRun  = null === $lastRun
+            ? null
+            : DateTimeUtil::formatMysqlDateTime($lastRun);
+        $info     = $job->getInfo();
+        $info     = null === $info
+            ? null
+            : json_encode($info);
+        $createTs = $job->getCreateTs();
+        $createTs = DateTimeUtil::formatMysqlDateTime($createTs);
+        $interval = $job->getInterval();
+
+        $statement->bindParam("name", $name);
+        $statement->bindParam("type", $type);
+        $statement->bindParam("last_run", $lastRun);
+        $statement->bindParam("info", $info);
+        $statement->bindParam("create_ts", $createTs);
+        $statement->bindParam("interval", $interval);
+        $executed = $statement->execute();
+        FileLogger::error(json_encode($statement->errorInfo()));
+        if (false === $executed) return false;
+
+        $lastInsertId = parent::getLastInsertId();
+
+        if (null === $lastInsertId) return false;
+
+        return false === $this->hasErrors($statement->errorCode());
+
+    }
+
 
 }

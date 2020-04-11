@@ -55,6 +55,7 @@ class FileService {
         $path = "$dir/profile-picture.png";
 
         $file = new File();
+        $file->setId(0);
         $file->setContent(
             file_get_contents($path)
         );

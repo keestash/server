@@ -19,24 +19,30 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\App\Config;
+namespace KSP\Core\Repository\User;
 
-use DateTime;
-use doganoo\Backgrounder\BackgroundJob\JobList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use KSP\Core\DTO\IUser;
 
-interface IApp {
+/**
+ * This methods registers the state for users. If the user gets locked, he is not able to
+ * do any actions on Keestash anymore.
+ *
+ * If the user enters the delete state, he will be deleted after a certain amount of time.
+ *
+ * Interface IUserStateRepository
+ * @package KSP\Core\Repository\User
+ */
+interface IUserStateRepository {
 
-    public const ENABLED_TRUE  = "true";
-    public const ENABLED_FALSE = "false";
+    public function lock(IUser $user): bool;
 
-    public function getId(): string;
+    public function unlock(IUser $user): bool;
 
-    public function isEnabled(): bool;
+    public function delete(IUser $user): bool;
 
-    public function getVersion(): int;
+    public function revertDelete(IUser $user): bool;
 
-    public function getCreateTs(): DateTime;
-
-    public function getBackgroundJobs(): JobList;
+    public function getDeletedUsers(): ArrayList;
 
 }

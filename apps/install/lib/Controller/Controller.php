@@ -82,14 +82,16 @@ class Controller extends FullscreenAppController {
 
         $diff = new Diff();
 
-        // Step 1: we disable all apps that are disabled in our db
-        $diff->removeDisabledApps($loadedApps, $installedApps);
+        // Step 1: we remove all apps that are disabled in our db
+        $loadedApps = $diff->removeDisabledApps($loadedApps, $installedApps);
 
+        // Step 2: we determine all apps that needs to be installed
         $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
 
+        // Step 3: install them!
         $installed = $this->install($appsToInstall);
 
-        // Step 3: we check if one of our loaded apps has a new version
+        // Step 4: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
         $appsToUpgrade = $diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);

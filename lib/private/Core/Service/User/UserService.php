@@ -25,6 +25,13 @@ namespace Keestash\Core\Service\User;
 use DateTime;
 use Keestash;
 use Keestash\Core\DTO\User;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\User\Key\KeyService;
+use Keestash\Exception\KeyNotCreatedException;
+use Keestash\Exception\UserNotCreatedException;
+use Keestash\Exception\UserNotLockedException;
+use Keestash\Legacy\Legacy;
+use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
@@ -32,6 +39,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 
 class UserService {
 
@@ -50,18 +58,38 @@ class UserService {
     /** @var IUserRepository */
     private $userRepository;
 
+    /** @var KeyService */
+    private $keyService;
+
+    /** @var Legacy */
+    private $legacy;
+
+    /** @var IUserStateRepository */
+    private $userStateRepository;
+
+    /** @var FileService */
+    private $fileService;
+
     public function __construct(
         IApiLogRepository $apiLogRepository
         , IFileRepository $fileRepository
         , IEncryptionKeyRepository $keyRepository
         , IPermissionRepository $rolesRepository
         , IUserRepository $userRepository
+        , KeyService $keyService
+        , Legacy $legacy
+        , IUserStateRepository $userStateRepository
+        , FileService $fileService
     ) {
-        $this->apiLogRepository = $apiLogRepository;
-        $this->fileRepository   = $fileRepository;
-        $this->keyRepository    = $keyRepository;
-        $this->rolesRepository  = $rolesRepository;
-        $this->userRepository   = $userRepository;
+        $this->apiLogRepository    = $apiLogRepository;
+        $this->fileRepository      = $fileRepository;
+        $this->keyRepository       = $keyRepository;
+        $this->rolesRepository     = $rolesRepository;
+        $this->userRepository      = $userRepository;
+        $this->keyService          = $keyService;
+        $this->legacy              = $legacy;
+        $this->userStateRepository = $userStateRepository;
+        $this->fileService         = $fileService;
     }
 
     public function removeUser(IUser $user): array {
@@ -139,21 +167,89 @@ class UserService {
      */
     public function getSystemUser(): IUser {
         $user = new User();
-        $user->setName((string) Keestash::getServer()->getLegacy()->getApplication()->get("name"));
+        $user->setName((string) $this->legacy->getApplication()->get("name"));
         $user->setId(IUser::SYSTEM_USER_ID);
         $user->setHash(
             $this->getRandomHash()
         );
         $user->setCreateTs((new DateTime())->getTimestamp());
-        $user->setEmail((string) Keestash::getServer()->getLegacy()->getApplication()->get("email"));
-        $user->setFirstName((string) Keestash::getServer()->getLegacy()->getApplication()->get("name"));
-        $user->setLastName((string) Keestash::getServer()->getLegacy()->getApplication()->get("name"));
-        $user->setPhone((string) Keestash::getServer()->getLegacy()->getApplication()->get("phone"));
-        $user->setWebsite((string) Keestash::getServer()->getLegacy()->getApplication()->get("web"));
+        $user->setEmail((string) $this->legacy->getApplication()->get("email"));
+        $user->setFirstName((string) $this->legacy->getApplication()->get("name"));
+        $user->setLastName((string) $this->legacy->getApplication()->get("name"));
+        $user->setPhone((string) $this->legacy->getApplication()->get("phone"));
+        $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
         $user->setPassword(
             $this->hashPassword($user->getName())
         );
         return $user;
+    }
+
+
+    public function createRegularUser(IUser $user) {
+        $this->createUser($user, false);
+    }
+
+    /**
+     * @param IUser $user
+     * @return bool
+     * @throws KeyNotCreatedException
+     * @throws UserNotCreatedException
+     * @throws UserNotLockedException
+     */
+    public function createSystemUser(IUser $user): bool {
+        $file = $this->fileService->defaultProfileImage();
+        $file->setOwner($user);
+        return $this->createUser(
+            $user
+            , true
+            , $file
+        );
+    }
+
+    /**
+     * @param IUser      $user
+     * @param bool       $lockUser
+     * @param IFile|null $file
+     * @return bool
+     * @throws KeyNotCreatedException
+     * @throws UserNotCreatedException
+     * @throws UserNotLockedException
+     */
+    public function createUser(
+        IUser $user
+        , bool $lockUser = false
+        , ?IFile $file = null
+    ): bool {
+
+        $userId = $this->userRepository->insert($user);
+
+        if (null === $userId) {
+            throw new UserNotCreatedException();
+        }
+
+        $keyCreated = $this->keyService->createKey(
+            Keestash::getServer()->getBaseEncryption($user)
+            , $user
+        );
+
+        if (false === $keyCreated) {
+            throw new KeyNotCreatedException("could not create key");
+        }
+
+        if (false === $lockUser) return true;
+
+        $user->setId($userId);
+        $locked = $this->userStateRepository->lock($user);
+
+        if (false === $locked) {
+            throw new UserNotLockedException();
+        }
+
+        if (null === $file) return true;
+
+        $this->fileRepository->add($file);
+
+        return true;
     }
 
 }
