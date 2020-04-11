@@ -19,9 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Servicr\Encryption\Base;
-
-use Keestash\Core\Service\Encryption\Base\AES;
+namespace Keestash\Core\Service\Encryption\Base;
 
 class BaseEncryption extends AES {
 

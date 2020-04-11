@@ -19,14 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Encryption;
+namespace Keestash\Core\Service\Encryption\Base;
 
 use doganoo\PHPUtil\Log\FileLogger;
-use KSP\Core\Encryption\ICredential;
-use KSP\Core\Encryption\IEncryption;
+use KSP\Core\DTO\Encryption\ICredential;
+use KSP\Core\Service\Encryption\IEncryptionService;
 
 // TODO move to service
-class AES implements IEncryption {
+class AES implements IEncryptionService {
 
     public const METHOD         = "AES-256-CBC";
     public const HASH_ALGORITHM = "sha256";
