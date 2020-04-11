@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use Keestash;
-use Keestash\Core\DTO\User;
+use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Key\KeyService;
 use Keestash\Exception\KeyNotCreatedException;
@@ -32,7 +32,7 @@ use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;

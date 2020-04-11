@@ -27,7 +27,7 @@ use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 class FileService {
 

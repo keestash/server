@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IUserRepository extends IRepository {

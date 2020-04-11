@@ -23,6 +23,7 @@ namespace KSP\Core\DTO;
 
 use DateTime;
 use JsonSerializable;
+use KSP\Core\DTO\User\IUser;
 
 interface IToken extends IObject {
 

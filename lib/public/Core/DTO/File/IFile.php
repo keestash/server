@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\File;
 
 use DateTime;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\IObject;
 
 interface IFile extends IObject {

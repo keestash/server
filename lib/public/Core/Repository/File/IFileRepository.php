@@ -24,7 +24,7 @@ namespace KSP\Core\Repository\File;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\IRepository;
 

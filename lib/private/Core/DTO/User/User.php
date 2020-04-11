@@ -19,12 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO;
+namespace Keestash\Core\DTO\User;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
 use Exception;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Permission\IUser as PermissionUser;
 
 class User implements IUser, PermissionUser {

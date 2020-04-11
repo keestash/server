@@ -35,7 +35,7 @@ use KSA\Account\Application\Application;
 use KSA\PasswordManager\Service\Util;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\Permission\IPermissionRepository;

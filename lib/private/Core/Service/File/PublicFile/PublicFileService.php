@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\File\PublicFile;
 use Keestash;
 use Keestash\Core\DTO\URI\URL\URL;
 use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
 
 /**

@@ -19,15 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\User;
 
 use DateTime;
+use KSP\Core\DTO\IComparator;
+use KSP\Core\DTO\IObject;
 
 /**
  * Interface IUser
- * @package KSP\Core\DTO
+ * @package KSP\Core\DTO\User
  *
- * TODO move to right place
  */
 interface IUser extends IObject, IComparator {
 

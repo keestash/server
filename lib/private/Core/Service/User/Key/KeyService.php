@@ -26,7 +26,7 @@ use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Core\DTO\Key;
 use Keestash\Core\Encryption\Base\BaseEncryption;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 class KeyService {
 

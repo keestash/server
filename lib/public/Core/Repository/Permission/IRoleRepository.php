@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\Permission;
 
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 /**

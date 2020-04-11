@@ -23,7 +23,7 @@ namespace Keestash\Core\DTO\File;
 
 use DateTime;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 class File implements IFile {
 

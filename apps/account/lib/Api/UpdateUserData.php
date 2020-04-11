@@ -24,7 +24,7 @@ namespace KSA\Account\Api;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Service\User\UserService;
 use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;

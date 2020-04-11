@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 /**
  * This methods registers the state for users. If the user gets locked, he is not able to

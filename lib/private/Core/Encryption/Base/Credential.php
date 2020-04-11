@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Encryption\Base;
 
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Encryption\ICredential;
 
 class Credential implements ICredential {
