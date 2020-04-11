@@ -74,7 +74,7 @@ class UserService {
         IApiLogRepository $apiLogRepository
         , IFileRepository $fileRepository
         , IEncryptionKeyRepository $keyRepository
-        , IPermissionRepository $rolesRepository
+        , IRoleRepository $rolesRepository
         , IUserRepository $userRepository
         , KeyService $keyService
         , Legacy $legacy

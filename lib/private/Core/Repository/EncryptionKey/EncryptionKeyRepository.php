@@ -71,7 +71,6 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
     }
 
     public function getKey(IUser $user): ?IKey {
-        FileLogger::debug(json_encode($user));
         $sql = "select
                         k.`id`
                         , k.`value`
@@ -81,22 +80,29 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
                         on k.`id` = uk.`key_id`
                 where uk.`user_id` = :user_id
                 ";
+
+        $statement = parent::prepareStatement($sql);
+        if (null === $statement) return null;
         $userId = $user->getId();
-        $row = parent::getSingle(
-            $sql
-            , [
-                "user_id" => $userId
-            ]
-        );
+        $statement->bindParam("user_id", $userId);
+        $executed = $statement->execute();
+        FileLogger::debug(json_encode($statement->errorInfo()));
+        FileLogger::debug(json_encode($userId));
+        if (!$executed) return null;
+        FileLogger::debug(json_encode($statement->rowCount()));
+        if ($statement->rowCount() === 0) return null;
 
-        if (0 === count($row)) return null;
+        $key = null;
+        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+            FileLogger::debug(json_encode($row));
+            $key = new Key();
+            $key->setId((int) $row[0]);
+            $key->setValue($row[1]);
+            $dateTime = new DateTime();
+            $dateTime->setTimestamp((int) $row[2]);
+            $key->setCreateTs($dateTime);
+        }
 
-        $key = new Key();
-        $key->setId((int) $row[0]);
-        $key->setValue($row[1]);
-        $dateTime = new DateTime();
-        $dateTime->setTimestamp((int) $row[2]);
-        $key->setCreateTs($dateTime);
         return $key;
     }
 

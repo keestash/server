@@ -504,7 +504,6 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $statement->bindParam("id", $userId);
         $statement->execute();
 
-        FileLogger::error(json_encode($statement->errorInfo()));
         return false === $this->hasErrors($statement->errorCode());
     }
 

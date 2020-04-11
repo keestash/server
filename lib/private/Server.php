@@ -34,15 +34,16 @@ use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\DTO\User\User;
-use Keestash\Core\Encryption\Base\BaseEncryption;
-use Keestash\Core\Encryption\Base\Credential;
+use Keestash\Core\Servicr\Encryption\Base\BaseEncryption;
+use Keestash\Core\DTO\Encryption\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
 use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
-use Keestash\Core\Manager\HookManager\DeletionHookManager;
+use Keestash\Core\Manager\HookManager\User\UserRemovedHookManager;
+use Keestash\Core\Manager\HookManager\User\UserStateHookManager;
 use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
 use Keestash\Core\Manager\HookManager\RegistrationHookManager;
 use Keestash\Core\Manager\HookManager\ServiceHookManager;
@@ -222,8 +223,11 @@ class Server {
         $this->register(PasswordChangedHookManager::class, function () {
             return new PasswordChangedHookManager();
         });
-        $this->register(DeletionHookManager::class, function () {
-            return new DeletionHookManager();
+        $this->register(UserStateHookManager::class, function () {
+            return new UserStateHookManager();
+        });
+        $this->register(UserRemovedHookManager::class, function () {
+            return new UserRemovedHookManager();
         });
 
         $this->register(TokenService::class, function () {
@@ -754,8 +758,12 @@ class Server {
         return $this->query(RegistrationHookManager::class);
     }
 
-    public function getUserDeletionHookManager(): IHookManager {
-        return $this->query(DeletionHookManager::class);
+    public function getUserStateHookManager(): IHookManager {
+        return $this->query(UserStateHookManager::class);
+    }
+
+    public function getUserRemovedHookManager(): IHookManager {
+        return $this->query(UserRemovedHookManager::class);
     }
 
     public function getPasswordChangedHookManager(): IHookManager {

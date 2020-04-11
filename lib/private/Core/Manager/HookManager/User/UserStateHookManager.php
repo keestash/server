@@ -19,21 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Encryption\Base;
+namespace Keestash\Core\Manager\HookManager\User;
 
-use KSP\Core\DTO\User\IUser;
-use KSP\Core\Encryption\ICredential;
+use Keestash\Core\Manager\HookManager\HookManager;
+use KSP\Core\DTO\User\IUserState;
 
-class Credential implements ICredential {
+class UserStateHookManager extends HookManager {
 
-    private $user = null;
-
-    public function __construct(IUser $user) {
-        $this->user = $user;
-    }
-
-    public function getSecret(): string {
-        return $this->user->getPassword();
-    }
+    public const HOOK_TYPE_DELETE = IUserState::USER_STATE_DELETE;
+    public const HOOK_TYPE_LOCK   = IUserState::USER_STATE_LOCK;
 
 }

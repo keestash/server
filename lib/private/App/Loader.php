@@ -127,7 +127,6 @@ class Loader implements ILoader {
             $app = $this->apps->get($key);
 
             if (true === $this->flushedApps->containsKey($app->getId())) {
-                FileLogger::debug("{$app->getId()} is flushed. Skipping");
                 continue;
             }
 

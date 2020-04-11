@@ -19,14 +19,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Encryption;
+namespace Keestash\Core\DTO\Encryption;
 
-interface IEncryption {
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Encryption\ICredential;
 
-    public function __construct(ICredential $credential);
+class Credential implements ICredential {
 
-    public function encrypt($raw);
+    private $user = null;
 
-    public function decrypt($encrypted);
+    public function __construct(IUser $user) {
+        $this->user = $user;
+    }
+
+    public function getSecret(): string {
+        return $this->user->getPassword();
+    }
 
 }

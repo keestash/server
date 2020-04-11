@@ -19,10 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Encryption\Base;
+namespace KSP\Core\Service\Encryption;
 
-use Keestash\Core\Encryption\AES;
+use KSP\Core\DTO\Encryption\ICredential;
 
-class BaseEncryption extends AES {
+interface IEncryptionService {
+
+    public function __construct(ICredential $credential);
+
+    public function encrypt($raw);
+
+    public function decrypt($encrypted);
 
 }

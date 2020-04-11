@@ -114,6 +114,7 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             return false;
         }
 
+        $id       = $job->getId();
         $name     = $job->getName();
         $interval = $job->getInterval();
         $type     = $job->getType();
@@ -133,6 +134,7 @@ class JobRepository extends AbstractRepository implements IJobRepository {
         $statement->bindParam(":type", $type);
         $statement->bindParam(":last_run", $lastRun);
         $statement->bindParam(":info", $info);
+        $statement->bindParam(":id", $id);
 
         $statement->execute();
 
@@ -149,7 +151,6 @@ class JobRepository extends AbstractRepository implements IJobRepository {
 
         /** @var Job $job */
         foreach ($jobList as $job) {
-            var_dump("sfsdfsdfsfd");
             $inserted = $this->replaceJob($job);
         }
 

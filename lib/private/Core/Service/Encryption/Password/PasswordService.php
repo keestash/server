@@ -23,6 +23,7 @@ namespace Keestash\Core\Service\Encryption\Password;
 
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash\Core\DTO\Encryption\Password\Password;
 use Keestash\Exception\KeestashException;
 
 class PasswordService {

@@ -23,6 +23,7 @@ namespace Keestash\Core\Repository\User;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Core\Repository\AbstractRepository;
@@ -66,18 +67,18 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     public function getDeletedUsers(): ArrayList {
         $list = new ArrayList();
         $sql  = "
-                SELECT 
-                      u.`id`
-                      , u.`user_id`
-                      , u.`state`
-                      , u.`valid_from`
-                      , u.`create_ts`
-                FROM `user` us
-                    WHERE us.`state` = :state  
+                SELECT
+                    us.`id`
+                     , us.`user_id`
+                     , us.`state`
+                     , us.`valid_from`
+                     , us.`create_ts`
+                FROM `user_state` us
+                WHERE us.`state` = :state
                 ;";
 
         $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
+        if (null === $statement) return $list;
         $state = IUserState::USER_STATE_DELETE;
         $statement->bindParam("state", $state);
 

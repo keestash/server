@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Encryption;
+namespace Keestash\Core\Servicr\Encryption\Base;
 
-interface ICredential {
+use Keestash\Core\Service\Encryption\Base\AES;
 
-    public function getSecret(): string;
+class BaseEncryption extends AES {
 
 }
