@@ -23,7 +23,7 @@ namespace Keestash\Core\DTO\User;
 
 use DateTime;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 class UserState implements IUserState {
 

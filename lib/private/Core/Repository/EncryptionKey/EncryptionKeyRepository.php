@@ -27,7 +27,7 @@ use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\Key;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\IKey;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use PDO;
 

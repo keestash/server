@@ -24,7 +24,7 @@ namespace Keestash\Core\DTO;
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
 use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 class Token implements IToken {
 

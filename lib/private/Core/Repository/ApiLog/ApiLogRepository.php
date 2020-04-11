@@ -23,7 +23,7 @@ namespace Keestash\Core\Repository\ApiLog;
 
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\IAPIRequest;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 
 class ApiLogRepository extends AbstractRepository implements IApiLogRepository {

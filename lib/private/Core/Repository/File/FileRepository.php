@@ -30,7 +30,7 @@ use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;

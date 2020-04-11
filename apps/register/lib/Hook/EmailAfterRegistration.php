@@ -25,7 +25,7 @@ use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\EmailService;
 use Keestash\Legacy\Legacy;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Hook\IHook;
 use KSP\Hook\IHookCache;

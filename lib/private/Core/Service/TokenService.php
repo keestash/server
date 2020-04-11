@@ -23,7 +23,7 @@ namespace Keestash\Core\Service;
 
 use Keestash\Core\DTO\Token;
 use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 
 class TokenService {
 

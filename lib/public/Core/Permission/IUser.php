@@ -25,6 +25,6 @@ namespace KSP\Core\Permission;
  * Interface IUser
  * @package KSP\Core\Permission
  */
-interface IUser extends \doganoo\SimpleRBAC\Common\IUser, \KSP\Core\DTO\IUser {
+interface IUser extends \doganoo\SimpleRBAC\Common\IUser, \KSP\Core\DTO\User\IUser {
 
 }

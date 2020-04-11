@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\EncryptionKey;
 
 use KSP\Core\DTO\IKey;
-use KSP\Core\DTO\IUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IEncryptionKeyRepository extends IRepository {
