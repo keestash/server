@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Instance;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use Keestash\Core\DTO\Instance\Repository\Table;
 use Keestash\Core\Repository\AbstractRepository;
 use PDO;
 
@@ -57,6 +58,39 @@ class InstanceRepository extends AbstractRepository {
         $this->query("SET FOREIGN_KEY_CHECKS = 1");
 
         return $ran;
+    }
+
+    /**
+     * @param string $table
+     * @return ArrayList
+     * TODO pay credit to https://www.got-it.ai/solutions/sqlquerychat/sql-help/data-query/how-to-find-the-dependencies-of-a-mysql-table-querychat/
+     */
+    public function getAllDependantTables(string $table): ArrayList {
+        $tableList = new ArrayList();
+        $sql       = "
+        SELECT TABLE_NAME as `DEPENDENCY`, COLUMN_NAME as `COLUMN`, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+WHERE REFERENCED_TABLE_NAME = :name;
+        ";
+        $statement = $this->prepareStatement($sql);
+        if (null === $statement) return $tableList;
+        $statement->bindParam("name", $table);
+        $statement->execute();
+
+        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+            $table = new Table();
+            $table->setName($row[0]);
+            $table->setColumn($row[1]);
+            $table->setReferencedTable($row[2]);
+            $table->setReferencedColumn($row[3]);
+            $tableList->add($table);
+        }
+
+        return $tableList;
+    }
+
+    public function rawQuery(string $sql) {
+        return parent::rawQuery($sql);
     }
 
 }

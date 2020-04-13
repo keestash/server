@@ -88,6 +88,7 @@ use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\TokenService;
+use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
@@ -613,13 +614,19 @@ class Server {
     public function getUserFromSession(): ?IUser {
         /** @var PersistenceService $persistenceService */
         $persistenceService = $this->query(PersistenceService::class);
-        $userId             = $persistenceService->getValue("user_id", null);
+        /** @var UserService $userService */
+        $userService = $this->query(UserService::class);
+        $userId      = $persistenceService->getValue("user_id", null);
+
 
         if (null === $userId) return null;
 
         /** @var IUserRepository $userManager */
         $userManager = $this->query(IUserRepository::class);
-        return $userManager->getUserById($userId);
+        $user        = $userManager->getUserById($userId);
+
+        if (true === $userService->isDisabled($user)) return null;
+        return $user;
     }
 
     public function getImageRoot(): string {

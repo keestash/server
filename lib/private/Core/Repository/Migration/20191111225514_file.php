@@ -109,6 +109,10 @@ class File extends KeestashMigration {
                 "user_id"
                 , "user"
                 , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
             )
             ->save();
 

@@ -101,7 +101,7 @@ class LoginService extends AbstractApi {
         $response = new LoginResponse();
         $response->setCode(HTTP::OK);
 
-        if (null === $user) {
+        if (true === $this->userService->isDisabled($user)) {
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK,
                 [

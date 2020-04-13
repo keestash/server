@@ -19,28 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\User;
+namespace KSP\Core\DTO\Instance\Repository;
 
-use DateTime;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\IObject;
 
-interface IUserState {
+interface ITable extends IObject {
 
-    /** @var string USER_STATE_DELETE */
-    public const USER_STATE_DELETE = "delete.state.user";
-    /** @var string USER_STATE_LOCK */
-    public const USER_STATE_LOCK = "lock.state.user";
+    public function getName(): string;
 
-    public function getId(): int;
+    public function getColumn(): string;
 
-    public function getUser(): IUser;
+    public function getReferencedTable(): string;
 
-    public function getState(): string;
-
-    public function getValidFrom(): DateTime;
-
-    public function getCreateTs(): DateTime;
-
-    public static function isValidState(string $state): bool;
+    public function getReferencedColumn(): string;
 
 }

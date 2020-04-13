@@ -23,6 +23,7 @@ namespace Keestash\Core\Repository\User;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\User\UserState;
@@ -38,14 +39,16 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
     /** @var IUserRepository */
     private $userRepository;
+    /** @var HashTable */
+    private $cache;
 
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
     ) {
         parent::__construct($backend);
-
         $this->userRepository = $userRepository;
+        $this->cache          = null;
     }
 
     public function unlock(IUser $user): bool {
@@ -57,34 +60,42 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     }
 
     public function delete(IUser $user): bool {
-        return $this->insert($user, IUserState::USER_STATE_DELETE);
+        $locked  = $this->insert($user, IUserState::USER_STATE_LOCK);
+        $deleted = $this->insert($user, IUserState::USER_STATE_DELETE);
+        return true === $locked && true === $deleted;
     }
 
     public function revertDelete(IUser $user): bool {
         return $this->remove($user, IUserState::USER_STATE_DELETE);
     }
 
-    public function getDeletedUsers(): ArrayList {
-        $list = new ArrayList();
-        $sql  = "
+    public function getAll(?string $state = null): HashTable {
+        if (null !== $this->cache) return $this->cache;
+        $table = new HashTable();
+        $sql   = "
                 SELECT
                     us.`id`
                      , us.`user_id`
                      , us.`state`
                      , us.`valid_from`
                      , us.`create_ts`
-                FROM `user_state` us
-                WHERE us.`state` = :state
-                ;";
+                FROM `user_state` us";
+
+        if (true === IUserState::isValidState((string) $state)) {
+            $sql = $sql . " WHERE us.`state` = :state";
+        }
 
         $statement = parent::prepareStatement($sql);
-        if (null === $statement) return $list;
+        if (null === $statement) return $table;
         $state = IUserState::USER_STATE_DELETE;
-        $statement->bindParam("state", $state);
+
+        if (true === IUserState::isValidState((string) $state)) {
+            $statement->bindParam("state", $state);
+        }
 
         $executed = $statement->execute();
-        if (!$executed) return $list;
-        if ($statement->rowCount() === 0) return $list;
+        if (!$executed) return $table;
+        if ($statement->rowCount() === 0) return $table;
 
         while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
             $id        = $row[0];
@@ -104,14 +115,24 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             $userState->setCreateTs(
                 DateTimeUtil::fromMysqlDateTime($createTs)
             );
+            $userState->setState($state);
 
-            $list->add($userState);
+            $table->put($userState->getId(), $userState);
         }
 
-        return $list;
+        $this->cache = $table;
+        return $table;
     }
 
+    public function getDeletedUsers(): HashTable {
+        return $this->getAll(IUserState::USER_STATE_DELETE);
+    }
 
+    public function getLockedUsers(): HashTable {
+        return $this->getAll(IUserState::USER_STATE_LOCK);
+    }
+
+    // TODO check whether already exists
     private function insert(IUser $user, string $state): bool {
         $sql = "insert into `user_state` (
                   `user_id`
@@ -149,6 +170,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
         if (null === $lastInsertId) return false;
 
+        $this->cache = null;
         return true;
     }
 
@@ -164,11 +186,46 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         if (null === $statement) return false;
         $userId = $user->getId();
         $statement->bindParam("user_id", $userId);
-        $statement->bindParam("state", $statement);
+        $statement->bindParam("state", $state);
         $statement->execute();
+        $executed = false === $this->hasErrors($statement->errorCode());
 
-        return false === $this->hasErrors($statement->errorCode());
+        if (false === $executed) return false;
+        $this->cache = null;
+        return $executed;
     }
 
+
+    public function removeAll(IUser $user): bool {
+        $lockRemoved   = $this->remove(
+            $user
+            , IUserState::USER_STATE_LOCK
+        );
+        $deleteRemoved = $this->remove(
+            $user
+            , IUserState::USER_STATE_DELETE
+        );
+        return true === $lockRemoved && true === $deleteRemoved;
+    }
+
+    public function isLocked(IUser $user): bool {
+        $lockedUsers = $this->getLockedUsers();
+
+        /** @var IUserState $userState */
+        foreach ($lockedUsers as $userState) {
+            if ($user->getId() === $userState->getUser()->getId()) return true;
+        }
+        return false;
+    }
+
+    public function isDeleted(IUser $user): bool {
+        $lockedUsers = $this->getDeletedUsers();
+
+        /** @var IUserState $userState */
+        foreach ($lockedUsers as $userState) {
+            if ($user->getId() === $userState->getUser()->getId()) return true;
+        }
+        return false;
+    }
 
 }

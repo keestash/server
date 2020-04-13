@@ -85,6 +85,10 @@ class EncryptionKey extends AbstractMigration {
                 "key_id"
                 , "key"
                 , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
             )
             ->save();
 
