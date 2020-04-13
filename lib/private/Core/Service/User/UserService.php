@@ -23,8 +23,10 @@ namespace Keestash\Core\Service\User;
 
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\User\User;
+use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Key\KeyService;
 use Keestash\Exception\KeyNotCreatedException;
@@ -32,6 +34,7 @@ use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\Instance\Repository\ITable;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
@@ -70,6 +73,9 @@ class UserService {
     /** @var FileService */
     private $fileService;
 
+    /** @var InstanceRepository $instanceRepository */
+    private $instanceRepository;
+
     public function __construct(
         IApiLogRepository $apiLogRepository
         , IFileRepository $fileRepository
@@ -80,6 +86,7 @@ class UserService {
         , Legacy $legacy
         , IUserStateRepository $userStateRepository
         , FileService $fileService
+        , InstanceRepository $instanceRepository
     ) {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
@@ -90,6 +97,7 @@ class UserService {
         $this->legacy              = $legacy;
         $this->userStateRepository = $userStateRepository;
         $this->fileService         = $fileService;
+        $this->instanceRepository  = $instanceRepository;
     }
 
     public function removeUser(IUser $user): array {
@@ -250,6 +258,10 @@ class UserService {
         $this->fileRepository->add($file);
 
         return true;
+    }
+
+    public function isDisabled(?IUser $user): bool {
+        return null === $user && true === $user->isLocked();
     }
 
 }

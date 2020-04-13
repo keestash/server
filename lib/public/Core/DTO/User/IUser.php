@@ -56,6 +56,8 @@ interface IUser extends IObject, IComparator {
 
     public function getLastLogin(): ?DateTime;
 
-    public function isDisabled(): bool;
+    public function isLocked(): bool;
+
+    public function isDeleted(): bool;
 
 }

@@ -32,6 +32,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use PDO;
 use PDOException;
 
@@ -39,6 +40,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
 
     /** @var null|IRoleRepository $roleManager */
     private $roleManager = null;
+
 
     public function __construct(
         IBackend $backend
@@ -60,8 +62,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , u.`phone`
                       , u.`website`
                       , u.`hash`
-                from `user` u 
-                  where `name` = :name;";
+                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
+                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
+                from `user` u
+                         left join `user_state` us
+                                    on u.`id` = us.`user_id`
+                  where u.`name` = :name;";
 
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
@@ -82,6 +88,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $phone     = $row[7];
             $website   = $row[8];
             $hash      = $row[9];
+            $deleted   = (bool) $row[10];
+            $locked    = (bool) $row[11];
 
             $user = new User();
             $user->setId($id);
@@ -95,8 +103,15 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setWebsite($website);
             $user->setHash($hash);
             $user->setLastLogin(new DateTime()); // TODO implement
-            $roles = $this->roleManager->getRolesByUser($user);
-            $user->setRoles($roles);
+            $user->setRoles(
+                $this->roleManager->getRolesByUser($user)
+            );
+            $user->setLocked(
+                true === $locked
+            );
+            $user->setDeleted(
+                true === $deleted
+            );
         }
 
         return $user;
@@ -113,9 +128,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `email`
                       , `phone`
                       , `website`
-                      , `hash`
-                from `user` u 
-                  where `email` = :email;";
+                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
+                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
+                 from `user` u
+                          left join `user_state` us
+                                    on u.`id` = us.`user_id`
+                  where u.`email` = :email;";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $statement->bindParam("email", $email);
@@ -135,6 +153,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $phone     = $row[7];
             $website   = $row[8];
             $hash      = $row[9];
+            $deleted   = (bool) $row[10];
+            $locked    = (bool) $row[11];
 
             $user = new User();
             $user->setId($id);
@@ -148,8 +168,16 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
             $user->setHash($hash);
-            $roles = $this->roleManager->getRolesByUser($user);
-            $user->setRoles($roles);
+            $user->setRoles(
+                $this->roleManager->getRolesByUser($user)
+            );
+            $user->setLocked(
+                true === $locked
+            );
+            $user->setDeleted(
+                true === $deleted
+            );
+
         }
 
         return $user;
@@ -174,7 +202,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , u.`phone`
                       , u.`website`
                       , u.`hash`
-                from `user` u;";
+                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
+                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
+                    from `user` u
+                        left join `user_state` us
+                        on u.`id` = us.`user_id`
+                ";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $executed = $statement->execute();
@@ -192,6 +225,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $phone     = $row[7];
             $website   = $row[8];
             $hash      = $row[9];
+            $deleted   = (bool) $row[10];
+            $locked    = (bool) $row[11];
 
             $user = new User();
             $user->setId((int) $id);
@@ -205,8 +240,15 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
             $user->setHash($hash);
-            $roles = $this->roleManager->getRolesByUser($user);
-            $user->setRoles($roles);
+            $user->setRoles(
+                $this->roleManager->getRolesByUser($user)
+            );
+            $user->setLocked(
+                true === $locked
+            );
+            $user->setDeleted(
+                true === $deleted
+            );
 
             $list->add($user);
         }
@@ -334,18 +376,22 @@ class UserRepository extends AbstractRepository implements IUserRepository {
 
     public function getUserById(string $id): ?IUser {
         $sql       = "select 
-                      `id`
-                      , `name`
-                      , `password`
-                      , `create_ts`
-                      , `first_name`
-                      , `last_name`
-                      , `email`
-                      , `phone`
-                      , `website`
-                      , `hash`
-                from `user` u 
-                  where `id` = :id;;";
+                      u.`id`
+                      , u.`name`
+                      , u.`password`
+                      , u.`create_ts`
+                      , u.`first_name`
+                      , u.`last_name`
+                      , u.`email`
+                      , u.`phone`
+                      , u.`website`
+                      , u.`hash`
+                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
+                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
+                    from `user` u
+                        left join `user_state` us
+                            on u.`id` = us.`user_id`
+                  where u.`id` = :id;";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $statement->bindParam("id", $id);
@@ -365,6 +411,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $phone     = $row[7];
             $website   = $row[8];
             $hash      = $row[9];
+            $deleted   = (bool) $row[10];
+            $locked    = (bool) $row[11];
 
             $user = new User();
             $user->setId($id);
@@ -378,8 +426,16 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
             $user->setHash($hash);
-            $roles = $this->roleManager->getRolesByUser($user);
-            $user->setRoles($roles);
+            $user->setRoles(
+                $this->roleManager->getRolesByUser($user)
+            );
+            $user->setLocked(
+                true === $locked
+            );
+            $user->setDeleted(
+                true === $deleted
+            );
+
         }
 
         return $user;
@@ -397,8 +453,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `phone`
                       , `website`
                       , `hash`
-                from `user` u 
-                  where `hash` = :hash;";
+                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
+                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
+                    from `user` u
+                        left join `user_state` us
+                            on u.`id` = us.`user_id`
+                  where u.`hash` = :hash;";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $statement->bindParam("hash", $hash);
@@ -418,6 +478,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $phone     = $row[7];
             $website   = $row[8];
             $hash      = $row[9];
+            $deleted   = (bool) $row[10];
+            $locked    = (bool) $row[11];
 
             $user = new User();
             $user->setId($id);
@@ -431,8 +493,16 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setWebsite($website);
             $user->setLastLogin(new DateTime()); // TODO implement
             $user->setHash($hash);
-            $roles = $this->roleManager->getRolesByUser($user);
-            $user->setRoles($roles);
+            $user->setRoles(
+                $this->roleManager->getRolesByUser($user)
+            );
+            $user->setLocked(
+                true === $locked
+            );
+            $user->setDeleted(
+                true === $deleted
+            );
+
         }
 
         return $user;
@@ -454,8 +524,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                       , `phone`
                       , `website`
                       , `hash`
-                from `user` u 
-                  where `name` = :name;";
+                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
+                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
+                    from `user` u
+                        left join `user_state` us
+                            on u.`id` = us.`user_id`
+                  where u.`name` = :name;";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return null;
         $statement->bindParam("name", $name);
@@ -475,6 +549,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $phone     = $row[7];
             $website   = $row[8];
             $hash      = $row[9];
+            $deleted   = (bool) $row[10];
+            $locked    = (bool) $row[11];
 
             $user = new User();
             $user->setId($id);
@@ -488,8 +564,15 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setWebsite($website);
             $user->setHash($hash);
             $user->setLastLogin(new DateTime()); // TODO implement
-            $roles = $this->roleManager->getRolesByUser($user);
-            $user->setRoles($roles);
+            $user->setRoles(
+                $this->roleManager->getRolesByUser($user)
+            );
+            $user->setLocked(
+                true === $locked
+            );
+            $user->setDeleted(
+                true === $deleted
+            );
         }
 
         return $user;
@@ -506,5 +589,6 @@ class UserRepository extends AbstractRepository implements IUserRepository {
 
         return false === $this->hasErrors($statement->errorCode());
     }
+
 
 }

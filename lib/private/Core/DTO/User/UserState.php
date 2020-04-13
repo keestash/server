@@ -109,4 +109,11 @@ class UserState implements IUserState {
     }
 
 
+    public static function isValidState(string $state): bool {
+        return in_array($state, [
+            IUserState::USER_STATE_DELETE
+            , IUserState::USER_STATE_LOCK
+        ]);
+    }
+
 }

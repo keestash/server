@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\User;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\User\IUser;
 
 /**
@@ -43,6 +43,18 @@ interface IUserStateRepository {
 
     public function revertDelete(IUser $user): bool;
 
-    public function getDeletedUsers(): ArrayList;
+    public function getDeletedUsers(): HashTable;
+
+    public function getLockedUsers(): HashTable;
+
+    public function getAll(): HashTable;
+
+    public function remove(IUser $user, string $state): bool;
+
+    public function removeAll(IUser $user): bool;
+
+    public function isLocked(IUser $user): bool;
+
+    public function isDeleted(IUser $user): bool;
 
 }

@@ -53,8 +53,10 @@ class User implements IUser, PermissionUser {
     private $lastLogin = null;
     /** @var string $hash */
     private $hash = null;
-    /** @var bool $disabled */
-    private $disabled = true;
+    /** @var bool $locked */
+    private $locked = false;
+    /** @var bool $deleted */
+    private $deleted = false;
 
     /**
      * @return string
@@ -226,12 +228,20 @@ class User implements IUser, PermissionUser {
         return false;
     }
 
-    public function setDisabled(bool $disabled): void {
-        $this->disabled = $disabled;
+    public function setLocked(bool $locked): void {
+        $this->locked = $locked;
     }
 
-    public function isDisabled(): bool {
-        return $this->disabled;
+    public function isLocked(): bool {
+        return $this->locked;
+    }
+
+    public function setDeleted(bool $deleted): void {
+        $this->deleted = $deleted;
+    }
+
+    public function isDeleted(): bool {
+        return $this->deleted;
     }
 
     /**
@@ -254,7 +264,8 @@ class User implements IUser, PermissionUser {
                 , 'website'    => $this->getWebsite()
                 , "roles"      => $this->getRoles()
                 , "hash"       => $this->getHash()
-                , "disabled"   => $this->isDisabled()
+                , "locked"     => $this->isLocked()
+                , "deleted"    => $this->isDeleted()
             ];
     }
 

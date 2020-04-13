@@ -51,16 +51,17 @@ class AbstractRepository implements IRepository {
         return $this->connection->lastInsertId($name);
     }
 
-    protected function query(string $sql, array $parameters = []): ?bool {
+    protected function query(string $sql, array $parameters = []): bool {
         $statement = $this->prepareStatement($sql);
-        if (null === $statement) return null;
+        if (null === $statement) return false;
 
         foreach ($parameters as $key => $value) {
             if (false === is_string($key)) continue;
             $statement->bindParam($key, $value);
         }
 
-        return $statement->execute();
+        $statement->execute();
+        return $this->hasErrors($statement->errorCode());
     }
 
     protected function prepareStatement(string $statement): ?PDOStatement {
@@ -95,6 +96,10 @@ class AbstractRepository implements IRepository {
 
     protected function getSchemaName(): string {
         return $this->backend->getSchemaName();
+    }
+
+    protected function rawQuery(string $sql) {
+        return $this->connection->exec($sql);
     }
 
 }

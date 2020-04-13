@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Permission\IRole;
 use Phinx\Migration\AbstractMigration;
@@ -229,11 +230,19 @@ class MinimalApp extends AbstractMigration {
                 "permission_id"
                 , "permission"
                 , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
             )
             ->addForeignKey(
                 "role_id"
                 , "role"
                 , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
             )
             ->save();
 
@@ -241,24 +250,50 @@ class MinimalApp extends AbstractMigration {
 
     private function createUserRole(): void {
 
-        $this->execute("
-                create table `user_role` (
-                    `id`        int auto_increment,
-                    `role_id`   int          not null,
-                    `user_id`   int null,
-                    `create_ts` int          not null,
-                constraint user_role_id_uindex
-                    unique (`id`),
-                constraint user_role_role_id_fk
-                foreign key (`role_id`) references role (`id`)
-                    on update cascade on delete cascade,
-                constraint user_role_users_id_fk
-                foreign key (`user_id`) references user (`id`)
-                    on update cascade on delete cascade
-                );
-        
-                alter table `user_role` add primary key (`id`);
-");
+        $this->table("user_role")
+            ->addColumn(
+                "role_id"
+                , KeestashMigration::INTEGER
+                , [
+                    "null"      => false
+                    , "comment" => "The user's role"
+                ]
+            )
+            ->addColumn(
+                "user_id"
+                , KeestashMigration::INTEGER
+                , [
+                    "null"      => false
+                    , "comment" => "The user"
+                ]
+            )
+            ->addColumn(
+                "create_ts"
+                , KeestashMigration::DATETIME
+                , [
+                    "null"      => false
+                    , "comment" => "The record's create ts"
+                ]
+            )
+            ->addForeignKey(
+                "role_id"
+                , "role"
+                , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                "user_id"
+                , "user"
+                , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
+            )
+            ->save();
 
     }
 

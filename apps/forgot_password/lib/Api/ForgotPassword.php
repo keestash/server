@@ -28,10 +28,12 @@ use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\EmailService;
+use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -46,6 +48,7 @@ class ForgotPassword extends AbstractApi {
     private $templateManager   = null;
     private $legacy            = null;
     private $permissionManager = null;
+    private $userService       = null;
 
     public function __construct(
         IL10N $l10n
@@ -54,6 +57,7 @@ class ForgotPassword extends AbstractApi {
         , ITemplateManager $templateManager
         , Legacy $legacy
         , IPermissionRepository $permissionManager
+        , UserService $userService
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
@@ -64,6 +68,7 @@ class ForgotPassword extends AbstractApi {
         $this->templateManager   = $templateManager;
         $this->legacy            = $legacy;
         $this->permissionManager = $permissionManager;
+        $this->userService       = $userService;
     }
 
     public function onCreate(array $parameters): void {
@@ -93,7 +98,10 @@ class ForgotPassword extends AbstractApi {
         $mailUser = $this->userManager->getUserByMail((string) $usernameOrEmail);
         $nameUser = $this->userManager->getUser((string) $usernameOrEmail);
 
-        if (null === $mailUser && null === $nameUser) {
+        if (
+            true === $this->userService->isDisabled($mailUser)
+            || true === $this->userService->isDisabled($nameUser)
+        ) {
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
