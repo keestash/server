@@ -652,7 +652,7 @@ class Server {
     public function getPhinxRoot(): string {
         return $this->getConfigRoot() . "phinx/";
     }
-
+    
     public function getLogfilePath(): string {
         $name    = $this->getLegacy()->getApplication()->get("name_internal");
         $logFile = $this->getDataRoot() . "$name.log";

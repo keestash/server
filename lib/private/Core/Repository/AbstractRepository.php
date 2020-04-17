@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository;
 
 use Doctrine\DBAL\Connection;
+use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
 use PDO;
@@ -61,7 +62,8 @@ class AbstractRepository implements IRepository {
         }
 
         $statement->execute();
-        return $this->hasErrors($statement->errorCode());
+        FileLogger::debug(json_encode($statement->errorInfo()));
+        return false === $this->hasErrors($statement->errorCode());
     }
 
     protected function prepareStatement(string $statement): ?PDOStatement {

@@ -27,13 +27,14 @@ use Keestash\App\Config\Diff;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\System\Installation\App\LockHandler;
-use KSA\Install\Application\Application;
 use KSP\Core\Controller\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
 
 class Controller extends FullscreenAppController {
+
+    public const TEMPLATE_INSTALL_APPS = "install.twig";
 
     private $permissionManager = null;
     private $templateManager   = null;
@@ -89,35 +90,41 @@ class Controller extends FullscreenAppController {
         $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
 
         // Step 3: install them!
-        $installed = $this->install($appsToInstall);
+//        $installed = $this->install($appsToInstall);
 
         // Step 4: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
         $appsToUpgrade = $diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
 
-        $updated = $this->install($appsToUpgrade);
+//        $updated = $this->install($appsToUpgrade);
 
-        $this->lockHandler->unlock();
+//        $this->lockHandler->unlock();
 
-        $template = Application::TEMPLATE_SUCCESS;
-        $message  = parent::getL10N()->translate("Updated All your Apps");
-        if (false === $installed || false === $updated) {
-            $template = Application::TEMPLATE_ERROR;
-            $message  = parent::getL10N()->translate("There was an error updating your apps. Please try it again");
-        }
-
-        parent::getTemplateManager()->replace(
-            $template
-            , [
-                "message" => $message
-                , "href"  => Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
-                , "name"  => Keestash::getServer()->getAppLoader()->getDefaultApp()->getName()
-            ]
+        $this->getTemplateManager()
+            ->replace(
+                Controller::TEMPLATE_INSTALL_APPS
+                , [
+                    "installationHeader"   => $this->getL10N()->translate("Installing Apps")
+                    , "installInstruction" => $this->getL10N()->translate("The following apps are going to be installed. Please click on \"install\" to finish the process.")
+                    , "updateInstruction"  => $this->getL10N()->translate("The following apps are going to be updated. Please click on \"install\" to finish the process.")
+                    , "endUpdate"          => $this->getL10N()->translate("Install")
+                    , "appsToInstall"      => $this->hashTableToArray($appsToInstall)
+                    , "appsToUpdate"       => $this->hashTableToArray($appsToUpgrade)
+                ]
+            );
+        $this->setAppContent(
+            $this->getTemplateManager()->render(Controller::TEMPLATE_INSTALL_APPS)
         );
-        parent::render($template);
     }
 
+    private function hashTableToArray(HashTable $hashTable): array {
+        $array = [];
+        foreach ($hashTable->keySet() as $key) {
+            $array[] = $hashTable->get($key);
+        }
+        return $array;
+    }
 
     public function afterCreate(): void {
 

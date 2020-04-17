@@ -21,24 +21,36 @@ declare(strict_types=1);
 
 namespace KSA\Install\Application;
 
+use Keestash;
+use Keestash\Core\Repository\Instance\InstanceRepository;
+use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\System\Installation\App\LockHandler;
+use KSA\Install\Command\Uninstall;
 use KSA\Install\Controller\Controller;
 
 class Application extends \Keestash\App\Application {
-
-    public const TEMPLATE_ERROR   = "error.twig";
-    public const TEMPLATE_SUCCESS = "success.twig";
 
     public const INSTALL = "install";
 
     public function register(): void {
 
-        parent::registerRoute(
+        $this->registerRoute(
             Application::INSTALL
             , Controller::class
         );
 
-        parent::registerPublicRoute(
+        $this->registerPublicRoute(
             Application::INSTALL
+        );
+
+        parent::addJavaScript("install");
+
+        $this->registerCommand(
+            new Uninstall(
+                Keestash::getServer()->query(InstanceRepository::class)
+                , Keestash::getServer()->query(LockHandler::class)
+                , Keestash::getServer()->query(Migrator::class)
+            )
         );
 
     }
