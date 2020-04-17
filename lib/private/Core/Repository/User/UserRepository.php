@@ -119,15 +119,15 @@ class UserRepository extends AbstractRepository implements IUserRepository {
 
     public function getUserByMail(string $email): ?IUser {
         $sql       = "select 
-                      `id`
-                      , `name`
-                      , `password`
-                      , `create_ts`
-                      , `first_name`
-                      , `last_name`
-                      , `email`
-                      , `phone`
-                      , `website`
+                      u.`id`
+                      , u.`name`
+                      , u.`password`
+                      , u.`create_ts`
+                      , u.`first_name`
+                      , u.`last_name`
+                      , u.`email`
+                      , u.`phone`
+                      , u.`website`
                       , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
                       , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
                  from `user` u

@@ -27,6 +27,7 @@ use Keestash\App\Config\Diff;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\System\Installation\App\LockHandler;
+use Keestash\Legacy\Legacy;
 use KSP\Core\Controller\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -36,37 +37,19 @@ class Controller extends FullscreenAppController {
 
     public const TEMPLATE_INSTALL_APPS = "install.twig";
 
-    private $permissionManager = null;
-    private $templateManager   = null;
-    private $lockHandler       = null;
-    private $installer         = null;
+    private $legacy = null;
 
     public function __construct(
         ITemplateManager $templateManager
-        , IPermissionRepository $permissionManager
         , IL10N $l10n
-        , LockHandler $lockHandler
-        , InstallerService $installer
+        , Legacy $legacy
     ) {
         parent::__construct(
             $templateManager
             , $l10n
         );
 
-        $this->templateManager   = $templateManager;
-        $this->permissionManager = $permissionManager;
-        $this->lockHandler       = $lockHandler;
-        $this->installer         = $installer;
-    }
-
-    private function install(HashTable $table): bool {
-
-        if (0 === $table->size()) return true;
-
-        $migrationRan = $this->installer->runMigrations();
-        $installed    = $this->installer->installAll($table);
-
-        return true === $migrationRan && true === $installed;
+        $this->legacy = $legacy;
     }
 
     public function onCreate(...$params): void {
@@ -89,28 +72,22 @@ class Controller extends FullscreenAppController {
         // Step 2: we determine all apps that needs to be installed
         $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
 
-        // Step 3: install them!
-//        $installed = $this->install($appsToInstall);
-
-        // Step 4: we check if one of our loaded apps has a new version
+        // Step 3: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
         $appsToUpgrade = $diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
-
-//        $updated = $this->install($appsToUpgrade);
-
-//        $this->lockHandler->unlock();
 
         $this->getTemplateManager()
             ->replace(
                 Controller::TEMPLATE_INSTALL_APPS
                 , [
-                    "installationHeader"   => $this->getL10N()->translate("Installing Apps")
-                    , "installInstruction" => $this->getL10N()->translate("The following apps are going to be installed. Please click on \"install\" to finish the process.")
-                    , "updateInstruction"  => $this->getL10N()->translate("The following apps are going to be updated. Please click on \"install\" to finish the process.")
-                    , "endUpdate"          => $this->getL10N()->translate("Install")
-                    , "appsToInstall"      => $this->hashTableToArray($appsToInstall)
-                    , "appsToUpdate"       => $this->hashTableToArray($appsToUpgrade)
+                    "installationHeader"        => $this->getL10N()->translate("Installing Apps")
+                    , "installationDescription" => $this->getL10N()->translate("Your {$this->legacy->getApplication()->get('name')} instance is not fully installed yet. Follow the instructions below to complete the installation.")
+                    , "installInstruction"      => $this->getL10N()->translate("The following apps are going to be installed. Please click on \"Install\" to finish the process.")
+                    , "updateInstruction"       => $this->getL10N()->translate("The following apps are going to be updated. Please click on \"Install\" to finish the process.")
+                    , "endUpdate"               => $this->getL10N()->translate("Install")
+                    , "appsToInstall"           => $this->hashTableToArray($appsToInstall)
+                    , "appsToUpdate"            => $this->hashTableToArray($appsToUpgrade)
                 ]
             );
         $this->setAppContent(

@@ -33,4 +33,12 @@ class HTTPService {
         die();
     }
 
+    public function buildWebRoute(string $base): string {
+        return Keestash::getBaseURL(true, true) . "/" . $base;
+    }
+
+    public function getLoginRoute(): string {
+        return $this->buildWebRoute("login");
+    }
+
 }

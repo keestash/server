@@ -30,7 +30,6 @@ use Keestash\App\Helper;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\Route;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
-use Keestash\Core\Manager\RouterManager\Router\Helper as RouterHelper;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
@@ -39,6 +38,8 @@ use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\MaintenanceService;
+use Keestash\Core\Service\Router\Installation\App\InstallAppService;
+use Keestash\Core\Service\Router\Installation\Instance\InstallInstanceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\System\Installation\LockHandler;
 use Keestash\Exception\KeestashException;
@@ -334,24 +335,22 @@ class Keestash {
     }
 
     private static function isInstanceInstalled(): void {
-        $lockHandler          = Keestash::getServer()->getInstanceLockHandler();
-        $instanceDB           = Keestash::getServer()->getInstanceDB();
-        $instanceHash         = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
-        $instanceId           = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
-        $isLocked             = $lockHandler->isLocked();
-        $routesToInstallation = RouterHelper::routesToInstallation();
+        /** @var InstallInstanceService $installInstanceService */
+        $installInstanceService = Keestash::getServer()->query(InstallInstanceService::class);
+        $lockHandler            = Keestash::getServer()->getInstanceLockHandler();
+        $instanceDB             = Keestash::getServer()->getInstanceDB();
+        $instanceHash           = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
+        $instanceId             = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
+        $isLocked               = $lockHandler->isLocked();
+        $routesToInstallation   = $installInstanceService->routesToInstallation();
 
-        // TODO we need to route to install apps if the current
-        //  route is going to another target
-        if (true === $isLocked || true === $routesToInstallation) {
-            return;
-        }
+        if (true === $isLocked || true === $routesToInstallation) return;
 
         /** @var HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
 
         if ((null === $instanceHash || null === $instanceId)) {
-            FileLogger::debug("The whole application is not installed. Please install");
+            FileLogger::debug("The whole application is not installed. Please Install");
             $lockHandler->lock();
             $httpService->routeToInstallInstance();
             exit();
@@ -362,14 +361,13 @@ class Keestash {
 
     private static function areAppsInstalled(): void {
         $instanceLockHandler = Keestash::getServer()->getInstanceLockHandler();
+        $instanceLocked      = $instanceLockHandler->isLocked();
 
         // if we are actually installing the instance,
         // we need to make sure that Keestash does not want
-        // to install the apps
-        if (true === $instanceLockHandler->isLocked()) return;
+        // to Install the apps
+        if (true === $instanceLocked) return;
 
-        // TODO we need to route to install apps if the current
-        //  route is going to another target
         // We only check loadedApps if the system is
         // installed
         $loadedApps    = Keestash::getServer()->getAppLoader()->getApps();
@@ -378,7 +376,7 @@ class Keestash {
         $diff          = new Diff();
         $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
 
-        // Step 1: we check if we have new apps to install
+        // Step 1: we check if we have new apps to Install
         if ($appsToInstall->size() > 0) {
             Keestash::handleNeedsUpgrade();
         }
@@ -398,27 +396,30 @@ class Keestash {
     }
 
     private static function handleNeedsUpgrade(): void {
+        /** @var InstallAppService $installationService */
+        $installationService = Keestash::getServer()->query(InstallAppService::class);
         /** @var LockHandler $lockHandler */
-        $lockHandler = Keestash::getServer()->getAppLockHandler();
-        $isLocked    = $lockHandler->isLocked();
+        $lockHandler          = Keestash::getServer()->getAppLockHandler();
+        $appsLocked           = $lockHandler->isLocked();
+        $routesToInstallation = $installationService->routesToInstallation();
 
-        if (true === $isLocked) {
+        if (true === $appsLocked && true === $routesToInstallation) {
             FileLogger::debug("already locked. Do not test again!");
             return;
         }
 
         if (Keestash::getMode() === Keestash::MODE_WEB) {
             $lockHandler->lock();
-            // in this case, we redirect to the install page
+            // in this case, we redirect to the Install page
             // since the user is logged in and is in web mode
             Keestash::getServer()
                 ->getHTTPRouter()
-                ->routeTo("install");
+                ->routeTo("Install");
             exit();
             die();
         }
 
-        if (Keestash::getMode() === Keestash::MODE_API) {
+        if (Keestash::getMode() === Keestash::MODE_API && false === $routesToInstallation) {
             // in all other cases, we simply return an
             // "need to upgrade" JSON String
             self::getServer()->getResponseManager()->add(
@@ -495,7 +496,7 @@ class Keestash {
             });
 
         set_exception_handler(
-            function (Exception $exception) {
+            function (Throwable $exception) {
 
                 FileLogger::error(
                     json_encode(

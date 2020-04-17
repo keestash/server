@@ -19,15 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\RouterManager\Router;
+namespace Keestash\Core\Service\Router\Installation\Instance;
 
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\ClassUtil;
 use Exception;
 use Keestash;
+use Keestash\Core\Manager\RouterManager\Router\APIRouter;
+use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Exception\KeestashException;
 
-class Helper {
+class InstallInstanceService {
 
     private const ROUTE_INSTALL_INSTANCE               = "install_instance";
     private const ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG = "install_instance/update_config/";
@@ -37,13 +39,7 @@ class Helper {
     private const ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS = "install_instance/has_data_dirs/";
     private const ROUTE_LOGIN_SUBMIT                   = "login/submit";
 
-    private function __construct() {
-    }
-
-    public function __clone() {
-    }
-
-    public static function routesToInstallation(): bool {
+    public function routesToInstallation(): bool {
         $router               = Keestash::getServer()->getRouter();
         $className            = ClassUtil::getClassName($router);
         $routesToInstallation = false;
@@ -51,11 +47,11 @@ class Helper {
         switch ($className) {
             case HTTPRouter::class:
                 /** @var HTTPRouter $router */
-                $routesToInstallation = Helper::handleHttp($router);
+                $routesToInstallation = $this->handleHttp($router);
                 break;
             case APIRouter::class:
                 /** @var APIRouter $router */
-                $routesToInstallation = Helper::handleApi($router);
+                $routesToInstallation = $this->handleApi($router);
                 break;
             default:
                 throw new KeestashException("could not identify class");
@@ -64,9 +60,9 @@ class Helper {
         return $routesToInstallation;
     }
 
-    private static function handleHttp(HTTPRouter $router): bool {
-        if (false === $router->hasRoute(Helper::ROUTE_INSTALL_INSTANCE)) return false;
-        if ($router->getRouteName() !== Helper::ROUTE_INSTALL_INSTANCE) return false;
+    private function handleHttp(HTTPRouter $router): bool {
+        if (false === $router->hasRoute(InstallInstanceService::ROUTE_INSTALL_INSTANCE)) return false;
+        if ($router->getRouteName() !== InstallInstanceService::ROUTE_INSTALL_INSTANCE) return false;
         return true;
     }
 
@@ -77,12 +73,12 @@ class Helper {
             return in_array(
                 $name
                 , [
-                    Helper::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
-                    , Helper::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
-                    , Helper::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
-                    , Helper::ROUTE_INSTALL_INSTANCE_END_UPDATE
-                    , Helper::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
-                    , Helper::ROUTE_LOGIN_SUBMIT
+                    InstallInstanceService::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
+                    , InstallInstanceService::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
+                    , InstallInstanceService::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
+                    , InstallInstanceService::ROUTE_INSTALL_INSTANCE_END_UPDATE
+                    , InstallInstanceService::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
+                    , InstallInstanceService::ROUTE_LOGIN_SUBMIT
                 ]
             );
         } catch (Exception $e) {
@@ -93,10 +89,6 @@ class Helper {
             return false;
         }
 
-    }
-
-    public static function buildWebRoute(string $base): string {
-        return Keestash::getBaseURL(true, true) . "/" . $base;
     }
 
 }

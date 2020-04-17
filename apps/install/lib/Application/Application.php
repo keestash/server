@@ -25,12 +25,15 @@ use Keestash;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\System\Installation\App\LockHandler;
+use KSA\Install\Api\InstallApps;
 use KSA\Install\Command\Uninstall;
 use KSA\Install\Controller\Controller;
+use KSP\Core\Manager\RouterManager\IRouter;
 
-class Application extends \Keestash\App\Application {
+class Application extends Keestash\App\Application {
 
-    public const INSTALL = "install";
+    public const INSTALL          = "install";
+    public const INSTALL_ALL_APPS = "install/apps/all/";
 
     public function register(): void {
 
@@ -41,6 +44,18 @@ class Application extends \Keestash\App\Application {
 
         $this->registerPublicRoute(
             Application::INSTALL
+        );
+
+        $this->registerApiRoute(
+            Application::INSTALL_ALL_APPS
+            , InstallApps::class
+            , [
+                IRouter::POST
+            ]
+        );
+
+        $this->registerPublicApiRoute(
+            Application::INSTALL_ALL_APPS
         );
 
         parent::addJavaScript("install");

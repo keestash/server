@@ -24,6 +24,7 @@ namespace KSA\Install\Command;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -41,27 +42,49 @@ class Uninstall extends KeestashCommand {
     /** @var Migrator */
     private $migrator;
 
+    /** @var UserService */
+    private $userService;
+
     public function __construct(
         InstanceRepository $instanceRepository
         , LockHandler $lockHandler
         , Migrator $migrator
+        , UserService $userService
     ) {
         parent::__construct(Uninstall::$defaultName);
         $this->instanceRepository = $instanceRepository;
         $this->lockHandler        = $lockHandler;
         $this->migrator           = $migrator;
+        $this->userService        = $userService;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln("locking in instanceDB");
-        $this->lockHandler->lock();
+        $this->lockInstallation($output);
         $output->writeln("dropping tables");
         $this->dropTables($output);
         $output->writeln("running core migrations");
         $this->runCoreMigrations($output);
+        $output->writeln("running create system user");
+        $this->createSystemUser($output);
         return 0;
     }
 
+    private function lockInstallation(OutputInterface $output): bool {
+        $locked = $this->lockHandler->lock();
+        if (true === $locked) {
+            $this->writeInfo(
+                "locked installation"
+                , $output
+            );
+        } else {
+            $this->writeError(
+                "could not lock installation"
+                , $output
+            );
+        }
+        return $locked;
+    }
 
     private function dropTables(OutputInterface $output, bool $includeSchema = false): bool {
         $dropped = $this->instanceRepository->dropSchema($includeSchema);
@@ -94,6 +117,25 @@ class Uninstall extends KeestashCommand {
             );
         }
         return $overwritten;
+    }
+
+    private function createSystemUser(OutputInterface $output): bool {
+        $created = $this->userService->createSystemUser(
+            $this->userService->getSystemUser()
+        );
+
+        if (true === $created) {
+            $this->writeInfo(
+                "system user created"
+                , $output
+            );
+        } else {
+            $this->writeError(
+                "could not create system user"
+                , $output
+            );
+        }
+        return $created;
     }
 
 }

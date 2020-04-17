@@ -89,31 +89,6 @@ export class Submit {
                             _this.router.routeTo(routeTo);
                         });
 
-                        // _this.request.get(
-                        //     _this.globalRoutes.getAllTemplates()
-                        //     , {}
-                        //     , (x, y, z) => {
-                        //         const isJson = Util.isJson(x);
-                        //         if (true === isJson) {
-                        //             const object = JSON.parse(x);
-                        //
-                        //             if (RESPONSE_CODE_OK in object) {
-                        //                 const templateStorage = new TemplateStorage();
-                        //                 const templates = object[RESPONSE_CODE_OK]["messages"]["templates"];
-                        //
-                        //                 templateStorage.addAll(templates)
-                        //                     .catch(() => {
-                        //                         console.log("error :(")
-                        //                     })
-                        //                     .finally(() => {
-                        //
-                        //                     });
-                        //
-                        //             }
-                        //         }
-                        //
-                        //     }
-                        // );
                         return;
                     } else if (RESPONSE_CODE_NOT_OK in object) {
                         result_object = object[RESPONSE_CODE_NOT_OK];
