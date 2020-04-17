@@ -33,37 +33,41 @@ class AppRepository extends AbstractRepository implements IAppRepository {
 
     public function getAllApps(): HashTable {
         $map = new HashTable();
+        try {
 
-        $sql  = "select 
+            $sql = "select 
                         `app_id`
                         , `enabled`
                         , `create_ts`
                         , `version`
                  from `app_config`";
 
-        $statement = parent::prepareStatement($sql);
+            $statement = parent::prepareStatement($sql);
 
-        if (null === $statement) {
+            if (null === $statement) {
+                return $map;
+            }
+            $statement->execute();
+
+            while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+                $appId    = $row[0];
+                $enabled  = $row[1];
+                $createTs = $row[2];
+                $version  = $row[3];
+
+                $app = new App();
+                $app->setId($appId);
+                $app->setEnabled($enabled === IApp::ENABLED_TRUE);
+                $app->setVersion((int) $version);
+                $app->setCreateTs(
+                    DateTimeUtil::fromMysqlDateTime($createTs)
+                );
+
+                $map->put($app->getId(), $app);
+
+            }
+        } catch (\Exception $exception) {
             return $map;
-        }
-        $statement->execute();
-
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $appId    = $row[0];
-            $enabled  = $row[1];
-            $createTs = $row[2];
-            $version  = $row[3];
-
-            $app = new App();
-            $app->setId($appId);
-            $app->setEnabled($enabled === IApp::ENABLED_TRUE);
-            $app->setVersion((int) $version);
-            $app->setCreateTs(
-                DateTimeUtil::fromMysqlDateTime($createTs)
-            );
-
-            $map->put($app->getId(), $app);
-
         }
         return $map;
     }

@@ -129,5 +129,12 @@ export class Base {
         return this.keys;
     }
 
+    removeAllExceptFirst(element) {
+        element.children().each((i, v) => {
+            if (i !== 0)
+                $(v).fadeOut(3000).remove();
+        });
+    }
+
 
 }

@@ -87,7 +87,6 @@ export class Config extends Base {
                     , log_requests: logRequests
                 };
 
-
                 _this.formula.post(
                     _this.routes.getInstallInstanceUpdateConfig()
                     , value
@@ -95,7 +94,10 @@ export class Config extends Base {
                         const object = JSON.parse(x);
 
                         if (RESPONSE_CODE_OK in object) {
-                            _this.parent.remove().fadeOut(3000);
+                            _this.removeAllExceptFirst(
+                                _this.parent
+                            )
+                            // _this.parent.children().remove().fadeOut(3000);
                             _this.parent.append(strings.updated);
                             _this.triggerEvent();
                         }

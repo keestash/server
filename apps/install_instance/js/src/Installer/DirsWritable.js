@@ -70,7 +70,6 @@ export class DirsWritable extends Base {
                     , {}
                     , function (x, y, z) {
                         const object = JSON.parse(x);
-                        console.log(object);
 
                         if (RESPONSE_CODE_OK in object) {
 
