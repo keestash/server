@@ -1,3 +1,5 @@
+import {Host} from "../../../../../lib/js/src/Backend/Host";
+
 /**
  * Keestash
  *
@@ -16,25 +18,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-const glob = require("glob");
-const webpack = require("webpack");
+export const END_UPDATE = "/install/apps/all/";
 
-module.exports = {
-    entry: glob.sync(__dirname + "/src/*.js"),
-    output: {
-        path: __dirname + "/dist/",
-        filename: 'Install.bundle.js'
-    },
-    module: {
-        rules: [{
-            exclude: /node_modules/,
-            loader: 'babel-loader'
-        }]
-    },
-    plugins: [
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
-    ]
-};
+export class Routes {
+    constructor() {
+        this.host = new Host();
+    }
+
+    getInstallAppsAll() {
+        return this.host.getApiHost() + END_UPDATE;
+    }
+
+}

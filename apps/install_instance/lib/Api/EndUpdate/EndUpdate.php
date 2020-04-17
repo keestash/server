@@ -23,11 +23,12 @@ namespace KSA\InstallInstance\Api\EndUpdate;
 
 use Keestash;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Manager\RouterManager\Router\Helper;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Router\Installation\Instance\InstallInstanceService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
@@ -45,6 +46,7 @@ class EndUpdate extends AbstractApi {
     private $userService        = null;
     private $userRepository     = null;
     private $persistenceService = null;
+    private $httpService        = null;
 
     public function __construct(
         IL10N $l10n
@@ -55,6 +57,7 @@ class EndUpdate extends AbstractApi {
         , UserService $userService
         , IUserRepository $userRepository
         , PersistenceService $persistenceService
+        , HTTPService $httpService
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
@@ -66,6 +69,7 @@ class EndUpdate extends AbstractApi {
         $this->userService        = $userService;
         $this->userRepository     = $userRepository;
         $this->persistenceService = $persistenceService;
+        $this->httpService        = $httpService;
     }
 
     public function onCreate(array $parameters): void {
@@ -118,7 +122,7 @@ class EndUpdate extends AbstractApi {
             IResponse::RESPONSE_CODE_OK
             , [
                 "message"    => "Ok"
-                , "route_to" => Helper::buildWebRoute(
+                , "route_to" => $this->httpService->buildWebRoute(
                     Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
                 )
             ]

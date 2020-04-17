@@ -128,7 +128,7 @@ class HTTPRouter extends Router {
     public function routeTo(string $url): void {
         $baseUrl = Keestash::getBaseURL();
         $url     = "$baseUrl/$url";
-        $this->routeURL($url);
+        $this->routeURL(strtolower($url));
     }
 
     private function routeURL(string $url): void {

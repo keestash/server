@@ -72,7 +72,7 @@ abstract class Router implements IRouter {
 
     private function add(string $name, array $defaults, array $verbs): void {
         $route = new Route(
-            $name
+            strtolower($name)
             , $defaults
             , []
             , []
