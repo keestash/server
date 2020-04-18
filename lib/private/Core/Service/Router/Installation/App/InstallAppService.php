@@ -31,8 +31,9 @@ use Keestash\Exception\KeestashException;
 
 class InstallAppService {
 
-    private const ROUTE_INSTALL          = "install";
-    private const ROUTE_INSTALL_ALL_APPS = "install/apps/all/";
+    private const ROUTE_INSTALL            = "install";
+    private const ROUTE_INSTALL_ALL_APPS   = "install/apps/all/";
+
 
     public function routesToInstallation(): bool {
         $router               = Keestash::getServer()->getRouter();
@@ -62,9 +63,6 @@ class InstallAppService {
     }
 
     private static function handleApi(APIRouter $router) {
-
-        FileLogger::debug(json_encode($router->getRoutes()->keySet()));
-        FileLogger::debug(InstallAppService::ROUTE_INSTALL_ALL_APPS);
 
         try {
             $name = $router->getRouteName();

@@ -30,14 +30,6 @@ require_once realpath(__DIR__ . '/../../lib/versioncheck.php');
 $dirname = __DIR__ . '/../../';
 $dirname = realpath($dirname);
 
-$keestash = __DIR__ . "/../../lib/Keestash.php";
-$keestash = realpath($keestash);
-
-/** @noinspection PhpIncludeInspection */
-require_once $keestash;
-
-Keestash::init();
-
 $pdo = new PDO(
     "mysql:host=" . $CONFIG['db_host'] . ";dbname=" . $CONFIG['db_name']
     , $CONFIG['db_user']

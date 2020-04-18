@@ -24,25 +24,24 @@ namespace Keestash\Core\System\Installation\Verification;
 use doganoo\PHPUtil\FileSystem\DirHandler;
 use Keestash;
 
+/**
+ * Class HasDataDirs
+ * @package Keestash\Core\System\Installation\Verification
+ */
 class HasDataDirs extends AbstractVerification {
 
-    private const PERMISSION = 0777;
+    private const PERMISSION = 0777; // TODO change permission
 
     public function hasProperty(): bool {
         $dataRoot  = Keestash::getServer()->getDataRoot();
         $imageRoot = Keestash::getServer()->getImageRoot();
 
-        $dirHandler = new DirHandler($dataRoot);
+        $hasDataRoot  = $this->checkAndCreateDirIfNecessary($dataRoot);
+        $hasImageRoot = $this->checkAndCreateDirIfNecessary($imageRoot);
 
-        if (false === $dirHandler->exists()) {
-            parent::addMessage("data_root", "{$dirHandler->getPath()}");
-            return false;
-        }
-
-        $imageRootCreated = $this->checkAndCreateDirIfNecessary($imageRoot);
-
-        return $imageRootCreated;
-
+        return
+            true === $hasDataRoot
+            && true === $hasImageRoot;
     }
 
     private function checkAndCreateDirIfNecessary(string $path): bool {

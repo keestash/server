@@ -24,6 +24,7 @@ namespace KSA\Install\Application;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSA\Install\Api\InstallApps;
 use KSA\Install\Command\Uninstall;
@@ -65,6 +66,7 @@ class Application extends Keestash\App\Application {
                 Keestash::getServer()->query(InstanceRepository::class)
                 , Keestash::getServer()->query(LockHandler::class)
                 , Keestash::getServer()->query(Migrator::class)
+                , Keestash::getServer()->query(UserService::class)
             )
         );
 
