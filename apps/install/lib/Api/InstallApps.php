@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\App\Config\Diff;

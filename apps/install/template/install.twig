@@ -1,16 +1,28 @@
 <div class="ui container" id="install__instance__container">
     <div class="ui text container">
         <h1>{{ installationHeader }}</h1>
-        <h4>{{ installationDescription }}</h4>
-        <span>{{ installInstruction }}</span>
 
-        {% for app in appsToInstall %}
-            <div class="ui segment">
-                <h4 class="ui header">{{ app.getName() }}</h4>
-                <span>Version: {{ app.getVersionString() }}</span>
-            </div>
+        {% if installType == 0 %}
+            <h4>{{ installInstructionNothingToUpdate }}</h4>
+        {% elseif installType ==1 %}
+            <h4>{{ installInstructionInstallApps }}</h4>
+        {% elseif installType ==2 %}
+            <h4>{{ installInstructionUpdateApps }}</h4>
+        {% elseif installType ==3 %}
+            <h4>{{ installInstructionInstallUpdateApps }}</h4>
+        {% elseif installType ==4 %}
+            <h4>{{ installationDescriptionError }}</h4>
+        {% endif %}
 
-        {% endfor %}
+        {% if appsToInstall|length > 0 %}
+            {% for app in appsToInstall %}
+                <div class="ui segment">
+                    <h4 class="ui header">{{ app.getName() }}</h4>
+                    <span>Version: {{ app.getVersionString() }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+
 
         {% if appsToUpdate|length > 0 %}
             <span>{{ updateInstruction }}</span>
@@ -18,15 +30,22 @@
             {% for app in appsToUpdate %}
                 <div class="ui segment">
                     <h4 class="ui header">{{ app.getName() }}</h4>
-                    <div class="ui active inverted dimmer">
-                        <div class="ui text loader"></div>
-                    </div>
+                    <span>Version: {{ app.getVersionString() }}</span>
                 </div>
-
             {% endfor %}
         {% endif %}
 
-        <button class="ui disabled primary button" id="i__end__update">{{ endUpdate }}</button>
+        {% if installType == 0 %}
+            <button class="ui disabled primary button" id="i__end__update">{{ endUpdate }}</button>
+        {% elseif installType ==1 %}
+            <button class="ui disabled primary button" id="i__end__update">{{ installApps }}</button>
+        {% elseif installType ==2 %}
+            <button class="ui disabled primary button" id="i__end__update">{{ updateApps }}</button>
+        {% elseif installType ==3 %}
+            <button class="ui disabled primary button" id="i__end__update">{{ updateApps }}</button>
+        {% elseif installType ==4 %}
+        {% endif %}
+
     </div>
 
 </div>

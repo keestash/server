@@ -18,7 +18,7 @@ import {Host} from "../../../../../lib/js/src/Backend/Host";
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-export const END_UPDATE = "/install/apps/all/";
+export const INSTALL_ALL_APPS = "/install/apps/all/";
 
 export class Routes {
     constructor() {
@@ -26,7 +26,7 @@ export class Routes {
     }
 
     getInstallAppsAll() {
-        return this.host.getApiHost() + END_UPDATE;
+        return this.host.getApiHost() + INSTALL_ALL_APPS;
     }
 
 }

@@ -24,6 +24,8 @@ use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 
 /** @noinspection PhpIncludeInspection */
 require realpath(__DIR__ . '/../config.php');
+/** @noinspection PhpIncludeInspection */
+require_once realpath(__DIR__ . '/../../lib/versioncheck.php');
 
 $dirname = __DIR__ . '/../../';
 $dirname = realpath($dirname);

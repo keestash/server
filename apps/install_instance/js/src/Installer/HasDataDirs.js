@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Base, HAS_DATA_DIRS, READABLE_DIRS, WRITABLE_DIRS} from "./Base";
+import {Base, HAS_DATA_DIRS, WRITABLE_DIRS} from "./Base";
 import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
 import modal from "../../../../../lib/js/src/UI/modal";
 

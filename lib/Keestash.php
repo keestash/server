@@ -344,7 +344,7 @@ class Keestash {
         $isLocked               = $lockHandler->isLocked();
         $routesToInstallation   = $installInstanceService->routesToInstallation();
 
-        if (true === $isLocked || true === $routesToInstallation) return;
+        if (true === $isLocked && true === $routesToInstallation) return;
 
         /** @var HTTPService $httpService */
         $httpService = Keestash::getServer()->query(HTTPService::class);
@@ -414,14 +414,15 @@ class Keestash {
             // since the user is logged in and is in web mode
             Keestash::getServer()
                 ->getHTTPRouter()
-                ->routeTo("Install");
+                ->routeTo("install");
             exit();
             die();
         }
 
         if (Keestash::getMode() === Keestash::MODE_API && false === $routesToInstallation) {
             // in all other cases, we simply return an
-            // "need to upgrade" JSON String
+            // "need to upgrade" JSON String (except for the
+            // case where we already route to installation)
             self::getServer()->getResponseManager()->add(
                 new NeedsUpgrade(
                     Keestash::getServer()->getL10N()
