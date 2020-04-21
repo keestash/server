@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\User;
 
 use DateTime;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Core\Repository\AbstractRepository;
@@ -39,8 +37,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
     /** @var IUserRepository */
     private $userRepository;
-    /** @var HashTable */
-    private $cache;
 
     public function __construct(
         IBackend $backend
@@ -48,29 +44,31 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     ) {
         parent::__construct($backend);
         $this->userRepository = $userRepository;
-        $this->cache          = null;
     }
 
     public function unlock(IUser $user): bool {
+        if (false === $this->isLocked($user)) return true;
         return $this->remove($user, IUserState::USER_STATE_LOCK);
     }
 
     public function lock(IUser $user): bool {
+        if (true === $this->isLocked($user)) return true;
         return $this->insert($user, IUserState::USER_STATE_LOCK);
     }
 
     public function delete(IUser $user): bool {
+        if (true === $this->isDeleted($user)) return true;
         $locked  = $this->insert($user, IUserState::USER_STATE_LOCK);
         $deleted = $this->insert($user, IUserState::USER_STATE_DELETE);
         return true === $locked && true === $deleted;
     }
 
     public function revertDelete(IUser $user): bool {
+        if (false === $this->isDeleted($user)) return true;
         return $this->remove($user, IUserState::USER_STATE_DELETE);
     }
 
     public function getAll(?string $state = null): HashTable {
-        if (null !== $this->cache) return $this->cache;
         $table = new HashTable();
         $sql   = "
                 SELECT
@@ -81,15 +79,14 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
                      , us.`create_ts`
                 FROM `user_state` us";
 
-        if (true === IUserState::isValidState((string) $state)) {
+        if (true === UserState::isValidState((string) $state)) {
             $sql = $sql . " WHERE us.`state` = :state";
         }
 
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return $table;
-        $state = IUserState::USER_STATE_DELETE;
 
-        if (true === IUserState::isValidState((string) $state)) {
+        if (true === UserState::isValidState((string) $state)) {
             $statement->bindParam("state", $state);
         }
 
@@ -120,7 +117,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             $table->put($userState->getId(), $userState);
         }
 
-        $this->cache = $table;
         return $table;
     }
 
@@ -170,7 +166,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
         if (null === $lastInsertId) return false;
 
-        $this->cache = null;
         return true;
     }
 
@@ -191,7 +186,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         $executed = false === $this->hasErrors($statement->errorCode());
 
         if (false === $executed) return false;
-        $this->cache = null;
         return $executed;
     }
 
@@ -212,17 +206,19 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         $lockedUsers = $this->getLockedUsers();
 
         /** @var IUserState $userState */
-        foreach ($lockedUsers as $userState) {
+        foreach ($lockedUsers->keySet() as $key) {
+            $userState = $lockedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) return true;
         }
         return false;
     }
 
     public function isDeleted(IUser $user): bool {
-        $lockedUsers = $this->getDeletedUsers();
+        $deletedUsers = $this->getDeletedUsers();
 
         /** @var IUserState $userState */
-        foreach ($lockedUsers as $userState) {
+        foreach ($deletedUsers->keySet() as $key) {
+            $userState = $deletedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) return true;
         }
         return false;
