@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository;
 
-use Doctrine\DBAL\Connection;
 use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
