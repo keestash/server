@@ -19,46 +19,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Encryption;
+namespace Keestash\Core\Service\Encryption\ServerKey;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
+use Keestash\Core\Service\Encryption\Base\BaseEncryption;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
+use KSP\Core\DTO\Encryption\ServerKey;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\DTO\Encryption\ICredential;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 
-class ServerKey implements ICredential {
+/**
+ * Class ServerKeyService
+ * @package Keestash\Core\Service\Encryption\ServerKey
+ */
+class ServerKeyService {
 
-    private $user           = null;
-    private $baseEncryption = null;
-    /** @var null|string $secret */
-    private $secret               = null;
-    private $encryptionRepository = null;
+    /** @var IEncryptionKeyRepository */
+    private $encryptionKeyRepository;
 
-    public function __construct(
-        IUser $user
-        , IEncryptionKeyRepository $encryptionKeyRepository
-    ) {
-        $this->encryptionRepository = $encryptionKeyRepository;
-        $this->user                 = $user;
-        $this->baseEncryption       = Keestash::getServer()->getBaseEncryption($this->user);
+    public function __construct(IEncryptionKeyRepository $encryptionKeyRepository) {
+        $this->encryptionKeyRepository = $encryptionKeyRepository;
     }
 
-    public function getSecret(): string {
-        $this->prepareKey();
-        return $this->secret;
-    }
-
-    private function prepareKey(): void {
-        if (null !== $this->secret) return;
-        $key = $this->encryptionRepository->getKey($this->user);
+    public function getKeyForUser(IUser $user): ServerKey {
+        /** @var BaseEncryption $baseEncryption */
+        $baseEncryption = Keestash::getServer()->getBaseEncryption($user);
+        $key            = $this->encryptionKeyRepository->getKey($user);
 
         if (null === $key) {
             throw new KeyNotFoundException("could not find key for {$this->user->getId()}");
         }
 
-        $this->secret = $this->baseEncryption->decrypt($key->getValue());
+        return new ServerKey($baseEncryption->decrypt($key->getValue()));
     }
 
 }

@@ -81,7 +81,6 @@ class PersistenceService {
     public function setPersistenceValue(string $key, string $value, int $expireTs = 0): bool {
         $sessionPersisted = $this->setSessionValue($key, $value);
         $cookiePersisted  = $this->setCookieValue($key, $value, $expireTs);
-        FileLogger::debug("session set: $sessionPersisted, cookie set: $cookiePersisted");
         return true === $sessionPersisted && true === $cookiePersisted;
     }
 
