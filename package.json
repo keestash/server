@@ -36,7 +36,7 @@
     "form-data": "^2.5.1",
     "glob": "latest",
     "install": "^0.13.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-ui-dist": "^1.12.1",
     "localforage": "^1.7.3",
     "mem": "^6.0.1",
