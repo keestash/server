@@ -28,8 +28,11 @@ use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
 use Keestash\Core\DTO\User\User;
+use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\User\UserService;
+use KSA\Register\Application\Application;
 use KSP\Api\IResponse;
+use KSP\App\ILoader;
 use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -45,12 +48,14 @@ class Add extends AbstractApi {
     private $userManager       = null;
     private $translator        = null;
     private $permissionManager = null;
+    private $loader            = null;
 
     public function __construct(
         IL10N $l10n
         , UserService $userService
         , IUserRepository $userManager
         , IPermissionRepository $permissionManager
+        , ILoader $loader
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
@@ -59,17 +64,38 @@ class Add extends AbstractApi {
         $this->userManager       = $userManager;
         $this->translator        = $l10n;
         $this->permissionManager = $permissionManager;
+        $this->loader            = $loader;
     }
 
 
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
         parent::setPermission(
-            Keestash\Core\Permission\PermissionFactory::getDefaultPermission()
+            PermissionFactory::getDefaultPermission()
         );
     }
 
     public function create(): void {
+
+        // a little bit out of sense, but
+        // we do not want to enable registering
+        // even if someone has found a hacky way
+        // to enable this controller!
+        $registerEnabled = $this->loader->hasApp(Application::APP_NAME_REGISTER);
+
+        if (false === $registerEnabled) {
+
+            $this->createAndSetResponse(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "message" => $this->getL10N()->translate("unknown operation")
+                ]
+            );
+
+            return;
+
+        }
+
         $msg = new DefaultResponse();
         $msg->setCode(HTTP::OK);
         $responseCode = IResponse::RESPONSE_CODE_OK;

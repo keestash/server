@@ -65,7 +65,7 @@ class EmailAfterRegistration implements IHook {
 
         $appName = $this->legacy->getApplication()->get("name");
         $this->templateManager->replace(
-            "welcome_email.html",
+            "welcome_email.twig",
             [
                 "logoPath"               => Keestash::getBaseURL(false) . "/asset/img/logo.png"
                 , "appName"              => $appName
@@ -76,7 +76,7 @@ class EmailAfterRegistration implements IHook {
                 , "thisEmailIsSentToYou" => $this->translator->translate("This email was sent to {$user->getEmail()} to reset your password. If you did not request a reset, please ignore this mail or let us know.")
             ]
         );
-        $rendered = $this->templateManager->render("welcome_email.html");
+        $rendered = $this->templateManager->render("welcome_email.twig");
         $this->emailService->addRecipent("Ucar Solutions", "info@ucar-solutions.de");
         $this->emailService->setSubject($this->translator->translate("You are registered for $appName"));
         $this->emailService->setBody($rendered);

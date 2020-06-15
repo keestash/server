@@ -608,7 +608,7 @@ class Server {
     }
 
     public function getConfig(): HashTable {
-        return $this->query("config");
+        return $this->query(Server::CONFIG);
     }
 
     public function getUserFromSession(): ?IUser {
@@ -652,7 +652,7 @@ class Server {
     public function getPhinxRoot(): string {
         return $this->getConfigRoot() . "phinx/";
     }
-    
+
     public function getLogfilePath(): string {
         $name    = $this->getLegacy()->getApplication()->get("name_internal");
         $logFile = $this->getDataRoot() . "$name.log";

@@ -47,7 +47,7 @@ class ServerKeyService {
         $key            = $this->encryptionKeyRepository->getKey($user);
 
         if (null === $key) {
-            throw new KeyNotFoundException("could not find key for {$this->user->getId()}");
+            throw new KeyNotFoundException("could not find key for {$user->getId()}");
         }
 
         return new ServerKey($baseEncryption->decrypt($key->getValue()));

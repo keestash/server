@@ -24,6 +24,7 @@ namespace KSA\Login\Controller;
 use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\HTTP\PersistenceService;
+use Keestash\Legacy\Legacy;
 use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
@@ -40,6 +41,7 @@ class LoginController extends StaticAppController {
     private $permissionManager  = null;
     private $loader             = null;
     private $persistenceService = null;
+    private $legacy             = null;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -47,12 +49,14 @@ class LoginController extends StaticAppController {
         , IPermissionRepository $permissionManager
         , ILoader $loader
         , PersistenceService $persistenceService
+        , Legacy $legacy
     ) {
         $this->templateManager    = $templateManager;
         $this->translator         = $translator;
         $this->permissionManager  = $permissionManager;
         $this->loader             = $loader;
         $this->persistenceService = $persistenceService;
+        $this->legacy             = $legacy;
 
         parent::__construct(
             $templateManager
@@ -71,7 +75,7 @@ class LoginController extends StaticAppController {
         $userId = $this->persistenceService->getValue("user_id", null);
         $hashes = Keestash::getServer()->getUserHashes();
 
-        if (null !== $userId && $hashes->containsValue((int)$userId)) {
+        if (null !== $userId && $hashes->containsValue((int) $userId)) {
             Keestash::getServer()->getHTTPRouter()->routeTo(
                 Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
             );
@@ -88,6 +92,7 @@ class LoginController extends StaticAppController {
                 , "text"                => $this->translator->translate("Create New Account")
                 , "forgotPassword"      => $this->translator->translate("Forgot your password?")
                 , "invalidCredentials"  => $this->translator->translate("Please enter valid credentials")
+                , "loginToApp"          => $this->translator->translate("Login to {$this->legacy->getApplication()->get('name')}")
                 , "newAccountLink"      => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"  => Keestash::getBaseURL(true) . "/forgot_password"
                 , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
