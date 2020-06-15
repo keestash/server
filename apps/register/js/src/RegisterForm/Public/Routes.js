@@ -16,10 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-export class Email {
+import {Host} from "../../../../../../lib/js/src/Backend/Host";
 
-    isValidAddress(email) {
-        let emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-        return emailReg.test(email);
+export const PASSWORD_REQUIREMENTS = "/password_requirements/";
+
+export class Routes {
+    constructor() {
+        this.host = new Host();
+    }
+
+    getPasswordRequirements() {
+        return this.host.getApiHost() + PASSWORD_REQUIREMENTS;
     }
 }

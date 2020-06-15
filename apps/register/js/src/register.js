@@ -19,8 +19,14 @@
 import $ from 'jquery';
 import Formula from "../../../../lib/js/src/Formula";
 import System from "../../../../lib/js/src/System";
-import Email from "../../../../lib/js/src/Validation/Email";
 import modal from "../../../../lib/js/src/UI/modal";
+import {Register} from "./RegisterForm/Register";
+import {Request} from "../../../../lib/js/src/Backend/Request";
+import {ConsoleLogger} from "../../../../lib/js/src/Log/ConsoleLogger";
+import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
+import {Router} from "../../../../lib/js/src/Route/Router";
+import {Host} from "../../../../lib/js/src/Backend/Host";
+import {Routes} from "./RegisterForm/Public/Routes";
 
 (function () {
     if (!Keestash.Register) {
@@ -60,26 +66,37 @@ import modal from "../../../../lib/js/src/UI/modal";
             $(this.SELECTORS.REGISTER_BUTTON).addClass("disabled");
         },
         init: function () {
-            let that = this;
+            let _this = this;
 
-            that.setUpOnChange();
-            $("#tl__register__terms__and__conditions").change(function () {
-                that.changeButtonState($(this).is(':checked'), that.SELECTORS);
-            });
+            const request = new Request(
+                new ConsoleLogger()
+                , new AppStorage()
+                , new Router(
+                    new Host()
+                )
+            );
 
-            $(that.SELECTORS.REGISTER_BUTTON).click(function (event) {
+            const routes = new Routes();
+
+            const register = new Register(
+                request
+                , routes
+            );
+            register.setup();
+
+            $(_this.SELECTORS.REGISTER_BUTTON).click(function (event) {
                 event.preventDefault();
 
-                if (true === that.registerButtonClicked) return;
+                if (true === _this.registerButtonClicked) return;
                 // that.disableForm();
 
-                let firstName = $(that.SELECTORS.FIRST_NAME).val();
-                let lastName = $(that.SELECTORS.LAST_NAME).val();
-                let userName = $(that.SELECTORS.USER_NAME).val();
-                let email = $(that.SELECTORS.EMAIL).val();
-                let password = $(that.SELECTORS.PASSWORD).val();
-                let passwordRepeat = $(that.SELECTORS.PASSWORD_REPEAT).val();
-                let termsAndConditions = $(that.SELECTORS.TERMS_AND_CONDITIONS).is(':checked');
+                let firstName = $(_this.SELECTORS.FIRST_NAME).val();
+                let lastName = $(_this.SELECTORS.LAST_NAME).val();
+                let userName = $(_this.SELECTORS.USER_NAME).val();
+                let email = $(_this.SELECTORS.EMAIL).val();
+                let password = $(_this.SELECTORS.PASSWORD).val();
+                let passwordRepeat = $(_this.SELECTORS.PASSWORD_REPEAT).val();
+                let termsAndConditions = $(_this.SELECTORS.TERMS_AND_CONDITIONS).is(':checked');
                 let formula = new Formula();
 
                 let values = {
@@ -116,94 +133,6 @@ import modal from "../../../../lib/js/src/UI/modal";
                 );
 
             });
-        },
-        setUpOnChange: function () {
-            let formula = new Formula();
-            let emailValidation = new Email();
-
-            let that = this;
-            $(that.SELECTORS.PASSWORD).keyup(function () {
-                let thiz = $(this);
-                let value = thiz.val();
-                let valLength = value.length;
-
-                if (valLength < 8) {
-                    that.changeState(true, that.SELECTORS.PASSWORD_INVALID_HINT);
-                    that.enabler.PASSWORD = false;
-                    that.checkIfEnabled_2();
-                    return;
-                }
-
-                formula.post(
-                    Keestash.Main.getApiHost() + "/password_requirements/"
-                    , {'password': value}
-                    , function (response, status, xhr) {
-                        let obj = JSON.parse(response);
-
-                        let validPazzword = false;
-
-                        if (1000 in obj) {
-                            validPazzword = true;
-                        } else if (2000 in obj) {
-                            validPazzword = false;
-                        }
-
-                        let stateChanged = false === validPazzword && value !== "";
-
-                        that.changeState(stateChanged, that.SELECTORS.PASSWORD_INVALID_HINT);
-                        that.enabler.PASSWORD = true === validPazzword && value !== "";
-                        that.checkIfEnabled_2();
-                    }
-                    , function () {
-                        modal.miniModal("Error. Please try again");
-                    }
-                )
-
-            });
-
-            $(that.SELECTORS.PASSWORD_REPEAT).keyup(function () {
-                let thiz = $(this);
-                let value = thiz.val();
-                let password = $(that.SELECTORS.PASSWORD).val();
-                let stateChanged = value !== password && value !== "";
-                that.changeState(stateChanged, that.SELECTORS.PASSWORD_REPEAT_INVALID_HINT);
-                that.enabler.PASSWORD_REPEAT = value === password && value !== "";
-                that.checkIfEnabled_2();
-            });
-
-            $(that.SELECTORS.FIRST_NAME).keyup(function () {
-                let thiz = $(this);
-                let value = thiz.val();
-                that.enabler.FIRST_NAME = value !== "";
-                that.checkIfEnabled_2();
-            });
-
-            $(that.SELECTORS.LAST_NAME).keyup(function () {
-                let thiz = $(this);
-                let value = thiz.val();
-                that.enabler.LAST_NAME = value !== "";
-                that.checkIfEnabled_2();
-            });
-
-            $(that.SELECTORS.EMAIL).keyup(function () {
-                let thiz = $(this);
-                let value = thiz.val();
-                let validEmail = emailValidation.isValid(value);
-                let stateChanged = false === validEmail && value !== "";
-
-                that.changeState(stateChanged, that.SELECTORS.EMAIL_INVALID_HINT);
-
-                that.enabler.EMAIL = true === validEmail && value !== "";
-                that.checkIfEnabled_2();
-            });
-
-            $(that.SELECTORS.USER_NAME).keyup(function () {
-                let thiz = $(this);
-                let value = thiz.val();
-                that.enabler.USER_NAME = value !== "";
-                that.checkIfEnabled_2();
-            });
-
         },
         checkIfEnabled_2: function () {
             var that = this;

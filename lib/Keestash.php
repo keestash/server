@@ -327,10 +327,13 @@ class Keestash {
 
         $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
+        $position = strpos($url, $scriptName);
+        $position = false === $position ? 0 : $position;
+
         if ($withScript) {
-            return substr($url, 0, strpos($url, $scriptName)) . $scriptNameToReplace;
+            return substr($url, 0, $position) . $scriptNameToReplace;
         } else {
-            return substr($url, 0, strpos($url, $scriptName)) . "";
+            return substr($url, 0, $position) . "";
         }
     }
 

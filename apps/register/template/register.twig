@@ -1,0 +1,68 @@
+<div class="ui text container">
+    <h1 class="ui center aligned header">{{ createNewAccount }}</h1>
+    <h4 class="ui center aligned header">{{ createNewAccountDesc }}</h4>
+
+    <div class="ui warning form segment">
+        <div class="field">
+            <div class="ui center aligned grid">
+                <img id="tl__login__image" src="{{ logoPath }}">
+            </div>
+        </div>
+        <div class="two fields">
+            <div class="field">
+                <label>{{ firstNameLabel }}</label>
+                <input id="tl__register__first__name" placeholder="{{ firstNamePlaceholder }}" type="text">
+                <span id="tl__register__first__name_invalid__text">{{ firstNameInvalidText }}</span>
+            </div>
+            <div class="field">
+                <label>{{ lastNameLabel }}</label>
+                <input id="tl__register__last__name" placeholder="{{ lastNamePlaceholder }}" type="text">
+                <span id="tl__register__last__name_invalid__text">{{ lastNameInvalidText }}</span>
+            </div>
+        </div>
+        <div class="field">
+            <label>{{ userNameLabel }}</label>
+            <input id="tl__register__user__name" placeholder="{{ userNamePlaceholder }}" type="text">
+            <span id="tl__register__user__name_invalid__text">{{ userNameInvalidText }}</span>
+        </div>
+        <div class="field">
+            <label>{{ emailLabel }}</label>
+            <input id="tl__register__email" placeholder="{{ emailPlaceholder }}" type="text">
+            <span id="tl__register__email__invalid__text">{{ emailInvalidText }}</span>
+        </div>
+        <div class="field">
+            <label>{{ phoneLabel }}</label>
+            <input id="tl__register__phone" placeholder="{{ phonePlaceholder }}" type="text">
+            <span id="tl__register__phone__invalid__text">{{ phoneInvalidText }}</span>
+        </div>
+        <div class="field">
+            <label>{{ websiteLabel }}</label>
+            <input id="tl__register__website" placeholder="{{ websitePlaceholder }}" type="text">
+            <span id="tl__register__website__invalid__text">{{ websiteInvalidText }}</span>
+        </div>
+
+        <div class="field">
+            <label>{{ passwordLabel }}</label>
+            <input id="tl__register__password" placeholder="{{ passwordPlaceholder }}" type="password">
+            <span id="tl__register__password__invalid__text">{{ passwordInvalidText }}<i class="info circle icon"
+                                                                                         title="{{ minimumPasswordRequirements }}"></i></span>
+        </div>
+        <div class="field">
+            <label>{{ passwordRepeatLabel }}</label>
+            <input id="tl__register__password__repeat" placeholder="{{ passwordRepeatPlaceholder }}" type="password">
+            <span id="tl__register__password__repeat__invalid__text">{{ passwordRepeatInvalidText }}</span>
+        </div>
+
+        <div class="inline field">
+            <div class="ui checkbox">
+                <input disabled id="tl__register__terms__and__conditions" type="checkbox">
+                <label>{{ termsConditionsFirstPart }} <a href="{{ termsConditionsLink }}">{{ termsAndConditions }}</a>
+                </label>
+            </div>
+        </div>
+        <div class="ui primary disabled submit button" id="tl__register__button">{{ submit }}</div>
+    </div>
+    <div class="six wide column centered">
+        <div class="ui basic left floated segment"><a href="{{ backToLoginLink }}">{{ backToLogin }}</a></div>
+    </div>
+</div>

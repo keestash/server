@@ -33,6 +33,8 @@ use KSP\L10N\IL10N;
 
 class Application extends Keestash\App\Application {
 
+    public const APP_NAME_REGISTER = "register";
+
     public const PERMISSION_REGISTER     = "register";
     public const PERMISSION_REGISTER_ADD = "register_add";
     public const REGISTER                = "register";

@@ -23,6 +23,7 @@ namespace KSA\Register\Controller;
 
 use Keestash;
 use KSA\Register\Application\Application;
+use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -30,14 +31,19 @@ use KSP\L10N\IL10N;
 
 class Controller extends StaticAppController {
 
+    public const TEMPLATE_NAME_REGISTER             = "register.twig";
+    public const TEMPLATE_NAME_REGISTER_NOT_ENABLED = "register_not_enabled.twig";
+
     private $templateManager   = null;
     private $translator        = null;
     private $permissionManager = null;
+    private $loader            = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
         , IPermissionRepository $permissionManager
+        , ILoader $loader
     ) {
         parent::__construct(
             $templateManager
@@ -47,33 +53,75 @@ class Controller extends StaticAppController {
         $this->templateManager   = $templateManager;
         $this->translator        = $translator;
         $this->permissionManager = $permissionManager;
+        $this->loader            = $loader;
 
     }
 
     public function onCreate(...$params): void {
-        parent::setPermission(
+        $this->setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_REGISTER)
         );
     }
 
     public function create(): void {
+        // a little bit out of sense, but
+        // we do not want to enable registering
+        // even if someone has found a hacky way
+        // to enable this controller!
+        $registerEnabled = $this->loader->hasApp(Application::APP_NAME_REGISTER);
+
+        if (true === $registerEnabled) {
+            $this->parseRegularRegister();
+        } else {
+            $this->parseRegisterNotEnabled();
+        }
+
+    }
+
+    private function parseRegularRegister(): void {
         $this->templateManager->replace(
-            "register.html"
+            Controller::TEMPLATE_NAME_REGISTER
             , [
+            // first name
             "firstNameLabel"                => $this->translator->translate("First Name")
             , "firstNamePlaceholder"        => $this->translator->translate("First Name")
+            , "firstNameInvalidText"        => $this->translator->translate("Please provide a first name")
+
+            // last name
             , "lastNameLabel"               => $this->translator->translate("Last Name")
             , "lastNamePlaceholder"         => $this->translator->translate("Last Name")
+            , "lastNameInvalidText"         => $this->translator->translate("Please provide a last name")
+
+            // user name
             , "userNameLabel"               => $this->translator->translate("Username")
-            , "emailLabel"                  => $this->translator->translate("Email")
             , "userNamePlaceholder"         => $this->translator->translate("Username")
+            , "userNameInvalidText"         => $this->translator->translate("The username is invalid or taken")
+
+            // email
+            , "emailLabel"                  => $this->translator->translate("Email")
             , "emailPlaceholder"            => $this->translator->translate("Email")
             , "emailStillAvailable"         => $this->translator->translate("The Email Address is still available")
             , "emailTaken"                  => $this->translator->translate("The Email Address is already in use")
+
+            // phone
+            , "phoneLabel"                  => $this->translator->translate("Phone")
+            , "phonePlaceholder"            => $this->translator->translate("Phone")
+            , "phoneInvalidText"            => $this->translator->translate("The phone number seems to be incorrect")
+
+            // website
+            , "websiteLabel"                => $this->translator->translate("Website")
+            , "websitePlaceholder"          => $this->translator->translate("Website")
+            , "websiteInvalidText"          => $this->translator->translate("The provided URL seems to be incorrect")
+
+            // password
             , "passwordLabel"               => $this->translator->translate("Password")
             , "passwordRepeaKSAbel"         => $this->translator->translate("Repeat Password")
+
+            // terms and conditions
             , "termsConditionsFirstPart"    => $this->translator->translate("I agree to the")
             , "termsAndConditions"          => $this->translator->translate("Terms and Conditions")
+
+            // stuff
             , "submit"                      => $this->translator->translate("Register")
             , "passwordPlaceholder"         => $this->translator->translate("Password")
             , "passwordRepeatPlaceholder"   => $this->translator->translate("Repat Password")
@@ -88,8 +136,19 @@ class Controller extends StaticAppController {
             , "backToLoginLink"             => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
             , "logoPath"                    => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
         ]);
+        $this->setAppContent(
+            $this->templateManager->render(Controller::TEMPLATE_NAME_REGISTER)
+        );
+    }
 
-        parent::setAppContent($this->templateManager->render("register.html"));
+    private function parseRegisterNotEnabled(): void {
+        $this->templateManager->replace(
+            Controller::TEMPLATE_NAME_REGISTER_NOT_ENABLED
+            , []
+        );
+        $this->setAppContent(
+            $this->templateManager->render(Controller::TEMPLATE_NAME_REGISTER_NOT_ENABLED)
+        );
     }
 
     public function afterCreate(): void {

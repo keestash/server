@@ -7,8 +7,10 @@
             <form class="ui form" id="login">
                 {% if registeringEnabled %}
                     <h4 class="ui center aligned top attached header"><a href="{{ newAccountLink }}">{{ text }}</a></h4>
-                    <div id="bl__response__div"></div>
+                {% else %}
+                    <h4 class="ui center aligned top attached header">{{ loginToApp }}</h4>
                 {% endif %}
+
                 <div class="ui center aligned attached segment" id="form-segment">
                     <div class="field">
                         <label for="username">{{ usernameLabel }}</label>

@@ -225,6 +225,36 @@ body {
     color: red;
 }
 
+#tl__register__user__name_invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__first__name_invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__last__name_invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__phone__invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
+#tl__register__website__invalid__text {
+    display: none;
+    justify-content: space-between;
+    color: red;
+}
+
 #tl__register__password__invalid__text {
     display: none;
     justify-content: space-between;
