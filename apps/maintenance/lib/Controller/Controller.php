@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Maintenance\Controller;
 
 use KSP\Core\Controller\FullscreenAppController;
+use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -65,8 +66,9 @@ class Controller extends FullscreenAppController {
 
         $string = $this->templateManager
             ->render("maintenance.html");
-        $this->templateManager->replace("app-content.html",
-            ["appContent" => $string]
+        $this->templateManager->replace(
+            ITemplate::APP_CONTENT
+            , ["appContent" => $string]
         );
     }
 

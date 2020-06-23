@@ -19,13 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\User\Key;
+namespace Keestash\Core\Service\Encryption\Key;
 
 use DateTime;
 use doganoo\PHPUtil\Util\StringUtil;
-use Keestash\Core\DTO\Encryption\Key\Key;
+use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
-use KSP\Core\DTO\Encryption\Key\ICredential;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Encryption\IEncryptionService;
 
@@ -45,7 +46,14 @@ class KeyService {
         $this->encryptionService       = $encryptionService;
     }
 
-    public function createKey(ICredential $credential, IUser $user): bool {
+    /**
+     * Returns an instance of IKey
+     *
+     * @param ICredential $credential
+     * @param IUser       $user
+     * @return IKey|null
+     */
+    public function createKey(ICredential $credential, IUser $user): ?IKey {
         // Step 1: we create a random secret
         //      This secret consists of a unique id (uuid)
         //      and a hash created out of the user object
@@ -54,16 +62,18 @@ class KeyService {
         $secret = $this->encryptionService->encrypt($credential, $secret);
         // Step 3: we add the data to the database
 
+        if (false === is_string($secret)) return null;
+
         $key = new Key();
-        $key->setValue($secret);
+        $key->setSecret($secret);
         $key->setCreateTs(new DateTime());
 
-        $added = $this->encryptionKeyRepository->storeKey(
-            $user
-            , $key
-        );
-
-        return (true === $added) && (true === is_string($secret));
+        return $key;
     }
+
+    public function storeKey(IUser $user, IKey $key): bool {
+        return $this->encryptionKeyRepository->storeKey($user, $key);
+    }
+
 
 }

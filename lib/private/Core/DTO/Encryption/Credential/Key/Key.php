@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Encryption\Key;
+namespace Keestash\Core\DTO\Encryption\Credential\Key;
 
 use DateTime;
-use KSP\Core\DTO\IKey;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 
 /**
  * Class Key
@@ -30,9 +30,12 @@ use KSP\Core\DTO\IKey;
  */
 class Key implements IKey {
 
-    private $id       = null;
-    private $value    = null;
-    private $createTs = null;
+    /** @var int */
+    private $id;
+    /** @var string */
+    private $secret;
+    /** @var DateTime */
+    private $createTs;
 
     public function getId(): int {
         return $this->id;
@@ -40,14 +43,6 @@ class Key implements IKey {
 
     public function setId(int $id): void {
         $this->id = $id;
-    }
-
-    public function getValue(): string {
-        return $this->value;
-    }
-
-    public function setValue(string $value): void {
-        $this->value = $value;
     }
 
     public function getCreateTs(): DateTime {
@@ -59,6 +54,21 @@ class Key implements IKey {
     }
 
     /**
+     * @return string
+     */
+    public function getSecret(): string {
+        return $this->secret;
+    }
+
+    /**
+     * @param string $secret
+     */
+    public function setSecret(string $secret): void {
+        $this->secret = $secret;
+    }
+
+
+    /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
@@ -68,7 +78,7 @@ class Key implements IKey {
     public function jsonSerialize() {
         return [
             "id"          => $this->getId()
-            , "value"     => $this->getValue()
+            , "secret"    => $this->getSecret()
             , "create_ts" => $this->getCreateTs()
         ];
     }

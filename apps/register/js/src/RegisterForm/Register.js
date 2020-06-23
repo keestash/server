@@ -61,6 +61,8 @@ export class Register {
             let userName = $("#tl__register__user__name").val();
             let password = $("#tl__register__password").val();
             let email = $("#tl__register__email").val();
+            let phone = $("#tl__register__phone").val();
+            let website = $("#tl__register__website").val();
             let passwordRepeat = $("#tl__register__password__repeat").val();
             let termsAndConditions = $("#tl__register__terms__and__conditions").is(':checked');
 
@@ -69,6 +71,8 @@ export class Register {
                 , 'last_name': lastName
                 , 'user_name': userName
                 , 'email': email
+                , 'phone': phone
+                , 'website': website
                 , 'password': password
                 , 'password_repeat': passwordRepeat
                 , 'terms_and_conditions': termsAndConditions

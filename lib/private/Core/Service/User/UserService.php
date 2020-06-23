@@ -24,12 +24,13 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
+use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\User\Key\KeyService;
 use Keestash\Exception\KeyNotCreatedException;
 use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotLockedException;
@@ -193,10 +194,6 @@ class UserService {
         return password_hash($plain, PASSWORD_BCRYPT);
     }
 
-    public function createRegularUser(IUser $user) {
-        $this->createUser($user, false);
-    }
-
     /**
      * @param IUser      $user
      * @param bool       $lockUser
@@ -219,13 +216,19 @@ class UserService {
             throw new UserNotCreatedException();
         }
 
-        $keyCreated = $this->keyService->createKey(
+        $key = $this->keyService->createKey(
             $this->credentialService->getCredentialForUser($user)
             , $user
         );
 
-        if (false === $keyCreated) {
+        if (null === $key) {
             throw new KeyNotCreatedException("could not create key");
+        }
+
+        $stored = $this->keyService->storeKey($user, $key);
+
+        if (false === $stored) {
+            throw new KeyNotCreatedException("could not store key");
         }
 
         if (false === $lockUser) return true;
@@ -246,7 +249,6 @@ class UserService {
 
     public function toUser(array $userArray): IUser {
         $user = new User();
-        $user->setId($userArray["id"]);
         $user->setCreateTs(
             $this->dateTimeService->toDateTime((int) $userArray["create_ts"])
         );
@@ -257,7 +259,8 @@ class UserService {
         $user->setPassword(
             $this->hashPassword($userArray["password"])
         );
-        $user->setPassword($userArray["phone"]);
+        FileLogger::debug(json_encode($userArray));
+        $user->setPhone($userArray["phone"]);
         $user->setWebsite($userArray["website"]);
         $user->setHash(
             $this->getRandomHash()

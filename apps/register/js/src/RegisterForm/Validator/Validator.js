@@ -134,10 +134,6 @@ export class Validator {
                 let isValid = _this.validateForMinimumValues(false);
                 let isValidWithToc = _this.validateForMinimumValues(true);
 
-                console.log(_this.DATA_BAG);
-                console.log(isValid);
-                console.log(isValidWithToc);
-
                 _this.changeTocState(true === isValid);
                 _this.changeButtonState(true === isValidWithToc);
 

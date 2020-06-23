@@ -24,6 +24,7 @@ namespace KSA\ForgotPassword\Controller;
 use Keestash;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Controller\StaticAppController;
+use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -87,8 +88,9 @@ class ResetPassword extends StaticAppController {
 
         $string = $this->templateManager
             ->render("reset_password.html");
-        $this->templateManager->replace("app-content.html",
-            ["appContent" => $string]
+        $this->templateManager->replace(
+            ITemplate::APP_CONTENT
+            , ["appContent" => $string]
         );
 
 

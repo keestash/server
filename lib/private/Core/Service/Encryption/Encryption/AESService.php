@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Encryption\Encryption;
 
 use doganoo\PHPUtil\Log\FileLogger;
-use KSP\Core\DTO\Encryption\Key\ICredential;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\Service\Encryption\IEncryptionService;
 
 /**

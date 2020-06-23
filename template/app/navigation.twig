@@ -1,0 +1,35 @@
+<div class="ui menu" id="top-menu">
+    <div class="ui fluid container">
+        <a class="header item" href="{{ href }}">
+            <img class="logo" id="main-logo" src="{{ logopath }}">
+        </a>
+        {% for partId, partEntry in parts %}
+            {{ partEntry.getName() }}
+            {% for id, entry in partEntry.getEntries() %}
+                {% if entry.isVisible() %}
+                    <a class="item" href="{{ baseURL }}/{{ entry.getName()|lower }}">
+                        <i class="{{ entry.getFaClass() }}"></i>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        <div class="right menu">
+            {% for partId, partEntry in settings %}
+                <div class="ui dropdown item tl__custom__item" id="right_menu">
+                    <div class="card">
+                        <div class="left floated avatar ui image" id="tl__pp_top__wraper">
+                            <img id="tl__pp__top__img" src="{{ userImage }}">
+                        </div>
+                    </div>
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                        {% for id, entry in partEntry.getEntries() %}
+                            <a class="item" href="{{ baseURL }}/{{ entry.getName()|lower }}"><i
+                                        class="{{ entry.getFaClass() }} fa-1x"></i>&nbsp;{{ entry.getName() }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

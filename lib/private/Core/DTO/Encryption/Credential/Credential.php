@@ -19,14 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Encryption;
+namespace Keestash\Core\DTO\Encryption\Credential;
 
-use KSP\Core\DTO\Encryption\Key\ICredential;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\User\IUser;
 
 class Credential implements ICredential {
 
-    private $user = null;
+    /** @var IUser */
+    private $user;
 
     public function __construct(IUser $user) {
         $this->user = $user;
@@ -34,6 +35,13 @@ class Credential implements ICredential {
 
     public function getSecret(): string {
         return $this->user->getPassword();
+    }
+
+    public function jsonSerialize() {
+        return [
+            'user'     => $this->user
+            , 'secret' => $this->getSecret()
+        ];
     }
 
 }

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption;
 
-use KSP\Core\DTO\Encryption\Key\ICredential;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 
 interface IEncryptionService {
 

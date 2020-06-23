@@ -27,6 +27,7 @@ use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use doganoo\Backgrounder\Backgrounder;
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
@@ -186,7 +187,6 @@ class Server {
             $this->userHashes = new HashTable();
             /** @var ArrayList $users */
             $users = $this->query(Server::USER_LIST);
-
 
 
             /** @var IUser $user */
@@ -459,7 +459,12 @@ class Server {
             return new UserRepository(
                 $this->query(IBackend::class)
                 , $this->query(IRoleRepository::class)
+                , $this->query(IDateTimeService::class)
             );
+        });
+
+        $this->register(IDateTimeService::class, function () {
+            return new \doganoo\DIP\DateTime\DateTimeService();
         });
 
         $this->register(IPermissionRepository::class, function () {

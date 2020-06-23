@@ -23,9 +23,9 @@ namespace Keestash\Core\Repository\EncryptionKey;
 
 use DateTime;
 use doganoo\PHPUtil\Util\DateTimeUtil;
-use Keestash\Core\DTO\Encryption\Key\Key;
+use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\AbstractRepository;
-use KSP\Core\DTO\IKey;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use PDO;

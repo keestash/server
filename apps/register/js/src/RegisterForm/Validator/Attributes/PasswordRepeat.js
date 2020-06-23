@@ -13,7 +13,6 @@ export class PasswordRepeat {
                 let passwordValue = passwordElement.val();
                 passwordValue = passwordValue.trim();
                 const isValid = value === passwordValue && value !== "";
-                console.log(isValid);
 
                 $(document).trigger(
                     EVENT_NAME_REGISTER_PASSWORD_REPEAT
