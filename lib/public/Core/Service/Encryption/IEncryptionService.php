@@ -21,14 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption;
 
-use KSP\Core\DTO\Encryption\ICredential;
+use KSP\Core\DTO\Encryption\Key\ICredential;
 
 interface IEncryptionService {
 
-    public function __construct(ICredential $credential);
+    public function encrypt(ICredential $credential, string $raw): string;
 
-    public function encrypt($raw);
-
-    public function decrypt($encrypted);
+    public function decrypt(ICredential $credential, string $encrypted): ?string;
 
 }

@@ -22,9 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\EncryptionKey;
 
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
-use Keestash\Core\DTO\Key;
+use Keestash\Core\DTO\Encryption\Key\Key;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\IKey;
 use KSP\Core\DTO\User\IUser;
@@ -86,15 +85,11 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
         $userId = $user->getId();
         $statement->bindParam("user_id", $userId);
         $executed = $statement->execute();
-        FileLogger::debug(json_encode($statement->errorInfo()));
-        FileLogger::debug(json_encode($userId));
         if (!$executed) return null;
-        FileLogger::debug(json_encode($statement->rowCount()));
         if ($statement->rowCount() === 0) return null;
 
         $key = null;
         while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            FileLogger::debug(json_encode($row));
             $key = new Key();
             $key->setId((int) $row[0]);
             $key->setValue($row[1]);

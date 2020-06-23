@@ -21,11 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\NavigationManager;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\Core\Service\DateTimeService;
 use Keestash\View\Navigation\Navigation;
-use KSP\Core\Backend\IBackend;
 use KSP\Core\Manager\NavigationManager\INavigationManager;
 use KSP\Core\View\Navigation\IEntry;
 use KSP\Core\View\Navigation\IPart;

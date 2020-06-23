@@ -38,7 +38,7 @@ class Logout extends StaticAppController {
     public function __construct(
         ITemplateManager $templateManager
         , SessionManager $session
-        , IPermissionRepository $permissionManager
+        , IPermissionRepository $permissionRepository
         , IL10N $l10n
     ) {
         parent::__construct(
@@ -46,7 +46,7 @@ class Logout extends StaticAppController {
             , $l10n
         );
         $this->session           = $session;
-        $this->permissionManager = $permissionManager;
+        $this->permissionManager = $permissionRepository;
     }
 
     public function onCreate(...$params): void {

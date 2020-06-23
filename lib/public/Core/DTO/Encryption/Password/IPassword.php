@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\Navigation;
+namespace KSP\Core\DTO\Encryption\Password;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\View\Navigation\IEntry;
+use KSP\Core\DTO\IObject;
 
-class NavigationPart extends ArrayList {
+/**
+ * Interface IPassword
+ *
+ * @package KSP\Core\DTO\Encryption\Password
+ */
+interface IPassword extends IObject {
 
-    public function add($item): bool {
-        if ($item instanceof IEntry) {
-            return parent::add($item);
-        }
-        return false;
-    }
+    public function getLength(): int;
+
+    public function getValue(): string;
+
+    public function getCharacterSet(): array;
+
+    public function getEntropy(): float;
+
+    public function getQuality(): int;
 
 }

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\View\Navigation;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\View\Navigation\IPart;
 
 class NavigationList extends ArrayList {

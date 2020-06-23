@@ -38,7 +38,7 @@ class ResetPassword extends StaticAppController {
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $il10n
-        , IPermissionRepository $permissionManager
+        , IPermissionRepository $permissionRepository
     ) {
         parent::__construct(
             $templateManager
@@ -47,7 +47,7 @@ class ResetPassword extends StaticAppController {
 
         $this->templateManager   = $templateManager;
         $this->translator        = $il10n;
-        $this->permissionManager = $permissionManager;
+        $this->permissionManager = $permissionRepository;
     }
 
     public function onCreate(...$params): void {

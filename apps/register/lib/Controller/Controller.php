@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Controller;
 
 use Keestash;
+use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
@@ -42,7 +43,7 @@ class Controller extends StaticAppController {
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionManager
+        , IPermissionRepository $permissionRepository
         , ILoader $loader
     ) {
         parent::__construct(
@@ -52,7 +53,7 @@ class Controller extends StaticAppController {
 
         $this->templateManager   = $templateManager;
         $this->translator        = $translator;
-        $this->permissionManager = $permissionManager;
+        $this->permissionManager = $permissionRepository;
         $this->loader            = $loader;
 
     }
@@ -128,7 +129,7 @@ class Controller extends StaticAppController {
             , "passwordInvalidText"         => $this->translator->translate("Your password has not reached the minimum requirements")
             , "emailInvalidText"            => $this->translator->translate("Your email address seems to be invalid")
             , "passwordRepeatInvalidText"   => $this->translator->translate("Your passwords do not match")
-            , "minimumPasswordRequirements" => $this->translator->translate("Your password has to contain at least one upper case, one lower case, one digit and 6 characters")
+            , "minimumPasswordRequirements" => $this->translator->translate("Your password has to contain at least one upper case, one lower case, one digit and " . UserService::MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD . " characters")
             , "createNewAccount"            => $this->translator->translate("Create New Account")
             , "createNewAccountDesc"        => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
             , "backToLogin"                 => $this->translator->translate("Back To Login")

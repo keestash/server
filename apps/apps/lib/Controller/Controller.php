@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Apps\Controller;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\Apps\Application\Application;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;

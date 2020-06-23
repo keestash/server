@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\View\Navigation;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 
 interface INavigation {
 

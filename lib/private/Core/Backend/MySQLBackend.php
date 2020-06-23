@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Backend;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
@@ -35,6 +37,9 @@ class MySQLBackend implements ISQLBackend {
     private $schemaName = null;
 
     private $connected = false;
+
+    /** @var Connection */
+    private $doctrineConnection;
 
     public function __construct(string $schemaName) {
         $this->schemaName = $schemaName;
@@ -58,6 +63,17 @@ class MySQLBackend implements ISQLBackend {
             FileLogger::error($exception->getMessage());
             return false;
         }
+
+        $this->doctrineConnection = DriverManager::getConnection(
+            [
+                'driver'     => 'pdo_mysql'
+                , 'host'     => $config->get('db_host')
+                , 'dbname'   => $this->schemaName
+                , 'port'     => '3306'
+                , 'user'     => $config->get('db_user')
+                , 'password' => $config->get('db_password')
+            ]
+        );
         return true;
     }
 
@@ -77,6 +93,15 @@ class MySQLBackend implements ISQLBackend {
 
     public function getSchemaName(): string {
         return $this->schemaName;
+    }
+
+    /**
+     * Returns the doctrine connection
+     *
+     * @return Connection
+     */
+    public function getDoctrineConnection(): Connection {
+        return $this->doctrineConnection;
     }
 
 }

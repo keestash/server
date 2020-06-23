@@ -23,27 +23,35 @@ namespace Keestash\Core\Service\User\Key;
 
 use DateTime;
 use doganoo\PHPUtil\Util\StringUtil;
-use Keestash\Core\DTO\Key;
-use Keestash\Core\Service\Encryption\Base\BaseEncryption;
+use Keestash\Core\DTO\Encryption\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
+use KSP\Core\DTO\Encryption\Key\ICredential;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Encryption\IEncryptionService;
 
 class KeyService {
 
     /** @var EncryptionKeyRepository */
     private $encryptionKeyRepository;
 
-    public function __construct(EncryptionKeyRepository $encryptionKeyRepository) {
+    /** @var IEncryptionService */
+    private $encryptionService;
+
+    public function __construct(
+        EncryptionKeyRepository $encryptionKeyRepository
+        , IEncryptionService $encryptionService
+    ) {
         $this->encryptionKeyRepository = $encryptionKeyRepository;
+        $this->encryptionService       = $encryptionService;
     }
 
-    public function createKey(BaseEncryption $baseEncryption, IUser $user): bool {
+    public function createKey(ICredential $credential, IUser $user): bool {
         // Step 1: we create a random secret
         //      This secret consists of a unique id (uuid)
         //      and a hash created out of the user object
         $secret = StringUtil::getUUID() . json_encode($user);
         // Step 2: we encrypt the data with our base encryption
-        $secret = $baseEncryption->encrypt($secret);
+        $secret = $this->encryptionService->encrypt($credential, $secret);
         // Step 3: we add the data to the database
 
         $key = new Key();

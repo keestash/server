@@ -22,232 +22,166 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\User;
 
 use DateTime;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
-use doganoo\PHPUtil\Log\FileLogger;
+use Doctrine\DBAL\FetchMode;
+use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Repository\AbstractRepository;
+use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
-use PDO;
-use PDOException;
 
+/**
+ * Class UserRepository
+ *
+ * @package Keestash\Core\Repository\User
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class UserRepository extends AbstractRepository implements IUserRepository {
 
     /** @var null|IRoleRepository $roleManager */
-    private $roleManager = null;
+    private $roleManager;
 
+    /** @var IDateTimeService */
+    private $dateTimeService;
 
     public function __construct(
         IBackend $backend
         , IRoleRepository $roleManager
+        , IDateTimeService $dateTimeService
     ) {
         parent::__construct($backend);
-        $this->roleManager = $roleManager;
+        $this->roleManager     = $roleManager;
+        $this->dateTimeService = $dateTimeService;
     }
 
+    /**
+     * Returns an instance of IUser, if found in the database
+     *
+     * @param string $name The name of the user
+     *
+     * @return IUser|null
+     * @throws KeestashException
+     */
     public function getUser(string $name): ?IUser {
-        $sql = "select 
-                      u.`id`
-                      , u.`name`
-                      , u.`password`
-                      , u.`create_ts`
-                      , u.`first_name`
-                      , u.`last_name`
-                      , u.`email`
-                      , u.`phone`
-                      , u.`website`
-                      , u.`hash`
-                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
-                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
-                from `user` u
-                         left join `user_state` us
-                                    on u.`id` = us.`user_id`
-                  where u.`name` = :name;";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'u.id'
+                , 'u.name'
+                , 'u.password'
+                , 'u.create_ts'
+                , 'u.first_name'
+                , 'u.last_name'
+                , 'u.email'
+                , 'u.phone'
+                , 'u.website'
+                , 'u.hash'
+                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+            ]
+        )
+            ->from('user', 'u')
+            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
+            ->where('u.name = ?')
+            ->setParameter(0, $name);
+        $users     = $queryBuilder->execute()->fetchAll();
+        $userCount = count($users);
 
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $statement->bindParam("name", $name);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
-
-        $user = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $password  = $row[2];
-            $createTs  = $row[3];
-            $firstName = $row[4];
-            $lastName  = $row[5];
-            $email     = $row[6];
-            $phone     = $row[7];
-            $website   = $row[8];
-            $hash      = $row[9];
-            $deleted   = (bool) $row[10];
-            $locked    = (bool) $row[11];
-
-            $user = new User();
-            $user->setId($id);
-            $user->setName($name);
-            $user->setPassword($password);
-            $user->setCreateTs((int) $createTs);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setWebsite($website);
-            $user->setHash($hash);
-            $user->setLastLogin(new DateTime()); // TODO implement
-            $user->setRoles(
-                $this->roleManager->getRolesByUser($user)
-            );
-            $user->setLocked(
-                true === $locked
-            );
-            $user->setDeleted(
-                true === $deleted
-            );
+        if (0 === $userCount) {
+            return null;
         }
 
-        return $user;
-    }
-
-    public function getUserByMail(string $email): ?IUser {
-        $sql       = "select 
-                      u.`id`
-                      , u.`name`
-                      , u.`password`
-                      , u.`create_ts`
-                      , u.`first_name`
-                      , u.`last_name`
-                      , u.`email`
-                      , u.`phone`
-                      , u.`website`
-                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
-                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
-                 from `user` u
-                          left join `user_state` us
-                                    on u.`id` = us.`user_id`
-                  where u.`email` = :email;";
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $statement->bindParam("email", $email);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
-
-        $user = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $password  = $row[2];
-            $createTs  = $row[3];
-            $firstName = $row[4];
-            $lastName  = $row[5];
-            $email     = $row[6];
-            $phone     = $row[7];
-            $website   = $row[8];
-            $hash      = $row[9];
-            $deleted   = (bool) $row[10];
-            $locked    = (bool) $row[11];
-
-            $user = new User();
-            $user->setId($id);
-            $user->setName($name);
-            $user->setPassword($password);
-            $user->setCreateTs((int) $createTs);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setWebsite($website);
-            $user->setLastLogin(new DateTime()); // TODO implement
-            $user->setHash($hash);
-            $user->setRoles(
-                $this->roleManager->getRolesByUser($user)
-            );
-            $user->setLocked(
-                true === $locked
-            );
-            $user->setDeleted(
-                true === $deleted
-            );
-
+        if ($userCount > 1) {
+            throw new KeestashException("found more then one user for the given name");
         }
+
+        $row = $users[0];
+
+        $user = new User();
+        $user->setId((int) $row['id']);
+        $user->setName($row['name']);
+        $user->setPassword($row['password']);
+        $user->setCreateTs(
+            $this->dateTimeService->toDateTime((int) $row['create_ts'])
+        );
+        $user->setFirstName($row['first_name']);
+        $user->setLastName($row['last_name']);
+        $user->setEmail($row['email']);
+        $user->setPhone($row['phone']);
+        $user->setWebsite($row['website']);
+        $user->setHash($row['hash']);
+        $user->setLastLogin(new DateTime()); // TODO implement
+        $user->setDeleted(
+            true === (bool) $row['deleted']
+        );
+        $user->setLocked(
+            true === (bool) $row['locked']
+        );
+        $user->setRoles(
+            $this->roleManager->getRolesByUser($user)
+        );
 
         return $user;
     }
 
     /**
-     * @return ArrayList|null
+     * Returns a list of users, registered for the app
+     *
+     * @return ArrayList
      * @throws Exception
      *
-     * TODO exclude users that did not log in for a certain amount of time
      */
-    public function getAll(): ?ArrayList {
-        $list      = new ArrayList();
-        $sql       = "select 
-                      u.`id`
-                      , u.`name`
-                      , u.`password`
-                      , u.`create_ts`
-                      , u.`first_name`
-                      , u.`last_name`
-                      , u.`email`
-                      , u.`phone`
-                      , u.`website`
-                      , u.`hash`
-                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
-                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
-                    from `user` u
-                        left join `user_state` us
-                        on u.`id` = us.`user_id`
-                ";
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
+    public function getAll(): ArrayList {
+        $list = new ArrayList();
 
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $password  = $row[2];
-            $createTs  = $row[3];
-            $firstName = $row[4];
-            $lastName  = $row[5];
-            $email     = $row[6];
-            $phone     = $row[7];
-            $website   = $row[8];
-            $hash      = $row[9];
-            $deleted   = (bool) $row[10];
-            $locked    = (bool) $row[11];
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'u.id'
+                , 'u.name'
+                , 'u.password'
+                , 'u.create_ts'
+                , 'u.first_name'
+                , 'u.last_name'
+                , 'u.email'
+                , 'u.phone'
+                , 'u.website'
+                , 'u.hash'
+                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+            ]
+        )
+            ->from('user', 'u')
+            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id');
+
+        $statement = $queryBuilder->execute();
+        $users     = $statement->fetchAll(FetchMode::ASSOCIATIVE);
+
+        foreach ($users as $row) {
 
             $user = new User();
-            $user->setId((int) $id);
-            $user->setName($name);
-            $user->setPassword($password);
-            $user->setCreateTs((int) $createTs);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setWebsite($website);
+            $user->setId((int) $row['id']);
+            $user->setName($row['name']);
+            $user->setPassword($row['password']);
+            $user->setCreateTs(
+                $this->dateTimeService->toDateTime((int) $row['create_ts'])
+            );
+            $user->setFirstName($row['first_name']);
+            $user->setLastName($row['last_name']);
+            $user->setEmail($row['email']);
+            $user->setPhone($row['phone']);
+            $user->setWebsite($row['website']);
             $user->setLastLogin(new DateTime()); // TODO implement
-            $user->setHash($hash);
+            $user->setHash($row['hash']);
+            $user->setDeleted((bool) $row['deleted']);
+            $user->setLocked((bool) $row['locked']);
             $user->setRoles(
                 $this->roleManager->getRolesByUser($user)
-            );
-            $user->setLocked(
-                true === $locked
-            );
-            $user->setDeleted(
-                true === $deleted
             );
 
             $list->add($user);
@@ -257,338 +191,165 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     }
 
     /**
+     * Inserts an instance of IUser into the database
+     *
      * @param IUser $user
+     *
      * @return int|null
      *
      * TODO insert roles and permissions
      */
     public function insert(IUser $user): ?int {
-        $sql = "insert into user (
-                  `first_name`
-                  , `last_name`
-                  , `name`
-                  , `email`
-                  , `phone`
-                  , `password`
-                  , `website`
-                  , `hash`
-                  )
-                  values (
-                          :first_name
-                          , :last_name
-                          , :name
-                          , :email
-                          , :phone
-                          , :password
-                          , :website
-                          , :hash
-                          );";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert('user')
+            ->values(
+                [
+                    'first_name'  => '?'
+                    , 'last_name' => '?'
+                    , 'name'      => '?'
+                    , 'email'     => '?'
+                    , 'phone'     => '?'
+                    , 'password'  => '?'
+                    , 'website'   => '?'
+                    , 'hash'      => '?'
+                ]
+            )
+            ->setParameter(0, $user->getFirstName())
+            ->setParameter(1, $user->getLastName())
+            ->setParameter(2, $user->getName())
+            ->setParameter(3, $user->getEmail())
+            ->setParameter(4, $user->getPhone())
+            ->setParameter(5, $user->getPassword())
+            ->setParameter(6, $user->getWebsite())
+            ->setParameter(7, $user->getHash())
+            ->execute();
 
-        $statement = parent::prepareStatement($sql);
+        $lastInsertId = $this->getDoctrineLastInsertId();
 
-        $firstName = $user->getFirstName();
-        $lastName  = $user->getLastName();
-        $name      = $user->getName();
-        $email     = $user->getEmail();
-        $phone     = $user->getPhone();
-        $password  = $user->getPassword();
-        $website   = $user->getWebsite();
-        $hash      = $user->getHash();
-
-        $statement->bindParam("first_name", $firstName);
-        $statement->bindParam("last_name", $lastName);
-        $statement->bindParam("name", $name);
-        $statement->bindParam("email", $email);
-        $statement->bindParam("phone", $phone);
-        $statement->bindParam("password", $password);
-        $statement->bindParam("website", $website);
-        $statement->bindParam("hash", $hash);
-
-        if (false === $statement->execute()) return null;
-
-        $lastInsertId = (int) parent::getLastInsertId();
-
-        if (0 === $lastInsertId) return null;
-
-        return $lastInsertId;
+        if (null === $lastInsertId) return null;
+        return (int) $lastInsertId;
 
     }
 
     /**
      * @param IUser $user
+     *
      * @return bool
      *
-     * TODO insert roles and permissions
+     * TODO update roles and permissions
      */
     public function update(IUser $user): bool {
-        try {
-            $sql = "
-                update `user`
-                    set `first_name` = :first_name
-                      , `last_name`  = :last_name
-                      , `name`       = :name
-                      , `email`      = :email
-                      , `phone`      = :phone
-                      , `password`   = :password
-                      , `website`    = :website
-                      , `hash`       = :hash
-                    where `id` = :id;
-        ";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->update('user')
+            ->values(
+                [
+                    'first_name'  => '?'
+                    , 'last_name' => '?'
+                    , 'name'      => '?'
+                    , 'email'     => '?'
+                    , 'phone'     => '?'
+                    , 'password'  => '?'
+                    , 'website'   => '?'
+                    , 'hash'      => '?'
+                ]
+            )
+            ->setParameter(0, $user->getFirstName())
+            ->setParameter(1, $user->getLastName())
+            ->setParameter(2, $user->getName())
+            ->setParameter(3, $user->getEmail())
+            ->setParameter(4, $user->getPhone())
+            ->setParameter(5, $user->getPassword())
+            ->setParameter(6, $user->getWebsite())
+            ->setParameter(7, $user->getHash())
+            ->execute();
 
-            $statement = parent::prepareStatement($sql);
-
-            if (null === $statement) {
-                return false;
-            }
-
-            $firstName = $user->getFirstName();
-            $lastName  = $user->getLastName();
-            $name      = $user->getName();
-            $email     = $user->getEmail();
-            $phone     = $user->getPhone();
-            $password  = $user->getPassword();
-            $id        = $user->getId();
-            $website   = $user->getWebsite();
-            $hash      = $user->getHash();
-
-            $statement->bindParam(":id", $id);
-            $statement->bindParam(":first_name", $firstName);
-            $statement->bindParam(":last_name", $lastName);
-            $statement->bindParam(":name", $name);
-            $statement->bindParam(":email", $email);
-            $statement->bindParam(":phone", $phone);
-            $statement->bindParam(":password", $password);
-            $statement->bindParam(":website", $website);
-            $statement->bindParam(":hash", $hash);
-
-            $executed = $statement->execute();
-        } catch (PDOException $e) {
-            FileLogger::error($e->getMessage());
-            throw $e;
-        }
-        return $executed;
+        return true;
 
     }
 
-    public function exists(string $id): bool {
-        return null !== $this->getUserById($id);
-    }
-
+    /**
+     * Returns an instance of IUser or null, if not found
+     *
+     * @param string $id
+     *
+     * @return IUser|null
+     * @throws KeestashException
+     */
     public function getUserById(string $id): ?IUser {
-        $sql       = "select 
-                      u.`id`
-                      , u.`name`
-                      , u.`password`
-                      , u.`create_ts`
-                      , u.`first_name`
-                      , u.`last_name`
-                      , u.`email`
-                      , u.`phone`
-                      , u.`website`
-                      , u.`hash`
-                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
-                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
-                    from `user` u
-                        left join `user_state` us
-                            on u.`id` = us.`user_id`
-                  where u.`id` = :id;";
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $statement->bindParam("id", $id);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'u.id'
+                , 'u.name'
+                , 'u.password'
+                , 'u.create_ts'
+                , 'u.first_name'
+                , 'u.last_name'
+                , 'u.email'
+                , 'u.phone'
+                , 'u.website'
+                , 'u.hash'
+                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+            ]
+        )
+            ->from('user', 'u')
+            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
+            ->where('u.id = ?')
+            ->setParameter(0, $id);
+        $users     = $queryBuilder->execute()->fetchAll();
+        $userCount = count($users);
 
-        $user = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $password  = $row[2];
-            $createTs  = $row[3];
-            $firstName = $row[4];
-            $lastName  = $row[5];
-            $email     = $row[6];
-            $phone     = $row[7];
-            $website   = $row[8];
-            $hash      = $row[9];
-            $deleted   = (bool) $row[10];
-            $locked    = (bool) $row[11];
-
-            $user = new User();
-            $user->setId($id);
-            $user->setName($name);
-            $user->setPassword($password);
-            $user->setCreateTs((int) $createTs);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setWebsite($website);
-            $user->setLastLogin(new DateTime()); // TODO implement
-            $user->setHash($hash);
-            $user->setRoles(
-                $this->roleManager->getRolesByUser($user)
-            );
-            $user->setLocked(
-                true === $locked
-            );
-            $user->setDeleted(
-                true === $deleted
-            );
-
+        if (0 === $userCount) {
+            return null;
         }
+
+        if ($userCount > 1) {
+            throw new KeestashException("found more then one user for the given name");
+        }
+
+        $row  = $users[0];
+        $user = new User();
+        $user->setId((int) $row['id']);
+        $user->setName($row['name']);
+        $user->setPassword($row['password']);
+        $user->setCreateTs(
+            $this->dateTimeService->toDateTime((int) $row['create_ts'])
+        );
+        $user->setFirstName($row['first_name']);
+        $user->setLastName($row['last_name']);
+        $user->setEmail($row['email']);
+        $user->setPhone($row['phone']);
+        $user->setWebsite($row['website']);
+        $user->setHash($row['hash']);
+        $user->setLastLogin(new DateTime()); // TODO implement
+        $user->setDeleted(
+            true === (bool) $row['deleted']
+        );
+        $user->setLocked(
+            true === (bool) $row['locked']
+        );
+        $user->setRoles(
+            $this->roleManager->getRolesByUser($user)
+        );
 
         return $user;
     }
 
-    public function getUserByHash(string $hash): ?IUser {
-        $sql       = "select 
-                      `id`
-                      , `name`
-                      , `password`
-                      , `create_ts`
-                      , `first_name`
-                      , `last_name`
-                      , `email`
-                      , `phone`
-                      , `website`
-                      , `hash`
-                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
-                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
-                    from `user` u
-                        left join `user_state` us
-                            on u.`id` = us.`user_id`
-                  where u.`hash` = :hash;";
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $statement->bindParam("hash", $hash);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
-
-        $user = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $password  = $row[2];
-            $createTs  = $row[3];
-            $firstName = $row[4];
-            $lastName  = $row[5];
-            $email     = $row[6];
-            $phone     = $row[7];
-            $website   = $row[8];
-            $hash      = $row[9];
-            $deleted   = (bool) $row[10];
-            $locked    = (bool) $row[11];
-
-            $user = new User();
-            $user->setId($id);
-            $user->setName($name);
-            $user->setPassword($password);
-            $user->setCreateTs((int) $createTs);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setWebsite($website);
-            $user->setLastLogin(new DateTime()); // TODO implement
-            $user->setHash($hash);
-            $user->setRoles(
-                $this->roleManager->getRolesByUser($user)
-            );
-            $user->setLocked(
-                true === $locked
-            );
-            $user->setDeleted(
-                true === $deleted
-            );
-
-        }
-
-        return $user;
-    }
-
-    public function nameExists(string $name): bool {
-        return null !== $this->getUserByName($name);
-    }
-
-    public function getUserByName(string $name): ?IUser {
-        $sql       = "select 
-                      `id`
-                      , `name`
-                      , `password`
-                      , `create_ts`
-                      , `first_name`
-                      , `last_name`
-                      , `email`
-                      , `phone`
-                      , `website`
-                      , `hash`
-                      , IF(us.`state` = 'delete.state.user', true, false) as `deleted`
-                      , IF(us.`state` = 'lock.state.user', true, false)   as `locked`
-                    from `user` u
-                        left join `user_state` us
-                            on u.`id` = us.`user_id`
-                  where u.`name` = :name;";
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $statement->bindParam("name", $name);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
-
-        $user = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $password  = $row[2];
-            $createTs  = $row[3];
-            $firstName = $row[4];
-            $lastName  = $row[5];
-            $email     = $row[6];
-            $phone     = $row[7];
-            $website   = $row[8];
-            $hash      = $row[9];
-            $deleted   = (bool) $row[10];
-            $locked    = (bool) $row[11];
-
-            $user = new User();
-            $user->setId($id);
-            $user->setName($name);
-            $user->setPassword($password);
-            $user->setCreateTs((int) $createTs);
-            $user->setFirstName($firstName);
-            $user->setLastName($lastName);
-            $user->setEmail($email);
-            $user->setPhone($phone);
-            $user->setWebsite($website);
-            $user->setHash($hash);
-            $user->setLastLogin(new DateTime()); // TODO implement
-            $user->setRoles(
-                $this->roleManager->getRolesByUser($user)
-            );
-            $user->setLocked(
-                true === $locked
-            );
-            $user->setDeleted(
-                true === $deleted
-            );
-        }
-
-        return $user;
-    }
-
+    /**
+     * Removes an instance of IUser
+     *
+     * @param IUser $user
+     *
+     * @return bool
+     */
     public function remove(IUser $user): bool {
-        $sql       = "DELETE FROM `user` WHERE `id` = :id;";
-        $statement = $this->prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $userId = $user->getId();
-        $statement->bindParam("id", $userId);
-        $statement->execute();
-
-        return false === $this->hasErrors($statement->errorCode());
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete('user')
+                ->where('id = ?')
+                ->setParameter(0, $user->getId())
+                ->execute()
+                ->columnCount() !== 0;
     }
-
 
 }

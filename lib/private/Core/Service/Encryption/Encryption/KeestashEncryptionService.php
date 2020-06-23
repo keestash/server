@@ -19,10 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Encryption;
+namespace Keestash\Core\Service\Encryption\Encryption;
 
-interface ICredential {
-
-    public function getSecret(): string;
+/**
+ * Class KeestashEncryptionService
+ *
+ * @package Keestash\Core\Service\Encryption\Encryption
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
+class KeestashEncryptionService extends AESService {
 
 }

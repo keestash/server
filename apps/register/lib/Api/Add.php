@@ -22,12 +22,10 @@ declare(strict_types=1);
 namespace KSA\Register\Api;
 
 use doganoo\PHPUtil\Datatype\StringClass;
-use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
-use Keestash\Core\DTO\User\User;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
@@ -45,7 +43,7 @@ class Add extends AbstractApi {
     /** @var IUser|null $user */
     private $user              = null;
     private $userService       = null;
-    private $userManager       = null;
+    private $userRepository    = null;
     private $translator        = null;
     private $permissionManager = null;
     private $loader            = null;
@@ -53,7 +51,7 @@ class Add extends AbstractApi {
     public function __construct(
         IL10N $l10n
         , UserService $userService
-        , IUserRepository $userManager
+        , IUserRepository $userRepository
         , IPermissionRepository $permissionManager
         , ILoader $loader
         , ?IToken $token = null
@@ -61,7 +59,7 @@ class Add extends AbstractApi {
         parent::__construct($l10n, $token);
 
         $this->userService       = $userService;
-        $this->userManager       = $userManager;
+        $this->userRepository    = $userRepository;
         $this->translator        = $l10n;
         $this->permissionManager = $permissionManager;
         $this->loader            = $loader;
@@ -109,6 +107,15 @@ class Add extends AbstractApi {
         $passwordRepeat     = $this->parameters["password_repeat"] ?? null;
         $termsAndConditions = $this->parameters["terms_and_conditions"] ?? null;
 
+        $users      = Keestash::getServer()->getUsersFromCache();
+        $nameExists = false;
+        $mailExists = false;
+        /** @var IUser $iUser */
+        foreach ($users as $iUser) {
+            $mailExists = $email === $iUser->getEmail();
+            $nameExists = $userName === $iUser->getName();
+        }
+
         if (null === $firstName || "" === $firstName) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Please name a first name");
@@ -150,12 +157,12 @@ class Add extends AbstractApi {
             $message      = $this->translator->translate("Your password does not fulfill the minimum requirements");
         }
 
-        if (null !== $this->userManager->getUser($userName)) {
+        if (true === $nameExists) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("A user with this name already exists");
         }
 
-        if (null !== $this->userManager->getUserByMail($email)) {
+        if (true === $mailExists) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("A user with this email address already exists");
         }
@@ -166,13 +173,11 @@ class Add extends AbstractApi {
                 ->getRegistrationHookManager()
                 ->executePre();
 
-            $added = $this->addUser(
-                $userName
-                , $email
-                , $password
-                , $firstName
-                , $lastName
-            );
+            $user   = $this->userService->toUser($this->parameters);
+            $userId = $this->userRepository->insert($user);
+            $added  = null !== $userId;
+            $user->setId((int) $userId);
+            $this->user = $user;
 
             if (false === $added) {
                 $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
@@ -200,37 +205,6 @@ class Add extends AbstractApi {
             $msg
         );
 
-    }
-
-    private function addUser(
-        string $userName
-        , string $email
-        , string $password
-        , string $firstName
-        , string $lastName
-    ): bool {
-
-        $password = $this->userService->hashPassword($password);
-
-        $user = new User();
-        $user->setName($userName);
-        $user->setCreateTs(DateTimeUtil::getUnixTimestamp());
-        $user->setEmail($email);
-        $user->setPassword($password);
-        $user->setFirstName($firstName);
-        $user->setLastName($lastName);
-        $user->setPhone("");
-        $user->setWebsite("");
-        $user->setHash($this->userService->getRandomHash());
-
-        $userId = $this->userManager->insert($user);
-
-        if (null === $userId) return false;
-
-        $user->setId($userId);
-        $this->user = $user;
-
-        return true;
     }
 
     public function afterCreate(): void {

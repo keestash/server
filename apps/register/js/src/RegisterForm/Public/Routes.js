@@ -18,7 +18,8 @@
  */
 import {Host} from "../../../../../../lib/js/src/Backend/Host";
 
-export const PASSWORD_REQUIREMENTS = "/password_requirements/";
+const PASSWORD_REQUIREMENTS = "/password_requirements/";
+const REGISTER_ADD = "/register/add/";
 
 export class Routes {
     constructor() {
@@ -27,5 +28,9 @@ export class Routes {
 
     getPasswordRequirements() {
         return this.host.getApiHost() + PASSWORD_REQUIREMENTS;
+    }
+
+    getRegisterAdd() {
+        return this.host.getApiHost() + REGISTER_ADD;
     }
 }

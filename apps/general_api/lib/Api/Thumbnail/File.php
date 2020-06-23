@@ -39,7 +39,7 @@ class File extends AbstractApi {
     private $fileService    = null;
 
     public function __construct(
-        IFileManager $fileManager
+        IFileManager $fileRepository
         , FileService $fileService
         , RawFileService $rawFileService
         , IL10N $l10n
@@ -48,7 +48,7 @@ class File extends AbstractApi {
         parent::__construct($l10n, $token);
 
         $this->fileService    = $fileService;
-        $this->fileManager    = $fileManager;
+        $this->fileManager    = $fileRepository;
         $this->rawFileService = $rawFileService;
     }
 

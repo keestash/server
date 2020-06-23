@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Manager\BreadCrumbManager;
 
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\View\BreadCrumb\IBreadCrumb;
 
 interface IBreadCrumbManager {

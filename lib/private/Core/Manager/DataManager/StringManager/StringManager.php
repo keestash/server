@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\DataManager\StringManager;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\Service\Util\ArrayListService;
 use KSP\Core\Manager\DataManager\StringManager\IStringManager;

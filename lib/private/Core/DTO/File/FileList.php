@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\File;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\File\IFile;
 
 class FileList extends ArrayList {

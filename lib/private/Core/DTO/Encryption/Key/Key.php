@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO;
+namespace Keestash\Core\DTO\Encryption\Key;
 
 use DateTime;
 use KSP\Core\DTO\IKey;

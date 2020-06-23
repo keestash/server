@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\Navigation;
+namespace Keestash\Core\Service\Encryption\Credential;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\View\Navigation\IEntry;
+use Keestash\Core\DTO\Encryption\Credential;
+use KSP\Core\DTO\Encryption\Key\ICredential;
+use KSP\Core\DTO\User\IUser;
 
-class NavigationPart extends ArrayList {
+class CredentialService {
 
-    public function add($item): bool {
-        if ($item instanceof IEntry) {
-            return parent::add($item);
-        }
-        return false;
+    public function getCredentialForUser(IUser $user): ICredential {
+        return new Credential($user);
     }
 
 }

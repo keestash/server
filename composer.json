@@ -18,10 +18,11 @@
     "ext-pdo": "*",
     "ext-posix": "*",
     "ext-sqlite3": "*",
-    "doganoo/php-algorithms": "0.0.27",
+    "doganoo/di-services": "dev-master",
+    "doganoo/php-algorithms": "^1.0",
     "doganoo/php-util": "0.3.12",
-    "doganoo/simple-rbac": "1.5.0",
-    "doganoo/backgrounder": "^2.0.0",
+    "doganoo/simple-rbac": "^1.6",
+    "doganoo/backgrounder": "^3.1",
     "filp/whoops": "2.3.1",
     "ocramius/package-versions": "1.4.0",
     "php-di/php-di": "6.0.7",
@@ -33,10 +34,11 @@
     "symfony/routing": "4.2.5",
     "symfony/webpack-encore-pack": "1.0.3",
     "twig/twig": "^2.0",
-    "xobotyi/php-mime-type": "1.2.0"
+    "xobotyi/php-mime-type": "1.2.0",
+    "doctrine/dbal": "^2.10"
   },
   "require-dev": {
-    "phpstan/phpstan": "^0.11.16",
+    "phpstan/phpstan": "^0.12",
     "phpunit/phpunit": "^7.5"
   },
   "autoload": {
@@ -47,7 +49,7 @@
       "KSA\\": "apps/"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "support": {
     "email": "dogan@dogan-ucar.de",
     "issues": "https://github.com/keestash/server/issues",

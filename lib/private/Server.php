@@ -27,6 +27,7 @@ use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use doganoo\Backgrounder\Backgrounder;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
@@ -34,20 +35,18 @@ use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\DTO\User\User;
-use Keestash\Core\Service\Encryption\Base\BaseEncryption;
-use Keestash\Core\DTO\Encryption\Credential;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
 use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\HookManager\ControllerHookManager;
-use Keestash\Core\Manager\HookManager\User\UserRemovedHookManager;
-use Keestash\Core\Manager\HookManager\User\UserStateHookManager;
 use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
 use Keestash\Core\Manager\HookManager\RegistrationHookManager;
 use Keestash\Core\Manager\HookManager\ServiceHookManager;
 use Keestash\Core\Manager\HookManager\SubmitHookManager;
+use Keestash\Core\Manager\HookManager\User\UserRemovedHookManager;
+use Keestash\Core\Manager\HookManager\User\UserStateHookManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\ResponseManager\JSONResponseManager;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
@@ -74,6 +73,8 @@ use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\DateTimeService;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\PublicFile\PublicFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
@@ -121,6 +122,7 @@ use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
@@ -130,12 +132,14 @@ use xobotyi\MimeType;
 
 /**
  * Class Server
+ *
  * @package Keestash
  */
 class Server {
 
     public const ALLOWED_MIME_TYPES      = "types.mime.allowed";
     public const USER_HASH_MAP           = 'map.hash.user';
+    public const USER_LIST               = 'list.user';
     public const CONFIG                  = 'config';
     public const DEFAULT_ACTION_BARS     = "bars.action.default";
     public const DEFAULT_ACTION_BAR_BAGS = "bags.bar.action.default";
@@ -148,9 +152,12 @@ class Server {
     private $classLoader = null;
     /** @var HashTable|null $userHashes */
     private $userHashes = null;
+    /** @var ArrayList */
+    private $userList = null;
 
     /**
      * Server constructor.
+     *
      * @param string      $appRoot
      * @param ClassLoader $classLoader
      */
@@ -175,19 +182,12 @@ class Server {
         });
 
         $this->register(Server::USER_HASH_MAP, function () {
-            /** @var InstallerService $installerService */
-            $installerService = $this->query(InstallerService::class);
-
-            if (false === $installerService->hasIdAndHash()) return null;
-            if (null !== $this->userHashes) return $this->userHashes;
 
             $this->userHashes = new HashTable();
-            /** @var IUserRepository $userManager */
-            $userManager = $this->getUserRepository();
+            /** @var ArrayList $users */
+            $users = $this->query(Server::USER_LIST);
 
-            $users = $userManager->getAll();
 
-            if (null === $users) return $this->userHashes;
 
             /** @var IUser $user */
             foreach ($users as $user) {
@@ -197,6 +197,18 @@ class Server {
                 );
             }
             return $this->userHashes;
+        });
+
+        $this->register(Server::USER_LIST, function () {
+            /** @var InstallerService $installerService */
+            $installerService = $this->query(InstallerService::class);
+
+            if (false === $installerService->hasIdAndHash()) return null;
+            if (null !== $this->userList) return $this->userList;
+
+            $userRepository = $this->getUserRepository();
+            $this->userList = $userRepository->getAll();
+            return $this->userList;
         });
 
         $this->register(Verification::class, function () {
@@ -548,6 +560,14 @@ class Server {
 
         });
 
+        $this->register(IEncryptionService::class, function () {
+            return new KeestashEncryptionService();
+        });
+
+        $this->register(CredentialService::class, function () {
+            return new CredentialService();
+        });
+
         $this->register(Core\DTO\BackgroundJob\Container::class, function () {
             return new Core\DTO\BackgroundJob\Container();
         });
@@ -578,12 +598,9 @@ class Server {
         return true;
     }
 
-    public function getUserRepository(): IUserRepository {
-        return $this->query(IUserRepository::class);
-    }
-
     /**
      * @param string $name
+     *
      * @return mixed
      * @throws DependencyException
      * @throws NotFoundException
@@ -593,6 +610,10 @@ class Server {
             return $this->container->get($name);
         }
         return null;
+    }
+
+    public function getUserRepository(): IUserRepository {
+        return $this->query(IUserRepository::class);
     }
 
     public function getTokenManager(): ITokenRepository {
@@ -629,28 +650,40 @@ class Server {
         return $user;
     }
 
-    public function getImageRoot(): string {
-        return $this->getDataRoot() . "image/";
+    public function getInstanceLockHandler(): InstanceLockHandler {
+        return $this->query(InstanceLockHandler::class);
     }
 
-    public function getAssetRoot(): string {
-        return $this->getServerRoot() . "asset/";
+    public function getJobRepository(): IJobRepository {
+        return $this->query(IJobRepository::class);
+    }
+
+    public function getUsersFromCache(): ArrayList {
+        return $this->query(Server::USER_LIST);
+    }
+
+    public function getImageRoot(): string {
+        return $this->getDataRoot() . "image/";
     }
 
     public function getDataRoot(): string {
         return $this->appRoot . "data/";
     }
 
-    public function getLockRoot(): string {
-        return $this->appRoot . "data/lock/";
+    public function getAssetRoot(): string {
+        return $this->getServerRoot() . "asset/";
     }
 
-    public function getInstallerRoot(): string {
-        return $this->getLockRoot() . "installer/";
+    public function getServerRoot(): string {
+        return $this->appRoot;
     }
 
     public function getPhinxRoot(): string {
         return $this->getConfigRoot() . "phinx/";
+    }
+
+    public function getConfigRoot(): string {
+        return $this->appRoot . "config/";
     }
 
     public function getLogfilePath(): string {
@@ -659,23 +692,12 @@ class Server {
         return $logFile;
     }
 
+    public function getLegacy(): Legacy {
+        return new Legacy();
+    }
+
     public function getConfigfilePath(): string {
         return $this->getConfigRoot() . "config.php";
-    }
-
-    public function getBaseEncryption(?IUser $user = null) {
-        // this breaks the DI principle.
-        // However, i do not know how to make this better
-        if (null === $user) {
-            $user = $this->getUserFromSession();
-        }
-        $credential = new Credential($user);
-        return new BaseEncryption($credential);
-
-    }
-
-    public function getServerRoot(): string {
-        return $this->appRoot;
     }
 
     public function getAppRoot(): string {
@@ -702,37 +724,12 @@ class Server {
         return $this->query(IActionBarManager::class);
     }
 
-
-    public function getLegacy(): Legacy {
-        return new Legacy();
-    }
-
-    public function getConfigRoot(): string {
-        return $this->appRoot . "config/";
-    }
-
     public function getNavigationManager(): NavigationManager {
         return $this->query(NavigationManager::class);
     }
 
-    public function getRouterManager(): RouterManager {
-        return $this->query(IRouterManager::class);
-    }
-
     public function getConsoleManager(): IConsoleManager {
         return $this->query(IConsoleManager::class);
-    }
-
-    public function getHTTPRouter(): HTTPRouter {
-        /** @var HTTPRouter $router */
-        $router = $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
-        return $router;
-    }
-
-    public function getApiRouter(): APIRouter {
-        /** @var APIRouter $router */
-        $router = $this->getRouterManager()->get(IRouterManager::API_ROUTER);
-        return $router;
     }
 
     public function getRouter(): Router {
@@ -748,6 +745,21 @@ class Server {
         }
     }
 
+    public function getHTTPRouter(): HTTPRouter {
+        /** @var HTTPRouter $router */
+        $router = $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
+        return $router;
+    }
+
+    public function getRouterManager(): RouterManager {
+        return $this->query(IRouterManager::class);
+    }
+
+    public function getApiRouter(): APIRouter {
+        /** @var APIRouter $router */
+        $router = $this->getRouterManager()->get(IRouterManager::API_ROUTER);
+        return $router;
+    }
 
     public function getL10N(): IL10N {
         return $this->query(IL10N::class);
@@ -805,10 +817,6 @@ class Server {
         return $this->query(AppLockHandler::class);
     }
 
-    public function getInstanceLockHandler(): InstanceLockHandler {
-        return $this->query(InstanceLockHandler::class);
-    }
-
     public function getBreadCrumbManager(): IBreadCrumbManager {
         return $this->query(IBreadCrumbManager::class);
     }
@@ -817,12 +825,9 @@ class Server {
         return $this->query(Backgrounder::class);
     }
 
-    public function getJobRepository(): IJobRepository {
-        return $this->query(IJobRepository::class);
-    }
-
     public function wipeCache(): void {
         $this->userHashes = null;
+        $this->userList   = null;
     }
 
 }

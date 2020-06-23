@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\ConsoleManager;
 
-use doganoo\PHPAlgorithms\Datastructure\Sets\HashSet;
 use Keestash\Command\KeestashCommand;
 use KSP\Core\Manager\ConsoleManager\ICommandSet;
 

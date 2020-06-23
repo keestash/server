@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use doganoo\PHPUtil\Log\FileLogger;
+use Keestash\Core\Backend\MySQLBackend;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
 use PDO;
@@ -29,10 +31,12 @@ use PDOStatement;
 
 /**
  * Class AbstractRepository
+ *
  * @package Keestash\Core\Repository
  */
 class AbstractRepository implements IRepository {
 
+    /** @var MySQLBackend */
     private $backend = null;
     /** @var PDO $connection */
     private $connection = null;
@@ -45,6 +49,14 @@ class AbstractRepository implements IRepository {
 
     protected function connect(): bool {
         return $this->backend->connect();
+    }
+
+    protected function getQueryBuilder(): QueryBuilder {
+        return $this->backend->getDoctrineConnection()->createQueryBuilder();
+    }
+
+    protected function getDoctrineLastInsertId(): ?string {
+        return $this->backend->getDoctrineConnection()->lastInsertId();
     }
 
     protected function getLastInsertId(?string $name = null): ?string {
@@ -72,6 +84,10 @@ class AbstractRepository implements IRepository {
         return null;
     }
 
+    protected function hasErrors(string $errorCode): bool {
+        return $errorCode !== "00000";
+    }
+
     protected function getSingle(string $sql, array $parameters = []): ?array {
         $statement = $this->prepareStatement($sql);
         if (null === $statement) return null;
@@ -89,10 +105,6 @@ class AbstractRepository implements IRepository {
         if (0 === count($row)) return null;
 
         return $row;
-    }
-
-    protected function hasErrors(string $errorCode): bool {
-        return $errorCode !== "00000";
     }
 
     protected function getSchemaName(): string {
