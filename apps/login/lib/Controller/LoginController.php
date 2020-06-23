@@ -28,6 +28,7 @@ use Keestash\Legacy\Legacy;
 use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
+use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -103,8 +104,9 @@ class LoginController extends StaticAppController {
 
         $string = $this->templateManager
             ->render(LoginController::TEMPLATE_NAME_LOGIN);
-        $this->templateManager->replace("app-content.html",
-            ["appContent" => $string]
+        $this->templateManager->replace(
+            ITemplate::APP_CONTENT
+            , ["appContent" => $string]
         );
     }
 

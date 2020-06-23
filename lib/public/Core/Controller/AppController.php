@@ -111,8 +111,9 @@ abstract class AppController implements IAppController {
     }
 
     protected function setAppContent(string $content): void {
-        $this->templateManager->replace("app-content.html",
-            ["appContent" => $content]
+        $this->templateManager->replace(
+            ITemplate::APP_CONTENT
+            , ["appContent" => $content]
         );
     }
 

@@ -19,10 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Encryption\Key;
+namespace KSP\Core\DTO\Key;
 
-interface ICredential {
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 
-    public function getSecret(): string;
+/**
+ * Interface IServerKey
+ * @package KSP\Core\DTO\Key
+ */
+interface IServerKey extends IKey {
 
 }

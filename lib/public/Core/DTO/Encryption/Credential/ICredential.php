@@ -19,11 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Encryption\Key;
+namespace KSP\Core\DTO\Encryption\Credential;
 
-use Keestash;
-use KSP\Core\DTO\IKey;
+use KSP\Core\DTO\IObject;
 
-class ServerKey extends Key implements IKey {
+interface ICredential extends IObject {
+
+    public function getSecret(): string;
 
 }

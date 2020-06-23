@@ -26,6 +26,11 @@ use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use function strtotime;
 
+/**
+ * Class DateTimeService
+ * @package    Keestash\Core\Service
+ * @deprecated migrate and use \doganoo\DIP\DateTime\DateTimeService instead
+ */
 class DateTimeService {
 
     /**
