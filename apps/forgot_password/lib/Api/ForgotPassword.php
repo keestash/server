@@ -36,14 +36,12 @@ use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
 class ForgotPassword extends AbstractApi {
 
     private $parameters        = null;
     private $translator        = null;
-    private $userManager       = null;
     private $emailService      = null;
     private $templateManager   = null;
     private $legacy            = null;
@@ -52,7 +50,6 @@ class ForgotPassword extends AbstractApi {
 
     public function __construct(
         IL10N $l10n
-        , IUserRepository $userManager
         , EmailService $emailService
         , ITemplateManager $templateManager
         , Legacy $legacy
@@ -63,7 +60,6 @@ class ForgotPassword extends AbstractApi {
         parent::__construct($l10n, $token);
 
         $this->translator        = $l10n;
-        $this->userManager       = $userManager;
         $this->emailService      = $emailService;
         $this->templateManager   = $templateManager;
         $this->legacy            = $legacy;
@@ -95,13 +91,21 @@ class ForgotPassword extends AbstractApi {
             return;
         }
 
-        $mailUser = $this->userManager->getUserByMail((string) $usernameOrEmail);
-        $nameUser = $this->userManager->getUser((string) $usernameOrEmail);
+        $users = Keestash::getServer()->getUsersFromCache();
+        $user  = null;
+        /** @var IUser $iUser */
+        foreach ($users as $iUser) {
+            if (
+                $usernameOrEmail === $iUser->getEmail()
+                || $usernameOrEmail === $iUser->getName()
+            ) {
+                $user = $iUser;
+                break;
+            }
+        }
 
-        if (
-            true === $this->userService->isDisabled($mailUser)
-            || true === $this->userService->isDisabled($nameUser)
-        ) {
+        if (true === $this->userService->isDisabled($user)) {
+
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -110,10 +114,10 @@ class ForgotPassword extends AbstractApi {
             );
             parent::setResponse($response);
             return;
+
         }
 
         $uuid      = StringUtil::getUUID();
-        $user      = null !== $mailUser ? $mailUser : $nameUser;
         $appName   = $this->legacy->getApplication()->get("name");
         $appSlogan = $this->legacy->getApplication()->get("slogan");
         $this->templateManager->replace(

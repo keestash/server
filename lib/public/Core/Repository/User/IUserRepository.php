@@ -21,27 +21,22 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\User;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
+/**
+ * Interface IUserRepository
+ *
+ * @package KSP\Core\Repository\User
+ */
 interface IUserRepository extends IRepository {
 
     public function getUser(string $name): ?IUser;
 
-    public function getUserByMail(string $email): ?IUser;
-
-    public function exists(string $id): bool;
-
-    public function nameExists(string $name): bool;
-
     public function getUserById(string $id): ?IUser;
 
-    public function getUserByHash(string $hash): ?IUser;
-
-    public function getUserByName(string $name): ?IUser;
-
-    public function getAll(): ?ArrayList;
+    public function getAll(): ArrayList;
 
     public function insert(IUser $user): ?int;
 

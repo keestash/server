@@ -37,27 +37,27 @@ class Application extends \Keestash\App\Application {
     public function register(): void {
 
         parent::registerRoute(
-            self::LOGIN
+            Application::LOGIN
             , LoginController::class
             , [IRouterManager::GET]
         );
 
         parent::registerApiRoute(
-            self::LOGIN_SUBMIT
+            Application::LOGIN_SUBMIT
             , LoginService::class
             , [IRouterManager::POST]
         );
 
         parent::registerPublicRoute(
-            self::LOGIN
+            Application::LOGIN
         );
 
         parent::registerPublicApiRoute(
-            self::LOGIN_SUBMIT
+            Application::LOGIN_SUBMIT
         );
 
         parent::addJavascript(
-            self::LOGIN
+            Application::LOGIN
         );
 
     }

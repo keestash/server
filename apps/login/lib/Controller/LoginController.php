@@ -36,27 +36,28 @@ class LoginController extends StaticAppController {
 
     public const TEMPLATE_NAME_LOGIN = "login.twig";
 
-    private $templateManager    = null;
-    private $translator         = null;
-    private $permissionManager  = null;
-    private $loader             = null;
-    private $persistenceService = null;
-    private $legacy             = null;
+    private $templateManager = null;
+    private $translator      = null;
+    /** @var IPermissionRepository */
+    private $permissionRepository = null;
+    private $loader               = null;
+    private $persistenceService   = null;
+    private $legacy               = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionManager
+        , IPermissionRepository $permissionRepository
         , ILoader $loader
         , PersistenceService $persistenceService
         , Legacy $legacy
     ) {
-        $this->templateManager    = $templateManager;
-        $this->translator         = $translator;
-        $this->permissionManager  = $permissionManager;
-        $this->loader             = $loader;
-        $this->persistenceService = $persistenceService;
-        $this->legacy             = $legacy;
+        $this->templateManager      = $templateManager;
+        $this->translator           = $translator;
+        $this->permissionRepository = $permissionRepository;
+        $this->loader               = $loader;
+        $this->persistenceService   = $persistenceService;
+        $this->legacy               = $legacy;
 
         parent::__construct(
             $templateManager

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\TemplateManager;
 
-use doganoo\PHPAlgorithms\Datastructure\Sets\HashSet;
+use doganoo\PHPAlgorithms\Datastructure\Set\HashSet;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;

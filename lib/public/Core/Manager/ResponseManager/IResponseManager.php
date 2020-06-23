@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\ResponseManager;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Api\IResponse;
 use KSP\Core\Manager\IManager;
 

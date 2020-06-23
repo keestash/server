@@ -17,9 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import $ from 'jquery';
-import Formula from "../../../../lib/js/src/Formula";
-import System from "../../../../lib/js/src/System";
-import modal from "../../../../lib/js/src/UI/modal";
 import {Register} from "./RegisterForm/Register";
 import {Request} from "../../../../lib/js/src/Backend/Request";
 import {ConsoleLogger} from "../../../../lib/js/src/Log/ConsoleLogger";
@@ -27,6 +24,7 @@ import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
 import {Router} from "../../../../lib/js/src/Route/Router";
 import {Host} from "../../../../lib/js/src/Backend/Host";
 import {Routes} from "./RegisterForm/Public/Routes";
+import {UIService} from "../../../../lib/js/src/Service/UI/UIService";
 
 (function () {
     if (!Keestash.Register) {
@@ -34,39 +32,8 @@ import {Routes} from "./RegisterForm/Public/Routes";
     }
 
     Keestash.Register = {
-        registerButtonClicked: false,
-        enabler: {
-            FIRST_NAME: false
-            , LAST_NAME: false
-            , USER_NAME: false
-            , PASSWORD: false
-            , EMAIL: false
-            , PASSWORD_REPEAT: false
-        },
-        SELECTORS: {
-            FIRST_NAME: "#tl__register__first__name"
-            , LAST_NAME: "#tl__register__last__name"
-            , USER_NAME: "#tl__register__user__name"
-            , PASSWORD: "#tl__register__password"
-            , PASSWORD_INVALID_HINT: "#tl__register__password__invalid__text"
-            , EMAIL_INVALID_HINT: "#tl__register__email__invalid__text"
-            , PASSWORD_REPEAT_INVALID_HINT: "#tl__register__password__repeat__invalid__text"
-            , EMAIL_TAKEN_INVALID_HINT: "#tl__register__email__taken__text"
-            , PASSWORD_REPEAT: "#tl__register__password__repeat"
-            , EMAIL: "#tl__register__email"
-            , TERMS_AND_CONDITIONS: "#tl__register__terms__and__conditions"
-            , REGISTER_BUTTON: "#tl__register__button"
-        },
-        enableForm: function () {
-            this.registerButtonClicked = false;
-            $(this.SELECTORS.REGISTER_BUTTON).removeClass("disabled");
-        },
-        disableForm: function () {
-            this.registerButtonClicked = true;
-            $(this.SELECTORS.REGISTER_BUTTON).addClass("disabled");
-        },
-        init: function () {
-            let _this = this;
+
+        init: async () => {
 
             const request = new Request(
                 new ConsoleLogger()
@@ -77,111 +44,20 @@ import {Routes} from "./RegisterForm/Public/Routes";
             );
 
             const routes = new Routes();
+            const uiService = new UIService();
 
             const register = new Register(
                 request
                 , routes
+                , uiService
             );
+            register.setUpClickListener();
             register.setup();
 
-            $(_this.SELECTORS.REGISTER_BUTTON).click(function (event) {
-                event.preventDefault();
-
-                if (true === _this.registerButtonClicked) return;
-                // that.disableForm();
-
-                let firstName = $(_this.SELECTORS.FIRST_NAME).val();
-                let lastName = $(_this.SELECTORS.LAST_NAME).val();
-                let userName = $(_this.SELECTORS.USER_NAME).val();
-                let email = $(_this.SELECTORS.EMAIL).val();
-                let password = $(_this.SELECTORS.PASSWORD).val();
-                let passwordRepeat = $(_this.SELECTORS.PASSWORD_REPEAT).val();
-                let termsAndConditions = $(_this.SELECTORS.TERMS_AND_CONDITIONS).is(':checked');
-                let formula = new Formula();
-
-                let values = {
-                    'first_name': firstName
-                    , 'last_name': lastName
-                    , 'user_name': userName
-                    , 'email': email
-                    , 'password': password
-                    , 'password_repeat': passwordRepeat
-                    , 'terms_and_conditions': termsAndConditions
-                };
-
-                formula.post(
-                    Keestash.Main.getApiHost() + "/register/add/"
-                    , values
-                    , function (response, status, xhr) {
-                        let obj = JSON.parse(response);
-                        let json_object = null;
-
-                        if (1000 in obj) {
-                            json_object = obj[1000];
-                        } else if (2000 in obj) {
-                            json_object = obj[2000];
-                            // 2000 means error!
-                            // that.disableForm();
-                        }
-                        modal.miniModal(json_object['message']);
-                        // that.enableForm();
-                    }
-                    , function (response, status, xhr) {
-                        modal.miniModal("There was an error during the registration. Please try it again or reach us out!");
-                        // that.disableForm();
-                    }
-                );
-
-            });
-        },
-        checkIfEnabled_2: function () {
-            var that = this;
-            var system = new System();
-            system.throttle(function () {
-                that.checkIfEnabled()
-            }, 500)()
-        },
-        checkIfEnabled: function () {
-            let enabled = true;
-            let element = $("#tl__register__terms__and__conditions");
-            $.each(this.enabler, function (i, v) {
-                enabled = v && enabled;
-            });
-
-            if (enabled === true) {
-                element.removeAttr("disabled");
-            } else {
-                element.prop("checked", false);
-                element.removeAttr("checked");
-                element.attr("disabled", true);
-                this.changeButtonState(false)
-            }
-        },
-        changeState: function (show, selectorName) {
-            let element = $(selectorName);
-
-            if (true === show) {
-                element.fadeIn(500, function () {
-                    $(this).show();
-                });
-            } else {
-                element.fadeOut(500, function () {
-                    $(this).hide();
-                });
-            }
-        },
-        changeButtonState: function (enable) {
-            let button = $(this.SELECTORS.REGISTER_BUTTON);
-
-            button.addClass("disabled");
-            if (true === enable) {
-                button.removeClass("disabled");
-            } else {
-
-            }
         }
+
     }
 })();
-$(document).ready(function () {
-    Keestash.Register.init();
+$(document).ready(async () => {
+    await Keestash.Register.init();
 });

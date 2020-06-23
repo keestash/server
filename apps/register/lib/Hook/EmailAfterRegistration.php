@@ -51,6 +51,8 @@ class EmailAfterRegistration implements IHook {
     }
 
     public function performAction(...$parameters): bool {
+        FileLogger::debug("please implement me :( " . EmailAfterRegistration::class);
+        return true;
         $user = $parameters[0][0] ?? null;
 
         if (null === $user) {

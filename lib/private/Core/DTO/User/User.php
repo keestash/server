@@ -72,11 +72,19 @@ class User implements IUser, PermissionUser {
         $this->password = $password;
     }
 
-    /**
-     * @param string $lastName
-     */
-    public function setLastName(string $lastName): void {
-        $this->lastName = $lastName;
+    public function getLastLogin(): ?DateTime {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(?DateTime $lastLogin): void {
+        $this->lastLogin = $lastLogin;
+    }
+
+    public function equals($object): bool {
+        if ($object instanceof IUser) {
+            return $this->getId() === $object->getId();
+        }
+        return false;
     }
 
     /**
@@ -91,6 +99,32 @@ class User implements IUser, PermissionUser {
      */
     public function setId(int $id): void {
         $this->id = $id;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize() {
+        return
+            [
+                'id'           => $this->getId()
+                , 'name'       => $this->getName()
+                , 'create_ts'  => $this->getCreateTs()->getTimestamp()
+                , 'first_name' => $this->getFirstName()
+                , 'last_name'  => $this->getLastName()
+                , 'email'      => $this->getEmail()
+                , 'phone'      => $this->getPhone()
+                , 'website'    => $this->getWebsite()
+                , "roles"      => $this->getRoles()
+                , "hash"       => $this->getHash()
+                , "locked"     => $this->isLocked()
+                , "deleted"    => $this->isDeleted()
+            ];
     }
 
     /**
@@ -115,13 +149,12 @@ class User implements IUser, PermissionUser {
     }
 
     /**
-     * @param int $createTs
+     * @param DateTime $createTs
+     *
      * @throws Exception
      */
-    public function setCreateTs(int $createTs): void {
-        $dateTime = new DateTime();
-        $dateTime->setTimestamp($createTs);
-        $this->createTs = $dateTime;
+    public function setCreateTs(DateTime $createTs): void {
+        $this->createTs = $createTs;
     }
 
     /**
@@ -143,6 +176,13 @@ class User implements IUser, PermissionUser {
      */
     public function getLastName(): string {
         return $this->lastName;
+    }
+
+    /**
+     * @param string $lastName
+     */
+    public function setLastName(string $lastName): void {
+        $this->lastName = $lastName;
     }
 
     /**
@@ -205,68 +245,28 @@ class User implements IUser, PermissionUser {
         $this->roles = $roles;
     }
 
-    public function setLastLogin(?DateTime $lastLogin): void {
-        $this->lastLogin = $lastLogin;
-    }
-
-    public function getLastLogin(): ?DateTime {
-        return $this->lastLogin;
+    public function getHash(): string {
+        return $this->hash;
     }
 
     public function setHash(string $hash): void {
         $this->hash = $hash;
     }
 
-    public function getHash(): string {
-        return $this->hash;
-    }
-
-    public function equals($object): bool {
-        if ($object instanceof IUser) {
-            return $this->getId() === $object->getId();
-        }
-        return false;
+    public function isLocked(): bool {
+        return $this->locked;
     }
 
     public function setLocked(bool $locked): void {
         $this->locked = $locked;
     }
 
-    public function isLocked(): bool {
-        return $this->locked;
-    }
-
-    public function setDeleted(bool $deleted): void {
-        $this->deleted = $deleted;
-    }
-
     public function isDeleted(): bool {
         return $this->deleted;
     }
 
-    /**
-     * Specify data which should be serialized to JSON
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize() {
-        return
-            [
-                'id'           => $this->getId()
-                , 'name'       => $this->getName()
-                , 'create_ts'  => $this->getCreateTs()->getTimestamp()
-                , 'first_name' => $this->getFirstName()
-                , 'last_name'  => $this->getLastName()
-                , 'email'      => $this->getEmail()
-                , 'phone'      => $this->getPhone()
-                , 'website'    => $this->getWebsite()
-                , "roles"      => $this->getRoles()
-                , "hash"       => $this->getHash()
-                , "locked"     => $this->isLocked()
-                , "deleted"    => $this->isDeleted()
-            ];
+    public function setDeleted(bool $deleted): void {
+        $this->deleted = $deleted;
     }
 
 }

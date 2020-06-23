@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Util;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 
 class ArrayListService {
 

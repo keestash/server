@@ -19,18 +19,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\Navigation;
+namespace Keestash\Core\DTO\Encryption\Key;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\View\Navigation\IEntry;
+use Keestash;
+use KSP\Core\DTO\IKey;
 
-class NavigationPart extends ArrayList {
-
-    public function add($item): bool {
-        if ($item instanceof IEntry) {
-            return parent::add($item);
-        }
-        return false;
-    }
+class ServerKey extends Key implements IKey {
 
 }

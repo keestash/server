@@ -11,9 +11,7 @@ export class Email {
         element.keyup(() => {
             let value = element.val();
             let validEmail = emailValidator.isValidAddress(value) && value !== "";
-
-            console.log(validEmail)
-
+            
             $(document).trigger(
                 EVENT_NAME_REGISTER_EMAIL
                 , {

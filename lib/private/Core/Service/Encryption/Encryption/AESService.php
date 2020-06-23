@@ -19,80 +19,73 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Encryption\Base;
+namespace Keestash\Core\Service\Encryption\Encryption;
 
 use doganoo\PHPUtil\Log\FileLogger;
-use KSP\Core\DTO\Encryption\ICredential;
+use KSP\Core\DTO\Encryption\Key\ICredential;
 use KSP\Core\Service\Encryption\IEncryptionService;
 
 /**
- * AES Encrypion service
+ * AES Encryption service
  *
  * @package Keestash\Core\Service\Encryption\Base
  */
-class AES implements IEncryptionService {
+class AESService implements IEncryptionService {
 
     public const METHOD         = "AES-256-CBC";
     public const HASH_ALGORITHM = "sha256";
     public const IV_LENGTH      = 16;
 
-    protected $credential = null;
-
-    public function __construct(ICredential $credential) {
-        $this->credential = $credential;
-    }
-
-    public function encrypt($raw) {
+    public function encrypt(ICredential $credential, string $raw): string {
         $key = hash(
-            AES::HASH_ALGORITHM
-            , $this->credential->getSecret()
+            AESService::HASH_ALGORITHM
+            , $credential->getSecret()
             , true
         );
 
-        $iv = openssl_random_pseudo_bytes(AES::IV_LENGTH);
+        $iv = openssl_random_pseudo_bytes(AESService::IV_LENGTH);
 
         $cipherText = openssl_encrypt(
             $raw
-            , AES::METHOD
+            , AESService::METHOD
             , $key
             , OPENSSL_RAW_DATA
             , $iv
         );
 
         $hash = hash_hmac(
-            AES::HASH_ALGORITHM
+            AESService::HASH_ALGORITHM
             , $cipherText
             , $key
             , true
         );
 
-        $encrypted = $iv . $hash . $cipherText;
-        return $encrypted;
+        return $iv . $hash . $cipherText;
     }
 
-    public function decrypt($encrypted) {
+    public function decrypt(ICredential $credential, string $encrypted): ?string {
         $iv = substr(
             $encrypted
             , 0
-            , AES::IV_LENGTH
+            , AESService::IV_LENGTH
         );
 
         $hash = substr(
             $encrypted
-            , AES::IV_LENGTH
+            , AESService::IV_LENGTH
             , 32
         );
 
         $cipherText = substr($encrypted, 48);
 
         $key = hash(
-            AES::HASH_ALGORITHM
-            , $this->credential->getSecret()
+            AESService::HASH_ALGORITHM
+            , $credential->getSecret()
             , true
         );
 
         $newHash = hash_hmac(
-            AES::HASH_ALGORITHM
+            AESService::HASH_ALGORITHM
             , $cipherText
             , $key
             , true
@@ -103,15 +96,14 @@ class AES implements IEncryptionService {
             return null;
         }
 
-        $decrypted = openssl_decrypt(
+        return openssl_decrypt(
             $cipherText
-            , AES::METHOD
+            , AESService::METHOD
             , $key
             , OPENSSL_RAW_DATA
             , $iv
         );
 
-        return $decrypted;
     }
 
 

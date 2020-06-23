@@ -23,10 +23,11 @@ namespace Keestash\Core\Service\User;
 
 
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
+use doganoo\DI\DateTime\IDateTimeService;
 use Keestash;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Repository\Instance\InstanceRepository;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Key\KeyService;
 use Keestash\Exception\KeyNotCreatedException;
@@ -34,47 +35,43 @@ use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\Instance\Repository\ITable;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 
 class UserService {
 
+    /** @var int */
+    public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
+
     /** @var IApiLogRepository */
     private $apiLogRepository;
-
     /** @var IFileRepository */
     private $fileRepository;
-
     /** @var IEncryptionKeyRepository */
     private $keyRepository;
-
     /** @var IRoleRepository */
     private $rolesRepository;
-
     /** @var IUserRepository */
     private $userRepository;
-
     /** @var KeyService */
     private $keyService;
-
     /** @var Legacy */
     private $legacy;
-
     /** @var IUserStateRepository */
     private $userStateRepository;
-
     /** @var FileService */
     private $fileService;
-
     /** @var InstanceRepository $instanceRepository */
     private $instanceRepository;
+    /** @var CredentialService */
+    private $credentialService;
+    /** @var IDateTimeService */
+    private $dateTimeService;
 
     public function __construct(
         IApiLogRepository $apiLogRepository
@@ -87,6 +84,8 @@ class UserService {
         , IUserStateRepository $userStateRepository
         , FileService $fileService
         , InstanceRepository $instanceRepository
+        , CredentialService $credentialService
+        , IDateTimeService $dateTimeService
     ) {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
@@ -98,6 +97,8 @@ class UserService {
         $this->userStateRepository = $userStateRepository;
         $this->fileService         = $fileService;
         $this->instanceRepository  = $instanceRepository;
+        $this->credentialService   = $credentialService;
+        $this->dateTimeService     = $dateTimeService;
     }
 
     public function removeUser(IUser $user): array {
@@ -127,14 +128,10 @@ class UserService {
         return true === password_verify($password, $hash);
     }
 
-    public function hashPassword(string $plain): string {
-        return password_hash($plain, PASSWORD_BCRYPT);
-    }
-
     public function passwordHasMinimumRequirements(string $password): bool {
         $passwordLength = strlen($password);
 
-        if (true === $passwordLength < 8) return false;
+        if (true === $passwordLength < UserService::MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD) return false;
 
         // minimum 1 number
         if (strlen(preg_replace('/([^0-9]*)/', '', $password)) < 1) return false;
@@ -165,10 +162,6 @@ class UserService {
         return hash("sha256", (string) $user->getId());
     }
 
-    public function getRandomHash(): string {
-        return hash("sha256", uniqid("", true));
-    }
-
     /**
      * @return IUser
      * @TODO urgent: this user has to be locked out (no login possible)
@@ -180,7 +173,7 @@ class UserService {
         $user->setHash(
             $this->getRandomHash()
         );
-        $user->setCreateTs((new DateTime())->getTimestamp());
+        $user->setCreateTs(new DateTime());
         $user->setEmail((string) $this->legacy->getApplication()->get("email"));
         $user->setFirstName((string) $this->legacy->getApplication()->get("name"));
         $user->setLastName((string) $this->legacy->getApplication()->get("name"));
@@ -192,32 +185,23 @@ class UserService {
         return $user;
     }
 
+    public function getRandomHash(): string {
+        return hash("sha256", uniqid("", true));
+    }
+
+    public function hashPassword(string $plain): string {
+        return password_hash($plain, PASSWORD_BCRYPT);
+    }
 
     public function createRegularUser(IUser $user) {
         $this->createUser($user, false);
     }
 
     /**
-     * @param IUser $user
-     * @return bool
-     * @throws KeyNotCreatedException
-     * @throws UserNotCreatedException
-     * @throws UserNotLockedException
-     */
-    public function createSystemUser(IUser $user): bool {
-        $file = $this->fileService->defaultProfileImage();
-        $file->setOwner($user);
-        return $this->createUser(
-            $user
-            , true
-            , $file
-        );
-    }
-
-    /**
      * @param IUser      $user
      * @param bool       $lockUser
      * @param IFile|null $file
+     *
      * @return bool
      * @throws KeyNotCreatedException
      * @throws UserNotCreatedException
@@ -236,7 +220,7 @@ class UserService {
         }
 
         $keyCreated = $this->keyService->createKey(
-            Keestash::getServer()->getBaseEncryption($user)
+            $this->credentialService->getCredentialForUser($user)
             , $user
         );
 
@@ -260,8 +244,63 @@ class UserService {
         return true;
     }
 
+    public function toUser(array $userArray): IUser {
+        $user = new User();
+        $user->setId($userArray["id"]);
+        $user->setCreateTs(
+            $this->dateTimeService->toDateTime((int) $userArray["create_ts"])
+        );
+        $user->setName($userArray["user_name"]);
+        $user->setEmail($userArray["email"]);
+        $user->setLastName($userArray["last_name"]);
+        $user->setFirstName($userArray["first_name"]);
+        $user->setPassword(
+            $this->hashPassword($userArray["password"])
+        );
+        $user->setPassword($userArray["phone"]);
+        $user->setWebsite($userArray["website"]);
+        $user->setHash(
+            $this->getRandomHash()
+        );
+        return $user;
+    }
+
+    /**
+     * @param IUser $user
+     *
+     * @return bool
+     * @throws KeyNotCreatedException
+     * @throws UserNotCreatedException
+     * @throws UserNotLockedException
+     */
+    public function createSystemUser(IUser $user): bool {
+        $file = $this->fileService->defaultProfileImage();
+        $file->setOwner($user);
+        return $this->createUser(
+            $user
+            , true
+            , $file
+        );
+    }
+
     public function isDisabled(?IUser $user): bool {
         return null === $user && true === $user->isLocked();
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function userExistsByName(string $name): bool {
+        $users = Keestash::getServer()->getUsersFromCache();
+
+        /** @var IUser $user */
+        foreach ($users as $user) {
+            if ($user->getName() === $name) return true;
+        }
+
+        return false;
     }
 
 }

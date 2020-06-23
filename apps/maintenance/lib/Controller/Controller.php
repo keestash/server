@@ -35,7 +35,7 @@ class Controller extends FullscreenAppController {
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionManager
+        , IPermissionRepository $permissionRepository
     ) {
         parent::__construct(
             $templateManager
@@ -44,7 +44,7 @@ class Controller extends FullscreenAppController {
 
         $this->templateManager   = $templateManager;
         $this->translator        = $translator;
-        $this->permissionManager = $permissionManager;
+        $this->permissionManager = $permissionRepository;
     }
 
     public function onCreate(...$params): void {

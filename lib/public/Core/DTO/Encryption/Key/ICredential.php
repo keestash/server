@@ -19,8 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Encryption\Base;
+namespace KSP\Core\DTO\Encryption\Key;
 
-class BaseEncryption extends AES {
+interface ICredential {
+
+    public function getSecret(): string;
 
 }

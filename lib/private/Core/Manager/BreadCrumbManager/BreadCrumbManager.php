@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\BreadCrumbManager;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
 use KSP\Core\View\BreadCrumb\IBreadCrumb;
 

@@ -42,8 +42,8 @@ class LoginService extends AbstractApi {
 
     private const DEFAULT_USER_LIFETIME = 60 * 60;
 
-    /** @var IUserRepository|null $userManager */
-    private $userManager = null;
+    /** @var IUserRepository|null $userRepository */
+    private $userRepository = null;
     /** @var null|array $params */
     private $params = null;
     /** @var IL10N|null $translator */
@@ -62,7 +62,7 @@ class LoginService extends AbstractApi {
     private $configService = null;
 
     public function __construct(
-        IUserRepository $userManager
+        IUserRepository $userRepository
         , IL10N $translator
         , UserService $userService
         , ITokenRepository $tokenManager
@@ -72,7 +72,7 @@ class LoginService extends AbstractApi {
         , ConfigService $configService
         , ?IToken $token = null
     ) {
-        $this->userManager        = $userManager;
+        $this->userRepository     = $userRepository;
         $this->translator         = $translator;
         $this->userService        = $userService;
         $this->tokenManager       = $tokenManager;
@@ -96,7 +96,7 @@ class LoginService extends AbstractApi {
         $userName = $this->params["user"] ?? "";
         $password = $this->params["password"] ?? "";
 
-        $user = $this->userManager->getUser($userName);
+        $user = $this->userRepository->getUser($userName);
 
         $response = new LoginResponse();
         $response->setCode(HTTP::OK);

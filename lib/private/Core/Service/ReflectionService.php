@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use KSP\Core\DTO\IToken;
 use ReflectionClass;

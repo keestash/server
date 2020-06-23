@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Instance;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\DTO\Instance\Repository\Table;
 use Keestash\Core\Repository\AbstractRepository;

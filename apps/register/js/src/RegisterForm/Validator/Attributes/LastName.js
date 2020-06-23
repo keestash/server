@@ -9,14 +9,16 @@ export class LastName {
 
         element.keyup(() => {
             let value = element.val();
-            console.log(value)
+            value = value.trim();
+
             $(document).trigger(
                 EVENT_NAME_REGISTER_LAST_NAME
                 , {
                     "valid": value !== ""
                     , "hint_id": "#tl__register__last__name_invalid__text"
                 }
-            )
+            );
+
         });
 
     }

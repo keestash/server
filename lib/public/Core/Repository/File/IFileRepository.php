@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\File;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayLists\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
