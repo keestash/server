@@ -38,7 +38,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
         if (null === $statement) return false;
 
         $createTs = DateTimeUtil::getUnixTimestamp();
-        $value    = $key->getValue();
+        $value    = $key->getSecret();
         $statement->bindParam("value", $value);
         $statement->bindParam("create_ts", $createTs);
 
@@ -61,7 +61,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
     public function updateKey(IKey $key): bool {
         $sql       = "update `key` set `value` = :key_value where `id` = :id";
         $statement = parent::prepareStatement($sql);
-        $value     = $key->getValue();
+        $value     = $key->getSecret();
         $id        = $key->getId();
 
         $statement->bindParam("id", $id);
@@ -92,7 +92,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
         while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
             $key = new Key();
             $key->setId((int) $row[0]);
-            $key->setValue($row[1]);
+            $key->setSecret($row[1]);
             $dateTime = new DateTime();
             $dateTime->setTimestamp((int) $row[2]);
             $key->setCreateTs($dateTime);

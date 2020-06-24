@@ -75,5 +75,4 @@ class KeyService {
         return $this->encryptionKeyRepository->storeKey($user, $key);
     }
 
-
 }
