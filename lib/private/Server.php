@@ -27,6 +27,7 @@ use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
 use doganoo\Backgrounder\Backgrounder;
+use doganoo\Backgrounder\Service\Log\ILoggerService;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
@@ -35,6 +36,8 @@ use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\DTO\BackgroundJob\Logger;
+use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
@@ -99,6 +102,7 @@ use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
@@ -561,8 +565,13 @@ class Server {
             return new Backgrounder(
                 Keestash::getServer()->getJobRepository()->getJobList()
                 , Keestash::getServer()->query(Core\DTO\BackgroundJob\Container::class)
+                , Keestash::getServer()->query(ILoggerService::class)
             );
 
+        });
+
+        $this->register(ILoggerService::class, function () {
+            return new Logger();
         });
 
         $this->register(IEncryptionService::class, function () {
@@ -828,6 +837,12 @@ class Server {
 
     public function getBackgrounder(): Backgrounder {
         return $this->query(Backgrounder::class);
+    }
+
+    public function getUserCredentialFromSession(): ICredential {
+        return new Credential(
+            $this->getUserFromSession()
+        );
     }
 
     public function wipeCache(): void {
