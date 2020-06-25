@@ -679,12 +679,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doganoo/DIServices.git",
-                "reference": "f2a51ca508c3902ac99d0679866229b1433579ab"
+                "reference": "f5acd1d6ded4664c5f14c51ca5dee911bedf8f48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doganoo/DIServices/zipball/f2a51ca508c3902ac99d0679866229b1433579ab",
-                "reference": "f2a51ca508c3902ac99d0679866229b1433579ab",
+                "url": "https://api.github.com/repos/doganoo/DIServices/zipball/f5acd1d6ded4664c5f14c51ca5dee911bedf8f48",
+                "reference": "f5acd1d6ded4664c5f14c51ca5dee911bedf8f48",
                 "shasum": ""
             },
             "require": {
@@ -692,7 +692,7 @@
                 "php": "^7.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "*"
+                "phpunit/phpunit": "^7.5"
             },
             "type": "library",
             "autoload": {
@@ -713,7 +713,7 @@
                 }
             ],
             "description": "service classes in the sense of Dependency Injection",
-            "time": "2020-06-22T18:19:47+00:00"
+            "time": "2020-06-23T10:16:57+00:00"
         },
         {
             "name": "doganoo/php-algorithms",
@@ -1285,12 +1285,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "2dae0c3941bf0c2938528aaad92be05cc10b0f0a"
+                "reference": "40a1e0224a53d314ddebaab4336a566ce875a895"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/2dae0c3941bf0c2938528aaad92be05cc10b0f0a",
-                "reference": "2dae0c3941bf0c2938528aaad92be05cc10b0f0a",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/40a1e0224a53d314ddebaab4336a566ce875a895",
+                "reference": "40a1e0224a53d314ddebaab4336a566ce875a895",
                 "shasum": ""
             },
             "require": {
@@ -1319,7 +1319,7 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2020-06-22T06:47:29+00:00"
+            "time": "2020-06-23T11:24:11+00:00"
         },
         {
             "name": "psr/container",

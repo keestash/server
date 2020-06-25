@@ -24,7 +24,6 @@ export class Page {
                 , {}
                 , (x, y, z) => {
                     const object = JSON.parse(x);
-console.log(x)
                     if (RESPONSE_CODE_OK in object) {
                         const result_object = object[RESPONSE_CODE_OK];
                         let routeTo = result_object['routeTo'];
