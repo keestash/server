@@ -173,7 +173,7 @@ class Add extends AbstractApi {
                 ->getRegistrationHookManager()
                 ->executePre();
 
-            $user   = $this->userService->toUser($this->parameters);
+            $user   = $this->userService->toNewUser($this->parameters);
             $userId = $this->userRepository->insert($user);
             $added  = null !== $userId;
             $user->setId((int) $userId);

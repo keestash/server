@@ -24,7 +24,6 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Repository\Instance\InstanceRepository;
@@ -194,6 +193,42 @@ class UserService {
         return password_hash($plain, PASSWORD_BCRYPT);
     }
 
+    public function toNewUser(array $userArray): IUser {
+        $user = new User();
+        $user->setCreateTs(new DateTime());
+        $user->setName($userArray["user_name"]);
+        $user->setEmail($userArray["email"]);
+        $user->setLastName($userArray["last_name"]);
+        $user->setFirstName($userArray["first_name"]);
+        $user->setPassword(
+            $this->hashPassword($userArray["password"])
+        );
+        $user->setPhone($userArray["phone"]);
+        $user->setWebsite($userArray["website"]);
+        $user->setHash(
+            $this->getRandomHash()
+        );
+        return $user;
+    }
+
+    /**
+     * @param IUser $user
+     *
+     * @return bool
+     * @throws KeyNotCreatedException
+     * @throws UserNotCreatedException
+     * @throws UserNotLockedException
+     */
+    public function createSystemUser(IUser $user): bool {
+        $file = $this->fileService->defaultProfileImage();
+        $file->setOwner($user);
+        return $this->createUser(
+            $user
+            , true
+            , $file
+        );
+    }
+
     /**
      * @param IUser      $user
      * @param bool       $lockUser
@@ -245,45 +280,6 @@ class UserService {
         $this->fileRepository->add($file);
 
         return true;
-    }
-
-    public function toUser(array $userArray): IUser {
-        $user = new User();
-        $user->setCreateTs(
-            $this->dateTimeService->toDateTime((int) $userArray["create_ts"])
-        );
-        $user->setName($userArray["user_name"]);
-        $user->setEmail($userArray["email"]);
-        $user->setLastName($userArray["last_name"]);
-        $user->setFirstName($userArray["first_name"]);
-        $user->setPassword(
-            $this->hashPassword($userArray["password"])
-        );
-        FileLogger::debug(json_encode($userArray));
-        $user->setPhone($userArray["phone"]);
-        $user->setWebsite($userArray["website"]);
-        $user->setHash(
-            $this->getRandomHash()
-        );
-        return $user;
-    }
-
-    /**
-     * @param IUser $user
-     *
-     * @return bool
-     * @throws KeyNotCreatedException
-     * @throws UserNotCreatedException
-     * @throws UserNotLockedException
-     */
-    public function createSystemUser(IUser $user): bool {
-        $file = $this->fileService->defaultProfileImage();
-        $file->setOwner($user);
-        return $this->createUser(
-            $user
-            , true
-            , $file
-        );
     }
 
     public function isDisabled(?IUser $user): bool {

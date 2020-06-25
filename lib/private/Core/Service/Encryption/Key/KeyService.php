@@ -51,6 +51,7 @@ class KeyService {
      *
      * @param ICredential $credential
      * @param IUser       $user
+     *
      * @return IKey|null
      */
     public function createKey(ICredential $credential, IUser $user): ?IKey {
@@ -73,6 +74,10 @@ class KeyService {
 
     public function storeKey(IUser $user, IKey $key): bool {
         return $this->encryptionKeyRepository->storeKey($user, $key);
+    }
+
+    public function getKey(IUser $user): ?IKey {
+        return $this->encryptionKeyRepository->getKey($user);
     }
 
 }
