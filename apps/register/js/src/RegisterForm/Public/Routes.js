@@ -20,6 +20,7 @@ import {Host} from "../../../../../../lib/js/src/Backend/Host";
 
 const PASSWORD_REQUIREMENTS = "/password_requirements/";
 const REGISTER_ADD = "/register/add/";
+const USER_GET = "/user/exists/";
 
 export class Routes {
     constructor() {
@@ -32,5 +33,9 @@ export class Routes {
 
     getRegisterAdd() {
         return this.host.getApiHost() + REGISTER_ADD;
+    }
+
+    getUserExists(userName) {
+        return this.host.getApiHost() + USER_GET + userName + '/';
     }
 }

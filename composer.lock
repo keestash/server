@@ -466,12 +466,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "f7e8b5f1ae7e76e73827f0ee72b352138cd20769"
+                "reference": "1c42543c2caffdbfce4802ad9f0138fb68ae7e9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/f7e8b5f1ae7e76e73827f0ee72b352138cd20769",
-                "reference": "f7e8b5f1ae7e76e73827f0ee72b352138cd20769",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/1c42543c2caffdbfce4802ad9f0138fb68ae7e9b",
+                "reference": "1c42543c2caffdbfce4802ad9f0138fb68ae7e9b",
                 "shasum": ""
             },
             "require": {
@@ -484,7 +484,7 @@
                 "doctrine/coding-standard": "^8.0",
                 "jetbrains/phpstorm-stubs": "^2019.1",
                 "nikic/php-parser": "^4.4",
-                "phpstan/phpstan": "^0.12",
+                "phpstan/phpstan": "^0.12.30",
                 "phpunit/phpunit": "^9.2",
                 "psalm/plugin-phpunit": "^0.10.0",
                 "symfony/console": "^2.0.5|^3.0|^4.0|^5.0",
@@ -553,7 +553,7 @@
                 "sqlserver",
                 "sqlsrv"
             ],
-            "time": "2020-06-20T17:35:37+00:00"
+            "time": "2020-06-26T20:39:54+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -679,12 +679,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doganoo/DIServices.git",
-                "reference": "f5acd1d6ded4664c5f14c51ca5dee911bedf8f48"
+                "reference": "fa6c37f323c7642abb4b193924f80e40d7233172"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doganoo/DIServices/zipball/f5acd1d6ded4664c5f14c51ca5dee911bedf8f48",
-                "reference": "f5acd1d6ded4664c5f14c51ca5dee911bedf8f48",
+                "url": "https://api.github.com/repos/doganoo/DIServices/zipball/fa6c37f323c7642abb4b193924f80e40d7233172",
+                "reference": "fa6c37f323c7642abb4b193924f80e40d7233172",
                 "shasum": ""
             },
             "require": {
@@ -713,7 +713,7 @@
                 }
             ],
             "description": "service classes in the sense of Dependency Injection",
-            "time": "2020-06-23T10:16:57+00:00"
+            "time": "2020-06-26T21:26:06+00:00"
         },
         {
             "name": "doganoo/php-algorithms",
@@ -1285,12 +1285,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "40a1e0224a53d314ddebaab4336a566ce875a895"
+                "reference": "a91dd4b02b83682832223d1744defe0fec2ca9c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/40a1e0224a53d314ddebaab4336a566ce875a895",
-                "reference": "40a1e0224a53d314ddebaab4336a566ce875a895",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a91dd4b02b83682832223d1744defe0fec2ca9c3",
+                "reference": "a91dd4b02b83682832223d1744defe0fec2ca9c3",
                 "shasum": ""
             },
             "require": {
@@ -1319,7 +1319,7 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2020-06-23T11:24:11+00:00"
+            "time": "2020-06-26T07:09:50+00:00"
         },
         {
             "name": "psr/container",
@@ -1668,12 +1668,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "a3660e1c74be6d5a02b884f57e80a4e440a705ef"
+                "reference": "fb66fad45b5f3647b948417ae5ab3b992ede76bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/a3660e1c74be6d5a02b884f57e80a4e440a705ef",
-                "reference": "a3660e1c74be6d5a02b884f57e80a4e440a705ef",
+                "url": "https://api.github.com/repos/symfony/console/zipball/fb66fad45b5f3647b948417ae5ab3b992ede76bc",
+                "reference": "fb66fad45b5f3647b948417ae5ab3b992ede76bc",
                 "shasum": ""
             },
             "require": {
@@ -1737,7 +1737,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2020-06-15T12:37:55+00:00"
+            "time": "2020-06-24T13:34:53+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -1849,12 +1849,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "895a9d01d5f138f1ea43d54fc831d863505e05f4"
+                "reference": "c0a97379ec53a75f988daa6b007ef5af5f313bda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/895a9d01d5f138f1ea43d54fc831d863505e05f4",
-                "reference": "895a9d01d5f138f1ea43d54fc831d863505e05f4",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/c0a97379ec53a75f988daa6b007ef5af5f313bda",
+                "reference": "c0a97379ec53a75f988daa6b007ef5af5f313bda",
                 "shasum": ""
             },
             "require": {
@@ -1903,7 +1903,7 @@
                 "mime",
                 "mime-type"
             ],
-            "time": "2020-06-22T14:55:08+00:00"
+            "time": "2020-06-24T13:38:36+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

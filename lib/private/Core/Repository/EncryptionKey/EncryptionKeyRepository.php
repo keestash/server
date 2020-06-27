@@ -96,6 +96,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
             $dateTime = new DateTime();
             $dateTime->setTimestamp((int) $row[2]);
             $key->setCreateTs($dateTime);
+            $key->setOwner($user);
         }
 
         return $key;

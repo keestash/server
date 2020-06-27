@@ -67,6 +67,7 @@ class KeyService {
 
         $key = new Key();
         $key->setSecret($secret);
+        $key->setOwner($user);
         $key->setCreateTs(new DateTime());
 
         return $key;

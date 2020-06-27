@@ -7,9 +7,10 @@
     "lib": "lib"
   },
   "scripts": {
-    "build-dev": "webpack --env dev",
-    "watch": "webpack --watch",
-    "watch-dev": "webpack --env dev --watch"
+    "build:dev": "webpack --mode development",
+    "watch:dev": "webpack --mode development --watch",
+    "build:prod": "NODE_ENV=development webpack -p",
+    "watch:prod": "webpack --mode production --watch"
   },
   "repository": {
     "type": "git",
