@@ -21,14 +21,42 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Credential;
 
+use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\User\IUser;
 
+/**
+ * Class CredentialService
+ *
+ * @package Keestash\Core\Service\Encryption\Credential
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class CredentialService {
 
+    /**
+     * Returns an instance of credential for the given user
+     *
+     * Please note that this credential is only used to de-/encrypt the
+     * user's key. If you want to de-/encrypt user related stuff, try
+     * encrypting with IKey.
+     *
+     * The Credential is used to encrypt the IKey. The content of IKey
+     * is never changed, but the user's password may change over time.
+     * When changing the password, it is only necessary to re-encrypt
+     * the IKey and not the whole data encrypted so far.
+     *
+     * @param IUser $user
+     *
+     * @return ICredential
+     */
     public function getCredentialForUser(IUser $user): ICredential {
-        return new Credential($user);
+        $credential = new Credential();
+        $credential->setOwner($user);
+        $credential->setSecret($user->getPassword());
+        $credential->setCreateTs(new DateTime());
+        $credential->setId($user->getId());
+        return $credential;
     }
 
 }

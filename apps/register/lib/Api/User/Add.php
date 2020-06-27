@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Api;
+namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
 use Keestash;

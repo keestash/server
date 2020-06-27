@@ -21,10 +21,47 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Encryption\Credential;
 
+use DateTime;
 use KSP\Core\DTO\IObject;
+use KSP\Core\DTO\User\IUser;
 
+/**
+ * Interface ICredential
+ *
+ * @package KSP\Core\DTO\Encryption\Credential
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 interface ICredential extends IObject {
 
+    /**
+     * Returns the Id identifying the credential uniquely
+     *
+     * @return int
+     */
+    public function getId(): int;
+
+    /**
+     * Returns the credential's secret
+     *
+     * Depending on the type of implementation, the secret can
+     * be encrypted or in plain
+     *
+     * @return string
+     */
     public function getSecret(): string;
+
+    /**
+     * Returns the user to whom the credential belongs to
+     *
+     * @return IUser
+     */
+    public function getOwner(): IUser;
+
+    /**
+     * Returns the credential's creation date
+     *
+     * @return DateTime
+     */
+    public function getCreateTs(): DateTime;
 
 }

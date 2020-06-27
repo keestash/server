@@ -29,6 +29,8 @@ use DI\NotFoundException;
 use doganoo\Backgrounder\Backgrounder;
 use doganoo\Backgrounder\Service\Log\ILoggerService;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\String\IStringService;
+use doganoo\DIP\String\StringService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
@@ -580,6 +582,10 @@ class Server {
 
         $this->register(CredentialService::class, function () {
             return new CredentialService();
+        });
+
+        $this->register(IStringService::class, function () {
+            return new StringService();
         });
 
         $this->register(Core\DTO\BackgroundJob\Container::class, function () {

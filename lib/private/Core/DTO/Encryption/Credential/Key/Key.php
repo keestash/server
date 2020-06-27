@@ -21,66 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Encryption\Credential\Key;
 
-use DateTime;
+use Keestash\Core\DTO\Encryption\Credential\Credential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 
 /**
  * Class Key
+ *
  * @package Keestash\Core\DTO
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Key implements IKey {
-
-    /** @var int */
-    private $id;
-    /** @var string */
-    private $secret;
-    /** @var DateTime */
-    private $createTs;
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function setId(int $id): void {
-        $this->id = $id;
-    }
-
-    public function getCreateTs(): DateTime {
-        return $this->createTs;
-    }
-
-    public function setCreateTs(DateTime $createTs): void {
-        $this->createTs = $createTs;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSecret(): string {
-        return $this->secret;
-    }
-
-    /**
-     * @param string $secret
-     */
-    public function setSecret(string $secret): void {
-        $this->secret = $secret;
-    }
-
-
-    /**
-     * Specify data which should be serialized to JSON
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize() {
-        return [
-            "id"          => $this->getId()
-            , "secret"    => $this->getSecret()
-            , "create_ts" => $this->getCreateTs()
-        ];
-    }
+class Key extends Credential implements IKey {
 
 }

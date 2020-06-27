@@ -25,6 +25,7 @@ use DateTime;
 use Doctrine\DBAL\FetchMode;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
@@ -240,19 +241,17 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      */
     public function update(IUser $user): bool {
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->update('user')
-            ->values(
-                [
-                    'first_name'  => '?'
-                    , 'last_name' => '?'
-                    , 'name'      => '?'
-                    , 'email'     => '?'
-                    , 'phone'     => '?'
-                    , 'password'  => '?'
-                    , 'website'   => '?'
-                    , 'hash'      => '?'
-                ]
-            )
+
+        $q = $queryBuilder->update('user', 'u')
+            ->set('u.first_name', '?')
+            ->set('u.last_name', '?')
+            ->set('u.name', '?')
+            ->set('u.email', '?')
+            ->set('u.phone', '?')
+            ->set('u.password', '?')
+            ->set('u.website', '?')
+            ->set('u.hash', '?')
+            ->where('u.id = ?')
             ->setParameter(0, $user->getFirstName())
             ->setParameter(1, $user->getLastName())
             ->setParameter(2, $user->getName())
@@ -261,8 +260,12 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->setParameter(5, $user->getPassword())
             ->setParameter(6, $user->getWebsite())
             ->setParameter(7, $user->getHash())
+            ->setParameter(8, $user->getId())
             ->execute();
+;
+        FileLogger::debug(json_encode($queryBuilder->getSQL()));
 
+//        exit();
         return true;
 
     }

@@ -18,7 +18,7 @@ export class PasswordRepeat {
                     EVENT_NAME_REGISTER_PASSWORD_REPEAT
                     , {
                         "valid": isValid
-                        , "hint_element_id": "#tl__register__password__repeat__invalid__text"
+                        , "hint_id": "#tl__register__password__repeat__invalid__text"
                     }
                 )
 

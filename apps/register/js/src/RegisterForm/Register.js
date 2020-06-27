@@ -32,7 +32,12 @@ export class Register {
         );
         validator.register(new FirstName());
         validator.register(new LastName());
-        validator.register(new UserName());
+        validator.register(
+            new UserName(
+                this.request
+                , this.routes
+            )
+        );
         validator.register(new Email());
         validator.register(new Phone());
         validator.register(new Website());
