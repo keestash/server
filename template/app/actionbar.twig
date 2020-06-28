@@ -1,33 +1,35 @@
-<div class="btn-group">
+<div class="container">
+    <div class="btn-group">
 
-    <button
-            type="button"
-            class="btn dropdown-toggle action-bar-button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            id="{{ buttonId }}"
-    >
-    </button>
+        <button
+                type="button"
+                class="btn dropdown-toggle action-bar-button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                id="{{ buttonId }}"
+        >
+            <i class="fas {{ iconClass }}  fa-lg"></i>
+        </button>
 
 
-
-    <div class="dropdown-menu dropdown-menu-right">
-        {% for key, value in elements %}
-            {% if value is not null %}
-                <div class="dropdown-item"
-                        {% if value.getId() is not null %}
-                            id="{{ value.getId() }}"
-                        {% endif %}
-                >
-                    {% if value.getHref() is not null %}
-                        <a href="{{ value.getHref() }}">
+        <div class="dropdown-menu">
+            {% for key, value in elements %}
+                {% if value is not null %}
+                    <div class="dropdown-item"
+                            {% if value.getId() is not null %}
+                                id="{{ value.getId() }}"
+                            {% endif %}
+                    >
+                        {% if value.getHref() is not null %}
+                            <a href="{{ value.getHref() }}">
+                                {{ value.getDescription() }}
+                            </a>
+                        {% else %}
                             {{ value.getDescription() }}
-                        </a>
-                    {% else %}
-                        {{ value.getDescription() }}
-                    {% endif %}
-                </div>
-            {% endif %}
-        {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 </div>

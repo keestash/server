@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,25 +19,45 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\View\ActionBar;
+namespace Keestash\View\Navigation\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 
-interface IActionBar {
+class Segment {
 
-    public const TYPE_PLUS     = "fa-plus";
-    public const TYPE_SETTINGS = "icon settings";
+    /** @var string */
+    private $title;
+    /** @var ArrayList */
+    private $entries;
 
-    public function setName(string $name): void;
+    public function __construct(string $title = "") {
+        $this->entries = new ArrayList();
+        $this->setTitle($title);
+    }
 
-    public function getName(): string;
+    /**
+     * @return string
+     */
+    public function getTitle(): string {
+        return $this->title;
+    }
 
-    public function getType(): string;
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title): void {
+        $this->title = $title;
+    }
 
-    public function getElements(): ArrayList;
+    /**
+     * @return ArrayList
+     */
+    public function getEntries(): ArrayList {
+        return $this->entries;
+    }
 
-    public function addElement(IActionBarElement $element): void;
-
-    public function hasElements(): bool;
+    public function addEntry(Entry $entry): void {
+        $this->entries->add($entry);
+    }
 
 }

@@ -52,6 +52,7 @@ use Keestash\Core\Manager\HookManager\ServiceHookManager;
 use Keestash\Core\Manager\HookManager\SubmitHookManager;
 use Keestash\Core\Manager\HookManager\User\UserRemovedHookManager;
 use Keestash\Core\Manager\HookManager\User\UserStateHookManager;
+use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\ResponseManager\JSONResponseManager;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
@@ -434,6 +435,10 @@ class Server {
             return $navigationManager;
         });
 
+        $this->register(AppNavigationManager::class, function () {
+            return new AppNavigationManager();
+        });
+
         $this->register(IActionBarManager::class, function () {
             $actionBarManager = new ActionBarManager();
             $bags             = $this->query(Server::DEFAULT_ACTION_BAR_BAGS);
@@ -703,16 +708,16 @@ class Server {
         return $this->getServerRoot() . "lib/scss/";
     }
 
+    public function getServerRoot(): string {
+        return $this->appRoot;
+    }
+
     public function getAppRoot(): string {
         return $this->appRoot . "/apps/";
     }
 
     public function getAssetRoot(): string {
         return $this->getServerRoot() . "asset/";
-    }
-
-    public function getServerRoot(): string {
-        return $this->appRoot;
     }
 
     public function getPhinxRoot(): string {

@@ -22,14 +22,11 @@ declare(strict_types=1);
 namespace KSP\Core\Controller;
 
 use Keestash;
-use Keestash\Core\Manager\NavigationManager\NavigationManager;
-use KSP\Core\Manager\CookieManager\ICookieManager;
-use KSP\Core\Manager\SessionManager\ISessionManager;
+use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
+use Keestash\View\Navigation\App\NavigationList;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IPermission;
-use KSP\Core\View\Navigation\INavigation;
-use KSP\Core\View\Navigation\IPart;
 use KSP\L10N\IL10N;
 
 abstract class AppController implements IAppController {
@@ -54,10 +51,6 @@ abstract class AppController implements IAppController {
         $this->l10n            = $l10n;
     }
 
-    public function isAppNavigationVisible(): bool {
-        return $this->getControllerType() === IAppController::CONTROLLER_TYPE_NORMAL;
-    }
-
     public function getControllerType(): int {
         return $this->controllerType;
     }
@@ -73,8 +66,11 @@ abstract class AppController implements IAppController {
     }
 
     public function setHasAppNavigation(bool $hasAppNavigation): void {
-        $this->templateManager->replace(ITemplate::APP_NAVIGATION,
-            ["hasAppNavigationInput" => $hasAppNavigation]
+        $this->templateManager->replace(
+            ITemplate::APP_NAVIGATION
+            , [
+                "hasAppNavigationInput" => $hasAppNavigation
+            ]
         );
     }
 
@@ -86,22 +82,13 @@ abstract class AppController implements IAppController {
         $this->permission = $permission;
     }
 
-    protected function addAppNavigation(?IPart $part): void {
-        if (false === $this->isAppNavigationVisible()) return;
-        if (null === $part) return;
-        Keestash::getServer()
-            ->getNavigationManager()
-            ->getByName(NavigationManager::NAVIGATION_TYPE_APP)
-            ->addPart($part);
-    }
+    protected function setAppNavigation(NavigationList $navigationList): void {
+        if (Keestash::getMode() !== Keestash::MODE_WEB) return;
 
-    protected function setAppNavigation(?INavigation $navigation): void {
-        if (false === $this->isAppNavigationVisible()) return;
-        if (null === $navigation) return;
-        Keestash::getServer()
-            ->getNavigationManager()
-            ->getByName(NavigationManager::NAVIGATION_TYPE_APP)
-            ->addAll($navigation->getAll());
+        /** @var AppNavigationManager $appNavigation */
+        $appNavigation = Keestash::getServer()
+            ->query(AppNavigationManager::class);
+        $appNavigation->setList($navigationList);
     }
 
     protected function render(string $templateName): void {
@@ -113,16 +100,10 @@ abstract class AppController implements IAppController {
     protected function setAppContent(string $content): void {
         $this->templateManager->replace(
             ITemplate::APP_CONTENT
-            , ["appContent" => $content]
+            , [
+                "appContent" => $content
+            ]
         );
-    }
-
-    protected function getCookieManager(): ICookieManager {
-        return Keestash::getServer()->query(ICookieManager::class);
-    }
-
-    protected function getSessionManager(): ISessionManager {
-        return Keestash::getServer()->query(ISessionManager::class);
     }
 
     protected function getTemplateManager(): ITemplateManager {

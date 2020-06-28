@@ -1,27 +1,30 @@
 {% if hasActionBars == true %}
-    <div class="container-fluid" style="background: red; height: 50px">
+    <div class="container-fluid action-bar-wrapper">
         {{ actionBar|raw }}
     </div>
 {% endif %}
+<div class="row" id="content">
+    <div class="w-25">
+        {{ appNavigation|raw }}
+    </div>
+    <div class="w-75">
+        {% if hasBreadcrumbs == true %}
+            <div id="breadcrumb__wrapper">
+                {{ breadcrumbs|raw }}
+            </div>
+        {% endif %}
+        {{ appContent|raw }}
+    </div>
+
+</div>
+
 {#<div class="ui two column doubling stackable grid" id="main-container">#}
 {#    {% if hasAppNavigation == true %}#}
-
 {#        <div class="three wide column" id="app-navigation">#}
 {#            {{ appNavigation|raw }}#}
 {#        </div>#}
-
 {#        <div class="thirteen wide column">#}
-{#            {% if hasBreadcrumbs == true %}#}
-{#                <div id="breadcrumb__wrapper">#}
-{#                    {{ breadcrumbs|raw }}#}
-{#                </div>#}
-{#            {% endif %}#}
-
-
-
-{#            {{ appContent|raw }}#}
 {#        </div>#}
-
 {#    {% else %}#}
 {#        <div class="sixteen wide column">{{ appContent|raw }}</div>#}
 {#    {% endif %}#}
