@@ -1,10 +1,20 @@
-<button class="circular large ui icon button dropdown" id="{{ buttonId }}">
-    <i class="{{ iconClass }}"></i>
+<div class="btn-group">
 
-    <div class="menu">
+    <button
+            type="button"
+            class="btn dropdown-toggle action-bar-button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            id="{{ buttonId }}"
+    >
+    </button>
+
+
+
+    <div class="dropdown-menu dropdown-menu-right">
         {% for key, value in elements %}
             {% if value is not null %}
-                <div class="item"
+                <div class="dropdown-item"
                         {% if value.getId() is not null %}
                             id="{{ value.getId() }}"
                         {% endif %}
@@ -19,5 +29,5 @@
                 </div>
             {% endif %}
         {% endfor %}
-        <div>
-</button>
+    </div>
+</div>

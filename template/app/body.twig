@@ -1,11 +1,9 @@
 <body>
-<div class="pusher">
-    {% if noContext == false %}
-        {{ navigation|raw }}
-    {% endif %}
-    {{ content|raw }}
-    {% if noContext == false %}
-        {{ footer|raw }}
-    {% endif %}
-</div>
+{% if noContext == false %}
+    {{ navigation|raw }}
+{% endif %}
+{{ content|raw }}
+{% if noContext == false %}
+    {{ footer|raw }}
+{% endif %}
 </body>

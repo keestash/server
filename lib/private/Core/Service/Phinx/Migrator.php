@@ -23,7 +23,7 @@ namespace Keestash\Core\Service\Phinx;
 
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
-use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Instance\InstallerService;
 use Phinx\Console\PhinxApplication;
 use Phinx\Wrapper\TextWrapper;
 

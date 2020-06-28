@@ -1,0 +1,29 @@
+$body-bg: #FFF;
+$body-color: #FFF;
+
+$enable-rounded: false;
+$enable-print-styles: false;
+
+$theme-color: #269dff;
+$text-color: #FFF;
+
+$avatar-size: 30px;
+
+@import "../../vendor/twitter/bootstrap/scss/bootstrap.scss";
+
+.navbar {
+  padding: .5rem 1rem !important;
+  background-color: $theme-color;
+  color: $text-color;
+}
+
+.avatar {
+  vertical-align: middle;
+  width: $avatar-size;
+  height: $avatar-size;
+  border-radius: 50%;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}

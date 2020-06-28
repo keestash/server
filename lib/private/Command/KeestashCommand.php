@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Command;
 
+use DateTime;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,24 +36,34 @@ abstract class KeestashCommand extends Command {
         $this->_addArgument($name, true, $description);
     }
 
-    protected function addOptionalArgument(string $name, string $description): void {
-        $this->_addArgument($name, false, $description);
-    }
-
     private function _addArgument(string $name, bool $required, string $description): void {
         $this->addArgument($name, $required, $description);
     }
 
+    protected function addOptionalArgument(string $name, string $description): void {
+        $this->_addArgument($name, false, $description);
+    }
+
     protected function writeError(string $message, OutputInterface $output): void {
-        $output->writeln('<error>' . $message . '</error>');
+        $this->write($message, "error", $output);
+    }
+
+    private function write(string $message, string $tag, OutputInterface $output): void {
+        $dateTime = $this->getFormattedDateTime();
+        $output->writeln('<' . $tag . '>' . $dateTime . ": " . $message . '<' . $tag . '>');
+    }
+
+    private function getFormattedDateTime(): string {
+        $dateTime = new DateTime();
+        return $dateTime->format("Y-m-d H:i:s");
     }
 
     protected function writeInfo(string $message, OutputInterface $output): void {
-        $output->writeln('<info>' . $message . '</info>');
+        $this->write($message, "info", $output);
     }
 
     protected function writeComment(string $message, OutputInterface $output): void {
-        $output->writeln('<comment>' . $message . '</comment>');
+        $this->write($message, "comment", $output);
     }
 
     protected function getArguments(string $name, InputInterface $input): array {

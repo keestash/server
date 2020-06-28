@@ -53,6 +53,11 @@ class Loader implements ILoader {
         $this->lruAppCache = new LRUCache();
     }
 
+    public function loadAppsAndFlush(): void {
+        $this->loadApps();
+        $this->flush();
+    }
+
     public function loadApps(): void {
         $appRoot    = $this->appRoot . "apps/";
         $dirHandler = new DirHandler($appRoot);
@@ -61,11 +66,6 @@ class Loader implements ILoader {
         foreach ($result as $appId => $value) {
             $this->loadApp($appId);
         }
-    }
-
-    public function loadAppsAndFlush(): void {
-        $this->loadApps();
-        $this->flush();
     }
 
     public function loadApp(string $appId): bool {
@@ -87,56 +87,10 @@ class Loader implements ILoader {
 
         $this->buildApp($info, $app);
         $this->overrideDefaultApp($app);
+        $this->registerForScss($app);
         $this->apps->put($app->getId(), $app);
 
         return true;
-    }
-
-    public function loadCoreApps(): void {
-        $coreApps = [
-            ILoader::APP_NAME_ABOUT
-            , ILoader::APP_NAME_ACCOUNT
-            , ILoader::APP_NAME_APPS
-            , ILoader::APP_NAME_FORGOT_PASSWORD
-            , ILoader::APP_NAME_GENERAL_API
-            , ILoader::APP_NAME_GENERAL_VIEW
-            , ILoader::APP_NAME_INSTALL
-            , ILoader::APP_NAME_INSTALL_INSTANCE
-            , ILoader::APP_NAME_LOGIN
-            , ILoader::APP_NAME_LOGOUT
-            , ILoader::APP_NAME_MAINTENANCE
-            , ILoader::APP_NAME_PROMOTION
-            , ILoader::APP_NAME_REGISTER
-            , ILoader::APP_NAME_TNC
-            , ILoader::APP_NAME_USERS
-        ];
-
-        foreach ($coreApps as $coreApp) {
-            $this->loadApp($coreApp);
-        }
-    }
-
-    public function loadCoreAppsAndFlush(): void {
-        $this->loadCoreApps();
-        $this->flush();
-    }
-
-    public function flush(): void {
-        foreach ($this->apps->keySet() as $key) {
-            /** @var IApp $app */
-            $app = $this->apps->get($key);
-
-            if (true === $this->flushedApps->containsKey($app->getId())) {
-                continue;
-            }
-
-            $this->buildNamespaceAndRequire($app);
-            $this->requireInfoPhp($app);
-            $this->loadTemplate($app);
-            $this->loadString($app);
-//        $this->loadJs($app);
-            $this->flushedApps->put($app->getId(), $app);
-        }
     }
 
     private function loadInfo(IApp $app): ?array {
@@ -195,7 +149,7 @@ class Loader implements ILoader {
         $app->setName($info[IApp::FIELD_NAME]);
         $app->setNamespace($info[IApp::FIELD_NAMESPACE]);
         $app->setBaseRoute($info[IApp::FIELD_BASE_ROUTE]);
-        $app->setAppPath("{$this->appRoot}/apps/{$app->getId()}");
+        $app->setAppPath("{$this->appRoot}apps/{$app->getId()}");
         $app->setTemplatePath("{$app->getAppPath()}/template/");
         $app->setStringPath("{$app->getAppPath()}/string/");
         $app->setFAIconClass($info[IApp::FIELD_FA_ICON_CLASS]);
@@ -205,6 +159,57 @@ class Loader implements ILoader {
         $showIcon = $info[IApp::FIELD_SHOW_ICON] ?? 0;
         $app->setShowIcon($showIcon === 1);
         $app->setBackgroundJobs($info[IApp::FIELD_BACKGROUND_JOBS] ?? []);
+    }
+
+    private function overrideDefaultApp(IApp $app): void {
+        $currentAppKey = $this->lruAppCache->last();
+        /** @var IApp|null $currentApp */
+        $currentApp = $this->lruAppCache->get($currentAppKey);
+
+        if (null === $currentApp) {
+            $this->lruAppCache->put($app->getId(), $app);
+            return;
+        }
+
+        if ($app->getOrder() === $currentApp->getOrder() && $app->getId() !== $currentApp->getId()) {
+            throw new DuplicatedSameOrderException("there are two apps with the same order ({$app->getName()} and {$currentApp->getName()})");
+        }
+        if ($app->getOrder() < $currentApp->getOrder()) {
+            $this->lruAppCache->put($app->getId(), $app);
+        }
+    }
+
+    private function registerForScss(IApp $app): void {
+        $source      = $app->getAppPath() . "/scss/";
+        $destination = $app->getAppPath() . "/scss/dist/";
+
+        if (false === is_dir($source) || false === is_dir($destination)) {
+            FileLogger::warn("$source or $destination is not a directory. Can not register scss");
+            return;
+        }
+
+        Keestash::getServer()
+            ->getStylesheetManager()
+            ->register($app);
+
+    }
+
+    public function flush(): void {
+        foreach ($this->apps->keySet() as $key) {
+            /** @var IApp $app */
+            $app = $this->apps->get($key);
+
+            if (true === $this->flushedApps->containsKey($app->getId())) {
+                continue;
+            }
+
+            $this->buildNamespaceAndRequire($app);
+            $this->requireInfoPhp($app);
+            $this->loadTemplate($app);
+            $this->loadString($app);
+//        $this->loadJs($app);
+            $this->flushedApps->put($app->getId(), $app);
+        }
     }
 
     private function buildNamespaceAndRequire(IApp $app): bool {
@@ -225,24 +230,6 @@ class Loader implements ILoader {
         }
 
         return false;
-    }
-
-    private function overrideDefaultApp(IApp $app): void {
-        $currentAppKey = $this->lruAppCache->last();
-        /** @var IApp|null $currentApp */
-        $currentApp = $this->lruAppCache->get($currentAppKey);
-
-        if (null === $currentApp) {
-            $this->lruAppCache->put($app->getId(), $app);
-            return;
-        }
-
-        if ($app->getOrder() === $currentApp->getOrder() && $app->getId() !== $currentApp->getId()) {
-            throw new DuplicatedSameOrderException("there are two apps with the same order ({$app->getName()} and {$currentApp->getName()})");
-        }
-        if ($app->getOrder() < $currentApp->getOrder()) {
-            $this->lruAppCache->put($app->getId(), $app);
-        }
     }
 
     private function loadTemplate(IApp $app) {
@@ -300,6 +287,35 @@ class Loader implements ILoader {
 
     }
 
+    public function loadCoreAppsAndFlush(): void {
+        $this->loadCoreApps();
+        $this->flush();
+    }
+
+    public function loadCoreApps(): void {
+        $coreApps = [
+            ILoader::APP_NAME_ABOUT
+            , ILoader::APP_NAME_ACCOUNT
+            , ILoader::APP_NAME_APPS
+            , ILoader::APP_NAME_FORGOT_PASSWORD
+            , ILoader::APP_NAME_GENERAL_API
+            , ILoader::APP_NAME_GENERAL_VIEW
+            , ILoader::APP_NAME_INSTALL
+            , ILoader::APP_NAME_INSTALL_INSTANCE
+            , ILoader::APP_NAME_LOGIN
+            , ILoader::APP_NAME_LOGOUT
+            , ILoader::APP_NAME_MAINTENANCE
+            , ILoader::APP_NAME_PROMOTION
+            , ILoader::APP_NAME_REGISTER
+            , ILoader::APP_NAME_TNC
+            , ILoader::APP_NAME_USERS
+        ];
+
+        foreach ($coreApps as $coreApp) {
+            $this->loadApp($coreApp);
+        }
+    }
+
     public function getApps(): HashTable {
         return $this->apps;
     }
@@ -320,6 +336,11 @@ class Loader implements ILoader {
         return $this->lruAppCache->get($currentAppKey);
     }
 
+    public function hasApp(string $name): bool {
+        if (null === $this->apps) return false;
+        return $this->apps->containsKey($name);
+    }
+
     private function loadJs(IApp $app): bool {
         if (Keestash::MODE_WEB !== Keestash::getMode()) return false;
         $dirHandler = new DirHandler(
@@ -335,11 +356,6 @@ class Loader implements ILoader {
         }
 
         return true;
-    }
-
-    public function hasApp(string $name): bool {
-        if (null === $this->apps) return false;
-        return $this->apps->containsKey($name);
     }
 
 }

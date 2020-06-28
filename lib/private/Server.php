@@ -39,7 +39,6 @@ use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\DTO\BackgroundJob\Logger;
-use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
@@ -61,6 +60,7 @@ use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
 use Keestash\Core\Manager\StringManager\FrontendManager as FrontendStringManager;
+use Keestash\Core\Manager\StylesheetManager\StylesheetManager;
 use Keestash\Core\Manager\TemplateManager\ApiManager;
 use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use Keestash\Core\Manager\TemplateManager\TwigManager;
@@ -88,12 +88,13 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use Keestash\Core\Service\HTTP\PersistenceService;
-use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Log\LoggerService;
 use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Stylesheet\Compiler;
 use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
@@ -104,7 +105,6 @@ use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
@@ -116,6 +116,7 @@ use KSP\Core\Manager\HookManager\IHookManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
+use KSP\Core\Manager\StylesheetManager\IStylesheetManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IDataProvider;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
@@ -178,6 +179,10 @@ class Server {
 
         $this->register(IL10N::class, function () {
             return new GetText();
+        });
+
+        $this->register(Compiler::class, function () {
+            return new Compiler();
         });
 
         $this->register(InputSanitizer::class, function () {
@@ -611,6 +616,10 @@ class Server {
             );
         });
 
+        $this->register(IStylesheetManager::class, function () {
+            return new StylesheetManager();
+        });
+
     }
 
     public function register(string $name, Closure $closure): bool {
@@ -690,6 +699,14 @@ class Server {
         return $this->appRoot . "data/";
     }
 
+    public function getSCSSRoot(): string {
+        return $this->getServerRoot() . "lib/scss/";
+    }
+
+    public function getAppRoot(): string {
+        return $this->appRoot . "/apps/";
+    }
+
     public function getAssetRoot(): string {
         return $this->getServerRoot() . "asset/";
     }
@@ -718,10 +735,6 @@ class Server {
 
     public function getConfigfilePath(): string {
         return $this->getConfigRoot() . "config.php";
-    }
-
-    public function getAppRoot(): string {
-        return $this->appRoot . "/apps/";
     }
 
     public function getTemplateManager(): TwigManager {
@@ -845,10 +858,8 @@ class Server {
         return $this->query(Backgrounder::class);
     }
 
-    public function getUserCredentialFromSession(): ICredential {
-        return new Credential(
-            $this->getUserFromSession()
-        );
+    public function getStylesheetManager(): IStylesheetManager {
+        return $this->query(IStylesheetManager::class);
     }
 
     public function wipeCache(): void {

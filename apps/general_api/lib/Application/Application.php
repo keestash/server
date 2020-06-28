@@ -23,6 +23,7 @@ namespace KSA\GeneralApi\Application;
 
 use Keestash;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
 use KSA\general_api\lib\Api\UserList;
 use KSA\GeneralApi\Api\MinimumCredential;
 use KSA\GeneralApi\Api\Template\GetAll;
@@ -30,10 +31,12 @@ use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
+use KSA\GeneralApi\Command\Stylesheet\Compiler;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
 /**
  * Class Application
+ *
  * @package Keestash\Api\Core
  */
 class Application extends \Keestash\App\Application {
@@ -106,6 +109,13 @@ class Application extends \Keestash\App\Application {
             new ClearBundleJS(
                 Keestash::getServer()->getServerRoot()
                 , Keestash::getServer()->getAppRoot()
+            )
+        );
+
+        $this->registerCommand(
+            new Compiler(
+                Keestash::getServer()->query(StylesheetCompiler::class)
+                , Keestash::getServer()->getSCSSRoot()
             )
         );
 

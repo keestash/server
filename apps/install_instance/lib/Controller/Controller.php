@@ -24,7 +24,7 @@ namespace KSA\InstallInstance\Controller;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
-use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Core\Controller\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;

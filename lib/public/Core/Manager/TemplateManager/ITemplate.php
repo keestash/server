@@ -32,7 +32,7 @@ interface ITemplate {
     public const FOOTER         = "footer.twig";
     public const HEAD           = "head.twig";
     public const HTML           = "html.twig";
-    public const NAVIGATION     = "navigation.twig";
+    public const NAV_BAR        = "navbar.twig";
     public const NO_CONTENT     = "no-content.twig";
     public const SIDE_BAR       = "side-bar.twig";
     public const PART_TEMPLATE  = "part-template.twig";
