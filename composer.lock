@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a0d0f7ebae0d0c4d6e61287c4c221265",
+    "content-hash": "d4266e0451274f5ef8d152f48cb41b57",
     "packages": [
         {
             "name": "apache/log4php",
@@ -466,12 +466,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "1c42543c2caffdbfce4802ad9f0138fb68ae7e9b"
+                "reference": "70115f89b53007fadea5b3c1e892cea7c9767691"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/1c42543c2caffdbfce4802ad9f0138fb68ae7e9b",
-                "reference": "1c42543c2caffdbfce4802ad9f0138fb68ae7e9b",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/70115f89b53007fadea5b3c1e892cea7c9767691",
+                "reference": "70115f89b53007fadea5b3c1e892cea7c9767691",
                 "shasum": ""
             },
             "require": {
@@ -484,7 +484,7 @@
                 "doctrine/coding-standard": "^8.0",
                 "jetbrains/phpstorm-stubs": "^2019.1",
                 "nikic/php-parser": "^4.4",
-                "phpstan/phpstan": "^0.12.30",
+                "phpstan/phpstan": "^0.12.31",
                 "phpunit/phpunit": "^9.2",
                 "psalm/plugin-phpunit": "^0.10.0",
                 "symfony/console": "^2.0.5|^3.0|^4.0|^5.0",
@@ -553,7 +553,7 @@
                 "sqlserver",
                 "sqlsrv"
             ],
-            "time": "2020-06-26T20:39:54+00:00"
+            "time": "2020-06-27T16:11:23+00:00"
         },
         {
             "name": "doctrine/event-manager",
@@ -1541,6 +1541,67 @@
                 "phinx"
             ],
             "time": "2019-08-28T12:24:19+00:00"
+        },
+        {
+            "name": "scssphp/scssphp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scssphp/scssphp.git",
+                "reference": "0c3f939f56c87445ba945fdcc35d96d5541dacde"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/0c3f939f56c87445ba945fdcc35d96d5541dacde",
+                "reference": "0c3f939f56c87445ba945fdcc35d96d5541dacde",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-json": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3",
+                "squizlabs/php_codesniffer": "~3.5",
+                "twbs/bootstrap": "~4.3",
+                "zurb/foundation": "~6.5"
+            },
+            "bin": [
+                "bin/pscss"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ScssPhp\\ScssPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "homepage": "https://github.com/robocoder"
+                },
+                {
+                    "name": "Cédric Morin",
+                    "email": "cedric@yterium.com",
+                    "homepage": "https://github.com/Cerdic"
+                }
+            ],
+            "description": "scssphp is a compiler for SCSS written in PHP.",
+            "homepage": "http://scssphp.github.io/scssphp/",
+            "keywords": [
+                "css",
+                "less",
+                "sass",
+                "scss",
+                "stylesheet"
+            ],
+            "time": "2020-06-24T04:54:34+00:00"
         },
         {
             "name": "symfony/asset",
@@ -2694,6 +2755,52 @@
             "time": "2020-06-22T15:25:21+00:00"
         },
         {
+            "name": "twitter/bootstrap",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/twbs/bootstrap.git",
+                "reference": "594e5fd07175baf796c03c1de755ee021e5b4c5d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/594e5fd07175baf796c03c1de755ee021e5b4c5d",
+                "reference": "594e5fd07175baf796c03c1de755ee021e5b4c5d",
+                "shasum": ""
+            },
+            "replace": {
+                "twitter/bootstrap": "self.version"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Otto",
+                    "email": "markdotto@gmail.com"
+                },
+                {
+                    "name": "Jacob Thornton",
+                    "email": "jacobthornton@gmail.com"
+                }
+            ],
+            "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+            "homepage": "https://getbootstrap.com/",
+            "keywords": [
+                "JS",
+                "css",
+                "framework",
+                "front-end",
+                "mobile-first",
+                "responsive",
+                "sass",
+                "web"
+            ],
+            "time": "2020-06-12T17:49:01+00:00"
+        },
+        {
             "name": "xobotyi/php-mime-type",
             "version": "v1.2.0",
             "source": {
@@ -3012,24 +3119,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/ReflectionDocBlock.git",
-                "reference": "790426f28bfcbfc1a6f1d59ee8c986edfa45395c"
+                "reference": "664187301bfbc87e686df212094e6817805c3ab8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/790426f28bfcbfc1a6f1d59ee8c986edfa45395c",
-                "reference": "790426f28bfcbfc1a6f1d59ee8c986edfa45395c",
+                "url": "https://api.github.com/repos/phpDocumentor/ReflectionDocBlock/zipball/664187301bfbc87e686df212094e6817805c3ab8",
+                "reference": "664187301bfbc87e686df212094e6817805c3ab8",
                 "shasum": ""
             },
             "require": {
-                "ext-filter": "^7.1",
-                "php": "^7.2",
+                "ext-filter": "*",
+                "php": "^7.2 || ^8.0",
                 "phpdocumentor/reflection-common": "^2.0",
                 "phpdocumentor/type-resolver": "^1.0",
                 "webmozart/assert": "^1"
             },
             "require-dev": {
-                "doctrine/instantiator": "^1",
-                "mockery/mockery": "^1"
+                "mockery/mockery": "1.3.*"
             },
             "type": "library",
             "extra": {
@@ -3057,7 +3163,7 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
-            "time": "2020-06-19T18:58:43+00:00"
+            "time": "2020-06-27T17:33:53+00:00"
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -4163,7 +4269,9 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "doganoo/di-services": 20
+        "doganoo/di-services": 20,
+        "twitter/bootstrap": 20,
+        "scssphp/scssphp": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -21,10 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Api\DirsWritable;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
-use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
 use KSP\L10N\IL10N;

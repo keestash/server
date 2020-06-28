@@ -1,0 +1,24 @@
+<nav class="navbar sticky-top flex-md-nowrap p-0">
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="{{ mainHref }}">
+        <img src="{{ logopath }}" height="30" alt="{{ vendorName }}">
+    </a>
+
+    <div class="btn-group">
+        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            <img height="30" src="{{ userImage }}" class="avatar">
+            {{ menu }}
+        </button>
+        <div class="dropdown-menu dropdown-menu-right">
+            {% for partId, partEntry in settings %}
+                {% for id, entry in partEntry.getEntries() %}
+
+                    <a class="dropdown-item" href="{{ baseURL }}/{{ entry.getName()|lower }}"><i
+                                class="{{ entry.getFaClass() }} fa-1x"></i>&nbsp;{{ entry.getName() }}</a>
+                {% endfor %}
+
+            {% endfor %}
+        </div>
+    </div>
+
+</nav>

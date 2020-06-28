@@ -26,7 +26,7 @@ use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
-use Keestash\Core\Service\InstallerService;
+use Keestash\Core\Service\Instance\InstallerService;
 use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;

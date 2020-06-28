@@ -35,7 +35,9 @@
     "symfony/webpack-encore-pack": "1.0.3",
     "twig/twig": "^2.0",
     "xobotyi/php-mime-type": "1.2.0",
-    "doctrine/dbal": "^2.10"
+    "doctrine/dbal": "^2.10",
+    "twitter/bootstrap": "dev-master",
+    "scssphp/scssphp": "dev-master"
   },
   "require-dev": {
     "phpstan/phpstan": "^0.12",
