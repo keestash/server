@@ -1,41 +1,20 @@
-<div class="ui secondary fluid vertical menu" id="upper__navigation__wrapper">
-    {% for navigationPart in appNavigation %}
-        <a class="item" data-id="{{ navigationPart.getId() }}" href="{{ navigationPart.getHref() }}">
-            <i class="{{ navigationPart.getIconClass() }}" data-id="{{ navigationPart.getId() }}"></i>
-            {{ navigationPart.getName() }}
-        </a>
-    {% endfor %}
-</div>
+{% if appNavigation.length() > 0 %}
+    <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+            {% for id, segment in appNavigation %}
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>{{ segment.getTitle() }}</span>
+                </h6>
+                {% for id2, entry in segment.getEntries() %}
+                    <li class="nav-item">
+                        <a class="nav-link active"
 
-{% if hasAppNavigationInput == true %}
-    <div id="tl__app__navigation__part__two">
-        <div class="ui fluid input">
-            <input class="form-control"
-                   id="app-navigation-value"
-                   name="app-navigation-value"
-                   placeholder="{{ navigationActionPlaceholder }}"
-                   type="text"
-            >
-        </div>
-        <small class="form-text text-left text-muted">{{ navigationActionDetail }}</small>
+                           href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"
+                        >{{ entry.getTitle() }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
     </div>
 {% endif %}
-
-
-<div class="ui mini test modal" id="tl__delete__left__menu__item__modal">
-    <div class="header">
-        {{ deleteLeftMenuHeader }}
-    </div>
-    <div class="content">
-        <p>{{ deleteLeftMenuContent }}</p>
-    </div>
-    <div class="actions">
-        <div class="ui negative button">
-            {{ deleteLeftMenuAnswerNo }}
-        </div>
-        <div class="ui primary positive right labeled icon button">
-            {{ deleteLeftMenuAnswerYes }}
-            <i class="checkmark icon"></i>
-        </div>
-    </div>
-</div>

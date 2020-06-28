@@ -45,6 +45,7 @@ class NavigationManager implements INavigationManager {
 
     /**
      * @param string $name
+     *
      * @return bool
      * @throws \doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException
      * @throws \doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException

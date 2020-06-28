@@ -27,6 +27,7 @@ use Keestash\Api\Response\NeedsUpgrade;
 use Keestash\Api\Response\SessionExpired;
 use Keestash\App\Config\Diff;
 use Keestash\App\Helper;
+use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\Route;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
@@ -45,7 +46,6 @@ use Keestash\Core\System\Installation\LockHandler;
 use Keestash\Exception\KeestashException;
 use Keestash\Server;
 use Keestash\View\Navigation\Entry;
-use Keestash\View\Navigation\Navigation;
 use Keestash\View\Navigation\Part;
 use KSP\Api\IResponse;
 use KSP\App\IApp;
@@ -480,29 +480,27 @@ class Keestash {
             , "appScripts" => Keestash::getServer()->getTemplateManager()->getAppScripts($routeName)
         ]);
 
-        $head = Keestash::getServer()->getTemplateManager()->render(ITemplate::HEAD);
+        /** @var AppNavigationManager $appNavigationManager */
+        $appNavigationManager = Keestash::getServer()->query(AppNavigationManager::class);
+        $hasAppNavigation     =
+            (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER)
+            && $appNavigationManager->getNavigationList()->length() > 0;
+        $noContext            = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
+        $actionBar            = Keestash::renderActionBars(
+            Keestash::getServer()->getActionBarManager()->get(IActionBarBag::ACTION_BAR_TOP)
+        );
+        $head                 = Keestash::getServer()->getTemplateManager()->render(ITemplate::HEAD);
+
         if (!self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->isPublicRoute()) {
             Keestash::getServer()->getTemplateManager()->replace(
                 ITemplate::APP_NAVIGATION
                 , [
-                    "appNavigation"                 => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getAll()
-                    , "hrefMain"                    => self::getBaseURL(true) . "/"
-                    , "navigationActionText"        => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_URL)
-                    , "navigationActionDetail"      => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_DETAIL)
-                    , "navigationActionPlaceholder" => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_PLACEHOLDER)
-                    , "deleteLeftMenuHeader"        => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_DELETE_MODAL_HEADER)
-                    , "deleteLeftMenuContent"       => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_DELETE_MODAL_CONTENT)
-                    , "deleteLeftMenuAnswerNo"      => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_DELETE_MODAL_ANSWER_NO)
-                    , "deleteLeftMenuAnswerYes"     => Keestash::getServer()->getNavigationManager()->getByName(NavigationManager::NAVIGATION_TYPE_APP)->getActionAtribute(Navigation::ACTION_ATTRIBUTE_DELETE_MODAL_ANSWER_YES)
+                    "appNavigation"      => $appNavigationManager->getNavigationList()
+                    , "hasAppNavigation" => $hasAppNavigation
                 ]
             );
         }
-        $appNavigation    = Keestash::getServer()->getTemplateManager()->render(ITemplate::APP_NAVIGATION);
-        $hasAppNavigation = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER);
-        $noContext        = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
-        $actionBar        = Keestash::renderActionBars(
-            Keestash::getServer()->getActionBarManager()->get(IActionBarBag::ACTION_BAR_TOP)
-        );
+        $appNavigation = Keestash::getServer()->getTemplateManager()->render(ITemplate::APP_NAVIGATION);
 
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::BREADCRUMB
@@ -515,15 +513,13 @@ class Keestash {
 
         Keestash::getServer()->getTemplateManager()->replace(ITemplate::CONTENT,
             [
-                "appNavigation"       => $appNavigation
-                , "appContent"        => $appContent
-                , "actionBar"         => $actionBar
-                , "breadcrumbs"       => $breadCrumb
-                , "appNavigationSize" => false === $hasAppNavigation ? "zero" : "two"
-                , "appContentSize"    => false === $hasAppNavigation ? "sixteen" : "fourteen"
-                , "hasAppNavigation"  => $hasAppNavigation
-                , "hasActionBars"     => Keestash::getServer()->getActionBarManager()->isVisible()
-                , "hasBreadcrumbs"    => Keestash::getServer()->getBreadCrumbManager()->isVisible()
+                "appNavigation"      => $appNavigation
+                , "appContent"       => $appContent
+                , "actionBar"        => $actionBar
+                , "breadcrumbs"      => $breadCrumb
+                , "hasAppNavigation" => $hasAppNavigation
+                , "hasActionBars"    => Keestash::getServer()->getActionBarManager()->isVisible()
+                , "hasBreadcrumbs"   => Keestash::getServer()->getBreadCrumbManager()->isVisible()
             ]
         );
 
@@ -654,9 +650,7 @@ class Keestash {
             , "stylecss"       => self::getBaseURL(false) . "/lib/scss/dist/style.css"
             , "faviconPath"    => self::getBaseURL(false) . "/asset/img/favicon.png"
             , "fontAwesomeCss" => "https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-            //            , "semanticUiCss"  => self::getBaseURL(false) . "lib/js/src/semantic/semantic.min.css"
             , "baseJs"         => self::getBaseURL(false) . "lib/js/dist/base.bundle.js"
-            //            , "semanticJs"     => self::getBaseURL(false) . "lib/js/src/semantic/semantic.min.js"
         ]);
 
         Keestash::getServer()->getTemplateManager()->replace(

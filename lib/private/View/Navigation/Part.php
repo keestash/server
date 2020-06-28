@@ -27,8 +27,9 @@ use KSP\Core\View\Navigation\IPart;
 
 /**
  * Class Part
+ *
  * @package    Keestash\View\Navigation
- * @deprecated Please use navigationlist and navigatoinpart instead
+ * @deprecated
  */
 class Part implements IPart {
 
@@ -51,13 +52,6 @@ class Part implements IPart {
      */
     public function getColorCode(): string {
         return $this->colorCode;
-    }
-
-    /**
-     * @param string $colorCode
-     */
-    public function setColorCode(string $colorCode): void {
-        $this->colorCode = $colorCode;
     }
 
     /**
@@ -104,13 +98,6 @@ class Part implements IPart {
     }
 
     /**
-     * @return string
-     */
-    public function getHref(): ?string {
-        return $this->href;
-    }
-
-    /**
      * @param string $href
      */
     public function setHref(string $href): void {
@@ -119,10 +106,6 @@ class Part implements IPart {
 
     public function getIconClass(): ?string {
         return $this->iconClass;
-    }
-
-    public function setIconClass(?string $iconClass): void {
-        $this->iconClass = $iconClass;
     }
 
 }

@@ -28,17 +28,10 @@ use KSP\Core\View\Navigation\IPart;
 
 /**
  * Class Navigation
- * @deprecated Please use navigationlist and navigatoinpart instead
+ *
+ * @deprecated
  */
 class Navigation implements INavigation {
-
-    public const ACTION_ATTRIBUTE_PLACEHOLDER             = "placeholder.attribute.action";
-    public const ACTION_ATTRIBUTE_DELETE_MODAL_HEADER     = "header.modal.delete.attribute.action";
-    public const ACTION_ATTRIBUTE_DELETE_MODAL_CONTENT    = "content.modal.delete.attribute.action";
-    public const ACTION_ATTRIBUTE_DELETE_MODAL_ANSWER_NO  = "no.answer.modal.delete.attribute.action";
-    public const ACTION_ATTRIBUTE_DELETE_MODAL_ANSWER_YES = "yes.answer.modal.delete.attribute.action";
-    public const ACTION_ATTRIBUTE_DETAIL                  = "detail.attribute.action";
-    public const ACTION_ATTRIBUTE_URL                     = "url.attribute.action";
 
     private $parts = null;
 
@@ -47,14 +40,6 @@ class Navigation implements INavigation {
     public function __construct() {
         $this->parts            = new ArrayList();
         $this->actionAttributes = new HashTable();
-    }
-
-    public function addActionAtribute(string $name, string $attribute): bool {
-        return $this->actionAttributes->put($name, $attribute);
-    }
-
-    public function getActionAtribute(string $name) {
-        return $this->actionAttributes->get($name);
     }
 
     public function addAll(ArrayList $list): bool {

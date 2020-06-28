@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import $ from 'jquery';
-import '../../../../lib/js/src/semantic/semantic.min';
 import Formula from "../../../../lib/js/src/Formula";
 import Input from "../../../../lib/js/src/UI/Input";
 import modal from "../../../../lib/js/src/UI/modal";
