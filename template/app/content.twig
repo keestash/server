@@ -1,5 +1,5 @@
 {% if hasActionBars == true %}
-    <div class="container-fluid action-bar-wrapper">
+    <div class="container-fluid action-bar">
         {{ actionBar|raw }}
     </div>
 {% endif %}
@@ -8,15 +8,15 @@
         {{ appNavigation|raw }}
     </div>
     <div class="w-75">
-        {% if hasBreadcrumbs == true %}
-            <div id="breadcrumb__wrapper">
-                {{ breadcrumbs|raw }}
-            </div>
-        {% endif %}
-        {{ appContent|raw }}
+{#        {% if hasBreadcrumbs == true %}#}
+{#            <div id="breadcrumb__wrapper">#}
+{#                {{ breadcrumbs|raw }}#}
+{#            </div>#}
+{#        {% endif %}#}
+{#        {{ appContent|raw }}#}
     </div>
 
-</div>
+{#</div>#}
 
 {#<div class="ui two column doubling stackable grid" id="main-container">#}
 {#    {% if hasAppNavigation == true %}#}
