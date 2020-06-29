@@ -1,10 +1,8 @@
 $body-bg: #FFF;
 $body-color: #FFF;
 
-$enable-rounded: false;
-$enable-print-styles: false;
-
 $theme-color: #269dff;
+$theme-color-inverted: #F2F2F2;
 $theme-color-dark1: #0070cc;
 $text-color: #000;
 $text-color-white: #FFF;
@@ -12,6 +10,10 @@ $text-color-white: #FFF;
 $avatar-size: 30px;
 
 @import "../../vendor/twitter/bootstrap/scss/bootstrap.scss";
+
+html {
+  color: $text-color-white;
+}
 
 body {
   color: $text-color;
@@ -25,7 +27,6 @@ body {
 
 .avatar {
   vertical-align: middle;
-  //width: $avatar-size;
   height: $avatar-size;
   border-radius: 50%;
 }
@@ -34,11 +35,33 @@ body {
   display: none;
 }
 
-.action-bar-wrapper {
-  background: $theme-color-dark1;
+.action-bar {
+  background: $theme-color-inverted;
+  margin-bottom: 0.5rem;
+
+  .action-bar-inner {
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+
 }
 
 #content {
   padding: 0;
   margin: 0;
+  height: 100%;
+
+  .app-navigation {
+    li{
+      border: white;
+    }
+  }
+}
+
+.btn.btn-primary,
+.btn.btn-primary:active,
+.btn.btn-primary:hover,
+.btn.btn-primary:focus {
+  background: $theme-color;
+  border: $theme-color-dark1;
 }
