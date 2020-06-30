@@ -8,7 +8,7 @@
 {#                {% for id2, entry in segment.getEntries() %}#}
 {#                    <li class="nav-item">#}
 {#                        <a class="nav-link active"#}
-
+{#                {% for id2, entry in segment.getEntries() %}#}
 {#                           href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"#}
 {#                        >{{ entry.getTitle() }}#}
 {#                        </a>#}
@@ -20,61 +20,32 @@
 {#{% endif %}#}
 
 
-<div class="app-navigation">
-    <ul class="list-group">
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="active list-group-item-action d-flex align-items-center"><i
-                        class="mdi mdi-inbox"></i> Inbox <span
-                        class="badge badge-success text-white font-normal badge-pill ml-auto">6</span></a>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"> <i class="mdi mdi-star"></i> Starred </a>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action d-flex align-items-center"> <i
-                        class="mdi mdi-send"></i> Draft <span
-                        class="badge badge-warning text-white font-normal badge-pill ml-auto">15</span></a></li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"> <i class="mdi mdi-email"></i> Sent Mail
-            </a>
-        </li>
-        <li class="list-group-item">
-            <hr>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"> <i class="mdi mdi-block-helper"></i> Spam
-            </a>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"> <i class="mdi mdi-delete"></i> Trash </a>
-        </li>
-        <li class="list-group-item">
-            <hr>
-        </li>
-        <li>
-            <small class="p-3 grey-text text-lighten-1 db">Labels</small>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"><i
-                        class="text-danger mdi mdi-checkbox-blank-circle"></i> Work </a>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"><i
-                        class="text-cyan mdi mdi-checkbox-blank-circle"></i> Business </a>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"><i
-                        class="text-warning mdi mdi-checkbox-blank-circle"></i> Family </a>
-        </li>
-        <li class="list-group-item">
-            <a href="javascript:void(0)" class="list-group-item-action"><i
-                        class="text-info mdi mdi-checkbox-blank-circle"></i> Friends </a>
-        </li>
-    </ul>
-    <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;">
-        <div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div>
-    </div>
-    <div class="ps-scrollbar-y-rail" style="top: 0px; right: 3px;">
-        <div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div>
-    </div>
+<div id="app-navigation">
+    {% if appNavigation.length() > 0 %}
+        <ul class="list-group">
+            {% for id, segment in appNavigation %}
+                <li>
+                    <small class="p-3 grey-text text-lighten-1 db"
+                           data-id="{{ segment.getId() }}">{{ segment.getTitle() }}</small>
+                </li>
+                {% for id2, entry in segment.getEntries() %}
+                    <li class="list-group-item">
+                        <a
+                                href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"
+                                class="list-group-item-action d-flex align-items-center"
+                                data-id="{{ entry.getId() }}"
+                        >
+                            <i class="mdi mdi-inbox"></i> {{ entry.getTitle() }}
+                        </a>
+                    </li>
+                {% endfor %}
+
+                {% if loop.last() != false %}
+                    <li class="list-group-item">
+                        <hr>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 </div>

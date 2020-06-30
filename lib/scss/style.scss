@@ -37,7 +37,7 @@ body {
 
 .action-bar {
   background: $theme-color-inverted;
-  margin-bottom: 0.5rem;
+  border-bottom: none;
 
   .action-bar-inner {
     padding-top: 0.3rem;
@@ -51,11 +51,22 @@ body {
   margin: 0;
   height: 100%;
 
-  .app-navigation {
-    li{
-      border: white;
+  #content-twentyfive {
+    margin-left: 0;
+    padding-left: 0;
+
+    #app-navigation {
+      background-color: $theme-color-inverted;
+
+      li {
+        border: none;
+        background-color: transparent;
+      }
     }
+
   }
+
+
 }
 
 .btn.btn-primary,
