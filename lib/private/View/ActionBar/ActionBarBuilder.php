@@ -23,9 +23,18 @@ namespace Keestash\View\ActionBar;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
+use Keestash\View\ActionBar\ActionBar\AddActionBar;
+use Keestash\View\ActionBar\ActionBar\SettingsActionBar;
+use Keestash\View\ActionBar\Element\ActionBarElement;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarElement;
 
+/**
+ * Class ActionBarBuilder
+ *
+ * @package Keestash\View\ActionBar
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class ActionBarBuilder {
 
     /** @var IActionBar $actionBar */
@@ -66,7 +75,7 @@ class ActionBarBuilder {
 
     public function withElement(
         string $name
-        , ? string $id = null
+        , ?string $id = null
         , ?string $href = null
     ): ActionBarBuilder {
         $element = new ActionBarElement($name);
@@ -76,8 +85,13 @@ class ActionBarBuilder {
         return $this;
     }
 
-    public function withName(string $name): ActionBarBuilder {
-        $this->actionBar->setName($name);
+    public function withId(string $name): ActionBarBuilder {
+        $this->actionBar->setId($name);
+        return $this;
+    }
+
+    public function withDescription(string $description): ActionBarBuilder {
+        $this->actionBar->setDescription($description);
         return $this;
     }
 

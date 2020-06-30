@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,23 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\ActionBar;
+namespace Keestash\View\ActionBar\ActionBar;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarElement;
 
-class SettingsActionBar implements IActionBar {
+abstract class ActionBar implements IActionBar {
 
-    private $name     = null;
-    private $elements = null;
+    /** @var string */
+    private $id;
+    /** @var string */
+    private $description;
+    /** @var ArrayList */
+    private $elements;
 
     public function __construct() {
         $this->elements = new ArrayList();
     }
 
     public function getType(): string {
-        return IActionBar::TYPE_SETTINGS;
+        return IActionBar::TYPE_PLUS;
     }
 
     public function addElement(IActionBarElement $element): void {
@@ -50,12 +54,20 @@ class SettingsActionBar implements IActionBar {
         return $this->elements;
     }
 
-    public function getName(): string {
-        return $this->name;
+    public function getId(): string {
+        return $this->id;
     }
 
-    public function setName(string $name): void {
-        $this->name = $name;
+    public function setId(string $name): void {
+        $this->id = $name;
+    }
+
+    public function getDescription(): string {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): void {
+        $this->description = $description;
     }
 
 }

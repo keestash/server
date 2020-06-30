@@ -1,51 +1,38 @@
-{#{% if appNavigation.length() > 0 %}#}
-{#    <div class="sidebar-sticky">#}
-{#        <ul class="nav flex-column">#}
-{#            {% for id, segment in appNavigation %}#}
-{#                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">#}
-{#                    <span>{{ segment.getTitle() }}</span>#}
-{#                </h6>#}
-{#                {% for id2, entry in segment.getEntries() %}#}
-{#                    <li class="nav-item">#}
-{#                        <a class="nav-link active"#}
-{#                {% for id2, entry in segment.getEntries() %}#}
-{#                           href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"#}
-{#                        >{{ entry.getTitle() }}#}
-{#                        </a>#}
-{#                    </li>#}
-{#                {% endfor %}#}
-{#            {% endfor %}#}
-{#        </ul>#}
-{#    </div>#}
-{#{% endif %}#}
-
-
 <div id="app-navigation">
-    {% if appNavigation.length() > 0 %}
-        <ul class="list-group">
-            {% for id, segment in appNavigation %}
-                <li>
-                    <small class="p-3 grey-text text-lighten-1 db"
-                           data-id="{{ segment.getId() }}">{{ segment.getTitle() }}</small>
-                </li>
-                {% for id2, entry in segment.getEntries() %}
-                    <li class="list-group-item">
-                        <a
-                                href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"
-                                class="list-group-item-action d-flex align-items-center"
-                                data-id="{{ entry.getId() }}"
-                        >
-                            <i class="mdi mdi-inbox"></i> {{ entry.getTitle() }}
-                        </a>
+    {# TODO make this based on media size #}
+    <a class="ks-menu ks-close btn btn-success show-app-navigation d-block d-md-none"></a>
+    <div class="scrollable">
+        {% if hasActionBars == true %}
+            <div class="container-fluid action-bar">
+                {{ actionBar|raw }}
+            </div>
+        {% endif %}
+        {% if appNavigation|length > 0 %}
+            <ul class="list-group">
+                {% for id, segment in appNavigation %}
+                    <li>
+                        <small class="p-3"
+                               data-id="{{ segment.getId() }}">{{ segment.getTitle() }}</small>
                     </li>
-                {% endfor %}
+                    {% for id2, entry in segment.getEntries() %}
+                        <li class="list-group-item">
+                            <a
+                                    id="{{ entry.getSelector() }}"
+                                    href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"
+                                    class="list-group-item-action d-flex align-items-center"
+                            >
+                                <i class="mdi mdi-inbox"></i> {{ entry.getTitle() }}
+                            </a>
+                        </li>
+                    {% endfor %}
 
-                {% if loop.last() != false %}
-                    <li class="list-group-item">
-                        <hr>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    {% endif %}
+                    {% if loop.last != true %}
+                        <li class="list-group-item">
+                            <hr>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 </div>

@@ -19,29 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\View\ActionBar;
+namespace Keestash\View\ActionBar\ActionBar;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+class AddActionBar extends ActionBar {
 
-interface IActionBar {
-
-    public const TYPE_PLUS     = "fa-plus";
-    public const TYPE_SETTINGS = "icon settings";
-
-    public function setId(string $name): void;
-
-    public function getId(): string;
-
-    public function setDescription(string $description): void;
-
-    public function getDescription(): string;
-
-    public function getType(): string;
-
-    public function getElements(): ArrayList;
-
-    public function addElement(IActionBarElement $element): void;
-
-    public function hasElements(): bool;
 
 }

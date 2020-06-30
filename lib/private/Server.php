@@ -451,7 +451,7 @@ class Server {
         });
 
         $this->register(Server::DEFAULT_ACTION_BAR_BAGS, function () {
-            $actionBarBag = new Keestash\View\ActionBar\ActionBarBag();
+            $actionBarBag = new View\ActionBar\Bag\ActionBarBag();
             $actionBars   = $this->query(Server::DEFAULT_ACTION_BARS);
 
             foreach ($actionBars as $name => $actionBar) {

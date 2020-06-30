@@ -35,38 +35,84 @@ body {
   display: none;
 }
 
-.action-bar {
-  background: $theme-color-inverted;
-  border-bottom: none;
-
-  .action-bar-inner {
-    padding-top: 0.3rem;
-    padding-bottom: 0.3rem;
-  }
-
-}
-
 #content {
   padding: 0;
   margin: 0;
   height: 100%;
 
-  #content-twentyfive {
-    margin-left: 0;
-    padding-left: 0;
+  #app-navigation {
+    background-color: $theme-color-inverted;
+    height: 100%;
+    width: 260px;
+    position: absolute;
 
-    #app-navigation {
-      background-color: $theme-color-inverted;
-
-      li {
-        border: none;
-        background-color: transparent;
-      }
+    .ks-menu:before {
+      content: "\e68e"
     }
 
+    .ks-menu-alt:before {
+      content: "\e68f"
+    }
+
+    .ks-close:before {
+      content: "\e646"
+    }
+
+    .scrollable {
+      position: relative;
+
+      .action-bar {
+
+        .action-bar-inner {
+          padding-top: 0.3rem;
+          padding-bottom: 0.3rem;
+
+          .p-3 {
+            .btn-group {
+              width: 100%;
+            }
+          }
+
+        }
+
+      }
+
+    }
+
+    .list-group-item {
+      border: none;
+      background-color: transparent;
+      padding: inherit;
+
+      .list-group-item-action {
+        padding: 12px 15px;
+        display: block;
+        width: 100%;
+        color: black;
+        text-align: inherit;
+        text-decoration: none;
+      }
+
+      .list-group-item-action.active,
+      .list-group-item-action:hover {
+        background: rgba(0, 0, 0, .03)
+      }
+
+      .list-group-item-action:focus,
+      .list-group-item-action:hover {
+        z-index: 1;
+        color: #525f7f;
+        background-color: #f7fafc
+      }
+    }
   }
+}
 
-
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, .1);
 }
 
 .btn.btn-primary,

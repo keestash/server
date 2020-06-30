@@ -495,8 +495,10 @@ class Keestash {
             Keestash::getServer()->getTemplateManager()->replace(
                 ITemplate::APP_NAVIGATION
                 , [
-                    "appNavigation"      => $appNavigationManager->getNavigationList()
+                    "appNavigation"      => $appNavigationManager->getNavigationList()->toArray(false)
                     , "hasAppNavigation" => $hasAppNavigation
+                    , "actionBar"        => $actionBar
+                    , "hasActionBars"    => Keestash::getServer()->getActionBarManager()->isVisible()
                 ]
             );
         }
@@ -511,14 +513,13 @@ class Keestash {
 
         $breadCrumb = Keestash::getServer()->getTemplateManager()->render(ITemplate::BREADCRUMB);
 
-        Keestash::getServer()->getTemplateManager()->replace(ITemplate::CONTENT,
-            [
+        Keestash::getServer()->getTemplateManager()->replace(
+            ITemplate::CONTENT
+            , [
                 "appNavigation"      => $appNavigation
                 , "appContent"       => $appContent
-                , "actionBar"        => $actionBar
                 , "breadcrumbs"      => $breadCrumb
                 , "hasAppNavigation" => $hasAppNavigation
-                , "hasActionBars"    => Keestash::getServer()->getActionBarManager()->isVisible()
                 , "hasBreadcrumbs"   => Keestash::getServer()->getBreadCrumbManager()->isVisible()
             ]
         );
@@ -724,9 +725,7 @@ class Keestash {
             Keestash::getServer()->getTemplateManager()->replace(
                 ITemplate::ACTION_BAR
                 , [
-                    "iconClass"  => $actionBar->getType()
-                    , "elements" => $actionBar->getElements()
-                    , "buttonId" => $actionBar->getName()
+                    "actionBar" => $actionBar
                 ]
             );
             $rendered = $rendered . Keestash::getServer()->getTemplateManager()->render(ITemplate::ACTION_BAR);
