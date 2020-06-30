@@ -56,4 +56,15 @@ class NavigationList extends ArrayList {
         return false;
     }
 
+    public function toArray(bool $includeNull = true): array {
+        $array = [];
+        foreach ($this as $key => $value) {
+            if (false === $includeNull && null === $value) {
+                continue;
+            }
+            $array[$key] = $value;
+        }
+        return $array;
+    }
+
 }

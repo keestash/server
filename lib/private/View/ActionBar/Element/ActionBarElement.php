@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\ActionBar;
+namespace Keestash\View\ActionBar\Element;
 
 use KSP\Core\View\ActionBar\IActionBarElement;
 

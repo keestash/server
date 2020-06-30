@@ -1,37 +1,38 @@
 <div class="container action-bar-inner">
-    <div class="btn-group">
+
+    <div class="p-3">
+
+        <div class="btn-group">
+            <button
+                    type="button"
+                    class="btn dropdown-toggle btn-primary"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    id="{{ actionBar.getId() }}"
+            >
+                {{ actionBar.getDescription() }}
+            </button>
 
 
-        <button
-                type="button"
-                class="btn dropdown-toggle btn-primary"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                id="{{ buttonId }}"
-        >
-            <i class="fa fa-fw fa-plus-circle"></i>
-            Create
-        </button>
-
-
-        <div class="dropdown-menu">
-            {% for key, value in elements %}
-                {% if value is not null %}
-                    <div class="dropdown-item"
-                            {% if value.getId() is not null %}
-                                id="{{ value.getId() }}"
-                            {% endif %}
-                    >
-                        {% if value.getHref() is not null %}
-                            <a href="{{ value.getHref() }}">
+            <div class="dropdown-menu">
+                {% for key, value in actionBar.getElements() %}
+                    {% if value is not null %}
+                        <div class="dropdown-item"
+                                {% if value.getId() is not null %}
+                                    id="{{ value.getId() }}"
+                                {% endif %}
+                        >
+                            {% if value.getHref() is not null %}
+                                <a href="{{ value.getHref() }}">
+                                    {{ value.getDescription() }}
+                                </a>
+                            {% else %}
                                 {{ value.getDescription() }}
-                            </a>
-                        {% else %}
-                            {{ value.getDescription() }}
-                        {% endif %}
-                    </div>
-                {% endif %}
-            {% endfor %}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
