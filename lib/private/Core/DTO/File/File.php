@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\File;
 
 use DateTime;
-use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\File\IJsonFile;
+use KSP\Core\DTO\User\IJsonUser;
 
-class File implements IFile {
+class File implements IJsonFile {
 
     private $id            = null;
     private $name          = null;
@@ -114,11 +114,11 @@ class File implements IFile {
         return $this->size;
     }
 
-    public function setOwner(IUser $owner): void {
+    public function setOwner(IJsonUser $owner): void {
         $this->owner = $owner;
     }
 
-    public function getOwner(): IUser {
+    public function getOwner(): IJsonUser {
         return $this->owner;
     }
 

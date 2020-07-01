@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\File;
 
-use KSP\Core\DTO\IObject;
+use KSP\Core\DTO\Object\IJsonObject;
 
-interface IExtension extends IObject {
+interface IJsonExtension extends IJsonObject {
 
     public const PNG  = "png";
     public const JPG  = "jpg";

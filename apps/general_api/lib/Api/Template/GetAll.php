@@ -26,7 +26,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\L10N\IL10N;
 
 class GetAll extends AbstractApi {
@@ -36,7 +36,7 @@ class GetAll extends AbstractApi {
     public function __construct(
         IL10N $l10n
         , FrontendManager $frontendManager
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
         parent::__construct($l10n, $token);
 

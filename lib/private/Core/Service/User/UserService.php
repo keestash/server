@@ -34,8 +34,8 @@ use Keestash\Exception\KeyNotCreatedException;
 use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
-use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\File\IJsonFile;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
@@ -101,7 +101,7 @@ class UserService {
         $this->dateTimeService     = $dateTimeService;
     }
 
-    public function removeUser(IUser $user): array {
+    public function removeUser(IJsonUser $user): array {
 
         $logsRemoved  = $this->apiLogRepository->removeForUser($user);
         $filesRemoved = $this->fileRepository->removeForUser($user);
@@ -158,18 +158,18 @@ class UserService {
         return false !== filter_var($email, FILTER_VALIDATE_URL);
     }
 
-    public function hashUserId(IUser $user): string {
+    public function hashUserId(IJsonUser $user): string {
         return hash("sha256", (string) $user->getId());
     }
 
     /**
-     * @return IUser
+     * @return IJsonUser
      * @TODO urgent: this user has to be locked out (no login possible)
      */
-    public function getSystemUser(): IUser {
+    public function getSystemUser(): IJsonUser {
         $user = new User();
         $user->setName((string) $this->legacy->getApplication()->get("name"));
-        $user->setId(IUser::SYSTEM_USER_ID);
+        $user->setId(IJsonUser::SYSTEM_USER_ID);
         $user->setHash(
             $this->getRandomHash()
         );
@@ -193,7 +193,7 @@ class UserService {
         return password_hash($plain, PASSWORD_BCRYPT);
     }
 
-    public function toNewUser(array $userArray): IUser {
+    public function toNewUser(array $userArray): IJsonUser {
         $user = new User();
         $user->setCreateTs(new DateTime());
         $user->setName($userArray["user_name"]);
@@ -212,14 +212,14 @@ class UserService {
     }
 
     /**
-     * @param IUser $user
+     * @param IJsonUser $user
      *
      * @return bool
      * @throws KeyNotCreatedException
      * @throws UserNotCreatedException
      * @throws UserNotLockedException
      */
-    public function createSystemUser(IUser $user): bool {
+    public function createSystemUser(IJsonUser $user): bool {
         $file = $this->fileService->defaultProfileImage();
         $file->setOwner($user);
         return $this->createUser(
@@ -230,9 +230,9 @@ class UserService {
     }
 
     /**
-     * @param IUser      $user
-     * @param bool       $lockUser
-     * @param IFile|null $file
+     * @param IJsonUser      $user
+     * @param bool           $lockUser
+     * @param IJsonFile|null $file
      *
      * @return bool
      * @throws KeyNotCreatedException
@@ -240,9 +240,9 @@ class UserService {
      * @throws UserNotLockedException
      */
     public function createUser(
-        IUser $user
+        IJsonUser $user
         , bool $lockUser = false
-        , ?IFile $file = null
+        , ?IJsonFile $file = null
     ): bool {
 
         $userId = $this->userRepository->insert($user);
@@ -282,7 +282,7 @@ class UserService {
         return true;
     }
 
-    public function isDisabled(?IUser $user): bool {
+    public function isDisabled(?IJsonUser $user): bool {
         return null === $user && true === $user->isLocked();
     }
 
@@ -294,7 +294,7 @@ class UserService {
     public function userExistsByName(string $name): bool {
         $users = Keestash::getServer()->getUsersFromCache();
 
-        /** @var IUser $user */
+        /** @var IJsonUser $user */
         foreach ($users as $user) {
             if ($user->getName() === $name) return true;
         }

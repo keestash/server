@@ -32,7 +32,7 @@ use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Application\Application;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -70,7 +70,7 @@ class LoginService extends AbstractApi {
         , IPermissionRepository $permissionManager
         , PersistenceService $persistenceService
         , ConfigService $configService
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;

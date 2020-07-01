@@ -26,7 +26,7 @@ use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Controller\IAppController;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +49,7 @@ class HTTPRouter extends Router {
         );
     }
 
-    public function route(?IToken $token): void {
+    public function route(?IJsonToken $token): void {
 
         try {
             $context = new RequestContext();

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,28 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\Object;
 
-use DateTime;
-use JsonSerializable;
-use KSP\Core\DTO\User\IUser;
-
-interface IToken extends IObject {
-
-    public function getId(): int;
-
-    public function getName(): string;
-
-    public function getValue(): string;
-
-    public function equals(IToken $token): bool;
-
-    public function expired(): bool;
-
-    public function valid(): bool;
-
-    public function getUser(): IUser;
-
-    public function getCreateTs(): DateTime;
+interface IObject {
 
 }

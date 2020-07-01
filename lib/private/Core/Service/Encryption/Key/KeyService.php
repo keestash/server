@@ -25,9 +25,9 @@ use DateTime;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\Encryption\Credential\IJsonCredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Service\Encryption\IEncryptionService;
 
 class KeyService {
@@ -49,12 +49,12 @@ class KeyService {
     /**
      * Returns an instance of IKey
      *
-     * @param ICredential $credential
-     * @param IUser       $user
+     * @param IJsonCredential $credential
+     * @param IJsonUser       $user
      *
      * @return IKey|null
      */
-    public function createKey(ICredential $credential, IUser $user): ?IKey {
+    public function createKey(IJsonCredential $credential, IJsonUser $user): ?IKey {
         // Step 1: we create a random secret
         //      This secret consists of a unique id (uuid)
         //      and a hash created out of the user object
@@ -73,11 +73,11 @@ class KeyService {
         return $key;
     }
 
-    public function storeKey(IUser $user, IKey $key): bool {
+    public function storeKey(IJsonUser $user, IKey $key): bool {
         return $this->encryptionKeyRepository->storeKey($user, $key);
     }
 
-    public function getKey(IUser $user): ?IKey {
+    public function getKey(IJsonUser $user): ?IKey {
         return $this->encryptionKeyRepository->getKey($user);
     }
 

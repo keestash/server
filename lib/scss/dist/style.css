@@ -6355,6 +6355,8 @@ html {
 
 body {
   color: #000; }
+  body .grey-text {
+    color: #9e9e9e; }
 
 .navbar {
   padding: 0.5rem 1rem !important;
@@ -6389,8 +6391,11 @@ body {
       #content #app-navigation .scrollable .action-bar .action-bar-inner {
         padding-top: 0.3rem;
         padding-bottom: 0.3rem; }
-        #content #app-navigation .scrollable .action-bar .action-bar-inner .p-3 .btn-group {
-          width: 100%; }
+        #content #app-navigation .scrollable .action-bar .action-bar-inner .p-3 {
+          padding-left: 0 !important;
+          padding-right: 0 !important; }
+          #content #app-navigation .scrollable .action-bar .action-bar-inner .p-3 .btn-group {
+            width: 100%; }
     #content #app-navigation .list-group-item {
       border: none;
       background-color: transparent;
@@ -6402,6 +6407,8 @@ body {
         color: black;
         text-align: inherit;
         text-decoration: none; }
+      #content #app-navigation .list-group-item .entry-icon {
+        margin-right: 1rem; }
       #content #app-navigation .list-group-item .list-group-item-action.active, #content #app-navigation .list-group-item .list-group-item-action:hover {
         background: rgba(0, 0, 0, 0.03); }
       #content #app-navigation .list-group-item .list-group-item-action:focus, #content #app-navigation .list-group-item .list-group-item-action:hover {

@@ -27,8 +27,8 @@ use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
@@ -49,7 +49,7 @@ class UserList extends AbstractApi {
         , FileService $fileService
         , RawFileService $rawFileService
         , FileManager $fileManager
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
@@ -72,7 +72,7 @@ class UserList extends AbstractApi {
         $all          = $this->userRepository->getAll();
         $pictureTable = [];
 
-        /** @var IUser $user */
+        /** @var IJsonUser $user */
         foreach ($all as $key => $user) {
             if ($type === UserList::USER_TYPE_SEEN && null === $user->getLastLogin()) {
                 $all->remove($key);

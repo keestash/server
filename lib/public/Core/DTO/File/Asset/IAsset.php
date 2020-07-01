@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\File\Asset;
 
 
-use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\File\IJsonFile;
 use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
 
-interface IAsset extends IFile {
+interface IAsset extends IJsonFile {
 
     public function getURL(): IUniformResourceLocator;
 

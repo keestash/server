@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Encryption\Encryption;
 
 use doganoo\PHPUtil\Log\FileLogger;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\Encryption\Credential\IJsonCredential;
 use KSP\Core\Service\Encryption\IEncryptionService;
 
 /**
@@ -36,7 +36,7 @@ class AESService implements IEncryptionService {
     public const HASH_ALGORITHM = "sha256";
     public const IV_LENGTH      = 16;
 
-    public function encrypt(ICredential $credential, string $raw): string {
+    public function encrypt(IJsonCredential $credential, string $raw): string {
         $key = hash(
             AESService::HASH_ALGORITHM
             , $credential->getSecret()
@@ -63,7 +63,7 @@ class AESService implements IEncryptionService {
         return $iv . $hash . $cipherText;
     }
 
-    public function decrypt(ICredential $credential, string $encrypted): ?string {
+    public function decrypt(IJsonCredential $credential, string $encrypted): ?string {
         $iv = substr(
             $encrypted
             , 0

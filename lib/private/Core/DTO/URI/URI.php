@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\URI;
 
-use KSP\Core\DTO\URI\IUniformResourceIdentifier;
+use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
 
-class URI implements IUniformResourceIdentifier {
+class URI implements IJsonUniformResourceIdentifier {
 
     private $identifier = null;
 

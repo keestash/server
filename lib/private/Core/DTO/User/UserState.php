@@ -23,13 +23,13 @@ namespace Keestash\Core\DTO\User;
 
 use DateTime;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 
 class UserState implements IUserState {
 
     /** @var int $id */
     private $id;
-    /** @var IUser $user */
+    /** @var IJsonUser $user */
     private $user;
     /** @var string $state */
     private $state;
@@ -53,16 +53,16 @@ class UserState implements IUserState {
     }
 
     /**
-     * @return IUser
+     * @return IJsonUser
      */
-    public function getUser(): IUser {
+    public function getUser(): IJsonUser {
         return $this->user;
     }
 
     /**
-     * @param IUser $user
+     * @param IJsonUser $user
      */
-    public function setUser(IUser $user): void {
+    public function setUser(IJsonUser $user): void {
         $this->user = $user;
     }
 

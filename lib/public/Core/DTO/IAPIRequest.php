@@ -21,9 +21,11 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO;
 
-interface IAPIRequest extends IObject {
+use KSP\Core\DTO\Object\IJsonObject;
 
-    public function getToken(): IToken;
+interface IAPIRequest extends IJsonObject {
+
+    public function getToken(): IJsonToken;
 
     public function getStart(): float;
 

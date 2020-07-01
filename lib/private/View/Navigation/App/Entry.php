@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\View\Navigation\App;
 
-class Entry {
+use KSP\View\Navigation\App\IEntry;
+
+class Entry implements IEntry {
 
     /** @var string */
     private $title;
@@ -29,15 +31,19 @@ class Entry {
     private $selector;
     /** @var string|null */
     private $href;
+    /** @var string */
+    private $iconClass;
 
     public function __construct(
         string $title = ""
         , string $selector = ""
         , ?string $href = null
+        , string $iconClass = IEntry::ICON_CIRCLE
     ) {
         $this->setTitle($title);
         $this->setSelector($selector);
         $this->setHref($href);
+        $this->setIconClass($iconClass);
     }
 
     /**
@@ -82,5 +88,18 @@ class Entry {
         $this->href = $href;
     }
 
+    /**
+     * @return string
+     */
+    public function getIconClass(): string {
+        return $this->iconClass;
+    }
+
+    /**
+     * @param string $iconClass
+     */
+    public function setIconClass(string $iconClass): void {
+        $this->iconClass = $iconClass;
+    }
 
 }

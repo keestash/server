@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Instance\Repository;
 
-use KSP\Core\DTO\Instance\Repository\ITable;
+use KSP\Core\DTO\Instance\Repository\IJsonTable;
 
-class Table implements ITable {
+class Table implements IJsonTable {
 
     /** @var string $name */
     private $name;

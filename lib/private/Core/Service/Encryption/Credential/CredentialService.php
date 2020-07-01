@@ -23,8 +23,8 @@ namespace Keestash\Core\Service\Encryption\Credential;
 
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Encryption\Credential\IJsonCredential;
+use KSP\Core\DTO\User\IJsonUser;
 
 /**
  * Class CredentialService
@@ -46,11 +46,11 @@ class CredentialService {
      * When changing the password, it is only necessary to re-encrypt
      * the IKey and not the whole data encrypted so far.
      *
-     * @param IUser $user
+     * @param IJsonUser $user
      *
-     * @return ICredential
+     * @return IJsonCredential
      */
-    public function getCredentialForUser(IUser $user): ICredential {
+    public function getCredentialForUser(IJsonUser $user): IJsonCredential {
         $credential = new Credential();
         $credential->setOwner($user);
         $credential->setSecret($user->getPassword());

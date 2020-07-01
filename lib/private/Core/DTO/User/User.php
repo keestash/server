@@ -24,10 +24,10 @@ namespace Keestash\Core\DTO\User;
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
 use Exception;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Permission\IUser as PermissionUser;
 
-class User implements IUser, PermissionUser {
+class User implements IJsonUser, PermissionUser {
 
     /** @var int $id */
     private $id;
@@ -81,7 +81,7 @@ class User implements IUser, PermissionUser {
     }
 
     public function equals($object): bool {
-        if ($object instanceof IUser) {
+        if ($object instanceof IJsonUser) {
             return $this->getId() === $object->getId();
         }
         return false;

@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\Router;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 
 class Verification {
@@ -42,7 +42,7 @@ class Verification {
         $this->userHashes      = $userHashes;
     }
 
-    public function verifyToken(array $parameters): ?IToken {
+    public function verifyToken(array $parameters): ?IJsonToken {
 
         if (null === $this->userHashes) return null;
 

@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Token;
 
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\Core\Repository\IRepository;
 
 interface ITokenRepository extends IRepository {
 
-    public function get(int $id): ?IToken;
+    public function get(int $id): ?IJsonToken;
 
-    public function getByHash(string $hash): ?IToken;
+    public function getByHash(string $hash): ?IJsonToken;
 
-    public function add(IToken $token): ?int;
+    public function add(IJsonToken $token): ?int;
 
 }

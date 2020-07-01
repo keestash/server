@@ -25,9 +25,9 @@ use DateTime;
 use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use KSP\Core\DTO\File\IExtension;
-use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\File\IJsonExtension;
+use KSP\Core\DTO\File\IJsonFile;
+use KSP\Core\DTO\User\IJsonUser;
 
 class FileService {
 
@@ -37,7 +37,7 @@ class FileService {
         $this->rawFileService = $rawFileService;
     }
 
-    public function getProfileImageName(IUser $user): string {
+    public function getProfileImageName(IJsonUser $user): string {
         return "profile_image_{$user->getId()}";
     }
 
@@ -49,7 +49,7 @@ class FileService {
         return $this->defaultProfileImage()->getFullPath();
     }
 
-    public function defaultProfileImage(): IFile {
+    public function defaultProfileImage(): IJsonFile {
         $dir  = Keestash::getServer()->getAssetRoot() . "/img/";
         $dir  = str_replace("//", "/", $dir);
         $path = "$dir/profile-picture.png";
@@ -61,7 +61,7 @@ class FileService {
         );
         $file->setCreateTs(new DateTime());
         $file->setDirectory($dir);
-        $file->setExtension(IExtension::PNG);
+        $file->setExtension(IJsonExtension::PNG);
         $file->setHash(md5_file($path));
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName("profile-picture");
@@ -69,13 +69,13 @@ class FileService {
         return $file;
     }
 
-    public function getProfileImage(IUser $user): string {
+    public function getProfileImage(IJsonUser $user): string {
         $name = $this->getProfileImageName($user);
         $path = Keestash::getServer()->getImageRoot() . "/" . $name;
         return str_replace("//", "/", $path);
     }
 
-    public function getProfileImagePath(?IUser $user): string {
+    public function getProfileImagePath(?IJsonUser $user): string {
 
         if (null === $user) {
             return $this->defaultProfileImage()->getFullPath();

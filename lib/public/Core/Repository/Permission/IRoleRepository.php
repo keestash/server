@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\Permission;
 
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Repository\IRepository;
 
 /**
@@ -31,8 +31,8 @@ use KSP\Core\Repository\IRepository;
  */
 interface IRoleRepository extends IRepository {
 
-    public function getRolesByUser(IUser $user): ?BinarySearchTree;
+    public function getRolesByUser(IJsonUser $user): ?BinarySearchTree;
 
-    public function removeUserRoles(IUser $user): bool;
+    public function removeUserRoles(IJsonUser $user): bool;
 
 }
