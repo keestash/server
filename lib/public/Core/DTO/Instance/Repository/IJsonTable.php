@@ -19,21 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service;
+namespace KSP\Core\DTO\Instance\Repository;
 
-use Keestash\Core\DTO\Token;
-use KSP\Core\DTO\IJsonToken;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\Object\IJsonObject;
 
-class TokenService {
+interface IJsonTable extends IJsonObject {
 
-    public function generate(string $name, IJsonUser $user): IJsonToken {
-        $token = new Token();
-        $token->setCreateTs(time());
-        $token->setUser($user);
-        $token->setValue(md5(md5(uniqid((string) time(), true))));
-        $token->setName($name);
-        return $token;
-    }
+    public function getName(): string;
+
+    public function getColumn(): string;
+
+    public function getReferencedTable(): string;
+
+    public function getReferencedColumn(): string;
 
 }

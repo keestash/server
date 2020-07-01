@@ -26,7 +26,7 @@ use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 
 class Exists extends AbstractApi {
 
@@ -42,7 +42,7 @@ class Exists extends AbstractApi {
         $users    = Keestash::getServer()->getUsersFromCache();
         $user     = null;
 
-        /** @var IUser $iUser */
+        /** @var IJsonUser $iUser */
         foreach ($users as $iUser) {
 
             if (strtolower($userName) === strtolower($iUser->getName())) {

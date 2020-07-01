@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,12 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\URI;
+namespace KSP\View\Navigation\App;
 
-use KSP\Core\DTO\IObject;
+use KSP\Core\DTO\Object\IObject;
 
-interface IUniformResourceIdentifier extends IObject {
+interface IEntry extends IObject {
 
-    public function getIdentifier(): string;
+    public const ICON_CIRCLE  = "far fa-circle";
+    public const ICON_HISTORY = "fas fa-history";
+    public const ICON_SHARE   = "fas fa-share";
+    public const ICON_SITEMAP = "fas fa-sitemap";
+    public const ICON_STAR    = "fas fa-star";
 
 }

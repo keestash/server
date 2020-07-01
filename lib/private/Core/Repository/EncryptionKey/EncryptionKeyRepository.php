@@ -26,13 +26,13 @@ use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use PDO;
 
 class EncryptionKeyRepository extends AbstractRepository implements IEncryptionKeyRepository {
 
-    public function storeKey(IUser $user, IKey $key): bool {
+    public function storeKey(IJsonUser $user, IKey $key): bool {
         $sql       = "insert into `key` (`value`, `create_ts`) values (:value, :create_ts);";
         $statement = parent::prepareStatement($sql);
         if (null === $statement) return false;
@@ -69,7 +69,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
         return $statement->execute();
     }
 
-    public function getKey(IUser $user): ?IKey {
+    public function getKey(IJsonUser $user): ?IKey {
         $sql = "select
                         k.`id`
                         , k.`value`
@@ -103,7 +103,7 @@ class EncryptionKeyRepository extends AbstractRepository implements IEncryptionK
     }
 
 
-    public function remove(IUser $user): bool {
+    public function remove(IJsonUser $user): bool {
         $key       = $this->getKey($user);
         $sql       = "DELETE FROM `user_key` WHERE `key_id` = :key_id;";
         $statement = $this->prepareStatement($sql);

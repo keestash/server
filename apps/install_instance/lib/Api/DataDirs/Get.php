@@ -25,7 +25,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\L10N\IL10N;
 
 class Get extends AbstractApi {
@@ -35,7 +35,7 @@ class Get extends AbstractApi {
     public function __construct(
         IL10N $l10n
         , InstallerService $installerService
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
         parent::__construct($l10n, $token);
 

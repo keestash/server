@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service;
+namespace KSP\Core\DTO\Encryption\Password;
 
-use Keestash\Core\DTO\Token;
-use KSP\Core\DTO\IJsonToken;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\Object\IJsonObject;
 
-class TokenService {
+/**
+ * Interface IPassword
+ *
+ * @package KSP\Core\DTO\Encryption\Password
+ */
+interface IJsonPassword extends IJsonObject {
 
-    public function generate(string $name, IJsonUser $user): IJsonToken {
-        $token = new Token();
-        $token->setCreateTs(time());
-        $token->setUser($user);
-        $token->setValue(md5(md5(uniqid((string) time(), true))));
-        $token->setName($name);
-        return $token;
-    }
+    public function getLength(): int;
+
+    public function getValue(): string;
+
+    public function getCharacterSet(): array;
+
+    public function getEntropy(): float;
+
+    public function getQuality(): int;
 
 }

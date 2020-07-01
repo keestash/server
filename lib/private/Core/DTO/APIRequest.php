@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO;
 
 use KSP\Core\DTO\IAPIRequest;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 
 /**
  * Class APIRequest
@@ -35,11 +35,11 @@ class APIRequest implements IAPIRequest {
     private $end   = null;
     private $route = null;
 
-    public function getToken(): IToken {
+    public function getToken(): IJsonToken {
         return $this->token;
     }
 
-    public function setToken(IToken $token): void {
+    public function setToken(IJsonToken $token): void {
         $this->token = $token;
     }
 

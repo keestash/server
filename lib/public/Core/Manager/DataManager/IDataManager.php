@@ -22,22 +22,22 @@ declare(strict_types=1);
 namespace KSP\Core\Manager\DataManager;
 
 use Keestash\Core\DTO\File\FileList;
-use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\File\IJsonFile;
 use KSP\Core\Manager\IManager;
 
 interface IDataManager extends IManager {
 
     public function __construct(string $appId, ?string $context = null);
 
-    public function store(IFile $file): bool;
+    public function store(IJsonFile $file): bool;
 
     public function storeAll(FileList $fileList): bool;
 
-    public function get(IFile $file): IFile;
+    public function get(IJsonFile $file): IJsonFile;
 
     public function getAll(FileList $fileList): FileList;
 
-    public function remove(IFile $file): bool;
+    public function remove(IJsonFile $file): bool;
 
     public function removeAll(FileList $fileList): bool;
 

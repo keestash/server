@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Api;
 
 use Keestash\Api\AbstractApi;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\L10N\IL10N;
 
 class TestApi extends AbstractApi {
@@ -31,7 +31,7 @@ class TestApi extends AbstractApi {
 
     public function __construct(
         IL10N $l10n
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
         parent::__construct($l10n, $token);
     }

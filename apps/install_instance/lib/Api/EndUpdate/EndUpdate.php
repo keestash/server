@@ -31,7 +31,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -57,7 +57,7 @@ class EndUpdate extends AbstractApi {
         , IUserRepository $userRepository
         , PersistenceService $persistenceService
         , HTTPService $httpService
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
         parent::__construct($l10n, $token);
 

@@ -106,8 +106,8 @@ use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\File\IExtension;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\File\IJsonExtension;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
 use KSP\Core\Manager\ConsoleManager\IConsoleManager;
@@ -201,7 +201,7 @@ class Server {
             $users = $this->query(Server::USER_LIST);
 
 
-            /** @var IUser $user */
+            /** @var IJsonUser $user */
             foreach ($users as $user) {
                 $this->userHashes->put(
                     $user->getHash()
@@ -266,9 +266,9 @@ class Server {
         });
 
         $this->register(Server::ALLOWED_MIME_TYPES, function () {
-            $png = MimeType::getExtensionMimes(IExtension::PNG);
-            $jpg = MimeType::getExtensionMimes(IExtension::JPG);
-            $pdf = MimeType::getExtensionMimes(IExtension::PDF);
+            $png = MimeType::getExtensionMimes(IJsonExtension::PNG);
+            $jpg = MimeType::getExtensionMimes(IJsonExtension::JPG);
+            $pdf = MimeType::getExtensionMimes(IJsonExtension::PDF);
 
             return array_merge(
                 $png
@@ -423,7 +423,7 @@ class Server {
             return Keestash::getServer()->getUserFromSession();
         });
 
-        $this->register(IUser::class, function () {
+        $this->register(IJsonUser::class, function () {
             return Keestash::getServer()->getUserFromSession();
         });
 
@@ -666,7 +666,7 @@ class Server {
         return $this->query(Server::CONFIG);
     }
 
-    public function getUserFromSession(): ?IUser {
+    public function getUserFromSession(): ?IJsonUser {
         /** @var PersistenceService $persistenceService */
         $persistenceService = $this->query(PersistenceService::class);
         /** @var UserService $userService */

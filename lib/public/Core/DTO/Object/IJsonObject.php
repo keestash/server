@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\Object;
 
 use JsonSerializable;
 
-interface IObject extends JsonSerializable {
+interface IJsonObject extends IObject, JsonSerializable {
 
 }

@@ -23,8 +23,8 @@ namespace Keestash\Core\Service\File\PublicFile;
 
 use Keestash;
 use Keestash\Core\DTO\URI\URL\URL;
-use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
 
 /**
@@ -33,7 +33,7 @@ use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
  */
 class PublicFileService {
 
-    public function getPublicProfilePictureURL(IUser $user, ?IToken $token = null): ?IUniformResourceLocator {
+    public function getPublicProfilePictureURL(IJsonUser $user, ?IJsonToken $token = null): ?IUniformResourceLocator {
         if (null === $token) return null;
         $baseURL    = Keestash::getBaseURL(true, false);
         $identifier = "$baseURL/users/profile_pictures/{$token->getValue()}/{$user->getHash()}/";

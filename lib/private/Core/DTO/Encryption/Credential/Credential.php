@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\Encryption\Credential;
 
 use DateTime;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Encryption\Credential\IJsonCredential;
+use KSP\Core\DTO\User\IJsonUser;
 
 /**
  * Class Credential
@@ -31,7 +31,7 @@ use KSP\Core\DTO\User\IUser;
  * @package Keestash\Core\DTO\Encryption\Credential
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Credential implements ICredential {
+class Credential implements IJsonCredential {
 
     /** @var int */
     private $id;
@@ -39,7 +39,7 @@ class Credential implements ICredential {
     private $secret;
     /** @var DateTime */
     private $createTs;
-    /** @var IUser */
+    /** @var IJsonUser */
     private $owner;
 
     /**
@@ -83,11 +83,11 @@ class Credential implements ICredential {
         $this->createTs = $createTs;
     }
 
-    public function getOwner(): IUser {
+    public function getOwner(): IJsonUser {
         return $this->owner;
     }
 
-    public function setOwner(IUser $owner): void {
+    public function setOwner(IJsonUser $owner): void {
         $this->owner = $owner;
     }
 

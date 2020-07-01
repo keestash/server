@@ -24,8 +24,8 @@ namespace Keestash\Core\Manager\FileManager;
 use Keestash;
 use Keestash\Core\DTO\URI\URI;
 use Keestash\Server;
-use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\URI\IUniformResourceIdentifier;
+use KSP\Core\DTO\File\IJsonFile;
+use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Repository\File\IFileRepository;
 
@@ -37,7 +37,7 @@ class FileManager implements IFileManager {
         $this->fileRepository = $fileRepository;
     }
 
-    public function write(IFile $file): bool {
+    public function write(IJsonFile $file): bool {
 
         if (false === $this->verifyFile($file)) return false;
 
@@ -57,7 +57,7 @@ class FileManager implements IFileManager {
 
     }
 
-    public function verifyFile(IFile $file): bool {
+    public function verifyFile(IJsonFile $file): bool {
         if ($file->getSize() <= 0) return false;
 
         return true;
@@ -76,14 +76,14 @@ class FileManager implements IFileManager {
 
     }
 
-    public function read(?IUniformResourceIdentifier $uri): ?IFile {
+    public function read(?IJsonUniformResourceIdentifier $uri): ?IJsonFile {
         if (null === $uri) return null;
         $path = $uri->getIdentifier();
         if (false === is_file($path)) return null;
         return $this->fileRepository->getByUri($uri);
     }
 
-    public function remove(IFile $file): bool {
+    public function remove(IJsonFile $file): bool {
         $path = realpath($file->getFullPath());
 
         if (false === $path) return false;

@@ -28,7 +28,7 @@ use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use KSP\Api\IApi;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\IJsonToken;
 use KSP\Core\Permission\IPermission;
 use KSP\L10N\IL10N;
 
@@ -47,7 +47,7 @@ abstract class AbstractApi implements IApi {
 
     public function __construct(
         IL10N $l10n
-        , ?IToken $token = null
+        , ?IJsonToken $token = null
     ) {
 
         $this->translator = $l10n;
@@ -104,7 +104,7 @@ abstract class AbstractApi implements IApi {
         return $this->translator;
     }
 
-    protected function getToken(): ?IToken {
+    protected function getToken(): ?IJsonToken {
         return $this->token;
     }
 

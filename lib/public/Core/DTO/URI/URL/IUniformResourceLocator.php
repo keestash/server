@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\URI\URL;
 
-use KSP\Core\DTO\URI\IUniformResourceIdentifier;
+use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
 
-interface IUniformResourceLocator extends IUniformResourceIdentifier {
+interface IUniformResourceLocator extends IJsonUniformResourceIdentifier {
 
 }

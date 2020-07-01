@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 
 /**
  * This methods registers the state for users. If the user gets locked, he is not able to
@@ -35,13 +35,13 @@ use KSP\Core\DTO\User\IUser;
  */
 interface IUserStateRepository {
 
-    public function lock(IUser $user): bool;
+    public function lock(IJsonUser $user): bool;
 
-    public function unlock(IUser $user): bool;
+    public function unlock(IJsonUser $user): bool;
 
-    public function delete(IUser $user): bool;
+    public function delete(IJsonUser $user): bool;
 
-    public function revertDelete(IUser $user): bool;
+    public function revertDelete(IJsonUser $user): bool;
 
     public function getDeletedUsers(): HashTable;
 
@@ -49,12 +49,12 @@ interface IUserStateRepository {
 
     public function getAll(): HashTable;
 
-    public function remove(IUser $user, string $state): bool;
+    public function remove(IJsonUser $user, string $state): bool;
 
-    public function removeAll(IUser $user): bool;
+    public function removeAll(IJsonUser $user): bool;
 
-    public function isLocked(IUser $user): bool;
+    public function isLocked(IJsonUser $user): bool;
 
-    public function isDeleted(IUser $user): bool;
+    public function isDeleted(IJsonUser $user): bool;
 
 }

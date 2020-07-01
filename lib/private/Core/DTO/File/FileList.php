@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\File;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\File\IJsonFile;
 
 class FileList extends ArrayList {
 
     public function add($item): bool {
 
-        if ($item instanceof IFile) {
+        if ($item instanceof IJsonFile) {
             return parent::add($item);
         }
 
@@ -47,7 +47,7 @@ class FileList extends ArrayList {
     }
 
     public function addToIndex(int $index, $item): bool {
-        if ($item instanceof IFile) {
+        if ($item instanceof IJsonFile) {
             return parent::addToIndex($index, $item);
         }
         return false;

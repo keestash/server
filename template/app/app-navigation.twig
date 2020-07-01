@@ -11,7 +11,7 @@
             <ul class="list-group">
                 {% for id, segment in appNavigation %}
                     <li>
-                        <small class="p-3"
+                        <small class="p-3 grey-text"
                                data-id="{{ segment.getId() }}">{{ segment.getTitle() }}</small>
                     </li>
                     {% for id2, entry in segment.getEntries() %}
@@ -19,9 +19,9 @@
                             <a
                                     id="{{ entry.getSelector() }}"
                                     href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"
-                                    class="list-group-item-action d-flex align-items-center"
+                                    class="list-group-item-action d-flex align-items-baseline justify-content-start"
                             >
-                                <i class="mdi mdi-inbox"></i> {{ entry.getTitle() }}
+                                <i class="{{ entry.getIconClass() }} entry-icon"></i> {{ entry.getTitle() }}
                             </a>
                         </li>
                     {% endfor %}

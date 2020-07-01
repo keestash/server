@@ -23,7 +23,7 @@ namespace Keestash\Core\Repository\ApiLog;
 
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\IAPIRequest;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IJsonUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 
 class ApiLogRepository extends AbstractRepository implements IApiLogRepository {
@@ -71,7 +71,7 @@ class ApiLogRepository extends AbstractRepository implements IApiLogRepository {
         return $lastInsertId;
     }
 
-    public function removeForUser(IUser $user): bool {
+    public function removeForUser(IJsonUser $user): bool {
         $sql       = "DELETE FROM `apilog` WHERE `user_id` = :user_id;";
         $statement = $this->prepareStatement($sql);
 
