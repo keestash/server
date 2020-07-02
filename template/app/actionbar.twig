@@ -24,9 +24,11 @@
                         >
                             {% if value.getHref() is not null %}
                                 <a href="{{ value.getHref() }}">
+                                    <i class="{{ value.getType() }}"></i>
                                     {{ value.getDescription() }}
                                 </a>
                             {% else %}
+                                <i class="{{ value.getType() }}"></i>
                                 {{ value.getDescription() }}
                             {% endif %}
                         </div>

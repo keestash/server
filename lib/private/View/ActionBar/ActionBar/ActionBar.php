@@ -33,13 +33,19 @@ abstract class ActionBar implements IActionBar {
     private $description;
     /** @var ArrayList */
     private $elements;
+    /** @var $type */
+    private $type;
 
     public function __construct() {
         $this->elements = new ArrayList();
     }
 
     public function getType(): string {
-        return IActionBar::TYPE_PLUS;
+        return $this->type;
+    }
+
+    public function setType(string $type): void {
+        $this->type = $type;
     }
 
     public function addElement(IActionBarElement $element): void {

@@ -28,6 +28,8 @@ class ActionBarElement implements IActionBarElement {
     private $description = null;
     private $href        = null;
     private $id          = null;
+    /** @var string */
+    private $type;
 
     public function __construct(?string $description = null) {
         $this->setDescription($description);
@@ -55,6 +57,20 @@ class ActionBarElement implements IActionBarElement {
 
     public function setId(?string $id): void {
         $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void {
+        $this->type = $type;
     }
 
 }

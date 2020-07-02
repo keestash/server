@@ -23,10 +23,18 @@ namespace KSP\Core\View\ActionBar;
 
 interface IActionBarElement {
 
+    public const TYPE_CIRCLE   = "far fa-circle";
+    public const TYPE_FOLDER   = "far fa-folder";
+    public const TYPE_KEY      = "fas fa-key";
+    public const TYPE_PLUS     = "fa-plus";
+    public const TYPE_SETTINGS = "icon settings";
+
     public function getDescription(): string;
 
     public function getHref(): ?string;
 
     public function getId(): ?string;
+
+    public function getType(): string;
 
 }
