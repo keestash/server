@@ -23,6 +23,12 @@ namespace KSP\View\Navigation\App;
 
 use KSP\Core\DTO\Object\IObject;
 
+/**
+ * Interface IEntry
+ *
+ * @package KSP\View\Navigation\App
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 interface IEntry extends IObject {
 
     public const ICON_CIRCLE  = "far fa-circle";

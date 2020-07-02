@@ -77,10 +77,12 @@ class ActionBarBuilder {
         string $name
         , ?string $id = null
         , ?string $href = null
+        , ?string $type = IActionBarElement::TYPE_CIRCLE
     ): ActionBarBuilder {
         $element = new ActionBarElement($name);
         $element->setId($id);
         $element->setHref($href);
+        $element->setType($type);
         $this->elements->add($element);
         return $this;
     }

@@ -27,6 +27,8 @@ interface IActionBar {
 
     public const TYPE_PLUS     = "fa-plus";
     public const TYPE_SETTINGS = "icon settings";
+    public const TYPE_KEY      = "fas fa-key";
+    public const TYPE_FOLDER   = "far fa-folder";
 
     public function setId(string $name): void;
 
@@ -37,6 +39,8 @@ interface IActionBar {
     public function getDescription(): string;
 
     public function getType(): string;
+
+    public function setType(string $type): void;
 
     public function getElements(): ArrayList;
 
