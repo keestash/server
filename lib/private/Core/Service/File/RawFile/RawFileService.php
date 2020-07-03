@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\RawFile;
 
 use Keestash\Core\DTO\URI\URI;
-use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use xobotyi\MimeType;
 
 class RawFileService {
@@ -41,7 +41,7 @@ class RawFileService {
         return MimeType::getExtensions($mimeType);
     }
 
-    public function stringToUri(string $path, bool $strict = true): ?IJsonUniformResourceIdentifier {
+    public function stringToUri(string $path, bool $strict = true): ?IUniformResourceIdentifier {
 
         if (true === $strict) {
             $path = realpath($path);

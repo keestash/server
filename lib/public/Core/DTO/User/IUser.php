@@ -19,12 +19,45 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\URI;
+namespace KSP\Core\DTO\User;
 
+use DateTime;
+use KSP\Core\DTO\IComparator;
 use KSP\Core\DTO\Object\IJsonObject;
 
-interface IJsonUniformResourceIdentifier extends IJsonObject {
+/**
+ * Interface IUser
+ * @package KSP\Core\DTO\User
+ *
+ */
+interface IUser extends IJsonObject, IComparator {
 
-    public function getIdentifier(): string;
+    public const SYSTEM_USER_ID = 1;
+
+    public function getId(): int;
+
+    public function getName(): string;
+
+    public function getPassword(): string;
+
+    public function getCreateTs(): DateTime;
+
+    public function getFirstName(): string;
+
+    public function getLastName(): string;
+
+    public function getEmail(): string;
+
+    public function getPhone(): string;
+
+    public function getWebsite(): string;
+
+    public function getHash(): string;
+
+    public function getLastLogin(): ?DateTime;
+
+    public function isLocked(): bool;
+
+    public function isDeleted(): bool;
 
 }

@@ -29,9 +29,9 @@ use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\File\IJsonFile;
-use KSP\Core\DTO\User\IJsonUser;
-use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use PDO;
@@ -49,7 +49,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $this->userRepository = $userRepository;
     }
 
-    public function add(IJsonFile $file): ?int {
+    public function add(IFile $file): ?int {
         $sql = "insert into `file` (
                    `name`
                   , `path`
@@ -106,7 +106,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
 
     public function addAll(FileList &$files): bool {
         $addedAll = false;
-        /** @var IJsonFile $file */
+        /** @var IFile $file */
         foreach ($files as $file) {
             $fileId   = $this->add($file);
             $addedAll = false;
@@ -120,7 +120,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return $addedAll;
     }
 
-    public function remove(IJsonFile $file): bool {
+    public function remove(IFile $file): bool {
         $sql       = "delete from `file` where `id` = :file_id;";
         $statement = parent::prepareStatement($sql);
 
@@ -140,7 +140,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return $removedAll;
     }
 
-    public function get(int $id): ?IJsonFile {
+    public function get(int $id): ?IFile {
 
         $sql = "select 
                         `id`
@@ -201,7 +201,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $fileList = new FileList();
 
         foreach ($fileIds as $id) {
-            /** @var IJsonFile $file */
+            /** @var IFile $file */
             $file = $this->get($id);
             $fileList->add($file);
         }
@@ -209,7 +209,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return $fileList;
     }
 
-    public function getByUri(IJsonUniformResourceIdentifier $uri): ?IJsonFile {
+    public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
         try {
 
             $path = $uri->getIdentifier();
@@ -276,7 +276,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return null;
     }
 
-    public function removeForUser(IJsonUser $user): bool {
+    public function removeForUser(IUser $user): bool {
         $sql       = "DELETE FROM `file` WHERE `user_id` = :user_id;";
         $statement = $this->prepareStatement($sql);
 

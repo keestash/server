@@ -25,7 +25,7 @@ use KSP\Core\DTO\Object\IJsonObject;
 
 interface IAPIRequest extends IJsonObject {
 
-    public function getToken(): IJsonToken;
+    public function getToken(): IToken;
 
     public function getStart(): float;
 

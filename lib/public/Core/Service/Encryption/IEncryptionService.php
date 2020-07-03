@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption;
 
-use KSP\Core\DTO\Encryption\Credential\IJsonCredential;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 
 interface IEncryptionService {
 
-    public function encrypt(IJsonCredential $credential, string $raw): string;
+    public function encrypt(ICredential $credential, string $raw): string;
 
-    public function decrypt(IJsonCredential $credential, string $encrypted): ?string;
+    public function decrypt(ICredential $credential, string $encrypted): ?string;
 
 }

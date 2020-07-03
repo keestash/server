@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Manager\RouterManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\IToken;
 use Symfony\Component\Routing\Route;
 
 interface IRouter {
@@ -34,7 +34,7 @@ interface IRouter {
 
     public function addRoute(string $name, array $defaults, array $verbs = ["GET"]): bool;
 
-    public function route(?IJsonToken $token): void;
+    public function route(?IToken $token): void;
 
     public function getRoutes(): ?HashTable;
 

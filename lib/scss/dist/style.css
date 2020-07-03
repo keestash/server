@@ -6425,3 +6425,6 @@ hr {
 .btn.btn-primary, .btn.btn-primary:active, .btn.btn-primary:hover, .btn.btn-primary:focus {
   background: #269dff;
   border: #0070cc; }
+
+.btn.btn-secondary, .btn.btn-secondary:active, .btn.btn-secondary:hover, .btn.btn-secondary:focus {
+  background: #3B3939; }

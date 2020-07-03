@@ -32,8 +32,8 @@ use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IJsonToken;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -55,7 +55,7 @@ class ForgotPassword extends AbstractApi {
         , Legacy $legacy
         , IPermissionRepository $permissionManager
         , UserService $userService
-        , ?IJsonToken $token = null
+        , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
@@ -93,7 +93,7 @@ class ForgotPassword extends AbstractApi {
 
         $users = Keestash::getServer()->getUsersFromCache();
         $user  = null;
-        /** @var IJsonUser $iUser */
+        /** @var IUser $iUser */
         foreach ($users as $iUser) {
             if (
                 $usernameOrEmail === $iUser->getEmail()

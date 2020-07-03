@@ -25,7 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
 use doganoo\SimpleRBAC\Test\DataProvider\Role;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use PDO;
@@ -46,7 +46,7 @@ class RoleRepository extends AbstractRepository implements IRoleRepository {
         $this->permissionManager = $permissionManager;
     }
 
-    public function getRolesByUser(IJsonUser $user): ?BinarySearchTree {
+    public function getRolesByUser(IUser $user): ?BinarySearchTree {
         $tree = null;
         $sql  = "select 
                     r.`id`
@@ -83,7 +83,7 @@ class RoleRepository extends AbstractRepository implements IRoleRepository {
         return $tree;
     }
 
-    public function removeUserRoles(IJsonUser $user): bool {
+    public function removeUserRoles(IUser $user): bool {
         $sql       = "DELETE FROM `user_role` WHERE `user_id` = :user_id;";
         $statement = $this->prepareStatement($sql);
 

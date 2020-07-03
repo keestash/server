@@ -27,7 +27,7 @@ use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\L10N\IL10N;
 
@@ -43,7 +43,7 @@ class File extends AbstractApi {
         , FileService $fileService
         , RawFileService $rawFileService
         , IL10N $l10n
-        , ?IJsonToken $token = null
+        , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 

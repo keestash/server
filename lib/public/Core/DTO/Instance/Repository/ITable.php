@@ -19,28 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\Instance\Repository;
 
-use DateTime;
 use KSP\Core\DTO\Object\IJsonObject;
-use KSP\Core\DTO\User\IJsonUser;
 
-interface IJsonToken extends IJsonObject {
-
-    public function getId(): int;
+interface ITable extends IJsonObject {
 
     public function getName(): string;
 
-    public function getValue(): string;
+    public function getColumn(): string;
 
-    public function equals(IJsonToken $token): bool;
+    public function getReferencedTable(): string;
 
-    public function expired(): bool;
-
-    public function valid(): bool;
-
-    public function getUser(): IJsonUser;
-
-    public function getCreateTs(): DateTime;
+    public function getReferencedColumn(): string;
 
 }

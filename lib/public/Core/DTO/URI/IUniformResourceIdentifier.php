@@ -19,36 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\File;
+namespace KSP\Core\DTO\URI;
 
-use DateTime;
 use KSP\Core\DTO\Object\IJsonObject;
-use KSP\Core\DTO\User\IJsonUser;
 
-interface IJsonFile extends IJsonObject {
+interface IUniformResourceIdentifier extends IJsonObject {
 
-    public function getId(): int;
-
-    public function getName(): string;
-
-    public function getDirectory(): string;
-
-    public function getTemporaryPath(): ?string;
-
-    public function getMimeType(): string;
-
-    public function getHash(): string;
-
-    public function getExtension(): string;
-
-    public function getSize(): int;
-
-    public function getOwner(): IJsonUser;
-
-    public function getFullPath(): string;
-
-    public function getContent(): ?string;
-
-    public function getCreateTs(): DateTime;
+    public function getIdentifier(): string;
 
 }

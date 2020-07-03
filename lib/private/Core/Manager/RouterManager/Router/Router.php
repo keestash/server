@@ -26,7 +26,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\DTO\IAPIRequest;
-use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Manager\RouterManager\IRouter;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
@@ -174,7 +174,7 @@ abstract class Router implements IRouter {
         return $route;
     }
 
-    abstract public function route(?IJsonToken $token): void;
+    abstract public function route(?IToken $token): void;
 
     protected function logRequest(IAPIRequest $request): bool {
         $logRequests = Keestash::getServer()->getConfig()->get("log_requests");

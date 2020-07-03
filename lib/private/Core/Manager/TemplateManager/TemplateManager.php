@@ -23,7 +23,7 @@ namespace Keestash\Core\Manager\TemplateManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Set\HashSet;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\DTO\File\IJsonExtension;
+use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
@@ -63,7 +63,7 @@ class TemplateManager implements ITemplateManager {
         foreach ($iterator as $info) {
             if (
                 true === $info->isFile() &&
-                IJsonExtension::TWIG === $info->getExtension()
+                IExtension::TWIG === $info->getExtension()
             ) {
                 $this->names->add($info->getRealPath());
             }

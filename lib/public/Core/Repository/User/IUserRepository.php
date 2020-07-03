@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 /**
@@ -32,16 +32,16 @@ use KSP\Core\Repository\IRepository;
  */
 interface IUserRepository extends IRepository {
 
-    public function getUser(string $name): ?IJsonUser;
+    public function getUser(string $name): ?IUser;
 
-    public function getUserById(string $id): ?IJsonUser;
+    public function getUserById(string $id): ?IUser;
 
     public function getAll(): ArrayList;
 
-    public function insert(IJsonUser $user): ?int;
+    public function insert(IUser $user): ?int;
 
-    public function update(IJsonUser $user): bool;
+    public function update(IUser $user): bool;
 
-    public function remove(IJsonUser $user): bool;
+    public function remove(IUser $user): bool;
 
 }

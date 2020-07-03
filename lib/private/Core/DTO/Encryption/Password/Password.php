@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Encryption\Password;
 
-use KSP\Core\DTO\Encryption\Password\IJsonPassword;
+use KSP\Core\DTO\Encryption\Password\IPassword;
 
 /**
  * Class Password
@@ -29,7 +29,7 @@ use KSP\Core\DTO\Encryption\Password\IJsonPassword;
  * @package Keestash\Core\DTO\Encryption\Password
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Password implements IJsonPassword {
+class Password implements IPassword {
 
     /** @var string $value */
     private $value;

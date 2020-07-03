@@ -23,19 +23,19 @@ namespace Keestash\Core\Manager\FileManager\AssetManager;
 
 use Keestash\Core\Manager\FileManager\FileManager;
 use KSP\Core\DTO\File\Asset\IAsset;
-use KSP\Core\DTO\File\IJsonFile;
+use KSP\Core\DTO\File\IFile;
 use KSP\Core\Manager\FileManager\AssetManager\IAssetManager;
 
 class AssetManager extends FileManager implements IAssetManager {
 
-    public function write(IJsonFile $file): bool {
+    public function write(IFile $file): bool {
         if ($file instanceof IAsset) {
             return parent::write($file);
         }
         return false;
     }
 
-    public function verifyFile(IJsonFile $file): bool {
+    public function verifyFile(IFile $file): bool {
         if ($file instanceof IAsset) {
             return parent::verifyFile($file);
         }

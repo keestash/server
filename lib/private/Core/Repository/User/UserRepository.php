@@ -32,7 +32,7 @@ use Keestash\Core\DTO\User\User;
 use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
 
@@ -65,10 +65,10 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      *
      * @param string $name The name of the user
      *
-     * @return IJsonUser|null
+     * @return IUser|null
      * @throws KeestashException
      */
-    public function getUser(string $name): ?IJsonUser {
+    public function getUser(string $name): ?IUser {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(
             [
@@ -194,13 +194,13 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     /**
      * Inserts an instance of IUser into the database
      *
-     * @param IJsonUser $user
+     * @param IUser $user
      *
      * @return int|null
      *
      * TODO insert roles and permissions
      */
-    public function insert(IJsonUser $user): ?int {
+    public function insert(IUser $user): ?int {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->insert('user')
             ->values(
@@ -233,13 +233,13 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     }
 
     /**
-     * @param IJsonUser $user
+     * @param IUser $user
      *
      * @return bool
      *
      * TODO update roles and permissions
      */
-    public function update(IJsonUser $user): bool {
+    public function update(IUser $user): bool {
         $queryBuilder = $this->getQueryBuilder();
 
         $q = $queryBuilder->update('user', 'u')
@@ -275,10 +275,10 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      *
      * @param string $id
      *
-     * @return IJsonUser|null
+     * @return IUser|null
      * @throws KeestashException
      */
-    public function getUserById(string $id): ?IJsonUser {
+    public function getUserById(string $id): ?IUser {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->select(
             [
@@ -342,11 +342,11 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     /**
      * Removes an instance of IUser
      *
-     * @param IJsonUser $user
+     * @param IUser $user
      *
      * @return bool
      */
-    public function remove(IJsonUser $user): bool {
+    public function remove(IUser $user): bool {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder->delete('user')
                 ->where('id = ?')
