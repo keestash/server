@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace Keestash\Core\Service;
 
 use Keestash\Core\DTO\Token;
-use KSP\Core\DTO\IJsonToken;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\User\IUser;
 
 class TokenService {
 
-    public function generate(string $name, IJsonUser $user): IJsonToken {
+    public function generate(string $name, IUser $user): IToken {
         $token = new Token();
         $token->setCreateTs(time());
         $token->setUser($user);

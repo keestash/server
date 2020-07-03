@@ -28,7 +28,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\DTO\APIRequest;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\NoControllerFoundException;
-use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\IToken;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class APIRouter extends Router {
@@ -37,12 +37,12 @@ class APIRouter extends Router {
     public const FIELD_NAME_TOKEN     = "token";
 
     /**
-     * @param IJsonToken|null $token
+     * @param IToken|null $token
      *
      * @throws KeestashException
      * @throws NoControllerFoundException
      */
-    public function route(?IJsonToken $token): void {
+    public function route(?IToken $token): void {
         try {
             /** @var array $allParameters */
             $allParameters = $this->getAllParameters();
@@ -101,7 +101,7 @@ class APIRouter extends Router {
         throw new NoControllerFoundException("no controller found");
     }
 
-    private function log(?IJsonToken $token, float $start, float $end): bool {
+    private function log(?IToken $token, float $start, float $end): bool {
         $route = $this->getRouteName();
         if (null === $token) {
             FileLogger::debug("There is no token for $route which means that it is not necessary to log");

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTime;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 
 interface IUserState {
 
@@ -33,7 +33,7 @@ interface IUserState {
 
     public function getId(): int;
 
-    public function getUser(): IJsonUser;
+    public function getUser(): IUser;
 
     public function getState(): string;
 

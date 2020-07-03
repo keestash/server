@@ -27,7 +27,7 @@ use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -46,24 +46,24 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         $this->userRepository = $userRepository;
     }
 
-    public function unlock(IJsonUser $user): bool {
+    public function unlock(IUser $user): bool {
         if (false === $this->isLocked($user)) return true;
         return $this->remove($user, IUserState::USER_STATE_LOCK);
     }
 
-    public function lock(IJsonUser $user): bool {
+    public function lock(IUser $user): bool {
         if (true === $this->isLocked($user)) return true;
         return $this->insert($user, IUserState::USER_STATE_LOCK);
     }
 
-    public function delete(IJsonUser $user): bool {
+    public function delete(IUser $user): bool {
         if (true === $this->isDeleted($user)) return true;
         $locked  = $this->insert($user, IUserState::USER_STATE_LOCK);
         $deleted = $this->insert($user, IUserState::USER_STATE_DELETE);
         return true === $locked && true === $deleted;
     }
 
-    public function revertDelete(IJsonUser $user): bool {
+    public function revertDelete(IUser $user): bool {
         if (false === $this->isDeleted($user)) return true;
         return $this->remove($user, IUserState::USER_STATE_DELETE);
     }
@@ -129,7 +129,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     }
 
     // TODO check whether already exists
-    private function insert(IJsonUser $user, string $state): bool {
+    private function insert(IUser $user, string $state): bool {
         $sql = "insert into `user_state` (
                   `user_id`
                   , `state`
@@ -169,7 +169,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         return true;
     }
 
-    public function remove(IJsonUser $user, string $state): bool {
+    public function remove(IUser $user, string $state): bool {
         $sql       = "DELETE FROM 
                             `user_state`
                       WHERE 
@@ -190,7 +190,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     }
 
 
-    public function removeAll(IJsonUser $user): bool {
+    public function removeAll(IUser $user): bool {
         $lockRemoved   = $this->remove(
             $user
             , IUserState::USER_STATE_LOCK
@@ -202,7 +202,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         return true === $lockRemoved && true === $deleteRemoved;
     }
 
-    public function isLocked(IJsonUser $user): bool {
+    public function isLocked(IUser $user): bool {
         $lockedUsers = $this->getLockedUsers();
 
         /** @var IUserState $userState */
@@ -213,7 +213,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         return false;
     }
 
-    public function isDeleted(IJsonUser $user): bool {
+    public function isDeleted(IUser $user): bool {
         $deletedUsers = $this->getDeletedUsers();
 
         /** @var IUserState $userState */

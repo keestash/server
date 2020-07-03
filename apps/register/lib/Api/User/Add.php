@@ -31,8 +31,8 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\DTO\IJsonToken;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -40,7 +40,7 @@ use KSP\L10N\IL10N;
 class Add extends AbstractApi {
 
     private $parameters = null;
-    /** @var IJsonUser|null $user */
+    /** @var IUser|null $user */
     private $user              = null;
     private $userService       = null;
     private $userRepository    = null;
@@ -54,7 +54,7 @@ class Add extends AbstractApi {
         , IUserRepository $userRepository
         , IPermissionRepository $permissionManager
         , ILoader $loader
-        , ?IJsonToken $token = null
+        , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
@@ -110,7 +110,7 @@ class Add extends AbstractApi {
         $users      = Keestash::getServer()->getUsersFromCache();
         $nameExists = false;
         $mailExists = false;
-        /** @var IJsonUser $iUser */
+        /** @var IUser $iUser */
         foreach ($users as $iUser) {
             $mailExists = $email === $iUser->getEmail();
             $nameExists = $userName === $iUser->getName();

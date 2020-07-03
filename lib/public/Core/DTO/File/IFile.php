@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2019> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,25 +19,36 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Encryption\Password;
+namespace KSP\Core\DTO\File;
 
+use DateTime;
 use KSP\Core\DTO\Object\IJsonObject;
+use KSP\Core\DTO\User\IUser;
 
-/**
- * Interface IPassword
- *
- * @package KSP\Core\DTO\Encryption\Password
- */
-interface IJsonPassword extends IJsonObject {
+interface IFile extends IJsonObject {
 
-    public function getLength(): int;
+    public function getId(): int;
 
-    public function getValue(): string;
+    public function getName(): string;
 
-    public function getCharacterSet(): array;
+    public function getDirectory(): string;
 
-    public function getEntropy(): float;
+    public function getTemporaryPath(): ?string;
 
-    public function getQuality(): int;
+    public function getMimeType(): string;
+
+    public function getHash(): string;
+
+    public function getExtension(): string;
+
+    public function getSize(): int;
+
+    public function getOwner(): IUser;
+
+    public function getFullPath(): string;
+
+    public function getContent(): ?string;
+
+    public function getCreateTs(): DateTime;
 
 }

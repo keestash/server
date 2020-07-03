@@ -23,7 +23,7 @@ namespace KSP\Core\DTO\Encryption\Credential;
 
 use DateTime;
 use KSP\Core\DTO\Object\IJsonObject;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 
 /**
  * Interface ICredential
@@ -31,7 +31,7 @@ use KSP\Core\DTO\User\IJsonUser;
  * @package KSP\Core\DTO\Encryption\Credential
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-interface IJsonCredential extends IJsonObject {
+interface ICredential extends IJsonObject {
 
     /**
      * Returns the Id identifying the credential uniquely
@@ -53,9 +53,9 @@ interface IJsonCredential extends IJsonObject {
     /**
      * Returns the user to whom the credential belongs to
      *
-     * @return IJsonUser
+     * @return IUser
      */
-    public function getOwner(): IJsonUser;
+    public function getOwner(): IUser;
 
     /**
      * Returns the credential's creation date

@@ -23,10 +23,10 @@ namespace Keestash\Core\DTO;
 
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
-use KSP\Core\DTO\IJsonToken;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\User\IUser;
 
-class Token implements IJsonToken {
+class Token implements IToken {
 
     private $id        = null;
     private $value     = null;
@@ -50,15 +50,15 @@ class Token implements IJsonToken {
         $this->name = $name;
     }
 
-    public function getUser(): IJsonUser {
+    public function getUser(): IUser {
         return $this->user;
     }
 
-    public function setUser(IJsonUser $user): void {
+    public function setUser(IUser $user): void {
         $this->user = $user;
     }
 
-    public function equals(IJsonToken $token): bool {
+    public function equals(IToken $token): bool {
         $string = new StringClass($token->getValue());
         return $string->equals($this->getValue());
     }

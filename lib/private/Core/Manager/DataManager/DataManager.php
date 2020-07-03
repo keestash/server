@@ -26,7 +26,7 @@ use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Exception\FolderNotCreatedException;
-use KSP\Core\DTO\File\IJsonFile;
+use KSP\Core\DTO\File\IFile;
 use KSP\Core\Manager\DataManager\IDataManager;
 
 /**
@@ -74,7 +74,7 @@ class DataManager implements IDataManager {
         return true;
     }
 
-    public function store(IJsonFile $file): bool {
+    public function store(IFile $file): bool {
 
         $isFile = is_file($file->getFullPath());
         if (true === $isFile) {
@@ -89,7 +89,7 @@ class DataManager implements IDataManager {
         return true === $copied;
     }
 
-    public function get(IJsonFile $file): IJsonFile {
+    public function get(IFile $file): IFile {
         $file   = new File();
         $isFile = is_file($file->getFullPath());
         if (false === $isFile) return $file;
@@ -99,7 +99,7 @@ class DataManager implements IDataManager {
 
     public function storeAll(FileList $fileList): bool {
         $storedAll = false;
-        /** @var IJsonFile $file */
+        /** @var IFile $file */
         foreach ($fileList as $file) {
             $stored    = $this->store($file);
             $storedAll = $storedAll || $stored;
@@ -111,7 +111,7 @@ class DataManager implements IDataManager {
 
     public function getAll(FileList $fileList): FileList {
 
-        /** @var IJsonFile $file */
+        /** @var IFile $file */
         foreach ($fileList as $index => $file) {
             $file = $this->get($file);
             $fileList->addToIndex($index, $file);
@@ -120,7 +120,7 @@ class DataManager implements IDataManager {
         return $fileList;
     }
 
-    public function remove(IJsonFile $file): bool {
+    public function remove(IFile $file): bool {
 
         $fullPath   = $file->getFullPath();
         $isFile     = is_file($fullPath);
@@ -144,7 +144,7 @@ class DataManager implements IDataManager {
 
     public function removeAll(FileList $fileList): bool {
         $removed = false;
-        /** @var IJsonFile $file */
+        /** @var IFile $file */
         foreach ($fileList as $file) {
 
             $removed = $this->remove($file);

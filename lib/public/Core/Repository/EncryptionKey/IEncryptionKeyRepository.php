@@ -22,17 +22,17 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\EncryptionKey;
 
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IEncryptionKeyRepository extends IRepository {
 
-    public function storeKey(IJsonUser $user, IKey $key): bool;
+    public function storeKey(IUser $user, IKey $key): bool;
 
     public function updateKey(IKey $key): bool;
 
-    public function getKey(IJsonUser $user): ?IKey;
+    public function getKey(IUser $user): ?IKey;
 
-    public function remove(IJsonUser $user): bool;
+    public function remove(IUser $user): bool;
 
 }

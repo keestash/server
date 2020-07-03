@@ -23,26 +23,26 @@ namespace KSP\Core\Repository\File;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
-use KSP\Core\DTO\File\IJsonFile;
-use KSP\Core\DTO\User\IJsonUser;
-use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Repository\IRepository;
 
 interface IFileRepository extends IRepository {
 
-    public function add(IJsonFile $file): ?int;
+    public function add(IFile $file): ?int;
 
     public function addAll(FileList &$files): bool;
 
-    public function remove(IJsonFile $file): bool;
+    public function remove(IFile $file): bool;
 
-    public function removeForUser(IJsonUser $user): bool;
+    public function removeForUser(IUser $user): bool;
 
     public function removeAll(FileList $files): bool;
 
-    public function get(int $id): ?IJsonFile;
+    public function get(int $id): ?IFile;
 
-    public function getByUri(IJsonUniformResourceIdentifier $uri): ?IJsonFile;
+    public function getByUri(IUniformResourceIdentifier $uri): ?IFile;
 
     public function getAll(ArrayList $fileIds): FileList;
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\File;
+namespace KSP\Core\DTO\Encryption\Password;
 
 use KSP\Core\DTO\Object\IJsonObject;
 
-interface IJsonExtension extends IJsonObject {
+/**
+ * Interface IPassword
+ *
+ * @package KSP\Core\DTO\Encryption\Password
+ */
+interface IPassword extends IJsonObject {
 
-    public const PNG  = "png";
-    public const JPG  = "jpg";
-    public const PDF  = "pdf";
-    public const TWIG = "twig";
-    public const JSON = "json";
+    public function getLength(): int;
+
+    public function getValue(): string;
+
+    public function getCharacterSet(): array;
+
+    public function getEntropy(): float;
+
+    public function getQuality(): int;
 
 }

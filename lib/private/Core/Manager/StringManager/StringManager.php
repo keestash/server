@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\StringManager;
 
 use doganoo\PHPUtil\Log\FileLogger;
-use KSP\Core\DTO\File\IJsonExtension;
+use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Manager\StringManager\IStringManager;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
@@ -65,7 +65,7 @@ class StringManager implements IStringManager {
             /** @var SplFileInfo $info */
             foreach ($iterator as $info) {
 
-                if (strtolower(trim($info->getExtension())) === IJsonExtension::JSON) {
+                if (strtolower(trim($info->getExtension())) === IExtension::JSON) {
 
                     $content = $this->mergeStrings(
                         file_get_contents($info->getRealPath())

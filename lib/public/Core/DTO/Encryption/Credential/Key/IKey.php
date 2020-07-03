@@ -21,14 +21,14 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Encryption\Credential\Key;
 
-use KSP\Core\DTO\Encryption\Credential\IJsonCredential;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 
 /**
  * Interface IKey
  *
  * @package KSP\Core\DTO
  */
-interface IKey extends IJsonCredential {
+interface IKey extends ICredential {
 
 
 }

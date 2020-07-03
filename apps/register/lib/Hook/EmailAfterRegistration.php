@@ -25,7 +25,7 @@ use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\EmailService;
 use Keestash\Legacy\Legacy;
-use KSP\Core\DTO\User\IJsonUser;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Hook\IHook;
 use KSP\Hook\IHookCache;
@@ -60,7 +60,7 @@ class EmailAfterRegistration implements IHook {
             return false;
         }
 
-        if (!$user instanceof IJsonUser) {
+        if (!$user instanceof IUser) {
             FileLogger::error("passed argument is not an user, can not send mail. Parameters are: " . (json_encode($parameters)));
             return false;
         }

@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\FileManager;
 
-use KSP\Core\DTO\File\IJsonFile;
-use KSP\Core\DTO\URI\IJsonUniformResourceIdentifier;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Manager\IManager;
 use KSP\Core\Repository\File\IFileRepository;
 
@@ -32,12 +32,12 @@ interface IFileManager extends IManager {
 
     public function __construct(IFileRepository $fileRepository);
 
-    public function write(IJsonFile $file): bool;
+    public function write(IFile $file): bool;
 
-    public function remove(IJsonFile $file): bool;
+    public function remove(IFile $file): bool;
 
-    public function verifyFile(IJsonFile $file): bool;
+    public function verifyFile(IFile $file): bool;
 
-    public function read(?IJsonUniformResourceIdentifier $uri): ?IJsonFile;
+    public function read(?IUniformResourceIdentifier $uri): ?IFile;
 
 }

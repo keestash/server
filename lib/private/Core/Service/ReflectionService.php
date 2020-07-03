@@ -23,18 +23,18 @@ namespace Keestash\Core\Service;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
-use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\IToken;
 use ReflectionClass;
 
 class ReflectionService {
 
     /**
      * @param string          $className
-     * @param IJsonToken|null $token
+     * @param IToken|null $token
      *
      * @return object
      */
-    public function createObject(string $className, ?IJsonToken $token = null) {
+    public function createObject(string $className, ?IToken $token = null) {
         $constructorArgs = [];
         $instance        = new ReflectionClass($className);
 

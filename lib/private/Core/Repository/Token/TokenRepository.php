@@ -25,7 +25,7 @@ use Keestash;
 use Keestash\Core\DTO\Token;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\IJsonToken;
+use KSP\Core\DTO\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use PDO;
@@ -42,7 +42,7 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
         $this->userRepository = $userRepository;
     }
 
-    public function get(int $id): ?IJsonToken {
+    public function get(int $id): ?IToken {
         $sql = "
         select
                 `id`
@@ -82,7 +82,7 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
         return $token;
     }
 
-    public function getByHash(string $hash): ?IJsonToken {
+    public function getByHash(string $hash): ?IToken {
         $sql = "
         select
                 `id`
@@ -122,7 +122,7 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
         return $token;
     }
 
-    public function add(IJsonToken $token): ?int {
+    public function add(IToken $token): ?int {
         $sql = "insert into `token` (
                   `name`
                   , `value`
