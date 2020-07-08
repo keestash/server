@@ -16,9 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Input from "../../../../../../lib/js/src/UI/Input";
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../lib/js/src/UI/ModalHandler";
-import modal from "../../../../../../lib/js/src/UI/modal";
 
 export class Submit {
 
@@ -29,6 +27,9 @@ export class Submit {
         , routes
         , globalRoutes
         , templateLoader
+        , inputService
+        , buttonService
+        , miniModal
     ) {
         this.router = router;
         this.request = request;
@@ -36,80 +37,114 @@ export class Submit {
         this.routes = routes;
         this.globalRoutes = globalRoutes;
         this.templateLoader = templateLoader;
+        this.inputService = inputService;
+        this.buttonService = buttonService;
+        this.miniModal = miniModal;
     }
 
     handle() {
         const _this = this;
 
-        $("#login").submit(function (event) {
-            event.preventDefault();
-            _this.changeButtonState(false);
+        $("#loginform").submit(
+            (event) => {
+                event.preventDefault();
 
-            let user = $("#username").val();
-            let password = $("#password").val();
+                const user = $("#username");
+                const password = $("#password");
+                const signIn = $("#sign__in");
 
-            if (user === "") {
-                Input.invalid("#username");
-                _this.changeButtonState(true);
-                return;
-            }
+                _this.buttonService.disable(signIn, true);
 
-            if (password === "") {
-                Input.invalid("#password");
-                _this.changeButtonState(true);
-                return
-            }
+                if ("" === user.val().trim()) {
+                    _this.inputService.invalid(user);
+                    return;
+                }
 
-            let data = {
-                'user': user
-                , 'password': password
-            };
+                if ("" === password.val().trim()) {
+                    _this.inputService.invalid(password);
+                    return;
+                }
 
-            _this.request.post(
-                _this.routes.getLoginSubmit()
-                , data
-                , function (html, status, xhr) {
-                    let object = JSON.parse(html);
-                    let result_object = null;
+                const data = {
+                    'user': user.val().trim()
+                    , 'password': password.val().trim()
+                };
 
-                    if (RESPONSE_CODE_OK in object) {
-                        result_object = object[RESPONSE_CODE_OK];
-                        let routeTo = result_object['routeTo'];
-                        let token = xhr.getResponseHeader('api_token');
-                        let userHash = xhr.getResponseHeader('user_hash');
+                _this.request.post(
+                    _this.routes.getLoginSubmit()
+                    , data
+                    , (html, status, xhr) => {
+                        let object = JSON.parse(html);
+                        let result_object = null;
 
-                        _this.appStorage.storeAPICredentials(
-                            token
-                            , userHash
+                        if (RESPONSE_CODE_OK in object) {
+                            result_object = object[RESPONSE_CODE_OK];
+                            let routeTo = result_object['routeTo'];
+                            let token = xhr.getResponseHeader('api_token');
+                            let userHash = xhr.getResponseHeader('user_hash');
+
+                            _this.appStorage.storeAPICredentials(
+                                token
+                                , userHash
+                            );
+
+                            _this.buttonService.disable(
+                                signIn
+                                , false
+                            );
+
+                            _this.templateLoader.load(true).finally(() => {
+                                _this.router.routeTo(routeTo);
+                            });
+
+                            return;
+                        } else if (RESPONSE_CODE_NOT_OK in object) {
+                            result_object = object[RESPONSE_CODE_NOT_OK];
+                            _this.miniModal.show(
+                                'Error'
+                                , 'Ok'
+                                , 'Not Ok'
+                                , result_object['message']
+                                , 'event'
+                            );
+                            _this.appStorage.clearAPICredentials();
+                            _this.buttonService.disable(
+                                signIn
+                                , false
+                            );
+                        }
+
+                        if (result_object === null) {
+                            _this.miniModal.show(
+                                'Error'
+                                , 'Ok'
+                                , 'Not Ok'
+                                , "There was an error. Please try again or contact our support"
+                                , 'event'
+                            );
+                            _this.appStorage.clearAPICredentials();
+                        }
+                        _this.buttonService.disable(
+                            signIn
+                            , true
                         );
-
-                        _this.changeButtonState(true);
-
-                        _this.templateLoader.load(true).finally(() => {
-                            _this.router.routeTo(routeTo);
-                        });
-
-                        return;
-                    } else if (RESPONSE_CODE_NOT_OK in object) {
-                        result_object = object[RESPONSE_CODE_NOT_OK];
-                        modal.miniModal(result_object['message']);
-                        _this.appStorage.clearAPICredentials();
-                        _this.changeButtonState(true);
                     }
-
-                    if (result_object === null) {
-                        modal.miniModal("There was an error. Please try again or contact our support");
+                    , (html, status, xhr) => {
+                        _this.miniModal.show(
+                            'Error'
+                            , 'Ok'
+                            , 'Not Ok'
+                            , "There was an error. Please try again or contact our support"
+                            , 'event'
+                        );
                         _this.appStorage.clearAPICredentials();
+                        _this.buttonService.disable(
+                            signIn
+                            , false
+                        );
                     }
-                    _this.changeButtonState(true);
-                }
-                , function (html, status, xhr) {
-                    modal.miniModal("There was an error. Please try again or contact our support")
-                    _this.appStorage.clearAPICredentials();
-                    _this.changeButtonState(true);
-                }
-            );
-        });
+                );
+            });
 
 
     }

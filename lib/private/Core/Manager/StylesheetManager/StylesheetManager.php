@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\StylesheetManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash;
 use KSP\App\IApp;
 use KSP\Core\Manager\StylesheetManager\IStylesheetManager;
 
@@ -42,6 +43,20 @@ class StylesheetManager implements IStylesheetManager {
 
     public function register(IApp $app): void {
         $this->apps->put($app->getName(), $app);
+    }
+
+    public function getStylesheetPaths(): array {
+
+        $apps = $this->getApps();
+
+        $paths = [];
+        foreach ($apps->keySet() as $appId) {
+            /** @var IApp $app */
+            $app     = $apps->get($appId);
+            $paths[] = Keestash::getBaseURL(false) . "/apps/{$app->getId()}/scss/dist/style.css";
+        }
+
+        return $paths;
     }
 
     public function getApps(): HashTable {

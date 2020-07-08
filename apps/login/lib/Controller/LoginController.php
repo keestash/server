@@ -85,19 +85,22 @@ class LoginController extends StaticAppController {
         $this->getTemplateManager()->replace(
             LoginController::TEMPLATE_NAME_LOGIN
             , [
-                "signIn"                => $this->getL10N()->translate("Sign In")
-                , "passwordPlaceholder" => $this->getL10N()->translate("Password")
-                , "passwordLabel"       => $this->getL10N()->translate("Password")
-                , "userPlaceholder"     => $this->getL10N()->translate("Username")
-                , "usernameLabel"       => $this->getL10N()->translate("Username")
-                , "text"                => $this->getL10N()->translate("Create New Account")
-                , "forgotPassword"      => $this->getL10N()->translate("Forgot your password?")
-                , "invalidCredentials"  => $this->getL10N()->translate("Please enter valid credentials")
-                , "loginToApp"          => $this->getL10N()->translate("Login to {$this->legacy->getApplication()->get('name')}")
-                , "newAccountLink"      => Keestash::getBaseURL(true) . "/register"
-                , "forgotPasswordLink"  => Keestash::getBaseURL(true) . "/forgot_password"
-                , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
-                , "registeringEnabled"  => $this->loader->hasApp(Application::APP_NAME_REGISTER)
+                // strings
+                "signIn"                       => $this->getL10N()->translate("Sign In")
+                , "passwordPlaceholder"        => $this->getL10N()->translate("Password")
+                , "userNamePlaceholder"        => $this->getL10N()->translate("Username")
+                , "createNewAccountText"       => $this->getL10N()->translate("Create New Account")
+                , "createNewAccountActionText" => $this->getL10N()->translate("Sign Up")
+                , "forgotPasswordText"         => $this->getL10N()->translate("Forgot your password?")
+                , "forgotPasswordActionText"   => $this->getL10N()->translate("Register")
+                , "loginToApp"                 => $this->getL10N()->translate("Login to {$this->legacy->getApplication()->get('name')}")
+                , "newAccountLink"             => Keestash::getBaseURL(true) . "/register"
+                , "forgotPasswordLink"         => Keestash::getBaseURL(true) . "/forgot_password"
+                , "registeringEnabled"         => $this->loader->hasApp(Application::APP_NAME_REGISTER)
+
+                // values
+                , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
+                , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
             ]
         );
 

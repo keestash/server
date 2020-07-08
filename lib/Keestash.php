@@ -475,7 +475,7 @@ class Keestash {
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::HEAD
             , [
-            "stylesheets"  => Keestash::getServer()->getTemplateManager()->getStylesheets()
+            "stylesheets"  => Keestash::getServer()->getStylesheetManager()->getStylesheetPaths()
             , "scripts"    => Keestash::getServer()->getTemplateManager()->getScripts()
             , "appScripts" => Keestash::getServer()->getTemplateManager()->getAppScripts($routeName)
         ]);

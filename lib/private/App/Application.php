@@ -62,12 +62,6 @@ abstract class Application implements IApplication {
             );
     }
 
-    protected function addStylesheet(string $id, string $name): void {
-        if (Keestash::MODE_WEB !== Keestash::getMode()) return;
-        $url = Keestash::getBaseURL(false) . "apps/" . $id;
-        Keestash::getServer()->getTemplateManager()->addStylesheet($url . "/css/$name");
-    }
-
     protected function addJavaScript(string $id): bool {
         if (Keestash::MODE_WEB !== Keestash::getMode()) return false;
         Keestash::getServer()->getTemplateManager()->addAppScript(

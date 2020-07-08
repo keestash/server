@@ -25,15 +25,19 @@ import {Routes as GlobalRoutes} from "../../../../lib/js/src/Route/Routes";
 import {Host} from "../../../../lib/js/src/Backend/Host";
 import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
 import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/TemplateLoader";
+import {InputService} from "../../../../lib/js/src/UI/Input/InputService";
+import {ButtonService} from "../../../../lib/js/src/UI/Button/ButtonService";
+import {Mini} from "../../../../lib/js/src/UI/Modal/Mini";
+import {Parser} from "../../../../lib/js/src/UI/Template/Parser/Parser";
 
-(function () {
+(async () => {
     if (!Keestash.Login) {
         Keestash.Login = {};
     }
 
     Keestash.Login = {
 
-        init: function () {
+        init: async () => {
             const router = new Router(
                 Keestash.Main.getHost()
             );
@@ -48,6 +52,12 @@ import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/Tem
             const globalRoutes = new GlobalRoutes(
                 new Host()
             );
+            const templateLoader = new TemplateLoader(
+                request
+                , globalRoutes
+            );
+            await templateLoader.load(true);
+            const templateParser = new Parser();
 
             const submit = new Submit(
                 router
@@ -55,9 +65,12 @@ import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/Tem
                 , appStorage
                 , new Routes()
                 , globalRoutes
-                , new TemplateLoader(
-                    request
-                    , globalRoutes
+                , templateLoader
+                , new InputService()
+                , new ButtonService()
+                , new Mini(
+                    templateLoader
+                    , templateParser
                 )
             );
             submit.handle();
@@ -66,7 +79,7 @@ import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/Tem
     }
 })();
 
-$(document).ready(function () {
-    Keestash.Login.init();
+$(document).ready(async () => {
+    await Keestash.Login.init();
 });
 

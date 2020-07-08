@@ -82,6 +82,7 @@ use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\DateTimeService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
+use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\PublicFile\PublicFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
@@ -314,6 +315,23 @@ class Server {
                 , $this->appRoot
             );
         });
+        $this->register(UserService::class, function () {
+            return new UserService(
+                $this->query(IApiLogRepository::class)
+                , $this->query(IFileRepository::class)
+                , $this->query(IEncryptionKeyRepository::class)
+                , $this->query(IRoleRepository::class)
+                , $this->query(IUserRepository::class)
+                , $this->query(KeyService::class)
+                , $this->query(Legacy::class)
+                , $this->query(IUserStateRepository::class)
+                , $this->query(FileService::class)
+                , $this->query(InstanceRepository::class)
+                , $this->query(CredentialService::class)
+                , $this->query(IDateTimeService::class)
+            );
+        });
+        
         $this->register(IBackend::class, function () {
             self::getSystem()->createConfig();
             return new MySQLBackend((string) self::getConfig()->get("db_name"));

@@ -283,7 +283,7 @@ class UserService {
     }
 
     public function isDisabled(?IUser $user): bool {
-        return null === $user && true === $user->isLocked();
+        return null === $user || true === $user->isLocked();
     }
 
     /**

@@ -39,7 +39,7 @@ use KSP\Core\Manager\RouterManager\IRouterManager;
  *
  * @package Keestash\Api\Core
  */
-class Application extends \Keestash\App\Application {
+class Application extends Keestash\App\Application {
 
     public const PASSWORD_REQUIREMENTS = "password_requirements/";
     public const ALL_USERS             = "users/all/{type}/";
@@ -84,6 +84,9 @@ class Application extends \Keestash\App\Application {
         );
         $this->registerPublicApiRoute(
             Application::FRONTEND_STRINGS
+        );
+        $this->registerPublicApiRoute(
+            Application::FRONTEND_TEMPLATES
         );
 
         $this->registerPublicApiRoute(

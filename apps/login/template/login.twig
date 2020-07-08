@@ -1,88 +1,53 @@
-{#<div class="ui container">#}
-{#    <div class="ui one column centered grid">#}
-{#        <div class="center aligned column">#}
-{#            <img id="tl__login__image" src="{{ logoPath }}">#}
-{#        </div>#}
-{#        <div class="six wide column centered">#}
-{#            <form class="ui form" id="login">#}
-{#                {% if registeringEnabled %}#}
-{#                    <h4 class="ui center aligned top attached header"><a href="{{ newAccountLink }}">{{ text }}</a></h4>#}
-{#                {% else %}#}
-{#                    <h4 class="ui center aligned top attached header">{{ loginToApp }}</h4>#}
-{#                {% endif %}#}
-
-{#                <div class="ui center aligned attached segment" id="form-segment">#}
-{#                    <div class="field">#}
-{#                        <label for="username">{{ usernameLabel }}</label>#}
-{#                        <input id="username" name="username" placeholder="{{ userPlaceholder }}"#}
-{#                               type="text">#}
-{#                    </div>#}
-{#                    <div class="field">#}
-{#                        <label for="password">{{ passwordLabel }}</label>#}
-{#                        <input id="password" name="password" placeholder="{{ passwordPlaceholder }}"#}
-{#                               type="password">#}
-{#                    </div>#}
-{#                </div>#}
-{#                <button class="ui bottom attached fluid button" id="tl__login__button" type="submit">{{ signIn }}#}
-{#                </button>#}
-{#            </form>#}
-{#            <div class="six wide column centered">#}
-{#                <div class="ui basic right floated segment"><a href="{{ forgotPasswordLink }}">{{ forgotPassword }}</a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
-
 <div class="main-wrapper login">
-    <div class="auth-wrapper d-flex no-block justify-content-center align-items-center" style="background:url(https://www.wrappixel.com/ampleadmin/assets/images/big/auth-bg.jpg) no-repeat center center;">
+    <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+         style="background:url({{ backgroundPath }}) no-repeat center center;">
         <div class="auth-box">
             <div id="loginform">
                 <div class="logo">
-                    <span class="db"><img src="../../assets/images/logos/logo-icon.png" alt="logo" /></span>
-                    <h5 class="font-medium mb-3">Sign In to Admin</h5>
+                    <span class="db"><img id="logo-image" height="30px" src="{{ logoPath }}" alt="logo"/></span>
+                    <h5 class="font-medium mb-3">{{ loginToApp }}</h5>
                 </div>
                 <!-- Form -->
                 <div class="row">
                     <div class="col-12">
-                        <form class="form-horizontal mt-3" id="loginform" action="index.html">
+                        <form class="form-horizontal mt-3" id="loginform">
                             <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1"><i class="ti-user"></i></span>
+                                <div class="d-flex">
+                                    <span class="input-group-text" id="basic-addon1"><i class="far fa-user"></i></span>
                                 </div>
-                                <input type="text" class="form-control form-control-lg" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                                <input type="text"
+                                       id="username"
+                                       class="form-control form-control-lg"
+                                       placeholder="{{ userNamePlaceholder }}"
+                                       aria-label="{{ userNamePlaceholder }}" aria-describedby="basic-addon1"
+                                >
                             </div>
                             <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon2"><i class="ti-pencil"></i></span>
+                                <div class="d-flex">
+                                    <span class="input-group-text" id="basic-addon2"><i class="fas fa-pen"></i></span>
                                 </div>
-                                <input type="text" class="form-control form-control-lg" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-md-12">
-                                    <div class="custom-control custom-checkbox d-flex align-items-center">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                        <label class="custom-control-label" for="customCheck1">Remember me</label>
-                                        <a href="javascript:void(0)" id="to-recover" class="text-dark ml-auto"><i class="fa fa-lock mr-1"></i> Forgot pwd?</a>
-                                    </div>
-                                </div>
+                                <input type="password"
+                                       id="password"
+                                       class="form-control form-control-lg"
+                                       placeholder="{{ passwordPlaceholder }}"
+                                       aria-label="{{ passwordPlaceholder }}" aria-describedby="basic-addon1"
+                                >
                             </div>
                             <div class="form-group text-center">
                                 <div class="col-xs-12 pb-3">
-                                    <button class="btn btn-block btn-lg btn-info" type="submit">Log In</button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 text-center">
-                                    <div class="social">
-                                        <a href="javascript:void(0)" class="btn  btn-facebook" data-toggle="tooltip" title="" data-original-title="Login with Facebook"> <i aria-hidden="true" class="fab  fa-facebook"></i> </a>
-                                        <a href="javascript:void(0)" class="btn btn-googleplus" data-toggle="tooltip" title="" data-original-title="Login with Google"> <i aria-hidden="true" class="fab  fa-google-plus"></i> </a>
-                                    </div>
+                                    <button id="sign__in" class="btn btn-block btn-lg btn-info" type="submit">{{ signIn }}</button>
                                 </div>
                             </div>
                             <div class="form-group mb-0 mt-2">
                                 <div class="col-sm-12 text-center">
-                                    Don't have an account? <a href="authentication-register1.html" class="text-info ml-1"><b>Sign Up</b></a>
+                                    {{ createNewAccountText }} <a href="{{ newAccountLink }}" target="_blank"
+                                                                  class="text-info ml-1"><b>{{ createNewAccountActionText }}</b></a>
+                                </div>
+                            </div>
+                            <div class="form-group mb-0 mt-2">
+                                <div class="col-sm-12 text-center">
+                                    {{ forgotPasswordText }} <a href="{{ forgotPasswordLink }}" target="_blank"
+                                                                class="text-info ml-1"><b>{{ forgotPasswordActionText }}</b></a>
                                 </div>
                             </div>
                         </form>
@@ -91,35 +56,4 @@
             </div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- Login box.scss -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Page wrapper scss in scafholding.scss -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Page wrapper scss in scafholding.scss -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Right Sidebar -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- Right Sidebar -->
-    <!-- ============================================================== -->
 </div>
-<!-- ============================================================== -->
-<!-- All Required js -->
-<!-- ============================================================== -->
-<script src="../../assets/libs/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap tether Core JavaScript -->
-<script src="../../assets/libs/popper.js/dist/umd/popper.min.js"></script>
-<script src="../../assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- ============================================================== -->
-<!-- This page plugin js -->
-<!-- ============================================================== -->
-<script>
-    $('[data-toggle="tooltip"]').tooltip();
-    $(".preloader").fadeOut();
-    // ==============================================================
-
-</script>

@@ -1,4 +1,26 @@
-.auth-wrapper {
-  min-height: 100vh;
-  position: relative;
+.login {
+  .auth-wrapper {
+    min-height: 100vh;
+    position: relative;
+
+    .auth-box {
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .1);
+      max-width: 400px;
+      width: 90%;
+      margin: 10% 0;
+
+      .logo {
+        text-align: center;
+
+        #logo-image {
+          height: 5rem;
+        }
+
+      }
+    }
+
+  }
+
 }
