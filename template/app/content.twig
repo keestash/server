@@ -1,22 +1,13 @@
 <div id="content">
-    {# TODO hasAppNavigation #}
-    {{ appNavigation|raw }}
+    {% if hasAppNavigation == true %}
+        {{ appNavigation|raw }}
+    {% endif %}
+    <div class="sixteen wide column">{{ appContent|raw }}</div>
+
     {#        {% if hasBreadcrumbs == true %}#}
     {#            <div id="breadcrumb__wrapper">#}
     {#                {{ breadcrumbs|raw }}#}
     {#            </div>#}
     {#        {% endif %}#}
     {#        {{ appContent|raw }}#}
-    {#</div>#}
-
-    {#<div class="ui two column doubling stackable grid" id="main-container">#}
-    {#    {% if hasAppNavigation == true %}#}
-    {#        <div class="three wide column" id="app-navigation">#}
-    {#            {{ appNavigation|raw }}#}
-    {#        </div>#}
-    {#        <div class="thirteen wide column">#}
-    {#        </div>#}
-    {#    {% else %}#}
-    {#        <div class="sixteen wide column">{{ appContent|raw }}</div>#}
-    {#    {% endif %}#}
     {#</div>#}

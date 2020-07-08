@@ -37,13 +37,14 @@ class LoginController extends StaticAppController {
 
     public const TEMPLATE_NAME_LOGIN = "login.twig";
 
-    private $templateManager = null;
-    private $translator      = null;
     /** @var IPermissionRepository */
-    private $permissionRepository = null;
-    private $loader               = null;
-    private $persistenceService   = null;
-    private $legacy               = null;
+    private $permissionRepository;
+    /** @var ILoader */
+    private $loader;
+    /** @var PersistenceService */
+    private $persistenceService;
+    /** @var Legacy */
+    private $legacy;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -53,8 +54,6 @@ class LoginController extends StaticAppController {
         , PersistenceService $persistenceService
         , Legacy $legacy
     ) {
-        $this->templateManager      = $templateManager;
-        $this->translator           = $translator;
         $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->persistenceService   = $persistenceService;
@@ -83,18 +82,18 @@ class LoginController extends StaticAppController {
             );
             exit();
         }
-        $this->templateManager->replace(
+        $this->getTemplateManager()->replace(
             LoginController::TEMPLATE_NAME_LOGIN
             , [
-                "signIn"                => $this->translator->translate("Sign In")
-                , "passwordPlaceholder" => $this->translator->translate("Password")
-                , "passwordLabel"       => $this->translator->translate("Password")
-                , "userPlaceholder"     => $this->translator->translate("Username")
-                , "usernameLabel"       => $this->translator->translate("Username")
-                , "text"                => $this->translator->translate("Create New Account")
-                , "forgotPassword"      => $this->translator->translate("Forgot your password?")
-                , "invalidCredentials"  => $this->translator->translate("Please enter valid credentials")
-                , "loginToApp"          => $this->translator->translate("Login to {$this->legacy->getApplication()->get('name')}")
+                "signIn"                => $this->getL10N()->translate("Sign In")
+                , "passwordPlaceholder" => $this->getL10N()->translate("Password")
+                , "passwordLabel"       => $this->getL10N()->translate("Password")
+                , "userPlaceholder"     => $this->getL10N()->translate("Username")
+                , "usernameLabel"       => $this->getL10N()->translate("Username")
+                , "text"                => $this->getL10N()->translate("Create New Account")
+                , "forgotPassword"      => $this->getL10N()->translate("Forgot your password?")
+                , "invalidCredentials"  => $this->getL10N()->translate("Please enter valid credentials")
+                , "loginToApp"          => $this->getL10N()->translate("Login to {$this->legacy->getApplication()->get('name')}")
                 , "newAccountLink"      => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"  => Keestash::getBaseURL(true) . "/forgot_password"
                 , "logoPath"            => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
@@ -102,11 +101,13 @@ class LoginController extends StaticAppController {
             ]
         );
 
-        $string = $this->templateManager
+        $string = $this->getTemplateManager()
             ->render(LoginController::TEMPLATE_NAME_LOGIN);
-        $this->templateManager->replace(
+        $this->getTemplateManager()->replace(
             ITemplate::APP_CONTENT
-            , ["appContent" => $string]
+            , [
+                "appContent" => $string
+            ]
         );
     }
 
