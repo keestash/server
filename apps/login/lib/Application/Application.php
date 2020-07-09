@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Login\Application;
 
-use KSA\Login\Api\LoginService;
+use KSA\Login\Api\Login;
 use KSA\Login\Controller\LoginController;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
@@ -44,7 +44,7 @@ class Application extends \Keestash\App\Application {
 
         parent::registerApiRoute(
             Application::LOGIN_SUBMIT
-            , LoginService::class
+            , Login::class
             , [IRouterManager::POST]
         );
 

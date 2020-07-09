@@ -45,10 +45,6 @@ class TemplateManager implements ITemplateManager {
         $this->env    = new Environment($this->loader);
     }
 
-    protected function getEnvironment(): Environment {
-        return $this->env;
-    }
-
     public function addAll(array $paths): void {
         foreach ($paths as $path) {
             $this->addPath($path);
@@ -80,10 +76,6 @@ class TemplateManager implements ITemplateManager {
         }
     }
 
-    public function getRawTemplate(string $name): string {
-        return $this->env->getLoader()->getSourceContext($name)->getCode();
-    }
-
     public function getAllRaw(): HashTable {
         $table = new HashTable();
         foreach ($this->names->toArray() as $name) {
@@ -97,13 +89,24 @@ class TemplateManager implements ITemplateManager {
         return $table;
     }
 
+    public function getRawTemplate(string $name): string {
+        return $this->env->getLoader()->getSourceContext($name)->getCode();
+    }
+
     public function render(string $name): string {
         $variables = [];
         if ($this->map->containsKey($name)) {
             $variables = $this->map->get($name);
         }
-        $rendered = $this->env->render($name, $variables);
-        return $rendered;
+        return $this->env->render($name, $variables);
+    }
+
+    public function getPaths(): HashSet {
+        return $this->names;
+    }
+
+    protected function getEnvironment(): Environment {
+        return $this->env;
     }
 
 }

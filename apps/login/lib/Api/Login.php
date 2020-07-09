@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\LoginResponse;
@@ -38,7 +39,7 @@ use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
-class LoginService extends AbstractApi {
+class Login extends AbstractApi {
 
     private const DEFAULT_USER_LIFETIME = 60 * 60;
 
@@ -93,8 +94,8 @@ class LoginService extends AbstractApi {
     }
 
     public function create(): void {
-        $userName = $this->params["user"] ?? "";
-        $password = $this->params["password"] ?? "";
+        $userName = $this->getParameter("user", "");
+        $password = $this->getParameter("password", "");
 
         $user = $this->userRepository->getUser($userName);
 
@@ -108,49 +109,47 @@ class LoginService extends AbstractApi {
                     "message" => $this->translator->translate("No User Found")
                 ]
             );
+        } else if (false === $this->userService->validatePassword($password, $user->getPassword())) {
+            $response->addMessage(
+                IResponse::RESPONSE_CODE_NOT_OK,
+                [
+                    "message" => $this->translator->translate("Invalid Credentials")
+                ]
+            );
         } else {
-            if (!$this->userService->validatePassword($password, $user->getPassword())) {
-                $response->addMessage(
-                    IResponse::RESPONSE_CODE_NOT_OK,
-                    [
-                        "message" => $this->translator->translate("Invalid Credentials")
-                    ]
+            $token = $this->tokenService->generate("login", $user);
+
+            $response->addMessage(
+                IResponse::RESPONSE_CODE_OK,
+                [
+                    "message"   => $this->translator->translate("Ok")
+                    , "routeTo" => Helper::getDefaultRoute()
+                ]
+            );
+
+            $response->addHeader(
+                "api_token"
+                , $token->getValue()
+            );
+
+            $response->addHeader(
+                'user_hash'
+                , $user->getHash()
+            );
+
+            $this->tokenManager->add($token);
+
+            $expireTs = DateTimeUtil::getUnixTimestamp() +
+                $this->configService->getValue(
+                    "user_lifetime"
+                    , (string) Login::DEFAULT_USER_LIFETIME
                 );
-            } else {
-                $token = $this->tokenService->generate("login", $user);
+            $this->persistenceService->setPersistenceValue(
+                "user_id"
+                , (string) $user->getId()
+                , (int) $expireTs
+            );
 
-                $response->addMessage(
-                    IResponse::RESPONSE_CODE_OK,
-                    [
-                        "message"   => $this->translator->translate("Ok")
-                        , "routeTo" => Helper::getDefaultRoute()
-                    ]
-                );
-
-                $response->addHeader(
-                    "api_token"
-                    , $token->getValue()
-                );
-
-                $response->addHeader(
-                    'user_hash'
-                    , $user->getHash()
-                );
-
-                $this->tokenManager->add($token);
-
-                $expireTs = DateTimeUtil::getUnixTimestamp() +
-                    $this->configService->getValue(
-                        "user_lifetime"
-                        , (string) LoginService::DEFAULT_USER_LIFETIME
-                    );
-                $this->persistenceService->setPersistenceValue(
-                    "user_id"
-                    , (string) $user->getId()
-                    , (int) $expireTs
-                );
-
-            }
         }
 
         parent::setResponse(

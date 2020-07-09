@@ -92,7 +92,7 @@ class LoginController extends StaticAppController {
                 , "createNewAccountText"       => $this->getL10N()->translate("Create New Account")
                 , "createNewAccountActionText" => $this->getL10N()->translate("Sign Up")
                 , "forgotPasswordText"         => $this->getL10N()->translate("Forgot your password?")
-                , "forgotPasswordActionText"   => $this->getL10N()->translate("Register")
+                , "forgotPasswordActionText"   => $this->getL10N()->translate("Request")
                 , "loginToApp"                 => $this->getL10N()->translate("Login to {$this->legacy->getApplication()->get('name')}")
                 , "newAccountLink"             => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"         => Keestash::getBaseURL(true) . "/forgot_password"

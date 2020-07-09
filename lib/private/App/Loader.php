@@ -184,7 +184,7 @@ class Loader implements ILoader {
         $destination = $app->getAppPath() . "/scss/dist/";
 
         if (false === is_dir($source) || false === is_dir($destination)) {
-            FileLogger::warn("$source or $destination is not a directory. Can not register scss");
+//            FileLogger::warn("$source or $destination is not a directory. Can not register scss");
             return;
         }
 

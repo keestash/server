@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\TemplateManager;
 
+use doganoo\PHPAlgorithms\Datastructure\Set\HashSet;
 use KSP\Core\Manager\IManager;
 
 interface ITemplateManager extends IManager {
@@ -32,5 +33,7 @@ interface ITemplateManager extends IManager {
     public function replace(string $name, array $value): void;
 
     public function getRawTemplate(string $name): string;
+
+    public function getPaths(): HashSet;
 
 }

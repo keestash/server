@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Controller;
 
 use Keestash;
+use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\Manager\TemplateManager\ITemplate;
@@ -32,14 +33,19 @@ use KSP\L10N\IL10N;
 
 class ForgotPassword extends StaticAppController {
 
+    public const TEMPLATE_NAME = "forgot_password.twig";
+
     private $templateManager   = null;
     private $translator        = null;
     private $permissionManager = null;
+    /** @var Legacy */
+    private $legacy;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
         , IPermissionRepository $permissionRepository
+        , Legacy $legacy
     ) {
         parent::__construct(
             $templateManager
@@ -49,6 +55,7 @@ class ForgotPassword extends StaticAppController {
         $this->templateManager   = $templateManager;
         $this->translator        = $translator;
         $this->permissionManager = $permissionRepository;
+        $this->legacy            = $legacy;
     }
 
     public function onCreate(...$params): void {
@@ -58,27 +65,34 @@ class ForgotPassword extends StaticAppController {
     }
 
     public function create(): void {
-        $this->templateManager->replace(
-            "forgot_password.html",
-            [
-                "reset"                           => $this->translator->translate("Reset")
-                , "usernameOrPasswordLabel"       => $this->translator->translate("Username or Email Address")
-                , "usernameOrPasswordPlaceholder" => $this->translator->translate("Username or Email Address")
-                , "forgotPassword"                => $this->translator->translate("Forgot your password?")
-                , "invalidCredentials"            => $this->translator->translate("Please enter valid credentials")
-                , "newAccountLink"                => Keestash::getBaseURL(true) . "/" . \KSA\Register\Application\Application::REGISTER
-                , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/" . Application::FORGOT_PASSWORD
-                , "logoPath"                      => Keestash::getBaseURL(false) . "/asset/img/logo.png"
-                , "backToLogin"                   => $this->translator->translate("Back To Login")
+        $this->getTemplateManager()->replace(
+            ForgotPassword::TEMPLATE_NAME
+            , [
+                // strings
+                "resetPassword"                   => $this->getL10N()->translate("Reset")
+                , "usernameOrPasswordPlaceholder" => $this->getL10N()->translate("Username or Email Address")
+                , "createNewAccountText"          => $this->getL10N()->translate("Not registered Yet?")
+                , "createNewAccountActionText"    => $this->getL10N()->translate("Sign Up")
+                , "loginToApp"                    => $this->getL10N()->translate("Reset password")
+                , "backToLogin"                   => $this->getL10N()->translate("Back To Login")
+
+                // values
+                , "backgroundPath"                => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
+                , "logoPath"                      => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "backToLoginLink"               => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
+                , "newAccountLink"                => Keestash::getBaseURL(true) . "/register"
+                , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/forgot_password"
             ]
         );
 
-        $string = $this->templateManager
-            ->render("forgot_password.html");
-        $this->templateManager->replace(
+        $string = $this->getTemplateManager()
+            ->render(ForgotPassword::TEMPLATE_NAME);
+
+        $this->getTemplateManager()->replace(
             ITemplate::APP_CONTENT
-            , ["appContent" => $string]
+            , [
+                "appContent" => $string
+            ]
         );
     }
 
