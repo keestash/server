@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\LoginResponse;
@@ -29,9 +28,9 @@ use Keestash\App\Helper;
 use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
-use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Application\Application;
+use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -44,23 +43,21 @@ class Login extends AbstractApi {
     private const DEFAULT_USER_LIFETIME = 60 * 60;
 
     /** @var IUserRepository|null $userRepository */
-    private $userRepository = null;
-    /** @var null|array $params */
-    private $params = null;
+    private $userRepository;
     /** @var IL10N|null $translator */
-    private $translator = null;
+    private $translator;
     /** @var null|UserService $userService */
-    private $userService = null;
+    private $userService;
     /** @var null|ITokenRepository $tokenManager */
-    private $tokenManager = null;
+    private $tokenManager;
     /** @var null|TokenService $tokenService */
-    private $tokenService = null;
+    private $tokenService;
     /** @var null|IPermissionRepository $permissionManager */
-    private $permissionManager = null;
+    private $permissionManager;
     /** @var PersistenceService $persistenceService */
-    private $persistenceService = null;
+    private $persistenceService;
     /** @var ConfigService $configService */
-    private $configService = null;
+    private $configService;
 
     public function __construct(
         IUserRepository $userRepository
@@ -86,8 +83,6 @@ class Login extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        $this->params = $parameters;
-
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_LOGIN_SUBMIT)
         );

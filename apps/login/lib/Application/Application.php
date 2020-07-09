@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Login\Application;
 
+use Keestash;
 use KSA\Login\Api\Login;
 use KSA\Login\Controller\LoginController;
+use KSA\Login\Service\TokenService;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends \Keestash\App\Application {
@@ -60,7 +62,14 @@ class Application extends \Keestash\App\Application {
             Application::LOGIN
         );
 
+        $this->registerServices();
     }
 
+    private function registerServices(): void {
+        Keestash::getServer()->register(TokenService::class, function () {
+            return new TokenService();
+        }
+        );
+    }
 
 }

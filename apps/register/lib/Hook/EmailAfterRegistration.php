@@ -23,7 +23,7 @@ namespace KSA\Register\Hook;
 
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
-use Keestash\Core\Service\EmailService;
+use Keestash\Core\Service\Email\EmailService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;

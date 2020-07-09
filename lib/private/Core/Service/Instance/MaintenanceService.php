@@ -19,21 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service;
+namespace Keestash\Core\Service\Instance;
 
-use Keestash\Core\DTO\Token;
-use KSP\Core\DTO\IToken;
-use KSP\Core\DTO\User\IUser;
+/**
+ * Class MaintenanceService
+ * @package Keestash\Core\Service
+ *
+ * TODO implement
+ */
+class MaintenanceService {
 
-class TokenService {
-
-    public function generate(string $name, IUser $user): IToken {
-        $token = new Token();
-        $token->setCreateTs(time());
-        $token->setUser($user);
-        $token->setValue(md5(md5(uniqid((string) time(), true))));
-        $token->setName($name);
-        return $token;
+    public function isMaintenance(): bool {
+        return false;
     }
 
 }

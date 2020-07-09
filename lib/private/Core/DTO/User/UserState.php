@@ -22,21 +22,30 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\User;
 
 use DateTime;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IUserState;
 
 class UserState implements IUserState {
 
-    /** @var int $id */
+    /** @var int */
     private $id;
-    /** @var IUser $user */
+    /** @var IUser */
     private $user;
-    /** @var string $state */
+    /** @var string */
     private $state;
-    /** @var DateTime $validFrom */
+    /** @var DateTime */
     private $validFrom;
-    /** @var DateTime $createTs */
+    /** @var DateTime */
     private $createTs;
+    /** @var string|null */
+    private $stateHash;
+
+    public static function isValidState(string $state): bool {
+        return in_array($state, [
+            IUserState::USER_STATE_DELETE
+            , IUserState::USER_STATE_LOCK
+        ]);
+    }
 
     /**
      * @return int
@@ -108,12 +117,18 @@ class UserState implements IUserState {
         $this->createTs = $createTs;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getStateHash(): ?string {
+        return $this->stateHash;
+    }
 
-    public static function isValidState(string $state): bool {
-        return in_array($state, [
-            IUserState::USER_STATE_DELETE
-            , IUserState::USER_STATE_LOCK
-        ]);
+    /**
+     * @param string|null $stateHash
+     */
+    public function setStateHash(?string $stateHash): void {
+        $this->stateHash = $stateHash;
     }
 
 }

@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\ResponseManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Core\Service\DateTimeService;
 use KSP\Api\IResponse;
-use KSP\Core\Backend\IBackend;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 
 class JSONResponseManager implements IResponseManager {

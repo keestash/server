@@ -22,6 +22,7 @@ export class ForgotPassword {
         const form = $("#forgot_password_form");
         const submitButton = $("#fp__rest");
         const input = $("#fp__input");
+        const spinner = $("#fp__spinner");
         const _this = this;
 
         form.submit(
@@ -29,19 +30,11 @@ export class ForgotPassword {
                 event.preventDefault();
 
                 if (true === _this.buttonClicked) return;
-                _this.buttonClicked = true;
-                _this.buttonService.disable(
-                    submitButton
-                    , true
-                );
+                _this.disableForm(submitButton, spinner, true);
 
                 if ("" === input.val().trim()) {
                     _this.inputService.invalid(input);
-                    _this.buttonService.disable(
-                        submitButton
-                        , false
-                    );
-                    _this.buttonClicked = false;
+                    _this.disableForm(submitButton, spinner, false);
                     return;
                 }
 
@@ -70,12 +63,8 @@ export class ForgotPassword {
                             , 'new event'
                         );
 
-                        _this.buttonService.disable(
-                            submitButton
-                            , false
-                        );
-                        _this.buttonClicked = false;
-
+                        _this.disableForm(submitButton, spinner, false);
+                        input.val("");
                     }
                     , (response, status, xhr) => {
                         _this.miniModal.show(
@@ -86,15 +75,30 @@ export class ForgotPassword {
                             , 'new event'
                         );
 
-                        _this.buttonService.disable(
-                            submitButton
-                            , false
-                        );
-                        _this.buttonClicked = false;
+                        _this.disableForm(submitButton, spinner, false);
+
                     }
                 );
             }
         );
     }
 
+    disableForm(button, spinner, disable) {
+        this.buttonService.disable(
+            button
+            , disable
+        );
+        this.buttonClicked = false === disable;
+        spinner.removeClass(
+            true === disable
+                ? 'invisible'
+                : 'visible'
+        )
+        spinner.addClass(
+            true === disable
+                ? 'visible'
+                : 'invisible'
+        )
+
+    }
 }

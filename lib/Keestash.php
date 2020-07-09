@@ -38,7 +38,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
-use Keestash\Core\Service\MaintenanceService;
+use Keestash\Core\Service\Instance\MaintenanceService;
 use Keestash\Core\Service\Router\Installation\App\InstallAppService;
 use Keestash\Core\Service\Router\Installation\Instance\InstallInstanceService;
 use Keestash\Core\Service\Router\Verification;

@@ -34,15 +34,15 @@ use KSP\L10N\IL10N;
 
 abstract class AbstractApi implements IApi {
 
-    private $response   = null;
-    private $permission = null;
-    private $translator = null;
-    private $parameters = null;
-    private $token      = null;
+    private $response;
+    private $permission;
+    private $translator;
+    private $parameters;
+    private $token;
     /** @var InputSanitizer $inputSanitizer */
-    private $inputSanitizer = null;
+    private $inputSanitizer;
     /** @var OutputSanitizer $outputSanitizer */
-    private $outputSanitizer     = null;
+    private $outputSanitizer;
     private $parametersSanitized = false;
 
     public function __construct(
@@ -67,21 +67,18 @@ abstract class AbstractApi implements IApi {
 
     }
 
-    public function setParameters(array $parameters): void {
-        $this->parameters          = $parameters;
-        $this->parametersSanitized = false;
-    }
+    protected function createResponse(int $code, array $messages): IResponse {
+        $defaultResponse = new DefaultResponse();
+        $defaultResponse->setCode(HTTP::OK);
+        $defaultResponse->addMessage(
+            $code
+            , [
+                "code"       => $code
+                , "messages" => $this->outputSanitizer->sanitizeAll($messages)
+            ]
+        );
 
-    protected function getParameters(): array {
-        if (false === $this->parametersSanitized) {
-            $this->parameters          = $this->inputSanitizer->sanitizeAll($this->parameters);
-            $this->parametersSanitized = true;
-        }
-        return $this->parameters;
-    }
-
-    protected function getParameter(string $name, ?string $default = null): ?string {
-        return $this->getParameters()[$name] ?? $default;
+        return $defaultResponse;
     }
 
     public function getResponse(): IResponse {
@@ -100,31 +97,34 @@ abstract class AbstractApi implements IApi {
         $this->permission = $permission;
     }
 
+    public function createAndSetResponse(int $code, array $messages): void {
+        $response = $this->createResponse($code, $messages);
+        $this->setResponse($response);
+    }
+
+    protected function getParameter(string $name, ?string $default = null): ?string {
+        return $this->getParameters()[$name] ?? $default;
+    }
+
+    protected function getParameters(): array {
+        if (false === $this->parametersSanitized) {
+            $this->parameters          = $this->inputSanitizer->sanitizeAll($this->parameters);
+            $this->parametersSanitized = true;
+        }
+        return $this->parameters;
+    }
+
+    public function setParameters(array $parameters): void {
+        $this->parameters          = $parameters;
+        $this->parametersSanitized = false;
+    }
+
     protected function getL10N(): IL10N {
         return $this->translator;
     }
 
     protected function getToken(): ?IToken {
         return $this->token;
-    }
-
-    protected function createResponse(int $code, array $messages): IResponse {
-        $defaultResponse = new DefaultResponse();
-        $defaultResponse->setCode(HTTP::OK);
-        $defaultResponse->addMessage(
-            $code
-            , [
-                "code"       => $code
-                , "messages" => $this->outputSanitizer->sanitizeAll($messages)
-            ]
-        );
-
-        return $defaultResponse;
-    }
-
-    public function createAndSetResponse(int $code, array $messages): void {
-        $response = $this->createResponse($code, $messages);
-        $this->setResponse($response);
     }
 
 }

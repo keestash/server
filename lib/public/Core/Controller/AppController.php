@@ -23,6 +23,7 @@ namespace KSP\Core\Controller;
 
 use Keestash;
 use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
+use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
@@ -33,15 +34,18 @@ abstract class AppController implements IAppController {
 
     /** @var null|IPermission $permission */
     private $permission = null;
-
     /** @var ITemplateManager|null $templateManager */
-    private $templateManager = null;
-
+    private $templateManager;
     /** @var int $controllerType */
     private $controllerType = IAppController::CONTROLLER_TYPE_NORMAL;
-
     /** @var IL10N $l10n */
-    private $l10n = null;
+    private $l10n;
+    /** @var array */
+    private $parameters;
+    /** @var bool */
+    private $parametersSanitized = false;
+    /** @var InputSanitizer $inputSanitizer */
+    private $inputSanitizer;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -49,6 +53,9 @@ abstract class AppController implements IAppController {
     ) {
         $this->templateManager = $templateManager;
         $this->l10n            = $l10n;
+        $this->setParameters([]);
+        // TODO inject via constructor once you are ready to adapt all extending classes
+        $this->inputSanitizer = Keestash::getServer()->query(InputSanitizer::class);
     }
 
     public function getControllerType(): int {
@@ -112,6 +119,23 @@ abstract class AppController implements IAppController {
 
     protected function getL10N(): IL10N {
         return $this->l10n;
+    }
+
+    protected function getParameter(string $name, ?string $default = null): ?string {
+        return $this->getParameters()[$name] ?? $default;
+    }
+
+    protected function getParameters(): array {
+        if (false === $this->parametersSanitized) {
+            $this->parameters          = $this->inputSanitizer->sanitizeAll($this->parameters);
+            $this->parametersSanitized = true;
+        }
+        return $this->parameters;
+    }
+
+    public function setParameters(array $parameters): void {
+        $this->parameters          = $parameters;
+        $this->parametersSanitized = false;
     }
 
 }

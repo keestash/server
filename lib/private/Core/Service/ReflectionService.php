@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use doganoo\DIP\Object\Reflection\ReflectionService as DiServicesReflectionService;
 use Keestash;
 use KSP\Core\DTO\IToken;
 use ReflectionClass;
 
-class ReflectionService {
+class ReflectionService extends DiServicesReflectionService {
 
     /**
-     * @param string          $className
+     * @param string      $className
      * @param IToken|null $token
      *
      * @return object
@@ -49,17 +49,6 @@ class ReflectionService {
 
         $constructorArgs[] = $token;
         return $instance->newInstanceArgs($constructorArgs);
-    }
-
-    /**
-     * @param object $class
-     * @return ArrayList
-     */
-    public function getParentClasses($class): ArrayList {
-        $list = new ArrayList();
-        $p    = class_parents($class);
-        $list->addAllArray($p);
-        return $list;
     }
 
 

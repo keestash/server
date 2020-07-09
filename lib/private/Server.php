@@ -30,6 +30,7 @@ use doganoo\Backgrounder\Backgrounder;
 use doganoo\Backgrounder\Service\Log\ILoggerService;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\String\IStringService;
+use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\String\StringService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
@@ -79,7 +80,6 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Core\Service\DateTimeService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
@@ -91,13 +91,12 @@ use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Instance\InstallerService;
+use Keestash\Core\Service\Instance\MaintenanceService;
 use Keestash\Core\Service\Log\LoggerService;
-use Keestash\Core\Service\MaintenanceService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\Stylesheet\Compiler;
-use Keestash\Core\Service\TokenService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
@@ -256,9 +255,6 @@ class Server {
             return new UserRemovedHookManager();
         });
 
-        $this->register(TokenService::class, function () {
-            return new TokenService();
-        });
         $this->register(IRoleRepository::class, function () {
             return new RoleRepository(
                 $this->query(IBackend::class)
@@ -331,7 +327,7 @@ class Server {
                 , $this->query(IDateTimeService::class)
             );
         });
-        
+
         $this->register(IBackend::class, function () {
             self::getSystem()->createConfig();
             return new MySQLBackend((string) self::getConfig()->get("db_name"));
@@ -353,10 +349,6 @@ class Server {
 
         $this->register(ITemplateManager::class, function () {
             return $this->query(TwigManager::class);
-        });
-
-        $this->register(DateTimeService::class, function () {
-            return new DateTimeService();
         });
 
         $this->register(RawFileService::class, function () {
@@ -498,7 +490,7 @@ class Server {
         });
 
         $this->register(IDateTimeService::class, function () {
-            return new \doganoo\DIP\DateTime\DateTimeService();
+            return new DateTimeService();
         });
 
         $this->register(IPermissionRepository::class, function () {

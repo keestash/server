@@ -23,13 +23,12 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Api;
 
 use doganoo\PHPUtil\Datatype\StringClass;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\DTO\HTTP;
-use Keestash\Core\Service\EmailService;
+use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
@@ -172,7 +171,7 @@ class ForgotPassword extends AbstractApi {
                 , "poweredByText"  => $this->getL10N()->translate("Powered By $appName")
 
                 // values
-                , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+                , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "ctaLink"        => $ctaLink
                 , "baseUrl"        => $baseUrl
                 , "hasUnsubscribe" => false
@@ -182,14 +181,15 @@ class ForgotPassword extends AbstractApi {
 
         $rendered = $this->templateManager->render(ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME);
 
-        FileLogger::debug("$rendered");
-        FileLogger::debug($ctaLink);
 
         // TODO check them
         //   make sure that there is no bot triggering a lot of mails
         $this->emailService->setBody($rendered);
         $this->emailService->setSubject($this->getL10N()->translate("Resetting Password"));
-        $this->emailService->addRecipent("Dogan Ucar", "dogan@dogan-ucar.de");
+        $this->emailService->addRecipent(
+            $user->getName()
+            , $user->getEmail()
+        );
         $this->emailService->send();
 
         $response->addMessage(

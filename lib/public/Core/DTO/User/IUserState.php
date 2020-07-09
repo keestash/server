@@ -22,14 +22,16 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTime;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Object\IObject;
 
-interface IUserState {
+interface IUserState extends IObject {
 
     /** @var string USER_STATE_DELETE */
     public const USER_STATE_DELETE = "delete.state.user";
     /** @var string USER_STATE_LOCK */
     public const USER_STATE_LOCK = "lock.state.user";
+
+    public static function isValidState(string $state): bool;
 
     public function getId(): int;
 
@@ -40,7 +42,5 @@ interface IUserState {
     public function getValidFrom(): DateTime;
 
     public function getCreateTs(): DateTime;
-
-    public static function isValidState(string $state): bool;
 
 }

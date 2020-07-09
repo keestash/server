@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Application;
 
 use Keestash;
-use Keestash\Core\Service\EmailService;
+use Keestash\Core\Service\Email\EmailService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;

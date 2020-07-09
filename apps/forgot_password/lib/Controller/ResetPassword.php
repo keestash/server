@@ -31,10 +31,10 @@ use KSP\L10N\IL10N;
 
 class ResetPassword extends StaticAppController {
 
-    private $parameters        = null;
-    private $templateManager   = null;
-    private $translator        = null;
-    private $permissionManager = null;
+    private const RESET_PASSWORD_TEMPLATE_NAME = "reset_password.twig";
+
+    /** @var IPermissionRepository */
+    private $permissionManager;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -46,13 +46,10 @@ class ResetPassword extends StaticAppController {
             , $il10n
         );
 
-        $this->templateManager   = $templateManager;
-        $this->translator        = $il10n;
         $this->permissionManager = $permissionRepository;
     }
 
     public function onCreate(...$params): void {
-        $this->parameters = $params;
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_RESET_PASSWORD)
         );
@@ -60,7 +57,8 @@ class ResetPassword extends StaticAppController {
 
     public function create(): void {
         $rendered = null;
-        $token    = $this->parameters[0] ?? null;
+        $token    = $this->getParameter("token", null);
+
         if (null === $token) {
             $rendered = "no request found";
         }
@@ -70,27 +68,32 @@ class ResetPassword extends StaticAppController {
             $rendered = "no request found";
         }
 
-        $this->templateManager->replace(
-            "reset_password.html",
-            [
-                "reset"                          => $this->translator->translate("Reset")
-                , "newPasswordLabel"             => $this->translator->translate("New Password")
-                , "newPasswordRepeaKSAbel"       => $this->translator->translate("New Password Repeat")
-                , "userNameLabel"                => $this->translator->translate("Username")
-                , "newPasswordPlaceholder"       => $this->translator->translate("New Password Repeat")
-                , "newPasswordRepeatPlaceholder" => $this->translator->translate("New Password")
-                , "usernamePlaceholder"          => $this->translator->translate("Username")
+        $this->getTemplateManager()->replace(
+            ResetPassword::RESET_PASSWORD_TEMPLATE_NAME
+            , [
+                // strings
+                "reset"                          => $this->getL10n()->translate("Reset")
+                , "newPasswordLabel"             => $this->getL10n()->translate("New Password")
+                , "newPasswordRepeaKSAbel"       => $this->getL10n()->translate("New Password Repeat")
+                , "userNameLabel"                => $this->getL10n()->translate("Username")
+                , "newPasswordPlaceholder"       => $this->getL10n()->translate("New Password Repeat")
+                , "newPasswordRepeatPlaceholder" => $this->getL10n()->translate("New Password")
+                , "usernamePlaceholder"          => $this->getL10n()->translate("Username")
+                , "backToLogin"                  => $this->getL10n()->translate("Back To Login")
+
+                // values
                 , "logoPath"                     => Keestash::getBaseURL(false) . "/asset/img/logo.png"
-                , "backToLogin"                  => $this->translator->translate("Back To Login")
                 , "backToLoginLink"              => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
             ]
         );
 
-        $string = $this->templateManager
-            ->render("reset_password.html");
-        $this->templateManager->replace(
+        $string = $this->getTemplateManager()
+            ->render(ResetPassword::RESET_PASSWORD_TEMPLATE_NAME);
+        $this->getTemplateManager()->replace(
             ITemplate::APP_CONTENT
-            , ["appContent" => $string]
+            , [
+                "appContent" => $string
+            ]
         );
 
 
