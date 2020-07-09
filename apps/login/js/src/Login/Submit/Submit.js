@@ -149,13 +149,4 @@ export class Submit {
 
     }
 
-    changeButtonState(enable) {
-
-        let button = $("#tl__login__button");
-
-        button.addClass("disabled");
-        if (true === enable) {
-            button.removeClass("disabled");
-        }
-    }
 }

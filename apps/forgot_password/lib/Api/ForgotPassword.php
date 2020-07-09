@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Api;
 
+use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;
@@ -39,6 +41,8 @@ use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
 
 class ForgotPassword extends AbstractApi {
+
+    private const FORGOT_EMAIL_TEMPLATE_NAME = "forgot_email.twig";
 
     private $parameters        = null;
     private $translator        = null;
@@ -76,32 +80,38 @@ class ForgotPassword extends AbstractApi {
 
     public function create(): void {
 
-        $usernameOrEmail = $this->parameters["username_or_email"] ?? null;
-        $response        = new DefaultResponse();
+        $input    = $this->getParameter("input", null);
+        $response = new DefaultResponse();
         $response->setCode(HTTP::OK);
+        $responseHeader = $this->translator->translate("Password reset");
 
-        if (null === $usernameOrEmail) {
+        if (null === $input || "" === $input) {
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->translator->translate("No parameter given")
+                    "header"    => $responseHeader
+                    , "message" => $this->translator->translate("No parameter given")
                 ]
             );
-            parent::setResponse($response);
+            $this->setResponse($response);
             return;
         }
 
-        $users = Keestash::getServer()->getUsersFromCache();
-        $user  = null;
+        $users       = Keestash::getServer()->getUsersFromCache();
+        $user        = null;
+        $inputObject = new StringClass($input);
+
         /** @var IUser $iUser */
         foreach ($users as $iUser) {
+
             if (
-                $usernameOrEmail === $iUser->getEmail()
-                || $usernameOrEmail === $iUser->getName()
+                $inputObject->equalsIgnoreCase($iUser->getEmail())
+                || $inputObject->equalsIgnoreCase($iUser->getName())
             ) {
                 $user = $iUser;
                 break;
             }
+
         }
 
         if (true === $this->userService->isDisabled($user)) {
@@ -109,10 +119,11 @@ class ForgotPassword extends AbstractApi {
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->translator->translate("No User found")
+                    "header"    => $responseHeader
+                    , "message" => $this->translator->translate("Can not reset the user. Please contact your admin")
                 ]
             );
-            parent::setResponse($response);
+            $this->setResponse($response);
             return;
 
         }
@@ -121,7 +132,7 @@ class ForgotPassword extends AbstractApi {
         $appName   = $this->legacy->getApplication()->get("name");
         $appSlogan = $this->legacy->getApplication()->get("slogan");
         $this->templateManager->replace(
-            "forgot_email.html"
+            ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME
             , [
                 "subject"                => $this->translator->translate("Reset Password")
                 , "logoPath"             => Keestash::getBaseURL(false) . "/asset/img/logo.png"
@@ -137,21 +148,26 @@ class ForgotPassword extends AbstractApi {
         );
 
 
-        $rendered = $this->templateManager->render("forgot_email.html");
+        $rendered = $this->templateManager->render(ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME);
+
+        FileLogger::debug("$rendered");
+        FileLogger::debug(Keestash::getBaseURL(true, true) . "/" . Application::RESET_PASSWORD . "/" . $uuid . "/");
 
         // TODO check them
-        $this->emailService->setBody($rendered);
-        $this->emailService->setSubject($this->translator->translate("Resetting Password"));
-        $this->emailService->addRecipent("Dogan Ucar", "dogan@dogan-ucar.de");
-        $this->emailService->send();
+        //   make sure that there is no bot triggering a lot of mails
+        // $this->emailService->setBody($rendered);
+        // $this->emailService->setSubject($this->translator->translate("Resetting Password"));
+        // $this->emailService->addRecipent("Dogan Ucar", "dogan@dogan-ucar.de");
+        // $this->emailService->send();
 
         $response->addMessage(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->translator->translate("We sent an email to reset your password")
+                "header"    => $responseHeader
+                , "message" => $this->translator->translate("We sent an email to reset your password")
             ]
         );
-        parent::setResponse($response);
+        $this->setResponse($response);
         return;
     }
 

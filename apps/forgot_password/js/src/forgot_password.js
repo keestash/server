@@ -17,9 +17,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import $ from 'jquery';
-import Formula from "../../../../lib/js/src/Formula";
-import Input from "../../../../lib/js/src/UI/Input";
-import modal from "../../../../lib/js/src/UI/modal";
+import {ForgotPassword} from "./ForgotPassword/ForgotPassword";
+import {ButtonService} from "../../../../lib/js/src/UI/Button/ButtonService";
+import {InputService} from "../../../../lib/js/src/UI/Input/InputService";
+import {Request} from "../../../../lib/js/src/Backend/Request";
+import {ConsoleLogger} from "../../../../lib/js/src/Log/ConsoleLogger";
+import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
+import {Router} from "../../../../lib/js/src/Route/Router";
+import {Host} from "../../../../lib/js/src/Backend/Host";
+import {Routes} from "./Routes/Routes";
+import {Mini} from "../../../../lib/js/src/UI/Modal/Mini";
+import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/TemplateLoader";
+import {Routes as GlobalRoutes} from "../../../../lib/js/src/Route/Routes";
+import {Parser} from "../../../../lib/js/src/UI/Template/Parser/Parser";
 
 (function () {
 
@@ -27,73 +37,46 @@ import modal from "../../../../lib/js/src/UI/modal";
         Keestash.ForgotPassword = {};
     }
     Keestash.ForgotPassword = {
-        buttonClicked: false,
-        SELECTORS: {
-            FORGOT_PASSWORD_FORM: "#tl__forgot__password"
-            , USERNAME_OR_PASSWORD: "#tl__forgot__password__username__or__email"
-            , SUBMIT_BUTTON: "#tl__login__button"
-        },
-        enableForm: function () {
-            this.buttonClicked = false;
-            $(this.SELECTORS).removeClass("disable");
-        },
-        disableForm: function () {
-            this.buttonClicked = true;
-            $(this.SELECTORS).addClass("disable");
-        },
-        init: function () {
-            let formula = new Formula();
-            let that = this;
 
-            that.buttonClicked = false;
-            $(that.SELECTORS.FORGOT_PASSWORD_FORM).submit(
-                function (event) {
-                    event.preventDefault();
-
-                    let username_or_email = $(that.SELECTORS.USERNAME_OR_PASSWORD).val();
-
-                    if (true === that.buttonClicked) return;
-                    that.disableForm();
-
-                    if (username_or_email === "") {
-                        that.enableForm();
-                        Input.invalid(that.SELECTORS.USERNAME_OR_PASSWORD);
-                        return false;
-                    }
-
-                    formula.post(
-                        Keestash.Main.getApiHost() + "/forgot_password/submit/"
-                        , {'username_or_email': username_or_email}
-                        , function (response, status, xhr) {
-                            let object = JSON.parse(response);
-                            let result_object = null;
-                            // TODO get the response from server!!
-                            let message = "There was an error. Please try again or contact our support";
-                            if (1000 in object) {
-                                result_object = object[1000];
-                                that.enableForm();
-                            } else if (2000 in object) {
-                                result_object = object[2000];
-                                // 2000 means error!
-                                that.disableForm();
-                            }
-
-                            if (null !== result_object) {
-                                message = result_object['message'];
-                            }
-                            modal.miniModal(message);
-                        }
-                        , function (response, status, xhr) {
-                            // TODO get the response from server!!
-                            modal.miniModal("There was an error. Please try again or contact our support");
-                            that.enableForm();
-                        }
-                    );
-                }
+        init: async () => {
+            const buttonService = new ButtonService();
+            const inputService = new InputService();
+            const host = new Host();
+            const globalRoutes = new GlobalRoutes(
+                host
             );
+            const request = new Request(
+                new ConsoleLogger()
+                , new AppStorage()
+                , new Router(
+                    host
+                )
+            );
+            const routes = new Routes();
+            const templateLoader = new TemplateLoader(
+                request
+                , globalRoutes
+            );
+            const parser = new Parser();
+
+            const miniModal = new Mini(
+                templateLoader
+                , parser
+            );
+
+            const forgotPassword = new ForgotPassword(
+                buttonService
+                , inputService
+                , request
+                , routes
+                , miniModal
+            )
+
+            await forgotPassword.run();
+
         }
     }
 })();
-$(document).ready(function () {
-    Keestash.ForgotPassword.init();
+$(document).ready(async () => {
+    await Keestash.ForgotPassword.init();
 });
