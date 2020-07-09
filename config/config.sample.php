@@ -24,66 +24,51 @@ $CONFIG =
         /*
          * Whether errors should be shown on the UI or not
          */
-        "show_errors"       => false
+        "show_errors"     => false
 
         /*
          * If the application should behave in debug
          */
-        , "debug"           => false
+        , "debug"         => false
 
         /*
          * The database host
          */
-        , "db_host"         => ""
+        , "db_host"       => ""
 
         /*
          * The database user
          */
-        , "db_user"         => ""
+        , "db_user"       => ""
 
         /*
          * The database password
          */
-        , "db_password"     => ""
+        , "db_password"   => ""
 
         /*
          * The database password
          */
-        , "db_name"         => ""
+        , "db_name"       => ""
 
         /*
          * The database password
          */
-        , "db_port"         => ""
+        , "db_port"       => ""
 
         /*
          * The database password
          */
-        , "db_charset"      => ""
+        , "db_charset"    => ""
 
         /*
          * Whether the api requests should
          * be logged
          */
-        , "log_requests"    => false
+        , "log_requests"  => false
 
         /*
          * How long a user should be logged in
          */
-        , "user_lifetime"   => 0
-
-        /*
-         * The SMTP host to send emails
-         */
-        , "email_smtp_host" => ""
-
-        /*
-         * The email address from which mails are sent
-         */
-        , "email_user"      => ""
-
-        /*
-         * The password belonging to email_user
-         */
-        , "email_password"  => ""
+        , "user_lifetime" => 0
     ];
