@@ -44,7 +44,6 @@ class ForgotPassword extends AbstractApi {
 
     private const FORGOT_EMAIL_TEMPLATE_NAME = "forgot_email.twig";
 
-    private $parameters        = null;
     private $translator        = null;
     private $emailService      = null;
     private $templateManager   = null;
@@ -63,16 +62,14 @@ class ForgotPassword extends AbstractApi {
     ) {
         parent::__construct($l10n, $token);
 
-        $this->translator        = $l10n;
         $this->emailService      = $emailService;
-        $this->templateManager   = $templateManager;
         $this->legacy            = $legacy;
         $this->permissionManager = $permissionManager;
         $this->userService       = $userService;
+        $this->templateManager   = $templateManager;
     }
 
     public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_FORGOT_PASSWORD_SUBMIT)
         );
@@ -83,14 +80,14 @@ class ForgotPassword extends AbstractApi {
         $input    = $this->getParameter("input", null);
         $response = new DefaultResponse();
         $response->setCode(HTTP::OK);
-        $responseHeader = $this->translator->translate("Password reset");
+        $responseHeader = $this->getL10N()->translate("Password reset");
 
         if (null === $input || "" === $input) {
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "header"    => $responseHeader
-                    , "message" => $this->translator->translate("No parameter given")
+                    , "message" => $this->getL10N()->translate("No parameter given")
                 ]
             );
             $this->setResponse($response);
@@ -114,13 +111,26 @@ class ForgotPassword extends AbstractApi {
 
         }
 
+        if (null === $user) {
+
+            $response->addMessage(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "header"    => $responseHeader
+                    , "message" => $this->getL10N()->translate("No user found")
+                ]
+            );
+            $this->setResponse($response);
+            return;
+
+        }
         if (true === $this->userService->isDisabled($user)) {
 
             $response->addMessage(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "header"    => $responseHeader
-                    , "message" => $this->translator->translate("Can not reset the user. Please contact your admin")
+                    , "message" => $this->getL10N()->translate("Can not reset the user. Please contact your admin")
                 ]
             );
             $this->setResponse($response);
@@ -131,19 +141,41 @@ class ForgotPassword extends AbstractApi {
         $uuid      = StringUtil::getUUID();
         $appName   = $this->legacy->getApplication()->get("name");
         $appSlogan = $this->legacy->getApplication()->get("slogan");
+
+        $baseUrl = Keestash::getBaseURL(true, true);
+
+        $resetPassword = str_replace(
+            "{token}"
+            , $uuid
+            , Application::RESET_PASSWORD
+        );
+        $ctaLink       = $baseUrl . "/" . $resetPassword;
+
         $this->templateManager->replace(
             ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME
             , [
-                "subject"                => $this->translator->translate("Reset Password")
-                , "logoPath"             => Keestash::getBaseURL(false) . "/asset/img/logo.png"
-                , "appName"              => $appName
-                , "appSlogan"            => $appSlogan
-                , "thisEmailIsSentToYou" => $this->translator->translate("This email was sent to {$user->getEmail()} to reset your password. If you did not request a reset, please ignore this mail or let us know.")
-                , "forwardToFriend"      => $this->translator->translate("Forward to a friend")
-                , "passwordReset"        => $this->translator->translate("Password Reset for $appName")
-                , "callToAction"         => $this->translator->translate("Please follow the link below to reset your password")
-                , "ctaButtonText"        => $this->translator->translate("Reset Password")
-                , "ctaLink"              => Keestash::getBaseURL(true, true) . "/" . Application::RESET_PASSWORD . "/" . $uuid . "/"
+                // changeable
+                "appName"          => $appName
+                , "logoAlt"        => $appName
+                , "appSlogan"      => $appSlogan
+
+                // TODO load this from theming
+                , "bodyBackground" => "#f8f8f8"
+                , "themeColor"     => "#269dff"
+
+                // strings
+                , "mailTitle"      => $this->getL10N()->translate("Reset Password")
+                , "salutation"     => $this->getL10N()->translate("Dear {$user->getName()},")
+                , "text"           => $this->getL10N()->translate("This email was sent to {$user->getEmail()} to reset your password. If you did not request a reset, please ignore this mail or let us know.")
+                , "ctaButtonText"  => $this->getL10N()->translate("Reset Password")
+                , "thanksText"     => $this->getL10N()->translate("-Thanks $appName")
+                , "poweredByText"  => $this->getL10N()->translate("Powered By $appName")
+
+                // values
+                , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+                , "ctaLink"        => $ctaLink
+                , "baseUrl"        => $baseUrl
+                , "hasUnsubscribe" => false
             ]
         );
 
@@ -151,20 +183,20 @@ class ForgotPassword extends AbstractApi {
         $rendered = $this->templateManager->render(ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME);
 
         FileLogger::debug("$rendered");
-        FileLogger::debug(Keestash::getBaseURL(true, true) . "/" . Application::RESET_PASSWORD . "/" . $uuid . "/");
+        FileLogger::debug($ctaLink);
 
         // TODO check them
         //   make sure that there is no bot triggering a lot of mails
-        // $this->emailService->setBody($rendered);
-        // $this->emailService->setSubject($this->translator->translate("Resetting Password"));
-        // $this->emailService->addRecipent("Dogan Ucar", "dogan@dogan-ucar.de");
-        // $this->emailService->send();
+        $this->emailService->setBody($rendered);
+        $this->emailService->setSubject($this->getL10N()->translate("Resetting Password"));
+        $this->emailService->addRecipent("Dogan Ucar", "dogan@dogan-ucar.de");
+        $this->emailService->send();
 
         $response->addMessage(
             IResponse::RESPONSE_CODE_OK
             , [
                 "header"    => $responseHeader
-                , "message" => $this->translator->translate("We sent an email to reset your password")
+                , "message" => $this->getL10N()->translate("We sent an email to reset your password")
             ]
         );
         $this->setResponse($response);
