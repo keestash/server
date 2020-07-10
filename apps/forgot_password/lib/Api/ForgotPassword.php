@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Api;
 
+use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;
@@ -35,20 +37,28 @@ use KSA\ForgotPassword\Application\Application;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\IToken;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
 
 class ForgotPassword extends AbstractApi {
 
     private const FORGOT_EMAIL_TEMPLATE_NAME = "forgot_email.twig";
 
-    private $translator        = null;
-    private $emailService      = null;
-    private $templateManager   = null;
-    private $legacy            = null;
-    private $permissionManager = null;
-    private $userService       = null;
+    /** @var EmailService */
+    private $emailService;
+    /** @var ITemplateManager */
+    private $templateManager;
+    /** @var Legacy */
+    private $legacy;
+    /** @var IPermissionRepository */
+    private $permissionManager;
+    /** @var UserService */
+    private $userService;
+    /** @var IUserStateRepository */
+    private $userStateRepository;
 
     public function __construct(
         IL10N $l10n
@@ -57,15 +67,17 @@ class ForgotPassword extends AbstractApi {
         , Legacy $legacy
         , IPermissionRepository $permissionManager
         , UserService $userService
+        , IUserStateRepository $userStateRepository
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
-        $this->emailService      = $emailService;
-        $this->legacy            = $legacy;
-        $this->permissionManager = $permissionManager;
-        $this->userService       = $userService;
-        $this->templateManager   = $templateManager;
+        $this->emailService        = $emailService;
+        $this->legacy              = $legacy;
+        $this->permissionManager   = $permissionManager;
+        $this->userService         = $userService;
+        $this->templateManager     = $templateManager;
+        $this->userStateRepository = $userStateRepository;
     }
 
     public function onCreate(array $parameters): void {
@@ -137,6 +149,31 @@ class ForgotPassword extends AbstractApi {
 
         }
 
+        $userStates       = $this->userStateRepository->getUsersWithPasswordResetRequest();
+        $alreadyRequested = false;
+
+        foreach ($userStates->keySet() as $userStateId) {
+            /** @var IUserState $userState */
+            $userState = $userStates->get($userStateId);
+            if ($user->getId() === $userState->getUser()->getId()) {
+                $difference       = $userState->getCreateTs()->diff(new DateTime());
+                $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
+            }
+        }
+
+        if (true === $alreadyRequested) {
+
+            $response->addMessage(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "header"    => $responseHeader
+                    , "message" => $this->getL10N()->translate("You have already requested an password reset. Please check your mails or try later again")
+                ]
+            );
+            $this->setResponse($response);
+            return;
+
+        }
         $uuid      = StringUtil::getUUID();
         $appName   = $this->legacy->getApplication()->get("name");
         $appSlogan = $this->legacy->getApplication()->get("slogan");
@@ -190,7 +227,12 @@ class ForgotPassword extends AbstractApi {
             $user->getName()
             , $user->getEmail()
         );
-        $this->emailService->send();
+        $sent = $this->emailService->send();
+
+        if (true === $sent) {
+            $this->userStateRepository->revertPasswordChangeRequest($user);
+            $this->userStateRepository->requestPasswordReset($user, $uuid);
+        }
 
         $response->addMessage(
             IResponse::RESPONSE_CODE_OK

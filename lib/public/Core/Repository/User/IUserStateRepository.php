@@ -35,26 +35,40 @@ use KSP\Core\DTO\User\IUser;
  */
 interface IUserStateRepository {
 
+    // for locking users
     public function lock(IUser $user): bool;
 
     public function unlock(IUser $user): bool;
 
+    public function isLocked(IUser $user): bool;
+
+    public function getLockedUsers(): HashTable;
+
+    // for marking users as deleted in the app
     public function delete(IUser $user): bool;
 
     public function revertDelete(IUser $user): bool;
 
+    public function isDeleted(IUser $user): bool;
+
     public function getDeletedUsers(): HashTable;
 
-    public function getLockedUsers(): HashTable;
+    // for password change requests
+    public function requestPasswordReset(IUser $user, string $hash): bool;
 
+    public function revertPasswordChangeRequest(IUser $user): bool;
+
+    public function hasPasswordResetRequested(IUser $user): bool;
+
+    public function getUsersWithPasswordResetRequest(): HashTable;
+
+    // public
     public function getAll(): HashTable;
 
+    // for removing from the system
     public function remove(IUser $user, string $state): bool;
 
     public function removeAll(IUser $user): bool;
 
-    public function isLocked(IUser $user): bool;
-
-    public function isDeleted(IUser $user): bool;
 
 }

@@ -667,12 +667,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doganoo/DIServices.git",
-                "reference": "6a4745451c6c9b7fb1dad33a2e06c0102123e61f"
+                "reference": "0c1dac3777dc16cc47a39dbaff5fef406773d288"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doganoo/DIServices/zipball/6a4745451c6c9b7fb1dad33a2e06c0102123e61f",
-                "reference": "6a4745451c6c9b7fb1dad33a2e06c0102123e61f",
+                "url": "https://api.github.com/repos/doganoo/DIServices/zipball/0c1dac3777dc16cc47a39dbaff5fef406773d288",
+                "reference": "0c1dac3777dc16cc47a39dbaff5fef406773d288",
                 "shasum": ""
             },
             "require": {
@@ -702,7 +702,7 @@
                 }
             ],
             "description": "service classes in the sense of Dependency Injection",
-            "time": "2020-07-09 18:02:41"
+            "time": "2020-07-10 07:52:40"
         },
         {
             "name": "doganoo/php-algorithms",
@@ -1274,12 +1274,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b7bdbf9943c3f07422cf9dabbf0213c8b4c6a520"
+                "reference": "025973d8c1104be7576c12f23baff705a97028c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b7bdbf9943c3f07422cf9dabbf0213c8b4c6a520",
-                "reference": "b7bdbf9943c3f07422cf9dabbf0213c8b4c6a520",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/025973d8c1104be7576c12f23baff705a97028c4",
+                "reference": "025973d8c1104be7576c12f23baff705a97028c4",
                 "shasum": ""
             },
             "require": {
@@ -1308,7 +1308,7 @@
                 "MIT"
             ],
             "description": "PHPStan - PHP Static Analysis Tool",
-            "time": "2020-07-09 16:59:27"
+            "time": "2020-07-09 20:09:35"
         },
         {
             "name": "psr/container",

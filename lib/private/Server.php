@@ -29,9 +29,9 @@ use DI\NotFoundException;
 use doganoo\Backgrounder\Backgrounder;
 use doganoo\Backgrounder\Service\Log\ILoggerService;
 use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\DI\String\IStringService;
+use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
-use doganoo\DIP\String\StringService;
+use doganoo\DIP\Object\String\StringService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
@@ -622,6 +622,7 @@ class Server {
             return new UserStateRepository(
                 Keestash::getServer()->query(IBackend::class)
                 , Keestash::getServer()->getUserRepository()
+                , Keestash::getServer()->query(IDateTimeService::class)
             );
         });
 

@@ -44,6 +44,7 @@ class UserState implements IUserState {
         return in_array($state, [
             IUserState::USER_STATE_DELETE
             , IUserState::USER_STATE_LOCK
+            , IUserState::USER_STATE_REQUEST_PW_CHANGE
         ]);
     }
 

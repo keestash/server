@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
  *
  * Copyright (C) <2019> <Dogan Ucar>
  *
@@ -22,8 +21,8 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\User;
 
 use DateTime;
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
@@ -31,19 +30,23 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use PDO;
 
 class UserStateRepository extends AbstractRepository implements IUserStateRepository {
 
     /** @var IUserRepository */
     private $userRepository;
 
+    /** @var IDateTimeService */
+    private $dateTimeService;
+
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
+        , IDateTimeService $dateTimeService
     ) {
         parent::__construct($backend);
-        $this->userRepository = $userRepository;
+        $this->userRepository  = $userRepository;
+        $this->dateTimeService = $dateTimeService;
     }
 
     public function unlock(IUser $user): bool {
@@ -53,13 +56,25 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
     public function lock(IUser $user): bool {
         if (true === $this->isLocked($user)) return true;
-        return $this->insert($user, IUserState::USER_STATE_LOCK);
+        return $this->insert(
+            $user
+            , IUserState::USER_STATE_LOCK
+            , null
+        );
     }
 
     public function delete(IUser $user): bool {
         if (true === $this->isDeleted($user)) return true;
-        $locked  = $this->insert($user, IUserState::USER_STATE_LOCK);
-        $deleted = $this->insert($user, IUserState::USER_STATE_DELETE);
+        $locked  = $this->insert(
+            $user
+            , IUserState::USER_STATE_LOCK
+            , null
+        );
+        $deleted = $this->insert(
+            $user
+            , IUserState::USER_STATE_DELETE
+            , null
+        );
         return true === $locked && true === $deleted;
     }
 
@@ -70,36 +85,35 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
     public function getAll(?string $state = null): HashTable {
         $table = new HashTable();
-        $sql   = "
-                SELECT
-                    us.`id`
-                     , us.`user_id`
-                     , us.`state`
-                     , us.`valid_from`
-                     , us.`create_ts`
-                FROM `user_state` us";
 
-        if (true === UserState::isValidState((string) $state)) {
-            $sql = $sql . " WHERE us.`state` = :state";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $queryBuilder->select(
+            [
+                'us.`id`'
+                , 'us.`user_id`'
+                , 'us.`state`'
+                , 'us.`valid_from`'
+                , 'us.`create_ts`'
+                , 'us.`state_hash`'
+            ]
+        )
+            ->from('user_state', 'us');
+
+        if ($state !== null) {
+            $queryBuilder = $queryBuilder->
+            where('us.`state` = ?')
+                ->setParameter(0, $state);
         }
 
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return $table;
+        $usersStates = $queryBuilder->execute()->fetchAll();
 
-        if (true === UserState::isValidState((string) $state)) {
-            $statement->bindParam("state", $state);
-        }
-
-        $executed = $statement->execute();
-        if (!$executed) return $table;
-        if ($statement->rowCount() === 0) return $table;
-
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $userId    = $row[1];
-            $state     = $row[2];
-            $validFrom = $row[3];
-            $createTs  = $row[4];
+        foreach ($usersStates as $row) {
+            $id            = $row["id"];
+            $userId        = $row["user_id"];
+            $state         = $row["state"];
+            $validFrom     = $row["valid_from"];
+            $createTs      = $row["create_ts"];
+            $userStateHash = $row["state_hash"];
 
             $userState = new UserState();
             $userState->setId((int) $id);
@@ -107,12 +121,13 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
                 $this->userRepository->getUserById((string) $userId)
             );
             $userState->setValidFrom(
-                DateTimeUtil::fromMysqlDateTime($validFrom)
+                $this->dateTimeService->fromString($validFrom)
             );
             $userState->setCreateTs(
-                DateTimeUtil::fromMysqlDateTime($createTs)
+                $this->dateTimeService->fromString($createTs)
             );
             $userState->setState($state);
+            $userState->setStateHash($userStateHash);
 
             $table->put($userState->getId(), $userState);
         }
@@ -129,64 +144,45 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     }
 
     // TODO check whether already exists
-    private function insert(IUser $user, string $state): bool {
-        $sql = "insert into `user_state` (
-                  `user_id`
-                  , `state`
-                  , `valid_from`
-                  , `create_ts`
-                  )
-                  values (
-                          :user_id
-                          , :state
-                          , :valid_from
-                          , :create_ts
-                          );";
+    private function insert(IUser $user, string $state, ?string $hash = null): bool {
 
-        $statement = parent::prepareStatement($sql);
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert('user_state')
+            ->values(
+                [
+                    'user_id'      => '?'
+                    , 'state'      => '?'
+                    , 'state_hash' => '?'
+                    , 'valid_from' => '?'
+                    , 'create_ts'  => '?'
+                ]
+            )
+            ->setParameter(0, $user->getId())
+            ->setParameter(1, $state)
+            ->setParameter(2, $hash)
+            ->setParameter(3,
+                $this->dateTimeService->toYMDHIS(new DateTime())
+            )
+            ->setParameter(4,
+                $this->dateTimeService->toYMDHIS(new DateTime())
+            )
+            ->execute();
 
-        $userId    = $user->getId();
-        $validFrom = new DateTime();
-        $validFrom = DateTimeUtil::formatMysqlDateTime(
-            $validFrom
-        );
-        $createTs  = new DateTime();
-        $createTs  = DateTimeUtil::formatMysqlDateTime(
-            $createTs
-        );
-
-        $statement->bindParam("user_id", $userId);
-        $statement->bindParam("state", $state);
-        $statement->bindParam("valid_from", $validFrom);
-        $statement->bindParam("create_ts", $createTs);
-
-        if (false === $statement->execute()) return false;
-
-        $lastInsertId = parent::getLastInsertId();
+        $lastInsertId = $this->getDoctrineLastInsertId();
 
         if (null === $lastInsertId) return false;
-
         return true;
+
     }
 
     public function remove(IUser $user, string $state): bool {
-        $sql       = "DELETE FROM 
-                            `user_state`
-                      WHERE 
-                            `user_id` = :user_id
-                        AND `state` = :state
-                            ;";
-        $statement = $this->prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $userId = $user->getId();
-        $statement->bindParam("user_id", $userId);
-        $statement->bindParam("state", $state);
-        $statement->execute();
-        $executed = false === $this->hasErrors($statement->errorCode());
-
-        if (false === $executed) return false;
-        return $executed;
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete('user_state')
+                ->where('user_id = ?')
+                ->andWhere('state = ?')
+                ->setParameter(0, $user->getId())
+                ->setParameter(1, $state)
+                ->execute() !== 0;
     }
 
 
@@ -222,6 +218,39 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             if ($user->getId() === $userState->getUser()->getId()) return true;
         }
         return false;
+    }
+
+    public function requestPasswordReset(IUser $user, string $hash): bool {
+        if (true === $this->hasPasswordResetRequested($user)) return true;
+        return $this->insert(
+            $user
+            , IUserState::USER_STATE_REQUEST_PW_CHANGE
+            , $hash
+        );
+
+    }
+
+    public function revertPasswordChangeRequest(IUser $user): bool {
+        if (false === $this->hasPasswordResetRequested($user)) return true;
+        return $this->remove($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
+    }
+
+    public function hasPasswordResetRequested(IUser $user): bool {
+        $lockedUsers = $this->getUsersWithPasswordResetRequest();
+
+        /** @var IUserState $userState */
+        foreach ($lockedUsers->keySet() as $key) {
+            $userState = $lockedUsers->get($key);
+            if ($user->getId() === $userState->getUser()->getId()) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public function getUsersWithPasswordResetRequest(): HashTable {
+        return $this->getAll(IUserState::USER_STATE_REQUEST_PW_CHANGE);
     }
 
 }

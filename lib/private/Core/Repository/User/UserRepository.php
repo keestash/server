@@ -261,8 +261,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->setParameter(6, $user->getWebsite())
             ->setParameter(7, $user->getHash())
             ->setParameter(8, $user->getId())
-            ->execute();
-;
+            ->execute();;
         FileLogger::debug(json_encode($queryBuilder->getSQL()));
 
 //        exit();
@@ -351,8 +350,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         return $queryBuilder->delete('user')
                 ->where('id = ?')
                 ->setParameter(0, $user->getId())
-                ->execute()
-                ->columnCount() !== 0;
+                ->execute() !== 0;
     }
 
 }

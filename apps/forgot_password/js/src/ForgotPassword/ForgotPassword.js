@@ -15,7 +15,6 @@ export class ForgotPassword {
         this.request = request;
         this.routes = routes;
         this.miniModal = miniModal;
-        this.buttonClicked = false;
     }
 
     async run() {
@@ -29,7 +28,6 @@ export class ForgotPassword {
             (event) => {
                 event.preventDefault();
 
-                if (true === _this.buttonClicked) return;
                 _this.disableForm(submitButton, spinner, true);
 
                 if ("" === input.val().trim()) {
@@ -88,7 +86,6 @@ export class ForgotPassword {
             button
             , disable
         );
-        this.buttonClicked = false === disable;
         spinner.removeClass(
             true === disable
                 ? 'invisible'
