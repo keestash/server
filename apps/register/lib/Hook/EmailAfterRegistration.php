@@ -79,7 +79,7 @@ class EmailAfterRegistration implements IHook {
             ]
         );
         $rendered = $this->templateManager->render("welcome_email.twig");
-        $this->emailService->addRecipent("Ucar Solutions", "info@ucar-solutions.de");
+        $this->emailService->addRecipent($user->getName(), $user->getEmail());
         $this->emailService->setSubject($this->translator->translate("You are registered for $appName"));
         $this->emailService->setBody($rendered);
         return $this->emailService->send();

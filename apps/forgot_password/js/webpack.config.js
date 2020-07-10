@@ -20,10 +20,13 @@ const glob = require("glob");
 const webpack = require("webpack");
 
 module.exports = {
-    entry: glob.sync(__dirname + "/src/*.js"),
+    entry: {
+        forgot_password: glob.sync(__dirname + "/src/forgot_password.js")
+        , reset_password: glob.sync(__dirname + "/src/reset_password.js")
+    },
     output: {
         path: __dirname + "/dist/",
-        filename: 'forgot_password.bundle.js'
+        filename: '[name].bundle.js'
     },
     module: {
         rules: [{

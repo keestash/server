@@ -43,6 +43,8 @@ interface IUserState extends IObject {
 
     public function getValidFrom(): DateTime;
 
+    public function getStateHash(): ?string;
+
     public function getCreateTs(): DateTime;
 
 }

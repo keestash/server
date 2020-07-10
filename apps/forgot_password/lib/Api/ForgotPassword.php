@@ -24,7 +24,6 @@ namespace KSA\ForgotPassword\Api;
 
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;

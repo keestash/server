@@ -29,6 +29,7 @@ interface ITemplate {
     public const BODY           = "body.twig";
     public const BREADCRUMB     = "breadcrumb.twig";
     public const CONTENT        = "content.twig";
+    public const ERROR          = "error.twig";
     public const FOOTER         = "footer.twig";
     public const HEAD           = "head.twig";
     public const HTML           = "html.twig";

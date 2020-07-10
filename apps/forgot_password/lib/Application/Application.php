@@ -34,6 +34,7 @@ class Application extends \Keestash\App\Application {
     public const FORGOT_PASSWORD_SUBMIT            = "forgot_password/submit";
     public const FORGOT_PASSWORD                   = "forgot_password";
     public const RESET_PASSWORD                    = "reset_password/{token}/";
+    public const RESET_PASSWORD_UPDATE             = "/reset_password/update/";
 
     public function register(): void {
 
@@ -68,6 +69,21 @@ class Application extends \Keestash\App\Application {
 
         parent::addJavascript(
             self::FORGOT_PASSWORD
+        );
+
+        $this->registerApiRoute(
+            Application::RESET_PASSWORD_UPDATE
+            , \KSA\ForgotPassword\Api\ResetPassword::class
+            , [IRouterManager::POST]
+        );
+        $this->registerPublicApiRoute(
+            Application::RESET_PASSWORD_UPDATE
+        );
+
+        parent::addJavaScriptFor(
+            "forgot_password"
+            , "reset_password"
+            , self::RESET_PASSWORD
         );
 
     }

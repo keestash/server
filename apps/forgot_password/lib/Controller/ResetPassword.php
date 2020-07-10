@@ -24,9 +24,11 @@ namespace KSA\ForgotPassword\Controller;
 use Keestash;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Controller\StaticAppController;
+use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
 
 class ResetPassword extends StaticAppController {
@@ -36,17 +38,21 @@ class ResetPassword extends StaticAppController {
     /** @var IPermissionRepository */
     private $permissionManager;
 
+    private $userStateRepository;
+
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $il10n
         , IPermissionRepository $permissionRepository
+        , IUserStateRepository $userStateRepository
     ) {
         parent::__construct(
             $templateManager
             , $il10n
         );
 
-        $this->permissionManager = $permissionRepository;
+        $this->permissionManager   = $permissionRepository;
+        $this->userStateRepository = $userStateRepository;
     }
 
     public function onCreate(...$params): void {
@@ -58,32 +64,42 @@ class ResetPassword extends StaticAppController {
     public function create(): void {
         $rendered = null;
         $token    = $this->getParameter("token", null);
+        $user     = null;
 
         if (null === $token) {
-            $rendered = "no request found";
+            $this->render(ITemplate::ERROR);
+            return;
         }
-        $dbToken = $token; // TODO ask database
 
-        if ($token !== $dbToken) {
-            $rendered = "no request found";
+        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
+
+        foreach ($userStates->keySet() as $userStateId) {
+            /** @var IUserState $usersState */
+            $usersState = $userStates->get($userStateId);
+            if ($token === $usersState->getStateHash()) {
+                $user = $usersState->getUser();
+                break;
+            }
+        }
+
+        if (null === $user) {
+            $this->render(ITemplate::ERROR);
+            return;
         }
 
         $this->getTemplateManager()->replace(
             ResetPassword::RESET_PASSWORD_TEMPLATE_NAME
             , [
                 // strings
-                "reset"                          => $this->getL10n()->translate("Reset")
-                , "newPasswordLabel"             => $this->getL10n()->translate("New Password")
-                , "newPasswordRepeaKSAbel"       => $this->getL10n()->translate("New Password Repeat")
-                , "userNameLabel"                => $this->getL10n()->translate("Username")
-                , "newPasswordPlaceholder"       => $this->getL10n()->translate("New Password Repeat")
-                , "newPasswordRepeatPlaceholder" => $this->getL10n()->translate("New Password")
-                , "usernamePlaceholder"          => $this->getL10n()->translate("Username")
-                , "backToLogin"                  => $this->getL10n()->translate("Back To Login")
+                "title"            => $this->getL10N()->translate("Reset password for {$user->getName()}")
+                , "passwordLabel"  => $this->getL10n()->translate("New Password")
+                , "resetPassword"  => $this->getL10n()->translate("Reset Password")
 
                 // values
-                , "logoPath"                     => Keestash::getBaseURL(false) . "/asset/img/logo.png"
-                , "backToLoginLink"              => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
+                , "backgroundPath" => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
+                , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "token"          => $token
+
             ]
         );
 

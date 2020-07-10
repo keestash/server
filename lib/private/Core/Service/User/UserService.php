@@ -302,4 +302,22 @@ class UserService {
         return false;
     }
 
+    public function updateUser(IUser $updatedUser, IUser $oldUser): bool {
+        Keestash::getServer()
+            ->getPasswordChangedHookManager()
+            ->executePre();
+
+        $updated = $this->userRepository->update($updatedUser);
+
+        Keestash::getServer()
+            ->getPasswordChangedHookManager()
+            ->executePost(
+                $updatedUser
+                , $oldUser
+                , $updated
+            );
+
+        return $updated;
+    }
+
 }
