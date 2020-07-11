@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Api;
 
+use DateTime;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\Permission\PermissionFactory;
@@ -57,16 +58,41 @@ class ResetPassword extends AbstractApi {
     }
 
     public function create(): void {
+        $response = new DefaultResponse();
+
         $hash        = $this->getParameter("hash", null);
         $newPassword = $this->getParameter("input", null);
 
+        $userState     = $this->findCandidate($hash);
+        $validPassword = $this->userService->passwordHasMinimumRequirements($newPassword);
 
-        // TODO input validation here
-        // 1. hash exists
-        // 2. hash expired
-        // 3. password minimum requirements
+        if (null === $userState) {
 
-        $userState = $this->findCandidate($hash);
+            $response->addMessage(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "header"    => $this->getL10N()->translate("User not updated")
+                    , "message" => $this->getL10N()->translate("No user found or session is expired. Please request a new link")
+                ]
+            );
+            $this->setResponse($response);
+            return;
+
+        }
+
+        if (false === $validPassword) {
+
+            $response->addMessage(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "header"    => $this->getL10N()->translate("User not updated")
+                    , "message" => $this->getL10N()->translate("Password minimum requirements not met")
+                ]
+            );
+            $this->setResponse($response);
+            return;
+
+        }
 
         $newUser = $userState->getUser();
         $oldUser = clone $newUser;
@@ -81,7 +107,7 @@ class ResetPassword extends AbstractApi {
 
             $this->userStateRepository->revertPasswordChangeRequest($oldUser);
 
-            $response = new DefaultResponse();
+
             $response->addMessage(
                 IResponse::RESPONSE_CODE_OK
                 , [
@@ -102,9 +128,14 @@ class ResetPassword extends AbstractApi {
         foreach ($userStates->keySet() as $userStateId) {
             /** @var IUserState $userState */
             $userState = $userStates->get($userStateId);
-            if ($userState->getStateHash() === $hash) {
+
+            if (
+                $userState->getStateHash() === $hash
+                && $userState->getCreateTs()->diff(new DateTime())->i < 2
+            ) {
                 return $userState;
             }
+
         }
 
         return null;

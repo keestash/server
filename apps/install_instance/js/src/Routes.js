@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import {Host} from "../../../../lib/js/src/Backend/Host";
+
 export const UPDATE_CONFIG = "/install_instance/update_config/";
 export const DIRS_WRITABLE = "/install_instance/dirs_writable/";
 export const END_UPDATE = "/install_instance/end_update/";
@@ -23,24 +25,28 @@ export const CONFIG_DATA = "/install_instance/config_data/";
 export const HAS_DATA_DIRS = "/install_instance/has_data_dirs/";
 
 export class Routes {
+    constructor() {
+        this.host = new Host();
+    }
+
     getInstallInstanceUpdateConfig() {
-        return Keestash.Main.getApiHost() + UPDATE_CONFIG;
+        return this.host.getApiHost() + UPDATE_CONFIG;
     }
 
     getInstallInstanceEndUpdate() {
-        return Keestash.Main.getApiHost() + END_UPDATE;
+        return this.host.getApiHost() + END_UPDATE;
     }
 
     getConfigData() {
-        return Keestash.Main.getApiHost() + CONFIG_DATA;
+        return this.host.getApiHost() + CONFIG_DATA;
     }
 
     getDirsWritableData() {
-        return Keestash.Main.getApiHost() + DIRS_WRITABLE;
+        return this.host.getApiHost() + DIRS_WRITABLE;
     }
 
     getHasDataDirs() {
-        return Keestash.Main.getApiHost() + HAS_DATA_DIRS;
+        return this.host.getApiHost() + HAS_DATA_DIRS;
     }
 
 }

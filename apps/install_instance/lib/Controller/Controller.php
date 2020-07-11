@@ -92,17 +92,6 @@ class Controller extends FullscreenAppController {
                 , "configurationPartHeader" => $this->getL10N()->translate("Configuration File")
                 , "dirsWritablePartHeader"  => $this->getL10N()->translate("Files and Directories that are not Writable")
                 , "hasDataDirsPartHeader"   => $this->getL10N()->translate("Data Directories that are missing")
-                , "templates"               => json_encode([
-                    "config_template"          => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_CONFIG_PART)
-                    , "dirs_writable_template" => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_DIRS_WRITABLE_PART)
-                    , "has_data_dirs_template" => $this->getTemplateManager()->getRawTemplate(Controller::TEMPLATE_NAME_HAS_DATA_DIRS)
-                ])
-                , "strings"                 => json_encode([
-                    "has_data_dirs" => [
-                        "nothingToUpdate" => $this->getL10N()->translate("Nothing To Update")
-                    ]
-                ])
-
             ]
         );
         parent::render(Controller::TEMPLATE_NAME_INSTALL_INSTANCE);

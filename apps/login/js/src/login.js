@@ -38,15 +38,16 @@ import {Parser} from "../../../../lib/js/src/UI/Template/Parser/Parser";
     Keestash.Login = {
 
         init: async () => {
+            const host = new Host();
             const router = new Router(
-                Keestash.Main.getHost()
+                host.getHost()
             );
             const appStorage = new AppStorage();
             const request = new Request(
                 new ConsoleLogger()
                 , appStorage
                 , new Router(
-                    Keestash.Main.getHost()
+                    host.getHost()
                 )
             );
             const globalRoutes = new GlobalRoutes(

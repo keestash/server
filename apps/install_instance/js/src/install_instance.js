@@ -18,12 +18,10 @@
  */
 import {Config} from "./Installer/Config";
 import {DirsWritable} from "./Installer/DirsWritable";
-import Formula from "../../../../lib/js/src/Formula";
 import {Routes} from "./Routes";
 import {HasDataDirs} from "./Installer/HasDataDirs";
 import {EndUpdate} from "./Installer/EndUpdate";
-import {LazyOperator} from "../../../../lib/js/src/Util/LazyOperator";
-import {Router} from "../../../../lib/js/src/Route/Router";
+import {LAZY_OPERATOR, REQUEST, ROUTER} from "../../../../lib/js/src/Bootstrap";
 
 (function () {
     if (!Keestash.Apps.InstallInstance) {
@@ -32,35 +30,31 @@ import {Router} from "../../../../lib/js/src/Route/Router";
 
     Keestash.Apps.InstallInstance = {
 
-        init: function () {
-            const formula = new Formula();
+        init: () => {
             const routes = new Routes();
-            const lazyOperator = new LazyOperator();
-            const router = new Router(
-                Keestash.Main.getHost()
-            );
+            const diContainer = Keestash.Main.getContainer();
 
             const handler = [
 
                 new Config(
-                    formula
+                    diContainer.query(REQUEST)
                     , routes
                 )
 
                 , new DirsWritable(
-                    formula
+                    diContainer.query(REQUEST)
                     , routes
-                    , lazyOperator
+                    , diContainer.query(LAZY_OPERATOR)
                 )
                 , new HasDataDirs(
-                    formula
+                    diContainer.query(REQUEST)
                     , routes
-                    , lazyOperator
+                    , diContainer.query(LAZY_OPERATOR)
                 )
                 , new EndUpdate(
-                    formula
+                    diContainer.query(REQUEST)
                     , routes
-                    , router
+                    , diContainer.query(ROUTER)
                 )
             ];
 
@@ -68,15 +62,13 @@ import {Router} from "../../../../lib/js/src/Route/Router";
                 handler[i].handle();
             }
 
-
         }
-
 
     }
 
 })();
 
-$(document).ready(function () {
+$(document).ready(() => {
     Keestash.Apps.InstallInstance.init();
 });
 
