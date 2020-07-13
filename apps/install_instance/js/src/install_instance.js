@@ -21,7 +21,7 @@ import {DirsWritable} from "./Installer/DirsWritable";
 import {Routes} from "./Routes";
 import {HasDataDirs} from "./Installer/HasDataDirs";
 import {EndUpdate} from "./Installer/EndUpdate";
-import {LAZY_OPERATOR, REQUEST, ROUTER} from "../../../../lib/js/src/Bootstrap";
+import {LAZY_OPERATOR, REQUEST, ROUTER} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.Apps.InstallInstance) {

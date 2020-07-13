@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Controller;
 
+use DateTime;
 use Keestash;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Controller\StaticAppController;
@@ -94,11 +95,13 @@ class ResetPassword extends StaticAppController {
                 "title"            => $this->getL10N()->translate("Reset password for {$user->getName()}")
                 , "passwordLabel"  => $this->getL10n()->translate("New Password")
                 , "resetPassword"  => $this->getL10n()->translate("Reset Password")
+                , "noHashFound"    => $this->getL10N()->translate("Link seems to be expired. Please request a new one")
 
                 // values
                 , "backgroundPath" => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
                 , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "token"          => $token
+                , "hasHash"        => $this->hasHash($token)
 
             ]
         );
@@ -113,6 +116,26 @@ class ResetPassword extends StaticAppController {
         );
 
 
+    }
+
+    private function hasHash(?string $hash): bool {
+        if (null === $hash) return false;
+        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
+
+        foreach ($userStates->keySet() as $userStateId) {
+            /** @var IUserState $userState */
+            $userState = $userStates->get($userStateId);
+
+            if (
+                $userState->getStateHash() === $hash
+                && $userState->getCreateTs()->diff(new DateTime())->i < 2
+            ) {
+                return true;
+            }
+
+        }
+
+        return false;
     }
 
     public function afterCreate(): void {

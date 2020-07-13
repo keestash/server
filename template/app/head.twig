@@ -9,7 +9,6 @@
     {% block stylesheets %}
         <link href="{{ stylecss }}" rel="stylesheet"/>
         <link href="{{ fontAwesomeCss }}" rel="stylesheet"/>
-        <link href="{{ semanticUiCss }}" rel="stylesheet">
         {% for key, value in stylesheets %}
             <link href="{{ value }}" rel="stylesheet"/>
         {% endfor %}
@@ -17,7 +16,6 @@
 
     {% block scripts %}
         <script src="{{ baseJs }}" type="application/javascript"></script>
-        <script src="{{ semanticJs }}" type="application/javascript"></script>
         {% for key, value in scripts %}
         <script src="{{ app_asset('') }}{{ key }}" type="{{ value }}"></script>
         {% endfor %}

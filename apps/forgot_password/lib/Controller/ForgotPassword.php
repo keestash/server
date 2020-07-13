@@ -87,7 +87,6 @@ class ForgotPassword extends StaticAppController {
                 , "createNewAccountActionText"    => $this->getL10N()->translate("Sign Up")
                 , "loginToApp"                    => $this->getL10N()->translate("Reset password")
                 , "backToLogin"                   => $this->getL10N()->translate("Back To Login")
-                , "noHashFound"                   => $this->getL10N()->translate("Link seems to be expired. Please request a new one")
 
                 // values
                 , "backgroundPath"                => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
@@ -95,7 +94,6 @@ class ForgotPassword extends StaticAppController {
                 , "backToLoginLink"               => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
                 , "newAccountLink"                => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/forgot_password"
-                , "hasHash"                       => $this->hasHash($token)
             ]
         );
 
@@ -108,26 +106,6 @@ class ForgotPassword extends StaticAppController {
                 "appContent" => $string
             ]
         );
-    }
-
-    private function hasHash(?string $hash): bool {
-        if (null === $hash) return false;
-        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
-
-        foreach ($userStates->keySet() as $userStateId) {
-            /** @var IUserState $userState */
-            $userState = $userStates->get($userStateId);
-
-            if (
-                $userState->getStateHash() === $hash
-                && $userState->getCreateTs()->diff(new DateTime())->i < 2
-            ) {
-                return true;
-            }
-
-        }
-
-        return false;
     }
 
     public function afterCreate(): void {

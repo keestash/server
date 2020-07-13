@@ -54,33 +54,19 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         return $this->remove($user, IUserState::USER_STATE_LOCK);
     }
 
-    public function lock(IUser $user): bool {
-        if (true === $this->isLocked($user)) return true;
-        return $this->insert(
-            $user
-            , IUserState::USER_STATE_LOCK
-            , null
-        );
+    public function isLocked(IUser $user): bool {
+        $lockedUsers = $this->getLockedUsers();
+
+        /** @var IUserState $userState */
+        foreach ($lockedUsers->keySet() as $key) {
+            $userState = $lockedUsers->get($key);
+            if ($user->getId() === $userState->getUser()->getId()) return true;
+        }
+        return false;
     }
 
-    public function delete(IUser $user): bool {
-        if (true === $this->isDeleted($user)) return true;
-        $locked  = $this->insert(
-            $user
-            , IUserState::USER_STATE_LOCK
-            , null
-        );
-        $deleted = $this->insert(
-            $user
-            , IUserState::USER_STATE_DELETE
-            , null
-        );
-        return true === $locked && true === $deleted;
-    }
-
-    public function revertDelete(IUser $user): bool {
-        if (false === $this->isDeleted($user)) return true;
-        return $this->remove($user, IUserState::USER_STATE_DELETE);
+    public function getLockedUsers(): HashTable {
+        return $this->getAll(IUserState::USER_STATE_LOCK);
     }
 
     public function getAll(?string $state = null): HashTable {
@@ -135,15 +121,25 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         return $table;
     }
 
-    public function getDeletedUsers(): HashTable {
-        return $this->getAll(IUserState::USER_STATE_DELETE);
+    public function remove(IUser $user, string $state): bool {
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete('user_state')
+                ->where('user_id = ?')
+                ->andWhere('state = ?')
+                ->setParameter(0, $user->getId())
+                ->setParameter(1, $state)
+                ->execute() !== 0;
     }
 
-    public function getLockedUsers(): HashTable {
-        return $this->getAll(IUserState::USER_STATE_LOCK);
+    public function lock(IUser $user): bool {
+        if (true === $this->isLocked($user)) return true;
+        return $this->insert(
+            $user
+            , IUserState::USER_STATE_LOCK
+            , null
+        );
     }
 
-    // TODO check whether already exists
     private function insert(IUser $user, string $state, ?string $hash = null): bool {
 
         $queryBuilder = $this->getQueryBuilder();
@@ -160,11 +156,13 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             ->setParameter(0, $user->getId())
             ->setParameter(1, $state)
             ->setParameter(2, $hash)
-            ->setParameter(3,
-                $this->dateTimeService->toYMDHIS(new DateTime())
+            ->setParameter(
+                3
+                , $this->dateTimeService->toYMDHIS(new DateTime())
             )
-            ->setParameter(4,
-                $this->dateTimeService->toYMDHIS(new DateTime())
+            ->setParameter(
+                4
+                , $this->dateTimeService->toYMDHIS(new DateTime())
             )
             ->execute();
 
@@ -175,38 +173,21 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
     }
 
-    public function remove(IUser $user, string $state): bool {
-        $queryBuilder = $this->getQueryBuilder();
-        return $queryBuilder->delete('user_state')
-                ->where('user_id = ?')
-                ->andWhere('state = ?')
-                ->setParameter(0, $user->getId())
-                ->setParameter(1, $state)
-                ->execute() !== 0;
-    }
+    // TODO check whether already exists
 
-
-    public function removeAll(IUser $user): bool {
-        $lockRemoved   = $this->remove(
+    public function delete(IUser $user): bool {
+        if (true === $this->isDeleted($user)) return true;
+        $locked  = $this->insert(
             $user
             , IUserState::USER_STATE_LOCK
+            , null
         );
-        $deleteRemoved = $this->remove(
+        $deleted = $this->insert(
             $user
             , IUserState::USER_STATE_DELETE
+            , null
         );
-        return true === $lockRemoved && true === $deleteRemoved;
-    }
-
-    public function isLocked(IUser $user): bool {
-        $lockedUsers = $this->getLockedUsers();
-
-        /** @var IUserState $userState */
-        foreach ($lockedUsers->keySet() as $key) {
-            $userState = $lockedUsers->get($key);
-            if ($user->getId() === $userState->getUser()->getId()) return true;
-        }
-        return false;
+        return true === $locked && true === $deleted;
     }
 
     public function isDeleted(IUser $user): bool {
@@ -220,6 +201,27 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
         return false;
     }
 
+    public function getDeletedUsers(): HashTable {
+        return $this->getAll(IUserState::USER_STATE_DELETE);
+    }
+
+    public function revertDelete(IUser $user): bool {
+        if (false === $this->isDeleted($user)) return true;
+        return $this->remove($user, IUserState::USER_STATE_DELETE);
+    }
+
+    public function removeAll(IUser $user): bool {
+        $lockRemoved   = $this->remove(
+            $user
+            , IUserState::USER_STATE_LOCK
+        );
+        $deleteRemoved = $this->remove(
+            $user
+            , IUserState::USER_STATE_DELETE
+        );
+        return true === $lockRemoved && true === $deleteRemoved;
+    }
+
     public function requestPasswordReset(IUser $user, string $hash): bool {
         if (true === $this->hasPasswordResetRequested($user)) return true;
         return $this->insert(
@@ -228,11 +230,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             , $hash
         );
 
-    }
-
-    public function revertPasswordChangeRequest(IUser $user): bool {
-        if (false === $this->hasPasswordResetRequested($user)) return true;
-        return $this->remove($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
     }
 
     public function hasPasswordResetRequested(IUser $user): bool {
@@ -251,6 +248,11 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
 
     public function getUsersWithPasswordResetRequest(): HashTable {
         return $this->getAll(IUserState::USER_STATE_REQUEST_PW_CHANGE);
+    }
+
+    public function revertPasswordChangeRequest(IUser $user): bool {
+        if (false === $this->hasPasswordResetRequested($user)) return true;
+        return $this->remove($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
     }
 
 }
