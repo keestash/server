@@ -1,0 +1,7 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% for key, value in breadcrumbs %}
+            <li class="breadcrumb-item" data-id="{{ value.id }}">{{ value.name }}</li>
+        {% endfor %}
+    </ol>
+</nav>

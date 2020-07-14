@@ -6377,9 +6377,7 @@ body {
   height: 100%; }
   #content #app-navigation {
     background-color: #F2F2F2;
-    height: 100%;
-    width: 260px;
-    position: absolute; }
+    min-width: 260px; }
     #content #app-navigation .ks-menu:before {
       content: "\e68e"; }
     #content #app-navigation .ks-menu-alt:before {
@@ -6415,6 +6413,9 @@ body {
         z-index: 1;
         color: #525f7f;
         background-color: #f7fafc; }
+  #content #app-content {
+    width: 100%;
+    height: 100%; }
 
 hr {
   margin-top: 1rem;

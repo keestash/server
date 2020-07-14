@@ -505,20 +505,10 @@ class Keestash {
         $appNavigation = Keestash::getServer()->getTemplateManager()->render(ITemplate::APP_NAVIGATION);
 
         Keestash::getServer()->getTemplateManager()->replace(
-            ITemplate::BREADCRUMB
-            , [
-                "bc" => Keestash::getServer()->getBreadCrumbManager()->getAll()
-            ]
-        );
-
-        $breadCrumb = Keestash::getServer()->getTemplateManager()->render(ITemplate::BREADCRUMB);
-
-        Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::CONTENT
             , [
                 "appNavigation"      => $appNavigation
                 , "appContent"       => $appContent
-                , "breadcrumbs"      => $breadCrumb
                 , "hasAppNavigation" => $hasAppNavigation
                 , "hasBreadcrumbs"   => Keestash::getServer()->getBreadCrumbManager()->isVisible()
             ]
@@ -551,7 +541,6 @@ class Keestash {
 
         $partTemplate       = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::PART_TEMPLATE);
         $sideBar            = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::SIDE_BAR);
-        $breadCrumbTemplate = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::BREADCRUMB);
 
         Keestash::getServer()->getTemplateManager()->replace(ITemplate::HTML,
             [
@@ -562,7 +551,6 @@ class Keestash {
                 , "noContext"          => $noContext
                 , "partTemplate"       => $partTemplate
                 , "sidebarTemplate"    => $sideBar
-                , "breadcrumbTemplate" => $breadCrumbTemplate
             ]
         );
         $html = Keestash::getServer()->getTemplateManager()->render(ITemplate::HTML);
