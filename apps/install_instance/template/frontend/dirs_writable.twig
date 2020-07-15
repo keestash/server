@@ -1,6 +1,6 @@
 <form id="ii__dirs__writable">
     {% if objectData.dir_writable.size > 0 %}
-        <div class="ui container">
+        <div class=" container">
             <span>{{ writableDescription }}</span>
             {% for key, value in objectData.dir_writable %}
                 {% if key != 'size' %}
@@ -12,7 +12,7 @@
     {% endif %}
 
     {% if objectData.dir_readable.size > 0 %}
-        <div class="ui container">
+        <div class="container">
             <span>{{ readableDescription }}</span>
             {% for key, value in objectData.dir_readable %}
                 {% if key != 'size' %}

@@ -38,6 +38,8 @@ class InstallInstanceService {
     private const ROUTE_INSTALL_INSTANCE_END_UPDATE    = "install_instance/end_update/";
     private const ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS = "install_instance/has_data_dirs/";
     private const ROUTE_LOGIN_SUBMIT                   = "login/submit";
+    private const ROUTE_FRONTEND_TEMPLATES_ALL         = "frontend_templates/all/";
+    private const ROUTE_FRONTEND_STRINGS_ALL           = "frontend_strings/all/";
 
     public function routesToInstallation(): bool {
         $router               = Keestash::getServer()->getRouter();
@@ -79,6 +81,8 @@ class InstallInstanceService {
                     , InstallInstanceService::ROUTE_INSTALL_INSTANCE_END_UPDATE
                     , InstallInstanceService::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
                     , InstallInstanceService::ROUTE_LOGIN_SUBMIT
+                    , InstallInstanceService::ROUTE_FRONTEND_TEMPLATES_ALL
+                    , InstallInstanceService::ROUTE_FRONTEND_STRINGS_ALL
                 ]
             );
         } catch (Exception $e) {

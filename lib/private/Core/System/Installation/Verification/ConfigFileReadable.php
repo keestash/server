@@ -22,10 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Core\System\Installation\Verification;
 
 use doganoo\PHPUtil\FileSystem\DirHandler;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
-use KSP\L10N\IL10N;
 
+/**
+ * Class ConfigFileReadable
+ * @package Keestash\Core\System\Installation\Verification
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class ConfigFileReadable extends AbstractVerification {
 
     private const KEYS = [
@@ -38,6 +41,9 @@ class ConfigFileReadable extends AbstractVerification {
         , "db_port"
         , "db_charset"
         , "log_requests"
+        , "email_smtp_host"
+        , "email_user"
+        , "email_password"
     ];
 
     private const FILES = [
@@ -100,11 +106,13 @@ class ConfigFileReadable extends AbstractVerification {
             $CONFIG = [];
         }
 
-        $conf = $CONFIG;
+        $conf      = $CONFIG;
+        $confCount = count($conf);
         include $configSample->getPath();
-        $confSample = $CONFIG;
+        $confSample      = $CONFIG;
+        $confSampleCount = count($confSample);
 
-        if (null === $conf) {
+        if (0 === $confCount) {
             parent::addMessage(
                 "config_match"
                 , "config array missing"
@@ -113,7 +121,7 @@ class ConfigFileReadable extends AbstractVerification {
             $conf          = [];
         }
 
-        if (null === $confSample) {
+        if (0 === $confSampleCount) {
             parent::addMessage(
                 "config_match"
                 , "config sample array missing"

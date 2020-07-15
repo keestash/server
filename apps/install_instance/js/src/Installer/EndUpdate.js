@@ -21,9 +21,11 @@ import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
 export class EndUpdate {
 
     constructor(
-        formula
-        , routes
+        request
         , router
+        , templateLoader
+        , templateParser
+        , routes
     ) {
         this.allEvents = {
             "config_data": false
@@ -31,7 +33,7 @@ export class EndUpdate {
             , "has_data_dirs": false
         };
         this.button = $("#ii__main__button");
-        this.formula = formula;
+        this.formula = request;
         this.router = router;
         this.routes = routes;
     }
@@ -72,13 +74,14 @@ export class EndUpdate {
 
     listenToButton() {
         const _this = this;
-        _this.button.click(function (e) {
+        _this.button.click((e) => {
             e.preventDefault();
 
             _this.button.addClass("loading");
             _this.button.addClass("disabled");
+
             window.setTimeout(
-                function () {
+                () => {
                     _this.formula.post(
                         _this.routes.getInstallInstanceEndUpdate()
                         , {}

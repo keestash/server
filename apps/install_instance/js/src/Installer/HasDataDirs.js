@@ -23,18 +23,22 @@ import modal from "../../../../../lib/js/src/UI/modal";
 export class HasDataDirs extends Base {
 
     constructor(
-        formula
-        , routes
+        request
         , lazyOperator
+        , templateLoader
+        , templateParser
+        , routes
     ) {
         super(
             "ii__has__data__dirs__segment"
             , "ii__has__data__dirs__segment__dimmer"
-            , formula
+            , request
+            , templateLoader
+            , templateParser
             , {
                 "name": HAS_DATA_DIRS
                 , "route": routes.getHasDataDirs()
-                , "template_name": "has_data_dirs_template"
+                , "template_name": "has_data_dirs"
             }
         );
 

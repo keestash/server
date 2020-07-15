@@ -18,34 +18,43 @@
  */
 import {Base, CONFIG_DATA} from "./Base";
 import {Validator} from "../Validator";
-import modal from "../../../../../lib/js/src/UI/modal";
 import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
 
 export class Config extends Base {
 
-    constructor(formula, routes) {
+    constructor(
+        request
+        , templateLoader
+        , templateParser
+        , modal
+        , routes
+    ) {
 
         super(
             "ii__config__segment"
             , "ii__config__segment__dimmer"
-            , formula
+            , request
+            , templateLoader
+            , templateParser
             , {
                 "name": CONFIG_DATA
                 , "route": routes.getConfigData()
-                , "template_name": "config_template"
+                , "template_name": "config_part"
             }
         );
 
         this.routes = routes;
+        this.modal = modal;
 
     }
 
     initFormSubmit(strings) {
         const validator = new Validator();
         const _this = this;
+        const button = $("#ii__config__part__submit");
 
-        $("#ii__config__part__submit").ready(function () {
-            $("#ii__config__part__submit").click(function (e) {
+        button.ready(() => {
+            button.click((e) => {
                 e.preventDefault();
 
                 const host = validator.getValIfExists("ii__db__host");
@@ -63,17 +72,28 @@ export class Config extends Base {
                 const portValid = validator.isValid(port, "ii__db__port");
                 const charsetValid = validator.isValid(charset, "ii__db__charset");
                 const lgValid = validator.isValidSelect(logRequests, "ii__log__requests");
+                const smtpHost = validator.isValid(logRequests, "ii__email__smtp__host");
+                const smtpUser = validator.isValid(logRequests, "ii__email__user");
+                const smtpPassword = validator.isValid(logRequests, "ii__email__password");
 
                 if (
-                    false === hostValid ||
-                    false === userValid ||
-                    // false === passwordValid ||
-                    false === nameValid ||
-                    false === portValid ||
-                    false === charsetValid ||
-                    false === lgValid
+                    false === hostValid
+                    || false === userValid
+                    || false === nameValid
+                    || false === portValid
+                    || false === charsetValid
+                    || false === lgValid
+                    || false === smtpHost
+                    || false === smtpUser
+                    || false === smtpPassword
                 ) {
-                    modal.miniModal("please edit");
+                    _this.modal.show(
+                        'Missing Data'
+                        , 'Ok'
+                        , 'Close'
+                        , 'Some Data are missing. Please edit'
+                        , 'new.event'
+                    );
                     return;
                 }
 
@@ -85,6 +105,9 @@ export class Config extends Base {
                     , port: port
                     , charset: charset
                     , log_requests: logRequests
+                    , smtp_host: smtpHost
+                    , smtp_user: smtpUser
+                    , smtp_password: smtpPassword
                 };
 
                 _this.formula.post(

@@ -64,13 +64,13 @@ class Update extends AbstractApi {
 
     public function create(): void {
 
-        $host        = $this->parameters["host"] ?? null;
-        $user        = $this->parameters["user"] ?? null;
-        $password    = $this->parameters["password"] ?? null;
-        $schemaName  = $this->parameters["schema_name"] ?? null;
-        $port        = $this->parameters["port"] ?? null;
-        $charSet     = $this->parameters["charset"] ?? null;
-        $logRequests = $this->parameters["log_requests"] ?? null;
+        $host        = $this->getParameter("host", null);
+        $user        = $this->getParameter("user", null);
+        $password    = $this->getParameter("password", null);
+        $schemaName  = $this->getParameter("schema_name", null);
+        $port        = $this->getParameter("port", null);
+        $charSet     = $this->getParameter("charset", null);
+        $logRequests = $this->getParameter("log_requests", null);
 
         if (
             false === $this->isValid($host) ||

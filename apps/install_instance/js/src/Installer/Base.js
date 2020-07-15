@@ -17,8 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
-import {DataNode} from "../DataNode";
-import Parser from "../../../../../lib/js/src/UI/Template/Parser";
 
 export const CONFIG_DATA = "config_data";
 export const WRITABLE_DIRS = "writable_dirs";
@@ -30,12 +28,16 @@ export class Base {
     constructor(
         parentId
         , dimmerId
-        , formula
+        , request
+        , templateLoader
+        , templateParser
         , keys
     ) {
         this.parent = $("#" + parentId);
         this.dimmer = $("#" + dimmerId);
-        this.formula = formula;
+        this.formula = request;
+        this.templateLoader = templateLoader;
+        this.templateParser = templateParser;
         this.dataNodeId = "install__instance__data__node";
         this.dataTemplatesId = "data-templates";
         this.dataStringsId = "data-strings";
@@ -51,7 +53,7 @@ export class Base {
         this.formula.get(
             keys.route
             , {}
-            , function (e) {
+            , async (e) => {
 
                 const response = JSON.parse(e);
 
@@ -71,8 +73,8 @@ export class Base {
                     const indices = Object.keys(object);
                     const indicesLength = indices.length;
 
-                    const dataNode = new DataNode(_this.dataNodeId);
-                    const templates = JSON.parse(dataNode.getValue(_this.dataTemplatesId));
+                    await _this.templateLoader.load(true);
+                    const templates = await _this.templateLoader.read();
                     const template = templates[keys.template_name];
 
                     if (0 === indicesLength) {
@@ -89,7 +91,7 @@ export class Base {
                     };
 
 
-                    const parsed = Parser.parse(
+                    const parsed = _this.templateParser.parse(
                         template
                         , contextData
                     );

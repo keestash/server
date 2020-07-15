@@ -1,0 +1,93 @@
+<div class="container">
+    <h1>{{ header }}</h1>
+    <form id="ii__config__form">
+        {% for key, value in objectData %}
+
+            {% if key =='db_host' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__db__host" id="ii__db__host"
+                           placeholder="{{ dbHostPlaceholder }}">
+                    <small class="form-text text-muted">{{ dbHostDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='db_user' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__db__user" id="ii__db__user"
+                           placeholder="{{ dbUserPlaceholder }}">
+                    <small class="form-text text-muted">{{ dbUserDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='db_password' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__db__password" id="ii__db__password"
+                           placeholder="{{ dbPasswordPlaceholder }}">
+                    <small class="form-text text-muted">{{ dbPasswordDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='db_name' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__db__name" id="ii__db__name"
+                           placeholder="{{ dbNamePlaceholder }}">
+                    <small class="form-text text-muted">{{ dbNameDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='db_port' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__db__port" id="ii__db__port"
+                           placeholder="{{ dbPortPlaceholder }}">
+                    <small class="form-text text-muted">{{ dbPortDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='db_charset' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__db__charset" id="ii__db__charset"
+                           placeholder="{{ dbCharsetPlaceholder }}" value="{{ utf8 }}">
+                    <small class="form-text text-muted">{{ dbCharsetDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='log_requests' or key =='config_match' %}
+                <div class="form-group">
+                    <select class="form-control" name="ii__log__requests" id="ii__log__requests">
+                        <option value=""></option>
+                        <option value="{{ enabledValue }}">{{ enabled }}</option>
+                        <option value="{{ disabledValue }}">{{ disabled }}</option>
+                    </select>
+                    <small class="form-text text-muted">{{ dbLogRequestsDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='email_smtp_host' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__email__smtp__host" id="ii__email__smtp__host"
+                           placeholder="{{ emailSmtpHostPlaceholder }}">
+                    <small class="form-text text-muted">{{ emailSmtpHostDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='email_user' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__email__user" id="ii__email__user"
+                           placeholder="{{ emailUserPlaceholder }}" value="">
+                    <small class="form-text text-muted">{{ emailUserDescription }}</small>
+                </div>
+            {% endif %}
+
+            {% if key =='email_password' or key =='config_match' %}
+                <div class="form-group">
+                    <input class="form-control" type="text" name="ii__email__password" id="ii__email__password"
+                           placeholder="{{ emailPasswordPlaceholder }}" value="">
+                    <small class="form-text text-muted">{{ emailPasswordDescription }}</small>
+                </div>
+            {% endif %}
+
+
+        {% endfor %}
+        <button class="btn btn-primary" type="submit" id="ii__config__part__submit">{{ submit }}</button>
+    </form>
+</div>

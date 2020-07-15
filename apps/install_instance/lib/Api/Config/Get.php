@@ -88,6 +88,15 @@ class Get extends AbstractApi {
                     , "nothingToUpdate"          => $this->getL10N()->translate("Nothing To Update")
                     , "updated"                  => $this->getL10N()->translate("Updated Successfully")
                     , "utf8"                     => "utf8"
+                    , "emailSmtpHostLabel"       => $this->getL10N()->translate("SMTP Host Name")
+                    , "emailSmtpHostPlaceholder" => $this->getL10N()->translate("SMTP Host Name")
+                    , "emailSmtpHostDescription" => $this->getL10N()->translate("The SMTP Host Name to send emails")
+                    , "emailUserLabel"           => $this->getL10N()->translate("SMTP Username")
+                    , "emailUserPlaceholder"     => $this->getL10N()->translate("SMTP Username")
+                    , "emailUserDescription"     => $this->getL10N()->translate("The SMTP username (usually email address) to send emails")
+                    , "emailPasswordLabel"       => $this->getL10N()->translate("SMTP password")
+                    , "emailPasswordPlaceholder" => $this->getL10N()->translate("SMTP password")
+                    , "emailPasswordDescription" => $this->getL10N()->translate("The password belonging to the SMTP username")
                 ])
             ]
         );

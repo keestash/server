@@ -23,18 +23,22 @@ import modal from "../../../../../lib/js/src/UI/modal";
 export class DirsWritable extends Base {
 
     constructor(
-        formula
-        , routes
+        request
         , lazyOperator
+        , templateLoader
+        , templateParser
+        , routes
     ) {
         super(
             "ii__dirs__writable__segment"
             , "ii__dirs__writable__segment__dimmer"
-            , formula
+            , request
+            , templateLoader
+            , templateParser
             , {
                 "name": WRITABLE_DIRS
                 , "route": routes.getDirsWritableData()
-                , "template_name": "dirs_writable_template"
+                , "template_name": "dirs_writable"
             }
         )
         ;

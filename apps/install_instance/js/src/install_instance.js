@@ -21,7 +21,14 @@ import {DirsWritable} from "./Installer/DirsWritable";
 import {Routes} from "./Routes";
 import {HasDataDirs} from "./Installer/HasDataDirs";
 import {EndUpdate} from "./Installer/EndUpdate";
-import {LAZY_OPERATOR, REQUEST, ROUTER} from "../../../../lib/js/src/StartUp";
+import {
+    LAZY_OPERATOR,
+    MINI_MODAL,
+    REQUEST,
+    ROUTER,
+    TEMPLATE_LOADER,
+    TEMPLATE_PARSER
+} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.Apps.InstallInstance) {
@@ -38,24 +45,36 @@ import {LAZY_OPERATOR, REQUEST, ROUTER} from "../../../../lib/js/src/StartUp";
 
                 new Config(
                     diContainer.query(REQUEST)
+                    , diContainer.query(TEMPLATE_LOADER)
+                    , diContainer.query(TEMPLATE_PARSER)
+                    , diContainer.query(MINI_MODAL)
                     , routes
                 )
 
                 , new DirsWritable(
                     diContainer.query(REQUEST)
-                    , routes
                     , diContainer.query(LAZY_OPERATOR)
+                    , diContainer.query(TEMPLATE_LOADER)
+                    , diContainer.query(TEMPLATE_PARSER)
+                    , routes
                 )
+
                 , new HasDataDirs(
                     diContainer.query(REQUEST)
-                    , routes
                     , diContainer.query(LAZY_OPERATOR)
+                    , diContainer.query(TEMPLATE_LOADER)
+                    , diContainer.query(TEMPLATE_PARSER)
+                    , routes
                 )
+
                 , new EndUpdate(
                     diContainer.query(REQUEST)
-                    , routes
                     , diContainer.query(ROUTER)
+                    , diContainer.query(TEMPLATE_LOADER)
+                    , diContainer.query(TEMPLATE_PARSER)
+                    , routes
                 )
+
             ];
 
             for (let i = 0; i < handler.length; i++) {

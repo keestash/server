@@ -200,6 +200,7 @@ class Server {
             /** @var ArrayList $users */
             $users = $this->query(Server::USER_LIST);
 
+            if (null === $users) return $this->userHashes;
 
             /** @var IUser $user */
             foreach ($users as $user) {

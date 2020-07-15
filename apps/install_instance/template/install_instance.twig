@@ -1,35 +1,29 @@
-<div class="ui container" id="install__instance__container">
-    <div class="ui text container">
+<div class="container" id="install__instance__container">
+    <div class="row">
         <h1>{{ installationHeader }}</h1>
-        <span>{{ installInstruction }}</span>
-
-        <div class="ui segment" id="ii__config__segment">
-            <h4 class="ui header">{{ configurationPartHeader }}</h4>
-            <div class="ui active inverted dimmer" id="ii__config__segment__dimmer">
-                <div class="ui text loader"></div>
-            </div>
+        <p class="text-justify">{{ installInstruction }}</p>
+    </div>
+    <div class="row">
+        <div class="col" id="ii__config__segment">
+            <h4>{{ configurationPartHeader }}</h4>
+            <div class="spinner-grow" role="status" id="ii__config__segment__dimmer"></div>
         </div>
-
-        <div class="ui segment" id="ii__dirs__writable__segment">
-            <h4 class="ui header">{{ dirsWritablePartHeader }}</h4>
-            <div class="ui active inverted dimmer" id="ii__dirs__writable__segment__dimmer">
-                <div class="ui text loader"></div>
-            </div>
-        </div>
-
-        <div class="ui segment" id="ii__has__data__dirs__segment">
-            <h4 class="ui header">{{ hasDataDirsPartHeader }}</h4>
-            <div class="ui active inverted dimmer" id="ii__has__data__dirs__segment__dimmer">
-                <div class="ui text loader"></div>
-            </div>
-        </div>
-
-        <button class="ui disabled primary button" id="ii__main__button">{{ endUpdate }}</button>
     </div>
 
+    <div class="row">
+        <div class="col" id="ii__dirs__writable__segment">
+            <h4>{{ dirsWritablePartHeader }}</h4>
+            <div class="spinner-grow" role="status" id="ii__dirs__writable__segment__dimmer"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" id="ii__has__data__dirs__segment">
+            <h4>{{ hasDataDirsPartHeader }}</h4>
+            <div class="spinner-grow" role="status" id="ii__has__data__dirs__segment__dimmer"></div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="ii__main__button">{{ endUpdate }}</button>
+
 </div>
-<data-node
-        id="install__instance__data__node"
-        data-strings="{{ strings }}"
-        data-templates="{{ templates }}"
-></data-node>
