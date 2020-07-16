@@ -23,13 +23,16 @@ namespace KSA\Register\Application;
 
 use Keestash;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;
+use KSA\Register\Command\CreateUser;
 use KSA\Register\Controller\Controller;
 use KSA\Register\Hook\EmailAfterRegistration;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
+use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 
 class Application extends Keestash\App\Application {
@@ -84,6 +87,25 @@ class Application extends Keestash\App\Application {
                 , Keestash::getServer()->query(IL10N::class)
             ));
 
+        $this->registerServices();
+        $this->registerCommands();
+    }
+
+    private function registerServices(): void {
+        Keestash::getServer()
+            ->register(CreateUser::class, function () {
+                return new CreateUser(
+                    Keestash::getServer()->query(IUserRepository::class)
+                    , Keestash::getServer()->query(UserService::class)
+                );
+            }
+            );
+    }
+
+    private function registerCommands(): void {
+        $this->registerCommand(
+            Keestash::getServer()->query(CreateUser::class)
+        );
     }
 
 }

@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
+use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Permission\IRole;
 use Phinx\Migration\AbstractMigration;
@@ -118,6 +119,70 @@ class MinimalApp extends AbstractMigration {
             )
             ->save();
 
+        $this->createUserState();
+    }
+
+    private function createUserState(): void {
+        $this->table("user_state")
+            ->addColumn(
+                "user_id"
+                , KeestashMigration::INTEGER
+                , [
+                    "null"      => false
+                    , "comment" => "the user which's state is configured"
+                ]
+            )
+            ->addColumn(
+                "state"
+                , KeestashMigration::ENUM
+                , [
+                    "null"                                  => false
+                    , "comment"                             => "The user's state"
+                    , KeestashMigration::OPTION_NAME_VALUES => [
+                        IUserState::USER_STATE_DELETE
+                        , IUserState::USER_STATE_LOCK
+                        , IUserState::USER_STATE_REQUEST_PW_CHANGE
+                    ]
+                    , "after"                               => "user_id"
+                ]
+            )
+            ->addColumn(
+                "valid_from"
+                , KeestashMigration::DATETIME
+                , [
+                    "null"      => false
+                    , "comment" => "The records valid from date"
+                    , "after"   => "state"
+                ]
+            )
+            ->addColumn(
+                "create_ts"
+                , KeestashMigration::DATETIME
+                , [
+                    "null"      => false
+                    , "comment" => "The records create ts"
+                    , "after"   => "valid_from"
+                ]
+            )
+            ->addColumn(
+                "state_hash"
+                , KeestashMigration::STRING
+                , [
+                "null"      => true
+                , "comment" => "The hash identifying the user state"
+                , "after"   => "state"
+                , "default" => null
+            ])
+            ->addForeignKey(
+                "user_id"
+                , "user"
+                , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
+            )
+            ->save();
     }
 
     private function createPermission(): void {

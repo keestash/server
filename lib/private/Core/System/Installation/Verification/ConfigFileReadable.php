@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\System\Installation\Verification;
 
 use doganoo\PHPUtil\FileSystem\DirHandler;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 
 /**
@@ -100,7 +101,7 @@ class ConfigFileReadable extends AbstractVerification {
             $configMatches = false;
         }
 
-        $CONFIG = include $config->getPath();
+        include $config->getPath();
 
         if (false === is_array($CONFIG)) {
             $CONFIG = [];

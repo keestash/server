@@ -64,22 +64,25 @@ class Update extends AbstractApi {
 
     public function create(): void {
 
-        $host        = $this->getParameter("host", null);
-        $user        = $this->getParameter("user", null);
-        $password    = $this->getParameter("password", null);
-        $schemaName  = $this->getParameter("schema_name", null);
-        $port        = $this->getParameter("port", null);
-        $charSet     = $this->getParameter("charset", null);
-        $logRequests = $this->getParameter("log_requests", null);
+        $host         = $this->getParameter("host", null);
+        $user         = $this->getParameter("user", null);
+        $password     = $this->getParameter("password", null);
+        $schemaName   = $this->getParameter("schema_name", null);
+        $port         = $this->getParameter("port", null);
+        $charSet      = $this->getParameter("charset", null);
+        $logRequests  = $this->getParameter("log_requests", null);
+        $smtpHost     = $this->getParameter("smtp_host", null);
+        $smtpUser     = $this->getParameter("smtp_user", null);
+        $smtpPassword = $this->getParameter("smtp_password", null);
 
         if (
-            false === $this->isValid($host) ||
-            false === $this->isValid($user) ||
-            null === $password ||
-            false === $this->isValid($schemaName) ||
-            false === $this->isValid($port) ||
-            false === $this->isValid($charSet) ||
-            false === $this->validLogRequestOption($logRequests)
+            false === $this->isValid($host)
+            || false === $this->isValid($user)
+            || null === $password
+            || false === $this->isValid($schemaName)
+            || false === $this->isValid($port)
+            || false === $this->isValid($charSet)
+            || false === $this->validLogRequestOption($logRequests)
         ) {
 
             parent::createAndSetResponse(
@@ -121,16 +124,19 @@ class Update extends AbstractApi {
         }
 
         $config = [
-            'show_errors'     => false
-            , 'debug'         => false
-            , 'db_host'       => $host
-            , 'db_user'       => $user
-            , 'db_password'   => $password
-            , 'db_name'       => $schemaName
-            , 'db_port'       => $port
-            , 'db_charset'    => $charSet
-            , 'log_requests'  => $logRequests === Application::LOG_REQUESTS_ENABLED ? true : false
-            , "user_lifetime" => Update::DEFAULT_USER_LIFETIME
+            'show_errors'       => false
+            , 'debug'           => false
+            , 'db_host'         => $host
+            , 'db_user'         => $user
+            , 'db_password'     => $password
+            , 'db_name'         => $schemaName
+            , 'db_port'         => $port
+            , 'db_charset'      => $charSet
+            , 'log_requests'    => $logRequests === Application::LOG_REQUESTS_ENABLED ? true : false
+            , "user_lifetime"   => Update::DEFAULT_USER_LIFETIME
+            , "email_smtp_host" => $smtpHost
+            , "email_user"      => $smtpUser
+            , "email_password"  => $smtpPassword
         ];
 
         $configRoot = Keestash::getServer()->getConfigRoot();

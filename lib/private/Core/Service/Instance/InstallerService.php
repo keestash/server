@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Instance;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
@@ -137,7 +138,6 @@ class InstallerService {
         $isInstalled = $this->hasIdAndHash();
         if (true === $isInstalled) return true;
 
-
         $list = new ArrayList();
         $list->add(new DirsWritable());
         $list->add(new ConfigFileReadable());
@@ -164,6 +164,8 @@ class InstallerService {
                 $this->messages
             );
         }
+
+        FileLogger::debug(json_encode($this->messages));
 
         return false === $hasErrors;
     }

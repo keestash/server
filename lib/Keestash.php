@@ -83,9 +83,14 @@ class Keestash {
 
         /** @var PersistenceService $persistenceService */
         $persistenceService = Keestash::getServer()->query(PersistenceService::class);
-        $persisted          = $persistenceService->isPersisted("user_id");
 
-        /** @var HTTPRouter $router */
+        try {
+            $persisted = $persistenceService->isPersisted("user_id");
+        } catch (PDOException $exception) {
+            FileLogger::error('error during persistence request ' . $exception->getMessage() . ': ' . $exception->getTraceAsString());
+            $persisted = false;
+        }
+
         $router = Keestash::getServer()->getHTTPRouter();
 
         if (true === $persisted || $router->isPublicRoute()) {
@@ -539,18 +544,18 @@ class Keestash {
 
         $body = Keestash::getServer()->getTemplateManager()->render(ITemplate::BODY);
 
-        $partTemplate       = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::PART_TEMPLATE);
-        $sideBar            = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::SIDE_BAR);
+        $partTemplate = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::PART_TEMPLATE);
+        $sideBar      = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::SIDE_BAR);
 
         Keestash::getServer()->getTemplateManager()->replace(ITemplate::HTML,
             [
-                "head"                 => $head
-                , "host"               => Keestash::getBaseURL()
-                , "apiHost"            => Keestash::getBaseAPIURL()
-                , "body"               => $body
-                , "noContext"          => $noContext
-                , "partTemplate"       => $partTemplate
-                , "sidebarTemplate"    => $sideBar
+                "head"              => $head
+                , "host"            => Keestash::getBaseURL()
+                , "apiHost"         => Keestash::getBaseAPIURL()
+                , "body"            => $body
+                , "noContext"       => $noContext
+                , "partTemplate"    => $partTemplate
+                , "sidebarTemplate" => $sideBar
             ]
         );
         $html = Keestash::getServer()->getTemplateManager()->render(ITemplate::HTML);

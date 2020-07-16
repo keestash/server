@@ -32,6 +32,7 @@ use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Exception\KeyNotCreatedException;
 use Keestash\Exception\UserNotCreatedException;
+use Keestash\Exception\UserNotDeletedException;
 use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\File\IFile;
@@ -164,7 +165,6 @@ class UserService {
 
     /**
      * @return IUser
-     * @TODO urgent: this user has to be locked out (no login possible)
      */
     public function getSystemUser(): IUser {
         $user = new User();
@@ -225,6 +225,7 @@ class UserService {
         return $this->createUser(
             $user
             , true
+            , false
             , $file
         );
     }
@@ -232,16 +233,19 @@ class UserService {
     /**
      * @param IUser      $user
      * @param bool       $lockUser
+     * @param bool       $deleteUser
      * @param IFile|null $file
      *
      * @return bool
      * @throws KeyNotCreatedException
      * @throws UserNotCreatedException
      * @throws UserNotLockedException
+     * @throws UserNotDeletedException
      */
     public function createUser(
         IUser $user
         , bool $lockUser = false
+        , bool $deleteUser = false
         , ?IFile $file = null
     ): bool {
 
@@ -250,6 +254,7 @@ class UserService {
         if (null === $userId) {
             throw new UserNotCreatedException();
         }
+        $user->setId($userId);
 
         $key = $this->keyService->createKey(
             $this->credentialService->getCredentialForUser($user)
@@ -268,11 +273,18 @@ class UserService {
 
         if (false === $lockUser) return true;
 
-        $user->setId($userId);
         $locked = $this->userStateRepository->lock($user);
 
         if (false === $locked) {
             throw new UserNotLockedException();
+        }
+
+        if (false === $deleteUser) return true;
+
+        $deleted = $this->userStateRepository->delete($user);
+
+        if (false === $deleted) {
+            throw new UserNotDeletedException();
         }
 
         if (null === $file) return true;

@@ -64,6 +64,9 @@ export class Config extends Base {
                 const port = validator.getValIfExists("ii__db__port");
                 const charset = validator.getValIfExists("ii__db__charset");
                 const logRequests = validator.getValIfExists("ii__log__requests");
+                const smtpHost = validator.getValIfExists("ii__email__smtp__host");
+                const smtpUser = validator.getValIfExists("ii__email__user");
+                const smtpPassword = validator.getValIfExists("ii__email__password");
 
                 const hostValid = validator.isValid(host, "ii__db__host");
                 const userValid = validator.isValid(user, "ii__db__user");
@@ -72,9 +75,9 @@ export class Config extends Base {
                 const portValid = validator.isValid(port, "ii__db__port");
                 const charsetValid = validator.isValid(charset, "ii__db__charset");
                 const lgValid = validator.isValidSelect(logRequests, "ii__log__requests");
-                const smtpHost = validator.isValid(logRequests, "ii__email__smtp__host");
-                const smtpUser = validator.isValid(logRequests, "ii__email__user");
-                const smtpPassword = validator.isValid(logRequests, "ii__email__password");
+                const smtpHostValid = validator.isValid(smtpHost, "ii__email__smtp__host");
+                const smtpUserValid = validator.isValid(smtpUser, "ii__email__user");
+                const smtpPasswordValid = validator.isValid(smtpPassword, "ii__email__password");
 
                 if (
                     false === hostValid
@@ -83,9 +86,9 @@ export class Config extends Base {
                     || false === portValid
                     || false === charsetValid
                     || false === lgValid
-                    || false === smtpHost
-                    || false === smtpUser
-                    || false === smtpPassword
+                    || false === smtpHostValid
+                    || false === smtpUserValid
+                    || false === smtpPasswordValid
                 ) {
                     _this.modal.show(
                         'Missing Data'
