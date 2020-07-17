@@ -98,6 +98,7 @@ use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\Stylesheet\Compiler;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\Service\Validation\ValidatorService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
@@ -635,6 +636,10 @@ class Server {
 
         $this->register(IStylesheetManager::class, function () {
             return new StylesheetManager();
+        });
+
+        $this->register(ValidatorService::class, function () {
+            return new ValidatorService();
         });
 
     }

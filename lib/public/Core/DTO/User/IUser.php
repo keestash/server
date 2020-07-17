@@ -24,13 +24,17 @@ namespace KSP\Core\DTO\User;
 use DateTime;
 use KSP\Core\DTO\IComparator;
 use KSP\Core\DTO\Object\IJsonObject;
+use KSP\Core\DTO\Object\IValidatable;
 
 /**
  * Interface IUser
  * @package KSP\Core\DTO\User
  *
  */
-interface IUser extends IJsonObject, IComparator {
+interface IUser extends
+    IJsonObject
+    , IComparator
+    , IValidatable {
 
     public const SYSTEM_USER_ID = 1;
 

@@ -32,6 +32,7 @@
     "symfony/http-foundation": "4.2.12",
     "symfony/mime": "^4.3",
     "symfony/routing": "4.2.5",
+    "symfony/validator": "^4.4",
     "symfony/webpack-encore-pack": "1.0.3",
     "twig/twig": "^2.0",
     "xobotyi/php-mime-type": "1.2.0",

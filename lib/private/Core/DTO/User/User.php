@@ -23,9 +23,12 @@ namespace Keestash\Core\DTO\User;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Permission\IUser as PermissionUser;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class User implements IUser, PermissionUser {
 
@@ -267,6 +270,17 @@ class User implements IUser, PermissionUser {
 
     public function setDeleted(bool $deleted): void {
         $this->deleted = $deleted;
+    }
+
+    public function validate(ClassMetadata $metadata): ArrayList {
+        $list = new ArrayList();
+        $metadata->addPropertyConstraint(
+            'name'
+            , new NotBlank()
+        );
+
+
+        return $list;
     }
 
 }

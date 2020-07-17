@@ -22,10 +22,13 @@ declare(strict_types=1);
 namespace KSA\Register\Command;
 
 use DateTime;
+use Keestash;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\Service\Validation\ValidatorService;
 use KSA\Register\Exception\CreateUserException;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,14 +43,19 @@ class CreateUser extends KeestashCommand {
     /** @var UserService */
     private $userService;
 
+    /** @var ValidatorService */
+    private $validatorService;
+
     public function __construct(
         IUserRepository $userRepository
         , UserService $userService
+        , ValidatorService $validatorService
     ) {
         parent::__construct(null);
 
-        $this->userRepository = $userRepository;
-        $this->userService    = $userService;
+        $this->userRepository   = $userRepository;
+        $this->userService      = $userService;
+        $this->validatorService = $validatorService;
     }
 
     protected function configure() {
@@ -57,6 +65,12 @@ class CreateUser extends KeestashCommand {
             ->addOption('deleted', 'd', InputOption::VALUE_OPTIONAL, "whether the user is deleted", false);
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int|void
+     * @throws CreateUserException
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a user");
@@ -77,6 +91,15 @@ class CreateUser extends KeestashCommand {
 
         if (false === $this->userService->passwordHasMinimumRequirements($password)) {
             throw new CreateUserException("minimum requirements for password do not match");
+        }
+
+        $users = Keestash::getServer()->getUsersFromCache();
+
+        /** @var IUser $iUser */
+        foreach ($users as $iUser) {
+            if (strtolower($iUser->getName()) === strtolower($name)) {
+                throw new CreateUserException("$name already exists");
+            }
         }
 
         $user = new User();
@@ -101,6 +124,8 @@ class CreateUser extends KeestashCommand {
             , $locked
             , $deleted
         );
+
+        $this->validatorService->validate($user);
 
         if (true === $created) {
             $this->writeInfo("$name created", $output);

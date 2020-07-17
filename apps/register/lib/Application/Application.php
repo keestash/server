@@ -24,6 +24,7 @@ namespace KSA\Register\Application;
 use Keestash;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\Service\Validation\ValidatorService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;
@@ -97,6 +98,7 @@ class Application extends Keestash\App\Application {
                 return new CreateUser(
                     Keestash::getServer()->query(IUserRepository::class)
                     , Keestash::getServer()->query(UserService::class)
+                    , Keestash::getServer()->query(ValidatorService::class)
                 );
             }
             );
