@@ -24,7 +24,6 @@ namespace KSA\Register\Application;
 use Keestash;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Core\Service\Validation\ValidatorService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;
@@ -34,6 +33,7 @@ use KSA\Register\Hook\EmailAfterRegistration;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Validation\IValidationService;
 use KSP\L10N\IL10N;
 
 class Application extends Keestash\App\Application {
@@ -98,7 +98,7 @@ class Application extends Keestash\App\Application {
                 return new CreateUser(
                     Keestash::getServer()->query(IUserRepository::class)
                     , Keestash::getServer()->query(UserService::class)
-                    , Keestash::getServer()->query(ValidatorService::class)
+                    , Keestash::getServer()->query(IValidationService::class)
                 );
             }
             );

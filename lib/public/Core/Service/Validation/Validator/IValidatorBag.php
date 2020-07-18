@@ -19,15 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Object;
+namespace KSP\Core\Service\Validation\Validator;
 
-use KSP\Core\Service\Validation\Validator\IValidatorBag;
+use Laminas\Validator\ValidatorChain;
 
-interface IValidatable {
+interface IValidatorBag {
 
     /**
-     * @return IValidatorBag[]
+     * @return string|int|float|object|null
      */
-    public function getValidators(): array;
+    public function getValue();
+
+    public function getChain(): ValidatorChain;
 
 }

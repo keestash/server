@@ -19,15 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Object;
+namespace KSP\Core\Service\Validation;
 
-use KSP\Core\Service\Validation\Validator\IValidatorBag;
+use KSP\Core\DTO\Object\IValidatable;
 
-interface IValidatable {
+interface IValidationService {
 
     /**
-     * @return IValidatorBag[]
+     * @param IValidatable $validatable
+     *
+     * @return string[]
      */
-    public function getValidators(): array;
+    public function validate(IValidatable $validatable): array;
 
 }

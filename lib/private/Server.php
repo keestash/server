@@ -98,7 +98,7 @@ use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\Stylesheet\Compiler;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Core\Service\Validation\ValidatorService;
+use Keestash\Core\Service\Validation\ValidationService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
@@ -133,9 +133,11 @@ use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Validation\IValidationService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
+use libphonenumber\PhoneNumberUtil;
 use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use xobotyi\MimeType;
@@ -155,15 +157,15 @@ class Server {
     public const DEFAULT_ACTION_BAR_BAGS = "bags.bar.action.default";
 
     /** @var Container|null $container */
-    private $container = null;
+    private $container;
     /** @var string|null $appRoot */
-    private $appRoot = null;
+    private $appRoot;
     /** @var ClassLoader|null $classLoader */
-    private $classLoader = null;
+    private $classLoader;
     /** @var HashTable|null $userHashes */
-    private $userHashes = null;
+    private $userHashes;
     /** @var ArrayList */
-    private $userList = null;
+    private $userList;
 
     /**
      * Server constructor.
@@ -339,6 +341,14 @@ class Server {
             $twigManager = new TwigManager();
             $twigManager->setUp(Keestash::getBaseURL(false));
             return $twigManager;
+        });
+
+        $this->register(IValidationService::class, function () {
+            return new ValidationService();
+        });
+
+        $this->register(PhoneNumberUtil::class, function () {
+            return PhoneNumberUtil::getInstance();
         });
 
         $this->register(ApiManager::class, function () {
@@ -636,10 +646,6 @@ class Server {
 
         $this->register(IStylesheetManager::class, function () {
             return new StylesheetManager();
-        });
-
-        $this->register(ValidatorService::class, function () {
-            return new ValidatorService();
         });
 
     }

@@ -18,12 +18,13 @@
     "ext-pdo": "*",
     "ext-posix": "*",
     "ext-sqlite3": "*",
-    "doganoo/di-services": "dev-master",
+    "doganoo/di-services": "^0.0.1",
     "doganoo/php-algorithms": "^1.0",
     "doganoo/php-util": "0.3.12",
     "doganoo/simple-rbac": "^1.6",
     "doganoo/backgrounder": "^3.1",
     "filp/whoops": "2.3.1",
+    "giggsey/libphonenumber-for-php": "^8.1",
     "ocramius/package-versions": "1.4.0",
     "php-di/php-di": "6.0.7",
     "phpmailer/phpmailer": "^6.0",
@@ -32,13 +33,15 @@
     "symfony/http-foundation": "4.2.12",
     "symfony/mime": "^4.3",
     "symfony/routing": "4.2.5",
-    "symfony/validator": "^4.4",
     "symfony/webpack-encore-pack": "1.0.3",
     "twig/twig": "^2.0",
     "xobotyi/php-mime-type": "1.2.0",
     "doctrine/dbal": "^2.9",
-    "twitter/bootstrap": "dev-master",
-    "scssphp/scssphp": "dev-master"
+    "twitter/bootstrap": "^4.1",
+    "scssphp/scssphp": "^1.1",
+    "laminas/laminas-validator": "^2.13",
+    "laminas/laminas-uri": "^2.7",
+    "ext-intl": "*"
   },
   "require-dev": {
     "phpstan/phpstan": "^0.12",
@@ -52,7 +55,7 @@
       "KSA\\": "apps/"
     }
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "support": {
     "email": "dogan@dogan-ucar.de",
     "issues": "https://github.com/keestash/server/issues",

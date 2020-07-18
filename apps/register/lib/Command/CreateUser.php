@@ -22,14 +22,12 @@ declare(strict_types=1);
 namespace KSA\Register\Command;
 
 use DateTime;
-use Keestash;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Core\Service\Validation\ValidatorService;
 use KSA\Register\Exception\CreateUserException;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Validation\IValidationService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -43,19 +41,19 @@ class CreateUser extends KeestashCommand {
     /** @var UserService */
     private $userService;
 
-    /** @var ValidatorService */
-    private $validatorService;
+    /** @var IValidationService */
+    private $validationService;
 
     public function __construct(
         IUserRepository $userRepository
         , UserService $userService
-        , ValidatorService $validatorService
+        , IValidationService $validationService
     ) {
         parent::__construct(null);
 
-        $this->userRepository   = $userRepository;
-        $this->userService      = $userService;
-        $this->validatorService = $validatorService;
+        $this->userRepository    = $userRepository;
+        $this->userService       = $userService;
+        $this->validationService = $validationService;
     }
 
     protected function configure() {
@@ -68,38 +66,26 @@ class CreateUser extends KeestashCommand {
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
+     *
      * @return int|void
      * @throws CreateUserException
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a user");
-        $name           = $style->ask("Username");
-        $password       = $style->askHidden("Password");
-        $passwordRepeat = $style->askHidden("Password Repeat");
-        $firstName      = $style->ask("First Name");
-        $lastName       = $style->ask("Last Name");
-        $email          = $style->ask("Email");
-        $phone          = $style->ask("Phone");
-        $website        = $style->ask("Website");
+        $name           = $style->ask("Username") ?? "";
+        $password       = $style->askHidden("Password") ?? "";
+        $passwordRepeat = $style->askHidden("Password Repeat") ?? "";
+        $firstName      = $style->ask("First Name") ?? "";
+        $lastName       = $style->ask("Last Name") ?? "";
+        $email          = $style->ask("Email") ?? "";
+        $phone          = $style->ask("Phone") ?? "";
+        $website        = $style->ask("Website") ?? "";
         $locked         = $input->getOption('locked') ?? false;
         $deleted        = $input->getOption('deleted') ?? false;
 
-        if ($password !== $passwordRepeat) {
-            throw new CreateUserException("passwords do not match");
-        }
-
-        if (false === $this->userService->passwordHasMinimumRequirements($password)) {
-            throw new CreateUserException("minimum requirements for password do not match");
-        }
-
-        $users = Keestash::getServer()->getUsersFromCache();
-
-        /** @var IUser $iUser */
-        foreach ($users as $iUser) {
-            if (strtolower($iUser->getName()) === strtolower($name)) {
-                throw new CreateUserException("$name already exists");
-            }
+        if ("" === $password || $password !== $passwordRepeat) {
+            throw new CreateUserException("passwords are empty or do not match");
         }
 
         $user = new User();
@@ -119,14 +105,21 @@ class CreateUser extends KeestashCommand {
         $user->setCreateTs(new DateTime());
         $user->setDeleted($deleted !== false);
 
+        $errors     = $this->validationService->validate($user);
+        $errorCount = count($errors);
+
+        if ($errorCount > 0) {
+            foreach ($errors as $error) {
+                $this->writeError($error, $output);
+            }
+            return -1;
+        }
+
         $created = $this->userService->createUser(
             $user
             , $locked
             , $deleted
         );
-
-        $this->validatorService->validate($user);
-
         if (true === $created) {
             $this->writeInfo("$name created", $output);
             return;

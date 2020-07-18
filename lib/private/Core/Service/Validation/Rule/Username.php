@@ -19,15 +19,35 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Object;
+namespace Keestash\Core\Service\Validation\Rule;
 
-use KSP\Core\Service\Validation\Validator\IValidatorBag;
+use Keestash;
+use KSP\Core\Permission\IUser;
+use Laminas\Validator\AbstractValidator;
 
-interface IValidatable {
+class Username extends AbstractValidator {
 
-    /**
-     * @return IValidatorBag[]
-     */
-    public function getValidators(): array;
+    private const USERNAME = "username";
+
+    protected $messageTemplates = [
+        Username::USERNAME => "%username% already exists"
+    ];
+
+    public function isValid($value) {
+        $this->setValue($value);
+
+        $users = Keestash::getServer()->getUsersFromCache();
+
+        /** @var IUser $iUser */
+        foreach ($users as $iUser) {
+            if (strtolower($iUser->getName()) === strtolower($value)) {
+                $this->error(Username::USERNAME);
+                return false;
+            }
+        }
+
+        return false;
+
+    }
 
 }

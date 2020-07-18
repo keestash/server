@@ -22,7 +22,7 @@ mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
 mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'%' identified by '$DBPASSWD'"
 mysql -uroot -p$DBPASSWD -e "flush privileges"
 
-sudo apt-get -y install apache2 php7.1 php7.1-mysql php7.1-mbstring php7.1-dom php7.1-sqlite php7.1-zip php7.1-curl
+sudo apt-get -y install apache2 php7.1 php7.1-mysql php7.1-mbstring php7.1-dom php7.1-sqlite php7.1-zip php7.1-curl php7.1-intl
 
 sudo apt-get -y install curl composer zip unzip
 

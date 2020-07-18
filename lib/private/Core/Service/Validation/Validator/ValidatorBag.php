@@ -19,15 +19,39 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Object;
+namespace Keestash\Core\Service\Validation\Validator;
 
 use KSP\Core\Service\Validation\Validator\IValidatorBag;
+use Laminas\Validator\AbstractValidator;
+use Laminas\Validator\ValidatorChain;
 
-interface IValidatable {
+class ValidatorBag implements IValidatorBag {
 
-    /**
-     * @return IValidatorBag[]
-     */
-    public function getValidators(): array;
+    private $value;
+    private $chain;
+
+    public function __construct() {
+        $this->chain = new ValidatorChain();
+    }
+
+    public function getValue() {
+        return $this->value;
+    }
+
+    public function setValue($value): void {
+        $this->value = $value;
+    }
+
+    public function addValidator(AbstractValidator $validator): void {
+        $this->chain->attach(
+            $validator
+            , false
+            , 1
+        );
+    }
+
+    public function getChain(): ValidatorChain {
+        return $this->chain;
+    }
 
 }
