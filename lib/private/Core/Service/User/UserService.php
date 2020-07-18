@@ -24,6 +24,8 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\PHPUtil\Log\FileLogger;
+use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Repository\Instance\InstanceRepository;
@@ -220,58 +222,50 @@ class UserService {
      * @throws UserNotLockedException
      */
     public function createSystemUser(IUser $user): bool {
+        $user->setLocked(true);
         $file = $this->fileService->defaultProfileImage();
         $file->setOwner($user);
-        return $this->createUser(
-            $user
-            , true
-            , false
-            , $file
-        );
+        try {
+            $this->createUser($user, $file);
+            return true;
+        } catch (Exception $exception) {
+            FileLogger::error(json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
+            return false;
+        }
     }
 
     /**
      * @param IUser      $user
-     * @param bool       $lockUser
-     * @param bool       $deleteUser
      * @param IFile|null $file
      *
-     * @return bool
+     * @return IUser
      * @throws KeyNotCreatedException
      * @throws UserNotCreatedException
      * @throws UserNotLockedException
      * @throws UserNotDeletedException
      */
-    public function createUser(
-        IUser $user
-        , bool $lockUser = false
-        , bool $deleteUser = false
-        , ?IFile $file = null
-    ): bool {
+    public function createUser(IUser $user, ?IFile $file = null): IUser {
+
+        Keestash::getServer()
+            ->getRegistrationHookManager()
+            ->executePre();
 
         $userId = $this->userRepository->insert($user);
 
         if (null === $userId) {
             throw new UserNotCreatedException();
         }
+
         $user->setId($userId);
 
-        $key = $this->keyService->createKey(
-            $this->credentialService->getCredentialForUser($user)
-            , $user
-        );
+        Keestash::getServer()
+            ->getRegistrationHookManager()
+            ->executePost(
+                true
+                , $user
+            );
 
-        if (null === $key) {
-            throw new KeyNotCreatedException("could not create key");
-        }
-
-        $stored = $this->keyService->storeKey($user, $key);
-
-        if (false === $stored) {
-            throw new KeyNotCreatedException("could not store key");
-        }
-
-        if (false === $lockUser) return true;
+        if (false === $user->isLocked()) return $user;
 
         $locked = $this->userStateRepository->lock($user);
 
@@ -279,7 +273,7 @@ class UserService {
             throw new UserNotLockedException();
         }
 
-        if (false === $deleteUser) return true;
+        if (false === $user->isDeleted()) return $user;
 
         $deleted = $this->userStateRepository->delete($user);
 
@@ -287,11 +281,11 @@ class UserService {
             throw new UserNotDeletedException();
         }
 
-        if (null === $file) return true;
+        if (null === $file) return $user;
 
         $this->fileRepository->add($file);
 
-        return true;
+        return $user;
     }
 
     public function isDisabled(?IUser $user): bool {

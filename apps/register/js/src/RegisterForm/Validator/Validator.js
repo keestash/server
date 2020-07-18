@@ -165,13 +165,13 @@ export class Validator {
         if (true === show) {
 
             element.fadeIn(500, function () {
-                $(this).show();
+                $(this).removeClass("invisible");
             });
 
         } else {
 
             element.fadeOut(500, function () {
-                $(this).hide();
+                $(this).addClass("visible");
             });
 
         }

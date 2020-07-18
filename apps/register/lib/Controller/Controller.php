@@ -133,9 +133,13 @@ class Controller extends StaticAppController {
             , "createNewAccount"            => $this->translator->translate("Create New Account")
             , "createNewAccountDesc"        => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
             , "backToLogin"                 => $this->translator->translate("Back To Login")
+
+            // values
+            , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
+            , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+
             , "termsConditionsLink"         => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::PERMISSION_TNC
             , "backToLoginLink"             => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
-            , "logoPath"                    => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
         ]);
         $this->setAppContent(
             $this->templateManager->render(Controller::TEMPLATE_NAME_REGISTER)

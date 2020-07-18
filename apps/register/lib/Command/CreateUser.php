@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Command;
 
 use DateTime;
+use Exception;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\UserService;
@@ -112,19 +113,18 @@ class CreateUser extends KeestashCommand {
             foreach ($errors as $error) {
                 $this->writeError($error, $output);
             }
-            return -1;
-        }
-
-        $created = $this->userService->createUser(
-            $user
-            , $locked
-            , $deleted
-        );
-        if (true === $created) {
-            $this->writeInfo("$name created", $output);
             return;
         }
-        $this->writeError("Could not create user $name", $output);
+
+        try {
+            $this->userService->createUser($user);
+        } catch (Exception $exception) {
+            $this->writeError("Could not create user $name", $output);
+            $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);
+            return;
+        }
+        $this->writeInfo("$name created", $output);
+
     }
 
 }

@@ -8,6 +8,7 @@ $keestash-theme-color-dark1: #0070cc;
 $keestash-theme-color-black: #3B3939;
 $keestash-text-color: #000;
 $keestash-text-color-white: #FFF;
+$keestash-error-text-color-red: #DC143C;
 
 $keestash-avatar-size: 30px;
 $grey: #9e9e9e;
@@ -145,4 +146,8 @@ hr {
 .btn.btn-secondary:hover,
 .btn.btn-secondary:focus {
   background: $keestash-theme-color-black;
+}
+
+a:visited, a:hover, a:active {
+  color: $keestash-theme-color-dark1 !important;
 }

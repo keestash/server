@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\PHPUtil\Log\FileLogger;
+use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
@@ -169,27 +171,23 @@ class Add extends AbstractApi {
 
         if ($responseCode === IResponse::RESPONSE_CODE_OK) {
 
-            Keestash::getServer()
-                ->getRegistrationHookManager()
-                ->executePre();
+            $user = null;
+            try {
+                $user = $this->userService->createUser(
+                    $this->userService->toNewUser($this->parameters)
+                );
+            } catch (Exception $exception) {
+                FileLogger::error($exception->getTraceAsString());
+                $user = null;
+            }
 
-            $user   = $this->userService->toNewUser($this->parameters);
-            $userId = $this->userRepository->insert($user);
-            $added  = null !== $userId;
-            $user->setId((int) $userId);
             $this->user = $user;
 
-            if (false === $added) {
+            if (null !== $user) {
                 $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
                 $message      = $this->translator->translate("Could not register user. Please try again");
             }
 
-            Keestash::getServer()
-                ->getRegistrationHookManager()
-                ->executePost(
-                    $added
-                    , $this->user
-                );
 
         }
 
