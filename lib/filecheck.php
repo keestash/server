@@ -43,7 +43,7 @@ if ($missingFileSize > 0) {
     echo 'The following files are missing on your instance. ' . PHP_EOL;
     echo 'Please create them and run your request again: ' . PHP_EOL;
     echo PHP_EOL;
-    echo implode($files, "<br>") . PHP_EOL;
+    echo implode("<br>", $files) . PHP_EOL;
     echo PHP_EOL;
     echo "Check our docs for further information: https://keestash.com" . PHP_EOL;
     exit();

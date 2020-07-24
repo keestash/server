@@ -18,7 +18,7 @@
  */
 import {Host} from "../../../../../lib/js/src/Backend/Host";
 
-export const LOGIN_SUBMIT = "/login/submit";
+export const LOGIN_SUBMIT = "/login/submit/";
 
 export class Routes {
     constructor() {

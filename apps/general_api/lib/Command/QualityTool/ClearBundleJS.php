@@ -27,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ClearBundleJS extends KeestashCommand {
 
-    protected static $defaultName = "quality-tool:clear-js";
+    protected static $defaultName = "general-api:clear-js";
 
     /** @var string $appRoot */
     private $appRoot = null;

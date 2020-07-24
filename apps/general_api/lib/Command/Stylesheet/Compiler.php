@@ -36,7 +36,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Compiler extends KeestashCommand {
 
-    protected static $defaultName = "stylesheet:compile-scss";
+    protected static $defaultName = "general-api:compile-scss";
 
     /** @var StylesheetCompiler */
     private $stylesheetCompiler;

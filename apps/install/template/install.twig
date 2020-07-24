@@ -1,48 +1,56 @@
-<div class="ui container" id="install__instance__container">
-    <div class="ui text container">
+<div class="container" id="install__instance__container">
+    <div class="container">
         <h1>{{ installationHeader }}</h1>
 
         {% if installType == 0 %}
-            <h4>{{ installInstructionNothingToUpdate }}</h4>
+            <p class="lead">{{ installInstructionNothingToUpdate }}</p>
         {% elseif installType ==1 %}
-            <h4>{{ installInstructionInstallApps }}</h4>
+            <p class="lead">{{ installInstructionInstallApps }}</p>
         {% elseif installType ==2 %}
-            <h4>{{ installInstructionUpdateApps }}</h4>
+            <p class="lead">{{ installInstructionUpdateApps }}</p>
         {% elseif installType ==3 %}
-            <h4>{{ installInstructionInstallUpdateApps }}</h4>
+            <p class="lead">{{ installInstructionInstallUpdateApps }}</p>
         {% elseif installType ==4 %}
-            <h4>{{ installationDescriptionError }}</h4>
+            <p class="lead">{{ installationDescriptionError }}</p>
         {% endif %}
 
         {% if appsToInstall|length > 0 %}
-            {% for app in appsToInstall %}
-                <div class="ui segment">
-                    <h4 class="ui header">{{ app.getName() }}</h4>
-                    <span>Version: {{ app.getVersionString() }}</span>
-                </div>
-            {% endfor %}
+            <div class="container">
+                {% for app in appsToInstall %}
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="ui header">{{ app.getName() }}</h4>
+                            <span>Version: {{ app.getVersionString() }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
 
 
         {% if appsToUpdate|length > 0 %}
-            <span>{{ updateInstruction }}</span>
+            <p class="lead">{{ updateInstruction }}</p>
 
-            {% for app in appsToUpdate %}
-                <div class="ui segment">
-                    <h4 class="ui header">{{ app.getName() }}</h4>
-                    <span>Version: {{ app.getVersionString() }}</span>
-                </div>
-            {% endfor %}
+            <div class="container">
+                {% for app in appsToUpdate %}
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="ui header">{{ app.getName() }}</h4>
+                            <span>Version: {{ app.getVersionString() }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
 
         {% if installType == 0 %}
-            <button class="ui disabled primary button" id="i__end__update">{{ endUpdate }}</button>
+            <button class="btn btn-primary" id="i__end__update">{{ endUpdate }}</button>
         {% elseif installType ==1 %}
-            <button class="ui disabled primary button" id="i__end__update">{{ installApps }}</button>
+            <button class="btn btn-primary" id="i__end__update">{{ installApps }}</button>
         {% elseif installType ==2 %}
-            <button class="ui disabled primary button" id="i__end__update">{{ updateApps }}</button>
+            <button class="btn btn-primary" id="i__end__update">{{ updateApps }}</button>
         {% elseif installType ==3 %}
-            <button class="ui disabled primary button" id="i__end__update">{{ updateApps }}</button>
+            <button class="btn btn-primary" id="i__end__update">{{ updateApps }}</button>
         {% elseif installType ==4 %}
         {% endif %}
 

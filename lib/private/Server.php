@@ -35,6 +35,7 @@ use doganoo\DIP\Object\String\StringService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
+use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
@@ -80,6 +81,8 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\Core\Language\LanguageService;
+use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
@@ -132,12 +135,15 @@ use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Core\Language\ILanguageService;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Validation\IValidationService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IActionBarBag;
 use KSP\L10N\IL10N;
 use libphonenumber\PhoneNumberUtil;
+use PDOException;
 use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use xobotyi\MimeType;
@@ -648,6 +654,16 @@ class Server {
             return new StylesheetManager();
         });
 
+        $this->register(ILocaleService::class, function () {
+            return new LocaleService();
+        });
+
+        $this->register(ILanguageService::class, function () {
+            return new LanguageService(
+                Keestash::getServer()->query(ILocaleService::class)
+            );
+        });
+
     }
 
     public function register(string $name, Closure $closure): bool {
@@ -694,8 +710,13 @@ class Server {
         $persistenceService = $this->query(PersistenceService::class);
         /** @var UserService $userService */
         $userService = $this->query(UserService::class);
-        $userId      = $persistenceService->getValue("user_id", null);
 
+        $userId = null;
+        try {
+            $userId = $persistenceService->getValue("user_id", null);
+        } catch (PDOException $exception) {
+            FileLogger::error(json_encode($exception));
+        }
 
         if (null === $userId) return null;
 

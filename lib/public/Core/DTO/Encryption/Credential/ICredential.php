@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\Encryption\Credential;
 
 use DateTime;
-use KSP\Core\DTO\Object\IJsonObject;
+use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\User\IUser;
 
 /**

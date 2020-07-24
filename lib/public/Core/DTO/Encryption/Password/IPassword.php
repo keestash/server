@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Encryption\Password;
 
-use KSP\Core\DTO\Object\IJsonObject;
+use KSP\Core\DTO\Entity\IJsonObject;
 
 /**
  * Interface IPassword

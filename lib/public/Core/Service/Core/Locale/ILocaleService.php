@@ -19,8 +19,32 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Object;
+namespace KSP\Core\Service\Core\Locale;
 
-interface IObject {
+use KSP\Core\DTO\User\IUser;
+
+/**
+ * Interface ILocaleService
+ *
+ * @package KSP\Core\Service\Core\Locale
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
+interface ILocaleService {
+
+    /**
+     * Returns the locale for a given user stored in the settings
+     *
+     * @param IUser $user
+     *
+     * @return string
+     */
+    public function getLocaleForUser(IUser $user): string;
+
+    /**
+     * Returns the locale for the server
+     *
+     * @return string
+     */
+    public function getLocale(): string;
 
 }

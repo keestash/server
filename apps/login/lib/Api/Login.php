@@ -36,6 +36,8 @@ use KSP\Core\DTO\IToken;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Core\Language\ILanguageService;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\L10N\IL10N;
 
 class Login extends AbstractApi {
@@ -58,6 +60,10 @@ class Login extends AbstractApi {
     private $persistenceService;
     /** @var ConfigService $configService */
     private $configService;
+    /** @var ILocaleService */
+    private $localeService;
+    /** @var ILanguageService */
+    private $languageService;
 
     public function __construct(
         IUserRepository $userRepository
@@ -68,6 +74,8 @@ class Login extends AbstractApi {
         , IPermissionRepository $permissionManager
         , PersistenceService $persistenceService
         , ConfigService $configService
+        , ILocaleService $localeService
+        , ILanguageService $languageService
         , ?IToken $token = null
     ) {
         $this->userRepository     = $userRepository;
@@ -78,6 +86,8 @@ class Login extends AbstractApi {
         $this->permissionManager  = $permissionManager;
         $this->persistenceService = $persistenceService;
         $this->configService      = $configService;
+        $this->localeService      = $localeService;
+        $this->languageService    = $languageService;
 
         parent::__construct($translator, $token);
     }
@@ -115,10 +125,14 @@ class Login extends AbstractApi {
             $token = $this->tokenService->generate("login", $user);
 
             $response->addMessage(
-                IResponse::RESPONSE_CODE_OK,
-                [
-                    "message"   => $this->translator->translate("Ok")
-                    , "routeTo" => Helper::getDefaultRoute()
+                IResponse::RESPONSE_CODE_OK
+                , [
+                    "message"    => $this->translator->translate("Ok")
+                    , "routeTo"  => Helper::getDefaultRoute()
+                    , "settings" => [
+                        "locale"     => $this->localeService->getLocaleForUser($user)
+                        , "language" => $this->languageService->getLanguageForUser($user)
+                    ]
                 ]
             );
 

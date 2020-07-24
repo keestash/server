@@ -32,7 +32,7 @@ class Application extends \Keestash\App\Application {
     public const PERMISSION_LOGIN        = "login";
     public const PERMISSION_LOGIN_SUBMIT = "login_submit";
     public const LOGIN                   = "login";
-    public const LOGIN_SUBMIT            = "login/submit";
+    public const LOGIN_SUBMIT            = "login/submit/";
 
     public const APP_NAME_REGISTER = "register";
 

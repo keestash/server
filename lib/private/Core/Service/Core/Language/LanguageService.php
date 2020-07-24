@@ -19,22 +19,33 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\View\Navigation\App;
+namespace Keestash\Core\Service\Core\Language;
 
-use KSP\Core\DTO\Entity\IObject;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Core\Language\ILanguageService;
+use KSP\Core\Service\Core\Locale\ILocaleService;
+use Locale;
 
-/**
- * Interface IEntry
- *
- * @package KSP\View\Navigation\App
- * @author  Dogan Ucar <dogan@dogan-ucar.de>
- */
-interface IEntry extends IObject {
+class LanguageService implements ILanguageService {
 
-    public const ICON_CIRCLE  = "far fa-circle";
-    public const ICON_HISTORY = "fas fa-history";
-    public const ICON_SHARE   = "fas fa-share";
-    public const ICON_SITEMAP = "fas fa-sitemap";
-    public const ICON_STAR    = "fas fa-star";
+    /** @var ILocaleService */
+    private $localeService;
+
+    public function __construct(ILocaleService $localeService) {
+        $this->localeService = $localeService;
+    }
+
+    public function getLanguage(): string {
+        return Locale::getDisplayLanguage(
+            $this->localeService->getLocale()
+        );
+    }
+
+    public function getLanguageForUser(IUser $user): string {
+        return Locale::getDisplayLanguage(
+            $this->localeService->getLocaleForUser($user)
+        );
+    }
+
 
 }

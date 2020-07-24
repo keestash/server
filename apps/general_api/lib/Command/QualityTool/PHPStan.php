@@ -27,7 +27,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PHPStan extends KeestashCommand {
 
-    protected static $defaultName = "quality-tool:phpstan";
+    protected static $defaultName = "general-api:phpstan";
 
     /** @var string $instanceRoot */
     private $instanceRoot = null;

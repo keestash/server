@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Instance\Repository;
 
-use KSP\Core\DTO\Object\IJsonObject;
+use KSP\Core\DTO\Entity\IJsonObject;
 
 interface ITable extends IJsonObject {
 

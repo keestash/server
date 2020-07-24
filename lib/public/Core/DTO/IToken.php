@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO;
 
 use DateTime;
-use KSP\Core\DTO\Object\IJsonObject;
+use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\User\IUser;
 
 interface IToken extends IJsonObject {

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Validation;
 
-use KSP\Core\DTO\Object\IValidatable;
+use KSP\Core\DTO\Entity\IValidatable;
 
 interface IValidationService {
 

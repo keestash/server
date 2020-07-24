@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,22 +19,40 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\L10N;
+namespace Keestash\Core\Service\Core\Locale;
+
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Core\Locale\ILocaleService;
+use Locale;
 
 /**
- * Interface IL10N
+ * Class LocaleService
  *
- * @package KSP\L10N
+ * @package Keestash\Core\Service\Core\Locale
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-interface IL10N {
+class LocaleService implements ILocaleService {
 
-    public function translate(string $text): string;
+    /**
+     * Returns the locale for a given user stored in the settings
+     *
+     * @param IUser $user
+     *
+     * TODO implement
+     *
+     * @return string
+     */
+    public function getLocaleForUser(IUser $user): string {
+        return $this->getLocale();
+    }
 
-    public function localize(string $text): string;
-
-    public function getLanguageCode(): string;
-
-    public function getLocaleCode(): string;
+    /**
+     * Returns the locale for the server
+     *
+     * @return string
+     */
+    public function getLocale(): string {
+        return Locale::getRegion(Locale::getDefault());
+    }
 
 }

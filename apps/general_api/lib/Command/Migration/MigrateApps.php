@@ -33,7 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class MigrateApps extends KeestashCommand {
 
-    protected static $defaultName = "migration:migrate-apps";
+    protected static $defaultName = "general-api:migrate-apps";
 
     private const ARGUMENT_MODE = "mode";
     private const MODE_APP      = "app";

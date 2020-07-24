@@ -69,7 +69,7 @@ class Application extends Keestash\App\Application {
 
         $this->registerApiRoute(
             Application::FRONTEND_STRINGS
-            , \KSA\GeneralApi\Api\String\GetAll::class
+            , \KSA\GeneralApi\Api\Strings\GetAll::class
             , [IRouterManager::GET]
         );
 

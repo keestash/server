@@ -82,11 +82,16 @@ export class Submit {
                             let routeTo = result_object['routeTo'];
                             let token = xhr.getResponseHeader('api_token');
                             let userHash = xhr.getResponseHeader('user_hash');
+                            let locale = result_object["settings"]["locale"];
+                            let language = result_object["settings"]["language"];
 
                             _this.appStorage.storeAPICredentials(
                                 token
                                 , userHash
                             );
+
+                            _this.appStorage.storeLocale(locale);
+                            _this.appStorage.storeLanguage(language);
 
                             _this.buttonService.disable(
                                 signIn

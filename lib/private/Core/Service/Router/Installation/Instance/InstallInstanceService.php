@@ -37,7 +37,7 @@ class InstallInstanceService {
     private const ROUTE_INSTALL_INSTANCE_CONFIG_DATA   = "install_instance/config_data/";
     private const ROUTE_INSTALL_INSTANCE_END_UPDATE    = "install_instance/end_update/";
     private const ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS = "install_instance/has_data_dirs/";
-    private const ROUTE_LOGIN_SUBMIT                   = "login/submit";
+    private const ROUTE_LOGIN_SUBMIT                   = "login/submit/";
     private const ROUTE_FRONTEND_TEMPLATES_ALL         = "frontend_templates/all/";
     private const ROUTE_FRONTEND_STRINGS_ALL           = "frontend_strings/all/";
 

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Validation;
 
-use KSP\Core\DTO\Object\IValidatable;
+use KSP\Core\DTO\Entity\IValidatable;
 use KSP\Core\Service\Validation\IValidationService;
 
 class ValidationService implements IValidationService {

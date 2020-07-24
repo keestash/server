@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTime;
-use KSP\Core\DTO\Object\IObject;
+use KSP\Core\DTO\Entity\IObject;
 
 interface IUserState extends IObject {
 
