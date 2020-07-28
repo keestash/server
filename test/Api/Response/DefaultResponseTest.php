@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KST\Api\Response;
 
+use doganoo\PHPUtil\HTTP\Code;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\DTO\HTTP;
 use KSP\Api\IResponse;
 use KST\KSTestCase;
 
@@ -32,13 +32,13 @@ class DefaultResponseTest extends KSTestCase {
 
         $response = new DefaultResponse();
 
-        $this->assertTrue($response->getCode() === HTTP::OK);
+        $this->assertTrue($response->getCode() === Code::OK);
         $this->assertTrue($response->getMessage() === "[]");
     }
 
     public function testWithCustomValues() {
         $response = new DefaultResponse();
-        $response->setCode(HTTP::BAD_REQUEST);
+        $response->setCode(Code::BAD_REQUEST);
 
         $messages = [
             IResponse::RESPONSE_CODE_OK       => [
@@ -55,7 +55,7 @@ class DefaultResponseTest extends KSTestCase {
             $response->addMessage($code, $message);
         }
 
-        $this->assertTrue($response->getCode() === HTTP::BAD_REQUEST);
+        $this->assertTrue($response->getCode() === Code::BAD_REQUEST);
         $this->assertTrue($response->getMessage() === json_encode($messages));
     }
 

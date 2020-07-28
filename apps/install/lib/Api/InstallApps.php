@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\App\Config\Diff;
@@ -31,7 +30,7 @@ use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
 
 class InstallApps extends AbstractApi {

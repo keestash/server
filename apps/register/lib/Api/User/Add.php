@@ -22,18 +22,18 @@ declare(strict_types=1);
 namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\PHPUtil\HTTP\Code;
 use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -97,7 +97,7 @@ class Add extends AbstractApi {
         }
 
         $msg = new DefaultResponse();
-        $msg->setCode(HTTP::OK);
+        $msg->setCode(Code::OK);
         $responseCode = IResponse::RESPONSE_CODE_OK;
         $message      = $this->translator->translate("User successfully registered");
 

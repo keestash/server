@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Manager\RouterManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use Symfony\Component\Routing\Route;
 
 interface IRouter {

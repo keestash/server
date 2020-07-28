@@ -26,7 +26,7 @@ use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Controller\IAppController;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;

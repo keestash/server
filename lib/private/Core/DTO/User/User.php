@@ -35,36 +35,28 @@ use Laminas\Validator\EmailAddress;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\Uri;
 
+/**
+ * Class User
+ *
+ * @package Keestash\Core\DTO\User
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class User implements IUser, PermissionUser {
 
-    /** @var int $id */
-    private $id;
-    /** @var string $name */
-    private $name;
-    /** @var string $password */
-    private $password;
-    /** @var DateTime $createTs */
-    private $createTs;
-    /** @var string $firstName */
-    private $firstName;
-    /** @var string $lastName */
-    private $lastName;
-    /** @var string $email */
-    private $email;
-    /** @var string $phone */
-    private $phone;
-    /** @var string $website */
-    private $website;
-    /** @var null|BinarySearchTree $roles */
-    private $roles = null;
-    /** @var null|DateTime */
-    private $lastLogin = null;
-    /** @var string $hash */
-    private $hash = null;
-    /** @var bool $locked */
-    private $locked = false;
-    /** @var bool $deleted */
-    private $deleted = false;
+    private int               $id;
+    private string            $name;
+    private string            $password;
+    private DateTime          $createTs;
+    private string            $firstName;
+    private string            $lastName;
+    private string            $email;
+    private string            $phone;
+    private string            $website;
+    private ?BinarySearchTree $roles     = null;
+    private ?DateTime         $lastLogin = null;
+    private string            $hash;
+    private bool              $locked    = false;
+    private bool              $deleted   = false;
 
     /**
      * @return string

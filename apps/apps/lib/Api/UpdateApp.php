@@ -25,7 +25,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
 use KSP\App\Config\IApp;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\L10N\IL10N;
 

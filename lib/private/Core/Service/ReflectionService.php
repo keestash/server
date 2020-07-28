@@ -23,7 +23,7 @@ namespace Keestash\Core\Service;
 
 use doganoo\DIP\Object\Reflection\ReflectionService as DiServicesReflectionService;
 use Keestash;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use ReflectionClass;
 
 class ReflectionService extends DiServicesReflectionService {

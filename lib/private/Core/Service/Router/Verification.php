@@ -22,9 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Router;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 
 class Verification {

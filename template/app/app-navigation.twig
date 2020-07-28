@@ -15,10 +15,11 @@
                                data-id="{{ segment.getId() }}">{{ segment.getTitle() }}</small>
                     </li>
                     {% for id2, entry in segment.getEntries() %}
-                        <li class="list-group-item">
+                        <li
+                                class="list-group-item"
+                        >
                             <a
                                     id="{{ entry.getSelector() }}"
-                                    href="{{ entry.getHref() == null ? '#' : entry.getHref() }}"
                                     class="list-group-item-action d-flex align-items-baseline justify-content-start"
                             >
                                 <i class="{{ entry.getIconClass() }} entry-icon"></i> {{ entry.getTitle() }}

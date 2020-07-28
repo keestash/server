@@ -24,16 +24,21 @@ namespace Keestash\Core\Manager\NavigationManager\App;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\Core\Manager\NavigationManager\INavigationManager;
 
+/**
+ * Class NavigationManager
+ *
+ * @package Keestash\Core\Manager\NavigationManager\App
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class NavigationManager implements INavigationManager {
 
-    /** @var NavigationList */
-    private $navigationList;
+    private NavigationList $navigationList;
 
     public function setList(NavigationList $navigationList): void {
         $this->navigationList = $navigationList;
     }
 
-    public function getNavigationList(): NavigationList {
+    public function getList(): NavigationList {
         return $this->navigationList;
     }
 

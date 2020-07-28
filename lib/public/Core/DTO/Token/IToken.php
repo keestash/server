@@ -19,38 +19,28 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO;
+namespace KSP\Core\DTO\Token;
 
-/**
- * Class HTTP
- * @package Keestash\Core\DTO
- * @deprecated remove
- */
-class HTTP {
+use DateTime;
+use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\User\IUser;
 
-    // Success
-    public const OK = 200;
+interface IToken extends IJsonObject {
 
-    // Client
-    public const BAD_REQUEST = 400;
-    public const NOT_FOUND   = 404;
+    public function getId(): int;
 
-    private function __construct() {
-    }
+    public function getName(): string;
 
-    public static function getDescriptionByCode(int $code): ?string {
-        if ($code === HTTP::OK) {
-            return "OK";
-        } else {
-            if ($code === HTTP::BAD_REQUEST) {
-                return "BAD REQUEST";
-            } else {
-                if ($code === HTTP::NOT_FOUND) {
-                    return "NOT FOUND";
-                }
-            }
-        }
-        return null;
-    }
+    public function getValue(): string;
+
+    public function equals(IToken $token): bool;
+
+    public function expired(): bool;
+
+    public function valid(): bool;
+
+    public function getUser(): IUser;
+
+    public function getCreateTs(): DateTime;
 
 }

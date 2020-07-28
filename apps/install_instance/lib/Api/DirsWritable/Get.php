@@ -25,7 +25,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
 
 class Get extends AbstractApi {

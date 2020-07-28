@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\ApiLog;
 
 use Keestash\Core\Repository\AbstractRepository;
-use KSP\Core\DTO\IAPIRequest;
+use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 

@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use doganoo\DI\HTTP\IHTTPService;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Log\Logger;
 use Keestash\Api\Response\MaintenanceResponse;
@@ -66,9 +67,9 @@ class Keestash {
     public const MODE_NONE = 0;
     public const MODE_WEB  = 1;
     public const MODE_API  = 2;
-    /** @var Server $server */
-    private static $server = null;
-    private static $mode   = Keestash::MODE_NONE;
+
+    private static ?Server $server = null;
+    private static int     $mode   = Keestash::MODE_NONE;
 
     private function __construct() {
 
@@ -489,7 +490,7 @@ class Keestash {
         $appNavigationManager = Keestash::getServer()->query(AppNavigationManager::class);
         $hasAppNavigation     =
             (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER)
-            && $appNavigationManager->getNavigationList()->length() > 0;
+            && $appNavigationManager->getList()->length() > 0;
         $noContext            = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
         $actionBar            = Keestash::renderActionBars(
             Keestash::getServer()->getActionBarManager()->get(IActionBarBag::ACTION_BAR_TOP)
@@ -500,7 +501,7 @@ class Keestash {
             Keestash::getServer()->getTemplateManager()->replace(
                 ITemplate::APP_NAVIGATION
                 , [
-                    "appNavigation"      => $appNavigationManager->getNavigationList()->toArray(false)
+                    "appNavigation"      => $appNavigationManager->getList()->toArray(false)
                     , "hasAppNavigation" => $hasAppNavigation
                     , "actionBar"        => $actionBar
                     , "hasActionBars"    => Keestash::getServer()->getActionBarManager()->isVisible()
@@ -771,9 +772,13 @@ class Keestash {
         /** @var IResponse $response */
         $response = $responses->get(0);
 
+        /** @var IHTTPService $httpService */
+        $httpService = Keestash::getServer()->query(IHTTPService::class);
+        $code        = $response->getCode();
+        $description = $httpService->translateCode($code);
 
         header('Access-Control-Allow-Origin: *');
-        header("HTTP/1.1 {$response->getCode()} {$response->getDescription()}");
+        header("HTTP/1.1 $code $description");
 
         foreach ($response->getHeaders() as $key => $header) {
             header("$key: $header");

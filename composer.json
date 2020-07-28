@@ -18,7 +18,7 @@
     "ext-pdo": "*",
     "ext-posix": "*",
     "ext-sqlite3": "*",
-    "doganoo/di-services": "^0.0.1",
+    "doganoo/di-services": "^0.0.5",
     "doganoo/php-algorithms": "^1.0",
     "doganoo/php-util": "0.3.12",
     "doganoo/simple-rbac": "^1.6",

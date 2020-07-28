@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Token;
 
 use Keestash;
-use Keestash\Core\DTO\Token;
+use Keestash\Core\DTO\Token\Token;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use PDO;

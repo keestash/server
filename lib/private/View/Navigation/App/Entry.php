@@ -25,14 +25,10 @@ use KSP\View\Navigation\App\IEntry;
 
 class Entry implements IEntry {
 
-    /** @var string */
-    private $title;
-    /** @var string */
-    private $selector;
-    /** @var string|null */
-    private $href;
-    /** @var string */
-    private $iconClass;
+    private string  $title;
+    private string  $selector;
+    private ?string $href;
+    private string  $iconClass;
 
     public function __construct(
         string $title = ""

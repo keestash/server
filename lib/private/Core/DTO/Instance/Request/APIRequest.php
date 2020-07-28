@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO;
+namespace Keestash\Core\DTO\Instance\Request;
 
-use KSP\Core\DTO\IAPIRequest;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Instance\Request\IAPIRequest;
+use KSP\Core\DTO\Token\IToken;
 
 /**
  * Class APIRequest

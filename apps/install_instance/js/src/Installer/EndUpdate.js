@@ -87,7 +87,6 @@ export class EndUpdate {
                         , {}
                         , function (x, y, z) {
                             const object = JSON.parse(x);
-                            console.log(object);
 
                             if (RESPONSE_CODE_OK in object) {
                                 const routeTo = object[RESPONSE_CODE_OK]['messages']['route_to'];

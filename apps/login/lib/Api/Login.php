@@ -21,18 +21,18 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
+use doganoo\PHPUtil\HTTP\Code;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\LoginResponse;
 use Keestash\App\Helper;
-use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Application\Application;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -105,7 +105,7 @@ class Login extends AbstractApi {
         $user = $this->userRepository->getUser($userName);
 
         $response = new LoginResponse();
-        $response->setCode(HTTP::OK);
+        $response->setCode(Code::OK);
 
         if (true === $this->userService->isDisabled($user)) {
             $response->addMessage(

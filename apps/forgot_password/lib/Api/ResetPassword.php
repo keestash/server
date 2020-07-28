@@ -27,7 +27,7 @@ use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;

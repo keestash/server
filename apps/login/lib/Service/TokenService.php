@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Login\Service;
 
-use Keestash\Core\DTO\Token;
-use KSP\Core\DTO\IToken;
+use Keestash\Core\DTO\Token\Token;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 
 class TokenService {

@@ -25,10 +25,10 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\DTO\APIRequest;
+use Keestash\Core\DTO\Instance\Request\APIRequest;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\NoControllerFoundException;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class APIRouter extends Router {

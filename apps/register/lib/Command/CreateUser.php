@@ -34,16 +34,17 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Class CreateUser
+ *
+ * @package KSA\Register\Command
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class CreateUser extends KeestashCommand {
 
-    /** @var IUserRepository */
-    private $userRepository;
-
-    /** @var UserService */
-    private $userService;
-
-    /** @var IValidationService */
-    private $validationService;
+    private IUserRepository    $userRepository;
+    private UserService        $userService;
+    private IValidationService $validationService;
 
     public function __construct(
         IUserRepository $userRepository

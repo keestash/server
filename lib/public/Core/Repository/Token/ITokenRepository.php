@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Token;
 
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\IRepository;
 
 interface ITokenRepository extends IRepository {

@@ -21,14 +21,14 @@ declare(strict_types=1);
 
 namespace Keestash\Api;
 
+use doganoo\PHPUtil\HTTP\Code;
 use Keestash;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use KSP\Api\IApi;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Permission\IPermission;
 use KSP\L10N\IL10N;
 
@@ -69,7 +69,7 @@ abstract class AbstractApi implements IApi {
 
     protected function createResponse(int $code, array $messages): IResponse {
         $defaultResponse = new DefaultResponse();
-        $defaultResponse->setCode(HTTP::OK);
+        $defaultResponse->setCode(Code::OK);
         $defaultResponse->addMessage(
             $code
             , [

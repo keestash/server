@@ -19,9 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace KSP\Core\DTO\Instance\Request;
 
 use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\Token\IToken;
 
 interface IAPIRequest extends IJsonObject {
 

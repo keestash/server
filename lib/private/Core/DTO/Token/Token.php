@@ -19,11 +19,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO;
+namespace Keestash\Core\DTO\Token;
 
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 
 class Token implements IToken {

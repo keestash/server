@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Api\Response;
 
-use Keestash\Core\DTO\HTTP;
+use doganoo\PHPUtil\HTTP\Code;
 use KSP\Api\IResponse;
 use function json_encode;
 
@@ -32,7 +32,7 @@ class DefaultResponse implements IResponse {
     private $header   = null;
 
     public function __construct() {
-        $this->code     = HTTP::OK;
+        $this->code     = Code::OK;
         $this->messages = [];
         $this->header   = [];
     }
@@ -44,10 +44,6 @@ class DefaultResponse implements IResponse {
     public function getMessage(): ?string {
         $json = json_encode($this->messages);
         return (false === $json) ? null : $json;
-    }
-
-    public function getDescription(): string {
-        return HTTP::getDescriptionByCode($this->getCode());
     }
 
     public function getCode(): int {

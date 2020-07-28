@@ -29,8 +29,10 @@ use DI\NotFoundException;
 use doganoo\Backgrounder\Backgrounder;
 use doganoo\Backgrounder\Service\Log\ILoggerService;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\HTTP\IHTTPService;
 use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
+use doganoo\DIP\HTTP\HTTPService as DIServicesHTTPService;
 use doganoo\DIP\Object\String\StringService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
@@ -162,16 +164,11 @@ class Server {
     public const DEFAULT_ACTION_BARS     = "bars.action.default";
     public const DEFAULT_ACTION_BAR_BAGS = "bags.bar.action.default";
 
-    /** @var Container|null $container */
-    private $container;
-    /** @var string|null $appRoot */
-    private $appRoot;
-    /** @var ClassLoader|null $classLoader */
-    private $classLoader;
-    /** @var HashTable|null $userHashes */
-    private $userHashes;
-    /** @var ArrayList */
-    private $userList;
+    private ?Container    $container;
+    private ?string       $appRoot;
+    private ?ClassLoader  $classLoader;
+    private ?HashTable    $userHashes = null;
+    private ?ArrayList    $userList   = null;
 
     /**
      * Server constructor.
@@ -193,6 +190,10 @@ class Server {
 
         $this->register(Compiler::class, function () {
             return new Compiler();
+        });
+
+        $this->register(IHTTPService::class, function () {
+            return new DIServicesHTTPService();
         });
 
         $this->register(InputSanitizer::class, function () {

@@ -29,7 +29,7 @@ class Username extends AbstractValidator {
 
     private const USERNAME = "username";
 
-    protected $messageTemplates = [
+    protected array $messageTemplates = [
         Username::USERNAME => "%username% already exists"
     ];
 

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Api;
 
 use Keestash\Api\AbstractApi;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
 
 class TestApi extends AbstractApi {

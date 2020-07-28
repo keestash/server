@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api;
 
+use doganoo\PHPUtil\HTTP\Code;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
 
@@ -90,7 +90,7 @@ class MinimumCredential extends AbstractApi {
 
     private function setResponseHelper(string $message, int $responseCode) {
         $response = new DefaultResponse();
-        $response->setCode(HTTP::OK);
+        $response->setCode(Code::OK);
         $response->addMessage(
             $responseCode
             , [

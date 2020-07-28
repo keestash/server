@@ -25,7 +25,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\StringManager\FrontendManager;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\StringManager\IStringManager;
 use KSP\L10N\IL10N;
 

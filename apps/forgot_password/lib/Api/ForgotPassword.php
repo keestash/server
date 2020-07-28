@@ -24,17 +24,17 @@ namespace KSA\ForgotPassword\Api;
 
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\PHPUtil\HTTP\Code;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\DTO\HTTP;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\IToken;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
@@ -89,7 +89,7 @@ class ForgotPassword extends AbstractApi {
 
         $input    = $this->getParameter("input", null);
         $response = new DefaultResponse();
-        $response->setCode(HTTP::OK);
+        $response->setCode(Code::OK);
         $responseHeader = $this->getL10N()->translate("Password reset");
 
         if (null === $input || "" === $input) {

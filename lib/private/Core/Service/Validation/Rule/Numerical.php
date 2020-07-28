@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,10 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO;
+namespace Keestash\Core\Service\Validation\Rule;
 
-interface IComparator {
+use Laminas\Validator\AbstractValidator;
 
-    public function equals($object): bool;
+class Numerical extends AbstractValidator {
+
+    private const NUMERIC = "numeric";
+
+    protected array $messageTemplates = [
+        Numerical::NUMERIC => "%numeric% is not numeric"
+    ];
+
+    public function isValid($value) {
+        $this->setValue($value);
+
+        $isNumeric = is_numeric($value);
+        if (false === $isNumeric) {
+            $this->error(Numerical::NUMERIC);
+        }
+        return $isNumeric;
+
+    }
 
 }
