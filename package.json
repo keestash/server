@@ -49,6 +49,7 @@
     "serialize-javascript": ">=2.1.1",
     "simple-dijs": "^2.0.2",
     "twig": "^1.14.0",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "elliptic": "^6.5.3"
   }
 }
