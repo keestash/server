@@ -50,6 +50,8 @@
     "simple-dijs": "^2.0.2",
     "twig": "^1.14.0",
     "webpack-merge": "^4.2.2",
-    "elliptic": "^6.5.3"
+    "elliptic": "^6.5.3",
+    "lodash": ">=4.17.19",
+    "dot-prop": ">=5.1.1"
   }
 }
