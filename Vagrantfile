@@ -11,6 +11,7 @@ Vagrant.configure("2") do |config|
           v.cpus = 2
       end
   config.vm.synced_folder "./", "/var/www/html", owner: "www-data", group: "www-data"
+  config.ssh.insert_key = false
 
   config.vm.provision :shell, path: "config/vagrant/bootstrap.sh"
 end
