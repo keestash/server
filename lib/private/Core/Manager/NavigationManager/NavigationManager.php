@@ -110,7 +110,7 @@ class NavigationManager implements INavigationManager {
 
     public function getByName(string $name): ?Navigation {
         if (false === $this->navigationMap->containsKey($name)) return null;
-        /** @var Navigation $navigation */
+        /** @var Navigation|null $navigation */
         $navigation = $this->navigationMap->get($name);
 
         if ($navigation instanceof Navigation) return $navigation;

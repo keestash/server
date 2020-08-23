@@ -36,19 +36,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class Compiler extends KeestashCommand {
 
-    protected static $defaultName = "general-api:compile-scss";
-
-    /** @var StylesheetCompiler */
-    private $stylesheetCompiler;
-
-    /** @var string */
-    private $scssRoot;
+    private StylesheetCompiler $stylesheetCompiler;
+    private string             $scssRoot;
 
     public function __construct(
         StylesheetCompiler $compiler
         , string $scssRoot
     ) {
-        parent::__construct(Compiler::$defaultName);
+        parent::__construct("general-api:compile-scss");
 
         $this->stylesheetCompiler = $compiler;
         $this->scssRoot           = $scssRoot;

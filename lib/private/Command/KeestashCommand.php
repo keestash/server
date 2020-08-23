@@ -23,6 +23,7 @@ namespace Keestash\Command;
 
 use DateTime;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,15 +34,15 @@ abstract class KeestashCommand extends Command {
     public const RETURN_CODE_RAN_SUCCESSFUL     = 0;
 
     protected function addRequiredArgument(string $name, string $description): void {
-        $this->_addArgument($name, true, $description);
+        $this->_addArgument($name, InputArgument::REQUIRED, $description);
     }
 
-    private function _addArgument(string $name, bool $required, string $description): void {
+    private function _addArgument(string $name, ?int $required, string $description): void {
         $this->addArgument($name, $required, $description);
     }
 
     protected function addOptionalArgument(string $name, string $description): void {
-        $this->_addArgument($name, false, $description);
+        $this->_addArgument($name, InputArgument::OPTIONAL, $description);
     }
 
     protected function writeError(string $message, OutputInterface $output): void {

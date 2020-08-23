@@ -36,10 +36,8 @@ use PDOStatement;
  */
 class AbstractRepository implements IRepository {
 
-    /** @var MySQLBackend */
-    private $backend = null;
-    /** @var PDO $connection */
-    private $connection = null;
+    private IBackend      $backend;
+    private ?PDO          $connection;
 
     public function __construct(IBackend $backend) {
         $this->backend = $backend;

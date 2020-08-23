@@ -31,19 +31,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Uninstall extends KeestashCommand {
 
-    protected static $defaultName = "apps:uninstall";
-
-    /** @var InstanceRepository */
-    private $instanceRepository;
-
-    /** @var LockHandler */
-    private $lockHandler;
-
-    /** @var Migrator */
-    private $migrator;
-
-    /** @var UserService */
-    private $userService;
+    private InstanceRepository $instanceRepository;
+    private LockHandler        $lockHandler;
+    private Migrator           $migrator;
+    private UserService        $userService;
 
     public function __construct(
         InstanceRepository $instanceRepository
@@ -51,7 +42,7 @@ class Uninstall extends KeestashCommand {
         , Migrator $migrator
         , UserService $userService
     ) {
-        parent::__construct(Uninstall::$defaultName);
+        parent::__construct("apps:uninstall");
         $this->instanceRepository = $instanceRepository;
         $this->lockHandler        = $lockHandler;
         $this->migrator           = $migrator;

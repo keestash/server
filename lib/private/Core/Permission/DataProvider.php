@@ -57,10 +57,11 @@ class DataProvider implements IDataProvider {
      * returns the permission object that belongs to $id
      *
      * @param int $id
+     *
      * @return IPermission|null
      */
     public function getPermission(int $id): ?IPermission {
-        $this->permissionManager->getPermissionById($id);
+        return $this->permissionManager->getPermissionById($id);
     }
 
     /**

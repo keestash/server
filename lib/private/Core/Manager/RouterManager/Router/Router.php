@@ -99,45 +99,6 @@ abstract class Router implements IRouter {
         return $this->routes->get($name);
     }
 
-    public function getParameter(string $name): ?string {
-        $allParameters = $this->getAllParameters();
-        return $allParameters[$name] ?? null;
-    }
-
-    protected function getAllParameters(): array {
-        $globals = $this->getParametersFromGlobals();
-        $route   = $this->getRouteParameters();
-
-        return array_merge(
-            $globals
-            , $route
-        );
-
-    }
-
-    protected function getControllerName(): string {
-        return $this->getParameter(Router::FIELD_NAME_CONTROLLER);
-    }
-
-    protected function getParametersFromGlobals(): array {
-        return array_merge(
-            $_GET ?? []
-            , $_POST ?? []
-            , $_FILES ?? []
-            , $_SERVER ?? []
-            , $_SESSION ?? []
-            , $_COOKIE ?? []
-        );
-    }
-
-    protected function getRouteParameters(): array {
-        $context = new RequestContext();
-        $request = Request::createFromGlobals();
-        $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes, $context);
-        return $matcher->match($context->getPathInfo());
-    }
-
     public function getRoutes(): ?HashTable {
         if (null === $this->routes) return null;
         $table = new HashTable();
@@ -146,7 +107,6 @@ abstract class Router implements IRouter {
         }
         return $table;
     }
-
 
     public function isPublicRoute(): bool {
         return $this->getPublicRoutes()->containsKey(
@@ -176,6 +136,45 @@ abstract class Router implements IRouter {
 
     abstract public function route(?IToken $token): void;
 
+    protected function getControllerName(): string {
+        return $this->getParameter(Router::FIELD_NAME_CONTROLLER);
+    }
+
+    public function getParameter(string $name): ?string {
+        $allParameters = $this->getAllParameters();
+        return $allParameters[$name] ?? null;
+    }
+
+    protected function getAllParameters(): array {
+        $globals = $this->getParametersFromGlobals();
+        $route   = $this->getRouteParameters();
+
+        return array_merge(
+            $globals
+            , $route
+        );
+
+    }
+
+    protected function getParametersFromGlobals(): array {
+        return array_merge(
+            $_GET ?? []
+            , $_POST ?? []
+            , $_FILES ?? []
+            , $_SERVER ?? []
+            , $_SESSION ?? []
+            , $_COOKIE ?? []
+        );
+    }
+
+    protected function getRouteParameters(): array {
+        $context = new RequestContext();
+        $request = Request::createFromGlobals();
+        $context->fromRequest($request);
+        $matcher = new UrlMatcher($this->routes, $context);
+        return $matcher->match($context->getPathInfo());
+    }
+
     protected function logRequest(IAPIRequest $request): bool {
         $logRequests = Keestash::getServer()->getConfig()->get("log_requests");
         if (false === $logRequests) return false;
@@ -193,7 +192,10 @@ abstract class Router implements IRouter {
         return $this->reflectionService;
     }
 
-    protected function hasPermission(?IPermission $permission) {
+    protected function hasPermission(?IPermission $permission): bool {
+        // for the case that the instance is not installed,
+        // we get an exception here. Need to fix this
+        // TODO FIXME
         return true;
         $permissionHandler = Keestash::getServer()->getPermissionHandler();
         return $permissionHandler->hasPermission($permission);

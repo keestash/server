@@ -21,69 +21,18 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Job;
 
+use doganoo\Backgrounder\BackgroundJob\Job;
+use doganoo\Backgrounder\BackgroundJob\JobList;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
-use doganoo\Backgrounder\BackgroundJob\Job;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\BackgroundJob\IJob;
 use KSP\Core\Repository\Job\IJobRepository;
 use PDO;
-use doganoo\Backgrounder\BackgroundJob\JobList;
 
 class JobRepository extends AbstractRepository implements IJobRepository {
 
-    /** @var JobList */
-    private $jobList = null;
-
-    public function getJobList(): JobList {
-
-        if (null !== $this->jobList) return $this->jobList;
-
-        $list      = new JobList();
-        $sql       = "SELECT
-                    b.`id`
-                    , b.`name`
-                    , b.`interval`
-                    , b.`type`
-                    , b.`last_run`
-                    , b.`info`
-                    , b.`create_ts`
-                FROM background_job b;";
-        $statement = $this->prepareStatement($sql);
-        if (null === $statement) return $list;
-        $statement->execute();
-        $list = new JobList();
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-
-            $id       = (int) $row[0];
-            $name     = $row[1];
-            $interval = (int) $row[2];
-            $type     = $row[3];
-            $lastRun  = $row[4];
-            $info     = $row[5];
-            $createTs = $row[6];
-
-            $info = null === $info
-                ? null
-                : json_decode($info, true);
-
-            $job = new Job();
-            $job->setId($id);
-            $job->setName($name);
-            $job->setInterval($interval);
-            $job->setType($type);
-            $job->setLastRun(
-                DateTimeUtil::fromMysqlDateTime($lastRun)
-            );
-            $job->setInfo($info);
-            $job->setCreateTs(
-                DateTimeUtil::fromMysqlDateTime($createTs)
-            );
-            $list->add($job);
-        }
-        $this->jobList = $list;
-        return $list;
-    }
+    private ?JobList $jobList = null;
 
     public function updateJobs(JobList $jobList): bool {
         $updated = false;
@@ -157,6 +106,13 @@ class JobRepository extends AbstractRepository implements IJobRepository {
         return $inserted;
     }
 
+    public function replaceJob(Job $job): bool {
+        if (true === $this->hasJob($job)) {
+            return $this->updateJob($job);
+        }
+        return $this->insert($job);
+    }
+
     private function hasJob(Job $job): bool {
 
         /** @var IJob $listJob */
@@ -168,11 +124,54 @@ class JobRepository extends AbstractRepository implements IJobRepository {
 
     }
 
-    public function replaceJob(Job $job): bool {
-        if (true === $this->hasJob($job)) {
-            return $this->updateJob($job);
+    public function getJobList(): JobList {
+
+        if (null !== $this->jobList) return $this->jobList;
+
+        $list      = new JobList();
+        $sql       = "SELECT
+                    b.`id`
+                    , b.`name`
+                    , b.`interval`
+                    , b.`type`
+                    , b.`last_run`
+                    , b.`info`
+                    , b.`create_ts`
+                FROM background_job b;";
+        $statement = $this->prepareStatement($sql);
+        if (null === $statement) return $list;
+        $statement->execute();
+        $list = new JobList();
+        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+
+            $id       = (int) $row[0];
+            $name     = $row[1];
+            $interval = (int) $row[2];
+            $type     = $row[3];
+            $lastRun  = $row[4];
+            $info     = $row[5];
+            $createTs = $row[6];
+
+            $info = null === $info
+                ? null
+                : json_decode($info, true);
+
+            $job = new Job();
+            $job->setId($id);
+            $job->setName($name);
+            $job->setInterval($interval);
+            $job->setType($type);
+            $job->setLastRun(
+                DateTimeUtil::fromMysqlDateTime($lastRun)
+            );
+            $job->setInfo($info);
+            $job->setCreateTs(
+                DateTimeUtil::fromMysqlDateTime($createTs)
+            );
+            $list->add($job);
         }
-        return $this->insert($job);
+        $this->jobList = $list;
+        return $list;
     }
 
     private function insert(Job $job): bool {
