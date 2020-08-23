@@ -26,15 +26,17 @@
     "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "babel-loader": "^8.0.0",
-    "npm-watch": "^0.6.0",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10",
     "kind-of": ">=6.0.3",
-    "minimist": "^1.2.5"
+    "minimist": "^1.2.5",
+    "npm-watch": "^0.7.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5",
+    "dot-prop": ">=5.1.1",
+    "elliptic": "^6.5.3",
     "form-data": "^2.5.1",
     "formvalidation": "^0.6.2-dev",
     "glob": "latest",
@@ -42,16 +44,14 @@
     "jquery": "^3.5.0",
     "jquery-ui-dist": "^1.12.1",
     "localforage": "^1.7.3",
+    "lodash": ">=4.17.19",
     "mem": "^6.0.1",
     "moment": "^2.27.0",
-    "npm": "^6.14.6",
+    "npm": "^6.14.8",
     "popper.js": "^1.16.1",
     "serialize-javascript": ">=3.1.0",
     "simple-dijs": "^2.0.2",
     "twig": "^1.14.0",
-    "webpack-merge": "^4.2.2",
-    "elliptic": "^6.5.3",
-    "lodash": ">=4.17.19",
-    "dot-prop": ">=5.1.1"
+    "webpack-merge": "^4.2.2"
   }
 }

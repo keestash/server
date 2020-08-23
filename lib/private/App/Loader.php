@@ -331,9 +331,9 @@ class Loader implements ILoader {
     }
 
     public function getDefaultApp(): ?IApp {
-        $currentAppKey = $this->lruAppCache->last();
-        /** @var IApp $currentApp */
-        return $this->lruAppCache->get($currentAppKey);
+        return $this->lruAppCache->get(
+            $this->lruAppCache->last()
+        );
     }
 
     public function hasApp(string $name): bool {

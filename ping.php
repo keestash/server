@@ -19,8 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-include 'vendor/autoload.php';
-include 'lib/Keestash.php';
+include __DIR__ . '/vendor/autoload.php';
+include __DIR__ . '/lib/Keestash.php';
 // we want to keep the global namespace clean.
 // Therefore, we call our framework within an
 // anonymous function.

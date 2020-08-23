@@ -39,7 +39,7 @@ class RouterManager implements IRouterManager {
 
     public function get(string $name): ?IRouter {
         if (false === $this->routers->containsKey($name)) return null;
-        /** @var IRouter $router */
+        /** @var IRouter|null $router */
         $router = $this->routers->get($name);
 
         if ($router instanceof IRouter) return $router;

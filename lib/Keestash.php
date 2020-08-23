@@ -353,7 +353,7 @@ class Keestash {
             });
 
         set_exception_handler(
-            function (Throwable $exception) {
+            function (Throwable $exception): void {
 
                 FileLogger::error(
                     json_encode(

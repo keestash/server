@@ -818,9 +818,6 @@ class Server {
     public function getRouter(): Router {
 
         switch (Keestash::getMode()) {
-            case Keestash::MODE_WEB:
-                return $this->getHTTPRouter();
-                break;
             case Keestash::MODE_API:
                 return $this->getApiRouter();
             default:

@@ -57,7 +57,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     public function isLocked(IUser $user): bool {
         $lockedUsers = $this->getLockedUsers();
 
-        /** @var IUserState $userState */
         foreach ($lockedUsers->keySet() as $key) {
             $userState = $lockedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) return true;
@@ -193,7 +192,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     public function isDeleted(IUser $user): bool {
         $deletedUsers = $this->getDeletedUsers();
 
-        /** @var IUserState $userState */
         foreach ($deletedUsers->keySet() as $key) {
             $userState = $deletedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) return true;
@@ -235,7 +233,6 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     public function hasPasswordResetRequested(IUser $user): bool {
         $lockedUsers = $this->getUsersWithPasswordResetRequest();
 
-        /** @var IUserState $userState */
         foreach ($lockedUsers->keySet() as $key) {
             $userState = $lockedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) {

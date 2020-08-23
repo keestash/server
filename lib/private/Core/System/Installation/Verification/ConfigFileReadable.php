@@ -101,6 +101,7 @@ class ConfigFileReadable extends AbstractVerification {
             $configMatches = false;
         }
 
+        $CONFIG = [];
         include $config->getPath();
 
         if (false === is_array($CONFIG)) {

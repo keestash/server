@@ -214,12 +214,9 @@ class UserService {
     }
 
     /**
-     * @param IUser $user
+     * @param IUser|User $user
      *
      * @return bool
-     * @throws KeyNotCreatedException
-     * @throws UserNotCreatedException
-     * @throws UserNotLockedException
      */
     public function createSystemUser(IUser $user): bool {
         $user->setLocked(true);

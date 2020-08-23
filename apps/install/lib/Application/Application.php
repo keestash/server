@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Install\Application;
 
 use Keestash;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\User\UserService;

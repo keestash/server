@@ -27,14 +27,10 @@ use KSP\Core\View\ActionBar\IActionBarElement;
 
 abstract class ActionBar implements IActionBar {
 
-    /** @var string */
-    private $id;
-    /** @var string */
-    private $description;
-    /** @var ArrayList */
-    private $elements;
-    /** @var $type */
-    private $type;
+    private string    $id;
+    private string    $description;
+    private ArrayList $elements;
+    private string    $type;
 
     public function __construct() {
         $this->elements = new ArrayList();

@@ -63,7 +63,7 @@ class KeyService {
         $secret = $this->encryptionService->encrypt($credential, $secret);
         // Step 3: we add the data to the database
 
-        if (false === is_string($secret)) return null;
+        if ("" === $secret) return null;
 
         $key = new Key();
         $key->setSecret($secret);
