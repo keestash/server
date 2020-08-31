@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {Base, CONFIG_DATA, READABLE_DIRS, WRITABLE_DIRS} from "./Base";
-import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
 import modal from "../../../../../lib/js/src/UI/modal";
+import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/Backend/Request";
 
 export class DirsWritable extends Base {
 

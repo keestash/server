@@ -1,4 +1,4 @@
-import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
+import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/Backend/Request";
 
 export class Page {
 

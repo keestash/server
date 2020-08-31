@@ -1,5 +1,5 @@
 import $ from "jquery";
-import {RESPONSE_CODE_OK} from "../../../../../../../lib/js/src/UI/ModalHandler";
+import {RESPONSE_CODE_OK} from "../../../../../../../lib/js/src/Backend/Request";
 
 export const EVENT_NAME_REGISTER_USER_NAME = "name.user.register.name.event";
 

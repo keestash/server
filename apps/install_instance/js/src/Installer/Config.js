@@ -18,7 +18,7 @@
  */
 import {Base, CONFIG_DATA} from "./Base";
 import {Validator} from "../Validator";
-import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
+import {RESPONSE_CODE_OK} from "../../../../../lib/js/src/Backend/Request";
 
 export class Config extends Base {
 
