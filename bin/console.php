@@ -31,6 +31,7 @@ use Symfony\Component\Console\Application;
 
     require_once __DIR__ . '/../lib/versioncheck.php';
     require_once __DIR__ . '/../lib/filecheck.php';
+    require_once __DIR__ . '/../lib/extensioncheck.php';
     require_once __DIR__ . '/../config/config.php';
     require_once __DIR__ . '/../lib/Keestash.php';
     Keestash::init();
