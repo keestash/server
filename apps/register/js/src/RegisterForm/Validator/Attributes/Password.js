@@ -1,5 +1,5 @@
 import $ from "jquery";
-import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../../lib/js/src/UI/ModalHandler";
+import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../../lib/js/src/Backend/Request";
 
 export const EVENT_NAME_REGISTER_PASSWORD = "password.register.name.event";
 const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;

@@ -4,13 +4,13 @@ import {LastName} from "./Validator/Attributes/LastName";
 import {UserName} from "./Validator/Attributes/UserName";
 import {Email} from "./Validator/Attributes/Email";
 import $ from "jquery";
-import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../lib/js/src/UI/ModalHandler";
 import modal from "../../../../../lib/js/src/UI/modal";
 import {Phone} from "./Validator/Attributes/Phone";
 import {Website} from "./Validator/Attributes/Website";
 import {Password} from "./Validator/Attributes/Password";
 import {PasswordRepeat} from "./Validator/Attributes/PasswordRepeat";
 import {TermsAndConditions} from "./Validator/Attributes/TermsAndConditions";
+import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../lib/js/src/Backend/Request";
 
 export class Register {
 
