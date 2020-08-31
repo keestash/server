@@ -25,6 +25,7 @@ declare(strict_types=1);
 
     require_once __DIR__ . '/lib/versioncheck.php';
     require_once __DIR__ . '/lib/filecheck.php';
+    require_once __DIR__ . '/lib/extensioncheck.php';
     require_once __DIR__ . '/config/config.php';
     require_once __DIR__ . '/lib/Keestash.php';
     Keestash::requestApi();
