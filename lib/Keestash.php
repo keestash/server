@@ -331,6 +331,15 @@ class Keestash {
     }
 
     private static function setExceptionHandler(): void {
+        /** @var ConfigService $configService */
+        $configService = Keestash::getServer()->query(ConfigService::class);
+        $showErrors = $configService->getValue("show_errors", false);
+        $debug = $configService->getValue("debug", false);
+
+        if (true === $showErrors && true === $debug) {
+            return;
+        }
+
         set_error_handler(
             function (int $id
                 , string $message

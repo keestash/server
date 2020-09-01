@@ -18,6 +18,7 @@
  */
 const glob = require("glob");
 const webpack = require("webpack");
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
 
 const baseModule = {
@@ -29,21 +30,34 @@ const baseModule = {
         filename: 'base.bundle.js'
     },
     module: {
-        rules: [{
-            exclude: /node_modules/,
-            loader: 'babel-loader',
-        }]
+        rules: [
+            {
+                test: /\.vue$/,
+                loader: 'vue-loader'
+            },
+            {
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader'
+            }
+        ]
     },
     plugins: [
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
-        })
+        }),
+        new VueLoaderPlugin()
     ],
     resolve: {
         alias: {
-            handlebars: 'handlebars/dist/handlebars.min.js'
-        }
+            handlebars: 'handlebars/dist/handlebars.min.js',
+            'vue$': 'vue/dist/vue.esm.js'
+        },
+        extensions: ['.js', '.vue'],
     },
     node: {
         fs: 'empty'
