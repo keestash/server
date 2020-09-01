@@ -34,6 +34,10 @@ class NavigationManager implements INavigationManager {
 
     private NavigationList $navigationList;
 
+    public function __construct() {
+        $this->navigationList = new NavigationList();
+    }
+
     public function setList(NavigationList $navigationList): void {
         $this->navigationList = $navigationList;
     }
