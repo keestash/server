@@ -21,7 +21,10 @@ const webpack = require("webpack");
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
 
+const env = process.env.NODE_ENV;
+
 const baseModule = {
+    mode: env,
     entry: {
         base: ['babel-polyfill', './lib/js/src/base.js']
     },
@@ -42,6 +45,16 @@ const baseModule = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader'
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                    },
+                ],
             }
         ]
     },
