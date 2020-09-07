@@ -52,7 +52,7 @@ class Application extends Keestash\App\Application {
         $this->registerApiRoute(
             Application::PASSWORD_REQUIREMENTS
             , MinimumCredential::class
-            , [IRouterManager::POST]
+            , [IRouterManager::GET]
         );
 
         $this->registerApiRoute(

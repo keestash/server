@@ -23,27 +23,38 @@
   },
   "homepage": "https://keestash.com",
   "devDependencies": {
-    "@babel/core": "^7.11.5",
+    "@babel/core": "^7.11.6",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.11.5",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
     "css-loader": "^4.2.2",
+    "eslint": "^6.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-vue": "^6.2.2",
     "html-webpack-plugin": "^4.4.1",
     "kind-of": ">=6.0.3",
     "minimist": "^1.2.5",
     "node-sass": "^4.14.1",
     "npm-watch": "^0.7.0",
-    "sass-loader": "^10.0.1",
+    "sass-loader": "^10.0.2",
     "vue-loader": "^15.9.3",
+    "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "axios": "^0.20.0",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5.2",
     "bootstrap-select": "^1.13.18",
-    "dot-prop": ">=5.1.1",
+    "bootstrap-vue": "^2.16.0",
+    "core-js": "^3.6.5",
+    "dot-prop": "^5.3.0",
     "elliptic": "^6.5.3",
     "form-data": "^2.5.1",
     "formvalidation": "^0.6.2-dev",
@@ -57,13 +68,26 @@
     "moment": "^2.27.0",
     "npm": "^6.14.8",
     "popper.js": "^1.16.1",
+    "portal-vue": "^2.1.7",
     "resolve": "^1.14.0",
-    "semantic-ui-search": "^2.3",
     "serialize-javascript": "^4.0.0",
     "simple-dijs": "^2.0.2",
     "twig": "^1.15.2",
     "vue": "^2.6.12",
-    "vue-template-compiler": "^2.6.12",
     "webpack-merge": "^4.2.2"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
   }
 }

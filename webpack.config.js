@@ -18,7 +18,6 @@
  */
 const glob = require("glob");
 const webpack = require("webpack");
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
 
 const env = process.env.NODE_ENV;
@@ -35,26 +34,12 @@ const baseModule = {
     module: {
         rules: [
             {
-                test: /\.vue$/,
-                loader: 'vue-loader'
-            },
-            {
                 exclude: /node_modules/,
                 loader: 'babel-loader',
             },
             {
                 test: /\.js$/,
                 loader: 'babel-loader'
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
             }
         ]
     },
@@ -62,15 +47,12 @@ const baseModule = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
-        }),
-        new VueLoaderPlugin()
+        })
     ],
     resolve: {
         alias: {
-            handlebars: 'handlebars/dist/handlebars.min.js',
-            'vue$': 'vue/dist/vue.esm.js'
+            handlebars: 'handlebars/dist/handlebars.min.js'
         },
-        extensions: ['.js', '.vue'],
     },
     node: {
         fs: 'empty'
@@ -79,16 +61,17 @@ const baseModule = {
 
 const webpackConfig = [].concat(
     baseModule
-    , toConfig(appModules)
+    , toConfig(appModules, baseModule)
 );
 
 module.exports = webpackConfig;
 
-function toConfig(modules) {
+function toConfig(modules, baseModule) {
     let conf = [];
     for (let i = 0; i < modules.length; i++) {
         const configPath = modules[i];
         const config = require(configPath);
+        config.mode = baseModule.mode;
         config.node = {fs: 'empty'};
         conf.push(config);
     }

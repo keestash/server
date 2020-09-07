@@ -41,35 +41,33 @@ use KSP\L10N\IL10N;
 
 class Add extends AbstractApi {
 
-    private $parameters = null;
-    /** @var IUser|null $user */
-    private $user              = null;
-    private $userService       = null;
-    private $userRepository    = null;
-    private $translator        = null;
-    private $permissionManager = null;
-    private $loader            = null;
+    private ?IUser                $user;
+    private UserService           $userService;
+    private IUserRepository       $userRepository;
+    private IL10N                 $translator;
+    private IPermissionRepository $permissionRepository;
+    private ILoader               $loader;
 
     public function __construct(
         IL10N $l10n
         , UserService $userService
         , IUserRepository $userRepository
-        , IPermissionRepository $permissionManager
+        , IPermissionRepository $permissionRepository
         , ILoader $loader
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
-        $this->userService       = $userService;
-        $this->userRepository    = $userRepository;
-        $this->translator        = $l10n;
-        $this->permissionManager = $permissionManager;
-        $this->loader            = $loader;
+        $this->userService          = $userService;
+        $this->userRepository       = $userRepository;
+        $this->translator           = $l10n;
+        $this->permissionRepository = $permissionRepository;
+        $this->loader               = $loader;
+        $this->user                 = null;
     }
 
 
     public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
         );
@@ -101,17 +99,19 @@ class Add extends AbstractApi {
         $responseCode = IResponse::RESPONSE_CODE_OK;
         $message      = $this->translator->translate("User successfully registered");
 
-        $firstName          = $this->parameters["first_name"] ?? null;
-        $lastName           = $this->parameters["last_name"] ?? null;
-        $userName           = $this->parameters["user_name"] ?? null;
-        $email              = $this->parameters["email"] ?? null;
-        $password           = $this->parameters["password"] ?? null;
-        $passwordRepeat     = $this->parameters["password_repeat"] ?? null;
-        $termsAndConditions = $this->parameters["terms_and_conditions"] ?? null;
+        $firstName          = $this->getParameter("first_name", null);
+        $lastName           = $this->getParameter("last_name", null);
+        $userName           = $this->getParameter("user_name", null);
+        $email              = $this->getParameter("email", null);
+        $password           = $this->getParameter("password", null);
+        $passwordRepeat     = $this->getParameter("password_repeat", null);
+        $termsAndConditions = $this->getParameter("terms_and_conditions", null);
+        $locked             = $this->getParameter("locked", "false");
 
         $users      = Keestash::getServer()->getUsersFromCache();
         $nameExists = false;
         $mailExists = false;
+
         /** @var IUser $iUser */
         foreach ($users as $iUser) {
             $mailExists = $email === $iUser->getEmail();
@@ -154,7 +154,7 @@ class Add extends AbstractApi {
             $message      = $this->translator->translate("You have not agreed to the terms and conditions");
         }
 
-        if (false === $this->userService->passwordHasMinimumRequirements($password)) {
+        if (false === $this->userService->passwordHasMinimumRequirements((string) $password)) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Your password does not fulfill the minimum requirements");
         }
@@ -169,12 +169,16 @@ class Add extends AbstractApi {
             $message      = $this->translator->translate("A user with this email address already exists");
         }
 
+        FileLogger::debug("mailexists: " . $mailExists);
+        FileLogger::debug("nameexists: " . $nameExists);
+        FileLogger::debug("response code: " . $responseCode);
+
         if ($responseCode === IResponse::RESPONSE_CODE_OK) {
 
             $user = null;
             try {
                 $user = $this->userService->createUser(
-                    $this->userService->toNewUser($this->parameters)
+                    $this->userService->toNewUser($this->getParameters())
                 );
             } catch (Exception $exception) {
                 FileLogger::error($exception->getTraceAsString());
@@ -183,11 +187,10 @@ class Add extends AbstractApi {
 
             $this->user = $user;
 
-            if (null !== $user) {
+            if (null === $user) {
                 $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
                 $message      = $this->translator->translate("Could not register user. Please try again");
             }
-
 
         }
 

@@ -32,10 +32,10 @@ use KSP\L10N\IL10N;
 
 class MinimumCredential extends AbstractApi {
 
-    private $parameters           = null;
-    private $userService          = null;
-    private $translator           = null;
-    private $permissionRepository = null;
+    private array                 $parameters;
+    private UserService           $userService;
+    private IL10N                 $translator;
+    private IPermissionRepository $permissionRepository;
 
     public function __construct(
         IL10N $l10n
@@ -73,7 +73,7 @@ class MinimumCredential extends AbstractApi {
         if (false == $hasRequirements) {
 
             $this->setResponseHelper(
-                $this->translator->translate("Your password does not fullfill the minimum requirements")
+                $this->translator->translate("Your password does not fulfill the minimum requirements")
                 , IResponse::RESPONSE_CODE_NOT_OK
             );
             return;
