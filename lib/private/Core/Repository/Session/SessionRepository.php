@@ -45,7 +45,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
         if (true === $this->hasErrors($statement->errorCode())) return null;
 
         $row  = $statement->fetch(PDO::FETCH_BOTH);
-        $data = $row["data"];
+        $data = $row["data"] ?? null;
         return (string) $data;
     }
 
