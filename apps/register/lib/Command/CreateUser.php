@@ -28,6 +28,7 @@ use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Exception\CreateUserException;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Validation\IValidationService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,27 +43,30 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CreateUser extends KeestashCommand {
 
-    private IUserRepository    $userRepository;
-    private UserService        $userService;
-    private IValidationService $validationService;
+    private IUserRepository      $userRepository;
+    private UserService          $userService;
+    private IValidationService   $validationService;
+    private IUserStateRepository $userStateRepository;
 
     public function __construct(
         IUserRepository $userRepository
         , UserService $userService
         , IValidationService $validationService
+        , IUserStateRepository $userStateRepository
     ) {
         parent::__construct(null);
 
-        $this->userRepository    = $userRepository;
-        $this->userService       = $userService;
-        $this->validationService = $validationService;
+        $this->userRepository      = $userRepository;
+        $this->userService         = $userService;
+        $this->validationService   = $validationService;
+        $this->userStateRepository = $userStateRepository;
     }
 
     protected function configure() {
         $this->setName("register:create-user")
             ->setDescription("creates a new user")
-            ->addOption('locked', 'l', InputOption::VALUE_OPTIONAL, "whether the user is locked", false)
-            ->addOption('deleted', 'd', InputOption::VALUE_OPTIONAL, "whether the user is deleted", false);
+            ->addOption('locked', 'l', InputOption::VALUE_NONE, "whether the user is locked")
+            ->addOption('deleted', 'd', InputOption::VALUE_NONE, "whether the user is deleted");
     }
 
     /**
@@ -119,6 +123,14 @@ class CreateUser extends KeestashCommand {
 
         try {
             $this->userService->createUser($user);
+
+            if (true === $locked) {
+                $this->userStateRepository->lock($user);
+            }
+
+            if (true === $deleted) {
+                $this->userStateRepository->delete($user);
+            }
         } catch (Exception $exception) {
             $this->writeError("Could not create user $name", $output);
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);

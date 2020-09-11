@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KST\App;
 
 use Keestash\App\App;
-use KST\KSTestCase;
+use KST\TestCase;
 
-class AppLoaderTest extends KSTestCase {
+class AppLoaderTest extends TestCase {
 
     public function testAppObject() {
         $app = new App();

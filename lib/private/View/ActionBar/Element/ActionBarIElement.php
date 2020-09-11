@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\View\ActionBar\Element;
 
-use KSP\Core\View\ActionBar\IActionBarElement;
+use KSP\Core\View\ActionBar\IElement;
 
-class ActionBarElement implements IActionBarElement {
+class ActionBarIElement implements IElement {
 
     private $description = null;
     private $href        = null;

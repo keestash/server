@@ -37,6 +37,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
 
 class Add extends AbstractApi {
@@ -47,6 +48,7 @@ class Add extends AbstractApi {
     private IL10N                 $translator;
     private IPermissionRepository $permissionRepository;
     private ILoader               $loader;
+    private IUserStateRepository  $userStateRepository;
 
     public function __construct(
         IL10N $l10n
@@ -54,6 +56,7 @@ class Add extends AbstractApi {
         , IUserRepository $userRepository
         , IPermissionRepository $permissionRepository
         , ILoader $loader
+        , IUserStateRepository $userStateRepository
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
@@ -63,6 +66,7 @@ class Add extends AbstractApi {
         $this->translator           = $l10n;
         $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
+        $this->userStateRepository  = $userStateRepository;
         $this->user                 = null;
     }
 
@@ -106,7 +110,7 @@ class Add extends AbstractApi {
         $password           = $this->getParameter("password", null);
         $passwordRepeat     = $this->getParameter("password_repeat", null);
         $termsAndConditions = $this->getParameter("terms_and_conditions", null);
-        $locked             = $this->getParameter("locked", "false");
+        $locked             = $this->getParameter("locked", "false") === "true";
 
         $users      = Keestash::getServer()->getUsersFromCache();
         $nameExists = false;
@@ -169,10 +173,6 @@ class Add extends AbstractApi {
             $message      = $this->translator->translate("A user with this email address already exists");
         }
 
-        FileLogger::debug("mailexists: " . $mailExists);
-        FileLogger::debug("nameexists: " . $nameExists);
-        FileLogger::debug("response code: " . $responseCode);
-
         if ($responseCode === IResponse::RESPONSE_CODE_OK) {
 
             $user = null;
@@ -180,6 +180,12 @@ class Add extends AbstractApi {
                 $user = $this->userService->createUser(
                     $this->userService->toNewUser($this->getParameters())
                 );
+
+                if (true === $locked) {
+                    $this->userStateRepository->lock(
+                        $user
+                    );
+                }
             } catch (Exception $exception) {
                 FileLogger::error($exception->getTraceAsString());
                 $user = null;

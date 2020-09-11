@@ -53,8 +53,9 @@ use KSP\App\IApp;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
+use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IActionBarBag;
+use KSP\Core\View\ActionBar\IBag;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
@@ -489,14 +490,17 @@ class Keestash {
         $navigation = Keestash::getServer()->getTemplateManager()->render(ITemplate::NAV_BAR);
         $appContent = Keestash::getServer()->getTemplateManager()->render(ITemplate::APP_CONTENT);
 
-        $routeName = self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteName();
+        $routeName = Keestash::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteName();
+        /** @var IRouteService $routeService */
+        $routeService = Keestash::getServer()->query(IRouteService::class);
+        $appId        = $routeService->routeToAppId($routeName);
 
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::HEAD
             , [
-            "stylesheets"  => Keestash::getServer()->getStylesheetManager()->getStylesheetPaths()
-            , "scripts"    => Keestash::getServer()->getTemplateManager()->getScripts()
-            , "appScripts" => Keestash::getServer()->getTemplateManager()->getAppScripts($routeName)
+            "appStyleSheet" => Keestash::getServer()->getStylesheetManager()->getPathForApp($appId)
+            , "scripts"     => Keestash::getServer()->getTemplateManager()->getScripts()
+            , "appScripts"  => Keestash::getServer()->getTemplateManager()->getAppScripts($appId)
         ]);
 
         /** @var AppNavigationManager $appNavigationManager */
@@ -506,7 +510,7 @@ class Keestash {
             && $appNavigationManager->getList()->length() > 0;
         $noContext            = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
         $actionBar            = Keestash::renderActionBars(
-            Keestash::getServer()->getActionBarManager()->get(IActionBarBag::ACTION_BAR_TOP)
+            Keestash::getServer()->getActionBarManager()->get(IBag::ACTION_BAR_TOP)
         );
         $head                 = Keestash::getServer()->getTemplateManager()->render(ITemplate::HEAD);
 
@@ -723,7 +727,7 @@ class Keestash {
         Keestash::getServer()->getNavigationManager()->addPart(NavigationManager::NAVIGATION_TYPE_TOP, $part);
     }
 
-    private static function renderActionBars(IActionBarBag $actionBarBag): string {
+    private static function renderActionBars(IBag $actionBarBag): string {
         $rendered = "";
 
         /** @var IActionBar $actionBar */

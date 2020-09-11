@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\View\ActionBar;
 
-interface IActionBarElement {
+interface IElement {
 
     public const TYPE_CIRCLE   = "far fa-circle";
     public const TYPE_FOLDER   = "far fa-folder";

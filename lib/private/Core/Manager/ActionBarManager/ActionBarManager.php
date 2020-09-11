@@ -24,7 +24,7 @@ namespace Keestash\Core\Manager\ActionBarManager;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Exception;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
-use KSP\Core\View\ActionBar\IActionBarBag;
+use KSP\Core\View\ActionBar\IBag;
 
 class ActionBarManager implements IActionBarManager {
 
@@ -35,11 +35,11 @@ class ActionBarManager implements IActionBarManager {
         $this->actionBarBag = new HashTable();
     }
 
-    public function add(string $name, IActionBarBag $bag): void {
+    public function add(string $name, IBag $bag): void {
         $this->actionBarBag->put($name, $bag);
     }
 
-    public function get(string $name): ?IActionBarBag {
+    public function get(string $name): ?IBag {
         $bag = $this->actionBarBag->get($name);
 
         if (null === $bag) throw new Exception();

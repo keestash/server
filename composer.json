@@ -43,7 +43,6 @@
     "symfony/http-foundation": "^4.2",
     "symfony/mime": "^4.4",
     "symfony/routing": "^4.4",
-    "symfony/webpack-encore-pack": "^1.0",
     "twig/twig": "^2.13",
     "twitter/bootstrap": "^4.5",
     "xobotyi/php-mime-type": "^1.2"
@@ -64,6 +63,9 @@
     }
   },
   "minimum-stability": "stable",
+  "scripts": {
+    "test": " cd vendor/bin && ./phpunit ../../test/"
+  },
   "support": {
     "email": "dogan@dogan-ucar.de",
     "issues": "https://github.com/keestash/server/issues",

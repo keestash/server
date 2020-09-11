@@ -95,6 +95,7 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use Keestash\Core\Service\HTTP\PersistenceService;
+use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Instance\MaintenanceService;
 use Keestash\Core\Service\Log\LoggerService;
@@ -140,9 +141,10 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Validation\IValidationService;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IActionBarBag;
+use KSP\Core\View\ActionBar\IBag;
 use KSP\L10N\IL10N;
 use libphonenumber\PhoneNumberUtil;
 use PDOException;
@@ -480,14 +482,14 @@ class Server {
         });
 
         $this->register(Server::DEFAULT_ACTION_BAR_BAGS, function () {
-            $actionBarBag = new View\ActionBar\Bag\ActionBarBag();
+            $actionBarBag = new View\ActionBar\Bag\ActionBarIBag();
             $actionBars   = $this->query(Server::DEFAULT_ACTION_BARS);
 
             foreach ($actionBars as $name => $actionBar) {
                 $actionBarBag->add($name, $actionBar);
             }
             return [
-                IActionBarBag::ACTION_BAR_TOP => $actionBarBag
+                IBag::ACTION_BAR_TOP => $actionBarBag
             ];
         });
         $this->register(Server::DEFAULT_ACTION_BARS, function () {
@@ -652,7 +654,9 @@ class Server {
         });
 
         $this->register(IStylesheetManager::class, function () {
-            return new StylesheetManager();
+            return new StylesheetManager(
+                Keestash::getServer()->query(IRouteService::class)
+            );
         });
 
         $this->register(ILocaleService::class, function () {
@@ -663,6 +667,10 @@ class Server {
             return new LanguageService(
                 Keestash::getServer()->query(ILocaleService::class)
             );
+        });
+
+        $this->register(IRouteService::class, function () {
+            return new RouteService();
         });
 
     }
@@ -825,9 +833,9 @@ class Server {
         }
     }
 
-    public function getHTTPRouter(): HTTPRouter {
-        /** @var HTTPRouter $router */
-        $router = $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
+    public function getApiRouter(): APIRouter {
+        /** @var APIRouter $router */
+        $router = $this->getRouterManager()->get(IRouterManager::API_ROUTER);
         return $router;
     }
 
@@ -835,9 +843,9 @@ class Server {
         return $this->query(IRouterManager::class);
     }
 
-    public function getApiRouter(): APIRouter {
-        /** @var APIRouter $router */
-        $router = $this->getRouterManager()->get(IRouterManager::API_ROUTER);
+    public function getHTTPRouter(): HTTPRouter {
+        /** @var HTTPRouter $router */
+        $router = $this->getRouterManager()->get(IRouterManager::HTTP_ROUTER);
         return $router;
     }
 

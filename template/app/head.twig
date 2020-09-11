@@ -9,9 +9,7 @@
     {% block stylesheets %}
         <link href="{{ stylecss }}" rel="stylesheet"/>
         <link href="{{ fontAwesomeCss }}" rel="stylesheet"/>
-        {% for key, value in stylesheets %}
-            <link href="{{ value }}" rel="stylesheet"/>
-        {% endfor %}
+        <link href="{{ appStyleSheet }}" rel="stylesheet"/>
     {% endblock %}
 
     {% block scripts %}
