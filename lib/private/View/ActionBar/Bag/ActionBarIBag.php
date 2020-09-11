@@ -25,7 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Exception;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IActionBarBag;
+use KSP\Core\View\ActionBar\IBag;
 
 /**
  * Class ActionBarBag
@@ -33,7 +33,7 @@ use KSP\Core\View\ActionBar\IActionBarBag;
  * @package Keestash\View\ActionBar
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class ActionBarBag implements IActionBarBag {
+class ActionBarIBag implements IBag {
 
     /** @var HashTable */
     private $actionBars;

@@ -31,15 +31,11 @@ use PDOException;
 
 class MySQLBackend implements ISQLBackend {
 
-    /** @var PDO|null $pdo */
-    private $pdo = null;
+    private ?PDO       $pdo       = null;
+    private Connection $doctrineConnection;
+    private string     $schemaName;
+    private bool       $connected = false;
 
-    private $schemaName = null;
-
-    private $connected = false;
-
-    /** @var Connection */
-    private $doctrineConnection;
 
     public function __construct(string $schemaName) {
         $this->schemaName = $schemaName;

@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KST\Api;
 
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KST\KSTestCase;
+use KST\TestCase;
 
-class ApiTest extends KSTestCase {
+class ApiTest extends TestCase {
 
     public function testApi() {
         $parameters      = [

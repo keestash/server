@@ -27,12 +27,14 @@ use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;
+use KSA\Register\Api\User\MailExists;
 use KSA\Register\Command\CreateUser;
 use KSA\Register\Controller\Controller;
 use KSA\Register\Hook\EmailAfterRegistration;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Validation\IValidationService;
 use KSP\L10N\IL10N;
 
@@ -45,6 +47,7 @@ class Application extends Keestash\App\Application {
     public const REGISTER                = "register";
     public const REGISTER_ADD            = "register/add/";
     public const USER_EXISTS             = "user/exists/{userName}/";
+    public const MAIL_EXISTS             = "user/mail/exists/{address}/";
 
     public function register(): void {
 
@@ -73,8 +76,10 @@ class Application extends Keestash\App\Application {
             , [IRouterManager::GET]
         );
 
-        $this->registerPublicApiRoute(
-            Application::USER_EXISTS
+        $this->registerApiRoute(
+            Application::MAIL_EXISTS
+            , MailExists::class
+            , [IRouterManager::GET]
         );
 
         $this->registerPublicRoute(Application::REGISTER);
@@ -99,6 +104,7 @@ class Application extends Keestash\App\Application {
                     Keestash::getServer()->query(IUserRepository::class)
                     , Keestash::getServer()->query(UserService::class)
                     , Keestash::getServer()->query(IValidationService::class)
+                    , Keestash::getServer()->query(IUserStateRepository::class)
                 );
             }
             );

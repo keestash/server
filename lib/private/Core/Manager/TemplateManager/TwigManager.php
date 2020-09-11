@@ -76,9 +76,6 @@ class TwigManager extends TemplateManager {
 
     public function getAppScripts(?string $route): array {
         if (null === $route) return $this->appScripts;
-        $route = str_replace("/", "", $route);
-        $route = str_replace("_", "", $route);
-        $route = strtolower($route);
         return $this->appScripts[$route] ?? [];
     }
 

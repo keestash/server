@@ -24,11 +24,11 @@ namespace KST;
 use Keestash;
 use Keestash\Server;
 use KST\Api\SimpleApiRunner;
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
-class KSTestCase extends TestCase {
+class TestCase extends FrameworkTestCase {
 
-    protected function setUp() {
+    protected function setUp(): void {
         parent::setUp();
 
         $keestash = __DIR__ . "/../lib/Keestash.php";

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\View\ActionBar;
+namespace Keestash\Exception;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-
-interface IActionBarBag {
-
-    public const ACTION_BAR_TOP = "top.bar.action";
-
-    public function get(string $name): ?IActionBar;
-
-    public function getAll(): ArrayList;
-
-    public function add(string $name, IActionBar $actionBar): void;
+final class ActionBarNotFoundException extends KeestashException {
 
 }

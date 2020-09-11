@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSP\Core\Manager\ActionBarManager;
 
 use KSP\Core\Manager\IManager;
-use KSP\Core\View\ActionBar\IActionBarBag;
+use KSP\Core\View\ActionBar\IBag;
 
 interface IActionBarManager extends IManager {
 
-    public function add(string $name, IActionBarBag $bag): void;
+    public function add(string $name, IBag $bag): void;
 
-    public function get(string $name): ?IActionBarBag;
+    public function get(string $name): ?IBag;
 
     public function isVisible(): bool;
 

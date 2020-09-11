@@ -23,11 +23,12 @@ namespace Keestash\View\ActionBar;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
+use Keestash\Exception\ActionBarNotFoundException;
 use Keestash\View\ActionBar\ActionBar\AddActionBar;
 use Keestash\View\ActionBar\ActionBar\SettingsActionBar;
-use Keestash\View\ActionBar\Element\ActionBarElement;
+use Keestash\View\ActionBar\Element\ActionBarIElement;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IActionBarElement;
+use KSP\Core\View\ActionBar\IElement;
 
 /**
  * Class ActionBarBuilder
@@ -37,15 +38,21 @@ use KSP\Core\View\ActionBar\IActionBarElement;
  */
 class ActionBarBuilder {
 
-    /** @var IActionBar $actionBar */
-    private $actionBar = null;
-    private $elements  = null;
+    private IActionBar $actionBar;
+    private ArrayList  $elements;
 
+    /**
+     * ActionBarBuilder constructor.
+     *
+     * @param $argument
+     *
+     * @throws Exception
+     */
     public function __construct($argument) {
 
+        $this->elements = new ArrayList();
         if (is_string($argument)) {
             $this->createActionBar($argument);
-            $this->elements = new ArrayList();
         } else {
             if ($argument instanceof IActionBar) {
                 $this->actionBar = $argument;
@@ -54,10 +61,13 @@ class ActionBarBuilder {
             }
         }
 
-        $this->elements = new ArrayList();
-
     }
 
+    /**
+     * @param string $type
+     *
+     * @throws ActionBarNotFoundException
+     */
     private function createActionBar(string $type): void {
         $actionBar = null;
 
@@ -68,6 +78,8 @@ class ActionBarBuilder {
             case IActionBar::TYPE_SETTINGS:
                 $actionBar = new SettingsActionBar();
                 break;
+            default:
+                throw new ActionBarNotFoundException();
         }
 
         $this->actionBar = $actionBar;
@@ -77,9 +89,9 @@ class ActionBarBuilder {
         string $name
         , ?string $id = null
         , ?string $href = null
-        , ?string $type = IActionBarElement::TYPE_CIRCLE
+        , ?string $type = IElement::TYPE_CIRCLE
     ): ActionBarBuilder {
-        $element = new ActionBarElement($name);
+        $element = new ActionBarIElement($name);
         $element->setId($id);
         $element->setHref($href);
         $element->setType($type);
@@ -98,7 +110,7 @@ class ActionBarBuilder {
     }
 
     public function build(): IActionBar {
-        /** @var IActionBarElement $element */
+        /** @var IElement $element */
         foreach ($this->elements as $element) {
             $this->actionBar->addElement($element);
         }

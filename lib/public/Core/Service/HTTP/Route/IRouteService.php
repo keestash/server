@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
  * Copyright (C) <2020> <Dogan Ucar>
  *
@@ -19,20 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\StylesheetManager;
+namespace KSP\Core\Service\HTTP\Route;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\App\IApp;
-use KSP\Core\Manager\IManager;
+interface IRouteService {
 
-interface IStylesheetManager extends IManager {
-
-    public function register(IApp $app): void;
-
-    public function getApps(): HashTable;
-
-    public function getPathForApp(string $id): ?string;
-
-    public function getPaths(): array;
+    public function routeToAppId(string $route): string;
 
 }

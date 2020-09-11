@@ -25,6 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use KSP\App\IApp;
 use KSP\Core\Manager\StylesheetManager\IStylesheetManager;
+use KSP\Core\Service\HTTP\Route\IRouteService;
 
 /**
  * Class StylesheetManager
@@ -34,28 +35,45 @@ use KSP\Core\Manager\StylesheetManager\IStylesheetManager;
  */
 class StylesheetManager implements IStylesheetManager {
 
-    /** @var HashTable */
-    private $apps;
+    private HashTable     $apps;
+    private ?array        $cache = null;
+    private IRouteService $routeService;
 
-    public function __construct() {
-        $this->apps = new HashTable();
+    public function __construct(IRouteService $routeService) {
+        $this->apps         = new HashTable();
+        $this->routeService = $routeService;
     }
 
     public function register(IApp $app): void {
         $this->apps->put($app->getName(), $app);
+        $this->cache = null;
     }
 
-    public function getStylesheetPaths(): array {
+    public function getPathForApp(string $id): ?string {
+        if (null === $this->cache) {
+            $this->cache = $this->getPaths();
+        }
+        return $this->cache[$id] ?? null;
+    }
+
+    public function getPaths(): array {
+
+        if (null !== $this->cache) {
+            return $this->cache;
+        }
 
         $apps = $this->getApps();
 
         $paths = [];
         foreach ($apps->keySet() as $appId) {
+
             /** @var IApp $app */
-            $app     = $apps->get($appId);
-            $paths[] = Keestash::getBaseURL(false) . "/apps/{$app->getId()}/scss/dist/style.css";
+            $app         = $apps->get($appId);
+            $key         = $this->routeService->routeToAppId($appId);
+            $paths[$key] = Keestash::getBaseURL(false) . "/apps/{$app->getId()}/scss/dist/style.css";
         }
 
+        $this->cache = $paths;
         return $paths;
     }
 

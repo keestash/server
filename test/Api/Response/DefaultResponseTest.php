@@ -24,9 +24,9 @@ namespace KST\Api\Response;
 use doganoo\PHPUtil\HTTP\Code;
 use Keestash\Api\Response\DefaultResponse;
 use KSP\Api\IResponse;
-use KST\KSTestCase;
+use KST\TestCase;
 
-class DefaultResponseTest extends KSTestCase {
+class DefaultResponseTest extends TestCase {
 
     public function testDefaults() {
 

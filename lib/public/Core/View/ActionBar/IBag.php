@@ -23,29 +23,14 @@ namespace KSP\Core\View\ActionBar;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 
-interface IActionBar {
+interface IBag {
 
-    public const TYPE_PLUS     = "fa-plus";
-    public const TYPE_SETTINGS = "icon settings";
-    public const TYPE_KEY      = "fas fa-key";
-    public const TYPE_FOLDER   = "far fa-folder";
+    public const ACTION_BAR_TOP = "top.bar.action";
 
-    public function setId(string $name): void;
+    public function get(string $name): ?IActionBar;
 
-    public function getId(): string;
+    public function getAll(): ArrayList;
 
-    public function setDescription(string $description): void;
-
-    public function getDescription(): string;
-
-    public function getType(): string;
-
-    public function setType(string $type): void;
-
-    public function getElements(): ArrayList;
-
-    public function addElement(IElement $element): void;
-
-    public function hasElements(): bool;
+    public function add(string $name, IActionBar $actionBar): void;
 
 }

@@ -23,7 +23,7 @@ namespace Keestash\View\ActionBar\ActionBar;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IActionBarElement;
+use KSP\Core\View\ActionBar\IElement;
 
 abstract class ActionBar implements IActionBar {
 
@@ -44,7 +44,7 @@ abstract class ActionBar implements IActionBar {
         $this->type = $type;
     }
 
-    public function addElement(IActionBarElement $element): void {
+    public function addElement(IElement $element): void {
         $this->elements->add($element);
     }
 
