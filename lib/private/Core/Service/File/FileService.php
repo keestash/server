@@ -31,31 +31,39 @@ use KSP\Core\DTO\User\IUser;
 
 class FileService {
 
-    private $rawFileService = null;
+    public const DEFAULT_IMAGE_FILE_ID = 1;
+
+    private RawFileService $rawFileService;
 
     public function __construct(RawFileService $rawFileService) {
         $this->rawFileService = $rawFileService;
     }
 
-    public function getProfileImageName(IUser $user): string {
-        return "profile_image_{$user->getId()}";
+    // TODO include default ?!
+    public function getProfileImagePath(?IUser $user): string {
+
+        if (null === $user) {
+            return $this->getDefaultImage()->getFullPath();
+        }
+
+        $imagePath = $this->getProfileImage($user);
+        $imagePath = realpath($imagePath);
+
+        if (false === $imagePath) {
+            return $this->getDefaultImage()->getFullPath();
+        }
+
+        return $imagePath;
     }
 
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getDefaultProfileImage(): string {
-        return $this->defaultProfileImage()->getFullPath();
-    }
-
-    public function defaultProfileImage(): IFile {
+    public function getDefaultImage(): IFile {
+        $name = 'profile-picture';
         $dir  = Keestash::getServer()->getAssetRoot() . "/img/";
         $dir  = str_replace("//", "/", $dir);
-        $path = "$dir/profile-picture.png";
+        $path = "$dir/$name.png";
 
         $file = new File();
-        $file->setId(0);
+        $file->setId(FileService::DEFAULT_IMAGE_FILE_ID);
         $file->setContent(
             file_get_contents($path)
         );
@@ -64,8 +72,11 @@ class FileService {
         $file->setExtension(IExtension::PNG);
         $file->setHash(md5_file($path));
         $file->setMimeType($this->rawFileService->getMimeType($path));
-        $file->setName("profile-picture");
+        $file->setName($name);
         $file->setSize(filesize($path));
+        $file->setOwner(
+            Keestash::getServer()->getSystemUser()
+        );
         return $file;
     }
 
@@ -75,20 +86,8 @@ class FileService {
         return str_replace("//", "/", $path);
     }
 
-    public function getProfileImagePath(?IUser $user): string {
-
-        if (null === $user) {
-            return $this->defaultProfileImage()->getFullPath();
-        }
-
-        $imagePath = $this->getProfileImage($user);
-        $imagePath = realpath($imagePath);
-
-        if (false === $imagePath) {
-            return $this->defaultProfileImage()->getFullPath();
-        }
-
-        return $imagePath;
+    public function getProfileImageName(IUser $user): string {
+        return "profile_image_{$user->getId()}";
     }
 
 }

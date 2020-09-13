@@ -95,7 +95,6 @@ export class Config extends Base {
                         , 'Ok'
                         , 'Close'
                         , 'Some Data are missing. Please edit'
-                        , 'new.event'
                     );
                     return;
                 }

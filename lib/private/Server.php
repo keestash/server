@@ -108,6 +108,7 @@ use Keestash\Core\Service\Validation\ValidationService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
+use Keestash\Exception\UserNotFoundException;
 use Keestash\L10N\GetText;
 use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
@@ -745,10 +746,6 @@ class Server {
         return $this->query(IJobRepository::class);
     }
 
-    public function getUsersFromCache(): ArrayList {
-        return $this->query(Server::USER_LIST);
-    }
-
     public function getImageRoot(): string {
         return $this->getDataRoot() . "image/";
     }
@@ -915,6 +912,27 @@ class Server {
 
     public function getStylesheetManager(): IStylesheetManager {
         return $this->query(IStylesheetManager::class);
+    }
+
+    /**
+     * @return IUser
+     * @throws UserNotFoundException
+     */
+    public function getSystemUser(): IUser {
+        $users = $this->getUsersFromCache();
+
+        /** @var IUser $user */
+        foreach ($users as $user) {
+            if ($user->getId() === IUser::SYSTEM_USER_ID) {
+                return $user;
+            }
+        }
+
+        throw new UserNotFoundException();
+    }
+
+    public function getUsersFromCache(): ArrayList {
+        return $this->query(Server::USER_LIST);
     }
 
     public function wipeCache(): void {

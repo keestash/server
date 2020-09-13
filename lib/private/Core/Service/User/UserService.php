@@ -220,7 +220,7 @@ class UserService {
      */
     public function createSystemUser(IUser $user): bool {
         $user->setLocked(true);
-        $file = $this->fileService->defaultProfileImage();
+        $file = $this->fileService->getDefaultImage();
         $file->setOwner($user);
         try {
             $this->createUser($user, $file);
