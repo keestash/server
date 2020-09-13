@@ -643,7 +643,7 @@ class Keestash {
         );
 
         if (null === $file) {
-            $file = $fileService->defaultProfileImage();
+            $file = $fileService->getDefaultImage();
         }
 
         $userImage = $rawFileService->stringToBase64($file->getFullPath());

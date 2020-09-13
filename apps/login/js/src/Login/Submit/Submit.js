@@ -110,7 +110,6 @@ export class Submit {
                                 , 'Ok'
                                 , 'Not Ok'
                                 , result_object['message']
-                                , 'event'
                             );
                             _this.appStorage.clearAPICredentials();
                             _this.buttonService.disable(
@@ -125,7 +124,6 @@ export class Submit {
                                 , 'Ok'
                                 , 'Not Ok'
                                 , "There was an error. Please try again or contact our support"
-                                , 'event'
                             );
                             _this.appStorage.clearAPICredentials();
                         }
@@ -140,7 +138,6 @@ export class Submit {
                             , 'Ok'
                             , 'Not Ok'
                             , "There was an error. Please try again or contact our support"
-                            , 'event'
                         );
                         _this.appStorage.clearAPICredentials();
                         _this.buttonService.disable(

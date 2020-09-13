@@ -70,7 +70,6 @@ export class ResetPassword {
                             , 'ok'
                             , 'close'
                             , result['message']
-                            , 'new event'
                         );
 
                         _this.disableForm(submitButton, spinner, false);
@@ -82,7 +81,6 @@ export class ResetPassword {
                             , 'ok'
                             , 'close'
                             , "There was an error. Please try again or contact our support"
-                            , 'new event'
                         );
 
                         _this.disableForm(submitButton, spinner, false);

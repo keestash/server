@@ -1,7 +1,9 @@
+<?php
+declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,26 +18,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import 'bootstrap/dist/js/bootstrap';
-import 'formvalidation/dist/js/formValidation'
-import {KeestashModal} from "./KeestashModal";
 
-export class Long extends KeestashModal {
+namespace Keestash\Exception;
 
-    constructor(
-        templateLoader
-        , templateParser
-    ) {
-        super(templateLoader, templateParser);
-    }
-
-    show(
-        header
-        , buttonText
-        , negativeButtonText
-        , description
-    ) {
-        return super.show('long', header, buttonText, negativeButtonText, description);
-    }
+final class UserNotFoundException extends KeestashException {
 
 }

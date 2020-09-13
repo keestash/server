@@ -117,6 +117,10 @@ class EndUpdate extends AbstractApi {
             $this->userService->getSystemUser()
         );
 
+        $this->fileRepository->add(
+            $this->fileService->getDefaultImage()
+        );
+
         parent::createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [

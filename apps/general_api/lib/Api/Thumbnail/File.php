@@ -65,7 +65,7 @@ class File extends AbstractApi {
 
         $file = $this->fileManager->read(
             $this->rawFileService->stringToUri(
-                $this->fileService->defaultProfileImage()->getFullPath()
+                $this->fileService->getDefaultImage()->getFullPath()
             )
         );
 
