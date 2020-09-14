@@ -26,7 +26,7 @@ use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
-use KSP\Core\Controller\FullscreenAppController;
+use KSP\Core\Controller\FullScreen\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
