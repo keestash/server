@@ -551,8 +551,9 @@ class Keestash {
         );
         $footer = Keestash::getServer()->getTemplateManager()->render(ITemplate::FOOTER);
 
-        Keestash::getServer()->getTemplateManager()->replace(ITemplate::BODY,
-            [
+        Keestash::getServer()->getTemplateManager()->replace(
+            ITemplate::BODY
+            , [
                 "navigation"  => $navigation
                 , "content"   => $content
                 , "noContext" => $noContext
@@ -565,8 +566,9 @@ class Keestash {
         $partTemplate = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::PART_TEMPLATE);
         $sideBar      = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::SIDE_BAR);
 
-        Keestash::getServer()->getTemplateManager()->replace(ITemplate::HTML,
-            [
+        Keestash::getServer()->getTemplateManager()->replace(
+            ITemplate::HTML
+            ,[
                 "head"              => $head
                 , "host"            => Keestash::getBaseURL()
                 , "apiHost"         => Keestash::getBaseAPIURL()

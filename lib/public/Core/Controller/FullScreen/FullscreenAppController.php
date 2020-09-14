@@ -19,8 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Controller;
+namespace KSP\Core\Controller\FullScreen;
 
+use KSP\Core\Controller\AppController;
+use KSP\Core\Controller\IAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\L10N\IL10N;
 

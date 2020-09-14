@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Maintenance\Controller;
 
-use KSP\Core\Controller\FullscreenAppController;
+use KSP\Core\Controller\FullScreen\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
