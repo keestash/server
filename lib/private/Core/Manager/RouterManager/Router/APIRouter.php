@@ -44,7 +44,6 @@ class APIRouter extends Router {
      */
     public function route(?IToken $token): void {
         try {
-            /** @var array $allParameters */
             $allParameters = $this->getAllParameters();
             /** @var AbstractApi $service */
             $service = $this->getReflectionService()->createObject(
@@ -60,6 +59,7 @@ class APIRouter extends Router {
             }
 
             $service->setParameters($allParameters);
+            $service->setFiles($this->getFiles());
             $service->onCreate($allParameters);
 
             $hasPermission = $this->hasPermission(

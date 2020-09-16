@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Request";
+import {STRING_LOADER, TEMPLATE_LOADER} from "../../../../../../lib/js/src/StartUp";
 
 export class Submit {
 
@@ -98,9 +99,10 @@ export class Submit {
                                 , false
                             );
 
-                            _this.templateLoader.load(true).finally(() => {
-                                _this.router.routeTo(routeTo);
-                            });
+                            _this.loadProperties()
+                                .then(() => {
+                                    _this.router.routeTo(routeTo);
+                                })
 
                             return;
                         } else if (RESPONSE_CODE_NOT_OK in object) {
@@ -149,6 +151,15 @@ export class Submit {
             });
 
 
+    }
+
+    async loadProperties() {
+        const diContainer = Keestash.Main.getContainer();
+        const templateLoader = diContainer.query(TEMPLATE_LOADER);
+        const stringLoader = diContainer.query(STRING_LOADER);
+
+        await templateLoader.load(true);
+        await stringLoader.load(true);
     }
 
 }

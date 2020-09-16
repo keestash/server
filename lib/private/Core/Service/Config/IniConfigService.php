@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,36 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 namespace Keestash\Core\Service\Config;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\Service\Config\IConfigService;
 
-class ConfigService implements IConfigService {
+class IniConfigService implements IConfigService {
 
-    private HashTable $config;
-
-    /**
-     * ConfigService constructor.
-     *
-     * @param HashTable $config
-     */
-    public function __construct(HashTable $config) {
-        $this->config = $config;
-    }
-
-    /**
-     * @param string     $key
-     * @param mixed|null $default
-     *
-     * @return mixed|null
-     */
     public function getValue(string $key, $default = null) {
-
-        if (true === $this->config->containsKey($key)) {
-            return $this->config->get($key);
-        }
-        return $default;
+        $ini = ini_get($key);
+        if ("" === $ini || null === $ini) return $default;
+        return $ini;
     }
 
 }

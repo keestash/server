@@ -28,8 +28,9 @@ use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\File\IFileService;
 
-class FileService {
+class FileService implements IFileService {
 
     public const DEFAULT_IMAGE_FILE_ID = 1;
 

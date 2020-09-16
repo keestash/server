@@ -27,119 +27,56 @@ use KSP\Core\DTO\User\IUser;
 
 class File implements IFile {
 
-    private $id            = null;
-    private $name          = null;
-    private $directory     = null;
-    private $temporaryPath = null;
-    private $mimeType      = null;
-    private $hash          = null;
-    private $extension     = null;
-    private $size          = null;
-    private $content       = null;
-    private $owner         = null;
-    private $createTs      = null;
-
-    public function setId(int $id): void {
-        $this->id = $id;
-    }
-
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function setName(string $name): void {
-        $this->name = $name;
-    }
-
-    public function getName(): string {
-        return $this->name;
-    }
-
-    public function setTemporaryPath(string $temporaryPath): void {
-        $this->temporaryPath = $temporaryPath;
-    }
-
-    public function getTemporaryPath(): ?string {
-        return $this->temporaryPath;
-    }
-
-    public function setDirectory(string $directory): void {
-        $this->directory = $directory;
-    }
-
-    public function getDirectory(): string {
-        return $this->directory;
-    }
+    private int              $id      = 0;
+    private string           $name;
+    private string           $directory;
+    private string           $temporaryPath;
+    private string           $mimeType;
+    private string           $hash;
+    private string           $extension;
+    private int              $size;
+    private ?string          $content = null;
+    private IUser            $owner;
+    private DateTime         $createTs;
 
     public function getFullPath(): string {
         $name      = $this->getName();
         $dir       = $this->getDirectory();
         $extension = $this->getExtension();
 
-        $path      = "$dir/$name.$extension";
-        $path      = str_replace("//", "/", $path);
+        $path = "$dir/$name.$extension";
+        $path = str_replace("//", "/", $path);
         return $path;
 
     }
 
-    public function setMimeType(string $mimeType): void {
-        $this->mimeType = $mimeType;
+    public function getName(): string {
+        return $this->name;
     }
 
-    public function getMimeType(): string {
-        return $this->mimeType;
+    public function setName(string $name): void {
+        $this->name = $name;
     }
 
-    public function setHash(string $hash): void {
-        $this->hash = $hash;
+    public function getDirectory(): string {
+        return $this->directory;
     }
 
-    public function getHash(): string {
-        return $this->hash;
-    }
-
-    public function setExtension(string $extension): void {
-        $this->extension = $extension;
+    public function setDirectory(string $directory): void {
+        $this->directory = $directory;
     }
 
     public function getExtension(): string {
         return $this->extension;
     }
 
-    public function setSize(int $size): void {
-        $this->size = $size;
-    }
-
-    public function getSize(): int {
-        return $this->size;
-    }
-
-    public function setOwner(IUser $owner): void {
-        $this->owner = $owner;
-    }
-
-    public function getOwner(): IUser {
-        return $this->owner;
-    }
-
-    public function setContent(?string $content): void {
-        $this->content = $content;
-    }
-
-    public function getContent(): ?string {
-        return $this->content;
-    }
-
-    public function setCreateTs(DateTime $createTs): void {
-        $this->createTs = $createTs;
-    }
-
-    public function getCreateTs(): DateTime {
-        return $this->createTs;
+    public function setExtension(string $extension): void {
+        $this->extension = $extension;
     }
 
     /**
      * Specify data which should be serialized to JSON
+     *
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
@@ -159,6 +96,70 @@ class File implements IFile {
             , "content"   => $this->getContent()
             , "create_ts" => $this->getCreateTs()
         ];
+    }
+
+    public function getId(): int {
+        return $this->id;
+    }
+
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
+    public function getTemporaryPath(): ?string {
+        return $this->temporaryPath;
+    }
+
+    public function setTemporaryPath(string $temporaryPath): void {
+        $this->temporaryPath = $temporaryPath;
+    }
+
+    public function getMimeType(): string {
+        return $this->mimeType;
+    }
+
+    public function setMimeType(string $mimeType): void {
+        $this->mimeType = $mimeType;
+    }
+
+    public function getHash(): string {
+        return $this->hash;
+    }
+
+    public function setHash(string $hash): void {
+        $this->hash = $hash;
+    }
+
+    public function getSize(): int {
+        return $this->size;
+    }
+
+    public function setSize(int $size): void {
+        $this->size = $size;
+    }
+
+    public function getOwner(): IUser {
+        return $this->owner;
+    }
+
+    public function setOwner(IUser $owner): void {
+        $this->owner = $owner;
+    }
+
+    public function getContent(): ?string {
+        return $this->content;
+    }
+
+    public function setContent(?string $content): void {
+        $this->content = $content;
+    }
+
+    public function getCreateTs(): DateTime {
+        return $this->createTs;
+    }
+
+    public function setCreateTs(DateTime $createTs): void {
+        $this->createTs = $createTs;
     }
 
 }
