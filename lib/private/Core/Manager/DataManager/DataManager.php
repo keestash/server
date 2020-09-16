@@ -31,13 +31,14 @@ use KSP\Core\Manager\DataManager\IDataManager;
 
 /**
  * Class DataManager
+ *
  * @package Keestash\Core\Manager\DataManager
  */
 class DataManager implements IDataManager {
 
-    private $appId   = null;
-    private $context = null;
-    private $path    = null;
+    private string         $appId;
+    private ?string        $context;
+    private string         $path;
 
     public function __construct(string $appId, ?string $context = null) {
         $this->appId   = $appId;
@@ -55,10 +56,6 @@ class DataManager implements IDataManager {
         $this->path = $path;
     }
 
-    public function getPath(): string {
-        return $this->path;
-    }
-
     private function createDir(string $path): bool {
         $realPath = realpath($path);
         $isDir    = false !== $realPath && true === is_dir($realPath);
@@ -74,27 +71,8 @@ class DataManager implements IDataManager {
         return true;
     }
 
-    public function store(IFile $file): bool {
-
-        $isFile = is_file($file->getFullPath());
-        if (true === $isFile) {
-            $this->remove($file);
-        }
-
-        $copied = copy(
-            $file->getTemporaryPath()
-            , $file->getFullPath()
-        );
-
-        return true === $copied;
-    }
-
-    public function get(IFile $file): IFile {
-        $file   = new File();
-        $isFile = is_file($file->getFullPath());
-        if (false === $isFile) return $file;
-        $file->setContent(file_get_contents($file->getFullPath()));
-        return $file;
+    public function getPath(): string {
+        return $this->path;
     }
 
     public function storeAll(FileList $fileList): bool {
@@ -109,15 +87,19 @@ class DataManager implements IDataManager {
 
     }
 
-    public function getAll(FileList $fileList): FileList {
+    public function store(IFile $file): bool {
 
-        /** @var IFile $file */
-        foreach ($fileList as $index => $file) {
-            $file = $this->get($file);
-            $fileList->addToIndex($index, $file);
+        $isFile = is_file($file->getFullPath());
+        if (true === $isFile) {
+            $this->remove($file);
         }
 
-        return $fileList;
+        $copied = copy(
+            $file->getTemporaryPath()
+            , $file->getFullPath()
+        );
+
+        return true === $copied;
     }
 
     public function remove(IFile $file): bool {
@@ -140,6 +122,25 @@ class DataManager implements IDataManager {
             FileLogger::debug("could not remove file, unlink returned false");
         }
         return $removed;
+    }
+
+    public function getAll(FileList $fileList): FileList {
+
+        /** @var IFile $file */
+        foreach ($fileList as $index => $file) {
+            $file = $this->get($file);
+            $fileList->addToIndex($index, $file);
+        }
+
+        return $fileList;
+    }
+
+    public function get(IFile $file): IFile {
+        $file   = new File();
+        $isFile = is_file($file->getFullPath());
+        if (false === $isFile) return $file;
+        $file->setContent(file_get_contents($file->getFullPath()));
+        return $file;
     }
 
     public function removeAll(FileList $fileList): bool {

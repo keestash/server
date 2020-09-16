@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// we want to keep the global namespace clean.
-// Therefore, we call our framework within an
-// anonymous function.
-(function () {
-    chdir(dirname(__DIR__));
+namespace KSP\Core\Service\File;
 
-    require_once __DIR__ . '/lib/versioncheck.php';
-    require_once __DIR__ . '/lib/filecheck.php';
-    require_once __DIR__ . '/lib/extensioncheck.php';
-    require_once __DIR__ . '/config/config.php';
-    require_once __DIR__ . '/lib/Keestash.php';
+interface IFileService {
 
-    Keestash::requestWeb();
-    return true;
-})();
+}

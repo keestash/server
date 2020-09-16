@@ -31,7 +31,7 @@ use KSP\L10N\IL10N;
 
 class GetAll extends AbstractApi {
 
-    private $frontendManager = null;
+    private FrontendManager $frontendManager;
 
     public function __construct(
         IL10N $l10n
@@ -65,6 +65,7 @@ class GetAll extends AbstractApi {
             $name         = str_replace(".twig", "", $name);
             $array[$name] =
                 ($table->get($key));
+//            '';
         }
         return $array;
     }

@@ -31,7 +31,7 @@ interface IResponse {
     public const HEADER_CONTENT_TYPE = "Content-Type";
 
     public function getCode(): int;
-    
+
     public function getMessage(): ?string;
 
     public function getHeaders(): array;

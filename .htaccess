@@ -20,3 +20,4 @@ DirectoryIndex index.php
 <Files ~ "\.(xml|css|jpe?g|png|gif|js|pdf|woff2|PNG|ico)$">
     Allow from all
 </Files>
+

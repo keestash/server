@@ -34,16 +34,15 @@ use KSP\L10N\IL10N;
 
 abstract class AbstractApi implements IApi {
 
-    private $response;
-    private $permission;
-    private $translator;
-    private $parameters;
-    private $token;
-    /** @var InputSanitizer $inputSanitizer */
-    private $inputSanitizer;
-    /** @var OutputSanitizer $outputSanitizer */
-    private $outputSanitizer;
-    private $parametersSanitized = false;
+    private IResponse                                        $response;
+    private IPermission                                      $permission;
+    private IL10N                                            $translator;
+    private array                                            $parameters;
+    private ?IToken                                          $token;
+    private InputSanitizer                                   $inputSanitizer;
+    private OutputSanitizer                                  $outputSanitizer;
+    private bool                                             $parametersSanitized = false;
+    private array                                            $files;
 
     public function __construct(
         IL10N $l10n
@@ -100,6 +99,14 @@ abstract class AbstractApi implements IApi {
     public function createAndSetResponse(int $code, array $messages): void {
         $response = $this->createResponse($code, $messages);
         $this->setResponse($response);
+    }
+
+    public function getFiles(): array {
+        return $this->files;
+    }
+
+    public function setFiles(array $files): void {
+        $this->files = $files;
     }
 
     protected function getParameter(string $name, ?string $default = null): ?string {

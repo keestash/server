@@ -40,14 +40,14 @@ class File extends AbstractApi {
 
     public function __construct(
         IFileManager $fileRepository
-        , FileService $fileService
+        , FileService $uploadFileService
         , RawFileService $rawFileService
         , IL10N $l10n
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
-        $this->fileService    = $fileService;
+        $this->fileService    = $uploadFileService;
         $this->fileManager    = $fileRepository;
         $this->rawFileService = $rawFileService;
     }

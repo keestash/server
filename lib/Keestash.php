@@ -568,7 +568,7 @@ class Keestash {
 
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::HTML
-            ,[
+            , [
                 "head"              => $head
                 , "host"            => Keestash::getBaseURL()
                 , "apiHost"         => Keestash::getBaseAPIURL()

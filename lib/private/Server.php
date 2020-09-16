@@ -83,6 +83,7 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
@@ -91,6 +92,7 @@ use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\PublicFile\PublicFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Core\Service\File\Upload\FileService as UploadFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
@@ -142,6 +144,8 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\File\IFileService;
+use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Validation\IValidationService;
 use KSP\Core\View\ActionBar\IActionBar;
@@ -380,6 +384,16 @@ class Server {
         $this->register(FileService::class, function () {
             return new FileService(
                 $this->query(RawFileService::class)
+            );
+        });
+
+        $this->register(IFileService::class, function () {
+            return Keestash::getServer()->query(FileService::class);
+        });
+
+        $this->register(IUploadFileService::class, function () {
+            return new UploadFileService(
+                Keestash::getServer()->query(IniConfigService::class)
             );
         });
 
@@ -674,6 +688,9 @@ class Server {
             return new RouteService();
         });
 
+        $this->register(IniConfigService::class, function () {
+            return new IniConfigService();
+        });
     }
 
     public function register(string $name, Closure $closure): bool {
