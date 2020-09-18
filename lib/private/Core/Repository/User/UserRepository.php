@@ -242,7 +242,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     public function update(IUser $user): bool {
         $queryBuilder = $this->getQueryBuilder();
 
-        $q = $queryBuilder->update('user', 'u')
+        $queryBuilder->update('user', 'u')
             ->set('u.first_name', '?')
             ->set('u.last_name', '?')
             ->set('u.name', '?')
@@ -261,10 +261,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->setParameter(6, $user->getWebsite())
             ->setParameter(7, $user->getHash())
             ->setParameter(8, $user->getId())
-            ->execute();;
-        FileLogger::debug(json_encode($queryBuilder->getSQL()));
+            ->execute();
 
-//        exit();
         return true;
 
     }

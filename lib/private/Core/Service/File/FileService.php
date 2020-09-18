@@ -32,15 +32,18 @@ use KSP\Core\Service\File\IFileService;
 
 class FileService implements IFileService {
 
-    public const DEFAULT_IMAGE_FILE_ID = 1;
+    public const DEFAULT_IMAGE_FILE_ID   = 1;
+    public const DEFAULT_AVATAR_FILE_ID  = 2;
+    public const DEFAULT_NODE_AVATAR     = "default-avatar";
+    public const DEFAULT_PROFILE_PICTURE = "profile-picture";
 
+    // TODO include default ?!
     private RawFileService $rawFileService;
 
     public function __construct(RawFileService $rawFileService) {
         $this->rawFileService = $rawFileService;
     }
 
-    // TODO include default ?!
     public function getProfileImagePath(?IUser $user): string {
 
         if (null === $user) {
@@ -58,7 +61,7 @@ class FileService implements IFileService {
     }
 
     public function getDefaultImage(): IFile {
-        $name = 'profile-picture';
+        $name = FileService::DEFAULT_PROFILE_PICTURE;
         $dir  = Keestash::getServer()->getAssetRoot() . "/img/";
         $dir  = str_replace("//", "/", $dir);
         $path = "$dir/$name.png";
@@ -89,6 +92,35 @@ class FileService implements IFileService {
 
     public function getProfileImageName(IUser $user): string {
         return "profile_image_{$user->getId()}";
+    }
+
+    public function getAvatarName(int $nodeId): string {
+        return "node_avatar_$nodeId";
+    }
+
+    public function getDefaultNodeAvatar(): IFile {
+        $name      = FileService::DEFAULT_NODE_AVATAR;
+        $extension = IExtension::JPG;
+        $dir       = Keestash::getServer()->getAssetRoot() . "/img/";
+        $dir       = str_replace("//", "/", $dir);
+        $path      = "$dir/$name.$extension";
+
+        $file = new File();
+        $file->setId(FileService::DEFAULT_AVATAR_FILE_ID);
+        $file->setContent(
+            file_get_contents($path)
+        );
+        $file->setCreateTs(new DateTime());
+        $file->setDirectory($dir);
+        $file->setExtension($extension);
+        $file->setHash(md5_file($path));
+        $file->setMimeType($this->rawFileService->getMimeType($path));
+        $file->setName($name);
+        $file->setSize(filesize($path));
+        $file->setOwner(
+            Keestash::getServer()->getSystemUser()
+        );
+        return $file;
     }
 
 }

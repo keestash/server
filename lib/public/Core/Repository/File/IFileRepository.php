@@ -24,13 +24,15 @@ namespace KSP\Core\Repository\File;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IFileRepository extends IRepository {
 
     public function add(IFile $file): ?int;
+
+    public function update(IFile $file): IFile;
 
     public function addAll(FileList &$files): bool;
 

@@ -27,17 +27,17 @@ use KSP\Core\DTO\User\IUser;
 
 class File implements IFile {
 
-    private int              $id      = 0;
-    private string           $name;
-    private string           $directory;
-    private string           $temporaryPath;
-    private string           $mimeType;
-    private string           $hash;
-    private string           $extension;
-    private int              $size;
-    private ?string          $content = null;
-    private IUser            $owner;
-    private DateTime         $createTs;
+    private int               $id            = 0;
+    private string            $name;
+    private string            $directory;
+    private ?string           $temporaryPath = null;
+    private string            $mimeType;
+    private string            $hash;
+    private string            $extension;
+    private int               $size;
+    private ?string           $content       = null;
+    private IUser             $owner;
+    private DateTime          $createTs;
 
     public function getFullPath(): string {
         $name      = $this->getName();
