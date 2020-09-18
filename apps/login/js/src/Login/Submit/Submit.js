@@ -101,7 +101,7 @@ export class Submit {
 
                             _this.loadProperties()
                                 .then(() => {
-                                    _this.router.routeTo(routeTo);
+                                    // _this.router.routeTo(routeTo);
                                 })
 
                             return;

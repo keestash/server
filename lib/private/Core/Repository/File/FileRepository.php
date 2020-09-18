@@ -28,10 +28,11 @@ use Exception;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use PDO;
@@ -47,6 +48,22 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         parent::__construct($backend);
 
         $this->userRepository = $userRepository;
+    }
+
+    public function addAll(FileList &$files): bool {
+        $addedAll = false;
+        /** @var IFile $file */
+        foreach ($files as $file) {
+            $fileId   = $this->add($file);
+            $addedAll = false;
+
+            if (null !== $fileId) {
+                $file->setId($fileId);
+                $addedAll = true;
+            }
+
+        }
+        return $addedAll;
     }
 
     public function add(IFile $file): ?int {
@@ -104,20 +121,13 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return $lastInsertId;
     }
 
-    public function addAll(FileList &$files): bool {
-        $addedAll = false;
-        /** @var IFile $file */
+    public function removeAll(FileList $files): bool {
+        $removedAll = false;
         foreach ($files as $file) {
-            $fileId   = $this->add($file);
-            $addedAll = false;
-
-            if (null !== $fileId) {
-                $file->setId($fileId);
-                $addedAll = true;
-            }
-
+            $removed    = $this->remove($file);
+            $removedAll = $removedAll || $removed;
         }
-        return $addedAll;
+        return $removedAll;
     }
 
     public function remove(IFile $file): bool {
@@ -131,13 +141,17 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         return $statement->execute();
     }
 
-    public function removeAll(FileList $files): bool {
-        $removedAll = false;
-        foreach ($files as $file) {
-            $removed    = $this->remove($file);
-            $removedAll = $removedAll || $removed;
+    public function getAll(ArrayList $fileIds): FileList {
+
+        $fileList = new FileList();
+
+        foreach ($fileIds as $id) {
+            /** @var IFile $file */
+            $file = $this->get($id);
+            $fileList->add($file);
         }
-        return $removedAll;
+
+        return $fileList;
     }
 
     public function get(int $id): ?IFile {
@@ -194,19 +208,6 @@ class FileRepository extends AbstractRepository implements IFileRepository {
 
         }
         return $file;
-    }
-
-    public function getAll(ArrayList $fileIds): FileList {
-
-        $fileList = new FileList();
-
-        foreach ($fileIds as $id) {
-            /** @var IFile $file */
-            $file = $this->get($id);
-            $fileList->add($file);
-        }
-
-        return $fileList;
     }
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
@@ -285,6 +286,47 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $statement->bindParam("user_id", $userId);
         $statement->execute();
         return false === $this->hasErrors($statement->errorCode());
+    }
+
+    /**
+     * @param IFile $file
+     *
+     * @return IFile
+     * @throws PasswordManagerException
+     */
+    public function update(IFile $file): IFile {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->update('file')
+            ->set('name', '?')
+            ->set('directory', '?')
+            ->set('path', '?')
+            ->set('mime_type', '?')
+            ->set('hash', '?')
+            ->set('extension', '?')
+            ->set('size', '?')
+            ->set('user_id', '?')
+            ->where('id = ?')
+            ->setParameter(0, $file->getName())
+            ->setParameter(1, $file->getDirectory())
+            ->setParameter(2, $file->getFullPath())
+            ->setParameter(3, $file->getMimeType())
+            ->setParameter(4, $file->getHash())
+            ->setParameter(5, $file->getExtension())
+            ->setParameter(6, $file->getSize())
+            ->setParameter(7, $file->getOwner()->getId())
+            ->setParameter(8, $file->getId());
+        FileLogger::debug($queryBuilder->getSQL());
+        FileLogger::debug($file->getId());
+        $rowCount = $queryBuilder->execute();
+
+        FileLogger::debug("update statement");
+        FileLogger::debug($rowCount);
+        FileLogger::debug($queryBuilder->getSQL());
+
+        if (0 === $rowCount) {
+            throw new PasswordManagerException('no rows updated');
+        }
+        return $file;
     }
 
 }

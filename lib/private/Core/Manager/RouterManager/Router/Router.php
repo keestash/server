@@ -23,6 +23,8 @@ namespace Keestash\Core\Manager\RouterManager\Router;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use doganoo\PHPUtil\Log\FileLogger;
+use Exception;
 use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
@@ -31,7 +33,6 @@ use KSP\Core\Manager\RouterManager\IRouter;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
@@ -71,7 +72,7 @@ abstract class Router implements IRouter {
 
     private function add(string $name, array $defaults, array $verbs): void {
         $route = new Route(
-            strtolower($name)
+            $name
             , $defaults
             , []
             , []
@@ -127,8 +128,8 @@ abstract class Router implements IRouter {
             $matcher    = new UrlMatcher($this->routes, $context);
             $parameters = $matcher->match($context->getPathInfo());
             $route      = $parameters["_route"];
-        } catch (ResourceNotFoundException $exception) {
-//            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
+        } catch (Exception $exception) {
+            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
             return null;
         }
         return $route;
