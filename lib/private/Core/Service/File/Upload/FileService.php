@@ -22,9 +22,11 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\Upload;
 
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\Config\IniConfigService;
-use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\File\IFile as ICoreFile;
+use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\Service\File\Upload\IFileService;
 use Symfony\Component\Mime\MimeTypes;
 
@@ -36,11 +38,12 @@ class FileService implements IFileService {
         $this->iniConfigService = $iniConfigService;
     }
 
-    public function validateUploadedFile(array $file): bool {
-        $error          = $file['error'] ?? -1;
-        $tmpName        = $file["tmp_name"] ?? null;
-        $type           = $file["type"] ?? null;
-        $size           = $file["size"] ?? -10;
+    public function validateUploadedFile(IFile $file): bool {
+        FileLogger::debug(json_encode($file));
+        $error          = $file->getError();
+        $tmpName        = $file->getTmpName();
+        $type           = $file->getType();
+        $size           = $file->getSize();
         $isUploadedFile = is_uploaded_file($tmpName);
         $maxSize        = $this->iniConfigService->getValue("upload_max_filesize", -1);
 
@@ -52,23 +55,23 @@ class FileService implements IFileService {
             && $size > $maxSize;
     }
 
-    public function toFile(array $fileArray): IFile {
+    public function toCoreFile(IFile $file): ICoreFile {
         $mimeTypes  = new MimeTypes();
-        $extensions = $mimeTypes->getExtensions($fileArray["type"]);
+        $extensions = $mimeTypes->getExtensions($file->getType());
         $extensions = array_values($extensions);
 
-        $file = new File();
-        $file->setExtension($extensions[0]);
-        $file->setHash(md5_file($fileArray["tmp_name"]));
-        $file->setTemporaryPath($fileArray["tmp_name"]);
-        $file->setMimeType($fileArray["type"]);
-        $file->setName($fileArray["name"]);
-        $file->setSize($fileArray["size"]);
-        $file->setCreateTs(new DateTime());
-        return $file;
+        $coreFile = new File();
+        $coreFile->setExtension($extensions[0]);
+        $coreFile->setHash(md5_file($file->getTmpName()));
+        $coreFile->setTemporaryPath($file->getTmpName());
+        $coreFile->setMimeType($file->getType());
+        $coreFile->setName($file->getName());
+        $coreFile->setSize($file->getSize());
+        $coreFile->setCreateTs(new DateTime());
+        return $coreFile;
     }
 
-    public function moveUploadedFile(IFile $file): bool {
+    public function moveUploadedFile(ICoreFile $file): bool {
         return move_uploaded_file($file->getTemporaryPath(), $file->getFullPath());
     }
 

@@ -90,6 +90,7 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\PublicFile\PublicFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\File\Upload\FileService as UploadFileService;
@@ -144,6 +145,7 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
@@ -375,6 +377,10 @@ class Server {
 
         $this->register(ITemplateManager::class, function () {
             return $this->query(TwigManager::class);
+        });
+
+        $this->register(IIconService::class, function () {
+            return new IconService();
         });
 
         $this->register(RawFileService::class, function () {

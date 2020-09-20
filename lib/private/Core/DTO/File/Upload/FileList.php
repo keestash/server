@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\File;
+namespace Keestash\Core\DTO\File\Upload;
 
-use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\File\Upload\IFile;
+use KSP\Core\DTO\File\Upload\IFileList;
 
-interface IExtension extends IJsonObject {
+class FileList implements IFileList {
 
-    public const PNG  = "png";
-    public const JPG  = "jpg";
-    public const JPEG = "jpeg";
-    public const PDF  = "pdf";
-    public const TWIG = "twig";
-    public const JSON = "json";
+    private array $files = [];
+
+    public function addFile(IFile $file): void {
+        $this->files[] = $file;
+    }
+
+    public function getFiles(): array {
+        return $this->files;
+    }
+
+    public function getSize(): int {
+        return count($this->files);
+    }
 
 }
