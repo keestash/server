@@ -39,7 +39,6 @@ class FileService implements IFileService {
     }
 
     public function validateUploadedFile(IFile $file): bool {
-        FileLogger::debug(json_encode($file));
         $error          = $file->getError();
         $tmpName        = $file->getTmpName();
         $type           = $file->getType();
