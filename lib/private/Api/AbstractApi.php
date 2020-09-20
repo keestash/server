@@ -28,21 +28,22 @@ use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizer;
 use KSP\Api\IApi;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\File\Upload\IFileList;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Permission\IPermission;
 use KSP\L10N\IL10N;
 
 abstract class AbstractApi implements IApi {
 
-    private IResponse                                        $response;
-    private IPermission                                      $permission;
-    private IL10N                                            $translator;
-    private array                                            $parameters;
-    private ?IToken                                          $token;
-    private InputSanitizer                                   $inputSanitizer;
-    private OutputSanitizer                                  $outputSanitizer;
-    private bool                                             $parametersSanitized = false;
-    private array                                            $files;
+    private IResponse                                            $response;
+    private IPermission                                          $permission;
+    private IL10N                                                $translator;
+    private array                                                $parameters;
+    private ?IToken                                              $token;
+    private InputSanitizer                                       $inputSanitizer;
+    private OutputSanitizer                                      $outputSanitizer;
+    private bool                                                 $parametersSanitized = false;
+    private IFileList                                            $files;
 
     public function __construct(
         IL10N $l10n
@@ -101,11 +102,11 @@ abstract class AbstractApi implements IApi {
         $this->setResponse($response);
     }
 
-    public function getFiles(): array {
+    public function getFiles(): IFileList {
         return $this->files;
     }
 
-    public function setFiles(array $files): void {
+    public function setFiles(IFileList $files): void {
         $this->files = $files;
     }
 

@@ -176,10 +176,6 @@ abstract class Router implements IRouter {
         return $matcher->match($context->getPathInfo());
     }
 
-    protected function getFiles(): array {
-        return $_FILES;
-    }
-
     protected function logRequest(IAPIRequest $request): bool {
         $logRequests = Keestash::getServer()->getConfig()->get("log_requests");
         if (false === $logRequests) return false;

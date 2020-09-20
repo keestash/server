@@ -21,14 +21,15 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\File\Upload;
 
-use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\File\IFile as ICoreFile;
+use KSP\Core\DTO\File\Upload\IFile;
 
 interface IFileService {
 
-    public function validateUploadedFile(array $file): bool;
+    public function validateUploadedFile(IFile $file): bool;
 
-    public function toFile(array $file): IFile;
+    public function toCoreFile(IFile $file): ICoreFile;
 
-    public function moveUploadedFile(IFile $file): bool;
+    public function moveUploadedFile(ICoreFile $file): bool;
 
 }

@@ -25,9 +25,12 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Api\AbstractApi;
+use Keestash\Core\DTO\File\Upload\File;
+use Keestash\Core\DTO\File\Upload\FileList;
 use Keestash\Core\DTO\Instance\Request\APIRequest;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\NoControllerFoundException;
+use KSP\Core\DTO\File\Upload\IFileList;
 use KSP\Core\DTO\Token\IToken;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
@@ -99,6 +102,29 @@ class APIRouter extends Router {
 
         //TODO make this to an ErrorView / a 404 catcher
         throw new NoControllerFoundException("no controller found");
+    }
+
+    private function getFiles(): IFileList {
+        $fileList = new FileList();
+        foreach ($_FILES as $fileArray) {
+            $length = count($fileArray['name']);
+
+            for ($i = 0; $i < $length; $i++) {
+                FileLogger::debug(json_encode($fileArray));
+                $file = new File();
+                $file->setName($fileArray['name'][$i]);
+                $file->setType($fileArray['type'][$i]);
+                $file->setSize((int) $fileArray['size'][$i]);
+                $file->setError((int) $fileArray['error'][$i]);
+                $file->setTmpName($fileArray['tmp_name'][$i]);
+                $fileList->addFile($file);
+            }
+
+        }
+        $_FILES = [];
+        return $fileList;
+
+
     }
 
     private function log(?IToken $token, float $start, float $end): bool {

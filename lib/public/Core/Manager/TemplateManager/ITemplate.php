@@ -27,7 +27,6 @@ interface ITemplate {
     public const APP_CONTENT    = "app-content.twig";
     public const APP_NAVIGATION = "app-navigation.twig";
     public const BODY           = "body.twig";
-    public const BREADCRUMB     = "breadcrumb.twig";
     public const CONTENT        = "content.twig";
     public const ERROR          = "error.twig";
     public const FOOTER         = "footer.twig";
@@ -35,6 +34,7 @@ interface ITemplate {
     public const HTML           = "html.twig";
     public const NAV_BAR        = "navbar.twig";
     public const NO_CONTENT     = "no-content.twig";
+    public const NOT_FOUND_404  = "not_found_404.twig";
     public const SIDE_BAR       = "side-bar.twig";
     public const PART_TEMPLATE  = "part-template.twig";
 
