@@ -24,12 +24,20 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: composer install
-        run: composer install
+        run: composer install --ignore-platform-reqs
 
       # Runs a single command using the runners shell
       - name: PHPUnit
         run: composer test
-
+        
+      # Runs a single command using the runners shell
+      - name: npm
+        run: npm install
+        
+      # Runs a single command using the runners shell
+      - name: npm build
+        run: npm run build:prod
+        
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
