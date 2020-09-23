@@ -27,6 +27,10 @@ jobs:
         run: composer install --ignore-platform-reqs
 
       # Runs a single command using the runners shell
+      - name: create config
+        run: cp config/config.sample.php config/config.php
+        
+      # Runs a single command using the runners shell
       - name: PHPUnit
         run: composer test
         
