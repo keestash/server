@@ -29,11 +29,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: create config
         run: cp config/config.sample.php config/config.php
-        
-      # Runs a single command using the runners shell
-      - name: PHPUnit
-        run: composer test
-        
+    
       # Runs a single command using the runners shell
       - name: npm
         run: npm install
