@@ -32,6 +32,7 @@ use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
+use KSA\GeneralApi\Controller\Route\RouteList;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
 /**
@@ -46,6 +47,7 @@ class Application extends Keestash\App\Application {
     public const FILE_ICONS            = "icon/file/get/{extension}/";
     public const FRONTEND_TEMPLATES    = "frontend_templates/all/";
     public const FRONTEND_STRINGS      = "frontend_strings/all/";
+    public const ROUTE_LIST            = "route_list/all/";
 
     public function register(): void {
 
@@ -94,6 +96,7 @@ class Application extends Keestash\App\Application {
         );
 
         $this->registerCommands();
+        $this->registerRoutes();
     }
 
     private function registerCommands(): void {
@@ -122,6 +125,13 @@ class Application extends Keestash\App\Application {
             )
         );
 
+    }
+
+    private function registerRoutes(): void {
+        $this->registerRoute(
+            Application::ROUTE_LIST
+            , RouteList::class
+        );
     }
 
 }
