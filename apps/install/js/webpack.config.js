@@ -23,7 +23,7 @@ module.exports = {
     entry: glob.sync(__dirname + "/src/*.js"),
     output: {
         path: __dirname + "/dist/",
-        filename: 'Install.bundle.js'
+        filename: 'install.bundle.js'
     },
     module: {
         rules: [{

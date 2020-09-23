@@ -34,7 +34,6 @@
     "giggsey/libphonenumber-for-php": "^8.12",
     "laminas/laminas-uri": "^2.7",
     "laminas/laminas-validator": "^2.13",
-    "ocramius/package-versions": "^1.4",
     "php-di/php-di": "^6.2",
     "phpmailer/phpmailer": "^6.1",
     "robmorgan/phinx": "^0.11",
@@ -64,7 +63,8 @@
   },
   "minimum-stability": "stable",
   "scripts": {
-    "test": " cd vendor/bin && ./phpunit ../../test/"
+    "test": " cd vendor/bin && ./phpunit ../../test/",
+    "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 8 --memory-limit=2G"
   },
   "support": {
     "email": "dogan@dogan-ucar.de",
