@@ -78,7 +78,7 @@ class InstanceDB {
     }
 
     public function updateOption(string $name, string $value): bool {
-        $statement = $this->database->prepare('UPDATE `instance` SET `name` =:name, `value` = :value, `create_ts` = :creat_ts');
+        $statement = $this->database->prepare('UPDATE `instance` SET `name` =:name, `value` = :value, `create_ts` = :create_ts');
 
         $createTs = new DateTime();
         $statement->bindValue(':name', $name);
