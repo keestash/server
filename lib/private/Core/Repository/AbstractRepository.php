@@ -23,7 +23,6 @@ namespace Keestash\Core\Repository;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use doganoo\PHPUtil\Log\FileLogger;
-use Keestash\Core\Backend\MySQLBackend;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
 use PDO;
