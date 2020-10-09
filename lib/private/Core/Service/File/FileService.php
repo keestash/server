@@ -78,9 +78,9 @@ class FileService implements IFileService {
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize(filesize($path));
-        $file->setOwner(
-            Keestash::getServer()->getSystemUser()
-        );
+//        $file->setOwner(
+//            Keestash::getServer()->getSystemUser()
+//        );
         return $file;
     }
 
