@@ -1,7 +1,7 @@
 # Keestash
 Open Source Password Safe
 
-![](https://keestash.com/wp-content/uploads/2019/10/keestash_logo_inverted_no_name.png|width=50)
+![](https://keestash.com/wp-content/uploads/2019/10/keestash_logo_inverted_no_name.png)
 
 * **encrypt your passwords** securely in your own password safe
 * **share with whoever you want** your team, familiy or just friends
