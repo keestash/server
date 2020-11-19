@@ -19,6 +19,7 @@
 const glob = require("glob");
 const webpack = require("webpack");
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const env = process.env.NODE_ENV;
 
@@ -40,23 +41,40 @@ const baseModule = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader'
-            }
+            },
+            {
+                test: /\.vue$/,
+                exclude: /node_modules/,
+                loader: ['vue-loader']
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                    },
+                ],
+            },
         ]
     },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        },
+        extensions: ['.js', '.vue'],
+    },
+    node: {
+        fs: 'empty'
+    },
     plugins: [
+        new VueLoaderPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
         })
-    ],
-    resolve: {
-        alias: {
-            handlebars: 'handlebars/dist/handlebars.min.js'
-        },
-    },
-    node: {
-        fs: 'empty'
-    }
+    ]
 };
 
 const webpackConfig = [].concat(
@@ -73,6 +91,8 @@ function toConfig(modules, baseModule) {
         const config = require(configPath);
         config.mode = baseModule.mode;
         config.node = {fs: 'empty'};
+        config.module = Object.assign(baseModule.module, config.module || {});
+        config.resolve = Object.assign(baseModule.resolve, config.resolve || {});
         conf.push(config);
     }
     return conf;

@@ -73,7 +73,7 @@ class BackgroundJobs extends KeestashMigration {
             ])
             ->addColumn(
                 "info"
-                , MysqlAdapter::PHINX_TYPE_JSON
+                , MysqlAdapter::PHINX_TYPE_TEXT
                 , [
                 "null"      => true
                 , "comment" => "additional info"

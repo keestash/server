@@ -76,6 +76,7 @@
     "simple-dijs": "^2.0.2",
     "twig": "^1.15.2",
     "vue": "^2.6.12",
+    "vuex": "^3.5.1",
     "webpack-merge": "^4.2.2"
   },
   "eslintConfig": {

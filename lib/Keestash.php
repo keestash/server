@@ -630,6 +630,7 @@ class Keestash {
         if (self::$mode === Keestash::MODE_API) return;
 
         $legacy = self::getServer()->getLegacy();
+        $userImage = null;
 
         /** @var IFileManager $fileManager */
         $fileManager = Keestash::getServer()->query(IFileManager::class);
@@ -638,17 +639,28 @@ class Keestash {
         /** @var FileService $fileService */
         $fileService = Keestash::getServer()->query(FileService::class);
 
-        $file = $fileManager->read(
-            $rawFileService->stringToUri(
-                $fileService->getProfileImagePath(Keestash::getServer()->getUserFromSession())
-            )
-        );
+        $instanceLockHandler = Keestash::getServer()->getInstanceLockHandler();
+        $instanceLocked      = $instanceLockHandler->isLocked();
 
-        if (null === $file) {
-            $file = $fileService->getDefaultImage();
+        // we are not interested in a profile image when
+        // we are installing the instance.
+        if (false === $instanceLocked) {
+            $file = $fileManager->read(
+                $rawFileService->stringToUri(
+                    $fileService->getProfileImagePath(Keestash::getServer()->getUserFromSession())
+                )
+            );
+
+            if (null === $file) {
+                $file = $fileService->getDefaultImage();
+            }
+
+            //        $userImage = $rawFileService->stringToBase64($file->getFullPath()); // TODO
+            $userImage = $rawFileService->stringToBase64("{$file->getDirectory()}/{$file->getName()}");
         }
 
-        $userImage = $rawFileService->stringToBase64($file->getFullPath());
+
+
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::NAV_BAR
             , [

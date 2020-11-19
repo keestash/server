@@ -41,8 +41,7 @@ class Update extends AbstractApi {
 
     private const DEFAULT_USER_LIFETIME = 15 * 24 * 60 * 60;
 
-    private $parameters       = null;
-    private $installerService = null;
+    private InstallerService $installerService;
 
     public function __construct(
         IL10N $l10n
@@ -55,8 +54,6 @@ class Update extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
         );

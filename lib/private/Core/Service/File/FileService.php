@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\File;
 
+use Cake\Log\Engine\FileLog;
 use DateTime;
+use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\File\RawFile\RawFileService;
@@ -78,9 +80,9 @@ class FileService implements IFileService {
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize(filesize($path));
-//        $file->setOwner(
-//            Keestash::getServer()->getSystemUser()
-//        );
+        $file->setOwner(
+            Keestash::getServer()->getSystemUser()
+        );
         return $file;
     }
 

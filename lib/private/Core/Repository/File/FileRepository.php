@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\File;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
@@ -39,15 +40,18 @@ use PDO;
 
 class FileRepository extends AbstractRepository implements IFileRepository {
 
-    private $userRepository = null;
+    private IUserRepository  $userRepository;
+    private IDateTimeService $dateTimeService;
 
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
+        , IDateTimeService $dateTimeService
     ) {
         parent::__construct($backend);
 
-        $this->userRepository = $userRepository;
+        $this->userRepository  = $userRepository;
+        $this->dateTimeService = $dateTimeService;
     }
 
     public function addAll(FileList &$files): bool {
@@ -213,35 +217,30 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
         try {
 
-            $path = $uri->getIdentifier();
+            $queryBuilder = $this->getQueryBuilder();
 
-            $sql = "SELECT 
-                        `id`
-                        , `name`
-                        , `path`
-                        , `mime_type`
-                        , `hash`
-                        , `extension`
-                        , `size`
-                        , `user_id`
-                        , `create_ts`
-                        , `directory`
-                 FROM `file`
-                    WHERE `path` = :path
-                 ";
+            $queryBuilder = $queryBuilder->select(
+                [
+                    'id'
+                    , 'name'
+                    , 'path'
+                    , 'mime_type'
+                    , 'hash'
+                    , 'extension'
+                    , 'size'
+                    , 'user_id'
+                    , 'create_ts'
+                    , 'directory'
+                ]
+            )
+                ->from('file')
+                ->where('path = ?')
+                ->setParameter(0, $uri->getIdentifier());
 
-            $statement = parent::prepareStatement($sql);
-
-            if (null === $statement) {
-                return null;
-            }
-
-            $statement->bindParam("path", $path);
-
-            $statement->execute();
+            $files = $queryBuilder->execute()->fetchAllNumeric();
 
             $file = null;
-            while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+            foreach ($files as $row) {
                 $id        = $row[0];
                 $name      = $row[1];
                 $path      = $row[2];
@@ -265,7 +264,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
                     $this->userRepository->getUserById((string) $userId)
                 );
                 $file->setCreateTs(
-                    DateTimeUtil::fromMysqlDateTime($createTs)
+                    $this->dateTimeService->fromFormat($createTs)
                 );
 
             }

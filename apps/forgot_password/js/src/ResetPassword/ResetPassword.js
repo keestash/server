@@ -38,7 +38,6 @@ export class ResetPassword {
                 }
 
                 if ("" === input.data("token").trim()) {
-                    console.log("no token found");
                     _this.disableForm(submitButton, spinner, false);
                     return;
                 }
@@ -56,8 +55,6 @@ export class ResetPassword {
                     , (response, status, xhr) => {
                         const object = JSON.parse(response);
                         let result = null;
-
-                        console.log(object);
 
                         if (RESPONSE_CODE_OK in object) {
                             result = object[RESPONSE_CODE_OK];

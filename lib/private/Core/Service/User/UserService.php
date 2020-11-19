@@ -184,6 +184,7 @@ class UserService {
         $user->setPassword(
             $this->hashPassword($user->getName())
         );
+        $user->setLocked(true);
         return $user;
     }
 

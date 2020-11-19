@@ -25,6 +25,8 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IExtension extends IJsonObject {
 
+    public const DOC  = "doc";
+    public const DOCX = "docx";
     public const PNG  = "png";
     public const JPG  = "jpg";
     public const JPEG = "jpeg";

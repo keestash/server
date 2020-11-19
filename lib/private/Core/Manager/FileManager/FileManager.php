@@ -31,7 +31,7 @@ use KSP\Core\Repository\File\IFileRepository;
 
 class FileManager implements IFileManager {
 
-    private $fileRepository = null;
+    private IFileRepository $fileRepository;
 
     public function __construct(IFileRepository $fileRepository) {
         $this->fileRepository = $fileRepository;

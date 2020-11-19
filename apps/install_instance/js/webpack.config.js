@@ -18,20 +18,18 @@
  */
 const glob = require("glob");
 const webpack = require("webpack");
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
-    entry: glob.sync(__dirname + "/src/*.js"),
+    entry: {
+        install_instance: glob.sync(__dirname + "/src/install_instance.js")
+    },
     output: {
         path: __dirname + "/dist/",
-        filename: 'install_instance.bundle.js'
-    },
-    module: {
-        rules: [{
-            exclude: /node_modules/,
-            loader: 'babel-loader'
-        }]
+        filename: '[name].bundle.js'
     },
     plugins: [
+        new VueLoaderPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
