@@ -423,6 +423,7 @@ class Server {
             return new FileRepository(
                 $this->query(IBackend::class)
                 , $this->query(IUserRepository::class)
+                , $this->query(IDateTimeService::class)
             );
         });
 
@@ -939,19 +940,13 @@ class Server {
 
     /**
      * @return IUser
-     * @throws UserNotFoundException
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public function getSystemUser(): IUser {
-        $users = $this->getUsersFromCache();
-
-        /** @var IUser $user */
-        foreach ($users as $user) {
-            if ($user->getId() === IUser::SYSTEM_USER_ID) {
-                return $user;
-            }
-        }
-
-        throw new UserNotFoundException();
+        /** @var UserService $userService */
+        $userService = $this->query(UserService::class);
+        return $userService->getSystemUser();
     }
 
     public function getUsersFromCache(): ArrayList {

@@ -33,6 +33,7 @@ use Keestash\Exception\NoControllerFoundException;
 use KSP\Core\DTO\File\Upload\IFileList;
 use KSP\Core\DTO\Token\IToken;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use function Composer\Autoload\includeFile;
 
 class APIRouter extends Router {
 
@@ -107,16 +108,37 @@ class APIRouter extends Router {
     private function getFiles(): IFileList {
         $fileList = new FileList();
         foreach ($_FILES as $fileArray) {
-            $length = count($fileArray['name']);
+            $isArray = is_array($fileArray['name']);
+            $length  = true === $isArray
+                ? count(
+                    $fileArray['name'] ?? []
+                )
+                : 1;
 
             for ($i = 0; $i < $length; $i++) {
-                FileLogger::debug(json_encode($fileArray));
                 $file = new File();
-                $file->setName($fileArray['name'][$i]);
-                $file->setType($fileArray['type'][$i]);
-                $file->setSize((int) $fileArray['size'][$i]);
-                $file->setError((int) $fileArray['error'][$i]);
-                $file->setTmpName($fileArray['tmp_name'][$i]);
+
+                $name    = true === $isArray
+                    ? $fileArray['name'][$i]
+                    : $fileArray['name'];
+                $type    = true === $isArray
+                    ? $fileArray['type'][$i]
+                    : $fileArray['type'];
+                $size    = true === $isArray
+                    ? $fileArray['size'][$i]
+                    : $fileArray['size'];
+                $error   = true === $isArray
+                    ? $fileArray['error'][$i]
+                    : $fileArray['error'];
+                $tmpName = true === $isArray
+                    ? $fileArray['tmp_name'][$i]
+                    : $fileArray['tmp_name'];
+
+                $file->setName((string) $name);
+                $file->setType((string) $type);
+                $file->setSize((int) $size);
+                $file->setError((int) $error);
+                $file->setTmpName((string) $tmpName);
                 $fileList->addFile($file);
             }
 

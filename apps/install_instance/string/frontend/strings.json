@@ -1,7 +1,81 @@
 {
   "strings": {
+    "head": {
+      "value": "Your instance seems to be incomplete. Please follow the instructions below."
+    },
+    "config": {
+      "header": "Configuration File",
+      "db": {
+        "host": {
+          "label": "Host",
+          "description": "The database host",
+          "placeholder": "The database host"
+        },
+        "user": {
+          "label": "User",
+          "description": "The database user",
+          "placeholder": "The database user"
+        },
+        "password": {
+          "label": "Password",
+          "description": "The database password",
+          "placeholder": "The database password"
+        },
+        "name": {
+          "label": "Name",
+          "description": "The database name",
+          "placeholder": "The database name"
+        },
+        "port": {
+          "label": "Port",
+          "description": "The database port",
+          "placeholder": "The database port"
+        },
+        "charset": {
+          "label": "Charset",
+          "description": "The database charset",
+          "placeholder": "The database charset"
+        }
+      },
+      "email": {
+        "smtp": {
+          "host": {
+            "value": "",
+            "label": "SMTP Host",
+            "description": "The SMTP host",
+            "placeholder": "The SMTP host"
+          },
+          "user": {
+            "value": "",
+            "label": "SMTP User",
+            "description": "The SMTP user",
+            "placeholder": "The SMTP user"
+          },
+          "password": {
+            "value": "",
+            "label": "SMTP Password",
+            "description": "The SMTP password",
+            "placeholder": "The SMTP password"
+          }
+        }
+      },
+      "logRequests": {
+        "label": "Log requests",
+        "value": "",
+        "options": [
+          "enabled",
+          "disabled"
+        ]
+      }
+    },
+    "dirsWritable": {
+      "header": "Files and Directories that are not Writable"
+    },
     "hasDataDirs": {
-      "nothingToUpdate": "Nothing To Update"
+      "header": "Data Directories that are missing"
+    },
+    "endUpdate": {
+      "buttonText": "End Update"
     }
   }
 }

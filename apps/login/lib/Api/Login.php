@@ -44,26 +44,16 @@ class Login extends AbstractApi {
 
     private const DEFAULT_USER_LIFETIME = 60 * 60;
 
-    /** @var IUserRepository|null $userRepository */
-    private $userRepository;
-    /** @var IL10N|null $translator */
-    private $translator;
-    /** @var null|UserService $userService */
-    private $userService;
-    /** @var null|ITokenRepository $tokenManager */
-    private $tokenManager;
-    /** @var null|TokenService $tokenService */
-    private $tokenService;
-    /** @var null|IPermissionRepository $permissionManager */
-    private $permissionManager;
-    /** @var PersistenceService $persistenceService */
-    private $persistenceService;
-    /** @var ConfigService $configService */
-    private $configService;
-    /** @var ILocaleService */
-    private $localeService;
-    /** @var ILanguageService */
-    private $languageService;
+    private IUserRepository       $userRepository;
+    private IL10N                 $translator;
+    private UserService           $userService;
+    private ITokenRepository      $tokenManager;
+    private TokenService          $tokenService;
+    private IPermissionRepository $permissionManager;
+    private PersistenceService    $persistenceService;
+    private ConfigService         $configService;
+    private ILocaleService        $localeService;
+    private ILanguageService      $languageService;
 
     public function __construct(
         IUserRepository $userRepository

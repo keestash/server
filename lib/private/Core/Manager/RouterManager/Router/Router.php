@@ -23,7 +23,6 @@ namespace Keestash\Core\Manager\RouterManager\Router;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
 use Keestash\Core\Service\ReflectionService;
@@ -42,10 +41,10 @@ abstract class Router implements IRouter {
 
     public const FIELD_NAME_CONTROLLER = "controller";
 
-    protected $routes            = null;
-    private   $publicRoutes      = null;
-    private   $apiLoggerManager  = null;
-    private   $reflectionService = null;
+    protected RouteCollection $routes;
+    private HashTable         $publicRoutes;
+    private IApiLogRepository $apiLoggerManager;
+    private ReflectionService $reflectionService;
 
     public function __construct(
         IApiLogRepository $apiLoggerManager
@@ -129,7 +128,7 @@ abstract class Router implements IRouter {
             $parameters = $matcher->match($context->getPathInfo());
             $route      = $parameters["_route"];
         } catch (Exception $exception) {
-            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
+//            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
             return null;
         }
         return $route;

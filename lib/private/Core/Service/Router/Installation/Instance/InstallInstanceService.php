@@ -89,7 +89,7 @@ class InstallInstanceService {
             // we do not do anything here
             // we know that there is no route and
             // return false
-            FileLogger::debug($e->getTraceAsString());
+//            FileLogger::debug($e->getTraceAsString());
             return false;
         }
 
