@@ -666,7 +666,6 @@ class Keestash {
             $userImage = $rawFileService->stringToBase64($path);
         }
 
-
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::NAV_BAR
             , [
