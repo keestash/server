@@ -235,9 +235,10 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             )
                 ->from('file')
                 ->where('path = ?')
-                ->setParameter(0, $uri->getIdentifier());
-
-            $files = $queryBuilder->execute()->fetchAllNumeric();
+                ->orWhere('path like ?')
+                ->setParameter(0, $uri->getIdentifier())
+                ->setParameter(1, "{$uri->getIdentifier()}%");
+            $files        = $queryBuilder->execute()->fetchAllNumeric();
 
             $file = null;
             foreach ($files as $row) {

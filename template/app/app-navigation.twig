@@ -10,7 +10,8 @@
                 {% for id, segment in appNavigation %}
                     <li>
                         <small class="p-3 grey-text"
-                               data-id="{{ segment.getId() }}">{{ segment.getTitle() }}</small>
+                               data-id="{{ segment.getId() }}"
+                        >{{ segment.getTitle() }}</small>
                     </li>
                     {% for id2, entry in segment.getEntries() %}
                         <li
