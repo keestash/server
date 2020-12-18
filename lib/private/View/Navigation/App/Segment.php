@@ -25,14 +25,17 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 
 class Segment {
 
-    /** @var string */
-    private $title;
-    /** @var ArrayList */
-    private $entries;
+    private string    $title;
+    private ?string   $id;
+    private ArrayList $entries;
 
-    public function __construct(string $title = "") {
+    public function __construct(
+        string $title = ""
+        , ?string $id = null
+    ) {
         $this->entries = new ArrayList();
         $this->setTitle($title);
+        $this->setId($id);
     }
 
     /**
@@ -58,6 +61,20 @@ class Segment {
 
     public function addEntry(Entry $entry): void {
         $this->entries->add($entry);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getId(): ?string {
+        return $this->id;
+    }
+
+    /**
+     * @param string|null $id
+     */
+    public function setId(?string $id): void {
+        $this->id = $id;
     }
 
 }

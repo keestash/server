@@ -139,6 +139,7 @@ class Keestash {
 
         //step 2: check for is installed
         Keestash::isInstanceInstalled();
+
         Keestash::areAppsInstalled();
 
         //step 4: load apps
@@ -159,6 +160,7 @@ class Keestash {
         $appRoot = self::getAppRoot();
 
         $vendorAutoLoad = $appRoot . "vendor/autoload.php";
+
         /** @var Composer\Autoload\ClassLoader $classLoader */
         /** @noinspection PhpIncludeInspection */
         $classLoader = require $vendorAutoLoad;
@@ -175,7 +177,6 @@ class Keestash {
 
         FileLogger::setPath($logPath);
         Logger::setLogLevel((int) $logLevel);
-
         return true;
     }
 
@@ -629,7 +630,7 @@ class Keestash {
     private static function initTemplates() {
         if (self::$mode === Keestash::MODE_API) return;
 
-        $legacy = self::getServer()->getLegacy();
+        $legacy    = self::getServer()->getLegacy();
         $userImage = null;
 
         /** @var IFileManager $fileManager */
@@ -655,10 +656,15 @@ class Keestash {
                 $file = $fileService->getDefaultImage();
             }
 
-            //        $userImage = $rawFileService->stringToBase64($file->getFullPath()); // TODO
-            $userImage = $rawFileService->stringToBase64("{$file->getDirectory()}/{$file->getName()}");
+            // TODO hotfix
+            //  we need to fix that fullpath stuff, where extension
+            //  is sometimes part of the path and sometimes not
+            $path = $file->getFullPath();
+            if (false === is_file($path)) {
+                $path = "{$file->getDirectory()}/{$file->getName()}";
+            }
+            $userImage = $rawFileService->stringToBase64($path);
         }
-
 
 
         Keestash::getServer()->getTemplateManager()->replace(
