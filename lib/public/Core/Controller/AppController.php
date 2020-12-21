@@ -66,7 +66,8 @@ abstract class AppController implements IAppController {
         if (true === in_array($controllerType, [
                 IAppController::CONTROLLER_TYPE_NORMAL
                 , IAppController::CONTROLLER_TYPE_FULL_SCREEN
-                , IAppController::CONTROLLER_TYPE_NO_APP_CONTEXT
+                , IAppController::CONTROLLER_TYPE_STATIC
+                , IAppController::CONTROLLER_TYPE_CONTEXTLESS
             ])) {
             $this->controllerType = $controllerType;
         }

@@ -29,7 +29,8 @@ class Application extends \Keestash\App\Application {
     public const TERMS_AND_CONDITIONS = "terms-and-conditions";
 
     public function register(): void {
-        parent::registerRoute(self::TERMS_AND_CONDITIONS, Controller::class);
+        $this->registerRoute(Application::TERMS_AND_CONDITIONS, Controller::class);
+        $this->registerPublicRoute(Application::TERMS_AND_CONDITIONS);
     }
 
 }

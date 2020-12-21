@@ -1,7 +1,9 @@
+<?php
+declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,5 +18,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-export const KEY_CODE_ENTER = 13;
-export const TYPE_UNDEFINED = "undefined";
+
+namespace KSP\Core\Controller;
+
+use KSP\Core\Manager\TemplateManager\ITemplateManager;
+use KSP\L10N\IL10N;
+
+/**
+ * Class ContextLessAppController
+ * @package KSP\Core\Controller
+ */
+abstract class ContextLessAppController extends AppController {
+
+    public function __construct(
+        ITemplateManager $templateManager
+        , IL10N $l10n
+    ) {
+        parent::__construct(
+            $templateManager
+            , $l10n
+        );
+        parent::setControllerType(IAppController::CONTROLLER_TYPE_CONTEXTLESS);
+    }
+
+}

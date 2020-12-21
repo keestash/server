@@ -22,38 +22,48 @@ declare(strict_types=1);
 namespace KSA\TNC\Controller;
 
 use KSA\TNC\Application\Application;
-use KSP\Core\Controller\AppController;
+use KSP\Core\Controller\ContextLessAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
 
-class Controller extends AppController {
+class Controller extends ContextLessAppController {
 
-    private $permissionManager = null;
-    private $templateManager   = null;
+    private const TEMPLATE_NAME_TNC = "tnc.twig";
+    private IPermissionRepository $permissionRepository;
 
     public function __construct(
         ITemplateManager $templateManager
-        , IPermissionRepository $permissionManager
-        , IL10N $l10n
+        , IPermissionRepository $permissionRepository
+        , IL10N $translator
     ) {
         parent::__construct(
             $templateManager
-            , $l10n
+            , $translator
         );
 
-        $this->templateManager   = $templateManager;
-        $this->permissionManager = $permissionManager;
+        $this->permissionRepository = $permissionRepository;
     }
 
     public function onCreate(...$params): void {
         parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_TNC)
+            $this->permissionRepository->getPermission(Application::PERMISSION_TNC)
         );
     }
 
     public function create(): void {
 
+        $this->getTemplateManager()
+            ->replace(
+                Controller::TEMPLATE_NAME_TNC
+                , [
+
+                ]
+            );
+
+        $this->setAppContent(
+            $this->getTemplateManager()->render(Controller::TEMPLATE_NAME_TNC)
+        );
     }
 
     public function afterCreate(): void {

@@ -509,7 +509,7 @@ class Keestash {
         $hasAppNavigation     =
             (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER)
             && $appNavigationManager->getList()->length() > 0;
-        $noContext            = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
+        $staticController     = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_STATIC);
         $actionBar            = Keestash::renderActionBars(
             Keestash::getServer()->getActionBarManager()->get(IBag::ACTION_BAR_TOP)
         );
@@ -557,7 +557,7 @@ class Keestash {
             , [
                 "navigation"  => $navigation
                 , "content"   => $content
-                , "noContext" => $noContext
+                , "noContext" => $staticController
                 , "footer"    => $footer
             ]
         );
@@ -574,7 +574,7 @@ class Keestash {
                 , "host"            => Keestash::getBaseURL()
                 , "apiHost"         => Keestash::getBaseAPIURL()
                 , "body"            => $body
-                , "noContext"       => $noContext
+                , "noContext"       => $staticController
                 , "partTemplate"    => $partTemplate
                 , "sidebarTemplate" => $sideBar
             ]
@@ -627,7 +627,7 @@ class Keestash {
 
     }
 
-    private static function initTemplates() {
+    private static function initTemplates(): void {
         if (self::$mode === Keestash::MODE_API) return;
 
         $legacy    = self::getServer()->getLegacy();
@@ -642,6 +642,7 @@ class Keestash {
 
         $instanceLockHandler = Keestash::getServer()->getInstanceLockHandler();
         $instanceLocked      = $instanceLockHandler->isLocked();
+        $contextLess         = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
 
         // we are not interested in a profile image when
         // we are installing the instance.
@@ -669,9 +670,10 @@ class Keestash {
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::NAV_BAR
             , [
-            "logopath"    => Keestash::getBaseURL(false) . "/asset/img/logo_no_name.png"
-            , "logoutURL" => Keestash::getBaseURL() . "logout"
-            , "userImage" => $userImage
+            "logopath"      => Keestash::getBaseURL(false) . "/asset/img/logo_no_name.png"
+            , "logoutURL"   => Keestash::getBaseURL() . "logout"
+            , "userImage"   => $userImage
+            , 'contextless' => $contextLess
         ]);
 
         Keestash::getServer()->getTemplateManager()->replace(

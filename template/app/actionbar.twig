@@ -8,13 +8,18 @@
                     class="btn dropdown-toggle btn-primary"
                     data-toggle="dropdown"
                     aria-haspopup="true"
+                    aria-expanded="false"
+                    data-target="action-bar-inner-dropdown"
                     id="{{ actionBar.getId() }}"
             >
                 {{ actionBar.getDescription() }}
             </button>
 
-
-            <div class="dropdown-menu">
+            <div
+                    id="action-bar-inner-dropdown"
+                    class="dropdown-menu dropdown-menu-left"
+                    aria-labelledby="action-bar-inner-dropdown"
+            >
                 {% for key, value in actionBar.getElements() %}
                     {% if value is not null %}
                         <div class="dropdown-item"

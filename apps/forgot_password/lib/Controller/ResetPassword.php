@@ -98,7 +98,7 @@ class ResetPassword extends StaticAppController {
                 , "noHashFound"    => $this->getL10N()->translate("Link seems to be expired. Please request a new one")
 
                 // values
-                , "backgroundPath" => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
+                , "backgroundPath" => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
                 , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "token"          => $token
                 , "hasHash"        => $this->hasHash($token)

@@ -45,18 +45,18 @@ class Controller extends FullscreenAppController {
 
     public function __construct(
         ITemplateManager $templateManager
-        , IPermissionRepository $permissionManager
-        , IL10N $l10n
+        , IPermissionRepository $permissionRepository
+        , IL10N $translator
         , LockHandler $lockHandler
         , InstallerService $installerService
     ) {
         parent::__construct(
             $templateManager
-            , $l10n
+            , $translator
         );
 
         $this->templateManager   = $templateManager;
-        $this->permissionManager = $permissionManager;
+        $this->permissionManager = $permissionRepository;
         $this->lockHandler       = $lockHandler;
         $this->installerService  = $installerService;
 

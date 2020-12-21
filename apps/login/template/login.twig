@@ -1,8 +1,14 @@
 <div class="main-wrapper login">
     <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
-         style="background:url({{ backgroundPath }}) no-repeat center center;">
+         style="
+                 background:url({{ backgroundPath }}) no-repeat center center fixed;
+                 -webkit-background-size: cover;
+                 -moz-background-size: cover;
+                 -o-background-size: cover;
+                 background-size: cover;
+                 ">
         <div class="auth-box">
-            <div id="loginform">
+            <div id="loginform-wrapper">
                 <div class="logo">
                     <span class="db"><img id="logo-image" height="30px" src="{{ logoPath }}" alt="logo"/></span>
                     <h5 class="font-medium mb-3">{{ loginToApp }}</h5>
@@ -13,29 +19,32 @@
                         <form class="form-horizontal mt-3" id="loginform">
                             <div class="input-group mb-3">
                                 <div class="d-flex">
-                                    <span class="input-group-text" id="basic-addon1"><i class="far fa-user"></i></span>
+                                    <span class="input-group-text inputgrouptext" id="username-input"><i
+                                                class="far fa-user"></i></span>
                                 </div>
                                 <input type="text"
                                        id="username"
-                                       class="form-control form-control-lg"
+                                       class="form-control form-control-lg login-form-control"
                                        placeholder="{{ userNamePlaceholder }}"
-                                       aria-label="{{ userNamePlaceholder }}" aria-describedby="basic-addon1"
+                                       aria-label="{{ userNamePlaceholder }}" aria-describedby="username-input"
                                 >
                             </div>
                             <div class="input-group mb-3">
                                 <div class="d-flex">
-                                    <span class="input-group-text" id="basic-addon2"><i class="fas fa-pen"></i></span>
+                                    <span class="input-group-text inputgrouptext" id="password-input"><i
+                                                class="fas fa-pen"></i></span>
                                 </div>
                                 <input type="password"
                                        id="password"
-                                       class="form-control form-control-lg"
+                                       class="form-control form-control-lg login-form-control"
                                        placeholder="{{ passwordPlaceholder }}"
-                                       aria-label="{{ passwordPlaceholder }}" aria-describedby="basic-addon1"
+                                       aria-label="{{ passwordPlaceholder }}" aria-describedby="password-input"
                                 >
                             </div>
                             <div class="form-group text-center">
-                                <div class="col-xs-12 pb-3">
-                                    <button id="sign__in" class="btn btn-block btn-lg btn-info" type="submit">{{ signIn }}</button>
+                                <div class="col-xs-12 pb-3 d-flex">
+                                    <button id="sign__in" class="btn btn-primary btn-lg flex-grow-1"
+                                            type="submit">{{ signIn }}</button>
                                 </div>
                             </div>
                             <div class="form-group mb-0 mt-2">
