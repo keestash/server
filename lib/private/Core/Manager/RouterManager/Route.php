@@ -25,6 +25,7 @@ class Route {
 
     public const ROUTE_TYPE_CONTROLLER                   = 1;
     public const ROUTE_TYPE_CONTROLLER_NO_APP_NAVIGATION = 2;
-    public const ROUTE_TYPE_CONTROLLER_CONTEXTLESS       = 3;
+    public const ROUTE_TYPE_CONTROLLER_STATIC            = 3;
+    public const ROUTE_TYPE_CONTROLLER_CONTEXTLESS       = 4;
 
 }

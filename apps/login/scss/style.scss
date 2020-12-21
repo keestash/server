@@ -13,6 +13,19 @@
       width: 90%;
       margin: 10% 0;
 
+      #loginform-wrapper {
+        #loginform {
+          .inputgrouptext{
+            border: 0;
+            margin-right: 0.3vw;
+          }
+
+          .login-form-control{
+            border-radius: 0.25rem;
+          }
+        }
+      }
+
       .logo {
         text-align: center;
 

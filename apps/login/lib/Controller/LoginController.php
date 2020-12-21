@@ -37,14 +37,10 @@ class LoginController extends StaticAppController {
 
     public const TEMPLATE_NAME_LOGIN = "login.twig";
 
-    /** @var IPermissionRepository */
-    private $permissionRepository;
-    /** @var ILoader */
-    private $loader;
-    /** @var PersistenceService */
-    private $persistenceService;
-    /** @var Legacy */
-    private $legacy;
+    private IPermissionRepository $permissionRepository;
+    private ILoader               $loader;
+    private PersistenceService    $persistenceService;
+    private Legacy                $legacy;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -73,7 +69,7 @@ class LoginController extends StaticAppController {
 
     public function create(): void {
 
-        $userId = $this->persistenceService->getValue("user_id", null);
+        $userId = $this->persistenceService->getValue("user_id");
         $hashes = Keestash::getServer()->getUserHashes();
 
         if (null !== $userId && $hashes->containsValue((int) $userId)) {
@@ -99,7 +95,7 @@ class LoginController extends StaticAppController {
                 , "registeringEnabled"         => $this->loader->hasApp(Application::APP_NAME_REGISTER)
 
                 // values
-                , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
+                , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
                 , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
             ]
         );

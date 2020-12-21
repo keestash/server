@@ -34,7 +34,7 @@ abstract class StaticAppController extends AppController {
             $templateManager
             , $l10n
         );
-        parent::setControllerType(IAppController::CONTROLLER_TYPE_NO_APP_CONTEXT);
+        parent::setControllerType(IAppController::CONTROLLER_TYPE_STATIC);
     }
 
 }

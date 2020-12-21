@@ -1,6 +1,11 @@
 <div class="main-wrapper register">
     <div class="register-wrapper d-flex no-block justify-content-center align-items-center"
-         style="background:url({{ backgroundPath }}) no-repeat center center;">
+         style="background:url({{ backgroundPath }}) no-repeat center center fixed;
+                 -webkit-background-size: cover;
+                 -moz-background-size: cover;
+                 -o-background-size: cover;
+                 background-size: cover;
+                 ">
         <div class="auth-box">
             <div id="loginform">
                 <div class="logo">
@@ -131,7 +136,7 @@
                                            id="tl__register__terms__and__conditions">
                                     <label class="form-check-label" for="exampleCheck1">{{ termsConditionsFirstPart }}
                                         <a
-                                                href="{{ termsConditionsLink }}">{{ termsAndConditions }}</a></label>
+                                                href="{{ termsConditionsLink }}" target="_blank">{{ termsAndConditions }}</a></label>
                                 </div>
                             </div>
 

@@ -25,9 +25,10 @@ use KSP\Core\Permission\IPermission;
 
 interface IAppController {
 
-    public const CONTROLLER_TYPE_NORMAL         = 1;
-    public const CONTROLLER_TYPE_FULL_SCREEN    = 2;
-    public const CONTROLLER_TYPE_NO_APP_CONTEXT = 3;
+    public const CONTROLLER_TYPE_NORMAL      = 1;
+    public const CONTROLLER_TYPE_FULL_SCREEN = 2;
+    public const CONTROLLER_TYPE_STATIC      = 3;
+    public const CONTROLLER_TYPE_CONTEXTLESS = 4;
 
     public function onCreate(...$params): void;
 

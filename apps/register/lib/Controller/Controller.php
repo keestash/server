@@ -35,10 +35,10 @@ class Controller extends StaticAppController {
     public const TEMPLATE_NAME_REGISTER             = "register.twig";
     public const TEMPLATE_NAME_REGISTER_NOT_ENABLED = "register_not_enabled.twig";
 
-    private $templateManager   = null;
-    private $translator        = null;
-    private $permissionManager = null;
-    private $loader            = null;
+    private ITemplateManager      $templateManager;
+    private IL10N                 $translator;
+    private IPermissionRepository $permissionRepository;
+    private ILoader               $loader;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -51,16 +51,16 @@ class Controller extends StaticAppController {
             , $translator
         );
 
-        $this->templateManager   = $templateManager;
-        $this->translator        = $translator;
-        $this->permissionManager = $permissionRepository;
-        $this->loader            = $loader;
+        $this->templateManager      = $templateManager;
+        $this->translator           = $translator;
+        $this->permissionRepository = $permissionRepository;
+        $this->loader               = $loader;
 
     }
 
     public function onCreate(...$params): void {
         $this->setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_REGISTER)
+            $this->permissionRepository->getPermission(Application::PERMISSION_REGISTER)
         );
     }
 
@@ -135,10 +135,10 @@ class Controller extends StaticAppController {
             , "backToLogin"                 => $this->translator->translate("Back To Login")
 
             // values
-            , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login_background.jpg"
-            , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+            , "backgroundPath"              => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
+            , "logoPath"                    => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
 
-            , "termsConditionsLink"         => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::PERMISSION_TNC
+            , "termsConditionsLink"         => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::TERMS_AND_CONDITIONS
             , "backToLoginLink"             => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
         ]);
         $this->setAppContent(

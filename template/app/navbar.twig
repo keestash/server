@@ -3,27 +3,28 @@
         <img src="{{ logopath }}" height="30" alt="{{ vendorName }}">
     </a>
 
-    <div class="btn-group">
-        <button type="button"
-                class="btn dropdown-toggle"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-                data-target="#navbarDropdown"
-        >
-            <img src="{{ userImage }}" class="avatar">
-        </button>
-        <div id="navbarDropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            {% for partId, partEntry in settings %}
-                {% for id, entry in partEntry.getEntries() %}
+    {% if contextless == false %}
+        <div class="btn-group">
+            <button type="button"
+                    class="btn dropdown-toggle"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    data-target="#navbarDropdown"
+            >
+                <img src="{{ userImage }}" class="avatar">
+            </button>
+            <div id="navbarDropdown" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                {% for partId, partEntry in settings %}
+                    {% for id, entry in partEntry.getEntries() %}
 
-                    <li><a class="dropdown-item" href="{{ baseURL }}/{{ entry.getName()|lower }}"><i
-                                    class="{{ entry.getFaClass() }} fa-1x"></i>&nbsp;{{ entry.getName() }}</a>
-                    </li>
+                        <li><a class="dropdown-item" href="{{ baseURL }}/{{ entry.getName()|lower }}"><i
+                                        class="{{ entry.getFaClass() }} fa-1x"></i>&nbsp;{{ entry.getName() }}</a>
+                        </li>
+                    {% endfor %}
+
                 {% endfor %}
-
-            {% endfor %}
+            </div>
         </div>
-    </div>
-
+    {% endif %}
 </nav>
