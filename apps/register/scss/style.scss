@@ -5,12 +5,10 @@
     min-height: 100vh;
     position: relative;
 
-    .auth-box {
-      background: #fff;
+    .register-box {
+      background: transparent;
       padding: 20px;
-      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .1);
       max-width: 800px;
-      width: 90%;
       margin: 5% 0;
 
       .logo {

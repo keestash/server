@@ -18,13 +18,8 @@
  */
 import $ from 'jquery';
 import {Register} from "./RegisterForm/Register";
-import {Request} from "../../../../lib/js/src/Backend/Request";
-import {ConsoleLogger} from "../../../../lib/js/src/Log/ConsoleLogger";
-import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
-import {Router} from "../../../../lib/js/src/Route/Router";
-import {Host} from "../../../../lib/js/src/Backend/Host";
 import {Routes} from "./RegisterForm/Public/Routes";
-import {UIService} from "../../../../lib/js/src/Service/UI/UIService";
+import {LONG_MODAL, REQUEST} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.Register) {
@@ -35,24 +30,14 @@ import {UIService} from "../../../../lib/js/src/Service/UI/UIService";
 
         init: async () => {
 
-            const request = new Request(
-                new ConsoleLogger()
-                , new AppStorage()
-                , new Router(
-                    new Host()
-                )
-            );
-
-            const routes = new Routes();
-            const uiService = new UIService();
+            const diContainer = Keestash.Main.getContainer();
 
             const register = new Register(
-                request
-                , routes
-                , uiService
+                diContainer.query(REQUEST)
+                , new Routes()
+                , diContainer.query(LONG_MODAL)
             );
             register.setUpClickListener();
-            register.setup();
 
         }
 

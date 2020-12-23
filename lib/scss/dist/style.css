@@ -7885,6 +7885,13 @@ body .grey-text {
   font-size: 12px;
   text-align: center;
 }
+#content .ks-form .icon-wrapper {
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+#content .ks-form .input-control {
+  border-radius: 0 0.25rem 0.25rem 0;
+  border-left: 0;
+}
 hr {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -7898,8 +7905,12 @@ hr {
 .btn.btn-secondary, .btn.btn-secondary:active, .btn.btn-secondary:hover, .btn.btn-secondary:focus {
   background: #3B3939;
 }
-a:visited, a:hover, a:active, a:link {
-  color: #0070cc !important;
+a, a:link {
+  color: #269dff !important;
+}
+a:visited, a:hover, a:active {
+  text-decoration: underline;
+  text-decoration-color: #269dff !important;
 }
 .text-color-grey-dark {
   color: #000;

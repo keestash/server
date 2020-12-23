@@ -21,18 +21,17 @@ export class ForgotPassword {
         const form = $("#forgot_password_form");
         const submitButton = $("#fp__rest");
         const input = $("#fp__input");
-        const spinner = $("#fp__spinner");
         const _this = this;
 
         form.submit(
             (event) => {
                 event.preventDefault();
 
-                _this.disableForm(submitButton, spinner, true);
+                _this.disableForm(submitButton, true);
 
                 if ("" === input.val().trim()) {
                     _this.inputService.invalid(input);
-                    _this.disableForm(submitButton, spinner, false);
+                    _this.disableForm(submitButton, false);
                     return;
                 }
 
@@ -60,7 +59,7 @@ export class ForgotPassword {
                             , result['message']
                         );
 
-                        _this.disableForm(submitButton, spinner, false);
+                        _this.disableForm(submitButton, false);
                         input.val("");
                     }
                     , (response, status, xhr) => {
@@ -71,7 +70,7 @@ export class ForgotPassword {
                             , "There was an error. Please try again or contact our support"
                         );
 
-                        _this.disableForm(submitButton, spinner, false);
+                        _this.disableForm(submitButton, false);
 
                     }
                 );
@@ -79,21 +78,10 @@ export class ForgotPassword {
         );
     }
 
-    disableForm(button, spinner, disable) {
+    disableForm(button, disable) {
         this.buttonService.disable(
             button
             , disable
         );
-        spinner.removeClass(
-            true === disable
-                ? 'invisible'
-                : 'visible'
-        )
-        spinner.addClass(
-            true === disable
-                ? 'visible'
-                : 'invisible'
-        )
-
     }
 }

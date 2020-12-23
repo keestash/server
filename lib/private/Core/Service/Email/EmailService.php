@@ -37,7 +37,8 @@ class EmailService {
     public const PHPMAILER_SMTP_DEBUG_DATA_COMMANDS_AND_CONNECTION_STATUS = 3;
     public const PHPMAILER_SMTP_DEBUG_LOW_LEVEL_DATA_OUTPUT               = 4;
 
-    private $mailer = null;
+    private PHPMailer     $mailer;
+    private ConfigService $configService;
 
     public function __construct(
         Legacy $legacy
@@ -50,9 +51,9 @@ class EmailService {
         $this->mailer->SMTPDebug = EmailService::PHPMAILER_SMTP_DEBUG_DATA_COMMANDS_AND_CONNECTION_STATUS;
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = $configService->getValue("email_user", null);
-        $this->mailer->Password   = $configService->getValue("email_password", null);
-        $this->mailer->Host       = $configService->getValue("email_smtp_host", null);
+        $this->mailer->Username   = $configService->getValue("email_user");
+        $this->mailer->Password   = $configService->getValue("email_password");
+        $this->mailer->Host       = $configService->getValue("email_smtp_host");
         $this->mailer->SMTPSecure = 'ssl';
         $this->mailer->Port       = 465;
 
@@ -69,7 +70,8 @@ class EmailService {
         };
 
         // Global Config
-        $this->mailer->isHTML(EmailService::IS_HTML);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // Set email format to HTML
+        $this->mailer->isHTML(EmailService::IS_HTML);   // Set email format to HTML
+        $this->configService = $configService;
 
     }
 
@@ -116,18 +118,20 @@ class EmailService {
         return "" !== trim($this->mailer->Body);
     }
 
-    private function replaceDebugMails() {
-        // TODO check if we are on debug
-        if (1 === 1) {
+    private function replaceDebugMails(): void {
+        if (true === $this->configService->getValue("debug", true)) {
             $this->mailer->clearAllRecipients();
             $this->mailer->clearCCs();
             $this->mailer->clearBCCs();
-            $this->mailer->addAddress("dogan@dogan-ucar.de", "Dogan Ucar");
+            $this->mailer->addAddress(
+                $this->configService->getValue("email_user")
+                , $this->configService->getValue("email_user")
+            );
         }
 
     }
 
-    private function clearAll() {
+    private function clearAll(): void {
         $this->mailer->clearAddresses();
         $this->mailer->clearAllRecipients();
         $this->mailer->clearAttachments();

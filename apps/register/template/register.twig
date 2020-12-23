@@ -1,160 +1,104 @@
 <div class="main-wrapper register">
     <div class="register-wrapper d-flex no-block justify-content-center align-items-center"
-         style="background:url({{ backgroundPath }}) no-repeat center center fixed;
+         style="
+                 background:url({{ backgroundPath }}) no-repeat center center fixed;
                  -webkit-background-size: cover;
                  -moz-background-size: cover;
                  -o-background-size: cover;
                  background-size: cover;
                  ">
-        <div class="auth-box">
-            <div id="loginform">
-                <div class="logo">
-                    <span class="db"><img id="logo-image" height="30px" src="{{ logoPath }}" alt="logo"/></span>
-                    <h5 class="font-medium mb-3">{{ createNewAccount }}</h5>
-                    <span>{{ createNewAccountDesc }}</span>
+        <form class="register-box" id="register--box">
+            <div class="logo">
+                <span class="db"><img id="logo-image" height="30px" src="{{ logoPath }}" alt="logo"/></span>
+                <h5 class="font-medium mb-3">{{ createNewAccount }}</h5>
+                <span>{{ createNewAccountDesc }}</span>
+            </div>
+
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                 </div>
-                <!-- Form -->
-                <div class="row">
-                    <div class="col-12">
-                        <form class="form-horizontal mt-3" id="loginform">
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__first__name"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ firstNamePlaceholder }}"
-                                           aria-label="{{ firstNamePlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__first__name_invalid__text"
-                                          class="hidden-invalid invisible">{{ firstNameInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__last__name"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ lastNamePlaceholder }}"
-                                           aria-label="{{ lastNamePlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__last__name_invalid__text"
-                                          class="hidden-invalid invisible">{{ lastNameInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__user__name"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ userNamePlaceholder }}"
-                                           aria-label="{{ userNamePlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__user__name_invalid__text"
-                                          class="hidden-invalid invisible">{{ userNameInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__email"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ emailPlaceholder }}"
-                                           aria-label="{{ emailPlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__email__invalid__text"
-                                          class="hidden-invalid invisible">{{ emailInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__phone"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ phonePlaceholder }}"
-                                           aria-label="{{ phonePlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__phone__invalid__text"
-                                          class="hidden-invalid invisible">{{ phoneInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__website"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ websitePlaceholder }}"
-                                           aria-label="{{ websitePlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__website__invalid__text"
-                                          class="hidden-invalid invisible">{{ websiteInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__password"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ passwordPlaceholder }}"
-                                           aria-label="{{ passwordPlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span class="hidden-invalid invisible">{{ passwordInvalidText }}<i
-                                                class="info circle icon"
-                                                title="{{ minimumPasswordRequirements }}"></i></span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="d-flex flex-column flex-grow-1">
-                                    <input type="text"
-                                           id="tl__register__password__repeat"
-                                           class="form-control form-control-lg"
-                                           placeholder="{{ passwordRepeatPlaceholder }}"
-                                           aria-label="{{ passwordRepeatPlaceholder }}"
-                                           aria-describedby="basic-addon1"
-                                    >
-                                    <span id="tl__register__password__repeat__invalid__text"
-                                          class="hidden-invalid invisible"> {{ passwordRepeatInvalidText }}</span>
-                                </div>
-                            </div>
-
-                            <div class="input-group mb-3">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input"
-                                           id="tl__register__terms__and__conditions">
-                                    <label class="form-check-label" for="exampleCheck1">{{ termsConditionsFirstPart }}
-                                        <a
-                                                href="{{ termsConditionsLink }}" target="_blank">{{ termsAndConditions }}</a></label>
-                                </div>
-                            </div>
-
-                            <div class="form-group text-center">
-                                <div class="col-xs-12 pb-3">
-                                    <button id="tl__register__button" class="btn btn-block btn-lg btn-info"
-                                            type="submit">{{ submit }}</button>
-                                </div>
-                            </div>
-                            <div class="form-group mb-0 mt-2">
-                                <div class="col-sm-12 text-center">
-                                    <a href="{{ backToLoginLink }}" class="ml-1"><b>{{ backToLogin }}</b></a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                <input id="first_name" name="first_name" class="form-control" placeholder="{{ firstNamePlaceholder }}"
+                       aria-label="{{ firstNamePlaceholder }}" type="text" required>
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                </div>
+                <input name="last_name" id="last_name" class="form-control" placeholder="{{ lastNamePlaceholder }}"
+                       aria-label="{{ lastNamePlaceholder }}" type="text" required>
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                </div>
+                <input name="user_name" id="user_name" class="form-control" placeholder="{{ userNamePlaceholder }}"
+                       aria-label="{{ userNamePlaceholder }}" type="text" required>
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                </div>
+                <input name="email" id="email" class="form-control" placeholder="{{ emailPlaceholder }}"
+                       aria-label="{{ emailPlaceholder }}" type="email" required>
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                </div>
+                <select class="custom-select" id="phone_prefix" name="phone_prefix" style="max-width: 120px;">
+                    <option selected="">+49</option>
+                    <option value="1">+90</option>
+                    <option value="2">+44</option>
+                    {# TODO add more #}
+                </select>
+                <input name="phone" id="phone" class="form-control" placeholder="{{ phonePlaceholder }}"
+                       aria-label="{{ phonePlaceholder }}" type="text">
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fab fa-chrome"></i> </span>
+                </div>
+                <input name="website" id="website" class="form-control" placeholder="{{ websitePlaceholder }}"
+                       aria-label="{{ websitePlaceholder }}" type="text">
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                </div>
+                <input id="password" name="password" class="form-control" placeholder="{{ passwordLabel }}"
+                       aria-label="{{ passwordLabel }}"
+                       type="password" required>
+            </div> <!-- form-group// -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                </div>
+                <input class="form-control" placeholder="{{ passwordRepeatLabel }}" id="password_repeat"
+                       name="password_repeat"
+                       aria-label="{{ passwordRepeatLabel }}" type="password" required>
+            </div> <!-- form-group// -->
+            <div class="input-group mb-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input"
+                           id="terms_and_conditions" required>
+                    <label class="form-check-label" for="terms_and_conditions">{{ termsConditionsFirstPart }}
+                        <a
+                                href="{{ termsConditionsLink }}"
+                                {% if newTab %}
+                                    target="_blank"
+                                {% endif %}
+                        >{{ termsAndConditions }}</a></label>
                 </div>
             </div>
-        </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"> {{ submit }}  </button>
+            </div> <!-- form-group// -->
+            <p class="text-center">{{ backToLoginQuestion }}<a href="{{ backToLoginLink }}"
+                        {% if newTab %}
+                            target="_blank"
+                        {% endif %}
+                >{{ backToLogin }}</a></p>
+        </form>
     </div>
 </div>
