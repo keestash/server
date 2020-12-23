@@ -22,12 +22,12 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Controller;
 
-use DateTime;
 use Keestash;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Application\Application;
+use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -38,16 +38,13 @@ class ForgotPassword extends StaticAppController {
 
     public const TEMPLATE_NAME = "forgot_password.twig";
 
-    /** @var ITemplateManager */
-    private $templateManager;
-    /** @var IL10N */
-    private $translator;
-    /** @var IPermissionRepository */
-    private $permissionManager;
-    /** @var Legacy */
-    private $legacy;
-    /** @var IUserStateRepository */
-    private $userStateRepository;
+    private ITemplateManager      $templateManager;
+    private IL10N                 $translator;
+    private IPermissionRepository $permissionManager;
+    private Legacy                $legacy;
+    private IUserStateRepository  $userStateRepository;
+    private ILoader               $loader;
+    private ConfigService         $configService;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -55,6 +52,8 @@ class ForgotPassword extends StaticAppController {
         , IPermissionRepository $permissionRepository
         , Legacy $legacy
         , IUserStateRepository $userStateRepository
+        , ILoader $loader
+        , ConfigService $configService
     ) {
         parent::__construct(
             $templateManager
@@ -66,6 +65,8 @@ class ForgotPassword extends StaticAppController {
         $this->permissionManager   = $permissionRepository;
         $this->legacy              = $legacy;
         $this->userStateRepository = $userStateRepository;
+        $this->loader              = $loader;
+        $this->configService       = $configService;
     }
 
     public function onCreate(...$params): void {
@@ -89,11 +90,13 @@ class ForgotPassword extends StaticAppController {
                 , "backToLogin"                   => $this->getL10N()->translate("Back To Login")
 
                 // values
-                , "backgroundPath"                => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
+                , "backgroundPath"                => Keestash::getBaseURL(false) . "/asset/img/forgot-password-background.jpg"
                 , "logoPath"                      => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "backToLoginLink"               => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
                 , "newAccountLink"                => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/forgot_password"
+                , "registeringEnabled"            => $this->loader->hasApp(\KSA\Login\Application\Application::APP_NAME_REGISTER)
+                , "newTab"                        => false === $this->configService->getValue('debug', false)
             ]
         );
 

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Controller;
 
 use Keestash;
-use Keestash\Core\Service\User\UserService;
+use Keestash\Core\Service\Config\ConfigService;
 use KSA\Register\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
@@ -39,12 +39,14 @@ class Controller extends StaticAppController {
     private IL10N                 $translator;
     private IPermissionRepository $permissionRepository;
     private ILoader               $loader;
+    private ConfigService         $configService;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
         , IPermissionRepository $permissionRepository
         , ILoader $loader
+        , ConfigService $configService
     ) {
         parent::__construct(
             $templateManager
@@ -55,6 +57,7 @@ class Controller extends StaticAppController {
         $this->translator           = $translator;
         $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
+        $this->configService        = $configService;
 
     }
 
@@ -84,62 +87,53 @@ class Controller extends StaticAppController {
             Controller::TEMPLATE_NAME_REGISTER
             , [
             // first name
-            "firstNameLabel"                => $this->translator->translate("First Name")
-            , "firstNamePlaceholder"        => $this->translator->translate("First Name")
-            , "firstNameInvalidText"        => $this->translator->translate("Please provide a first name")
+            "firstNameLabel"              => $this->translator->translate("First name")
+            , "firstNamePlaceholder"      => $this->translator->translate("First name")
 
             // last name
-            , "lastNameLabel"               => $this->translator->translate("Last Name")
-            , "lastNamePlaceholder"         => $this->translator->translate("Last Name")
-            , "lastNameInvalidText"         => $this->translator->translate("Please provide a last name")
+            , "lastNameLabel"             => $this->translator->translate("Last Name")
+            , "lastNamePlaceholder"       => $this->translator->translate("Last Name")
 
             // user name
-            , "userNameLabel"               => $this->translator->translate("Username")
-            , "userNamePlaceholder"         => $this->translator->translate("Username")
-            , "userNameInvalidText"         => $this->translator->translate("The username is invalid or taken")
+            , "userNameLabel"             => $this->translator->translate("Username")
+            , "userNamePlaceholder"       => $this->translator->translate("Username")
 
             // email
-            , "emailLabel"                  => $this->translator->translate("Email")
-            , "emailPlaceholder"            => $this->translator->translate("Email")
-            , "emailStillAvailable"         => $this->translator->translate("The Email Address is still available")
-            , "emailTaken"                  => $this->translator->translate("The Email Address is already in use")
+            , "emailLabel"                => $this->translator->translate("Email")
+            , "emailPlaceholder"          => $this->translator->translate("Email")
 
             // phone
-            , "phoneLabel"                  => $this->translator->translate("Phone")
-            , "phonePlaceholder"            => $this->translator->translate("Phone")
-            , "phoneInvalidText"            => $this->translator->translate("The phone number seems to be incorrect")
+            , "phoneLabel"                => $this->translator->translate("Phone")
+            , "phonePlaceholder"          => $this->translator->translate("Phone")
 
             // website
-            , "websiteLabel"                => $this->translator->translate("Website")
-            , "websitePlaceholder"          => $this->translator->translate("Website")
-            , "websiteInvalidText"          => $this->translator->translate("The provided URL seems to be incorrect")
+            , "websiteLabel"              => $this->translator->translate("Website")
+            , "websitePlaceholder"        => $this->translator->translate("Website")
 
             // password
-            , "passwordLabel"               => $this->translator->translate("Password")
-            , "passwordRepeaKSAbel"         => $this->translator->translate("Repeat Password")
+            , "passwordLabel"             => $this->translator->translate("Password")
+            , "passwordRepeatLabel"       => $this->translator->translate("Repeat Password")
 
             // terms and conditions
-            , "termsConditionsFirstPart"    => $this->translator->translate("I agree to the")
-            , "termsAndConditions"          => $this->translator->translate("Terms and Conditions")
+            , "termsConditionsFirstPart"  => $this->translator->translate("I agree to the")
+            , "termsAndConditions"        => $this->translator->translate("Terms and Conditions")
 
             // stuff
-            , "submit"                      => $this->translator->translate("Register")
-            , "passwordPlaceholder"         => $this->translator->translate("Password")
-            , "passwordRepeatPlaceholder"   => $this->translator->translate("Repat Password")
-            , "passwordInvalidText"         => $this->translator->translate("Your password has not reached the minimum requirements")
-            , "emailInvalidText"            => $this->translator->translate("Your email address seems to be invalid")
-            , "passwordRepeatInvalidText"   => $this->translator->translate("Your passwords do not match")
-            , "minimumPasswordRequirements" => $this->translator->translate("Your password has to contain at least one upper case, one lower case, one digit and " . UserService::MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD . " characters")
-            , "createNewAccount"            => $this->translator->translate("Create New Account")
-            , "createNewAccountDesc"        => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
-            , "backToLogin"                 => $this->translator->translate("Back To Login")
+            , "submit"                    => $this->translator->translate("Register")
+            , "passwordPlaceholder"       => $this->translator->translate("Password")
+            , "passwordRepeatPlaceholder" => $this->translator->translate("Repat Password")
+            , "createNewAccount"          => $this->translator->translate("Create New Account")
+            , "createNewAccountDesc"      => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
+            , "backToLogin"               => $this->translator->translate("Log In")
+            , "backToLoginQuestion"       => $this->translator->translate("Have an account?")
 
             // values
-            , "backgroundPath"              => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
-            , "logoPath"                    => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+            , "backgroundPath"            => Keestash::getBaseURL(false) . "/asset/img/register-background.jpg"
+            , "logoPath"                  => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
 
-            , "termsConditionsLink"         => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::TERMS_AND_CONDITIONS
-            , "backToLoginLink"             => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
+            , "termsConditionsLink"       => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::TERMS_AND_CONDITIONS
+            , "backToLoginLink"           => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
+            , "newTab"                    => false === $this->configService->getValue('debug', false)
         ]);
         $this->setAppContent(
             $this->templateManager->render(Controller::TEMPLATE_NAME_REGISTER)

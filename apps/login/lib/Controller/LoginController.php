@@ -23,6 +23,7 @@ namespace KSA\Login\Controller;
 
 use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Legacy\Legacy;
 use KSA\Login\Application\Application;
@@ -41,6 +42,7 @@ class LoginController extends StaticAppController {
     private ILoader               $loader;
     private PersistenceService    $persistenceService;
     private Legacy                $legacy;
+    private ConfigService         $configService;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -49,11 +51,13 @@ class LoginController extends StaticAppController {
         , ILoader $loader
         , PersistenceService $persistenceService
         , Legacy $legacy
+        , ConfigService $configService
     ) {
         $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->persistenceService   = $persistenceService;
         $this->legacy               = $legacy;
+        $this->configService        = $configService;
 
         parent::__construct(
             $templateManager
@@ -97,6 +101,7 @@ class LoginController extends StaticAppController {
                 // values
                 , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
                 , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "newTab"                     => false === $this->configService->getValue('debug', false)
             ]
         );
 

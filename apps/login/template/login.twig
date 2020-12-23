@@ -8,7 +8,7 @@
                  background-size: cover;
                  ">
         <div class="auth-box">
-            <div id="loginform-wrapper">
+            <div id="loginform-wrapper" class="ks-form">
                 <div class="logo">
                     <span class="db"><img id="logo-image" height="30px" src="{{ logoPath }}" alt="logo"/></span>
                     <h5 class="font-medium mb-3">{{ loginToApp }}</h5>
@@ -19,24 +19,24 @@
                         <form class="form-horizontal mt-3" id="loginform">
                             <div class="input-group mb-3">
                                 <div class="d-flex">
-                                    <span class="input-group-text inputgrouptext" id="username-input"><i
+                                    <span class="icon-wrapper input-group-text" id="username-input"><i
                                                 class="far fa-user"></i></span>
                                 </div>
                                 <input type="text"
                                        id="username"
-                                       class="form-control form-control-lg login-form-control"
+                                       class="form-control form-control-lg input-control"
                                        placeholder="{{ userNamePlaceholder }}"
                                        aria-label="{{ userNamePlaceholder }}" aria-describedby="username-input"
                                 >
                             </div>
                             <div class="input-group mb-3">
                                 <div class="d-flex">
-                                    <span class="input-group-text inputgrouptext" id="password-input"><i
+                                    <span class="input-group-text icon-wrapper" id="password-input"><i
                                                 class="fas fa-pen"></i></span>
                                 </div>
                                 <input type="password"
                                        id="password"
-                                       class="form-control form-control-lg login-form-control"
+                                       class="form-control form-control-lg input-control"
                                        placeholder="{{ passwordPlaceholder }}"
                                        aria-label="{{ passwordPlaceholder }}" aria-describedby="password-input"
                                 >
@@ -47,16 +47,24 @@
                                             type="submit">{{ signIn }}</button>
                                 </div>
                             </div>
-                            <div class="form-group mb-0 mt-2">
-                                <div class="col-sm-12 text-center">
-                                    {{ createNewAccountText }} <a href="{{ newAccountLink }}" target="_blank"
-                                                                  class="text-info ml-1"><b>{{ createNewAccountActionText }}</b></a>
+                            {% if registeringEnabled == true %}
+                                <div class="form-group mb-0 mt-2">
+                                    <div class="col-sm-12 text-center">
+                                        {{ createNewAccountText }} <a href="{{ newAccountLink }}"
+                                                                      {% if newTab %}
+                                                                      target="_blank"
+                                                                      {% endif %}
+                                                                      class="ml-1"><b>{{ createNewAccountActionText }}</b></a>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                             <div class="form-group mb-0 mt-2">
                                 <div class="col-sm-12 text-center">
-                                    {{ forgotPasswordText }} <a href="{{ forgotPasswordLink }}" target="_blank"
-                                                                class="text-info ml-1"><b>{{ forgotPasswordActionText }}</b></a>
+                                    {{ forgotPasswordText }} <a href="{{ forgotPasswordLink }}"
+                                            {% if newTab %}
+                                                target="_blank"
+                                            {% endif %}
+                                                                class="ml-1"><b>{{ forgotPasswordActionText }}</b></a>
                                 </div>
                             </div>
                         </form>

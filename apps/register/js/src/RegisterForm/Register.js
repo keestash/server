@@ -1,15 +1,22 @@
-import {Validator} from "./Validator/Validator";
-import {FirstName} from "./Validator/Attributes/FirstName";
-import {LastName} from "./Validator/Attributes/LastName";
-import {UserName} from "./Validator/Attributes/UserName";
-import {Email} from "./Validator/Attributes/Email";
+/**
+ * Keestash
+ *
+ * Copyright (C) <2019> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 import $ from "jquery";
-import modal from "../../../../../lib/js/src/UI/modal";
-import {Phone} from "./Validator/Attributes/Phone";
-import {Website} from "./Validator/Attributes/Website";
-import {Password} from "./Validator/Attributes/Password";
-import {PasswordRepeat} from "./Validator/Attributes/PasswordRepeat";
-import {TermsAndConditions} from "./Validator/Attributes/TermsAndConditions";
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../lib/js/src/Backend/Request";
 
 export class Register {
@@ -17,105 +24,83 @@ export class Register {
     constructor(
         request
         , routes
-        , uiService
+        , longModal
     ) {
         this.request = request;
         this.routes = routes;
-        this.uiService = uiService;
+        this.longModal = longModal;
         this.registerButtonClicked = false;
         this.registerButton = $("#tl__register__button");
-    }
-
-    setup() {
-        const validator = new Validator(
-            this.uiService
-        );
-        validator.register(new FirstName());
-        validator.register(new LastName());
-        validator.register(
-            new UserName(
-                this.request
-                , this.routes
-            )
-        );
-        validator.register(new Email());
-        validator.register(new Phone());
-        validator.register(new Website());
-        validator.register(
-            new Password(
-                this.request
-                , this.routes
-            )
-        );
-        validator.register(new PasswordRepeat());
-        validator.register(new TermsAndConditions());
-        validator.validate();
+        this.registerForm = $("#register--box");
     }
 
     setUpClickListener() {
         const _this = this;
 
-        this.registerButton.click((event) => {
-            event.preventDefault();
+        this.registerForm.submit(
+            (event) => {
+                event.preventDefault();
 
-            if (true === _this.registerButtonClicked) return;
-            _this.disableForm();
+                if (true === _this.registerButtonClicked) return;
+                _this.disableForm();
 
-            let firstName = $("#tl__register__first__name").val();
-            let lastName = $("#tl__register__last__name").val();
-            let userName = $("#tl__register__user__name").val();
-            let password = $("#tl__register__password").val();
-            let email = $("#tl__register__email").val();
-            let phone = $("#tl__register__phone").val();
-            let website = $("#tl__register__website").val();
-            let passwordRepeat = $("#tl__register__password__repeat").val();
-            let termsAndConditions = $("#tl__register__terms__and__conditions").is(':checked');
+                const firstName = $("#first_name").val();
+                const lastName = $("#last_name").val();
+                const userName = $("#user_name").val();
+                const password = $("#password").val();
+                const phone = $("#phone_prefix").val() + $("phone").val();
+                const email = $("#email").val();
+                const website = $("#website").val();
+                const passwordRepeat = $("#password_repeat").val();
+                const termsAndConditions = $("#terms_and_conditions").is(':checked');
 
-            let values = {
-                'first_name': firstName
-                , 'last_name': lastName
-                , 'user_name': userName
-                , 'email': email
-                , 'phone': phone
-                , 'website': website
-                , 'password': password
-                , 'password_repeat': passwordRepeat
-                , 'terms_and_conditions': termsAndConditions
-            };
+                let values = {
+                    'first_name': firstName
+                    , 'last_name': lastName
+                    , 'user_name': userName
+                    , 'email': email
+                    , 'phone': phone
+                    , 'website': website
+                    , 'password': password
+                    , 'password_repeat': passwordRepeat
+                    , 'terms_and_conditions': termsAndConditions
+                };
 
-            _this.request.post(
-                _this.routes.getRegisterAdd()
-                , values
-                , (response) => {
-                    let object = JSON.parse(response);
-                    let data = null;
+                _this.request.post(
+                    _this.routes.getRegisterAdd()
+                    , values
+                    , (response) => {
+                        let object = JSON.parse(response);
+                        let data = null;
 
-                    if (RESPONSE_CODE_OK in object) {
-                        data = object[RESPONSE_CODE_OK];
-                    } else if (RESPONSE_CODE_NOT_OK in object) {
-                        data = object[RESPONSE_CODE_NOT_OK];
+                        if (RESPONSE_CODE_OK in object) {
+                            data = object[RESPONSE_CODE_OK];
+                        } else if (RESPONSE_CODE_NOT_OK in object) {
+                            data = object[RESPONSE_CODE_NOT_OK];
+                        }
+
+                        _this.longModal.show("Register", "OK", "OK", data['message']);
+                        _this.enableForm();
                     }
+                    , () => {
+                        _this.longModal.show("Register", "OK", "OK", "There was an error during the registration. Please try it again or reach us out!");
+                        _this.enableForm();
+                    }
+                )
 
-                    modal.miniModal(data['message']);
-                    _this.enableForm();
-                }
-                , () => {
-                    modal.miniModal("There was an error during the registration. Please try it again or reach us out!");
-                    _this.enableForm();
-                }
-            )
-
-        });
+            });
     }
 
     enableForm() {
         this.registerButtonClicked = false;
         this.registerButton.removeClass("disabled");
+        $('#register--box input[type="submit"]').prop("disabled", false);
     }
 
     disableForm() {
         this.registerButtonClicked = true;
         this.registerButton.addClass("disabled");
+        $('#register--box input[type="submit"]').prop("disabled", true);
     }
 
 }
