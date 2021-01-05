@@ -43,7 +43,6 @@ use Keestash\Core\Service\Instance\MaintenanceService;
 use Keestash\Core\Service\Router\Installation\App\InstallAppService;
 use Keestash\Core\Service\Router\Installation\Instance\InstallInstanceService;
 use Keestash\Core\Service\Router\Verification;
-use Keestash\Core\System\Installation\LockHandler;
 use Keestash\Exception\KeestashException;
 use Keestash\Server;
 use Keestash\View\Navigation\Entry;
@@ -85,11 +84,12 @@ class Keestash {
 
         /** @var PersistenceService $persistenceService */
         $persistenceService = Keestash::getServer()->query(PersistenceService::class);
+        $logger             = Keestash::getServer()->getFileLogger();
 
         try {
             $persisted = $persistenceService->isPersisted("user_id");
         } catch (PDOException $exception) {
-            FileLogger::error('error during persistence request ' . $exception->getMessage() . ': ' . $exception->getTraceAsString());
+            $logger->error('error during persistence request ' . $exception->getMessage() . ': ' . $exception->getTraceAsString());
             $persisted = false;
         }
 
@@ -193,6 +193,7 @@ class Keestash {
         $installInstanceService = Keestash::getServer()->query(InstallInstanceService::class);
         $lockHandler            = Keestash::getServer()->getInstanceLockHandler();
         $instanceDB             = Keestash::getServer()->getInstanceDB();
+        $logger                 = Keestash::getServer()->getFileLogger();
         $instanceHash           = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
         $instanceId             = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
         $isLocked               = $lockHandler->isLocked();
@@ -204,7 +205,7 @@ class Keestash {
         $httpService = Keestash::getServer()->query(HTTPService::class);
 
         if ((null === $instanceHash || null === $instanceId)) {
-            FileLogger::debug("The whole application is not installed. Please Install");
+            $logger->debug("The whole application is not installed. Please Install");
             $lockHandler->lock();
             $httpService->routeToInstallInstance();
             exit();
@@ -246,19 +247,18 @@ class Keestash {
         if ($appsToUpgrade->size() > 0) {
             Keestash::handleNeedsUpgrade();
         }
-        return;
     }
 
     private static function handleNeedsUpgrade(): void {
         /** @var InstallAppService $installationService */
-        $installationService = Keestash::getServer()->query(InstallAppService::class);
-        /** @var LockHandler $lockHandler */
+        $installationService  = Keestash::getServer()->query(InstallAppService::class);
+        $logger               = Keestash::getServer()->getFileLogger();
         $lockHandler          = Keestash::getServer()->getAppLockHandler();
         $appsLocked           = $lockHandler->isLocked();
         $routesToInstallation = $installationService->routesToInstallation();
 
         if (true === $appsLocked && true === $routesToInstallation) {
-            FileLogger::debug("already locked. Do not test again!");
+            $logger->debug("already locked. Do not test again!");
             return;
         }
 
@@ -335,6 +335,7 @@ class Keestash {
     private static function setExceptionHandler(): void {
         /** @var ConfigService $configService */
         $configService = Keestash::getServer()->query(ConfigService::class);
+        $logger        = Keestash::getServer()->getFileLogger();
         $showErrors    = $configService->getValue("show_errors", false);
         $debug         = $configService->getValue("debug", false);
 
@@ -352,9 +353,9 @@ class Keestash {
                 , string $file
                 , int $line
                 , array $context
-            ) {
+            ) use ($logger) {
 
-                FileLogger::error(
+                $logger->error(
                     json_encode(
                         [
                             "id"        => $id
@@ -362,15 +363,16 @@ class Keestash {
                             , "file"    => $file
                             , "line"    => $line
                         ]
-                    )
+                    ),
+                    $context
                 );
 
             });
 
         set_exception_handler(
-            function (Throwable $exception): void {
+            function (Throwable $exception) use ($logger): void {
 
-                FileLogger::error(
+                $logger->error(
                     json_encode(
                         [
                             "id"                => $exception->getCode()
@@ -510,6 +512,7 @@ class Keestash {
             (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER)
             && $appNavigationManager->getList()->length() > 0;
         $staticController     = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_STATIC);
+        $contextLess          = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
         $actionBar            = Keestash::renderActionBars(
             Keestash::getServer()->getActionBarManager()->get(IBag::ACTION_BAR_TOP)
         );
@@ -555,10 +558,11 @@ class Keestash {
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::BODY
             , [
-                "navigation"  => $navigation
-                , "content"   => $content
-                , "noContext" => $staticController
-                , "footer"    => $footer
+                "navigation"      => $navigation
+                , "content"       => $content
+                , "noContext"     => $contextLess
+                , "staticContext" => $staticController
+                , "footer"        => $footer
             ]
         );
 
@@ -645,8 +649,8 @@ class Keestash {
         $contextLess         = (self::getServer()->getRouterManager()->get(IRouterManager::HTTP_ROUTER)->getRouteType() === Route::ROUTE_TYPE_CONTROLLER_CONTEXTLESS);
 
         // we are not interested in a profile image when
-        // we are installing the instance.
-        if (false === $instanceLocked) {
+        // we are installing the instance or will not show
+        if (false === $instanceLocked && false === $contextLess) {
             $file = $fileManager->read(
                 $rawFileService->stringToUri(
                     $fileService->getProfileImagePath(Keestash::getServer()->getUserFromSession())

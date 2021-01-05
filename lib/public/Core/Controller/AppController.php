@@ -32,20 +32,13 @@ use KSP\L10N\IL10N;
 
 abstract class AppController implements IAppController {
 
-    /** @var null|IPermission $permission */
-    private $permission = null;
-    /** @var ITemplateManager|null $templateManager */
-    private $templateManager;
-    /** @var int $controllerType */
-    private $controllerType = IAppController::CONTROLLER_TYPE_NORMAL;
-    /** @var IL10N $l10n */
-    private $l10n;
-    /** @var array */
-    private $parameters;
-    /** @var bool */
-    private $parametersSanitized = false;
-    /** @var InputSanitizer $inputSanitizer */
-    private $inputSanitizer;
+    private ?IPermission     $permission          = null;
+    private ITemplateManager $templateManager;
+    private int              $controllerType      = IAppController::CONTROLLER_TYPE_NORMAL;
+    private IL10N            $l10n;
+    private array            $parameters;
+    private bool             $parametersSanitized = false;
+    private InputSanitizer   $inputSanitizer;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -63,12 +56,16 @@ abstract class AppController implements IAppController {
     }
 
     protected function setControllerType(int $controllerType): void {
-        if (true === in_array($controllerType, [
-                IAppController::CONTROLLER_TYPE_NORMAL
-                , IAppController::CONTROLLER_TYPE_FULL_SCREEN
-                , IAppController::CONTROLLER_TYPE_STATIC
-                , IAppController::CONTROLLER_TYPE_CONTEXTLESS
-            ])) {
+        if (true === in_array(
+                $controllerType
+                , [
+                    IAppController::CONTROLLER_TYPE_NORMAL
+                    , IAppController::CONTROLLER_TYPE_FULL_SCREEN
+                    , IAppController::CONTROLLER_TYPE_STATIC
+                    , IAppController::CONTROLLER_TYPE_CONTEXTLESS
+                ]
+            )
+        ) {
             $this->controllerType = $controllerType;
         }
     }

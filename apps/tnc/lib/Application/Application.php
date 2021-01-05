@@ -26,7 +26,7 @@ use KSA\TNC\Controller\Controller;
 class Application extends \Keestash\App\Application {
 
     public const PERMISSION_TNC       = "tnc";
-    public const TERMS_AND_CONDITIONS = "terms-and-conditions";
+    public const TERMS_AND_CONDITIONS = "tnc";
 
     public function register(): void {
         $this->registerRoute(Application::TERMS_AND_CONDITIONS, Controller::class);

@@ -26,28 +26,35 @@ use doganoo\PHPAlgorithms\Datastructure\Cache\LRUCache;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\FileSystem\DirHandler;
 use doganoo\PHPUtil\FileSystem\FileHandler;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
+use KSP\Core\ILogger\ILogger;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
 
+/**
+ * Class Loader
+ * @package Keestash\App
+ */
 class Loader implements ILoader {
 
-    private $classLoader = null;
-    private $appRoot     = null;
-    private $apps        = null;
-    private $lruAppCache = null;
-    private $flushedApps = null;
+    private ClassLoader $classLoader;
+    private string      $appRoot;
+    private HashTable   $apps;
+    private LRUCache    $lruAppCache;
+    private HashTable   $flushedApps;
+    private ILogger     $logger;
 
     public function __construct(
         ClassLoader $classLoader
+        , ILogger $logger
         , string $appRoot
     ) {
         $this->classLoader = $classLoader;
         $this->appRoot     = $appRoot;
+        $this->logger      = $logger;
         $this->apps        = new HashTable();
         $this->flushedApps = new HashTable();
         $this->lruAppCache = new LRUCache();
@@ -74,14 +81,14 @@ class Loader implements ILoader {
         $info = $this->loadInfo($app);
 
         if (false === $this->isValidInfo($info)) {
-            FileLogger::info("$appId is not installed properly. Ignoring");
+            $this->logger->info("$appId is not installed properly. Ignoring");
             return false;
         }
 
         $disable = $info[IApp::FIELD_DISABLE] ?? false;
 
         if (false !== $disable || $disable === 1) {
-            FileLogger::info("$appId is disabled. Skipping!");
+            $this->logger->info("$appId is disabled. Skipping!");
             return false;
         }
 
@@ -184,7 +191,7 @@ class Loader implements ILoader {
         $destination = $app->getAppPath() . "/scss/dist/";
 
         if (false === is_dir($source) || false === is_dir($destination)) {
-//            FileLogger::warn("$source or $destination is not a directory. Can not register scss");
+            $this->logger->warning("$source or $destination is not a directory. Can not register scss");
             return;
         }
 

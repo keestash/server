@@ -7930,6 +7930,7 @@ a:visited, a:hover, a:active {
 }
 .register .register-wrapper .register-box .logo {
   text-align: center;
+  margin-bottom: 5vh;
 }
 .register .register-wrapper .register-box .logo #logo-image {
   height: 5rem;

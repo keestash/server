@@ -21,29 +21,28 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\StringManager;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\DTO\File\IExtension;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\StringManager\IStringManager;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
 
 class StringManager implements IStringManager {
 
-    /** @var array $paths */
-    private $paths;
+    private array   $paths;
+    private array   $additional;
+    private ILogger $logger;
 
-    /** @var array $additional */
-    private $additional;
-
-    public function __construct() {
+    public function __construct(ILogger $logger) {
         $this->paths      = [];
         $this->additional = [];
+        $this->logger     = $logger;
     }
 
     public function addPath(string $key, string $path): void {
 
         if (false === is_dir($path)) {
-            FileLogger::warn("$path is not a path. Skipping");
+            $this->logger->warning("$path is not a path. Skipping");
             return;
         }
 
@@ -73,6 +72,7 @@ class StringManager implements IStringManager {
                     );
 
                     $result[$key] = json_encode($content);
+
                 }
             }
         }
@@ -90,8 +90,6 @@ class StringManager implements IStringManager {
             );
 
         return $userStrings;
-
-
     }
 
     public function addString(string $appId, string $key, string $value): void {
