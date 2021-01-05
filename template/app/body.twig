@@ -1,9 +1,9 @@
 <body>
-{% if noContext == false %}
+{% if staticContext == false %}
     {{ navigation|raw }}
 {% endif %}
 {{ content|raw }}
-{% if noContext == false %}
+{% if staticContext == false %}
     {{ footer|raw }}
 {% endif %}
 </body>

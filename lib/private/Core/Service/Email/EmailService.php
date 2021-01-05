@@ -25,6 +25,7 @@ use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
+use KSP\Core\ILogger\ILogger;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class EmailService {
@@ -39,11 +40,14 @@ class EmailService {
 
     private PHPMailer     $mailer;
     private ConfigService $configService;
+    private ILogger       $logger;
 
     public function __construct(
         Legacy $legacy
         , ConfigService $configService
+        , ILogger $logger
     ) {
+        $this->logger = $logger;
         // TODO put the config in a config file
         $this->mailer = new PHPMailer(EmailService::HAS_EXCEPTIONS);
 
@@ -66,7 +70,7 @@ class EmailService {
             , $legacy->getApplication()->get("name")
         );
         $this->mailer->Debugoutput = function ($message) {
-            FileLogger::debug($message);
+            $this->logger->debug($message);
         };
 
         // Global Config

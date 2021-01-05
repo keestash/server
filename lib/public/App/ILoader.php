@@ -23,6 +23,7 @@ namespace KSP\App;
 
 use Composer\Autoload\ClassLoader;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use KSP\Core\ILogger\ILogger;
 
 interface ILoader {
 
@@ -44,7 +45,11 @@ interface ILoader {
 
     public const DIR_NAME_FRONTEND = "frontend";
 
-    public function __construct(ClassLoader $classLoader, string $appRoot);
+    public function __construct(
+        ClassLoader $classLoader,
+        ILogger $logger,
+        string $appRoot
+    );
 
     public function loadApps(): void;
 

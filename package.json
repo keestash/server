@@ -37,7 +37,7 @@
     "eslint": "^6.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-vue": "^6.2.2",
-    "html-webpack-plugin": "^4.5.0",
+    "html-webpack-plugin": "^4.5.1",
     "kind-of": ">=6.0.3",
     "minimist": "^1.2.5",
     "node-sass": "^4.14.1",
@@ -49,12 +49,12 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5.3",
     "bootstrap-select": "^1.13.18",
-    "bootstrap-vue": "^2.21.1",
-    "core-js": "^3.8.1",
+    "bootstrap-vue": "^2.21.2",
+    "core-js": "^3.8.2",
     "dexie": "^3.0.3",
     "dot-prop": "^5.3.0",
     "elliptic": "^6.5.3",
@@ -76,7 +76,7 @@
     "simple-dijs": "^2.0.2",
     "twig": "^1.15.4",
     "vue": "^2.6.12",
-    "vuex": "^3.5.1",
+    "vuex": "^3.6.0",
     "webpack-merge": "^4.2.2"
   },
   "eslintConfig": {

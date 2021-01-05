@@ -19,25 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\BackgroundJob;
+namespace KSP\Core\Manager\LoggerManager;
 
-use doganoo\Backgrounder\Service\Log\ILoggerService;
 use KSP\Core\ILogger\ILogger;
 
 /**
- * Class Logger
- * @package Keestash\Core\DTO\BackgroundJob
+ * Class ILoggerManager
+ * @package KSP\Core\Manager\LoggerManager
  */
-class Logger implements ILoggerService {
+interface ILoggerManager {
 
-    private ILogger $logger;
+    public const FILE_LOGGER = "logger.file";
 
-    public function __construct(ILogger $logger) {
-        $this->logger = $logger;
-    }
-
-    public function log(string $key, string $message, int $level): void {
-        $this->log($key, json_encode([$key, $message, $level]), $level);
-    }
+    public function getFileLogger(): ILogger;
 
 }

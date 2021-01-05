@@ -21,14 +21,20 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\BackgroundJob;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
+use KSP\Core\ILogger\ILogger;
 
 /**
  * Class Container
  * @package Keestash\Core\DTO\BackgroundJob
  */
 class Container extends \doganoo\Backgrounder\Util\Container {
+
+    private ILogger $logger;
+
+    public function __construct(ILogger $logger) {
+        $this->logger = $logger;
+    }
 
     /**
      * @param string $name
@@ -37,7 +43,7 @@ class Container extends \doganoo\Backgrounder\Util\Container {
      * @throws \DI\NotFoundException
      */
     public function query(string $name) {
-        FileLogger::debug($name);
+        $this->logger->debug($name);
         return Keestash::getServer()->query($name);
     }
 

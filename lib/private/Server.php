@@ -37,7 +37,6 @@ use doganoo\DIP\Object\String\StringService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
@@ -101,7 +100,6 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Instance\MaintenanceService;
-use Keestash\Core\Service\Log\LoggerService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
@@ -111,7 +109,6 @@ use Keestash\Core\Service\Validation\ValidationService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use Keestash\Core\System\System;
-use Keestash\Exception\UserNotFoundException;
 use Keestash\L10N\GetText;
 use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
@@ -119,12 +116,14 @@ use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
 use KSP\Core\Manager\ConsoleManager\IConsoleManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\HookManager\IHookManager;
+use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
@@ -328,6 +327,7 @@ class Server {
         $this->register(ILoader::class, function () {
             return new Loader(
                 $this->classLoader
+                , Keestash::getServer()->getFileLogger()
                 , $this->appRoot
             );
         });
@@ -551,10 +551,6 @@ class Server {
             );
         });
 
-        $this->register(LoggerService::class, function () {
-            return new LoggerService();
-        });
-
         $this->register(Migrator::class, function () {
             return new Migrator();
         });
@@ -622,7 +618,9 @@ class Server {
         });
 
         $this->register(FrontendStringManager::class, function () {
-            return new FrontendStringManager();
+            return new FrontendStringManager(
+                $this->getFileLogger()
+            );
         });
 
         $this->register(Backgrounder::class, function () {
@@ -652,7 +650,9 @@ class Server {
         });
 
         $this->register(Core\DTO\BackgroundJob\Container::class, function () {
-            return new Core\DTO\BackgroundJob\Container();
+            return new Core\DTO\BackgroundJob\Container(
+                $this->getFileLogger()
+            );
         });
 
         $this->register(IJobRepository::class, function () {
@@ -698,6 +698,15 @@ class Server {
         $this->register(IniConfigService::class, function () {
             return new IniConfigService();
         });
+        $this->register(ILoggerManager::class, function (){
+            return new Keestash\Core\Manager\LoggerManager\LoggerManager(
+                Keestash::getServer()->query(ConfigService::class)
+            );
+        });
+
+        $this->register(ILogger::class, function () {
+            return $this->getFileLogger();
+        });
     }
 
     public function register(string $name, Closure $closure): bool {
@@ -742,6 +751,7 @@ class Server {
     public function getUserFromSession(): ?IUser {
         /** @var PersistenceService $persistenceService */
         $persistenceService = $this->query(PersistenceService::class);
+        $logger = $this->getFileLogger();
         /** @var UserService $userService */
         $userService = $this->query(UserService::class);
 
@@ -749,7 +759,7 @@ class Server {
         try {
             $userId = $persistenceService->getValue("user_id", null);
         } catch (PDOException $exception) {
-            FileLogger::error(json_encode($exception));
+            $logger->error(json_encode($exception));
         }
 
         if (null === $userId) return null;
@@ -804,8 +814,7 @@ class Server {
 
     public function getLogfilePath(): string {
         $name    = $this->getLegacy()->getApplication()->get("name_internal");
-        $logFile = $this->getDataRoot() . "$name.log";
-        return $logFile;
+        return $this->getDataRoot() . "$name.log";
     }
 
     public function getLegacy(): Legacy {
@@ -936,6 +945,11 @@ class Server {
 
     public function getStylesheetManager(): IStylesheetManager {
         return $this->query(IStylesheetManager::class);
+    }
+
+    public function getFileLogger():ILogger{
+        $loggerManager = $this->query(ILoggerManager::class);
+        return $loggerManager->getFileLogger();
     }
 
     /**

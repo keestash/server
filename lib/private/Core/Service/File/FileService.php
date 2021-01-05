@@ -21,9 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\File;
 
-use Cake\Log\Engine\FileLog;
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\File\RawFile\RawFileService;

@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\App\AppFactory;
 use Keestash\Core\Service\Phinx\Migrator;
