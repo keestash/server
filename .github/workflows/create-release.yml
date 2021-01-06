@@ -20,6 +20,18 @@ jobs:
         with:
           repository: keestash/password_manager
           path: apps/
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - name: Composer Install
+        uses: php-actions/composer@v5
+        with:
+          dev: no
+          args: --profile --ignore-platform-reqs
+          php_version: 7.4
+          composer_version: 2
       - name: Build Project
         uses: actions/setup-node@v2
         with:
@@ -29,6 +41,11 @@ jobs:
       - run: lsb_release -a
       - run: npm install
       - run: npm run build:prod
+      - name: Clean Up
+        run: |
+          - rm -rf node_modules
+          - rm -rf .github .git config/phpstan config/vagrant test/
+          - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -39,8 +56,3 @@ jobs:
           release_name: Nightly ${{ github.ref }}
           draft: false
           prerelease: false
-      - name: Clean Up
-        run: |
-          - rm -rf node_modules
-          - rm -rf .github .git config/phpstan config/vagrant test/
-          - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
