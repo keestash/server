@@ -19,7 +19,7 @@
 const glob = require("glob");
 const webpack = require("webpack");
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const { VueLoaderPlugin } = require("vue-loader");
 
 const env = process.env.NODE_ENV;
 
