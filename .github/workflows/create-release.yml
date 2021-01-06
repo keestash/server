@@ -43,9 +43,9 @@ jobs:
       - run: npm run build:prod
       - name: Clean Up
         run: |
-          - rm -rf node_modules
-          - rm -rf .github .git config/phpstan config/vagrant test/
-          - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
+          rm -rf node_modules
+          rm -rf .github .git config/phpstan config/vagrant test/
+          rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
