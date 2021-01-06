@@ -29,23 +29,18 @@ jobs:
       - run: lsb_release -a
       - run: npm install
       - run: npm run build:prod
-      uses: php-actions/composer@v5
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          dev: no
-          args: --profile --ignore-platform-reqs
-          php_version: 7.4
-        - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Nightly ${{ github.ref }}
-            draft: false
-            prerelease: false
-        - name: Clean Up
-          run: |
-            - rm -rf node_modules
-            - rm -rf .github .git config/phpstan config/vagrant test/
-            - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
+          tag_name: ${{ github.ref }}
+          release_name: Nightly ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Clean Up
+        run: |
+          - rm -rf node_modules
+          - rm -rf .github .git config/phpstan config/vagrant test/
+          - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
