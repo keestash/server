@@ -10,42 +10,50 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
       - name: Keestash Users
         uses: actions/checkout@master
         with:
           repository: keestash/users
           path: apps/
+
       - name: Keestash Password Manager
         uses: actions/checkout@master
         with:
           repository: keestash/password_manager
           path: apps/
+
       - name: Cache Composer dependencies
         uses: actions/cache@v2
         with:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
       - name: Composer Install
         uses: php-actions/composer@v5
         with:
           dev: no
           args: --profile --ignore-platform-reqs
           php_version: 7.4
-          composer_version: 2
+
       - name: Build Project
         uses: actions/setup-node@v2
         with:
           node-version: '12.18.2'
+
       - run: npm -v
       - run: node -v
       - run: lsb_release -a
       - run: npm install
       - run: npm run build:prod
+
       - name: Clean Up
         run: |
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant test/
           rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
+          zip -r keestash-nightly-$(date +"%Y-%m-%d").zip ../server
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -56,3 +64,14 @@ jobs:
           release_name: Nightly ${{ github.ref }}
           draft: false
           prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./keestash-nightly-$(date +"%Y-%m-%d").zip
+          asset_name: keestash-nightly-$(date +"%Y-%m-%d").zip
+          asset_content_type: application/zip
