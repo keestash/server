@@ -21,9 +21,12 @@ jobs:
           repository: keestash/password_manager
           working_directory: apps/
       - name: Build Project
-        run: |
-          - npm install
-          - npm build:prod
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - run: npm install
+      - run: npm build:prod
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
