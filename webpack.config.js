@@ -19,7 +19,6 @@
 const glob = require("glob");
 const webpack = require("webpack");
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
-const { VueLoaderPlugin } = require("vue-loader");
 
 const env = process.env.NODE_ENV;
 
@@ -42,21 +41,6 @@ const baseModule = {
                 test: /\.js$/,
                 loader: 'babel-loader'
             },
-            {
-                test: /\.vue$/,
-                exclude: /node_modules/,
-                loader: ['vue-loader']
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
         ]
     },
     resolve: {
@@ -69,7 +53,6 @@ const baseModule = {
         fs: 'empty'
     },
     plugins: [
-        new VueLoaderPlugin(),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"

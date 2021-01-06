@@ -24,21 +24,28 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '12.18.2'
-      - run: npm -v  
+      - run: npm -v
+      - run: node -v
+      - run: lsb_release -a
       - run: npm install
       - run: npm run build:prod
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      uses: php-actions/composer@v5
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Nightly ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Clean Up
-        run: |
-          - rm -rf node_modules
-          - rm -rf .github .git config/phpstan config/vagrant test/
-          - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
+          dev: no
+          args: --profile --ignore-platform-reqs
+          php_version: 7.4
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Nightly ${{ github.ref }}
+            draft: false
+            prerelease: false
+        - name: Clean Up
+          run: |
+            - rm -rf node_modules
+            - rm -rf .github .git config/phpstan config/vagrant test/
+            - rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
