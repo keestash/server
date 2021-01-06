@@ -28,6 +28,31 @@ module.exports = {
         path: __dirname + "/dist/",
         filename: '[name].bundle.js'
     },
+    module: {
+        rules: [
+            {
+                test: /\.vue$/,
+                exclude: /node_modules/,
+                loader: ['vue-loader']
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader',
+                    {
+                        loader: 'sass-loader',
+                    },
+                ],
+            },
+        ]
+    },
+    resolve: {
+        alias: {
+            'vue$':'vue/dist/vue.esm.js'
+        },
+        extensions: ['.js', '.vue']
+    },
     plugins: [
         new VueLoaderPlugin(),
         new webpack.ProvidePlugin({
