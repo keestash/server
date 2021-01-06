@@ -14,12 +14,12 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: keestash/users
-          working_directory: apps/
+          path: apps/
       - name: Keestash Password Manager
         uses: actions/checkout@master
         with:
           repository: keestash/password_manager
-          working_directory: apps/
+          path: apps/
       - name: Build Project
         uses: actions/setup-node@v2
         with:
