@@ -10,10 +10,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - uses: actions/checkout@master
+        with:
+          name: keestash/users
+          working_directory: apps/
+      - uses: actions/checkout@master
+        with:
+          name: keestash/password_manager
+          working_directory: apps/
       - name: Build Project
         run: |
-          - cd apps/ && git clone https://github.com/keestash/users.git
-          - cd apps/ && git clone https://github.com/keestash/password_manager.git
           - npm install
           - npm build:prod
       - name: Create Release
