@@ -23,7 +23,6 @@ namespace Keestash\Core\Backend;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
 use PDO;
@@ -56,7 +55,7 @@ class MySQLBackend implements ISQLBackend {
 
             $this->connected = true;
         } catch (PDOException $exception) {
-            FileLogger::error($exception->getMessage());
+            Keestash::getServer()->getFileLogger()->error($exception->getMessage());
             return false;
         }
 

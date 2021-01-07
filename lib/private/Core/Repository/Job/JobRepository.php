@@ -23,7 +23,6 @@ namespace Keestash\Core\Repository\Job;
 
 use doganoo\Backgrounder\BackgroundJob\Job;
 use doganoo\Backgrounder\BackgroundJob\JobList;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\DTO\BackgroundJob\IJob;
@@ -215,7 +214,6 @@ class JobRepository extends AbstractRepository implements IJobRepository {
         $statement->bindParam("create_ts", $createTs);
         $statement->bindParam("interval", $interval);
         $executed = $statement->execute();
-        FileLogger::error(json_encode($statement->errorInfo()));
         if (false === $executed) return false;
 
         $lastInsertId = parent::getLastInsertId();

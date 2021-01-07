@@ -172,11 +172,11 @@ class Server {
     public const DEFAULT_ACTION_BARS     = "bars.action.default";
     public const DEFAULT_ACTION_BAR_BAGS = "bags.bar.action.default";
 
-    private ?Container    $container;
-    private ?string       $appRoot;
-    private ?ClassLoader  $classLoader;
-    private ?HashTable    $userHashes = null;
-    private ?ArrayList    $userList   = null;
+    private ?Container   $container;
+    private ?string      $appRoot;
+    private ?ClassLoader $classLoader;
+    private ?HashTable   $userHashes = null;
+    private ?ArrayList   $userList   = null;
 
     /**
      * Server constructor.
@@ -303,6 +303,7 @@ class Server {
                 , new HTTPRouter(
                     $loggerManager
                     , $reflectionService
+                    , Keestash::getServer()->getFileLogger()
                 )
             );
 
@@ -311,6 +312,7 @@ class Server {
                 , new APIRouter(
                     $loggerManager
                     , $reflectionService
+                    , Keestash::getServer()->getFileLogger()
                 )
             );
 
@@ -345,6 +347,7 @@ class Server {
                 , $this->query(InstanceRepository::class)
                 , $this->query(CredentialService::class)
                 , $this->query(IDateTimeService::class)
+                , $this->query(ILogger::class)
             );
         });
 
@@ -552,7 +555,9 @@ class Server {
         });
 
         $this->register(Migrator::class, function () {
-            return new Migrator();
+            return new Migrator(
+                $this->query(ILogger::class)
+            );
         });
 
         $this->register(IConsoleManager::class, function () {
@@ -634,11 +639,15 @@ class Server {
         });
 
         $this->register(ILoggerService::class, function () {
-            return new Logger();
+            return new Logger(
+                $this->query(ILogger::class)
+            );
         });
 
         $this->register(IEncryptionService::class, function () {
-            return new KeestashEncryptionService();
+            return new KeestashEncryptionService(
+                $this->query(ILogger::class)
+            );
         });
 
         $this->register(CredentialService::class, function () {
@@ -698,7 +707,7 @@ class Server {
         $this->register(IniConfigService::class, function () {
             return new IniConfigService();
         });
-        $this->register(ILoggerManager::class, function (){
+        $this->register(ILoggerManager::class, function () {
             return new Keestash\Core\Manager\LoggerManager\LoggerManager(
                 Keestash::getServer()->query(ConfigService::class)
             );
@@ -751,7 +760,7 @@ class Server {
     public function getUserFromSession(): ?IUser {
         /** @var PersistenceService $persistenceService */
         $persistenceService = $this->query(PersistenceService::class);
-        $logger = $this->getFileLogger();
+        $logger             = $this->getFileLogger();
         /** @var UserService $userService */
         $userService = $this->query(UserService::class);
 
@@ -813,7 +822,7 @@ class Server {
     }
 
     public function getLogfilePath(): string {
-        $name    = $this->getLegacy()->getApplication()->get("name_internal");
+        $name = $this->getLegacy()->getApplication()->get("name_internal");
         return $this->getDataRoot() . "$name.log";
     }
 
@@ -947,7 +956,7 @@ class Server {
         return $this->query(IStylesheetManager::class);
     }
 
-    public function getFileLogger():ILogger{
+    public function getFileLogger(): ILogger {
         $loggerManager = $this->query(ILoggerManager::class);
         return $loggerManager->getFileLogger();
     }

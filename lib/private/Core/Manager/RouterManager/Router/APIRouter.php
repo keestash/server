@@ -27,16 +27,34 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\DTO\File\Upload\File;
 use Keestash\Core\DTO\File\Upload\FileList;
 use Keestash\Core\DTO\Instance\Request\APIRequest;
+use Keestash\Core\Service\ReflectionService;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\NoControllerFoundException;
 use KSP\Core\DTO\File\Upload\IFileList;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
+use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 class APIRouter extends Router {
 
     public const FIELD_NAME_USER_HASH = "user_hash";
     public const FIELD_NAME_TOKEN     = "token";
+
+    private ILogger $logger;
+
+    public function __construct(
+        IApiLogRepository $apiLoggerManager
+        , ReflectionService $reflectionService
+        , ILogger $logger
+    ) {
+        $this->logger = $logger;
+        parent::__construct(
+            $apiLoggerManager
+            , $reflectionService
+            , $logger
+        );
+    }
 
     /**
      * @param IToken|null $token
@@ -96,7 +114,7 @@ class APIRouter extends Router {
             return;
 
         } catch (ResourceNotFoundException $exception) {
-            FileLogger::error($exception->getMessage());
+            $this->logger->error($exception->getMessage());
         }
 
         //TODO make this to an ErrorView / a 404 catcher
@@ -150,7 +168,7 @@ class APIRouter extends Router {
     private function log(?IToken $token, float $start, float $end): bool {
         $route = $this->getRouteName();
         if (null === $token) {
-            FileLogger::debug("There is no token for $route which means that it is not necessary to log");
+            $this->logger->debug("There is no token for $route which means that it is not necessary to log");
             return true;
         }
         $request = new APIRequest();

@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Controller;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
@@ -38,10 +38,11 @@ class Controller extends FullscreenAppController {
     public const TEMPLATE_NAME_DIRS_WRITABLE_PART = "dirs_writable.twig";
     public const TEMPLATE_NAME_HAS_DATA_DIRS      = "has_data_dirs.twig";
 
-    private $permissionManager = null;
-    private $templateManager   = null;
-    private $lockHandler       = null;
-    private $installerService  = null;
+    private IPermissionRepository $permissionRepository;
+    private ITemplateManager      $templateManager;
+    private LockHandler           $lockHandler;
+    private InstallerService      $installerService;
+    private ILogger               $logger;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -49,16 +50,18 @@ class Controller extends FullscreenAppController {
         , IL10N $translator
         , LockHandler $lockHandler
         , InstallerService $installerService
+        , ILogger $logger
     ) {
         parent::__construct(
             $templateManager
             , $translator
         );
 
-        $this->templateManager   = $templateManager;
-        $this->permissionManager = $permissionRepository;
-        $this->lockHandler       = $lockHandler;
-        $this->installerService  = $installerService;
+        $this->templateManager      = $templateManager;
+        $this->permissionRepository = $permissionRepository;
+        $this->lockHandler          = $lockHandler;
+        $this->installerService     = $installerService;
+        $this->logger               = $logger;
 
     }
 
@@ -76,7 +79,7 @@ class Controller extends FullscreenAppController {
         $legacy = Keestash::getServer()->getLegacy();
 
         if (false === $locked) {
-            FileLogger::info("The isntallation routine was not locked. However, we are in this class and lock the installation until we are finished");
+            $this->logger->info("The isntallation routine was not locked. However, we are in this class and lock the installation until we are finished");
         }
 
         if (true === $this->installerService->hasIdAndHash()) {

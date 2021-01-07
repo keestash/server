@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Email;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
@@ -106,7 +105,7 @@ class EmailService {
             $this->mailer->send();
             return true;
         } catch (Exception $e) {
-            FileLogger::debug($e->getTraceAsString());
+            $this->logger->debug($e->getTraceAsString());
             return false;
         } finally {
             $this->clearAll();

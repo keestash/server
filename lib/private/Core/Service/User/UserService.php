@@ -21,10 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User;
 
-
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
@@ -39,6 +37,7 @@ use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
@@ -51,30 +50,19 @@ class UserService {
     /** @var int */
     public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
 
-    /** @var IApiLogRepository */
-    private $apiLogRepository;
-    /** @var IFileRepository */
-    private $fileRepository;
-    /** @var IEncryptionKeyRepository */
-    private $keyRepository;
-    /** @var IRoleRepository */
-    private $rolesRepository;
-    /** @var IUserRepository */
-    private $userRepository;
-    /** @var KeyService */
-    private $keyService;
-    /** @var Legacy */
-    private $legacy;
-    /** @var IUserStateRepository */
-    private $userStateRepository;
-    /** @var FileService */
-    private $fileService;
-    /** @var InstanceRepository $instanceRepository */
-    private $instanceRepository;
-    /** @var CredentialService */
-    private $credentialService;
-    /** @var IDateTimeService */
-    private $dateTimeService;
+    private IApiLogRepository        $apiLogRepository;
+    private IFileRepository          $fileRepository;
+    private IEncryptionKeyRepository $keyRepository;
+    private IRoleRepository          $rolesRepository;
+    private IUserRepository          $userRepository;
+    private KeyService               $keyService;
+    private Legacy                   $legacy;
+    private IUserStateRepository     $userStateRepository;
+    private FileService              $fileService;
+    private InstanceRepository       $instanceRepository;
+    private CredentialService        $credentialService;
+    private IDateTimeService         $dateTimeService;
+    private ILogger                  $logger;
 
     public function __construct(
         IApiLogRepository $apiLogRepository
@@ -89,6 +77,7 @@ class UserService {
         , InstanceRepository $instanceRepository
         , CredentialService $credentialService
         , IDateTimeService $dateTimeService
+        , ILogger $logger
     ) {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
@@ -102,6 +91,7 @@ class UserService {
         $this->instanceRepository  = $instanceRepository;
         $this->credentialService   = $credentialService;
         $this->dateTimeService     = $dateTimeService;
+        $this->logger              = $logger;
     }
 
     public function removeUser(IUser $user): array {
@@ -227,7 +217,7 @@ class UserService {
             $this->createUser($user, $file);
             return true;
         } catch (Exception $exception) {
-            FileLogger::error(json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
+            $this->logger->error(json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
             return false;
         }
     }

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\HTTP;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
 

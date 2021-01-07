@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\Register\Hook;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Hook\IHook;
 use KSP\Hook\IHookCache;
@@ -33,35 +33,38 @@ use KSP\L10N\IL10N;
 
 class EmailAfterRegistration implements IHook {
 
-    private $templateManager = null;
-    private $emailService    = null;
-    private $legacy          = null;
-    private $translator      = null;
+    private ITemplateManager $templateManager;
+    private EmailService     $emailService;
+    private Legacy           $legacy;
+    private IL10N            $translator;
+    private ILogger          $logger;
 
     public function __construct(
         ITemplateManager $templateManager
         , EmailService $emailService
         , Legacy $legacy
         , IL10N $l10n
+        , ILogger $logger
     ) {
         $this->templateManager = $templateManager;
         $this->emailService    = $emailService;
         $this->legacy          = $legacy;
         $this->translator      = $l10n;
+        $this->logger          = $logger;
     }
 
     public function performAction(...$parameters): bool {
-        FileLogger::debug("please implement me :( " . EmailAfterRegistration::class);
+        $this->logger->debug("please implement me :( " . EmailAfterRegistration::class);
         return true;
         $user = $parameters[0][0] ?? null;
 
         if (null === $user) {
-            FileLogger::error("There is no user, can not send mail. Parameters are: " . (json_encode($parameters)));
+            $this->logger->error("There is no user, can not send mail. Parameters are: " . (json_encode($parameters)));
             return false;
         }
 
         if (!$user instanceof IUser) {
-            FileLogger::error("passed argument is not an user, can not send mail. Parameters are: " . (json_encode($parameters)));
+            $this->logger->error("passed argument is not an user, can not send mail. Parameters are: " . (json_encode($parameters)));
             return false;
         }
 

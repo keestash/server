@@ -91,6 +91,7 @@ class Application extends Keestash\App\Application {
                 , Keestash::getServer()->query(EmailService::class)
                 , Keestash::getServer()->query(Legacy::class)
                 , Keestash::getServer()->query(IL10N::class)
+                , Keestash::getServer()->getFileLogger()
             ));
 
         $this->registerServices();

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\DataManager;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
@@ -36,9 +35,9 @@ use KSP\Core\Manager\DataManager\IDataManager;
  */
 class DataManager implements IDataManager {
 
-    private string         $appId;
-    private ?string        $context;
-    private string         $path;
+    private string  $appId;
+    private ?string $context;
+    private string  $path;
 
     public function __construct(string $appId, ?string $context = null) {
         $this->appId   = $appId;
@@ -109,17 +108,14 @@ class DataManager implements IDataManager {
         $fileExists = is_file($fullPath);
 
         if (false === $fileExists) {
-            FileLogger::debug("File does not exist, aborting with true for unlink file");
             return true;
         }
         if (false === $isFile) {
-            FileLogger::debug("$fullPath is not a file");
             return false;
         }
         $removed = @unlink($fullPath);
 
         if (false === $removed) {
-            FileLogger::debug("could not remove file, unlink returned false");
         }
         return $removed;
     }
