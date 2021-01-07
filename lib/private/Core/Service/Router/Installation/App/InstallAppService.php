@@ -21,19 +21,24 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Router\Installation\App;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\ClassUtil;
 use Exception;
 use Keestash;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Exception\KeestashException;
+use KSP\Core\ILogger\ILogger;
 
 class InstallAppService {
 
-    private const ROUTE_INSTALL            = "install";
-    private const ROUTE_INSTALL_ALL_APPS   = "install/apps/all/";
+    private const ROUTE_INSTALL          = "install";
+    private const ROUTE_INSTALL_ALL_APPS = "install/apps/all/";
 
+    private ILogger $logger;
+
+    public function __construct(ILogger $logger) {
+        $this->logger = $logger;
+    }
 
     public function routesToInstallation(): bool {
         $router               = Keestash::getServer()->getRouter();
@@ -62,7 +67,7 @@ class InstallAppService {
         return true;
     }
 
-    private static function handleApi(APIRouter $router) {
+    private function handleApi(APIRouter $router) {
 
         try {
             $name = $router->getRouteName();
@@ -76,7 +81,7 @@ class InstallAppService {
             // we do not do anything here
             // we know that there is no route and
             // return false
-            FileLogger::debug($e->getTraceAsString());
+            $this->logger->debug($e->getTraceAsString());
             return false;
         }
 

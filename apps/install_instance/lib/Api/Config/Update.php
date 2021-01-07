@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Api\Config;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
@@ -212,7 +211,6 @@ class Update extends AbstractApi {
             new PDO("mysql:host=$host;port=$port;dbname=$schemaName", $user, $password);
             return true;
         } catch (Exception $e) {
-            FileLogger::info("test database connection is false {$e->getTraceAsString()}");
             return false;
         }
     }

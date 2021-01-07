@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Encryption;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Encryption\IEncryptionService;
 
 /**
@@ -35,6 +35,12 @@ class AESService implements IEncryptionService {
     public const METHOD         = "AES-256-CBC";
     public const HASH_ALGORITHM = "sha256";
     public const IV_LENGTH      = 16;
+
+    private ILogger $logger;
+
+    public function __construct(ILogger $logger) {
+        $this->logger = $logger;
+    }
 
     public function encrypt(ICredential $credential, string $raw): string {
         $key = hash(
@@ -92,7 +98,7 @@ class AESService implements IEncryptionService {
         );
 
         if ($newHash !== $hash) {
-            FileLogger::error("hashes do not match. There was an error. Aborting encryption");
+            $this->logger->error("hashes do not match. There was an error. Aborting encryption");
             return null;
         }
 

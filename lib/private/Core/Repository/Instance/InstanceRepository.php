@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Instance;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\DTO\Instance\Repository\Table;
 use Keestash\Core\Repository\AbstractRepository;
 use PDO;
@@ -55,7 +54,6 @@ class InstanceRepository extends AbstractRepository {
         $this->query("SET FOREIGN_KEY_CHECKS = 0");
         foreach ($this->getTables() as $table) {
             $ran = $this->query(" DROP TABLE IF EXISTS `$table`;");
-            FileLogger::debug("ran for $table : $ran");
         }
         $this->query("SET FOREIGN_KEY_CHECKS = 1");
 

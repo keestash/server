@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
-use doganoo\PHPUtil\Log\FileLogger;
-use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;
@@ -42,23 +40,17 @@ class MailExists extends AbstractApi {
         $users        = Keestash::getServer()->getUsersFromCache();
         $user         = null;
 
-        try {
+        /** @var IUser $iUser */
+        foreach ($users as $iUser) {
 
-            /** @var IUser $iUser */
-            foreach ($users as $iUser) {
-
-                if (strtolower($emailAddress) === strtolower($iUser->getEmail())) {
-                    $user = $iUser;
-                    break;
-                }
-
+            if (strtolower($emailAddress) === strtolower($iUser->getEmail())) {
+                $user = $iUser;
+                break;
             }
 
-        } catch (Exception $exception) {
-            FileLogger::error($exception->getTraceAsString());
         }
 
-       $this->createAndSetResponse(
+        $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [
                 "email_address_exists" => $user !== null

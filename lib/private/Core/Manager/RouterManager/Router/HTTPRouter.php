@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\RouterManager\Router;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Controller\IAppController;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,16 +36,20 @@ use Symfony\Component\Routing\RequestContext;
 
 class HTTPRouter extends Router {
 
-    private $routeType = null;
+    private int     $routeType;
+    private ILogger $logger;
 
     public function __construct(
         IApiLogRepository $loggerManager
         , ReflectionService $reflectionService
+        , ILogger $logger
     ) {
         $this->routeType = IAppController::CONTROLLER_TYPE_NORMAL;
+        $this->logger    = $logger;
         parent::__construct(
             $loggerManager
             , $reflectionService
+            , $logger
         );
     }
 
@@ -110,7 +114,7 @@ class HTTPRouter extends Router {
             }
 
         } catch (ResourceNotFoundException $exception) {
-            FileLogger::error($exception->getMessage());
+            $this->logger->error($exception->getMessage());
         }
 
         $defaultApp = Keestash::getServer()->getAppLoader()->getDefaultApp();

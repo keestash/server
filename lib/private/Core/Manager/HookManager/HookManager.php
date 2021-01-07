@@ -23,7 +23,6 @@ namespace Keestash\Core\Manager\HookManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\Manager\HookManager\IHookManager;
 use KSP\Hook\IHook;
 

@@ -28,6 +28,7 @@ use Keestash;
 use Keestash\Core\Service\ReflectionService;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\RouterManager\IRouter;
 use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
@@ -45,16 +46,19 @@ abstract class Router implements IRouter {
     private HashTable         $publicRoutes;
     private IApiLogRepository $apiLoggerManager;
     private ReflectionService $reflectionService;
+    private ILogger           $logger;
 
     public function __construct(
         IApiLogRepository $apiLoggerManager
         , ReflectionService $reflectionService
+        , ILogger $logger
     ) {
         $this->routes           = new RouteCollection();
         $this->publicRoutes     = new HashTable();
         $this->apiLoggerManager = $apiLoggerManager;
         $this->registerPublicRoute("/");
         $this->reflectionService = $reflectionService;
+        $this->logger            = $logger;
     }
 
     public function registerPublicRoute(string $name): bool {
@@ -128,7 +132,7 @@ abstract class Router implements IRouter {
             $parameters = $matcher->match($context->getPathInfo());
             $route      = $parameters["_route"];
         } catch (Exception $exception) {
-//            FileLogger::error($exception->getMessage() . " " . $exception->getTraceAsString());
+//            $this->logger->error($exception->getMessage() . " " . $exception->getTraceAsString());
             return null;
         }
         return $route;

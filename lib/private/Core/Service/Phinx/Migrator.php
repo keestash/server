@@ -21,25 +21,27 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Phinx;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Core\Service\Instance\InstallerService;
+use KSP\Core\ILogger\ILogger;
 use Phinx\Console\PhinxApplication;
 use Phinx\Wrapper\TextWrapper;
 
 class Migrator {
 
-    private $phinxRoot = null;
+    private string  $phinxRoot;
+    private ILogger $logger;
 
-    public function __construct() {
+    public function __construct(ILogger $logger) {
         $this->phinxRoot = Keestash::getServer()->getPhinxRoot();
+        $this->logger    = $logger;
     }
 
     public function runCore() {
         $file   = $this->phinxRoot . "/instance.php";
         $exists = $this->checkFile($file);
         if (false === $exists) {
-            FileLogger::debug("file $file does not exist");
+            $this->logger->debug("file $file does not exist");
             return false;
         }
         return $this->run($file);
@@ -56,7 +58,7 @@ class Migrator {
 
     private function checkFile(string $path): bool {
         if (false === is_file($path)) {
-            FileLogger::debug("The phinx file located at $path is missing. Please add this file and run again.");
+            $this->logger->debug("The phinx file located at $path is missing. Please add this file and run again.");
             return false;
         }
         return true;
@@ -76,7 +78,7 @@ class Migrator {
 
         $log = $phinxTextWrapper->getMigrate();
 
-        FileLogger::debug($log);
+        $this->logger->debug($log);
 
         return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;
     }

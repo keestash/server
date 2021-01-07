@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\Upload;
 
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\Config\IniConfigService;
 use KSP\Core\DTO\File\IFile as ICoreFile;

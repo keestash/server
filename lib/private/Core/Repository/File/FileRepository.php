@@ -23,9 +23,7 @@ namespace Keestash\Core\Repository\File;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPUtil\Log\FileLogger;
 use doganoo\PHPUtil\Util\DateTimeUtil;
-use Exception;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
@@ -215,66 +213,60 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
-        try {
+        $queryBuilder = $this->getQueryBuilder();
 
-            $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $queryBuilder->select(
+            [
+                'id'
+                , 'name'
+                , 'path'
+                , 'mime_type'
+                , 'hash'
+                , 'extension'
+                , 'size'
+                , 'user_id'
+                , 'create_ts'
+                , 'directory'
+            ]
+        )
+            ->from('file')
+            ->where('path = ?')
+            ->orWhere('path like ?')
+            ->setParameter(0, $uri->getIdentifier())
+            ->setParameter(1, "{$uri->getIdentifier()}%");
+        $files        = $queryBuilder->execute()->fetchAllNumeric();
 
-            $queryBuilder = $queryBuilder->select(
-                [
-                    'id'
-                    , 'name'
-                    , 'path'
-                    , 'mime_type'
-                    , 'hash'
-                    , 'extension'
-                    , 'size'
-                    , 'user_id'
-                    , 'create_ts'
-                    , 'directory'
-                ]
-            )
-                ->from('file')
-                ->where('path = ?')
-                ->orWhere('path like ?')
-                ->setParameter(0, $uri->getIdentifier())
-                ->setParameter(1, "{$uri->getIdentifier()}%");
-            $files        = $queryBuilder->execute()->fetchAllNumeric();
+        $file = null;
+        foreach ($files as $row) {
+            $id        = $row[0];
+            $name      = $row[1];
+            $path      = $row[2];
+            $mimeType  = $row[3];
+            $hash      = $row[4];
+            $extension = $row[5];
+            $size      = $row[6];
+            $userId    = $row[7];
+            $createTs  = $row[8];
+            $directory = $row[9];
 
-            $file = null;
-            foreach ($files as $row) {
-                $id        = $row[0];
-                $name      = $row[1];
-                $path      = $row[2];
-                $mimeType  = $row[3];
-                $hash      = $row[4];
-                $extension = $row[5];
-                $size      = $row[6];
-                $userId    = $row[7];
-                $createTs  = $row[8];
-                $directory = $row[9];
+            $file = new File();
+            $file->setId((int) $id);
+            $file->setName($name);
+            $file->setDirectory($directory);
+            $file->setMimeType($mimeType);
+            $file->setHash($hash);
+            $file->setExtension($extension);
+            $file->setSize((int) $size);
+            $file->setOwner(
+                $this->userRepository->getUserById((string) $userId)
+            );
+            $file->setCreateTs(
+                $this->dateTimeService->fromFormat($createTs)
+            );
 
-                $file = new File();
-                $file->setId((int) $id);
-                $file->setName($name);
-                $file->setDirectory($directory);
-                $file->setMimeType($mimeType);
-                $file->setHash($hash);
-                $file->setExtension($extension);
-                $file->setSize((int) $size);
-                $file->setOwner(
-                    $this->userRepository->getUserById((string) $userId)
-                );
-                $file->setCreateTs(
-                    $this->dateTimeService->fromFormat($createTs)
-                );
-
-            }
-
-            return $file;
-        } catch (Exception $e) {
-            FileLogger::debug($e->getTraceAsString());
         }
-        return null;
+
+        return $file;
     }
 
     public function removeForUser(IUser $user): bool {
@@ -315,14 +307,8 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             ->setParameter(6, $file->getSize())
             ->setParameter(7, $file->getOwner()->getId())
             ->setParameter(8, $file->getId());
-        FileLogger::debug($queryBuilder->getSQL());
-        FileLogger::debug($file->getId());
         $rowCount = $queryBuilder->execute();
-
-        FileLogger::debug("update statement");
-        FileLogger::debug($rowCount);
-        FileLogger::debug($queryBuilder->getSQL());
-
+        
         if (0 === $rowCount) {
             throw new PasswordManagerException('no rows updated');
         }

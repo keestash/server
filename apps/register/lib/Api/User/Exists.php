@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Permission\PermissionFactory;

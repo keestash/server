@@ -22,13 +22,12 @@ declare(strict_types=1);
 namespace Keestash\L10N;
 
 use DateTime;
-use doganoo\PHPUtil\Log\FileLogger;
 use KSP\L10N\IL10N;
 
 class GetText implements IL10N {
 
     public function __construct() {
-        FileLogger::debug("il10n not implemented");
+        \Keestash::getServer()->getFileLogger()->debug("il10n not implemented");
     }
 
     public function translate(string $text): string {

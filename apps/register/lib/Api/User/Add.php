@@ -23,7 +23,6 @@ namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
 use doganoo\PHPUtil\HTTP\Code;
-use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
@@ -35,6 +34,7 @@ use KSP\Api\IResponse;
 use KSP\App\ILoader;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -49,6 +49,7 @@ class Add extends AbstractApi {
     private IPermissionRepository $permissionRepository;
     private ILoader               $loader;
     private IUserStateRepository  $userStateRepository;
+    private ILogger               $logger;
 
     public function __construct(
         IL10N $l10n
@@ -57,6 +58,7 @@ class Add extends AbstractApi {
         , IPermissionRepository $permissionRepository
         , ILoader $loader
         , IUserStateRepository $userStateRepository
+        , ILogger $logger
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
@@ -67,6 +69,7 @@ class Add extends AbstractApi {
         $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->userStateRepository  = $userStateRepository;
+        $this->logger               = $logger;
         $this->user                 = null;
     }
 
@@ -187,7 +190,7 @@ class Add extends AbstractApi {
                     );
                 }
             } catch (Exception $exception) {
-                FileLogger::error($exception->getTraceAsString());
+                $this->logger->error($exception->getTraceAsString());
                 $user = null;
             }
 

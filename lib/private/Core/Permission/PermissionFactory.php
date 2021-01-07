@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Permission;
 
-use doganoo\PHPUtil\Log\FileLogger;
+use Keestash;
 use KSP\Core\Permission\IPermission;
 
 class PermissionFactory {
@@ -30,7 +30,7 @@ class PermissionFactory {
     }
 
     public static function getDefaultPermission(): IPermission {
-        FileLogger::warn("please set a proper permission !!!");
+        Keestash::getServer()->getFileLogger()->warning("please set a proper permission !!!");
         $permission = new Permission();
         $permission->setId(IPermission::ID_PUBLIC);
         return $permission;

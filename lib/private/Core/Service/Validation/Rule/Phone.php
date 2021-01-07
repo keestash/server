@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Validation\Rule;
 
-use doganoo\PHPUtil\Log\FileLogger;
 use Exception;
 use Keestash;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use Laminas\Validator\AbstractValidator;
 use libphonenumber\PhoneNumberUtil;
@@ -31,19 +31,19 @@ use libphonenumber\PhoneNumberUtil;
 class Phone extends AbstractValidator {
 
     private const PHONE = "phone";
-    protected $messageTemplates = [
+    protected               $messageTemplates = [
         Phone::PHONE => "%phone% is invalid"
     ];
-    /** @var PhoneNumberUtil */
-    private $phoneNumberUtl;
-    /** @var ILocaleService */
-    private $localeService;
+    private PhoneNumberUtil $phoneNumberUtl;
+    private ILocaleService  $localeService;
+    private ILogger         $logger;
 
     public function __construct() {
-        parent::__construct(null);
+        parent::__construct();
 
         $this->phoneNumberUtl = Keestash::getServer()->query(PhoneNumberUtil::class);
         $this->localeService  = Keestash::getServer()->query(ILocaleService::class);
+        $this->logger         = Keestash::getServer()->getFileLogger();
     }
 
     public function isValid($value) {
@@ -63,7 +63,7 @@ class Phone extends AbstractValidator {
             }
 
         } catch (Exception $exception) {
-            FileLogger::error(
+            $this->logger->error(
                 $exception->getMessage() . " " .
                 $exception->getTraceAsString()
             );

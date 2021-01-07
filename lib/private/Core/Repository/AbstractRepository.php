@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use doganoo\PHPUtil\Log\FileLogger;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
 use PDO;
@@ -35,8 +34,8 @@ use PDOStatement;
  */
 class AbstractRepository implements IRepository {
 
-    private IBackend      $backend;
-    private ?PDO          $connection;
+    private IBackend $backend;
+    private ?PDO     $connection;
 
     public function __construct(IBackend $backend) {
         $this->backend = $backend;
@@ -70,7 +69,6 @@ class AbstractRepository implements IRepository {
         }
 
         $statement->execute();
-        FileLogger::debug(json_encode($statement->errorInfo()));
         return false === $this->hasErrors($statement->errorCode());
     }
 
