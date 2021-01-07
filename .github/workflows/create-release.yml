@@ -10,9 +10,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        run: |
-          export KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")
-          echo "::set-env name=KEESTASH_ZIP_NAME::$KEESTASH_ZIP_NAME"
 
       - name: Keestash Users
         uses: actions/checkout@master
@@ -44,6 +41,9 @@ jobs:
         with:
           node-version: '12.18.2'
 
+      - run: |
+        export KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")
+        echo "::set-env name=KEESTASH_ZIP_NAME::$KEESTASH_ZIP_NAME"
       - run: npm -v
       - run: node -v
       - run: lsb_release -a
