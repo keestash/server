@@ -30,16 +30,30 @@ use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 
   require_once __DIR__ . '/../vendor/autoload.php';
 
+  createDirIfNotExists(__DIR__ . '/../lib/scss/dist/');
   compile(
       __DIR__ . '/../lib/scss/',
       __DIR__ . '/../lib/scss/dist/style.css',
   );
 
   foreach (glob(__DIR__ . '/../apps/*/scss/') as $directory) {
+    createDirIfNotExists($directory . '/dist/');
     compile($directory, $directory . '/dist/style.css');
   }
 
 })();
+
+function createDirIfNotExists(string $dir): bool {
+
+  if (true === is_dir($dir)) return true;
+
+  $created = mkdir($dir, 0777, true);
+
+  if (false === $created) {
+    throw new Exception('could not create ' . $dir);
+  }
+  return true;
+}
 
 function compile(string $source, string $destination): void {
   $compiler = new ScssCompiler();
