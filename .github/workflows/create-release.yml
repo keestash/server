@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Init Variables
-        id: Define Keestash Zip Name
+        id: step_one
         run: |
           echo 'KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")' >> $KEESTASH_ZIP_NAME
 
