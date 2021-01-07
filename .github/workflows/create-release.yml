@@ -8,6 +8,11 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
+      - name: Init Variables
+        id: Define Keestash Zip Name
+        run: |
+          echo 'KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")' >> $KEESTASH_ZIP_NAME
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -49,8 +54,6 @@ jobs:
 
       - name: Clean Up
         run: |
-          export KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")
-          echo "::set-env name=KEESTASH_ZIP_NAME::$KEESTASH_ZIP_NAME"
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant test/
           rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
