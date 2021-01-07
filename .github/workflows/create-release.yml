@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Init Variables
-        id: step_one
+        id: init_var_name
         run: |
           echo 'KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")' >> $GITHUB_ENV
-
+          echo $KEESTASH_ZIP_NAME
       - name: Checkout code
         uses: actions/checkout@v2
 
