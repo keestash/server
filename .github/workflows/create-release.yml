@@ -11,7 +11,7 @@ jobs:
       - name: Init Variables
         id: step_one
         run: |
-          echo 'KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")' >> $KEESTASH_ZIP_NAME
+          echo 'KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")' >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v2
