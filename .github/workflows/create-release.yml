@@ -8,11 +8,6 @@ jobs:
     name: Create Release
     runs-on: ubuntu-latest
     steps:
-      - name: Init Variables
-        id: init_var_name
-        run: |
-          echo 'KEESTASH_ZIP_NAME=keestash-nightly-$(date +"%Y-%m-%d-%H-%M-%S")' >> $GITHUB_ENV
-          echo $KEESTASH_ZIP_NAME
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -57,7 +52,7 @@ jobs:
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant test/
           rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
-          zip -r $KEESTASH_ZIP_NAME.zip ../server
+          zip -r nightly-${GITHUB_SHA}.zip ../server
 
       - name: Create Release
         id: create_release
@@ -65,8 +60,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: $KEESTASH_ZIP_NAME # ${{ github.ref }}
-          release_name: $KEESTASH_ZIP_NAME # ${{ github.ref }}
+          tag_name: nightly-${GITHUB_SHA}
+          release_name: nightly-${GITHUB_SHA}
           draft: false
           prerelease: false
 
@@ -77,6 +72,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./$KEESTASH_ZIP_NAME.zip
-          asset_name: $KEESTASH_ZIP_NAME.zip
+          asset_path: ./nightly-${GITHUB_SHA}.zip
+          asset_name: nightly-${GITHUB_SHA}.zip
           asset_content_type: application/zip
