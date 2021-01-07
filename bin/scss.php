@@ -26,7 +26,6 @@ use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 
 (function () {
 
-  $cwd = getcwd();
   chdir(dirname(__DIR__));
 
   require_once __DIR__ . '/../vendor/autoload.php';
@@ -41,8 +40,6 @@ use ScssPhp\ScssPhp\Compiler as ScssCompiler;
     createDirIfNotExists($directory . '/dist/');
     compile($directory, $directory . '/dist/style.css');
   }
-
-  chdir($cwd);
 
 })();
 
