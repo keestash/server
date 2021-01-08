@@ -38,14 +38,14 @@ use KSP\L10N\IL10N;
 
 class EndUpdate extends AbstractApi {
 
-    private $installerService   = null;
-    private $lockHandler        = null;
-    private $fileRepository     = null;
-    private $fileService        = null;
-    private $userService        = null;
-    private $userRepository     = null;
-    private $persistenceService = null;
-    private $httpService        = null;
+    private InstallerService   $installerService;
+    private LockHandler        $lockHandler;
+    private IFileRepository    $fileRepository;
+    private FileService        $fileService;
+    private UserService        $userService;
+    private IUserRepository    $userRepository;
+    private PersistenceService $persistenceService;
+    private HTTPService        $httpService;
 
     public function __construct(
         IL10N $l10n

@@ -23,10 +23,10 @@ namespace KSA\InstallInstance\Application;
 
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceRepository;
-use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
+use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Controller\Controller;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
@@ -36,8 +36,6 @@ class Application extends \Keestash\App\Application {
 
     public const ROUTE_INSTALL_INSTANCE               = "install_instance";
     public const ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG = "install_instance/update_config/";
-    public const ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE = "install_instance/dirs_writable/";
-    public const ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS = "install_instance/has_data_dirs/";
     public const ROUTE_INSTALL_INSTANCE_CONFIG_DATA   = "install_instance/config_data/";
     public const ROUTE_INSTALL_INSTANCE_END_UPDATE    = "install_instance/end_update/";
 
@@ -45,61 +43,44 @@ class Application extends \Keestash\App\Application {
     public const LOG_REQUESTS_DISABLED = "disabled";
 
     public function register(): void {
-        parent::registerRoute(
+        $this->registerRoute(
             Application::ROUTE_INSTALL_INSTANCE
             , Controller::class
         );
 
-        parent::registerApiRoute(
+        $this->registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
             , Update::class
             , [IRouterManager::POST]
         );
 
-        parent::registerApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
-            , \KSA\InstallInstance\Api\DirsWritable\Get::class
-            , [IRouterManager::GET]
-        );
-
-        parent::registerApiRoute(
+        $this->registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
             , Get::class
             , [IRouterManager::GET]
         );
 
-        parent::registerApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
-            , \KSA\InstallInstance\Api\DataDirs\Get::class
-            , [IRouterManager::GET]
-        );
-
-        parent::registerApiRoute(
+        $this->registerApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_END_UPDATE
             , EndUpdate::class
             , [IRouterManager::POST]
         );
 
-        parent::registerPublicRoute(
+        $this->registerPublicRoute(
             Application::ROUTE_INSTALL_INSTANCE
         );
-        parent::registerPublicApiRoute(
+        $this->registerPublicApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
         );
-        parent::registerPublicApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_DIRS_WRITABLE
-        );
-        parent::registerPublicApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_HAS_DATA_DIRS
-        );
-        parent::registerPublicApiRoute(
+
+        $this->registerPublicApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_END_UPDATE
         );
-        parent::registerPublicApiRoute(
+        $this->registerPublicApiRoute(
             Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
         );
 
-        parent::addJavaScript(Application::APP_ID);
+        $this->addJavaScript(Application::APP_ID);
 
         $this->registerCommand(
             new Uninstall(

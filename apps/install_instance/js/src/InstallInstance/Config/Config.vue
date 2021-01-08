@@ -290,7 +290,6 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault();
-      console.log("submitting...");
 
       const value = {
         host: this.form.content.db.host.value
@@ -315,10 +314,11 @@ export default {
           })
           .then(
               (r) => {
-                console.log(r)
                 if (RESPONSE_CODE_OK in r) {
                   this.form.show = false;
                   this.success.show = true;
+
+                  this.$emit('configFinished', true)
                 }
               }
           ).catch(

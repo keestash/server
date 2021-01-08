@@ -30,8 +30,6 @@ use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Core\System\Installation\Verification\AbstractVerification;
 use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
 use Keestash\Core\System\Installation\Verification\DatabaseReachable;
-use Keestash\Core\System\Installation\Verification\DirsWritable;
-use Keestash\Core\System\Installation\Verification\HasDataDirs;
 use Keestash\Core\System\Installation\Verification\HasMigrations;
 
 class InstallerService {
@@ -125,22 +123,12 @@ class InstallerService {
         return $this->verifyField(ConfigFileReadable::class, $force);
     }
 
-    public function verifyWritableDirs(bool $force = false): array {
-        return $this->verifyField(DirsWritable::class, $force);
-    }
-
-    public function verifyHasDataDirs(bool $force = false): array {
-        return $this->verifyField(HasDataDirs::class, $force);
-    }
-
     public function isInstalled(): bool {
         $isInstalled = $this->hasIdAndHash();
         if (true === $isInstalled) return true;
 
         $list = new ArrayList();
-        $list->add(new DirsWritable());
         $list->add(new ConfigFileReadable());
-        $list->add(new HasDataDirs());
         $list->add(new DatabaseReachable());
         $list->add(new HasMigrations());
 
