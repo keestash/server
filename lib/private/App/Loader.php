@@ -81,14 +81,14 @@ class Loader implements ILoader {
         $info = $this->loadInfo($app);
 
         if (false === $this->isValidInfo($info)) {
-            $this->logger->info("$appId is not installed properly. Ignoring");
+//            $this->logger->info("$appId is not installed properly. Ignoring");
             return false;
         }
 
         $disable = $info[IApp::FIELD_DISABLE] ?? false;
 
         if (false !== $disable || $disable === 1) {
-            $this->logger->info("$appId is disabled. Skipping!");
+//            $this->logger->info("$appId is disabled. Skipping!");
             return false;
         }
 
@@ -191,7 +191,7 @@ class Loader implements ILoader {
         $destination = $app->getAppPath() . "/scss/dist/";
 
         if (false === is_dir($source) || false === is_dir($destination)) {
-            $this->logger->warning("$source or $destination is not a directory. Can not register scss");
+//            $this->logger->warning("$source or $destination is not a directory. Can not register scss");
             return;
         }
 

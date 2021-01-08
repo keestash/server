@@ -10,9 +10,6 @@ import {Container} from "../../../../../../../lib/js/src/DI/Container";
 
 export default {
   name: "Head",
-  props: {
-    strings: ''
-  },
   data() {
     return {
       head: {
