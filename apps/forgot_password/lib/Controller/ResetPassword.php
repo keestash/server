@@ -56,7 +56,7 @@ class ResetPassword extends StaticAppController {
         $this->userStateRepository = $userStateRepository;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_RESET_PASSWORD)
         );

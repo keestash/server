@@ -66,7 +66,7 @@ class Controller extends FullscreenAppController {
     }
 
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         parent::setPermission(
             PermissionFactory::getDefaultPermission()
         );

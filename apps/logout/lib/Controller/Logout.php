@@ -49,7 +49,7 @@ class Logout extends StaticAppController {
         $this->permissionManager = $permissionRepository;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_LOGOUT)
         );

@@ -52,7 +52,7 @@ class Promotion extends FullscreenAppController {
         $this->permissionManager = $permissionManager;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_PROMOTION)
         );

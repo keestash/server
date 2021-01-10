@@ -27,7 +27,7 @@ use KSP\Core\Controller\AppController;
 
 class RouteList extends AppController {
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         $this->setPermission(
             PermissionFactory::getDefaultPermission()
         );

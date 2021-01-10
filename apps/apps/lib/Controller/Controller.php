@@ -51,7 +51,7 @@ class Controller extends AppController {
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
 
         parent::setPermission(
             $this->permissionRepository->getPermission(Application::PERMISSION_READ_APPS)

@@ -30,7 +30,7 @@ interface IAppController {
     public const CONTROLLER_TYPE_STATIC      = 3;
     public const CONTROLLER_TYPE_CONTEXTLESS = 4;
 
-    public function onCreate(...$params): void;
+    public function onCreate(): void;
 
     public function create(): void;
 
