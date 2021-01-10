@@ -61,7 +61,7 @@ class Controller extends StaticAppController {
 
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         $this->setPermission(
             $this->permissionRepository->getPermission(Application::PERMISSION_REGISTER)
         );

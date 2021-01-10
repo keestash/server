@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 $loadedExtensions = get_loaded_extensions();
 
-$requiredExtensions = [];
+$requiredExtensions = [
+    // intl
+];
 
 // TODO implement

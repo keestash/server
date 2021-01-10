@@ -35,21 +35,18 @@ use KSP\L10N\IL10N;
  */
 class View extends AppController {
 
-    private $parameters = null;
-
     public function __construct(ITemplateManager $templateManager, IL10N $l10n) {
         parent::__construct($templateManager, $l10n);
     }
 
-    public function onCreate(...$params): void {
-        $this->parameters = $params;
+    public function onCreate(): void {
         $this->setPermission(
             PermissionFactory::getDefaultPermission()
         );
     }
 
     public function create(): void {
-        $fileId = $this->parameters["file_id"] ?? null;
+        $fileId = $this->getParameter("file_id");
     }
 
     public function afterCreate(): void {

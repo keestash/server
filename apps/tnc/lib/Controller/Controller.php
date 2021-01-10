@@ -45,7 +45,7 @@ class Controller extends ContextLessAppController {
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         parent::setPermission(
             $this->permissionRepository->getPermission(Application::PERMISSION_TNC)
         );

@@ -69,7 +69,7 @@ class ForgotPassword extends StaticAppController {
         $this->configService       = $configService;
     }
 
-    public function onCreate(...$params): void {
+    public function onCreate(): void {
         parent::setPermission(
             $this->permissionManager->getPermission(Application::PERMISSION_FORGOT_PASSWORD)
         );

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e7781bf62734628e6729decbd72f33f",
+    "content-hash": "1a275a0e8c6df25b0e63f8cb981ddae8",
     "packages": [
         {
             "name": "apache/log4php",
@@ -864,16 +864,16 @@
         },
         {
             "name": "doganoo/php-algorithms",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doganoo/PHPAlgorithms.git",
-                "reference": "6ac50ce74831a09ea910cf8b8164974fce418d6b"
+                "reference": "7dbf60d6800936b9635344d2eacf107924afa7bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doganoo/PHPAlgorithms/zipball/6ac50ce74831a09ea910cf8b8164974fce418d6b",
-                "reference": "6ac50ce74831a09ea910cf8b8164974fce418d6b",
+                "url": "https://api.github.com/repos/doganoo/PHPAlgorithms/zipball/7dbf60d6800936b9635344d2eacf107924afa7bb",
+                "reference": "7dbf60d6800936b9635344d2eacf107924afa7bb",
                 "shasum": ""
             },
             "require": {
@@ -915,7 +915,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doganoo/PHPAlgorithms/issues",
-                "source": "https://github.com/doganoo/PHPAlgorithms/tree/1.0.4"
+                "source": "https://github.com/doganoo/PHPAlgorithms/tree/1.0.5"
             },
             "funding": [
                 {
@@ -923,7 +923,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2020-12-17T18:09:48+00:00"
+            "time": "2021-01-10T20:26:43+00:00"
         },
         {
             "name": "doganoo/php-util",

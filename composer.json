@@ -27,7 +27,7 @@
     "doctrine/dbal": "^2.10",
     "doganoo/backgrounder": "^3.1",
     "doganoo/di-services": "^0.0",
-    "doganoo/php-algorithms": "^1.0.4",
+    "doganoo/php-algorithms": "^1.0.5",
     "doganoo/php-util": "^0.3",
     "doganoo/simple-rbac": "^1.6",
     "filp/whoops": "^2.7",
