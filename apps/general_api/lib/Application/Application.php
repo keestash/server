@@ -62,7 +62,6 @@ class Application extends Keestash\App\Application {
             , UserList::class
             , [IRouterManager::GET]
         );
-
         $this->registerApiRoute(
             Application::FRONTEND_TEMPLATES
             , GetAll::class
@@ -90,11 +89,9 @@ class Application extends Keestash\App\Application {
         $this->registerPublicApiRoute(
             Application::FRONTEND_TEMPLATES
         );
-
         $this->registerPublicApiRoute(
             Application::FILE_ICONS
         );
-
         $this->registerCommands();
         $this->registerRoutes();
     }
