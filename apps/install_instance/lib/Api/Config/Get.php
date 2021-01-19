@@ -57,6 +57,7 @@ class Get extends AbstractApi {
             IResponse::RESPONSE_CODE_OK
             , [
                 "config_data" => json_encode($data)
+                , "length"    => count($data)
             ]
         );
 

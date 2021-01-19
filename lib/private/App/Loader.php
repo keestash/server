@@ -30,6 +30,7 @@ use Keestash;
 use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
+use KSP\Core\Cache\ICacheServer;
 use KSP\Core\ILogger\ILogger;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
@@ -40,16 +41,18 @@ use SplFileInfo;
  */
 class Loader implements ILoader {
 
-    private ClassLoader $classLoader;
-    private string      $appRoot;
-    private HashTable   $apps;
-    private LRUCache    $lruAppCache;
-    private HashTable   $flushedApps;
-    private ILogger     $logger;
+    private ClassLoader  $classLoader;
+    private string       $appRoot;
+    private HashTable    $apps;
+    private LRUCache     $lruAppCache;
+    private HashTable    $flushedApps;
+    private ILogger      $logger;
+    private ICacheServer $cacheServer;
 
     public function __construct(
         ClassLoader $classLoader
         , ILogger $logger
+        , ICacheServer $cacheServer
         , string $appRoot
     ) {
         $this->classLoader = $classLoader;
@@ -58,6 +61,7 @@ class Loader implements ILoader {
         $this->apps        = new HashTable();
         $this->flushedApps = new HashTable();
         $this->lruAppCache = new LRUCache();
+        $this->cacheServer = $cacheServer;
     }
 
     public function loadAppsAndFlush(): void {
@@ -102,11 +106,19 @@ class Loader implements ILoader {
 
     private function loadInfo(IApp $app): ?array {
         $file = "{$this->appRoot}/apps/{$app->getId()}/info/info.json";
+
+        if ($this->cacheServer->exists($file)) {
+            return json_decode($this->cacheServer->get($file), true);
+        }
+
         if (is_file($file) && is_readable($file)) {
-            return json_decode(
-                file_get_contents($file)
+            $content = file_get_contents($file);
+            $decoded = json_decode(
+                $content
                 , true
             );
+            $this->cacheServer->set($file, $content);
+            return $decoded;
         }
         return null;
     }

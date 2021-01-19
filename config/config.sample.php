@@ -86,4 +86,15 @@ $CONFIG =
          * The password belonging to email_user
          */
         , "email_password"  => ""
+
+        /*
+         * The redis server host used to cache data
+         */
+        , 'redis_server'    => '127.0.0.1'
+
+        /*
+         * The redis server port used to cache data
+         */
+        , 'redis_port'      => 6379
+
     ];

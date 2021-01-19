@@ -1,8 +1,8 @@
 <template>
   <div class="col">
     <h4>{{ this.head.value }}</h4>
-    <div class="text-center" v-if="!form.show">
-      <b-spinner type="grow" variant="primary" label="Spinning" v-if="!form.show"></b-spinner>
+    <div class="text-center" v-if="loading.show">
+      <b-spinner type="grow" variant="primary" label="Spinning" v-if="loading.show"></b-spinner>
     </div>
 
     <b-form @submit="onSubmit" v-if="form.show">
@@ -179,8 +179,11 @@ export default {
       success: {
         show: false
       },
+      loading: {
+        show: true
+      },
       form: {
-        show: true,
+        show: false,
         content: {
           db: {
             host: {
@@ -220,7 +223,6 @@ export default {
               placeholder: '',
             },
           },
-
           email: {
             smtp: {
               host: {
@@ -265,32 +267,61 @@ export default {
     startUp.setUp();
 
     this.container = startUp.getContainer();
-    const assetReader = this.container.query(ASSET_READER);
-    const assets = await assetReader.read(true);
-    const strings = JSON.parse(assets[1].install_instance).strings;
+    const axios = this.container.query(AXIOS);
 
-    this.head.value = strings.config.header;
+    axios.request(
+        ROUTES.GET_INSTALL_INSTANCE_CONFIG_DATA()
+    ).then((response) => {
+      return response.data[RESPONSE_CODE_OK]['messages'];
+    })
+        .then((response) => {
+          const needsConfig = response.length > 0;
 
-    this.form.content.db = Object.assign(
-        this.form.content.db,
-        strings.config.db,
-    );
-
-    this.form.content.email = Object.assign(
-        this.form.content.email,
-        strings.config.email,
-    );
-
-    this.form.content.logRequests = Object.assign(
-        this.form.content.logRequests,
-        strings.config.logRequests,
-    );
+          if (true === needsConfig) {
+            this.showForm();
+            return;
+          }
+          this.makeSuccess();
+        })
 
   },
   methods: {
+    async showForm() {
+
+      this.form.show = true;
+      this.loading.show = false;
+      this.success.show = false;
+
+      const assetReader = this.container.query(ASSET_READER);
+      const assets = await assetReader.read(true);
+      const strings = JSON.parse(assets[1].install_instance).strings;
+
+      this.head.value = strings.config.header;
+
+      this.form.content.db = Object.assign(
+          this.form.content.db,
+          strings.config.db,
+      );
+
+      this.form.content.email = Object.assign(
+          this.form.content.email,
+          strings.config.email,
+      );
+
+      this.form.content.logRequests = Object.assign(
+          this.form.content.logRequests,
+          strings.config.logRequests,
+      );
+    },
+    makeSuccess() {
+      this.form.show = false;
+      this.loading.show = false;
+      this.success.show = true;
+      this.$emit('configFinished', true);
+    },
     onSubmit(event) {
       event.preventDefault();
-
+      this.loading.show = true;
       const value = {
         host: this.form.content.db.host.value
         , user: this.form.content.db.user.value
@@ -315,10 +346,7 @@ export default {
           .then(
               (r) => {
                 if (RESPONSE_CODE_OK in r) {
-                  this.form.show = false;
-                  this.success.show = true;
-
-                  this.$emit('configFinished', true)
+                  this.makeSuccess();
                 }
               }
           ).catch(
@@ -326,8 +354,6 @@ export default {
             console.error(r)
           }
       )
-
-      console.log(value)
     }
   }
 }

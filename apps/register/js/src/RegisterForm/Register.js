@@ -48,7 +48,7 @@ export class Register {
                 const lastName = $("#last_name").val();
                 const userName = $("#user_name").val();
                 const password = $("#password").val();
-                const phone = $("#phone_prefix").val() + $("phone").val();
+                const phone = $("#phone_prefix").val() + $("#phone").val();
                 const email = $("#email").val();
                 const website = $("#website").val();
                 const passwordRepeat = $("#password_repeat").val();

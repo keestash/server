@@ -133,6 +133,8 @@ class Update extends AbstractApi {
             , "email_smtp_host" => $smtpHost
             , "email_user"      => $smtpUser
             , "email_password"  => $smtpPassword
+            , "redis_server"    => '127.0.0.1'
+            , "redis_port"      => 6379
         ];
 
         $configRoot = Keestash::getServer()->getConfigRoot();

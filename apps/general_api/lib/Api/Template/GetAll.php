@@ -26,21 +26,25 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
+use KSP\Core\Cache\ICacheServer;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
 
 class GetAll extends AbstractApi {
 
     private FrontendManager $frontendManager;
+    private ICacheServer    $cacheServer;
 
     public function __construct(
         IL10N $l10n
         , FrontendManager $frontendManager
+        , ICacheServer $cacheServer
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
         $this->frontendManager = $frontendManager;
+        $this->cacheServer     = $cacheServer;
     }
 
     public function onCreate(array $parameters): void {
@@ -48,12 +52,26 @@ class GetAll extends AbstractApi {
             PermissionFactory::getDefaultPermission()
         );
 
+        $redisKey = "frontendmanagerstrings";
+        $data     = null;
+        if (true === $this->cacheServer->exists($redisKey)) {
+            $data = json_decode(
+                $this->cacheServer->get($redisKey)
+                , true
+            );
+        } else {
+            $data = $this->hashTableToArray(
+                $this->frontendManager->getAllRaw()
+            );
+            $this->cacheServer->set(
+                $redisKey
+                , json_encode($data)
+            );
+        }
         $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [
-                "data" => $this->hashTableToArray(
-                    $this->frontendManager->getAllRaw()
-                )
+                "data" => $data
             ]
         );
     }

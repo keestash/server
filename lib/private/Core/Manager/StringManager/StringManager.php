@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\StringManager;
 
+use KSP\Core\Cache\ICacheServer;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\StringManager\IStringManager;
@@ -29,14 +30,19 @@ use SplFileInfo;
 
 class StringManager implements IStringManager {
 
-    private array   $paths;
-    private array   $additional;
-    private ILogger $logger;
+    private array        $paths;
+    private array        $additional;
+    private ILogger      $logger;
+    private ICacheServer $cacheServer;
 
-    public function __construct(ILogger $logger) {
-        $this->paths      = [];
-        $this->additional = [];
-        $this->logger     = $logger;
+    public function __construct(
+        ILogger $logger
+        , ICacheServer $cacheServer
+    ) {
+        $this->paths       = [];
+        $this->additional  = [];
+        $this->logger      = $logger;
+        $this->cacheServer = $cacheServer;
     }
 
     public function addPath(string $key, string $path): void {
@@ -55,6 +61,11 @@ class StringManager implements IStringManager {
             ? $this->paths
             : $this->paths[$key];
 
+        $redisKey = json_encode($key);
+        if ($this->cacheServer->exists($redisKey)) {
+            return $this->cacheServer->get($redisKey);
+        }
+
         $result = [];
 
 
@@ -72,10 +83,10 @@ class StringManager implements IStringManager {
                     );
 
                     $result[$key] = json_encode($content);
-
                 }
             }
         }
+        $this->cacheServer->set($redisKey, $result);
         return $result;
     }
 
