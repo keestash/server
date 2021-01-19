@@ -41,6 +41,7 @@ use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\Cache\RedisServer;
 use Keestash\Core\DTO\BackgroundJob\Logger;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
@@ -114,6 +115,7 @@ use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\Cache\ICacheServer;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
@@ -206,6 +208,13 @@ class Server {
 
         $this->register(InputSanitizer::class, function () {
             return new InputSanitizer();
+        });
+
+        $this->register(ICacheServer::class, function (){
+            return new RedisServer(
+                $this->getFileLogger()
+                , $this->query(ConfigService::class)
+            );
         });
 
         $this->register(OutputSanitizer::class, function () {
@@ -330,6 +339,7 @@ class Server {
             return new Loader(
                 $this->classLoader
                 , Keestash::getServer()->getFileLogger()
+                , $this->getCache()
                 , $this->appRoot
             );
         });
@@ -625,6 +635,7 @@ class Server {
         $this->register(FrontendStringManager::class, function () {
             return new FrontendStringManager(
                 $this->getFileLogger()
+                , $this->getCache()
             );
         });
 
@@ -974,6 +985,10 @@ class Server {
 
     public function getUsersFromCache(): ArrayList {
         return $this->query(Server::USER_LIST);
+    }
+
+    public function getCache():ICacheServer{
+        return $this->query(ICacheServer::class);
     }
 
     public function wipeCache(): void {

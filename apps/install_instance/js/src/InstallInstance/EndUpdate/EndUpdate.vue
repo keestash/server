@@ -16,7 +16,7 @@ export default {
   name: "EndUpdate",
   methods: {
     buttonClick: () => {
-
+      console.log("starting to end update ....");
       const startUp = new StartUp(
           new Container()
       );
@@ -30,19 +30,23 @@ export default {
           () => {
             axios.post(
                 ROUTES.GET_INSTALL_INSTANCE_END_UPDATE()
-                , {}
-                , function (x, y, z) {
-                  const object = JSON.parse(x);
+            ).then(
+                (response) => {
+                  console.log("done");
+                  const object = response.data;
 
                   if (RESPONSE_CODE_OK in object) {
+                    console.log("success. Routing ....");
                     const routeTo = object[RESPONSE_CODE_OK]['messages']['route_to'];
                     router.route(routeTo);
+                    return;
                   }
+                  console.log("Error :(");
                 }
-                , function (x, y, z) {
-                  console.log(x);
-                }
-            );
+            ).catch((response) => {
+              console.log(response);
+            })
+            ;
           }, 500
       );
     }

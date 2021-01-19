@@ -21,8 +21,6 @@ declare(strict_types=1);
  */
 
 use doganoo\DI\HTTP\IHTTPService;
-use doganoo\PHPUtil\Log\FileLogger;
-use doganoo\PHPUtil\Log\Logger;
 use Keestash\Api\Response\MaintenanceResponse;
 use Keestash\Api\Response\NeedsUpgrade;
 use Keestash\Api\Response\SessionExpired;
@@ -172,11 +170,6 @@ class Keestash {
 
         Keestash::getServer()->getSystem()->createConfig();
 
-        $logPath  = Keestash::getServer()->getLogfilePath();
-        $logLevel = Keestash::getServer()->getConfig()->get("log_level");
-
-        FileLogger::setPath($logPath);
-        Logger::setLogLevel((int) $logLevel);
         return true;
     }
 

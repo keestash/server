@@ -25,40 +25,53 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\StringManager\FrontendManager;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
+use KSP\Core\Cache\ICacheServer;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\StringManager\IStringManager;
 use KSP\L10N\IL10N;
 
 class GetAll extends AbstractApi {
 
-    /** @var IStringManager $stringManager */
-    private $stringManager = null;
+    private IStringManager $stringManager;
+    private ICacheServer   $cacheServer;
 
     public function __construct(
         IL10N $l10n
         , FrontendManager $frontendManager
+        , ICacheServer $cacheServer
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
 
         $this->stringManager = $frontendManager;
+        $this->cacheServer   = $cacheServer;
+    }
+
+
+    private function getCachedStrings(string $key): array {
+
+        if (true === $this->cacheServer->exists($key)) {
+            return json_decode($this->cacheServer->get($key), true);
+        }
+        $data = $this->stringManager->load();
+        $this->cacheServer->set($key, json_encode($data));
+        return $data;
     }
 
     public function onCreate(array $parameters): void {
         $this->setPermission(
             PermissionFactory::getDefaultPermission()
         );
-
-        $this->createAndSetResponse(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "data" => $this->stringManager->load()
-            ]
-        );
     }
 
     public function create(): void {
-
+        $redisKey = "frontendmanagertemplates";
+        $this->createAndSetResponse(
+            IResponse::RESPONSE_CODE_OK
+            , [
+                "data" => $this->getCachedStrings($redisKey)
+            ]
+        );
     }
 
     public function afterCreate(): void {

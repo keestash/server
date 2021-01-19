@@ -25,11 +25,9 @@ use Twig\TwigFunction;
 
 class TwigManager extends TemplateManager {
 
-    private $stylesheet = null;
-    private $scripts    = null;
-    private $appScripts = null;
-
-    private $map = null;
+    private array $stylesheet;
+    private array $scripts;
+    private array $appScripts;
 
     public function __construct() {
         $this->stylesheet = [];
@@ -39,24 +37,12 @@ class TwigManager extends TemplateManager {
         parent::__construct();
     }
 
-    public function setUp(?string $baseURL) {
-        if (null === $baseURL) return null;
+    public function setUp(?string $baseURL): void {
+        if (null === $baseURL) return;
         $this->getEnvironment()
             ->addFunction(new TwigFunction('app_asset', function ($asset) use ($baseURL) {
                 return $baseURL . $asset;
             }));
-    }
-
-    public function addStylesheet(string $href): void {
-        $this->stylesheet[] = $href;
-    }
-
-    public function getStylesheets(): array {
-        return $this->stylesheet;
-    }
-
-    public function addScript(string $path, string $application = "application/javascript"): void {
-        $this->scripts[$path] = $application;
     }
 
     public function addAppScript(
