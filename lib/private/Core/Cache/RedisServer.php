@@ -72,7 +72,7 @@ class RedisServer implements ICacheServer {
     }
 
     public function exists(string $key): bool {
-        if (false === $this->connected) return false;
+        if (false === $this->connected || $this->config->getValue('debug', false)) return false;
         return (bool) $this->instance->exists($key);
     }
 
