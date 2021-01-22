@@ -49,10 +49,9 @@ class SanitizerService {
      * TODO implement
      */
     public function sanitizeAll(array $all): array {
-        foreach ($all as $key => $input) {
-            $all[$key] = $input;
-        }
-
+//        foreach ($all as $key => $input) {
+//            $all[$key] = $input;
+//        }
         return $all;
     }
 
