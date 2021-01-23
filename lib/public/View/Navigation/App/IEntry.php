@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\View\Navigation\App;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Entity\IObject;
 
 /**
@@ -36,6 +35,7 @@ interface IEntry extends IObject {
     public const ICON_HISTORY = "fas fa-history";
     public const ICON_SHARE   = "fas fa-share";
     public const ICON_SITEMAP = "fas fa-sitemap";
+    public const ICON_HOME    = "fas fa-home";
     public const ICON_STAR    = "fas fa-star";
 
     public function getTitle(): string;
