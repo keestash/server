@@ -48,6 +48,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@braintree/sanitize-url": "^5.0.0",
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5.3",
