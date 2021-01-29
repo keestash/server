@@ -530,7 +530,7 @@ class Keestash {
                 "appNavigation"      => $appNavigation
                 , "appContent"       => $appContent
                 , "hasAppNavigation" => $hasAppNavigation
-                , "hasBreadcrumbs"   => Keestash::getServer()->getBreadCrumbManager()->isVisible()
+                , "hasBreadcrumbs"   => false
             ]
         );
 

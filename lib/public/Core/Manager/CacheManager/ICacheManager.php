@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Cache;
+namespace KSP\Core\Manager\CacheManager;
 
-interface ICacheServer {
+interface ICacheManager {
 
-    public function connect(): void;
+    public const SERVICE_NULL  = 'null.service';
+    public const SERVICE_REDIS = 'redis.service';
 
-    public function set(string $key, $value): bool;
-
-    public function get(string $key);
-
-    public function exists(string $key): bool;
+    public function getConfiguredService(): string;
 
 }

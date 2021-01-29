@@ -23,7 +23,7 @@ namespace KSP\App;
 
 use Composer\Autoload\ClassLoader;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\Cache\ICacheServer;
+use KSP\Core\Cache\ICacheService;
 use KSP\Core\ILogger\ILogger;
 
 interface ILoader {
@@ -49,7 +49,7 @@ interface ILoader {
     public function __construct(
         ClassLoader $classLoader,
         ILogger $logger,
-        ICacheServer $cacheServer,
+        ICacheService $cacheServer,
         string $appRoot
     );
 

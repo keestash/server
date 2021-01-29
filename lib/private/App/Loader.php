@@ -30,7 +30,7 @@ use Keestash;
 use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
-use KSP\Core\Cache\ICacheServer;
+use KSP\Core\Cache\ICacheService;
 use KSP\Core\ILogger\ILogger;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
@@ -46,13 +46,13 @@ class Loader implements ILoader {
     private HashTable    $apps;
     private LRUCache     $lruAppCache;
     private HashTable    $flushedApps;
-    private ILogger      $logger;
-    private ICacheServer $cacheServer;
+    private ILogger       $logger;
+    private ICacheService $cacheServer;
 
     public function __construct(
         ClassLoader $classLoader
         , ILogger $logger
-        , ICacheServer $cacheServer
+        , ICacheService $cacheServer
         , string $appRoot
     ) {
         $this->classLoader = $classLoader;

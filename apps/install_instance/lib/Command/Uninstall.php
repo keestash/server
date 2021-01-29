@@ -40,11 +40,38 @@ class Uninstall extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln("unlinking instance db file");
         $this->removeInstanceDB($output);
+        $output->writeln("unlinking scss files");
+        $this->removeCss($output);
         $output->writeln("dropping tables");
         $this->dropTables($output);
         $output->writeln("clearing config file");
         $this->clearConfig($output);
         return 0;
+    }
+
+    private function removeCss(OutputInterface $output): bool {
+        $appRoot = Keestash::getServer()
+            ->getAppRoot();
+
+        $styleSheets = glob($appRoot . '/*/scss/dist/*/css');
+
+        if (false === $styleSheets) {
+            $this->writeError('no data found :(', $output);
+            return false;
+        }
+
+        foreach ($styleSheets as $styleSheet) {
+            if (true === is_file($styleSheet)) {
+                $removed = @unlink($styleSheet);
+
+                if (false === $removed) {
+                    $this->writeInfo('removed ' . $styleSheet, $output);
+                }
+                continue;
+            }
+            $this->writeError($styleSheet . ' is not a file', $output);
+        }
+        return true;
     }
 
     private function removeInstanceDB(OutputInterface $output): bool {

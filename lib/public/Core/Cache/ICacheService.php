@@ -19,18 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\BreadCrumbManager;
+namespace KSP\Core\Cache;
 
+interface ICacheService {
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\View\BreadCrumb\IBreadCrumb;
+    public function connect(): void;
 
-interface IBreadCrumbManager {
+    public function set(string $key, $value): bool;
 
-    public function add(IBreadCrumb $breadCrumb): void;
+    public function get(string $key);
 
-    public function getAll(): ArrayList;
-
-    public function isVisible(): bool;
+    public function exists(string $key): bool;
 
 }
