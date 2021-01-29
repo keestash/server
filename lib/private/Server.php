@@ -41,11 +41,12 @@ use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
 use Keestash\App\Loader;
 use Keestash\Core\Backend\MySQLBackend;
-use Keestash\Core\Cache\RedisServer;
+use Keestash\Core\Cache\NullService;
+use Keestash\Core\Cache\RedisService;
 use Keestash\Core\DTO\BackgroundJob\Logger;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
-use Keestash\Core\Manager\BreadCrumbManager\BreadCrumbManager;
+use Keestash\Core\Manager\CacheManager\CacheManager;
 use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\FileManager\FileManager;
@@ -115,12 +116,12 @@ use Keestash\Legacy\Legacy;
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\Cache\ICacheServer;
+use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
-use KSP\Core\Manager\BreadCrumbManager\IBreadCrumbManager;
+use KSP\Core\Manager\CacheManager\ICacheManager;
 use KSP\Core\Manager\ConsoleManager\IConsoleManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\FileManager\IFileManager;
@@ -210,11 +211,8 @@ class Server {
             return new InputSanitizer();
         });
 
-        $this->register(ICacheServer::class, function (){
-            return new RedisServer(
-                $this->getFileLogger()
-                , $this->query(ConfigService::class)
-            );
+        $this->register(ICacheManager::class, function () {
+            return new CacheManager();
         });
 
         $this->register(OutputSanitizer::class, function () {
@@ -611,10 +609,6 @@ class Server {
             );
         });
 
-        $this->register(IBreadCrumbManager::class, function () {
-            return new BreadCrumbManager();
-        });
-
         $this->register(ConfigService::class, function () {
             return new ConfigService(
                 $this->query(Server::CONFIG)
@@ -726,6 +720,22 @@ class Server {
 
         $this->register(ILogger::class, function () {
             return $this->getFileLogger();
+        });
+
+        $this->register(ICacheService::class, function () {
+            /** @var ICacheManager $cacheManager */
+            $cacheManager = Keestash::getServer()->query(ICacheManager::class);
+
+            switch ($cacheManager->getConfiguredService()) {
+                case ICacheManager::SERVICE_REDIS:
+                    return Keestash::getServer()->query(RedisService::class);
+                default:
+                    return Keestash::getServer()->query(NullService::class);
+            }
+        });
+
+        $this->register(NullService::class, function () {
+            return new NullService();
         });
     }
 
@@ -955,10 +965,6 @@ class Server {
         return $this->query(AppLockHandler::class);
     }
 
-    public function getBreadCrumbManager(): IBreadCrumbManager {
-        return $this->query(IBreadCrumbManager::class);
-    }
-
     public function getBackgrounder(): Backgrounder {
         return $this->query(Backgrounder::class);
     }
@@ -987,8 +993,8 @@ class Server {
         return $this->query(Server::USER_LIST);
     }
 
-    public function getCache():ICacheServer{
-        return $this->query(ICacheServer::class);
+    public function getCache():ICacheService{
+        return $this->query(ICacheService::class);
     }
 
     public function wipeCache(): void {

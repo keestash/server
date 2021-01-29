@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,12 +19,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\View\BreadCrumb;
+namespace Keestash\Core\Manager\CacheManager;
 
-interface IBreadCrumb {
+use KSP\Core\Manager\CacheManager\ICacheManager;
 
-    public function getId(): string;
+class CacheManager implements ICacheManager {
 
-    public function getName(): string;
+    private string $configured = ICacheManager::SERVICE_REDIS;
+
+    public function getConfiguredService(): string {
+        $extensions = get_loaded_extensions();
+
+        if (false === in_array($this->configured, $extensions, true)) {
+            return $this->configured;
+        }
+        return ICacheManager::SERVICE_NULL;
+    }
 
 }

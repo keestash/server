@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,29 +19,30 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\BreadCrumb;
+namespace Keestash\Core\Cache;
 
-use KSP\Core\View\BreadCrumb\IBreadCrumb;
+use KSP\Core\Cache\ICacheService;
 
-class BreadCrumb implements IBreadCrumb {
+/**
+ * Class NullServer
+ * @package Keestash\Core\Cache
+ */
+class NullService implements ICacheService {
 
-    private $id   = null;
-    private $name = null;
+    public function connect(): void {
 
-    public function setId(string $id): void {
-        $this->id = $id;
     }
 
-    public function getId(): string {
-        return $this->id;
+    public function set(string $key, $value): bool {
+        return true;
     }
 
-    public function setName(string $name): void {
-        $this->name = $name;
+    public function get(string $key) {
+        return null;
     }
 
-    public function getName(): string {
-        return $this->name;
+    public function exists(string $key): bool {
+        return false;
     }
 
 }

@@ -31,8 +31,8 @@ class InstanceDB {
     public const FIELD_NAME_INSTANCE_HASH = "instance_hash";
     public const FIELD_NAME_INSTANCE_ID   = "instance_id";
 
-    private $path     = null;
-    private $database = null;
+    private string $path;
+    private PDO    $database;
 
     public function __construct() {
         $this->path     = InstanceDB::getPath();

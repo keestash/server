@@ -24,49 +24,63 @@ declare(strict_types=1);
 use Keestash\Exception\StylesheetsNotCompiledException;
 use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 
-(function () {
+$action = $argv[1] ?? 'add';
 
-  chdir(dirname(__DIR__));
+(function () use ($action) {
 
-  require_once __DIR__ . '/../vendor/autoload.php';
+    chdir(dirname(__DIR__));
 
-  createDirIfNotExists(__DIR__ . '/../lib/scss/dist/');
-  compile(
-      __DIR__ . '/../lib/scss/',
-      __DIR__ . '/../lib/scss/dist/style.css',
-  );
+    require_once __DIR__ . '/../vendor/autoload.php';
 
-  foreach (glob(__DIR__ . '/../apps/*/scss/') as $directory) {
-    createDirIfNotExists($directory . '/dist/');
-    compile($directory, $directory . '/dist/style.css');
-  }
+    createDirIfNotExists(__DIR__ . '/../lib/scss/dist/');
+    compile(
+            __DIR__ . '/../lib/scss/',
+            __DIR__ . '/../lib/scss/dist/style.css',
+    );
+
+    foreach (glob(__DIR__ . '/../apps/*/scss/') as $directory) {
+        createDirIfNotExists($directory . '/dist/');
+
+        if ('add' === $action) {
+            compile($directory, $directory . '/dist/style.css');
+        } else {
+            remove($directory . '/dist');
+        }
+    }
 
 })();
 
 function createDirIfNotExists(string $dir): bool {
 
-  if (true === is_dir($dir)) return true;
+    if (true === is_dir($dir)) return true;
 
-  $created = mkdir($dir, 0777, true);
+    $created = mkdir($dir, 0777, true);
 
-  if (false === $created) {
-    throw new Exception('could not create ' . $dir);
-  }
-  return true;
+    if (false === $created) {
+        throw new Exception('could not create ' . $dir);
+    }
+    return true;
+}
+
+function remove(string $dir): bool {
+    foreach (glob($dir . '/*.css') as $file) {
+        unlink($file);
+    }
+    return true;
 }
 
 function compile(string $source, string $destination): void {
-  $compiler = new ScssCompiler();
-  $compiler->addImportPath($source);
-  $css = $compiler->compile('@import "style.scss";');
+    $compiler = new ScssCompiler();
+    $compiler->addImportPath($source);
+    $css = $compiler->compile('@import "style.scss";');
 
-  if (true === is_file($destination)) {
-    unlink($destination);
-  }
+    if (true === is_file($destination)) {
+        unlink($destination);
+    }
 
-  $created = file_put_contents($destination, $css);
+    $created = file_put_contents($destination, $css);
 
-  if (false === $created || false === is_file($destination)) {
-    throw new StylesheetsNotCompiledException();
-  }
+    if (false === $created || false === is_file($destination)) {
+        throw new StylesheetsNotCompiledException();
+    }
 }

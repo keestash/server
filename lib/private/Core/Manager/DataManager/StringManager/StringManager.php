@@ -23,19 +23,14 @@ namespace Keestash\Core\Manager\DataManager\StringManager;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\Core\Service\Util\ArrayListService;
 use KSP\Core\Manager\DataManager\StringManager\IStringManager;
 
 class StringManager implements IStringManager {
 
-    private $apps             = null;
-    private $arrayListService = null;
+    private HashTable $apps;
 
-    public function __construct(
-        ArrayListService $arrayListService
-    ) {
-        $this->apps             = new HashTable();
-        $this->arrayListService = $arrayListService;
+    public function __construct() {
+        $this->apps = new HashTable();
     }
 
     public function add(string $appId, string $value): void {
@@ -53,7 +48,7 @@ class StringManager implements IStringManager {
         foreach ($this->apps->keySet() as $appId) {
             /** @var ArrayList $strings */
             $strings       = $this->apps->get($appId);
-            $array[$appId] = $this->arrayListService->toArray($strings);
+            $array[$appId] = $strings->toArray();
         }
         return $array;
     }

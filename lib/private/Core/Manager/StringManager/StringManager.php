@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\StringManager;
 
-use KSP\Core\Cache\ICacheServer;
+use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\StringManager\IStringManager;
@@ -33,11 +33,11 @@ class StringManager implements IStringManager {
     private array        $paths;
     private array        $additional;
     private ILogger      $logger;
-    private ICacheServer $cacheServer;
+    private ICacheService $cacheServer;
 
     public function __construct(
         ILogger $logger
-        , ICacheServer $cacheServer
+        , ICacheService $cacheServer
     ) {
         $this->paths       = [];
         $this->additional  = [];

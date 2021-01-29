@@ -25,7 +25,7 @@ use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\StringManager\FrontendManager;
 use Keestash\Core\Permission\PermissionFactory;
 use KSP\Api\IResponse;
-use KSP\Core\Cache\ICacheServer;
+use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\StringManager\IStringManager;
 use KSP\L10N\IL10N;
@@ -33,12 +33,12 @@ use KSP\L10N\IL10N;
 class GetAll extends AbstractApi {
 
     private IStringManager $stringManager;
-    private ICacheServer   $cacheServer;
+    private ICacheService   $cacheServer;
 
     public function __construct(
         IL10N $l10n
         , FrontendManager $frontendManager
-        , ICacheServer $cacheServer
+        , ICacheService $cacheServer
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
