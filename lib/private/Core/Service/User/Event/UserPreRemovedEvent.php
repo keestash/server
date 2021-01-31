@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\HookManager;
+namespace Keestash\Core\Service\User\Event;
 
-class RegistrationHookManager extends HookManager {
+use KSP\Core\DTO\User\IUser;
+use Symfony\Contracts\EventDispatcher\Event;
+
+class UserPreRemovedEvent extends Event {
+
+    private IUser $deletedUser;
+
+    public function __construct(IUser $deletedUser) {
+        $this->deletedUser = $deletedUser;
+    }
+
+    /**
+     * @return IUser
+     */
+    public function getDeletedUser(): IUser {
+        return $this->deletedUser;
+    }
 
 }

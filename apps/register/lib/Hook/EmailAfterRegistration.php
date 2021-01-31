@@ -26,12 +26,12 @@ use Keestash\Core\Service\Email\EmailService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Hook\IHook;
-use KSP\Hook\IHookCache;
 use KSP\L10N\IL10N;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class EmailAfterRegistration implements IHook {
+class EmailAfterRegistration implements IListener {
 
     private ITemplateManager $templateManager;
     private EmailService     $emailService;
@@ -53,19 +53,19 @@ class EmailAfterRegistration implements IHook {
         $this->logger          = $logger;
     }
 
-    public function performAction(...$parameters): bool {
+    public function execute(Event $event): void {
         $this->logger->debug("please implement me :( " . EmailAfterRegistration::class);
-        return true;
+        return;
         $user = $parameters[0][0] ?? null;
 
         if (null === $user) {
             $this->logger->error("There is no user, can not send mail. Parameters are: " . (json_encode($parameters)));
-            return false;
+            return;
         }
 
         if (!$user instanceof IUser) {
             $this->logger->error("passed argument is not an user, can not send mail. Parameters are: " . (json_encode($parameters)));
-            return false;
+            return;
         }
 
         $appName = $this->legacy->getApplication()->get("name");
@@ -85,11 +85,7 @@ class EmailAfterRegistration implements IHook {
         $this->emailService->addRecipent($user->getName(), $user->getEmail());
         $this->emailService->setSubject($this->translator->translate("You are registered for $appName"));
         $this->emailService->setBody($rendered);
-        return $this->emailService->send();
-    }
-
-    public function getHookCache(): ?IHookCache {
-        return null;
+        $this->emailService->send();
     }
 
 }

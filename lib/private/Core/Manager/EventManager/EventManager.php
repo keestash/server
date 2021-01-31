@@ -19,8 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\HookManager;
+namespace Keestash\Core\Manager\EventManager;
 
-class SubmitHookManager extends HookManager {
+use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Manager\EventManager\IListener;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Contracts\EventDispatcher\Event;
+
+class EventManager implements IEventManager {
+
+    private EventDispatcher $eventDispatcher;
+
+    public function __construct() {
+        $this->eventDispatcher = new EventDispatcher();
+    }
+
+    public function execute(Event $event): void {
+        $this->eventDispatcher->dispatch($event, get_class($event));
+    }
+
+    public function registerListener(string $eventName, IListener $event): void {
+        $this->eventDispatcher->addListener($eventName, [$event, 'execute']);
+    }
 
 }

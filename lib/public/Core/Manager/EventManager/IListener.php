@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,13 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\HookManager;
+namespace KSP\Core\Manager\EventManager;
+
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
- * Class ServiceHookManager
- * @package Keestash\Core\Manager\HookManager
- * TODO check for usage
+ * Interface IEvent
+ * @package KSP\Core\Manager\EventManager
  */
-class ServiceHookManager extends HookManager {
+interface IListener {
+
+    public function execute(Event $event): void;
 
 }

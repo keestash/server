@@ -88,15 +88,7 @@ class APIRouter extends Router {
 
             $start = microtime(true);
 
-            Keestash::getServer()
-                ->getServiceHookManager()
-                ->executePre();
-
             $service->create();
-
-            Keestash::getServer()
-                ->getSubmitHookManager()
-                ->executePost();
 
             $service->afterCreate();
             Keestash::getServer()

@@ -49,14 +49,8 @@ use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\CacheManager\CacheManager;
 use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
+use Keestash\Core\Manager\EventManager\EventManager;
 use Keestash\Core\Manager\FileManager\FileManager;
-use Keestash\Core\Manager\HookManager\ControllerHookManager;
-use Keestash\Core\Manager\HookManager\PasswordChangedHookManager;
-use Keestash\Core\Manager\HookManager\RegistrationHookManager;
-use Keestash\Core\Manager\HookManager\ServiceHookManager;
-use Keestash\Core\Manager\HookManager\SubmitHookManager;
-use Keestash\Core\Manager\HookManager\User\UserRemovedHookManager;
-use Keestash\Core\Manager\HookManager\User\UserStateHookManager;
 use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\ResponseManager\JSONResponseManager;
@@ -125,7 +119,7 @@ use KSP\Core\Manager\CacheManager\ICacheManager;
 use KSP\Core\Manager\ConsoleManager\IConsoleManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\FileManager\IFileManager;
-use KSP\Core\Manager\HookManager\IHookManager;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
@@ -262,23 +256,8 @@ class Server {
             );
         });
 
-        $this->register(ControllerHookManager::class, function () {
-            return new ControllerHookManager();
-        });
-        $this->register(SubmitHookManager::class, function () {
-            return new SubmitHookManager();
-        });
-        $this->register(RegistrationHookManager::class, function () {
-            return new RegistrationHookManager();
-        });
-        $this->register(PasswordChangedHookManager::class, function () {
-            return new PasswordChangedHookManager();
-        });
-        $this->register(UserStateHookManager::class, function () {
-            return new UserStateHookManager();
-        });
-        $this->register(UserRemovedHookManager::class, function () {
-            return new UserRemovedHookManager();
+        $this->register(IEventManager::class, function (){
+            return new EventManager();
         });
 
         $this->register(IRoleRepository::class, function () {
@@ -913,32 +892,8 @@ class Server {
         return $this->query(IL10N::class);
     }
 
-    public function getControllerHookManager(): IHookManager {
-        return $this->query(ControllerHookManager::class);
-    }
-
-    public function getSubmitHookManager(): IHookManager {
-        return $this->query(SubmitHookManager::class);
-    }
-
-    public function getRegistrationHookManager(): IHookManager {
-        return $this->query(RegistrationHookManager::class);
-    }
-
-    public function getUserStateHookManager(): IHookManager {
-        return $this->query(UserStateHookManager::class);
-    }
-
-    public function getUserRemovedHookManager(): IHookManager {
-        return $this->query(UserRemovedHookManager::class);
-    }
-
-    public function getPasswordChangedHookManager(): IHookManager {
-        return $this->query(PasswordChangedHookManager::class);
-    }
-
-    public function getServiceHookManager(): IHookManager {
-        return $this->query(ServiceHookManager::class);
+    public function getEventManager():IEventManager{
+        return $this->query(IEventManager::class);
     }
 
     public function getResponseManager(): IResponseManager {

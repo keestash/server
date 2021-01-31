@@ -30,6 +30,8 @@ use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\User\Event\UserCreatedEvent;
+use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use Keestash\Exception\KeyNotCreatedException;
 use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotDeletedException;
@@ -234,10 +236,6 @@ class UserService {
      */
     public function createUser(IUser $user, ?IFile $file = null): IUser {
 
-        Keestash::getServer()
-            ->getRegistrationHookManager()
-            ->executePre();
-
         $userId = $this->userRepository->insert($user);
 
         if (null === $userId) {
@@ -247,11 +245,8 @@ class UserService {
         $user->setId($userId);
 
         Keestash::getServer()
-            ->getRegistrationHookManager()
-            ->executePost(
-                true
-                , $user
-            );
+            ->getEventManager()
+            ->execute(new UserCreatedEvent($user));
 
         if (false === $user->isLocked()) return $user;
 
@@ -297,18 +292,16 @@ class UserService {
     }
 
     public function updateUser(IUser $updatedUser, IUser $oldUser): bool {
-        Keestash::getServer()
-            ->getPasswordChangedHookManager()
-            ->executePre();
-
         $updated = $this->userRepository->update($updatedUser);
 
         Keestash::getServer()
-            ->getPasswordChangedHookManager()
-            ->executePost(
-                $updatedUser
-                , $oldUser
-                , $updated
+            ->getEventManager()
+            ->execute(
+                new UserUpdatedEvent(
+                    $updatedUser
+                    , $oldUser
+                    , $updated
+                )
             );
 
         return $updated;
