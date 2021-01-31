@@ -19,8 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Hook;
+namespace KSP\Core\Manager\EventManager;
 
-interface IHookCache {
+use KSP\Core\Manager\IManager;
+use Symfony\Contracts\EventDispatcher\Event;
+
+interface IEventManager extends IManager {
+
+    public function registerListener(string $eventName, IListener $event): void;
+
+    public function execute(Event $event): void;
 
 }

@@ -23,6 +23,7 @@ namespace KSA\Register\Application;
 
 use Keestash;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Api\User\Add;
@@ -85,14 +86,17 @@ class Application extends Keestash\App\Application {
         $this->registerPublicRoute(Application::REGISTER);
 
         Keestash::getServer()
-            ->getRegistrationHookManager()
-            ->addPost(new EmailAfterRegistration(
-                Keestash::getServer()->query(ITemplateManager::class)
-                , Keestash::getServer()->query(EmailService::class)
-                , Keestash::getServer()->query(Legacy::class)
-                , Keestash::getServer()->query(IL10N::class)
-                , Keestash::getServer()->getFileLogger()
-            ));
+            ->getEventManager()
+            ->registerListener(
+                UserCreatedEvent::class
+                , new EmailAfterRegistration(
+                    Keestash::getServer()->query(ITemplateManager::class)
+                    , Keestash::getServer()->query(EmailService::class)
+                    , Keestash::getServer()->query(Legacy::class)
+                    , Keestash::getServer()->query(IL10N::class)
+                    , Keestash::getServer()->getFileLogger()
+                )
+            );
 
         $this->registerServices();
         $this->registerCommands();

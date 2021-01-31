@@ -100,14 +100,8 @@ class HTTPRouter extends Router {
                     $controller->getPermission()
                 );
 
-                Keestash::getServer()
-                    ->getControllerHookManager()
-                    ->executePre();
                 $controller->create();
 
-                Keestash::getServer()
-                    ->getControllerHookManager()
-                    ->executePost();
                 $controller->afterCreate();
                 $this->setRouteType($controller->getControllerType());
                 return;
