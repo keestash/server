@@ -21,11 +21,19 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\HTTP\Input;
 
+use HTMLPurifier;
+
 /**
  * Class SanitizerService
  * @package Keestash\Core\Service\HTTP\Input
  */
 class SanitizerService {
+
+    private HTMLPurifier $purifier;
+
+    public function __construct() {
+        $this->purifier = new HTMLPurifier();
+    }
 
     /**
      * sanitizes HTTP input (usually from $_GET, $_POST, etc)
@@ -33,10 +41,9 @@ class SanitizerService {
      * @param string $input The input value
      * @return string The sanitized input value
      *
-     * TODO implement
      */
     public function sanitize(string $input): string {
-        return $input;
+        return $this->purifier->purify($input);
     }
 
     /**

@@ -993,6 +993,17 @@ class Server {
         return $this->query(Server::USER_LIST);
     }
 
+    public function getUserFromCache(int $id): ?IUser {
+        $users  =$this->query(Server::USER_LIST);
+
+        /** @var IUser $user */
+        foreach ($users as $user) {
+            if ($user->getId() ===$id) {
+                return $user;
+            }
+        }
+        return null;
+    }
     public function getCache():ICacheService{
         return $this->query(ICacheService::class);
     }

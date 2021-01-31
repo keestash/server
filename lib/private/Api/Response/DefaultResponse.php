@@ -27,22 +27,16 @@ use function json_encode;
 
 class DefaultResponse implements IResponse {
 
-    private $code     = null;
-    private $messages = null;
-    private $header   = null;
-
-    public function __construct() {
-        $this->code     = Code::OK;
-        $this->messages = [];
-        $this->header   = [];
-    }
+    private int   $code     = Code::OK;
+    private array $messages = [];
+    private array $header   = [];
 
     public function addMessage(int $code, array $messages): void {
         $this->messages[$code] = $messages;
     }
 
     public function getMessage(): ?string {
-        $json = json_encode($this->messages);
+        $json = json_encode($this->messages, JSON_HEX_APOS | JSON_HEX_QUOT);
         return (false === $json) ? null : $json;
     }
 
