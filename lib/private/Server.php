@@ -757,6 +757,12 @@ class Server {
         return $this->query(Server::CONFIG);
     }
 
+    /**
+     * @return IUser|null
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @deprecated
+     */
     public function getUserFromSession(): ?IUser {
         /** @var PersistenceService $persistenceService */
         $persistenceService = $this->query(PersistenceService::class);
