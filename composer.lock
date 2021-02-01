@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3fcde66b0b027274b9b36e135b4c9ad6",
+    "content-hash": "fe91c0bd1fe46fdf2b87ce93579eef32",
     "packages": [
         {
             "name": "apache/log4php",
@@ -920,16 +920,16 @@
         },
         {
             "name": "doganoo/php-algorithms",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doganoo/PHPAlgorithms.git",
-                "reference": "7dbf60d6800936b9635344d2eacf107924afa7bb"
+                "reference": "9825f5322c1310d450e3eba6743e2ea1353bcd31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doganoo/PHPAlgorithms/zipball/7dbf60d6800936b9635344d2eacf107924afa7bb",
-                "reference": "7dbf60d6800936b9635344d2eacf107924afa7bb",
+                "url": "https://api.github.com/repos/doganoo/PHPAlgorithms/zipball/9825f5322c1310d450e3eba6743e2ea1353bcd31",
+                "reference": "9825f5322c1310d450e3eba6743e2ea1353bcd31",
                 "shasum": ""
             },
             "require": {
@@ -971,7 +971,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doganoo/PHPAlgorithms/issues",
-                "source": "https://github.com/doganoo/PHPAlgorithms/tree/1.0.5"
+                "source": "https://github.com/doganoo/PHPAlgorithms/tree/1.0.6"
             },
             "funding": [
                 {
@@ -979,7 +979,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2021-01-10T20:26:43+00:00"
+            "time": "2021-02-01T18:33:39+00:00"
         },
         {
             "name": "doganoo/php-util",
@@ -2002,16 +2002,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.70",
+            "version": "0.12.71",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "07f0ef37f5f876e8cee44cc8ea0ec3fe80d499ee"
+                "reference": "d508fa3b0ecc5fc91ac70c6c7ac2862f968ba2b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/07f0ef37f5f876e8cee44cc8ea0ec3fe80d499ee",
-                "reference": "07f0ef37f5f876e8cee44cc8ea0ec3fe80d499ee",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d508fa3b0ecc5fc91ac70c6c7ac2862f968ba2b5",
+                "reference": "d508fa3b0ecc5fc91ac70c6c7ac2862f968ba2b5",
                 "shasum": ""
             },
             "require": {
@@ -2042,7 +2042,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.70"
+                "source": "https://github.com/phpstan/phpstan/tree/0.12.71"
             },
             "funding": [
                 {
@@ -2058,7 +2058,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-01-27T17:06:47+00:00"
+            "time": "2021-02-01T18:24:00+00:00"
         },
         {
             "name": "psr/container",
