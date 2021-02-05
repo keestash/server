@@ -22,7 +22,24 @@ declare(strict_types=1);
 $loadedExtensions = get_loaded_extensions();
 
 $requiredExtensions = [
-    // intl
+    "mysqli"
+    , "pdo_mysql"
+    , "mysqlnd"
+    , "mbstring"
+    , "dom"
+    , "curl"
+    , "sqlite3"
+    , "pdo_sqlite"
+    , "zip"
+    , "intl"
 ];
 
-// TODO implement
+$diffed = array_diff(
+    $requiredExtensions
+    , $loadedExtensions
+);
+
+if (count($diffed) !== 0) {
+    echo 'There are some extensions missing on your system. Please make sure that all of the following extensions are installed:' . PHP_EOL;
+    echo var_export($requiredExtensions) . PHP_EOL;
+}

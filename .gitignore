@@ -290,3 +290,5 @@ data/*
 data
 .instance.sqlite
 
+lib/scss/dist/*.css
+apps/*/scss/dist/*.css

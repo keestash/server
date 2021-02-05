@@ -20,7 +20,7 @@ declare(strict_types=1);
  */
 
 // TODO maximum version?
-if (version_compare(PHP_VERSION, '7.1') === -1) {
-    echo 'Need to run PHP at least in version 7 your version: ' . PHP_VERSION;
+if (version_compare(PHP_VERSION, '7.4') === -1) {
+    echo 'Need to run PHP at least in version 7.4. Your version is: ' . PHP_VERSION;
     exit();
 }
