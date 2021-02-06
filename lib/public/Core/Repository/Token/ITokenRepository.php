@@ -32,4 +32,6 @@ interface ITokenRepository extends IRepository {
 
     public function add(IToken $token): ?int;
 
+    public function remove(IToken $token): bool;
+
 }

@@ -32,7 +32,7 @@ use PDO;
 
 class TokenRepository extends AbstractRepository implements ITokenRepository {
 
-    private $userRepository = null;
+    private IUserRepository $userRepository;
 
     public function __construct(
         IBackend $backend
@@ -154,7 +154,16 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;
+    }
 
+    public function remove(IToken $token): bool {
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete(
+                'token'
+            )
+                ->where('id = ?')
+                ->setParameter(0, $token->getId())
+                ->execute() !== 0;
     }
 
 }
