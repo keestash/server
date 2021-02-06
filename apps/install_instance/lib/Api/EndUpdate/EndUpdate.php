@@ -98,6 +98,7 @@ class EndUpdate extends AbstractApi {
 
         if (true === $ran && true === $removed) {
             $added = $this->installerService->writeIdAndHash();
+            // $this->installerService->writeProductionMode(); TODO not sure actually how to enable, need to differentiate between dev mode and production
         }
 
         if (false === $added) {

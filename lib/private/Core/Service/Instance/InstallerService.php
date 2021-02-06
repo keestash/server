@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Instance;
 
+use DateTime;
+use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceDB;
@@ -86,17 +88,21 @@ class InstallerService {
     }
 
     public function hasIdAndHash(): bool {
-        $hash = $this->instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
-        $id   = $this->instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
+        $hash = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
+        $id   = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
 
         return true === is_string($hash) && true === is_int((int) $id);
     }
 
     public function writeIdAndHash(): bool {
-        $addedId   = $this->instanceDB->addOption(InstanceDB::FIELD_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
-        $addedHash = $this->instanceDB->addOption(InstanceDB::FIELD_NAME_INSTANCE_HASH, md5(uniqid()));
+        $addedId   = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
+        $addedHash = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, md5(uniqid()));
 
         return true === $addedId && true === $addedHash;
+    }
+
+    public function writeProductionMode():bool{
+        return $this->instanceDB->addOption(InstanceDB::OPTION_NAME_PRODUCTION_MODE, (new DateTime())->format(DateTimeInterface::ATOM));
     }
 
     private function verifyField(string $name, bool $force = false): array {

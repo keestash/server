@@ -153,10 +153,6 @@ class UserService {
         return false !== filter_var($email, FILTER_VALIDATE_URL);
     }
 
-    public function hashUserId(IUser $user): string {
-        return hash("sha256", (string) $user->getId());
-    }
-
     /**
      * @return IUser
      */

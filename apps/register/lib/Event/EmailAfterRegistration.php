@@ -19,12 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Hook;
+namespace KSA\Register\Event;
 
+use DateTime;
+use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
+use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
@@ -32,6 +35,8 @@ use KSP\L10N\IL10N;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class EmailAfterRegistration implements IListener {
+
+    public const TEMPLATE_NAME = "mail.twig";
 
     private ITemplateManager $templateManager;
     private EmailService     $emailService;
@@ -53,39 +58,42 @@ class EmailAfterRegistration implements IListener {
         $this->logger          = $logger;
     }
 
+    /**
+     * @param Event|UserCreatedEvent $event
+     * @throws InvalidKeyTypeException
+     * @throws UnsupportedKeyTypeException
+     */
     public function execute(Event $event): void {
-        $this->logger->debug("please implement me :( " . EmailAfterRegistration::class);
-        return;
-        $user = $parameters[0][0] ?? null;
-
-        if (null === $user) {
-            $this->logger->error("There is no user, can not send mail. Parameters are: " . (json_encode($parameters)));
-            return;
-        }
-
-        if (!$user instanceof IUser) {
-            $this->logger->error("passed argument is not an user, can not send mail. Parameters are: " . (json_encode($parameters)));
-            return;
-        }
 
         $appName = $this->legacy->getApplication()->get("name");
         $this->templateManager->replace(
-            "welcome_email.twig",
+            EmailAfterRegistration::TEMPLATE_NAME,
             [
-                "logoPath"               => Keestash::getBaseURL(false) . "/asset/img/logo.png"
-                , "appName"              => $appName
-                , "appSlogan"            => $this->legacy->getApplication()->get("slogan")
-                , "welcomeToApp"         => $this->translator->translate("Welcome To $appName")
-                , "callToAction"         => $this->translator->translate("You are enabled now for $appName. Log In and start using.")
-                , "ctaButtonText"        => $this->translator->translate("Log In To $appName")
-                , "thisEmailIsSentToYou" => $this->translator->translate("This email was sent to {$user->getEmail()} to reset your password. If you did not request a reset, please ignore this mail or let us know.")
+                "title"              => $this->translator->translate("Welcome To $appName")
+                , "keestashLogoHref" => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+                , "keestashLogoAlt"  => $appName
+                , "salutation"       => $this->translator->translate("Dear {$event->getUser()->getFirstName()},")
+                , "mainInfo"         => $this->translator->translate("You are enabled now for $appName. Log In and start using.")
+                , "detailText"       => $this->translator->translate("You are successfully registered for $appName.")
+                , "ctaHref"          => Keestash::getBaseURL(false) . "/index.php/login/"
+                , "ctaText"          => $this->translator->translate("Login")
+                , "hasCta"           => true
+                , "postCtaFirst"     => $this->translator->translate("")
+                , "postCtaLink"      => Keestash::getBaseURL(false)
+                , "postCtaSecond"    => $this->translator->translate("Follow this link if you have any questions.")
+                , "thankYou"         => $this->translator->translate("Regards,")
+                , "thankYouName"     => $appName
+                , "hasSocialMedia"   => false
+                , "copyRightText"    => (new DateTime())->format("Y") . " " . $appName
+                , "copyRightHref"    => Keestash::getBaseURL(false)
             ]
         );
-        $rendered = $this->templateManager->render("welcome_email.twig");
-        $this->emailService->addRecipent($user->getName(), $user->getEmail());
+        $rendered = $this->templateManager->render(EmailAfterRegistration::TEMPLATE_NAME);
+        $this->emailService->addRecipient($event->getUser()->getName(), $event->getUser()->getEmail());
         $this->emailService->setSubject($this->translator->translate("You are registered for $appName"));
         $this->emailService->setBody($rendered);
         $this->emailService->send();
+
     }
 
 }

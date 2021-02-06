@@ -1,11 +1,6 @@
 #!/usr/bin/env php
 <?php
 declare(strict_types=1);
-
-use Keestash\Command\KeestashCommand;
-use KSP\Core\Manager\ConsoleManager\ICommandSet;
-use Symfony\Component\Console\Application;
-
 /**
  * Keestash
  *
@@ -34,20 +29,5 @@ use Symfony\Component\Console\Application;
     require_once __DIR__ . '/../lib/extensioncheck.php';
     require_once __DIR__ . '/../config/config.php';
     require_once __DIR__ . '/../lib/Keestash.php';
-    Keestash::init();
-    $consoleManager = Keestash::getServer()->getConsoleManager();
-    $commands       = $consoleManager->getSet();
-    $cliVersion     = "1.0.0";
-
-    $application = new Application(
-        Keestash::getServer()->getLegacy()->getApplication()->get("name") . " CLI Tools"
-        , $cliVersion
-    );
-
-    /** @var KeestashCommand $command */
-    foreach ($commands->getCommands() as $command) {
-        $application->add($command);
-    }
-
-    $application->run();
+    Keestash::requestConsole();
 })();

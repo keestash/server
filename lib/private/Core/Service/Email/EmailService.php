@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Email;
 
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Exception;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\ILogger\ILogger;
@@ -40,15 +42,23 @@ class EmailService {
     private PHPMailer     $mailer;
     private ConfigService $configService;
     private ILogger       $logger;
+    private InstanceDB    $instanceDb;
+    private HashTable     $recipients;
+    private HashTable     $carbonCopy;
+    private HashTable     $blindCarbonCopy;
 
     public function __construct(
         Legacy $legacy
         , ConfigService $configService
         , ILogger $logger
+        , InstanceDB $instanceDB
     ) {
-        $this->logger = $logger;
-        // TODO put the config in a config file
-        $this->mailer = new PHPMailer(EmailService::HAS_EXCEPTIONS);
+        $this->logger          = $logger;
+        $this->instanceDb      = $instanceDB;
+        $this->mailer          = new PHPMailer(EmailService::HAS_EXCEPTIONS);
+        $this->recipients      = new HashTable();
+        $this->carbonCopy      = new HashTable();
+        $this->blindCarbonCopy = new HashTable();
 
         //Server settings
         $this->mailer->SMTPDebug = EmailService::PHPMAILER_SMTP_DEBUG_DATA_COMMANDS_AND_CONNECTION_STATUS;
@@ -78,8 +88,16 @@ class EmailService {
 
     }
 
-    public function addRecipent(string $name, string $email): void {
-        $this->mailer->addAddress($email, $name);     // Add a recipient
+    public function addRecipient(string $name, string $email): void {
+        $this->recipients->put($name, $email);
+    }
+
+    public function addCarbonCopy(string $name, string $email): void {
+        $this->carbonCopy->put($name, $email);
+    }
+
+    public function addBlindCarbonCopy(string $name, string $email): void {
+        $this->blindCarbonCopy->put($name, $email);
     }
 
     public function addAttachment(string $path, string $name = ""): void {
@@ -92,13 +110,12 @@ class EmailService {
     }
 
     public function send(int $delay = 0): bool {
+        $this->putAllReceivers();
         $recipients = $this->mailer->getAllRecipientAddresses();
 
         if (0 === count($recipients)) return false;
         if (false === $this->hasSubject()) return false;
         if (false === $this->hasBody()) return false;
-
-        $this->replaceDebugMails();
 
         try {
             sleep($delay);
@@ -113,6 +130,31 @@ class EmailService {
 
     }
 
+    private function putAllReceivers(): void {
+        $productionModeDate = $this->instanceDb->getOption(InstanceDB::OPTION_NAME_PRODUCTION_MODE);
+        if (null === $productionModeDate || "" === $productionModeDate) {
+            $this->mailer->clearAllRecipients();
+            $this->mailer->addAddress(
+                $this->configService->getValue("email_user")
+                , $this->configService->getValue("email_user")
+            );
+            return;
+        }
+
+        foreach ($this->recipients->toArray() as $name => $mail) {
+            $this->mailer->addAddress($mail, $name);
+        }
+
+        foreach ($this->carbonCopy->toArray() as $name => $mail) {
+            $this->mailer->addCC($mail, $name);
+        }
+
+        foreach ($this->blindCarbonCopy->toArray() as $name => $mail) {
+            $this->mailer->addBCC($mail, $name);
+        }
+
+    }
+
     private function hasSubject(): bool {
         return "" !== trim($this->mailer->Subject);
     }
@@ -121,25 +163,16 @@ class EmailService {
         return "" !== trim($this->mailer->Body);
     }
 
-    private function replaceDebugMails(): void {
-        if (true === $this->configService->getValue("debug", true)) {
-            $this->mailer->clearAllRecipients();
-            $this->mailer->clearCCs();
-            $this->mailer->clearBCCs();
-            $this->mailer->addAddress(
-                $this->configService->getValue("email_user")
-                , $this->configService->getValue("email_user")
-            );
-        }
-
-    }
-
     private function clearAll(): void {
         $this->mailer->clearAddresses();
         $this->mailer->clearAllRecipients();
         $this->mailer->clearAttachments();
+        $this->recipients      = new HashTable();
+        $this->carbonCopy      = new HashTable();
+        $this->blindCarbonCopy = new HashTable();
         $this->setBody("");
         $this->setAlternativeBody("");
+        $this->setSubject('');
     }
 
     public function setBody(string $body): void {

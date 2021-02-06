@@ -28,8 +28,9 @@ use PDO;
 
 class InstanceDB {
 
-    public const FIELD_NAME_INSTANCE_HASH = "instance_hash";
-    public const FIELD_NAME_INSTANCE_ID   = "instance_id";
+    public const OPTION_NAME_INSTANCE_HASH   = "instance_hash";
+    public const OPTION_NAME_INSTANCE_ID     = "instance_id";
+    public const OPTION_NAME_PRODUCTION_MODE = "production_mode";
 
     private string $path;
     private PDO    $database;
@@ -78,11 +79,11 @@ class InstanceDB {
     }
 
     public function updateOption(string $name, string $value): bool {
-        $statement = $this->database->prepare('UPDATE `instance` SET `name` =:name, `value` = :value, `create_ts` = :create_ts');
+        $statement = $this->database->prepare('UPDATE `instance` SET `value` = :value, `create_ts` = :create_ts WHERE `name` = :name');
 
         $createTs = new DateTime();
-        $statement->bindValue(':name', $name);
         $statement->bindValue(':value', $value);
+        $statement->bindValue(':name', $name);
         $statement->bindValue(':create_ts', $createTs->format(DateTimeUtil::MYSQL_DATE_TIME_FORMAT));
         $statement->execute();
 
