@@ -49,6 +49,7 @@ class RedisService implements ICacheService {
 
     public function connect(): void {
         if (true === $this->connected) return;
+        if (false === class_exists("Redis")) return;
         try {
             $this->instance = new Redis();
             $this->instance->connect(

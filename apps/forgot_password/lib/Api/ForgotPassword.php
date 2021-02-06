@@ -222,7 +222,7 @@ class ForgotPassword extends AbstractApi {
         //   make sure that there is no bot triggering a lot of mails
         $this->emailService->setBody($rendered);
         $this->emailService->setSubject($this->getL10N()->translate("Resetting Password"));
-        $this->emailService->addRecipent(
+        $this->emailService->addRecipient(
             $user->getName()
             , $user->getEmail()
         );

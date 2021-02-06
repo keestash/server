@@ -26,6 +26,7 @@ use Keestash\Api\Response\NeedsUpgrade;
 use Keestash\Api\Response\SessionExpired;
 use Keestash\App\Config\Diff;
 use Keestash\App\Helper;
+use Keestash\Command\KeestashCommand;
 use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\Route;
@@ -41,7 +42,6 @@ use Keestash\Core\Service\Instance\MaintenanceService;
 use Keestash\Core\Service\Router\Installation\App\InstallAppService;
 use Keestash\Core\Service\Router\Installation\Instance\InstallInstanceService;
 use Keestash\Core\Service\Router\Verification;
-use Keestash\Exception\KeestashException;
 use Keestash\Server;
 use Keestash\View\Navigation\Entry;
 use Keestash\View\Navigation\Part;
@@ -53,6 +53,7 @@ use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
+use Symfony\Component\Console\Application;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
@@ -62,9 +63,10 @@ use Whoops\Run;
  */
 class Keestash {
 
-    public const MODE_NONE = 0;
-    public const MODE_WEB  = 1;
-    public const MODE_API  = 2;
+    public const MODE_NONE    = 0;
+    public const MODE_WEB     = 1;
+    public const MODE_API     = 2;
+    public const MODE_CONSOLE = 3;
 
     private static ?Server $server = null;
     private static int     $mode   = Keestash::MODE_NONE;
@@ -187,8 +189,8 @@ class Keestash {
         $lockHandler            = Keestash::getServer()->getInstanceLockHandler();
         $instanceDB             = Keestash::getServer()->getInstanceDB();
         $logger                 = Keestash::getServer()->getFileLogger();
-        $instanceHash           = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_HASH);
-        $instanceId             = $instanceDB->getOption(InstanceDB::FIELD_NAME_INSTANCE_ID);
+        $instanceHash           = $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
+        $instanceId             = $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
         $isLocked               = $lockHandler->isLocked();
         $routesToInstallation   = $installInstanceService->routesToInstallation();
 
@@ -455,6 +457,7 @@ class Keestash {
     private static function renderTemplates() {
         Keestash::renderWebTemplates();
         Keestash::renderApiTemplates();
+        Keestash::renderConsoleTemplates();
     }
 
     private static function renderWebTemplates() {
@@ -580,12 +583,8 @@ class Keestash {
         echo $html;
     }
 
-    /**
-     * TODO exclude frontend paths in sub folder 'frontend'
-     */
     private static function loadTemplates() {
         $appRoot      = Keestash::getAppRoot();
-        $mode         = Keestash::getMode();
         $templatePath = null;
         $frontendPath = null;
 
@@ -595,32 +594,22 @@ class Keestash {
                 realpath("$appRoot/template/app/frontend")
             );
 
-        switch ($mode) {
-            case Keestash::MODE_WEB:
-                $templatePath = $appRoot . "/template/app";
-                $frontendPath = $templatePath . "/frontend";
+        $templatePath     = $appRoot . "/template/app";
+        $frontendPath     = $templatePath . "/frontend";
+        $mailTemplatePath = $appRoot . "/template/email";
 
-                Keestash::getServer()
-                    ->getTemplateManager()
-                    ->addPath($templatePath);
+        Keestash::getServer()
+            ->getTemplateManager()
+            ->addPath($templatePath);
 
-                Keestash::getServer()
-                    ->getFrontendTemplateManager()
-                    ->addPath($frontendPath);
+        // TODO exclude to a own manager
+        Keestash::getServer()
+            ->getTemplateManager()
+            ->addPath($mailTemplatePath);
 
-                break;
-            case Keestash::MODE_API:
-                $templatePath = $appRoot . "/template/email";
-
-                Keestash::getServer()
-                    ->getApiTemplateManager()
-                    ->addPath($templatePath);
-
-                break;
-            default:
-                throw new KeestashException();
-        }
-
+        Keestash::getServer()
+            ->getFrontendTemplateManager()
+            ->addPath($frontendPath);
 
     }
 
@@ -700,7 +689,7 @@ class Keestash {
      * @return string
      */
     public static function getBaseURL(bool $withScript = true, bool $forceIndex = false): ?string {
-        if (Keestash::MODE_NONE === Keestash::getMode()) return null;
+        if (true === in_array(Keestash::getMode(), [Keestash::MODE_NONE, Keestash::MODE_CONSOLE], true)) return null;
         $scriptName          = "index.php";
         $scriptNameToReplace = $scriptName;
         if (self::$mode === self::MODE_API) {
@@ -771,6 +760,34 @@ class Keestash {
     private static function renderApiTemplates() {
         if (self::$mode !== Keestash::MODE_API) return;
         Keestash::loadTemplates();
+    }
+
+    private static function renderConsoleTemplates() {
+        if (self::$mode !== Keestash::MODE_CONSOLE) return;
+        Keestash::loadTemplates();
+    }
+
+    public static function requestConsole(): void {
+        Keestash::$mode = Keestash::MODE_CONSOLE;
+        Keestash::initRequest();
+        Keestash::renderTemplates();
+
+        $consoleManager = Keestash::getServer()->getConsoleManager();
+        $commands       = $consoleManager->getSet();
+        $cliVersion     = "1.0.0";
+
+        $application = new Application(
+            Keestash::getServer()->getLegacy()->getApplication()->get("name") . " CLI Tools"
+            , $cliVersion
+        );
+
+        /** @var KeestashCommand $command */
+        foreach ($commands->getCommands() as $command) {
+            $application->add($command);
+        }
+
+        $application->run();
+      
     }
 
     public static function requestApi(): void {

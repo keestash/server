@@ -31,7 +31,7 @@ use KSA\Register\Api\User\Exists;
 use KSA\Register\Api\User\MailExists;
 use KSA\Register\Command\CreateUser;
 use KSA\Register\Controller\Controller;
-use KSA\Register\Hook\EmailAfterRegistration;
+use KSA\Register\Event\EmailAfterRegistration;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\User\IUserRepository;

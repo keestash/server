@@ -41,11 +41,11 @@ use SplFileInfo;
  */
 class Loader implements ILoader {
 
-    private ClassLoader  $classLoader;
-    private string       $appRoot;
-    private HashTable    $apps;
-    private LRUCache     $lruAppCache;
-    private HashTable    $flushedApps;
+    private ClassLoader   $classLoader;
+    private string        $appRoot;
+    private HashTable     $apps;
+    private LRUCache      $lruAppCache;
+    private HashTable     $flushedApps;
     private ILogger       $logger;
     private ICacheService $cacheServer;
 
@@ -254,9 +254,7 @@ class Loader implements ILoader {
     private function loadTemplate(IApp $app) {
         $dir = $app->getTemplatePath();
         if (false === is_dir($dir)) return;
-        $dirsToAdd   = [];
-        $dirsToAdd[] = $dir;
-        $iterator    = new RecursiveDirectoryIterator($dir);
+        $iterator = new RecursiveDirectoryIterator($dir);
 
         /** @var SplFileInfo $info */
         foreach ($iterator as $info) {

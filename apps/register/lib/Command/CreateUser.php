@@ -118,7 +118,7 @@ class CreateUser extends KeestashCommand {
             foreach ($errors as $error) {
                 $this->writeError($error, $output);
             }
-            return;
+            return 1;
         }
 
         try {
@@ -134,10 +134,10 @@ class CreateUser extends KeestashCommand {
         } catch (Exception $exception) {
             $this->writeError("Could not create user $name", $output);
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);
-            return;
+            return 1;
         }
         $this->writeInfo("$name created", $output);
-
+        return 0;
     }
 
 }
