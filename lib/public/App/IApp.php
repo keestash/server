@@ -37,6 +37,7 @@ interface IApp {
     public const FIELD_BACKGROUND_JOBS          = "background_jobs";
     public const FIELD_BACKGROUND_JOBS_TYPE     = "type";
     public const FIELD_BACKGROUND_JOBS_INTERVAL = "interval";
+    public const FIELD_SETTINGS                 = "settings";
 
     public function getId(): string;
 
@@ -65,5 +66,7 @@ interface IApp {
     public function showIcon(): bool;
 
     public function getBackgroundJobs(): array;
+
+    public function getSettings(): array;
 
 }

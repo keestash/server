@@ -26,21 +26,21 @@ use KSP\App\IApp;
 class App implements IApp {
 
     public const TYPE_APP = "app";
-    private $id           = null;
-    private $order        = 0;
-    private $name         = null;
-    private $namespace    = null;
-    private $appPath      = null;
-    private $templatePath = null;
-    /** @var string $stringPath */
-    private $stringPath;
-    private $faIconClass    = null;
-    private $baseRoot       = null;
-    private $version        = null;
-    private $versionString  = null;
-    private $type           = null;
-    private $showIcon       = null;
-    private $backgroundJobs = [];
+    private string $id;
+    private int    $order          = 0;
+    private string $name;
+    private string $namespace;
+    private string $appPath;
+    private string $templatePath;
+    private string $stringPath;
+    private string $faIconClass;
+    private string $baseRoot;
+    private int    $version;
+    private string $versionString;
+    private string $type;
+    private bool   $showIcon;
+    private array  $backgroundJobs = [];
+    private array  $settings       = [];
 
     public function getOrder(): int {
         return $this->order;
@@ -152,6 +152,14 @@ class App implements IApp {
 
     public function setBackgroundJobs(array $backgroundJobs): void {
         $this->backgroundJobs = $backgroundJobs;
+    }
+    
+    public function getSettings(): array {
+        return $this->settings;
+    }
+
+    public function setSettings(array $settings): void {
+        $this->settings = $settings;
     }
 
 }

@@ -279,6 +279,7 @@ apps/*
 !/apps/promotion
 !/apps/register
 !/apps/tnc
+!/apps/settings
 !/apps/users
 
 

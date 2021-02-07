@@ -29,12 +29,11 @@ use KSP\App\IApp;
 use KSP\App\IApplication;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\View\Navigation\Factory\NavigationFactory;
-use Symfony\Component\Console\Command\Command;
 
 abstract class Application implements IApplication {
 
-    private $app               = null;
-    private $frontendTemplates = null;
+    private IApp      $app;
+    private HashTable $frontendTemplates;
 
     public function __construct(IApp $app) {
         $this->app               = $app;
@@ -145,6 +144,7 @@ abstract class Application implements IApplication {
                 , $value
             );
     }
+
 
     protected function getApp(): IApp {
         return $this->app;

@@ -59,6 +59,7 @@ use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
+use Keestash\Core\Manager\SettingManager\SettingManager;
 use Keestash\Core\Manager\StringManager\FrontendManager as FrontendStringManager;
 use Keestash\Core\Manager\StylesheetManager\StylesheetManager;
 use Keestash\Core\Manager\TemplateManager\ApiManager;
@@ -118,12 +119,13 @@ use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\CacheManager\ICacheManager;
 use KSP\Core\Manager\ConsoleManager\IConsoleManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
-use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Manager\ResponseManager\IResponseManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
+use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Manager\StylesheetManager\IStylesheetManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IDataProvider;
@@ -256,7 +258,7 @@ class Server {
             );
         });
 
-        $this->register(IEventManager::class, function (){
+        $this->register(IEventManager::class, function () {
             return new EventManager();
         });
 
@@ -668,6 +670,10 @@ class Server {
             );
         });
 
+        $this->register(ISettingManager::class, function () {
+            return new SettingManager();
+        });
+
         $this->register(IStylesheetManager::class, function () {
             return new StylesheetManager(
                 Keestash::getServer()->query(IRouteService::class)
@@ -898,7 +904,7 @@ class Server {
         return $this->query(IL10N::class);
     }
 
-    public function getEventManager():IEventManager{
+    public function getEventManager(): IEventManager {
         return $this->query(IEventManager::class);
     }
 
@@ -955,17 +961,18 @@ class Server {
     }
 
     public function getUserFromCache(int $id): ?IUser {
-        $users  =$this->query(Server::USER_LIST);
+        $users = $this->query(Server::USER_LIST);
 
         /** @var IUser $user */
         foreach ($users as $user) {
-            if ($user->getId() ===$id) {
+            if ($user->getId() === $id) {
                 return $user;
             }
         }
         return null;
     }
-    public function getCache():ICacheService{
+
+    public function getCache(): ICacheService {
         return $this->query(ICacheService::class);
     }
 

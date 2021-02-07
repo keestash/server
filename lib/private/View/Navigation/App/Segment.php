@@ -22,8 +22,10 @@ declare(strict_types=1);
 namespace Keestash\View\Navigation\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use KSP\View\Navigation\App\IEntry;
+use KSP\View\Navigation\App\ISegment;
 
-class Segment {
+class Segment implements ISegment {
 
     private string    $title;
     private ?string   $id;
@@ -59,7 +61,7 @@ class Segment {
         return $this->entries;
     }
 
-    public function addEntry(Entry $entry): void {
+    public function addEntry(IEntry $entry): void {
         $this->entries->add($entry);
     }
 

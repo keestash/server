@@ -21,16 +21,14 @@ declare(strict_types=1);
 
 namespace Keestash\View\Navigation\App;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\View\Navigation\App\IEntry;
 
 class Entry implements IEntry {
 
-    private string    $title;
-    private string    $selector;
-    private ?string   $href;
-    private string    $iconClass;
-    private ArrayList $entries;
+    private string  $title;
+    private string  $selector;
+    private ?string $href;
+    private string  $iconClass;
 
     public function __construct(
         string $title = ""
@@ -42,7 +40,6 @@ class Entry implements IEntry {
         $this->setSelector($selector);
         $this->setHref($href);
         $this->setIconClass($iconClass);
-        $this->entries = new ArrayList();
     }
 
     /**
