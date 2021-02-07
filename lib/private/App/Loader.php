@@ -27,11 +27,14 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\FileSystem\DirHandler;
 use doganoo\PHPUtil\FileSystem\FileHandler;
 use Keestash;
+use Keestash\Core\DTO\Setting\Context;
+use Keestash\Core\DTO\Setting\Setting;
 use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
 use KSP\Core\Cache\ICacheService;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\SettingManager\ISettingManager;
 use RecursiveDirectoryIterator;
 use SplFileInfo;
 
@@ -178,6 +181,7 @@ class Loader implements ILoader {
         $showIcon = $info[IApp::FIELD_SHOW_ICON] ?? 0;
         $app->setShowIcon($showIcon === 1);
         $app->setBackgroundJobs($info[IApp::FIELD_BACKGROUND_JOBS] ?? []);
+        $app->setSettings($info[IApp::FIELD_SETTINGS] ?? []);
     }
 
     private function overrideDefaultApp(IApp $app): void {
@@ -226,6 +230,7 @@ class Loader implements ILoader {
             $this->requireInfoPhp($app);
             $this->loadTemplate($app);
             $this->loadString($app);
+            $this->loadSettings($app);
 //        $this->loadJs($app);
             $this->flushedApps->put($app->getId(), $app);
         }
@@ -356,6 +361,27 @@ class Loader implements ILoader {
     public function hasApp(string $name): bool {
         if (null === $this->apps) return false;
         return $this->apps->containsKey($name);
+    }
+
+    private function loadSettings(IApp $app): void {
+        if (Keestash::MODE_WEB !== Keestash::getMode()) return;
+
+        foreach ($app->getSettings() as $setting) {
+            $id   = $setting["id"] ?? null;
+            $name = $setting["name"] ?? null;
+
+            if (null === $id || null === $name) {
+                continue;
+            }
+            Keestash::getServer()
+                ->query(ISettingManager::class)
+                ->addSetting(
+                    new Context($app->getId(), $app->getName())
+                    , new Setting($id, $name)
+                );
+        }
+
+
     }
 
     private function loadJs(IApp $app): bool {
