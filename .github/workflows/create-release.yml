@@ -23,6 +23,12 @@ jobs:
           repository: keestash/password_manager
           path: apps/password_manager
 
+      - name: Keestash Settings
+        uses: actions/checkout@master
+        with:
+          repository: keestash/settings
+          path: apps/settings
+
       - name: Cache Composer dependencies
         uses: actions/cache@v2
         with:
