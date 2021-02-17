@@ -1,7 +1,7 @@
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,29 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-export default {
-    SELECTORS: {
-        APP_NAVIGATION_CONTAINER: "#upper__navigation__wrapper"
-    },
-    CONSTANTS: {
-        FADE_IN_TIME: 9000
-    },
-    part: function () {
+const glob = require("glob");
+const webpack = require("webpack");
+const {VueLoaderPlugin} = require("vue-loader");
 
-    }
-    , register: function (listener) {
-        this.part = listener;
-    }
-    , run: function (data) {
-        this.part(data);
-    }
-    , runUI: function (html) {
-        $(this.SELECTORS.APP_NAVIGATION_CONTAINER).fadeIn(
-            this.CONSTANTS.FADE_IN_TIME
-            , function () {
-                $(this).append(html);
-            }
-        );
-        Keestash.Observer.AppNavigationItemClick.reattach();
-    }
-}
+module.exports = {
+    entry: {
+        organization_detail: __dirname + "/Organization/Detail/init.js"
+    },
+    output: {
+        path: __dirname + "/dist/",
+        filename: '[name].bundle.js'
+    },
+    module: {
+        rules: [{
+            exclude: /node_modules/,
+            loader: 'babel-loader'
+        }]
+    },
+    plugins: [
+        new VueLoaderPlugin(),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        })
+    ]
+};

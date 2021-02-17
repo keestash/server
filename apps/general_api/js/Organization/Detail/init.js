@@ -1,7 +1,7 @@
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,25 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Twig from '../../../../../node_modules/twig/twig';
+import store from "../../../../../lib/js/src/Store/store";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import App from "./App/App";
 
-/**
- * @deprecated
- */
-export default {
 
-    /**
-     * @deprecated
-     * @param raw
-     * @param context
-     * @returns {*}
-     */
-    parse: function (raw, context) {
-        let template = Twig.twig({
-            // id: "list", // id is optional, but useful for referencing the template later
-            data: raw
-        });
-        return template.render(context);
+window.addEventListener(
+    'DOMContentLoaded'
+    , async () => {
+        const vueConfig = {
+            store,
+            render: h => h(App)
+        };
+
+        Vue.use(BootstrapVue);
+        Vue.use(IconsPlugin);
+        new Vue(vueConfig)
+            .$mount("#organization-detail");
     }
-
-}
+);

@@ -498,7 +498,7 @@ class Keestash {
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::HEAD
             , [
-            "appStyleSheet" => Keestash::getServer()->getStylesheetManager()->getPathForApp($appId)
+            "appStyleSheet" => Keestash::getServer()->getStylesheetManager()->get($routeName)
             , "scripts"     => Keestash::getServer()->getTemplateManager()->getScripts()
             , "appScripts"  => Keestash::getServer()->getTemplateManager()->getAppScripts($appId)
         ]);

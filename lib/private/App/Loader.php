@@ -182,6 +182,7 @@ class Loader implements ILoader {
         $app->setShowIcon($showIcon === 1);
         $app->setBackgroundJobs($info[IApp::FIELD_BACKGROUND_JOBS] ?? []);
         $app->setSettings($info[IApp::FIELD_SETTINGS] ?? []);
+        $app->setStyleSheets($info[IApp::FIELD_STYLESHEETS] ?? []);
     }
 
     private function overrideDefaultApp(IApp $app): void {
@@ -206,14 +207,26 @@ class Loader implements ILoader {
         $source      = $app->getAppPath() . "/scss/";
         $destination = $app->getAppPath() . "/scss/dist/";
 
+        if (false === is_dir($source)) return;
+        if (false === is_dir($destination)) return;
+
         if (false === is_dir($source) || false === is_dir($destination)) {
 //            $this->logger->warning("$source or $destination is not a directory. Can not register scss");
             return;
         }
 
-        Keestash::getServer()
-            ->getStylesheetManager()
-            ->register($app);
+        foreach ($app->getStyleSheets() as $data) {
+
+            foreach ($data as $route => $name) {
+                Keestash::getServer()
+                    ->getStylesheetManager()
+                    ->registerForRoute(
+                        $route
+                        , Keestash::getBaseURL(false) . "/apps/{$app->getId()}/scss/dist/$name.css"
+                    );
+            }
+
+        }
 
     }
 

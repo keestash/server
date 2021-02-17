@@ -25,16 +25,21 @@ use KSP\Core\Controller\AppController;
 
 class Detail extends AppController {
 
+    public const TEMPLATE_NAME_ORGANIZATION_DETAIL = "organization_detail.twig";
+
     public function onCreate(): void {
-        // TODO: Implement onCreate() method.
+
     }
 
     public function create(): void {
-        // TODO: Implement create() method.
+        $this->setAppContent(
+            $this->getTemplateManager()
+                ->render(Detail::TEMPLATE_NAME_ORGANIZATION_DETAIL)
+        );
     }
 
     public function afterCreate(): void {
-        // TODO: Implement afterCreate() method.
+
     }
 
 }

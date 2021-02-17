@@ -21,7 +21,6 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Exception\StylesheetsNotCompiledException;
 use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 
 $action = $argv[1] ?? 'add';
@@ -33,16 +32,13 @@ $action = $argv[1] ?? 'add';
     require_once __DIR__ . '/../vendor/autoload.php';
 
     createDirIfNotExists(__DIR__ . '/../lib/scss/dist/');
-    compile(
-            __DIR__ . '/../lib/scss/',
-            __DIR__ . '/../lib/scss/dist/style.css',
-    );
+    compile(realpath(__DIR__ . '/../lib/scss/'));
 
     foreach (glob(__DIR__ . '/../apps/*/scss/') as $directory) {
         createDirIfNotExists($directory . '/dist/');
 
         if ('add' === $action) {
-            compile($directory, $directory . '/dist/style.css');
+            compile(realpath($directory));
         } else {
             remove($directory . '/dist');
         }
@@ -69,18 +65,31 @@ function remove(string $dir): bool {
     return true;
 }
 
-function compile(string $source, string $destination): void {
+function compile(string $source): void {
+
     $compiler = new ScssCompiler();
-    $compiler->addImportPath($source);
-    $css = $compiler->compile('@import "style.scss";');
+    $compiler->addImportPath(realpath(__DIR__ . '/../vendor/twitter/bootstrap/scss'));
+    $compiler->addImportPath(realpath(__DIR__ . '/../lib/scss/'));
+    foreach (glob($source . '/*.scss') as $file) {
+//        $compiler->addImportPath($file);
 
-    if (true === is_file($destination)) {
-        unlink($destination);
+        echo "processing file: $file \n";
+        $pathInfo    = pathinfo($file);
+        $destination = $pathInfo['dirname'] . '/dist/' . $pathInfo['filename'] . '.css';
+
+        $css = $compiler->compile(
+                file_get_contents($file)
+        );
+
+        if (true === is_file($destination)) {
+
+            unlink($destination);
+        }
+        $created = file_put_contents($destination, $css);
+
+        if (false === $created || false === is_file($destination)) {
+            echo "warning! not created!\n";
+        }
     }
 
-    $created = file_put_contents($destination, $css);
-
-    if (false === $created || false === is_file($destination)) {
-        throw new StylesheetsNotCompiledException();
-    }
 }
