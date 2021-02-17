@@ -196,13 +196,4 @@ abstract class Router implements IRouter {
         return $this->reflectionService;
     }
 
-    protected function hasPermission(?IPermission $permission): bool {
-        // for the case that the instance is not installed,
-        // we get an exception here. Need to fix this
-        // TODO FIXME
-        return true;
-        $permissionHandler = Keestash::getServer()->getPermissionHandler();
-        return $permissionHandler->hasPermission($permission);
-    }
-
 }

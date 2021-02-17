@@ -25,9 +25,6 @@ use Keestash;
 use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\DTO\Setting\IContext;
-use KSP\Core\DTO\Setting\ISetting;
-use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IPermission;
@@ -35,7 +32,6 @@ use KSP\L10N\IL10N;
 
 abstract class AppController implements IAppController {
 
-    private ?IPermission     $permission          = null;
     private ITemplateManager $templateManager;
     private int              $controllerType      = IAppController::CONTROLLER_TYPE_NORMAL;
     private IL10N            $l10n;
@@ -82,12 +78,12 @@ abstract class AppController implements IAppController {
         );
     }
 
-    public function getPermission(): IPermission {
-        return $this->permission;
-    }
-
+    /**
+     * @param IPermission $permission
+     * @deprecated
+     */
     protected function setPermission(IPermission $permission): void {
-        $this->permission = $permission;
+
     }
 
     protected function setAppNavigation(NavigationList $navigationList): void {

@@ -96,10 +96,6 @@ class HTTPRouter extends Router {
                     $methodParameters
                 );
 
-                $hasPermission = parent::hasPermission(
-                    $controller->getPermission()
-                );
-
                 $controller->create();
 
                 $controller->afterCreate();

@@ -4,13 +4,13 @@
     {% endif %}
     <div class="d-flex flex-column bg-white" id="app-content">
         <div class="d-none" id="breadcrumb-wrapper">
-            <nav aria-label="breadcrumb" style="background-color: white; border-bottom: 1px solid #dee2e6 !important;">
-                <ol class="breadcrumb" id="breadcrumb" style="background-color: white; margin: 0 !important;">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" id="breadcrumb">
                     <li class="breadcrumb-item invisible">breadcrumb</li>
                 </ol>
             </nav>
         </div>
-        <div>
+        <div class="d-flex flex-grow-1" id="app-content-inner">
             {{ appContent|raw }}
         </div>
     </div>

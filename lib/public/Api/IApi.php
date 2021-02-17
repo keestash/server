@@ -33,6 +33,4 @@ interface IApi {
 
     public function getResponse(): IResponse;
 
-    public function getPermission(): IPermission;
-
 }

@@ -21,18 +21,26 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Application;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use Keestash;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
 use KSA\general_api\lib\Api\UserList;
 use KSA\GeneralApi\Api\MinimumCredential;
+use KSA\GeneralApi\Api\Organization\Activate;
+use KSA\GeneralApi\Api\Organization\Add;
+use KSA\GeneralApi\Api\Organization\ListAll;
 use KSA\GeneralApi\Api\Template\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
+use KSA\GeneralApi\Controller\Organization\Detail;
 use KSA\GeneralApi\Controller\Route\RouteList;
+use KSA\GeneralApi\Repository\IOrganizationRepository;
+use KSA\GeneralApi\Repository\OrganizationRepository;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
 /**
@@ -48,6 +56,10 @@ class Application extends Keestash\App\Application {
     public const FRONTEND_TEMPLATES    = "frontend_templates/all/";
     public const FRONTEND_STRINGS      = "frontend_strings/all/";
     public const ROUTE_LIST            = "route_list/all/";
+    public const ORGANIZATION_LIST     = "organizations/all/";
+    public const ORGANIZATION_ADD      = "organizations/add/";
+    public const ORGANIZATION_ACTIVATE = "organizations/activate/";
+    public const ORGANIZATION_DETAILS  = "organizations/{id}/";
 
     public function register(): void {
 
@@ -55,6 +67,24 @@ class Application extends Keestash\App\Application {
             Application::PASSWORD_REQUIREMENTS
             , MinimumCredential::class
             , [IRouterManager::GET]
+        );
+
+        $this->registerApiRoute(
+            Application::ORGANIZATION_LIST
+            , ListAll::class
+            , [IRouterManager::GET]
+        );
+
+        $this->registerApiRoute(
+            Application::ORGANIZATION_ADD
+            , Add::class
+            , [IRouterManager::POST]
+        );
+
+        $this->registerApiRoute(
+            Application::ORGANIZATION_ACTIVATE
+            , Activate::class
+            , [IRouterManager::POST]
         );
 
         $this->registerApiRoute(
@@ -92,8 +122,19 @@ class Application extends Keestash\App\Application {
         $this->registerPublicApiRoute(
             Application::FILE_ICONS
         );
+        $this->registerServices();
         $this->registerCommands();
         $this->registerRoutes();
+    }
+
+    private function registerServices(): void {
+        Keestash::getServer()
+            ->register(IOrganizationRepository::class, function () {
+                return new OrganizationRepository(
+                    Keestash::getServer()->query(IDateTimeService::class)
+                    , Keestash::getServer()->query(IBackend::class)
+                );
+            });
     }
 
     private function registerCommands(): void {
@@ -128,6 +169,11 @@ class Application extends Keestash\App\Application {
         $this->registerRoute(
             Application::ROUTE_LIST
             , RouteList::class
+        );
+
+        $this->registerRoute(
+            Application::ORGANIZATION_DETAILS
+            , Detail::class
         );
     }
 

@@ -22,6 +22,7 @@ $grey-dark: #484848;
 
 html {
   color: $keestash-text-color-white;
+  height: 100%;
 }
 
 body {
@@ -128,6 +129,18 @@ body {
   #app-content {
     width: 100%;
     height: 100%;
+
+    #breadcrumb-wrapper {
+      nav {
+        background-color: white;
+        border-bottom: 1px solid #dee2e6 !important;
+
+        #breadcrumb {
+          background-color: white;
+          margin: 0 !important;
+        }
+      }
+    }
   }
 
   .btn-circle.btn-sm {
@@ -159,7 +172,7 @@ body {
 
   .ks-form {
     .icon-wrapper {
-      border-radius: 0.25rem 0 0 0.25rem ;
+      border-radius: 0.25rem 0 0 0.25rem;
     }
 
     .input-control {
