@@ -50,6 +50,8 @@ use KSP\Core\Manager\RouterManager\IRouterManager;
  */
 class Application extends Keestash\App\Application {
 
+    public const APP_ID = 'general_api';
+
     public const PASSWORD_REQUIREMENTS = "password_requirements/";
     public const ALL_USERS             = "users/all/{type}/";
     public const FILE_ICONS            = "icon/file/get/{extension}/";
@@ -125,6 +127,7 @@ class Application extends Keestash\App\Application {
         $this->registerServices();
         $this->registerCommands();
         $this->registerRoutes();
+        $this->registerJavascript();
     }
 
     private function registerServices(): void {
@@ -163,6 +166,14 @@ class Application extends Keestash\App\Application {
             )
         );
 
+    }
+
+    private function registerJavascript(): void {
+        $this->addJavaScriptFor(
+            Application::APP_ID
+            , "organization_detail"
+            , Application::ORGANIZATION_DETAILS
+        );
     }
 
     private function registerRoutes(): void {

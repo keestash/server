@@ -41,6 +41,7 @@ class App implements IApp {
     private bool   $showIcon;
     private array  $backgroundJobs = [];
     private array  $settings       = [];
+    private array  $styleSheets    = [];
 
     public function getOrder(): int {
         return $this->order;
@@ -153,13 +154,21 @@ class App implements IApp {
     public function setBackgroundJobs(array $backgroundJobs): void {
         $this->backgroundJobs = $backgroundJobs;
     }
-    
+
     public function getSettings(): array {
         return $this->settings;
     }
 
     public function setSettings(array $settings): void {
         $this->settings = $settings;
+    }
+
+    public function getStyleSheets(): array {
+        return $this->styleSheets;
+    }
+
+    public function setStyleSheets(array $styleSheets): void {
+        $this->styleSheets = $styleSheets;
     }
 
 }

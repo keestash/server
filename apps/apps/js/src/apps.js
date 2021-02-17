@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Formula from "../../../../lib/js/src/Formula";
+import {AXIOS} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.AppsApp) {
@@ -26,21 +26,20 @@ import Formula from "../../../../lib/js/src/Formula";
     Keestash.AppsApp = {
 
         listen: function () {
+            const diContainer = Keestash.Main.getContainer();
+
             $(".apps__app__checkbox").on("click", function () {
                 const checked = $(this).prop("checked");
                 const appId = $(this).attr("data-app-id");
-                const formula = new Formula();
+                const axios = diContainer.query(AXIOS);
 
-                formula.post(
+                axios.post(
                     routes.getAppsUpdate(appId)
                     , {
                         "activate": true === checked
                         , "app_id": appId
                     },
-                    function (x) {
-                        console.log(x)
-                    }
-                );
+                ).then((r) => console.log(r));
 
             });
         }

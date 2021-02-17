@@ -39,6 +39,8 @@ class StylesheetManager implements IStylesheetManager {
     private ?array        $cache = null;
     private IRouteService $routeService;
 
+    private array $route = [];
+
     public function __construct(IRouteService $routeService) {
         $this->apps         = new HashTable();
         $this->routeService = $routeService;
@@ -79,6 +81,14 @@ class StylesheetManager implements IStylesheetManager {
 
     public function getApps(): HashTable {
         return $this->apps;
+    }
+
+    public function registerForRoute(string $route, string $name): void {
+        $this->route[$route] = $name;
+    }
+
+    public function get(string $route): ?string {
+        return $this->route[$route] ?? null;
     }
 
 }

@@ -27,6 +27,10 @@ use KSP\Core\Manager\IManager;
 
 interface IStylesheetManager extends IManager {
 
+    public function registerForRoute(string $route, string $name):void;
+
+    public function get(string $route):?string;
+
     public function register(IApp $app): void;
 
     public function getApps(): HashTable;

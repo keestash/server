@@ -19,7 +19,6 @@
 
 import {Page} from "./Install/Page";
 import {Request} from "../../../../lib/js/src/Backend/Request";
-import {ConsoleLogger} from "../../../../lib/js/src/Log/ConsoleLogger";
 import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
 import {Router} from "../../../../lib/js/src/Route/Router";
 import {Host} from "../../../../lib/js/src/Backend/Host";
@@ -40,8 +39,7 @@ import {Routes} from "./Public/Routes";
 
             const page = new Page(
                 new Request(
-                    new ConsoleLogger()
-                    , new AppStorage()
+                    new AppStorage()
                     , router
                 )
                 , new Routes()

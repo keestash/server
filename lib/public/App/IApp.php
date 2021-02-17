@@ -38,6 +38,7 @@ interface IApp {
     public const FIELD_BACKGROUND_JOBS_TYPE     = "type";
     public const FIELD_BACKGROUND_JOBS_INTERVAL = "interval";
     public const FIELD_SETTINGS                 = "settings";
+    public const FIELD_STYLESHEETS              = "stylesheets";
 
     public function getId(): string;
 
@@ -68,5 +69,7 @@ interface IApp {
     public function getBackgroundJobs(): array;
 
     public function getSettings(): array;
+
+    public function getStyleSheets(): array;
 
 }
