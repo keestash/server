@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * server
+ * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\HTTP\Route;
+namespace KSP\Core\DTO\Organization;
 
-use KSP\Core\Service\HTTP\Route\IRouteService;
+use DateTimeInterface;
+use KSP\Core\DTO\Entity\IJsonObject;
 
-class RouteService implements IRouteService {
+interface IOrganization extends IJsonObject {
 
-    public function routeToAppId(string $route): string {
-        $route = str_replace("/", "", $route);
-        $route = str_replace("_", "", $route);
-        $route = str_replace(" ", "", $route);
-        return strtolower($route);
-    }
+    public function getId(): int;
+
+    public function getName(): string;
+
+    public function getCreateTs(): DateTimeInterface;
+
+    public function getActiveTs(): ?DateTimeInterface;
 
 }

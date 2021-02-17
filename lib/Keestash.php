@@ -50,6 +50,7 @@ use KSP\App\IApp;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplate;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
@@ -566,6 +567,8 @@ class Keestash {
 
         $partTemplate = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::PART_TEMPLATE);
         $sideBar      = Keestash::getServer()->getTemplateManager()->getRawTemplate(ITemplate::SIDE_BAR);
+        /** @var ILocaleService $localeService */
+        $localeService = Keestash::getServer()->query(ILocaleService::class);
 
         Keestash::getServer()->getTemplateManager()->replace(
             ITemplate::HTML
@@ -577,6 +580,7 @@ class Keestash {
                 , "noContext"       => $staticController
                 , "partTemplate"    => $partTemplate
                 , "sidebarTemplate" => $sideBar
+                , "language"        => $localeService->getLocale()
             ]
         );
         $html = Keestash::getServer()->getTemplateManager()->render(ITemplate::HTML);
@@ -787,7 +791,7 @@ class Keestash {
         }
 
         $application->run();
-      
+
     }
 
     public static function requestApi(): void {

@@ -82,10 +82,6 @@ class APIRouter extends Router {
             $service->setFiles($this->getFiles());
             $service->onCreate($allParameters);
 
-            $hasPermission = $this->hasPermission(
-                $service->getPermission()
-            );
-
             $start = microtime(true);
 
             $service->create();

@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\Core\Controller;
 
-use KSP\Core\Permission\IPermission;
-
 interface IAppController {
 
     public const CONTROLLER_TYPE_NORMAL      = 1;
@@ -37,7 +35,5 @@ interface IAppController {
     public function afterCreate(): void;
 
     public function getControllerType(): int;
-
-    public function getPermission(): IPermission;
 
 }
