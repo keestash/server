@@ -27,8 +27,7 @@ use KSP\L10N\IL10N;
 class SessionExpired extends DefaultResponse {
 
     public function __construct(IL10N $l10n) {
-        parent::__construct();
-        parent::addMessage(
+        $this->addMessage(
             IResponse::RESPONSE_CODE_SESSION_EXPIRED
             , [
                 "code"      => IResponse::RESPONSE_CODE_SESSION_EXPIRED

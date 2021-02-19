@@ -21,25 +21,31 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Organization;
 
-use DateTime;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\L10N\IL10N;
 
-class Add extends AbstractApi {
+class Update extends AbstractApi {
 
+    private IOrganizationService    $organizationService;
     private IOrganizationRepository $organizationRepository;
+    private ILogger                 $logger;
 
     public function __construct(
-        IOrganizationRepository $organizationRepository
+        IOrganizationService $organizationService
+        , IOrganizationRepository $organizationRepository
         , IL10N $l10n
+        , ILogger $logger
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
+        $this->organizationService    = $organizationService;
+        $this->logger                 = $logger;
         $this->organizationRepository = $organizationRepository;
     }
 
@@ -48,21 +54,20 @@ class Add extends AbstractApi {
     }
 
     public function create(): void {
+        $organization = $this->getParameter('organization');
+        $organization = json_decode($organization, true);
 
-        $name = $this->getParameter("organization");
-
-        if (null === $name || "" === $name) {
-            throw new GeneralApiException('no organization found');
+        if (null === $organization) {
+            throw new GeneralApiException();
         }
-        $organization = new Organization();
-        $organization->setName($name);
-        $organization->setCreateTs(new DateTime());
-        $organization->setActiveTs(new DateTime());
-        $organization = $this->organizationRepository->insert($organization);
+
+        $organization = $this->organizationService->toOrganization($organization);
+        $organization = $this->organizationRepository->update($organization);
+
         $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [
-                "organization" => $organization
+                'organization' => $organization
             ]
         );
     }

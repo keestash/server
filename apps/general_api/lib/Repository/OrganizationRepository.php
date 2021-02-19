@@ -31,14 +31,17 @@ use KSP\Core\DTO\Organization\IOrganization;
 
 class OrganizationRepository extends AbstractRepository implements IOrganizationRepository {
 
-    private IDateTimeService $dateTimeService;
+    private IDateTimeService            $dateTimeService;
+    private IOrganizationUserRepository $organizationUserRepository;
 
     public function __construct(
-        IDateTimeService $dateTimeService
+        IOrganizationUserRepository $organizationUserRepository
+        , IDateTimeService $dateTimeService
         , IBackend $backend
     ) {
         parent::__construct($backend);
-        $this->dateTimeService = $dateTimeService;
+        $this->dateTimeService            = $dateTimeService;
+        $this->organizationUserRepository = $organizationUserRepository;
     }
 
     public function getAll(): ArrayList {
@@ -46,20 +49,19 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
-                'id'
-                , 'name'
-                , 'create_ts'
-                , 'active_ts'
+                'o.id'
+                , 'o.name'
+                , 'o.create_ts'
+                , 'o.active_ts'
             ]
         )
-            ->from('organization');
+            ->from('organization', 'o');
         $rows         = $queryBuilder->execute();
 
         foreach ($rows as $row) {
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);
-            $organization->setMemberCount(0);
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null
@@ -68,6 +70,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
             $organization->setCreateTs(
                 $this->dateTimeService->fromFormat($row['create_ts'])
             );
+            $organization = $this->organizationUserRepository->getByOrganization($organization);
             $list->add($organization);
         }
         return $list;
@@ -102,12 +105,18 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
                 [
                     'name'        => '?'
                     , 'create_ts' => '?'
+                    , 'active_ts' => '?'
                 ]
             )
             ->setParameter(0, $organization->getName())
             ->setParameter(1,
                 $this->dateTimeService->toYMDHIS(
                     $organization->getCreateTs()
+                )
+            )
+            ->setParameter(2,
+                $this->dateTimeService->toYMDHIS(
+                    $organization->getActiveTs()
                 )
             )
             ->execute();
@@ -118,6 +127,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
             throw new GeneralApiException();
         }
         $organization->setId((int) $lastInsertId);
+        $organization = $this->organizationUserRepository->insert($organization);
         return $organization;
     }
 
@@ -141,7 +151,6 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);
-            $organization->setMemberCount(0);
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null
@@ -150,6 +159,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
             $organization->setCreateTs(
                 $this->dateTimeService->fromFormat($row['create_ts'])
             );
+            $organization = $this->organizationUserRepository->getByOrganization($organization);
         }
         return $organization;
     }

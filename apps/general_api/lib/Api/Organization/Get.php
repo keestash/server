@@ -21,26 +21,31 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Organization;
 
-use DateTime;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 
-class Add extends AbstractApi {
+class Get extends AbstractApi {
 
     private IOrganizationRepository $organizationRepository;
+    private ILogger                 $logger;
 
     public function __construct(
         IOrganizationRepository $organizationRepository
         , IL10N $l10n
+        , ILogger $logger
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
         $this->organizationRepository = $organizationRepository;
+        $this->logger                 = $logger;
     }
 
     public function onCreate(array $parameters): void {
@@ -48,21 +53,40 @@ class Add extends AbstractApi {
     }
 
     public function create(): void {
+        $id = $this->getParameter("id");
 
-        $name = $this->getParameter("organization");
-
-        if (null === $name || "" === $name) {
-            throw new GeneralApiException('no organization found');
+        if (null === $id || "" === $id || false === is_numeric($id)) {
+            $this->logger->debug($id);
+            throw new GeneralApiException('no id found');
         }
-        $organization = new Organization();
-        $organization->setName($name);
-        $organization->setCreateTs(new DateTime());
-        $organization->setActiveTs(new DateTime());
-        $organization = $this->organizationRepository->insert($organization);
+
+        $organization = $this->organizationRepository->get((int) $id);
+
+        $users      = Keestash::getServer()->getUsersFromCache();
+        $candidates = new ArrayList();
+
+        /** @var IUser $user */
+        foreach ($users as $user) {
+
+            $exists = false;
+            /** @var IUser $organizationUser */
+            foreach ($organization->getUsers() as $organizationUser) {
+
+                if ($user->getId() === $organizationUser->getId()) {
+                    $exists = true;
+                    break;
+                }
+            }
+            if (false === $exists) {
+                $candidates->add($user);
+            }
+        }
+
         $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [
-                "organization" => $organization
+                'organization' => $organization
+                , 'users'      => $candidates
             ]
         );
     }

@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\Api;
 
-use KSP\Core\Permission\IPermission;
-
 interface IApi {
 
     public function onCreate(array $parameters): void;
