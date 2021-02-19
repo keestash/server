@@ -1,5 +1,3 @@
-<?php
-declare(strict_types=1);
 /**
  * Keestash
  *
@@ -19,22 +17,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Organization;
+import {Host} from "../../../../lib/js/src/Backend/Host";
 
-use DateTimeInterface;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\DTO\Entity\IJsonObject;
+const host = new Host();
 
-interface IOrganization extends IJsonObject {
+const ORGANIZATION_GET = "/organizations/{id}/";
+const ORGANIZATION_UPDATE = "/organizations/update/";
+const ORGANIZATION_USER_CHANGE = "/organizations/user/change/";
 
-    public function getId(): int;
+export const MODE_ADD = 'add.mode';
+export const MODE_REMOVE = 'remove.mode';
 
-    public function getName(): string;
-
-    public function getCreateTs(): DateTimeInterface;
-
-    public function getActiveTs(): ?DateTimeInterface;
-
-    public function getUsers(): ArrayList;
-
+export const ROUTES = {
+    GET_ORGANIZATION_GET: (id) => {
+        return host.getApiHost() + ORGANIZATION_GET.replace('{id}', id);
+    },
+    GET_ORGANIZATION_UPDATE: () => {
+        return host.getApiHost() + ORGANIZATION_UPDATE;
+    },
+    GET_ORGANIZATION_USER_CHANGE: () => {
+        return host.getApiHost() + ORGANIZATION_USER_CHANGE;
+    },
 }

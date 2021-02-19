@@ -97,6 +97,7 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Instance\MaintenanceService;
+use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\Verification;
@@ -147,6 +148,7 @@ use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
+use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Validation\IValidationService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
@@ -313,6 +315,11 @@ class Server {
         });
         $this->register(ReflectionService::class, function () {
             return new ReflectionService();
+        });
+        $this->register(IOrganizationService::class, function (){
+            return new OrganizationService(
+                $this->query(IDateTimeService::class)
+            );
         });
         $this->register(ILoader::class, function () {
             return new Loader(

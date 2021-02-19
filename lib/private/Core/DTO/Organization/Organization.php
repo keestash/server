@@ -22,15 +22,22 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\Organization;
 
 use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\DTO\Organization\IOrganizationUser;
+use KSP\Core\DTO\User\IUser;
 
 class Organization implements IOrganization {
 
     private int                $id;
     private string             $name;
-    private int                $memberCount;
     private DateTimeInterface  $createTs;
     private ?DateTimeInterface $activeTs = null;
+    private ArrayList          $users;
+
+    public function __construct() {
+        $this->users = new ArrayList();
+    }
 
     /**
      * @return int
@@ -75,20 +82,6 @@ class Organization implements IOrganization {
     }
 
     /**
-     * @return int
-     */
-    public function getMemberCount(): int {
-        return $this->memberCount;
-    }
-
-    /**
-     * @param int $memberCount
-     */
-    public function setMemberCount(int $memberCount): void {
-        $this->memberCount = $memberCount;
-    }
-
-    /**
      * @return ?DateTimeInterface
      */
     public function getActiveTs(): ?DateTimeInterface {
@@ -102,13 +95,25 @@ class Organization implements IOrganization {
         $this->activeTs = $activeTs;
     }
 
+    public function addUser(IUser $user): void {
+        $this->users->add($user);
+    }
+
+    public function getUsers(): ArrayList {
+        return $this->users;
+    }
+
+    public function setUsers(ArrayList $users): void {
+        $this->users = $users;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'id'             => $this->getId()
-            , 'name'         => $this->getName()
-            , 'member_count' => $this->getMemberCount()
-            , 'create_ts'    => $this->getCreateTs()
-            , 'active_ts'    => $this->getActiveTs()
+            'id'          => $this->getId()
+            , 'name'      => $this->getName()
+            , 'users'     => $this->getUsers()
+            , 'create_ts' => $this->getCreateTs()
+            , 'active_ts' => $this->getActiveTs()
         ];
     }
 

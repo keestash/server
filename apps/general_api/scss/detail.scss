@@ -4,7 +4,6 @@ hr.solid {
   border-top: 2px solid #ced4da;
 }
 
-
 hr.hr-text {
   position: relative;
   border: none;
@@ -27,3 +26,6 @@ hr.hr-text::before {
   transform: translate(-50%, -50%);
 }
 
+.remove-badge {
+  cursor: pointer;
+}

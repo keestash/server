@@ -19,34 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\GeneralApi\Controller\Organization;
+namespace KSP\Core\Service\Organization;
 
-use KSP\Core\Controller\AppController;
+use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\Service\IService;
 
-class Detail extends AppController {
+interface IOrganizationService extends IService {
 
-    public const TEMPLATE_NAME_ORGANIZATION_DETAIL = "organization_detail.twig";
-
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-        $this->getTemplateManager()
-            ->replace(
-                Detail::TEMPLATE_NAME_ORGANIZATION_DETAIL
-                , [
-                    "id" => $this->getParameter("id")
-                ]
-            );
-        $this->setAppContent(
-            $this->getTemplateManager()
-                ->render(Detail::TEMPLATE_NAME_ORGANIZATION_DETAIL)
-        );
-    }
-
-    public function afterCreate(): void {
-
-    }
+    public function toOrganization(array $data): IOrganization;
 
 }

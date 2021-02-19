@@ -58,6 +58,52 @@ class Organizations extends KeestashMigration {
                 ]
             )
             ->save();
+
+        $this->table("user_organization")
+            ->addColumn(
+                "organization_id"
+                , KeestashMigration::INTEGER
+                , [
+                    "null"      => false
+                    , "comment" => "The organization id"
+                ]
+            )
+            ->addColumn(
+                "user_id"
+                , KeestashMigration::INTEGER
+                , [
+                    "null"      => false
+                    , "comment" => "The user id"
+                ]
+            )
+            ->addColumn(
+                "create_ts"
+                , "datetime"
+                , [
+                    "null"      => false
+                    , "comment" => "The create timestamp"
+                    , "default" => "CURRENT_TIMESTAMP"
+                ]
+            )
+            ->addForeignKey(
+                "organization_id"
+                , "organization"
+                , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
+            )
+            ->addForeignKey(
+                "user_id"
+                , "user"
+                , "id"
+                , [
+                    'delete'   => 'CASCADE'
+                    , 'update' => 'CASCADE'
+                ]
+            )
+            ->save();
     }
 
 }
