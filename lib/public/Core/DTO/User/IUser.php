@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\User;
 
-use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\Entity\IComparable;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\Entity\IValidatable;
@@ -36,7 +36,8 @@ interface IUser extends
     , IComparable
     , IValidatable {
 
-    public const SYSTEM_USER_ID = 1;
+    public const SYSTEM_USER_ID                                                              = 1;
+    public const VERY_DUMB_ATTEMPT_TO_MOCK_PASSWORDS_ON_SYSTEM_LEVEL_BUT_SECURITY_GOES_FIRST = 'first.goes.security.but.level.system.on.passwords.mock.to.attempt.dumb.very';
 
     public function getId(): int;
 
@@ -44,7 +45,7 @@ interface IUser extends
 
     public function getPassword(): string;
 
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
     public function getFirstName(): string;
 
@@ -57,8 +58,6 @@ interface IUser extends
     public function getWebsite(): string;
 
     public function getHash(): string;
-
-    public function getLastLogin(): ?DateTime;
 
     public function isLocked(): bool;
 

@@ -19,13 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Repository\EncryptionKey;
+namespace KSP\Core\Repository\EncryptionKey\User;
 
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
-interface IEncryptionKeyRepository extends IRepository {
+interface IUserKeyRepository extends IRepository {
 
     public function storeKey(IUser $user, IKey $key): bool;
 

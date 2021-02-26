@@ -68,15 +68,11 @@ class UserList extends AbstractApi {
     }
 
     public function create(): void {
-        $type         = $this->parameters['type'];
         $all          = $this->userRepository->getAll();
         $pictureTable = [];
 
         /** @var IUser $user */
         foreach ($all as $key => $user) {
-            if ($type === UserList::USER_TYPE_SEEN && null === $user->getLastLogin()) {
-                $all->remove($key);
-            }
 
             $picture = $this->fileManager->read(
                 $this->rawFileService->stringToUri(

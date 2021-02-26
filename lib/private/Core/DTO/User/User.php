@@ -21,15 +21,13 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\User;
 
-use DateTime;
-use doganoo\PHPAlgorithms\Datastructure\Graph\Tree\BinarySearchTree;
+use DateTimeInterface;
 use Exception;
 use Keestash\Core\Service\Validation\Rule\Password;
 use Keestash\Core\Service\Validation\Rule\Phone;
 use Keestash\Core\Service\Validation\Rule\Username;
 use Keestash\Core\Service\Validation\Validator\ValidatorBag;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Permission\IUser as PermissionUser;
 use KSP\Core\Service\Validation\Validator\IValidatorBag;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\NotEmpty;
@@ -41,22 +39,20 @@ use Laminas\Validator\Uri;
  * @package Keestash\Core\DTO\User
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class User implements IUser, PermissionUser {
+class User implements IUser {
 
     private int               $id;
     private string            $name;
     private string            $password;
-    private DateTime          $createTs;
+    private DateTimeInterface $createTs;
     private string            $firstName;
     private string            $lastName;
     private string            $email;
     private string            $phone;
     private string            $website;
-    private ?BinarySearchTree $roles     = null;
-    private ?DateTime         $lastLogin = null;
     private string            $hash;
-    private bool              $locked    = false;
-    private bool              $deleted   = false;
+    private bool              $locked  = false;
+    private bool              $deleted = false;
 
     /**
      * @return string
@@ -70,14 +66,6 @@ class User implements IUser, PermissionUser {
      */
     public function setPassword(string $password): void {
         $this->password = $password;
-    }
-
-    public function getLastLogin(): ?DateTime {
-        return $this->lastLogin;
-    }
-
-    public function setLastLogin(?DateTime $lastLogin): void {
-        $this->lastLogin = $lastLogin;
     }
 
     public function equals($object): bool {
@@ -109,18 +97,17 @@ class User implements IUser, PermissionUser {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return
             [
                 'id'           => $this->getId()
                 , 'name'       => $this->getName()
-                , 'create_ts'  => $this->getCreateTs()->getTimestamp()
+                , 'create_ts'  => $this->getCreateTs()
                 , 'first_name' => $this->getFirstName()
                 , 'last_name'  => $this->getLastName()
                 , 'email'      => $this->getEmail()
                 , 'phone'      => $this->getPhone()
                 , 'website'    => $this->getWebsite()
-                , "roles"      => $this->getRoles()
                 , "hash"       => $this->getHash()
                 , "locked"     => $this->isLocked()
                 , "deleted"    => $this->isDeleted()
@@ -142,18 +129,18 @@ class User implements IUser, PermissionUser {
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
     /**
-     * @param DateTime $createTs
+     * @param DateTimeInterface $createTs
      *
      * @throws Exception
      */
-    public function setCreateTs(DateTime $createTs): void {
+    public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
     }
 
@@ -225,24 +212,6 @@ class User implements IUser, PermissionUser {
      */
     public function setWebsite(string $website): void {
         $this->website = $website;
-    }
-
-    /**
-     * returns the users roles
-     *
-     * @return BinarySearchTree|null
-     */
-    public function getRoles(): ?BinarySearchTree {
-        return $this->roles;
-    }
-
-    /**
-     * sets the users roles
-     *
-     * @param BinarySearchTree|null $roles
-     */
-    public function setRoles(?BinarySearchTree $roles): void {
-        $this->roles = $roles;
     }
 
     public function getHash(): string {

@@ -23,7 +23,9 @@ namespace Keestash\Core\Service\Encryption\Credential;
 
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
+use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
 /**
@@ -54,6 +56,24 @@ class CredentialService {
         $credential = new Credential();
         $credential->setOwner($user);
         $credential->setSecret($user->getPassword());
+        $credential->setCreateTs(new DateTime());
+        $credential->setId($user->getId());
+        return $credential;
+    }
+
+    public function getCredentialForOrganization(IOrganization $organization): ICredential {
+
+        if (0 === $organization->getUsers()->length()) {
+            throw new KeestashException();
+        }
+
+        $credential = new Credential();
+        $secret     = "";
+        /** @var IUser $user */
+        foreach ($organization->getUsers() as $user) {
+            $secret = $secret . $user->getPassword();
+        }
+        $credential->setSecret($secret);
         $credential->setCreateTs(new DateTime());
         $credential->setId($user->getId());
         return $credential;

@@ -52,11 +52,26 @@ class Application extends Keestash\App\Application {
 
     public function register(): void {
 
+        $this->addJavascript(
+            Application::REGISTER
+        );
+
+        $this->registerServices();
+        $this->registerCommands();
+        $this->registerListener();
+        $this->registerApiRoutes();
+        $this->registerRoutes();
+    }
+
+    private function registerRoutes(): void {
         $this->registerRoute(
             Application::REGISTER
             , Controller::class
         );
+        $this->registerPublicRoute(Application::REGISTER);
+    }
 
+    private function registerApiRoutes(): void {
         $this->registerApiRoute(
             Application::REGISTER_ADD
             , Add::class
@@ -65,10 +80,6 @@ class Application extends Keestash\App\Application {
 
         $this->registerPublicApiRoute(
             Application::REGISTER_ADD
-        );
-
-        $this->addJavascript(
-            Application::REGISTER
         );
 
         $this->registerApiRoute(
@@ -82,9 +93,9 @@ class Application extends Keestash\App\Application {
             , MailExists::class
             , [IRouterManager::GET]
         );
+    }
 
-        $this->registerPublicRoute(Application::REGISTER);
-
+    private function registerListener(): void {
         Keestash::getServer()
             ->getEventManager()
             ->registerListener(
@@ -97,9 +108,6 @@ class Application extends Keestash\App\Application {
                     , Keestash::getServer()->getFileLogger()
                 )
             );
-
-        $this->registerServices();
-        $this->registerCommands();
     }
 
     private function registerServices(): void {

@@ -107,7 +107,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $user->setName($row['name']);
         $user->setPassword($row['password']);
         $user->setCreateTs(
-            $this->dateTimeService->toDateTime((int) $row['create_ts'])
+            $this->dateTimeService->fromString($row['create_ts'])
         );
         $user->setFirstName($row['first_name']);
         $user->setLastName($row['last_name']);
@@ -115,15 +115,11 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $user->setPhone($row['phone']);
         $user->setWebsite($row['website']);
         $user->setHash($row['hash']);
-        $user->setLastLogin(new DateTime()); // TODO implement
         $user->setDeleted(
             true === (bool) $row['deleted']
         );
         $user->setLocked(
             true === (bool) $row['locked']
-        );
-        $user->setRoles(
-            $this->roleManager->getRolesByUser($user)
         );
 
         return $user;
@@ -169,20 +165,16 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             $user->setName($row['name']);
             $user->setPassword($row['password']);
             $user->setCreateTs(
-                $this->dateTimeService->toDateTime((int) $row['create_ts'])
+                $this->dateTimeService->fromString($row['create_ts'])
             );
             $user->setFirstName($row['first_name']);
             $user->setLastName($row['last_name']);
             $user->setEmail($row['email']);
             $user->setPhone($row['phone']);
             $user->setWebsite($row['website']);
-            $user->setLastLogin(new DateTime()); // TODO implement
             $user->setHash($row['hash']);
             $user->setDeleted((bool) $row['deleted']);
             $user->setLocked((bool) $row['locked']);
-            $user->setRoles(
-                $this->roleManager->getRolesByUser($user)
-            );
 
             $list->add($user);
         }
@@ -313,7 +305,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $user->setName($row['name']);
         $user->setPassword($row['password']);
         $user->setCreateTs(
-            $this->dateTimeService->toDateTime((int) $row['create_ts'])
+            $this->dateTimeService->fromString($row['create_ts'])
         );
         $user->setFirstName($row['first_name']);
         $user->setLastName($row['last_name']);
@@ -321,15 +313,11 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $user->setPhone($row['phone']);
         $user->setWebsite($row['website']);
         $user->setHash($row['hash']);
-        $user->setLastLogin(new DateTime()); // TODO implement
-        $user->setDeleted(
+       $user->setDeleted(
             true === (bool) $row['deleted']
         );
         $user->setLocked(
             true === (bool) $row['locked']
-        );
-        $user->setRoles(
-            $this->roleManager->getRolesByUser($user)
         );
 
         return $user;
