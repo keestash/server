@@ -8,5 +8,10 @@
   "show-icon": 0,
   "base_route": "login",
   "version": 1,
-  "version_string": "1.0.0"
+  "version_string": "1.0.0",
+  "stylesheets": [
+    {
+      "login": "login"
+    }
+  ]
 }

@@ -23,6 +23,7 @@ namespace KSA\GeneralApi\Application;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
 use KSA\general_api\lib\Api\UserList;
@@ -41,6 +42,8 @@ use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
 use KSA\GeneralApi\Controller\Organization\Detail;
 use KSA\GeneralApi\Controller\Route\RouteList;
+use KSA\GeneralApi\Event\Listener\UserChangedListener;
+use KSA\GeneralApi\Event\Organization\UserChangedEvent;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\GeneralApi\Repository\IOrganizationUserRepository;
 use KSA\GeneralApi\Repository\OrganizationRepository;
@@ -48,7 +51,9 @@ use KSA\GeneralApi\Repository\OrganizationUserRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\RouterManager\IRouterManager;
+use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Encryption\IEncryptionService;
 
 /**
  * Class Application
@@ -156,6 +161,23 @@ class Application extends Keestash\App\Application {
         $this->registerPublicApiRoute(
             Application::FILE_ICONS
         );
+
+        $this->registerListener();
+    }
+
+    private function registerListener(): void {
+        Keestash::getServer()
+            ->getEventManager()
+            ->registerListener(
+                UserChangedEvent::class
+                , new UserChangedListener(
+                    Keestash::getServer()->query(IOrganizationUserRepository::class)
+                    , Keestash::getServer()->query(IOrganizationKeyRepository::class)
+                    , Keestash::getServer()->query(IEncryptionService::class)
+                    , Keestash::getServer()->query(CredentialService::class)
+                    , Keestash::getServer()->query(ILogger::class)
+                )
+            );
     }
 
     private function registerServices(): void {

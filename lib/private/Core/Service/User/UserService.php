@@ -41,7 +41,7 @@ use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
-use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -53,9 +53,9 @@ class UserService {
     public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
 
     private IApiLogRepository        $apiLogRepository;
-    private IFileRepository          $fileRepository;
-    private IEncryptionKeyRepository $keyRepository;
-    private IRoleRepository          $rolesRepository;
+    private IFileRepository    $fileRepository;
+    private IUserKeyRepository $keyRepository;
+    private IRoleRepository    $rolesRepository;
     private IUserRepository          $userRepository;
     private KeyService               $keyService;
     private Legacy                   $legacy;
@@ -69,7 +69,7 @@ class UserService {
     public function __construct(
         IApiLogRepository $apiLogRepository
         , IFileRepository $fileRepository
-        , IEncryptionKeyRepository $keyRepository
+        , IUserKeyRepository $keyRepository
         , IRoleRepository $rolesRepository
         , IUserRepository $userRepository
         , KeyService $keyService
@@ -182,6 +182,25 @@ class UserService {
 
     public function hashPassword(string $plain): string {
         return password_hash($plain, PASSWORD_BCRYPT);
+    }
+
+    public function toUser(array $userArray): IUser {
+        $user = new User();
+        $user->setId((int) $userArray['id']);
+        $user->setName($userArray['name']);
+        $user->setCreateTs(
+            $this->dateTimeService->fromString($userArray['create_ts']['date'])
+        );
+        $user->setDeleted($userArray['deleted']);
+        $user->setEmail($userArray['email']);
+        $user->setFirstName($userArray['first_name']);
+        $user->setLastName($userArray['last_name']);
+        $user->setHash($userArray['hash']);
+        $user->setLocked($userArray['locked']);
+        $user->setPassword(IUser::VERY_DUMB_ATTEMPT_TO_MOCK_PASSWORDS_ON_SYSTEM_LEVEL_BUT_SECURITY_GOES_FIRST);
+        $user->setPhone($userArray['phone']);
+        $user->setWebsite($userArray['website']);
+        return $user;
     }
 
     public function toNewUser(array $userArray): IUser {

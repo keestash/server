@@ -67,7 +67,8 @@ use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use Keestash\Core\Manager\TemplateManager\TwigManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
-use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
+use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
+use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
@@ -132,7 +133,8 @@ use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Permission\IDataProvider;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Repository\EncryptionKey\IEncryptionKeyRepository;
+use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -316,7 +318,7 @@ class Server {
         $this->register(ReflectionService::class, function () {
             return new ReflectionService();
         });
-        $this->register(IOrganizationService::class, function (){
+        $this->register(IOrganizationService::class, function () {
             return new OrganizationService(
                 $this->query(IDateTimeService::class)
             );
@@ -333,7 +335,7 @@ class Server {
             return new UserService(
                 $this->query(IApiLogRepository::class)
                 , $this->query(IFileRepository::class)
-                , $this->query(IEncryptionKeyRepository::class)
+                , $this->query(IUserKeyRepository::class)
                 , $this->query(IRoleRepository::class)
                 , $this->query(IUserRepository::class)
                 , $this->query(KeyService::class)
@@ -560,9 +562,19 @@ class Server {
             return new ConsoleManager();
         });
 
-        $this->register(IEncryptionKeyRepository::class, function () {
-            return new EncryptionKeyRepository(
+        $this->register(IUserKeyRepository::class, function () {
+            return new UserKeyRepository(
                 $this->query(IBackend::class)
+                , $this->query(IDateTimeService::class)
+                , $this->query(ILogger::class)
+            );
+        });
+
+        $this->register(IOrganizationKeyRepository::class, function () {
+            return new OrganizationKeyRepository(
+                $this->query(IBackend::class)
+                , $this->query(IDateTimeService::class)
+                , $this->query(ILogger::class)
             );
         });
 

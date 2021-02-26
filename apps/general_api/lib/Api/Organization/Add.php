@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Organization;
 
 use DateTime;
+use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
@@ -59,6 +60,7 @@ class Add extends AbstractApi {
         $organization->setCreateTs(new DateTime());
         $organization->setActiveTs(new DateTime());
         $organization = $this->organizationRepository->insert($organization);
+
         $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK
             , [

@@ -22,7 +22,10 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash;
 use Keestash\Api\AbstractApi;
+use KSA\GeneralApi\Event\Organization\UserChangedEvent;
+use KSA\GeneralApi\Event\Organization\UserRemovedEvent;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\GeneralApi\Repository\IOrganizationUserRepository;
@@ -85,13 +88,21 @@ class User extends AbstractApi {
             case User::MODE_ADD:
                 $organization->addUser($user);
                 $this->organizationUserRepository->insert($organization);
+
                 break;
             case User::MODE_REMOVE;
                 $this->organizationUserRepository->remove($user, $organization);
+
                 break;
             default:
                 throw new GeneralApiException('no mode given');
         }
+
+        Keestash::getServer()
+            ->getEventManager()
+            ->execute(
+                new UserChangedEvent($organization)
+            );
 
         $this->createAndSetResponse(
             IResponse::RESPONSE_CODE_OK

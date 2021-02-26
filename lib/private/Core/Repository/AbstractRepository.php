@@ -55,10 +55,21 @@ class AbstractRepository implements IRepository {
         return $this->backend->getDoctrineConnection()->lastInsertId();
     }
 
+    /**
+     * @param string|null $name
+     * @return string|null
+     * @deprecated
+     */
     protected function getLastInsertId(?string $name = null): ?string {
         return $this->connection->lastInsertId($name);
     }
 
+    /**
+     * @param string $sql
+     * @param array  $parameters
+     * @return bool
+     * @deprecated
+     */
     protected function query(string $sql, array $parameters = []): bool {
         $statement = $this->prepareStatement($sql);
         if (null === $statement) return false;
@@ -72,6 +83,11 @@ class AbstractRepository implements IRepository {
         return false === $this->hasErrors($statement->errorCode());
     }
 
+    /**
+     * @param string $statement
+     * @return PDOStatement|null
+     * @deprecated
+     */
     protected function prepareStatement(string $statement): ?PDOStatement {
         if (false === $this->backend->isConnected()) return null;
         $statement = $this->connection->prepare($statement);
@@ -79,33 +95,24 @@ class AbstractRepository implements IRepository {
         return null;
     }
 
+    /**
+     * @param string $errorCode
+     * @return bool
+     * @deprecated
+     */
     protected function hasErrors(string $errorCode): bool {
         return $errorCode !== "00000";
-    }
-
-    protected function getSingle(string $sql, array $parameters = []): ?array {
-        $statement = $this->prepareStatement($sql);
-        if (null === $statement) return null;
-
-        foreach ($parameters as $key => $value) {
-            if (false === is_string($key)) continue;
-            $statement->bindParam($key, $value);
-        }
-
-        $executed = $statement->execute();
-        if (false === $executed) return null;
-        if (0 === $statement->rowCount()) return null;
-
-        $row = $statement->fetch(PDO::FETCH_BOTH);
-        if (0 === count($row)) return null;
-
-        return $row;
     }
 
     protected function getSchemaName(): string {
         return $this->backend->getSchemaName();
     }
 
+    /**
+     * @param string $sql
+     * @return false|int
+     * @deprecated
+     */
     protected function rawQuery(string $sql) {
         return $this->connection->exec($sql);
     }

@@ -23,7 +23,7 @@ namespace Keestash\Core\Service\Encryption\Key;
 
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
-use Keestash\Core\Repository\EncryptionKey\EncryptionKeyRepository;
+use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
@@ -32,11 +32,11 @@ use Ramsey\Uuid\Uuid;
 
 class KeyService {
 
-    private EncryptionKeyRepository $encryptionKeyRepository;
-    private IEncryptionService      $encryptionService;
+    private UserKeyRepository  $encryptionKeyRepository;
+    private IEncryptionService $encryptionService;
 
     public function __construct(
-        EncryptionKeyRepository $encryptionKeyRepository
+        UserKeyRepository $encryptionKeyRepository
         , IEncryptionService $encryptionService
     ) {
         $this->encryptionKeyRepository = $encryptionKeyRepository;

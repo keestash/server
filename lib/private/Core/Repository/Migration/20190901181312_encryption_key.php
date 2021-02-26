@@ -1,5 +1,6 @@
 <?php
 
+use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 use Phinx\Migration\AbstractMigration;
 
 class EncryptionKey extends AbstractMigration {
@@ -40,10 +41,11 @@ class EncryptionKey extends AbstractMigration {
             )
             ->addColumn(
                 "create_ts"
-                , "integer"
+                , KeestashMigration::DATETIME
                 , [
                     "null"    => false
                     , "after" => "value"
+                    , "default" => "CURRENT_TIMESTAMP"
                 ]
             )
             ->save();
