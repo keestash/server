@@ -29,6 +29,7 @@ use doganoo\PHPUtil\FileSystem\FileHandler;
 use Keestash;
 use Keestash\Core\DTO\Setting\Context;
 use Keestash\Core\DTO\Setting\Setting;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
@@ -88,20 +89,29 @@ class Loader implements ILoader {
         $info = $this->loadInfo($app);
 
         if (false === $this->isValidInfo($info)) {
-//            $this->logger->info("$appId is not installed properly. Ignoring");
+            $this->logger->info("$appId is not installed properly. Ignoring");
             return false;
         }
 
         $disable = $info[IApp::FIELD_DISABLE] ?? false;
 
         if (false !== $disable || $disable === 1) {
-//            $this->logger->info("$appId is disabled. Skipping!");
+            $this->logger->info("$appId is disabled. Skipping!");
             return false;
         }
 
         $this->buildApp($info, $app);
         $this->overrideDefaultApp($app);
         $this->registerForScss($app);
+
+        /** @var InstanceDB $instanceDb */
+        $instanceDb = Keestash::getServer()->query(InstanceDB::class);
+        $demoMode   = $instanceDb->getOption("demo") === "true";
+
+        if (true === $demoMode && false === $app->isDemonstrateable()) {
+            return false;
+        }
+
         $this->apps->put($app->getId(), $app);
 
         return true;
@@ -139,6 +149,7 @@ class Loader implements ILoader {
         $versionString  = $info[IApp::FIELD_VERSION_STRING] ?? null;
         $type           = $info[IApp::FIELD_TYPE] ?? null;
         $backgroundJobs = $info[IApp::FIELD_BACKGROUND_JOBS] ?? null;
+        $demonstrate    = $info[IApp::FIELD_DEMONSTRATE] ?? null;
 
         if (null === $id) return false;
         if (null === $namespace) return false;
@@ -149,6 +160,7 @@ class Loader implements ILoader {
         if ($version <= 0) return false;
         if (null === $versionString) return false;
         if (null === $type) return false;
+        if (null === $demonstrate) return false;
 
         if (null !== $backgroundJobs) {
 
@@ -162,6 +174,8 @@ class Loader implements ILoader {
             }
 
         }
+
+        // TODO validate stylesheets
         return true;
     }
 
@@ -183,6 +197,7 @@ class Loader implements ILoader {
         $app->setBackgroundJobs($info[IApp::FIELD_BACKGROUND_JOBS] ?? []);
         $app->setSettings($info[IApp::FIELD_SETTINGS] ?? []);
         $app->setStyleSheets($info[IApp::FIELD_STYLESHEETS] ?? []);
+        $app->setDemonstratable((int) ($info[IApp::FIELD_DEMONSTRATE] ?? 0) === 1);
     }
 
     private function overrideDefaultApp(IApp $app): void {

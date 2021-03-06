@@ -28,6 +28,7 @@ use Keestash;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
@@ -65,6 +66,12 @@ class EmailAfterRegistration implements IListener {
      */
     public function execute(Event $event): void {
 
+        if (
+            $event->getUser()->getId() === IUser::SYSTEM_USER_ID
+            || $event->getUser()->getName() === IUser::DEMO_USER_NAME
+        ) {
+            return;
+        }
         $appName = $this->legacy->getApplication()->get("name");
         $this->templateManager->replace(
             EmailAfterRegistration::TEMPLATE_NAME,

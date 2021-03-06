@@ -42,6 +42,7 @@ class App implements IApp {
     private array  $backgroundJobs = [];
     private array  $settings       = [];
     private array  $styleSheets    = [];
+    private bool   $demonstratable;
 
     public function getOrder(): int {
         return $this->order;
@@ -169,6 +170,34 @@ class App implements IApp {
 
     public function setStyleSheets(array $styleSheets): void {
         $this->styleSheets = $styleSheets;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseRoot(): string {
+        return $this->baseRoot;
+    }
+
+    /**
+     * @param string $baseRoot
+     */
+    public function setBaseRoot(string $baseRoot): void {
+        $this->baseRoot = $baseRoot;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDemonstrateable(): bool {
+        return $this->demonstratable;
+    }
+
+    /**
+     * @param bool $demonstratable
+     */
+    public function setDemonstratable(bool $demonstratable): void {
+        $this->demonstratable = $demonstratable;
     }
 
 }

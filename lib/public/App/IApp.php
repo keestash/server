@@ -35,6 +35,7 @@ interface IApp {
     public const FIELD_TYPE                     = "type";
     public const FIELD_SHOW_ICON                = "show-icon";
     public const FIELD_BACKGROUND_JOBS          = "background_jobs";
+    public const FIELD_DEMONSTRATE              = "demonstrate";
     public const FIELD_BACKGROUND_JOBS_TYPE     = "type";
     public const FIELD_BACKGROUND_JOBS_INTERVAL = "interval";
     public const FIELD_SETTINGS                 = "settings";
@@ -71,5 +72,7 @@ interface IApp {
     public function getSettings(): array;
 
     public function getStyleSheets(): array;
+
+    public function isDemonstrateable(): bool;
 
 }

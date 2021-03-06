@@ -37,6 +37,8 @@ interface IUser extends
     , IValidatable {
 
     public const SYSTEM_USER_ID                                                              = 1;
+    public const DEMO_USER_NAME                                                              = "demo";
+    public const DEMO_PASSWORD                                                               = "demo";
     public const VERY_DUMB_ATTEMPT_TO_MOCK_PASSWORDS_ON_SYSTEM_LEVEL_BUT_SECURITY_GOES_FIRST = 'first.goes.security.but.level.system.on.passwords.mock.to.attempt.dumb.very';
 
     public function getId(): int;

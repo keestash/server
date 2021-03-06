@@ -59,8 +59,8 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
                 ]
             )
             ->setParameter(0, $user->getId())
-            ->setParameter(2, $key->getId())
-            ->setParameter(1, $this->dateTimeService->toYMDHIS($key->getCreateTs()));
+            ->setParameter(1, $key->getId())
+            ->setParameter(2, $this->dateTimeService->toYMDHIS($key->getCreateTs()));
 
         $queryBuilder->execute();
 

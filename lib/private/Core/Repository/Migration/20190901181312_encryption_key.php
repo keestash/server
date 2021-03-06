@@ -68,10 +68,11 @@ class EncryptionKey extends AbstractMigration {
             )
             ->addColumn(
                 "create_ts"
-                , "integer"
+                , KeestashMigration::DATETIME
                 , [
                     "null"    => false
                     , "after" => "key_id"
+                    , "default" => "CURRENT_TIMESTAMP"
                 ]
             )
             ->addForeignKey(

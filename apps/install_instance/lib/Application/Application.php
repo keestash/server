@@ -23,14 +23,17 @@ namespace KSA\InstallInstance\Application;
 
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceRepository;
+use Keestash\Core\Service\User\UserService;
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
+use KSA\InstallInstance\Command\DemoMode;
 use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Controller\Controller;
 use KSP\Core\Manager\RouterManager\IRouterManager;
+use KSP\Core\Repository\User\IUserRepository;
 
-class Application extends \Keestash\App\Application {
+class Application extends Keestash\App\Application {
 
     public const APP_ID = "install_instance";
 
@@ -81,12 +84,21 @@ class Application extends \Keestash\App\Application {
         );
 
         $this->addJavaScript(Application::APP_ID);
+        $this->registerCommands();
+    }
 
+    private function registerCommands(): void {
         $this->registerCommand(
             new Uninstall(
                 Keestash::getServer()->query(InstanceRepository::class)
             )
         );
+        $this->registerCommand(new DemoMode(
+            Keestash::getServer()->getInstanceDB()
+            , Keestash::getServer()->query(UserService::class)
+            , Keestash::getServer()->query(IUserRepository::class)
+        ));
     }
+
 
 }

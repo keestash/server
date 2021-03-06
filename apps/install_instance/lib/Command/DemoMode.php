@@ -1,0 +1,109 @@
+<?php
+declare(strict_types=1);
+/**
+ * Keestash
+ *
+ * Copyright (C) <2021> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace KSA\InstallInstance\Command;
+
+use Keestash;
+use Keestash\Command\KeestashCommand;
+use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\User\UserService;
+use KSA\InstallInstance\Exception\InstallInstanceException;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\User\IUserRepository;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class DemoMode extends KeestashCommand {
+
+    private InstanceDB      $instanceDb;
+    private UserService     $userService;
+    private IUserRepository $userRepository;
+
+    public function __construct(
+        InstanceDB $instanceDB
+        , UserService $userService
+        , IUserRepository $userRepository
+    ) {
+        parent::__construct("instance:demomode");
+        $this->instanceDb     = $instanceDB;
+        $this->userService    = $userService;
+        $this->userRepository = $userRepository;
+    }
+
+    private function enable(string $path): bool {
+        $put     = @file_put_contents(
+            $path
+            , (string) getmypid()
+        );
+        $enabled = $put !== false;
+
+        if (true === $enabled) {
+            $this->userService->createUser(
+                $this->userService->getDemoUser()
+            );
+            $this->instanceDb->addOption("demo", "true");
+        }
+        return $enabled;
+    }
+
+    private function disable(string $path): bool {
+        if (false === $this->isDemoMode($path)) return true;
+        $disabled = @unlink($path);
+
+        if (true === $disabled) {
+            $this->userService->removeUser(
+                $this->userRepository->getUser(IUser::DEMO_USER_NAME)
+            );
+            $this->instanceDb->removeOption("demo");
+        }
+        return $disabled;
+    }
+
+    private function isDemoMode(string $path): bool {
+        return true === is_file($path);
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output) {
+        $dataRoot     = Keestash::getServer()->getDataRoot();
+        $dataRoot     = realpath($dataRoot);
+        $demoModePath = $dataRoot . "/.mode.demo";
+
+        if (false === $dataRoot) {
+            throw new InstallInstanceException("no");
+        }
+
+        $ran = false;
+        if ($this->isDemoMode($demoModePath)) {
+            $output->writeln("disabling demo mode");
+            $ran = $this->disable($demoModePath);
+        } else {
+            $output->writeln("enabling demo mode");
+            $ran = $this->enable($demoModePath);
+        }
+
+        if (false === $ran) {
+            throw new InstallInstanceException();
+        }
+        $output->writeln("demo mode switched");
+        return 0;
+    }
+
+}

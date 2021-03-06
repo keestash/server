@@ -20,14 +20,17 @@ import {Routes} from "./Routes/Routes";
 import {Submit} from "./Login/Submit/Submit";
 import {
     APP_STORAGE,
+    AXIOS,
     BUTTON_SERVICE,
+    EMAIL_VALIDATOR,
     GLOBAL_ROUTES,
     INPUT_SERVICE,
     MINI_MODAL,
     REQUEST,
     ROUTER,
-    TEMPLATE_LOADER
+    TEMPLATE_LOADER, TEMPORARY_STORAGE
 } from "../../../../lib/js/src/StartUp";
+import {Login} from "./Login/Login";
 
 (async () => {
     if (!Keestash.Login) {
@@ -37,13 +40,14 @@ import {
     Keestash.Login = {
 
         init: () => {
+            const routes = new Routes();
 
             const diContainer = Keestash.Main.getContainer();
             const submit = new Submit(
                 diContainer.query(ROUTER)
                 , diContainer.query(REQUEST)
                 , diContainer.query(APP_STORAGE)
-                , new Routes()
+                , routes
                 , diContainer.query(GLOBAL_ROUTES)
                 , diContainer.query(TEMPLATE_LOADER)
                 , diContainer.query(INPUT_SERVICE)
@@ -51,6 +55,13 @@ import {
                 , diContainer.query(MINI_MODAL)
             );
             submit.handle();
+            const login = new Login(
+                diContainer.query(AXIOS)
+                , routes
+                , diContainer.query(EMAIL_VALIDATOR)
+                , diContainer.query(TEMPORARY_STORAGE)
+            );
+            login.init();
         }
     }
 })();

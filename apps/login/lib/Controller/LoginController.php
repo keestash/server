@@ -22,13 +22,15 @@ declare(strict_types=1);
 namespace KSA\Login\Controller;
 
 use Keestash;
-use Keestash\Core\Permission\PermissionFactory;
+use Keestash\Core\Manager\CookieManager\CookieManager;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Legacy\Legacy;
 use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\Permission\IPermissionRepository;
@@ -43,6 +45,8 @@ class LoginController extends StaticAppController {
     private PersistenceService    $persistenceService;
     private Legacy                $legacy;
     private ConfigService         $configService;
+    private InstanceDB            $instanceDb;
+    private CookieManager         $cookieManager;
 
     public function __construct(
         ITemplateManager $templateManager
@@ -52,12 +56,16 @@ class LoginController extends StaticAppController {
         , PersistenceService $persistenceService
         , Legacy $legacy
         , ConfigService $configService
+        , CookieManager $cookieManager
+        , InstanceDB $instanceDB
     ) {
         $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->persistenceService   = $persistenceService;
         $this->legacy               = $legacy;
         $this->configService        = $configService;
+        $this->instanceDb           = $instanceDB;
+        $this->cookieManager        = $cookieManager;
 
         parent::__construct(
             $templateManager
@@ -66,9 +74,7 @@ class LoginController extends StaticAppController {
     }
 
     public function onCreate(...$params): void {
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {
@@ -82,6 +88,12 @@ class LoginController extends StaticAppController {
             );
             exit();
         }
+
+        $isDemoMode = $this->instanceDb->getOption("demo") === "true";
+        $demo       = $isDemoMode
+            ? md5(uniqid())
+            : null;
+
         $this->getTemplateManager()->replace(
             LoginController::TEMPLATE_NAME_LOGIN
             , [
@@ -102,6 +114,15 @@ class LoginController extends StaticAppController {
                 , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
                 , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "newTab"                     => false === $this->configService->getValue('debug', false)
+                , "demo"                       => $demo
+                , "tncLink"                    => Keestash::getBaseURL(true) . "/tnc/"
+                , "demoMode"                   => [
+                    "isDemoMode"      => $isDemoMode
+                    , "sensitiveData" => $this->getL10N()->translate("Please do not input sensitive data as this the instance you are logging in is only for demonstration purposes!")
+                    , "deleteInfo"    => $this->getL10N()->translate("The data submitted here will be deleted after 60 minutes.")
+                    , "adminUser"     => $this->getL10N()->translate("Username: " . IUser::DEMO_USER_NAME)
+                    , "adminPassword" => $this->getL10N()->translate("Password: " . IUser::DEMO_PASSWORD)
+                ]
             ]
         );
 

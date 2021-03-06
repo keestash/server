@@ -34,7 +34,8 @@ class Application extends \Keestash\App\Application {
     public const LOGIN                   = "login";
     public const LOGIN_SUBMIT            = "login/submit/";
 
-    public const APP_NAME_REGISTER = "register";
+    public const APP_NAME_REGISTER        = "register";
+    public const APP_NAME_FORGOT_PASSWORD = "forgot_password";
 
     public function register(): void {
 

@@ -1,0 +1,14 @@
+@import "style";
+
+.keestash-about {
+  .application-image {
+    img {
+      max-height: 40vh;
+      max-width: 40vh;
+    }
+  }
+
+  .info-chip {
+    color: $grey-dark;
+  }
+}

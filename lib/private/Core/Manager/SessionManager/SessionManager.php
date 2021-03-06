@@ -26,14 +26,17 @@ use KSP\Core\Manager\SessionManager\ISessionManager;
 
 class SessionManager implements ISessionManager {
 
-    private $session = null;
+    private Session $session;
 
     public function __construct(Session $session) {
         $this->session = $session;
-        ini_set(
-            ISessionManager::SESSION_GC_MAX_LIFETIME_NAME
-            , (string) ISessionManager::SESSION_GC_MAX_LIFETIME
-        );
+
+        if (false === $this->session->isStarted()) {
+            ini_set(
+                ISessionManager::SESSION_GC_MAX_LIFETIME_NAME
+                , (string) ISessionManager::SESSION_GC_MAX_LIFETIME
+            );
+        }
     }
 
     /**

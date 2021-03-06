@@ -24,6 +24,7 @@ namespace Keestash\Core\Manager\CookieManager;
 
 use DateTime;
 use Keestash;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 
 class CookieManager implements ICookieManager {
@@ -39,7 +40,7 @@ class CookieManager implements ICookieManager {
     }
 
     public function get(string $key, ?string $default = null): ?string {
-        return $this->getAll()[$key] ?? null;
+        return $this->getAll()[$key] ?? $default;
     }
 
     public function getAll(): array {
