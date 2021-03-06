@@ -96,6 +96,7 @@ class ForgotPassword extends StaticAppController {
                 , "newAccountLink"                => Keestash::getBaseURL(true) . "/register"
                 , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/forgot_password"
                 , "registeringEnabled"            => $this->loader->hasApp(\KSA\Login\Application\Application::APP_NAME_REGISTER)
+                , "forgotPasswordEnabled"         => $this->loader->hasApp(\KSA\Login\Application\Application::APP_NAME_FORGOT_PASSWORD)
                 , "newTab"                        => false === $this->configService->getValue('debug', false)
             ]
         );

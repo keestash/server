@@ -46,9 +46,9 @@ class Legacy {
         $table->put("email", "info@ucar-solutions.de");
         $table->put("phone", "+49 (0) 69 175 111 52");
         $table->put("web", "https://www.keestash.com");
-        $table->put("facebookPage", "https://www.facebook.com/DoganUcar2");
-        $table->put("twitterPage", "https://twitter.com/DoganUcar9");
-        $table->put("linkedInPage", "https://www.linkedin.com/in/dogan-ucar/");
+        $table->put("facebookPage", "https://www.facebook.com/keestash");
+        $table->put("twitterPage", "https://www.twitter.com/keestash");
+        $table->put("linkedInPage", "https://www.linkedin.com/company/keestash");
         return $table;
     }
 

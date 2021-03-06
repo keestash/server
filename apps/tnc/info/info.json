@@ -8,5 +8,6 @@
   "show-icon": 0,
   "base_route": "tnc",
   "version": 1,
-  "version_string": "1.0.0"
+  "version_string": "1.0.0",
+  "demonstrate": 1
 }

@@ -85,7 +85,7 @@ abstract class KeyRepository extends AbstractRepository {
 
     protected function _remove(IKey $key): bool {
         $queryBuilder = $this->getQueryBuilder();
-        return 0 !== $queryBuilder->delete('key')
+        return 0 !== $queryBuilder->delete('`key`')
                 ->where('id = ?')
                 ->setParameter(0, $key->getId())
                 ->execute();

@@ -18,7 +18,8 @@
  */
 import {Host} from "../../../../../lib/js/src/Backend/Host";
 
-export const LOGIN_SUBMIT = "/login/submit/";
+const LOGIN_SUBMIT = "/login/submit/";
+const DEMOUSERS_USER_ADD = "/demousers/user/add/";
 
 export class Routes {
     constructor() {
@@ -27,5 +28,9 @@ export class Routes {
 
     getLoginSubmit() {
         return this.host.getApiHost() + LOGIN_SUBMIT;
+    }
+
+    getDemoUsersAdd() {
+        return this.host.getApiHost() + DEMOUSERS_USER_ADD;
     }
 }

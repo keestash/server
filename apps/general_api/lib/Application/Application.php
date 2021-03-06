@@ -27,6 +27,7 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
 use KSA\general_api\lib\Api\UserList;
+use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\Api\MinimumCredential;
 use KSA\GeneralApi\Api\Organization\Activate;
 use KSA\GeneralApi\Api\Organization\Add;
@@ -44,6 +45,7 @@ use KSA\GeneralApi\Controller\Organization\Detail;
 use KSA\GeneralApi\Controller\Route\RouteList;
 use KSA\GeneralApi\Event\Listener\UserChangedListener;
 use KSA\GeneralApi\Event\Organization\UserChangedEvent;
+use KSA\GeneralApi\Repository\DemoUsersRepository;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\GeneralApi\Repository\IOrganizationUserRepository;
 use KSA\GeneralApi\Repository\OrganizationRepository;
@@ -76,6 +78,7 @@ class Application extends Keestash\App\Application {
     public const ORGANIZATION_SINGLE      = "organizations/{id}/";
     public const ORGANIZATION_UPDATE      = "organizations/update/";
     public const ORGANIZATION_USER_CHANGE = "organizations/user/change/";
+    public const DEMOUSERS_USER_ADD       = "demousers/user/add/";
 
     public function register(): void {
         $this->registerServices();
@@ -83,12 +86,18 @@ class Application extends Keestash\App\Application {
         $this->registerRoutes();
         $this->registerJavascript();
         $this->registerApiRoutes();
+        $this->registerListener();
     }
 
     private function registerApiRoutes(): void {
         $this->registerApiRoute(
             Application::ORGANIZATION_USER_CHANGE
             , User::class
+            , [IRouterManager::POST]
+        );
+        $this->registerApiRoute(
+            Application::DEMOUSERS_USER_ADD
+            , AddEmailAddress::class
             , [IRouterManager::POST]
         );
         $this->registerApiRoute(
@@ -153,6 +162,9 @@ class Application extends Keestash\App\Application {
             Application::PASSWORD_REQUIREMENTS
         );
         $this->registerPublicApiRoute(
+            Application::DEMOUSERS_USER_ADD
+        );
+        $this->registerPublicApiRoute(
             Application::FRONTEND_STRINGS
         );
         $this->registerPublicApiRoute(
@@ -161,8 +173,6 @@ class Application extends Keestash\App\Application {
         $this->registerPublicApiRoute(
             Application::FILE_ICONS
         );
-
-        $this->registerListener();
     }
 
     private function registerListener(): void {
@@ -195,6 +205,16 @@ class Application extends Keestash\App\Application {
                     Keestash::getServer()->query(IUserRepository::class)
                     , Keestash::getServer()->query(IBackend::class)
                     , Keestash::getServer()->query(ILogger::class)
+                    , Keestash::getServer()->query(IDateTimeService::class)
+                );
+            });
+
+        Keestash::getServer()
+            ->register(
+                DemoUsersRepository::class
+                , function () {
+                return new DemoUsersRepository(
+                    Keestash::getServer()->query(IBackend::class)
                     , Keestash::getServer()->query(IDateTimeService::class)
                 );
             });

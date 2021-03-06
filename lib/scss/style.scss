@@ -220,3 +220,38 @@ a:visited, a:hover, a:active {
 .table {
   color: $keestash-text-color;
 }
+
+.black{
+  color: $keestash-text-color;
+}
+.theme-color{
+  color: $keestash-theme-color;
+}
+.grey-dark{
+  color: $grey-dark;
+}
+.error{
+  color: $keestash-error-text-color-red;
+}
+
+#navbarDropdown {
+  margin: 0;
+  padding: 0;
+  border-radius: 0.3vh;
+  min-width: 8rem;
+
+  .dropdown-item {
+    padding: 1vh 0;
+    margin: 0;
+
+    .icon {
+      width: 30%;
+      color: $grey-dark;
+    }
+
+    .name {
+      width: 70%;
+      color: $grey-dark;
+    }
+  }
+}

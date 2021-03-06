@@ -52,19 +52,19 @@ class UserService {
     /** @var int */
     public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
 
-    private IApiLogRepository        $apiLogRepository;
-    private IFileRepository    $fileRepository;
-    private IUserKeyRepository $keyRepository;
-    private IRoleRepository    $rolesRepository;
-    private IUserRepository          $userRepository;
-    private KeyService               $keyService;
-    private Legacy                   $legacy;
-    private IUserStateRepository     $userStateRepository;
-    private FileService              $fileService;
-    private InstanceRepository       $instanceRepository;
-    private CredentialService        $credentialService;
-    private IDateTimeService         $dateTimeService;
-    private ILogger                  $logger;
+    private IApiLogRepository    $apiLogRepository;
+    private IFileRepository      $fileRepository;
+    private IUserKeyRepository   $keyRepository;
+    private IRoleRepository      $rolesRepository;
+    private IUserRepository      $userRepository;
+    private KeyService           $keyService;
+    private Legacy               $legacy;
+    private IUserStateRepository $userStateRepository;
+    private FileService          $fileService;
+    private InstanceRepository   $instanceRepository;
+    private CredentialService    $credentialService;
+    private IDateTimeService     $dateTimeService;
+    private ILogger              $logger;
 
     public function __construct(
         IApiLogRepository $apiLogRepository
@@ -173,6 +173,27 @@ class UserService {
             $this->hashPassword($user->getName())
         );
         $user->setLocked(true);
+        return $user;
+    }
+
+    /**
+     * @return IUser
+     */
+    public function getDemoUser(): IUser {
+        $user = new User();
+        $user->setName(IUser::DEMO_USER_NAME);
+        $user->setHash(
+            $this->getRandomHash()
+        );
+        $user->setCreateTs(new DateTime());
+        $user->setEmail((string) $this->legacy->getApplication()->get("email"));
+        $user->setFirstName((string) $this->legacy->getApplication()->get("name"));
+        $user->setLastName((string) $this->legacy->getApplication()->get("name"));
+        $user->setPhone((string) $this->legacy->getApplication()->get("phone"));
+        $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
+        $user->setPassword(
+            $this->hashPassword(IUser::DEMO_USER_NAME)
+        );
         return $user;
     }
 

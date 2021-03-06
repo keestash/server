@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -20,7 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\Promotion\Application\Application;
+namespace KSA\InstallInstance\Exception;
 
-$application = new Application($app);
-$application->register();
+use Exception;
+
+class InstallInstanceException extends Exception {
+
+}

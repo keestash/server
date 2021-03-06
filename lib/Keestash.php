@@ -172,7 +172,6 @@ class Keestash {
         );
 
         Keestash::getServer()->getSystem()->createConfig();
-
         return true;
     }
 
@@ -722,6 +721,7 @@ class Keestash {
 
         $part = new Part();
         foreach ($apps->keySet() as $key) {
+
             /** @var IApp $app */
             $app = $apps->get($key);
 

@@ -18,8 +18,10 @@
                 {% for partId, partEntry in settings %}
                     {% for id, entry in partEntry.getEntries() %}
 
-                        <li><a class="dropdown-item" href="{{ baseURL }}/{{ entry.getName()|lower }}"><i
-                                        class="{{ entry.getFaClass() }} fa-1x"></i>&nbsp;{{ entry.getName() }}</a>
+                        <li><a class="dropdown-item d-flex flex-row" href="{{ baseURL }}/{{ entry.getName()|lower }}">
+                                <i class="{{ entry.getFaClass() }} fa-1x align-self-center justify-content-center text-center ml-1 icon"></i>
+                                <div class="name">&nbsp;{{ entry.getName() }}</div>
+                            </a>
                         </li>
                     {% endfor %}
 
