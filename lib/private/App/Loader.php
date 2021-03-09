@@ -89,7 +89,7 @@ class Loader implements ILoader {
         $info = $this->loadInfo($app);
 
         if (false === $this->isValidInfo($info)) {
-            $this->logger->info("$appId is not installed properly. Ignoring");
+            //$this->logger->info("$appId is not installed properly. Ignoring");
             return false;
         }
 

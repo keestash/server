@@ -64,7 +64,6 @@ abstract class KeyRepository extends AbstractRepository {
 
         $id = $this->getLastInsertId();
 
-        $this->logger->debug((string) $id === null);
         if (null === $id) {
             throw new KeestashException('id is not given!! ' . $id);
         }

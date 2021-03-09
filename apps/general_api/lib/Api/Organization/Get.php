@@ -56,7 +56,6 @@ class Get extends AbstractApi {
         $id = $this->getParameter("id");
 
         if (null === $id || "" === $id || false === is_numeric($id)) {
-            $this->logger->debug($id);
             throw new GeneralApiException('no id found');
         }
 
