@@ -64,7 +64,6 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             ->setParameter(1, $key->getId())
             ->setParameter(2, $this->dateTimeService->toYMDHIS($key->getCreateTs()));
 
-        $this->logger->debug("SQL: ". $queryBuilder->getSQL());
         $queryBuilder->execute();
 
         return null !== $this->getDoctrineLastInsertId();

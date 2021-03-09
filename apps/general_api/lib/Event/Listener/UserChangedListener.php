@@ -76,12 +76,10 @@ class UserChangedListener implements IListener {
         $secret     = $this->encryptionService->encrypt($credential, $secret);
 
         if (null === $key) {
-            $this->logger->debug("going to insert");
             $this->insertKey($organization, $secret);
             return;
         }
 
-        $this->logger->debug("going to update");
         $this->updateKey($key, $secret);
 
 
@@ -96,9 +94,7 @@ class UserChangedListener implements IListener {
         $key = new Key();
         $key->setCreateTs(new DateTime());
         $key->setSecret($secret);
-        $this->logger->debug("storing");
         $inserted = $this->organizationKeyRepository->storeKey($organization, $key);
-        $this->logger->debug("inserted" . (true === $inserted));
     }
 
 }

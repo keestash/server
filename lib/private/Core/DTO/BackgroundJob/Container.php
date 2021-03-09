@@ -43,7 +43,6 @@ class Container extends \doganoo\Backgrounder\Util\Container {
      * @throws \DI\NotFoundException
      */
     public function query(string $name) {
-        $this->logger->debug($name);
         return Keestash::getServer()->query($name);
     }
 
