@@ -21,38 +21,29 @@ declare(strict_types=1);
 
 namespace KSA\Logout\Controller;
 
-use Keestash;
 use Keestash\Core\Manager\SessionManager\SessionManager;
-use KSA\Logout\Application\Application;
 use KSP\Core\Controller\StaticAppController;
-use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
 
 class Logout extends StaticAppController {
 
-    private $session           = null;
-    private $permissionManager = null;
+    private SessionManager $session;
 
     public function __construct(
         ITemplateManager $templateManager
         , SessionManager $session
-        , IPermissionRepository $permissionRepository
         , IL10N $l10n
     ) {
         parent::__construct(
             $templateManager
             , $l10n
         );
-        $this->session           = $session;
-        $this->permissionManager = $permissionRepository;
+        $this->session = $session;
     }
 
     public function onCreate(): void {
-        parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_LOGOUT)
-        );
+
     }
 
     public function create(): void {
@@ -60,10 +51,7 @@ class Logout extends StaticAppController {
     }
 
     public function afterCreate(): void {
-        Keestash::getServer()
-            ->getRouterManager()
-            ->get(IRouterManager::HTTP_ROUTER)
-            ->routeTo(\KSA\Login\Application\Application::LOGIN);
+
     }
 
 }

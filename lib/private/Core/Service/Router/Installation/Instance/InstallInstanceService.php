@@ -74,7 +74,7 @@ class InstallInstanceService {
         return true;
     }
 
-    private function handleApi(APIRouter $router) {
+    private function handleApi(APIRouter $router): bool {
 
         try {
             $name = $router->getRouteName();

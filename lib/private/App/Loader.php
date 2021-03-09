@@ -151,16 +151,46 @@ class Loader implements ILoader {
         $backgroundJobs = $info[IApp::FIELD_BACKGROUND_JOBS] ?? null;
         $demonstrate    = $info[IApp::FIELD_DEMONSTRATE] ?? null;
 
-        if (null === $id) return false;
-        if (null === $namespace) return false;
-        if (null === $name) return false;
-        if (null === $baseRoot) return false;
-        if (null === $faIconClass) return false;
-        if ($order <= 0) return false;
-        if ($version <= 0) return false;
-        if (null === $versionString) return false;
-        if (null === $type) return false;
-        if (null === $demonstrate) return false;
+        if (null === $id) {
+            $this->logger->debug("missing id");
+            return false;
+        }
+        if (null === $namespace) {
+            $this->logger->debug("missing namespace");
+            return false;
+        }
+        if (null === $name) {
+            $this->logger->debug("missing name");
+            return false;
+        }
+        if (null === $baseRoot) {
+            $this->logger->debug("missing baseroot");
+            return false;
+        }
+        if (null === $faIconClass) {
+            $this->logger->debug("missing faIconClass");
+            return false;
+        }
+        if ($order <= 0) {
+            $this->logger->debug("missing order");
+            return false;
+        }
+        if ($version <= 0) {
+            $this->logger->debug("missing version");
+            return false;
+        }
+        if (null === $versionString) {
+            $this->logger->debug("missing versionstring");
+            return false;
+        }
+        if (null === $type) {
+            $this->logger->debug("missing type");
+            return false;
+        }
+        if (null === $demonstrate) {
+            $this->logger->debug("missing demonstrate");
+            return false;
+        }
 
         if (null !== $backgroundJobs) {
 

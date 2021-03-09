@@ -1,6 +1,9 @@
 @import "style";
 
 .keestash-about {
+  padding-left: 1vh;
+  padding-right: 1vh;
+
   .application-image {
     img {
       max-height: 40vh;
@@ -10,5 +13,6 @@
 
   .info-chip {
     color: $grey-dark;
+    flex: 1;
   }
 }

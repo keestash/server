@@ -186,19 +186,18 @@ class Keestash {
     private static function isInstanceInstalled(): void {
         /** @var InstallInstanceService $installInstanceService */
         $installInstanceService = Keestash::getServer()->query(InstallInstanceService::class);
-        $lockHandler            = Keestash::getServer()->getInstanceLockHandler();
-        $instanceDB             = Keestash::getServer()->getInstanceDB();
-        $logger                 = Keestash::getServer()->getFileLogger();
-        $instanceHash           = $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
-        $instanceId             = $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
-        $isLocked               = $lockHandler->isLocked();
-        $routesToInstallation   = $installInstanceService->routesToInstallation();
+        /** @var HTTPService $httpService */
+        $httpService          = Keestash::getServer()->query(HTTPService::class);
+        $lockHandler          = Keestash::getServer()->getInstanceLockHandler();
+        $instanceDB           = Keestash::getServer()->getInstanceDB();
+        $logger               = Keestash::getServer()->getFileLogger();
+        $instanceHash         = $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
+        $instanceId           = $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
+        $isLocked             = $lockHandler->isLocked();
+        $routesToInstallation = $installInstanceService->routesToInstallation();
 
         if (true === $isLocked && true === $routesToInstallation) return;
-
-        /** @var HTTPService $httpService */
-        $httpService = Keestash::getServer()->query(HTTPService::class);
-
+        
         if ((null === $instanceHash || null === $instanceId)) {
             $logger->debug("The whole application is not installed. Please Install");
             $lockHandler->lock();

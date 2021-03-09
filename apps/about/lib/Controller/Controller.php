@@ -62,7 +62,7 @@ class Controller extends FullscreenAppController {
                     , "product"    => [
                         "headline"       => $this->getL10N()->translate("Open Source Password Manager")
                         , "description"  => $this->getL10N()->translate("Keestash stores your password encrypted and secure. Easily install on a server in your company, at home or let us host it for you!")
-                        , "global"       => $this->getL10N()->translate("Host wherever you decide - on-premise or cloud based")
+                        , "global"       => $this->getL10N()->translate("on-premise or cloud subscription")
                         , "openStandard" => $this->getL10N()->translate("Open Standards and Legacy Integration")
                         , "openSource"   => $this->getL10N()->translate("100% Open Source")
                     ]
@@ -85,7 +85,7 @@ class Controller extends FullscreenAppController {
                             ]
                         ]
                         , "socialmedia" => [
-                            "headline"   => $this->getL10N()->translate("Follow us on Social Media")
+                            "headline"   => $this->getL10N()->translate("Social Media")
                             , "twitter"  => [
                                 "href"   => $this->legacy->getApplication()->get("twitterPage")
                                 , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("twitterPage"))

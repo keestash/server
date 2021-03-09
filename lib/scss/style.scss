@@ -19,24 +19,28 @@ $grey: #9e9e9e;
 $grey-dark: #484848;
 
 @import "bootstrap.scss";
+@import "media/xs";
 
 html {
   color: $keestash-text-color-white;
-  height: 100%;
-}
 
-body {
-  color: $keestash-text-color;
+  body {
+    color: $keestash-text-color;
 
-  .grey-text {
-    color: $grey;
+    .grey-text {
+      color: $grey;
+    }
   }
 }
 
+
 .navbar {
-  padding: .5rem 1rem !important;
   background-color: $keestash-theme-color;
   color: $keestash-text-color-white;
+}
+
+.app-navigation-background {
+  background-color: $keestash-theme-color-inverted;
 }
 
 .avatar {
@@ -49,50 +53,35 @@ body {
   display: none;
 }
 
-#content {
-  padding: 0;
-  margin: 0;
-  height: 100%;
 
-  #app-navigation {
-    background-color: $keestash-theme-color-inverted;
-    min-width: 260px;
+#app-navigation {
+  background-color: $keestash-theme-color-inverted;
 
-    .ks-menu:before {
-      content: "\e68e"
+  .ks-menu:before {
+    content: "\e68e"
+  }
+
+  .ks-menu-alt:before {
+    content: "\e68f"
+  }
+
+  .ks-close:before {
+    content: "\e646"
+  }
+
+
+  .action-bar {
+
+    .action-bar-inner {
+      padding-top: 0.3rem;
+      padding-bottom: 0.3rem;
     }
 
-    .ks-menu-alt:before {
-      content: "\e68f"
-    }
+  }
 
-    .ks-close:before {
-      content: "\e646"
-    }
-
-    .scrollable {
-      position: relative;
-
-      .action-bar {
-
-        .action-bar-inner {
-          padding-top: 0.3rem;
-          padding-bottom: 0.3rem;
-
-          .p-3 {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-
-            .btn-group {
-              width: 100%;
-            }
-          }
-
-        }
-
-      }
-
-    }
+  .my-list-group {
+    @extend .list-group;
+    list-style-type: none;
 
     .list-group-item {
       border: none;
@@ -125,60 +114,54 @@ body {
       }
     }
   }
+}
 
-  #app-content {
-    width: 100%;
-    height: 100%;
+#breadcrumb-wrapper {
+  nav {
+    background-color: white;
 
-    #breadcrumb-wrapper {
-      nav {
-        background-color: white;
-        border-bottom: 1px solid #dee2e6 !important;
-
-        #breadcrumb {
-          background-color: white;
-          margin: 0 !important;
-        }
-      }
+    #breadcrumb {
+      background-color: white;
+      margin: 0 !important;
     }
   }
+}
 
-  .btn-circle.btn-sm {
-    width: 30px;
-    height: 30px;
-    padding: 6px 0px;
-    border-radius: 15px;
-    font-size: 8px;
-    text-align: center;
+.btn-circle.btn-sm {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px;
+  font-size: 8px;
+  text-align: center;
+}
+
+.btn-circle.btn-md {
+  width: 50px;
+  height: 50px;
+  padding: 7px 10px;
+  border-radius: 25px;
+  font-size: 10px;
+  text-align: center;
+}
+
+.btn-circle.btn-xl {
+  width: 70px;
+  height: 70px;
+  padding: 10px 16px;
+  border-radius: 35px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.ks-form {
+  .icon-wrapper {
+    border-radius: 0.25rem 0 0 0.25rem;
   }
 
-  .btn-circle.btn-md {
-    width: 50px;
-    height: 50px;
-    padding: 7px 10px;
-    border-radius: 25px;
-    font-size: 10px;
-    text-align: center;
-  }
-
-  .btn-circle.btn-xl {
-    width: 70px;
-    height: 70px;
-    padding: 10px 16px;
-    border-radius: 35px;
-    font-size: 12px;
-    text-align: center;
-  }
-
-  .ks-form {
-    .icon-wrapper {
-      border-radius: 0.25rem 0 0 0.25rem;
-    }
-
-    .input-control {
-      border-radius: 0 0.25rem 0.25rem 0;
-      border-left: 0;
-    }
+  .input-control {
+    border-radius: 0 0.25rem 0.25rem 0;
+    border-left: 0;
   }
 }
 
@@ -221,17 +204,24 @@ a:visited, a:hover, a:active {
   color: $keestash-text-color;
 }
 
-.black{
+.black {
   color: $keestash-text-color;
 }
-.theme-color{
+
+.theme-color {
   color: $keestash-theme-color;
 }
-.grey-dark{
+
+.grey-dark {
   color: $grey-dark;
 }
-.error{
+
+.error {
   color: $keestash-error-text-color-red;
+}
+
+.ks-border-bottom {
+  border-bottom: 0.5px solid $keestash-theme-color-border-grey;
 }
 
 #navbarDropdown {

@@ -1,9 +1,19 @@
-<body class="d-flex flex-grow-1 flex-column">
-{% if staticContext == false %}
-    {{ navigation|raw }}
-{% endif %}
-{{ content|raw }}
-{% if staticContext == false %}
-    {{ footer|raw }}
-{% endif %}
+<body>
+<div class="container-fluid">
+    {% if staticContext == false %}
+        <div class="row">
+            {{ navigation|raw }}
+        </div>
+    {% endif %}
+    <div class="row">
+        {{ content|raw }}
+    </div>
+{#    {% if staticContext == false %}#}
+{#        <div class="row">#}
+{#            <div class="col ">#}
+{#                {{ footer|raw }}#}
+{#            </div>#}
+{#        </div>#}
+{#    {% endif %}#}
+</div>
 </body>
