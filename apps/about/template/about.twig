@@ -2,16 +2,16 @@
     <div class="application-image d-flex justify-content-center flex-column align-items-center">
         <img src="{{ image.logoPath }}" class="img-fluid" alt="{{ image.altName }}">
     </div>
-    <h3 class="black align-items-center align-self-center">{{ product.headline }}</h3>
+    <h3 class="black align-items-center align-self-center justify-content-center text-center">{{ product.headline }}</h3>
     <div class="d-flex justify-content-center flex-column align-items-center text-center grey-dark">
         {{ product.description }}
     </div>
     <div class="d-flex justify-content-around pt-5">
-        <div class="d-flex flex-column justify-content-center align-items-center info-chip">
-            <i class="fas fa-globe fa-3x mb-3 theme-color"></i>
+        <div class="d-flex flex-column justify-content-center align-items-center info-chip text-center">
+            <i class="fas fa-globe-americas fa-3x mb-3 theme-color"></i>
             <h6>{{ product.global }}</h6>
         </div>
-        <div class="d-flex flex-column justify-content-center align-items-center info-chip">
+        <div class="d-flex flex-column justify-content-center align-items-center info-chip text-center">
             <i class="fas fa-share-alt fa-3x mb-3 theme-color"></i>
             <h6>{{ product.openStandard }}</h6>
         </div>
@@ -34,15 +34,15 @@
         <div class="d-flex flex-column justify-content-center align-items-center info-chip">
             <i class="fas fa-phone fa-3x mb-3 theme-color"></i>
             <h6 class="black">{{ interested.letstalk.headline }}</h6>
-            <div>
+            <div class="pt-2">
                 <a href="{{ interested.letstalk.website.href }}"
                    target="_blank">{{ interested.letstalk.website.name }}</a>
             </div>
-            <div>
+            <div class="pt-2">
                 <a href="tel:{{ interested.letstalk.phone.href }}"
                    target="_blank">{{ interested.letstalk.phone.name }}</a>
             </div>
-            <div>
+            <div class="pt-2">
                 <a href="mailto:{{ interested.letstalk.email.href }}"
                    target="_blank">{{ interested.letstalk.email.name }}</a>
             </div>
@@ -50,20 +50,23 @@
         <div class="d-flex flex-column justify-content-center align-items-center info-chip">
             <i class="fas fa-mobile fa-3x mb-3 theme-color"></i>
             <h6 class="black">{{ interested.socialmedia.headline }}</h6>
-            <div>
-                <i class="fab fa-twitter"></i>
+            <div class="pt-2">
                 <a href="{{ interested.socialmedia.twitter.href }}"
-                   target="_blank">{{ interested.socialmedia.twitter.name }}</a>
+                   target="_blank">
+                    <i class="fab fa-twitter"></i>
+                </a>
             </div>
-            <div>
-                <i class="fab fa-facebook-f"></i>
+            <div class="pt-2">
                 <a href="{{ interested.socialmedia.facebook.href }}"
-                   target="_blank">{{ interested.socialmedia.facebook.name }}</a>
+                   target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
             </div>
-            <div>
-                <i class="fab fa-linkedin-in"></i>
+            <div class="pt-2">
                 <a href="{{ interested.socialmedia.linkedin.href }}"
-                   target="_blank">{{ interested.socialmedia.linkedin.name }}</a>
+                   target="_blank">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
             </div>
         </div>
     </div>

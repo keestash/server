@@ -27,20 +27,21 @@ use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends Keestash\App\Application {
 
+    public const APP_ID            = "logout";
     public const PERMISSION_LOGOUT = "logout";
     public const LOGOUT            = "logout";
 
     public function register(): void {
 
-        parent::registerRoute(
-            self::LOGOUT
+        $this->registerRoute(
+            Application::LOGOUT
             , Logout::class
             , [IRouterManager::GET]
         );
 
-        parent::registerPublicRoute(self::LOGOUT);
+        $this->registerPublicRoute(Application::LOGOUT);
 
-        parent::addSetting(
+        $this->addSetting(
             self::LOGOUT
             , Keestash::getServer()
             ->getL10N()
@@ -48,6 +49,17 @@ class Application extends Keestash\App\Application {
             , "fas fa-sign-out-alt"
             , 5
         );
+
+        $this->registerJavascript();
+    }
+
+    private function registerJavascript(): void {
+        $this->addJavaScriptFor(
+            Application::APP_ID
+            , "logout"
+            , "logout"
+        );
+
     }
 
 }

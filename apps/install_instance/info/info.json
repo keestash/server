@@ -9,5 +9,10 @@
   "base_route": "install_instance",
   "version": 1,
   "version_string": "1.0.0",
-  "demonstrate": 1
+  "demonstrate": 1,
+  "stylesheets": [
+    {
+      "install_instance": "style"
+    }
+  ]
 }
