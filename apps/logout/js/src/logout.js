@@ -18,7 +18,7 @@
  */
 
 import {Logout} from "./Logout/Logout";
-import {APP_STORAGE, ROUTER} from "../../../../lib/js/src/StartUp";
+import {APP_STORAGE, ROUTER, TEMPORARY_STORAGE} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.Logout) {
@@ -33,6 +33,7 @@ import {APP_STORAGE, ROUTER} from "../../../../lib/js/src/StartUp";
             const logout = new Logout(
                 diContainer.query(APP_STORAGE)
                 , diContainer.query(ROUTER)
+                , diContainer.query(TEMPORARY_STORAGE)
             );
             logout.init();
         }

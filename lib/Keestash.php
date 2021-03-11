@@ -196,8 +196,10 @@ class Keestash {
         $isLocked             = $lockHandler->isLocked();
         $routesToInstallation = $installInstanceService->routesToInstallation();
 
+        $logger->debug("isLocked: " . (string) $isLocked);
+        $logger->debug("routesToInstallation: " . (string) $routesToInstallation);
         if (true === $isLocked && true === $routesToInstallation) return;
-        
+
         if ((null === $instanceHash || null === $instanceId)) {
             $logger->debug("The whole application is not installed. Please Install");
             $lockHandler->lock();

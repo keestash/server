@@ -41,8 +41,11 @@ import {Login} from "./Login/Login";
 
         init: () => {
             const routes = new Routes();
-
             const diContainer = Keestash.Main.getContainer();
+            const temporaryStorage = diContainer.query(TEMPORARY_STORAGE);
+
+            temporaryStorage.clear();
+
             const submit = new Submit(
                 diContainer.query(ROUTER)
                 , diContainer.query(REQUEST)

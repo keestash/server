@@ -132,6 +132,7 @@ abstract class Router implements IRouter {
             $parameters = $matcher->match($context->getPathInfo());
             $route      = $parameters["_route"];
         } catch (Exception $exception) {
+            $this->logger->debug(json_encode($this->routes->all()));
 //            $this->logger->error($exception->getMessage() . " " . $exception->getTraceAsString());
             return null;
         }

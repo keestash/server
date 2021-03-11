@@ -27,7 +27,7 @@ use KSA\Login\Controller\LoginController;
 use KSA\Login\Service\TokenService;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 
-class Application extends \Keestash\App\Application {
+class Application extends Keestash\App\Application {
 
     public const PERMISSION_LOGIN        = "login";
     public const PERMISSION_LOGIN_SUBMIT = "login_submit";
