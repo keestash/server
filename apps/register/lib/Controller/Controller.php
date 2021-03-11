@@ -129,7 +129,7 @@ class Controller extends StaticAppController {
 
             // values
             , "backgroundPath"            => Keestash::getBaseURL(false) . "/asset/img/register-background.jpg"
-            , "logoPath"                  => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+            , "logoPath"                  => Keestash::getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
 
             , "termsConditionsLink"       => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::TERMS_AND_CONDITIONS
             , "backToLoginLink"           => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN

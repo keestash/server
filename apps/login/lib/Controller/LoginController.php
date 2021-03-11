@@ -112,7 +112,7 @@ class LoginController extends StaticAppController {
 
                 // values
                 , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
-                , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
                 , "newTab"                     => false === $this->configService->getValue('debug', false)
                 , "demo"                       => $demo
                 , "tncLink"                    => Keestash::getBaseURL(true) . "/tnc/"

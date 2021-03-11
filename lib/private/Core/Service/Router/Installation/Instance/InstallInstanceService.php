@@ -69,6 +69,7 @@ class InstallInstanceService {
     }
 
     private function handleHttp(HTTPRouter $router): bool {
+        $this->logger->debug("routename: " . $router->getRouteName());
         if (false === $router->hasRoute(InstallInstanceService::ROUTE_INSTALL_INSTANCE)) return false;
         if ($router->getRouteName() !== InstallInstanceService::ROUTE_INSTALL_INSTANCE) return false;
         return true;
@@ -78,6 +79,7 @@ class InstallInstanceService {
 
         try {
             $name = $router->getRouteName();
+            $this->logger->debug("routename: " . $router->getRouteName());
             return in_array(
                 $name
                 , [
