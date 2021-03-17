@@ -29,3 +29,5 @@ sudo apt-get -y install curl composer zip unzip
 sudo phpenmod pdo_mysql
 sudo service apache2 restart
 sudo service mysql restart
+
+rm config/.instance.sqlite
