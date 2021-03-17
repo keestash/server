@@ -27,7 +27,6 @@ use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Permission\IPermission;
 use KSP\L10N\IL10N;
 
 abstract class AppController implements IAppController {
@@ -79,10 +78,9 @@ abstract class AppController implements IAppController {
     }
 
     /**
-     * @param IPermission $permission
      * @deprecated
      */
-    protected function setPermission(IPermission $permission): void {
+    protected function setPermission(): void {
 
     }
 

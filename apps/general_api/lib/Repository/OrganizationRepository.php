@@ -121,7 +121,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
             )
             ->execute();
 
-        $lastInsertId = $this->getDoctrineLastInsertId();
+        $lastInsertId = $this->getLastInsertId();
 
         if (null === $lastInsertId) {
             throw new GeneralApiException();

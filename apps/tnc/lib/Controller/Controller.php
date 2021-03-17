@@ -24,31 +24,25 @@ namespace KSA\TNC\Controller;
 use KSA\TNC\Application\Application;
 use KSP\Core\Controller\ContextLessAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\L10N\IL10N;
 
 class Controller extends ContextLessAppController {
 
     private const TEMPLATE_NAME_TNC = "tnc.twig";
-    private IPermissionRepository $permissionRepository;
 
     public function __construct(
         ITemplateManager $templateManager
-        , IPermissionRepository $permissionRepository
         , IL10N $translator
     ) {
         parent::__construct(
             $templateManager
             , $translator
         );
-
-        $this->permissionRepository = $permissionRepository;
     }
 
     public function onCreate(): void {
-        parent::setPermission(
-            $this->permissionRepository->getPermission(Application::PERMISSION_TNC)
-        );
+
     }
 
     public function create(): void {

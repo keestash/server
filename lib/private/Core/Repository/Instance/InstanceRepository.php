@@ -21,76 +21,45 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Instance;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Core\DTO\Instance\Repository\Table;
 use Keestash\Core\Repository\AbstractRepository;
-use PDO;
+use KSP\Core\Backend\IBackend;
+use KSP\Core\ILogger\ILogger;
 
 class InstanceRepository extends AbstractRepository {
 
-    private function getTables(): ArrayList {
-        $list      = new ArrayList();
-        $sql       = "SHOW TABLES";
-        $statement = $this->prepareStatement($sql);
+    private ILogger $logger;
 
-        if (null === $statement) return $list;
-
-        $statement->execute();
-
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $list->add($row[0]);
-        }
-
-        return $list;
+    public function __construct(
+        IBackend $backend
+        , ILogger $logger
+    ) {
+        parent::__construct($backend);
+        $this->logger = $logger;
     }
 
     public function dropSchema(bool $includeSchema = false): bool {
 
         if (true === $includeSchema) {
-            return true === $this->query("DROP SCHEMA {$this->getSchemaName()};");
+            $this->rawQuery("DROP SCHEMA {$this->getSchemaName()};");
+            $this->rawQuery("CREATE SCHEMA {$this->getSchemaName()};");
+            return true;
         }
 
-        $ran = true;
-        $this->query("SET FOREIGN_KEY_CHECKS = 0");
+        $queries   = [];
+        $queries[] = "SET FOREIGN_KEY_CHECKS = 0";
         foreach ($this->getTables() as $table) {
-            $ran = $this->query(" DROP TABLE IF EXISTS `$table`;");
+            $this->logger->debug($table);
+            $queries[] = "DROP TABLE IF EXISTS `$table`;";
         }
-        $this->query("SET FOREIGN_KEY_CHECKS = 1");
+        $queries[] = "SET FOREIGN_KEY_CHECKS = 1";
 
-        return $ran;
+        return $this->rawQuery(implode(";", $queries))
+                ->rowCount() > 0;
     }
 
-    /**
-     * @param string $table
-     * @return ArrayList
-     * TODO pay credit to https://www.got-it.ai/solutions/sqlquerychat/sql-help/data-query/how-to-find-the-dependencies-of-a-mysql-table-querychat/
-     */
-    public function getAllDependantTables(string $table): ArrayList {
-        $tableList = new ArrayList();
-        $sql       = "
-        SELECT TABLE_NAME as `DEPENDENCY`, COLUMN_NAME as `COLUMN`, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
-FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-WHERE REFERENCED_TABLE_NAME = :name;
-        ";
-        $statement = $this->prepareStatement($sql);
-        if (null === $statement) return $tableList;
-        $statement->bindParam("name", $table);
-        $statement->execute();
 
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $table = new Table();
-            $table->setName($row[0]);
-            $table->setColumn($row[1]);
-            $table->setReferencedTable($row[2]);
-            $table->setReferencedColumn($row[3]);
-            $tableList->add($table);
-        }
-
-        return $tableList;
-    }
-
-    public function rawQuery(string $sql) {
-        return parent::rawQuery($sql);
+    public function rawQuery(string $query) {
+        return parent::rawQuery($query);
     }
 
 }

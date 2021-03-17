@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Login\Controller;
 
 use Keestash;
+use Keestash\App\Helper;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
@@ -33,14 +34,13 @@ use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\L10N\IL10N;
 
 class LoginController extends StaticAppController {
 
     public const TEMPLATE_NAME_LOGIN = "login.twig";
 
-    private IPermissionRepository $permissionRepository;
     private ILoader               $loader;
     private PersistenceService    $persistenceService;
     private Legacy                $legacy;
@@ -51,7 +51,6 @@ class LoginController extends StaticAppController {
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionRepository
         , ILoader $loader
         , PersistenceService $persistenceService
         , Legacy $legacy
@@ -59,7 +58,6 @@ class LoginController extends StaticAppController {
         , CookieManager $cookieManager
         , InstanceDB $instanceDB
     ) {
-        $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->persistenceService   = $persistenceService;
         $this->legacy               = $legacy;

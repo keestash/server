@@ -24,7 +24,7 @@ namespace KSA\Install\Controller;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\App\Config\Diff;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Legacy\Legacy;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
@@ -55,9 +55,7 @@ class Controller extends FullscreenAppController {
     }
 
     public function onCreate(): void {
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\EncryptionKey\Organization;
 
-use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
@@ -30,7 +29,6 @@ use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
-use PDO;
 
 class OrganizationKeyRepository extends KeyRepository implements IOrganizationKeyRepository {
 
@@ -66,7 +64,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
 
         $queryBuilder->execute();
 
-        return null !== $this->getDoctrineLastInsertId();
+        return null !== $this->getLastInsertId();
     }
 
     public function updateKey(IKey $key): bool {
@@ -74,33 +72,29 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
     }
 
     public function getKey(IOrganization $organization): ?IKey {
-        $sql = "select
-                        k.`id`
-                        , k.`value`
-                        , k.`create_ts`
-                from `key` k
-                    join `organization_key` ok
-                        on k.`id` = ok.`key_id`
-                where ok.`organization_id` = :organization_id
-                ";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'k.id'
+                , 'k.value'
+                , 'k.create_ts'
+            ]
+        )
+            ->from('key', 'k')
+            ->join('k', 'organization_key', 'ok', 'k.id = ok.key_id')
+            ->where('ok.`organization_id` = ?')
+            ->setParameter(0, $organization->getId());
 
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $userId = $organization->getId();
-        $statement->bindParam("organization_id", $userId);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
+        $result = $queryBuilder->execute();
+        $users  = $result->fetchAllAssociative();
 
         $key = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+        foreach ($users as $row) {
             $key = new Key();
             $key->setId((int) $row[0]);
             $key->setSecret($row[1]);
-            $dateTime = new DateTime();
-            $dateTime->setTimestamp((int) $row[2]);
-            $key->setCreateTs($dateTime);
-//            $key->setOwner($organization); // TODO
+            $key->setCreateTs($this->dateTimeService->fromFormat($row[2]));
+            $key->setKeyHolder($organization);
         }
 
         return $key;

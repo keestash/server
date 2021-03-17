@@ -21,89 +21,94 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Token;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use Keestash;
 use Keestash\Core\DTO\Token\Token;
 use Keestash\Core\Repository\AbstractRepository;
+use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use PDO;
 
 class TokenRepository extends AbstractRepository implements ITokenRepository {
 
-    private IUserRepository $userRepository;
+    private IUserRepository  $userRepository;
+    private IDateTimeService $dateTimeService;
 
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
+        , IDateTimeService $dateTimeService
     ) {
         parent::__construct($backend);
-        $this->userRepository = $userRepository;
+        $this->userRepository  = $userRepository;
+        $this->dateTimeService = $dateTimeService;
     }
 
     public function get(int $id): ?IToken {
-        $sql = "
-        select
-                `id`
-                , `name`
-                , `value`
-                , `user_id`
-                , `create_ts`
-           from `token`
-                where `id` = :id;
-        ";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'id'
+                , 'name'
+                , 'value'
+                , 'user_id'
+                , 'create_ts'
+            ]
+        )
+            ->from('token')
+            ->where('id = ?')
+            ->setParameter(0, $id);
+        $tokenData      = $queryBuilder->execute()->fetchAll();
+        $tokenDataCount = count($tokenData);
 
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return null;
-        $statement->bindParam("id", $id);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
-
-        $token = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id       = $row[0];
-            $name     = $row[1];
-            $value    = $row[2];
-            $userId   = $row[3];
-            $createTs = $row[4];
-
-            $token = new Token();
-            $token->setId((int) $id);
-            $token->setName($name);
-            $token->setValue($value);
-            $token->setUser(
-                $this->userRepository->getUserById($userId)
-            );
-            $token->setCreateTs((int) $createTs);
+        if (0 === $tokenDataCount) {
+            return null;
         }
+
+        if ($tokenDataCount > 1) {
+            throw new KeestashException("found more then one token for the given id");
+        }
+
+        $row      = $tokenData[0];
+        $token    = null;
+        $id       = $row[0];
+        $name     = $row[1];
+        $value    = $row[2];
+        $userId   = $row[3];
+        $createTs = $row[4];
+
+        $token = new Token();
+        $token->setId((int) $id);
+        $token->setName($name);
+        $token->setValue($value);
+        $token->setUser(
+            $this->userRepository->getUserById($userId)
+        );
+        $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
+
         return $token;
     }
 
     public function getByHash(string $hash): ?IToken {
-        $sql = "
-        select
-                `id`
-                , `name`
-                , `value`
-                , `user_id`
-                , `create_ts`
-           from `token`
-                where `value` = :hash;
-        ";
+        $token        = null;
+        $queryBuilder = $this->getQueryBuilder();
+        $result       = $queryBuilder->select(
+            [
+                'id'
+                , 'name'
+                , 'value'
+                , 'user_id'
+                , 'create_ts'
+            ]
+        )
+            ->from('token')
+            ->where('value = ?')
+            ->setParameter(0, $hash)
+            ->execute();
 
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return null;
-        $statement->bindParam("hash", $hash);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
-
-        $token = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+        foreach ($result->fetchAllNumeric() as $row) {
             $id       = $row[0];
             $name     = $row[1];
             $value    = $row[2];
@@ -117,40 +122,30 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
             $token->setUser(
                 $this->userRepository->getUserById((string) $userId)
             );
-            $token->setCreateTs((int) $createTs);
+            $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
         }
+
         return $token;
     }
 
     public function add(IToken $token): ?int {
-        $sql = "insert into `token` (
-                  `name`
-                  , `value`
-                  , `user_id`
-                  , `create_ts`
-                  )
-                  values (
-                          :name
-                          , :value
-                          , :user_id
-                          , :create_ts
-                          );";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert("`token`")
+            ->values(
+                [
+                    "`name`"        => '?'
+                    , "`value`"     => '?'
+                    , "`user_id`"   => '?'
+                    , "`create_ts`" => '?'
+                ]
+            )
+            ->setParameter(0, $token->getName())
+            ->setParameter(1, $token->getValue())
+            ->setParameter(2, $token->getUser()->getId())
+            ->setParameter(3, $this->dateTimeService->toYMDHIS($token->getCreateTs()))
+            ->execute();
 
-        $statement = parent::prepareStatement($sql);
-
-        $name     = $token->getName();
-        $value    = $token->getValue();
-        $userId   = $token->getUser()->getId();
-        $createTs = $token->getCreateTs()->getTimestamp();
-
-        $statement->bindParam("name", $name);
-        $statement->bindParam("value", $value);
-        $statement->bindParam("user_id", $userId);
-        $statement->bindParam("create_ts", $createTs);
-
-        if (false === $statement->execute()) return null;
-
-        $lastInsertId = (int) parent::getLastInsertId();
+        $lastInsertId = (int) $this->getLastInsertId();
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;

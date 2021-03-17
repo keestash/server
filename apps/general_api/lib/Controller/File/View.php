@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Controller\File;
 
-use Keestash\Core\Permission\PermissionFactory;
+
 use KSP\Core\Controller\AppController;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
@@ -40,9 +40,7 @@ class View extends AppController {
     }
 
     public function onCreate(): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

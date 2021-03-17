@@ -52,19 +52,21 @@ abstract class KeyRepository extends AbstractRepository {
      * @throws Exception
      */
     protected function _storeKey(IKey $key): IKey {
-        $sql       = "insert into `key` (`value`, `create_ts`) values (:value, :create_ts);";
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return false;
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert("`key`")
+            ->values(
+                [
+                    "`value`"       => '?'
+                    , "`create_ts`" => '?'
+                ]
+            )
+            ->setParameter(0, $key->getSecret())
+            ->setParameter(1, $this->dateTimeService->toYMDHIS($key->getCreateTs()))
+            ->execute();
 
-        $createTs = $this->dateTimeService->toYMDHIS($key->getCreateTs());
-        $value    = $key->getSecret();
-        $statement->bindParam("value", $value);
-        $statement->bindParam("create_ts", $createTs);
-        $statement->execute();
+        $id = (int) $this->getLastInsertId();
 
-        $id = $this->getLastInsertId();
-
-        if (null === $id) {
+        if (0 === $id) {
             throw new KeestashException('id is not given!! ' . $id);
         }
         $key->setId((int) $id);
@@ -72,14 +74,20 @@ abstract class KeyRepository extends AbstractRepository {
     }
 
     protected function _update(IKey $key): bool {
-        $sql       = "update `key` set `value` = :key_value where `id` = :id";
-        $statement = parent::prepareStatement($sql);
-        $value     = $key->getSecret();
-        $id        = $key->getId();
+        $queryBuilder = $this->getQueryBuilder();
 
-        $statement->bindParam("id", $id);
-        $statement->bindParam("key_value", $value);
-        return $statement->execute();
+        $queryBuilder = $queryBuilder->update('key')
+            ->set('value', '?')
+            ->where('id = ?')
+            ->setParameter(0, $key->getSecret())
+            ->setParameter(1, $key->getId());
+        $rowCount     = $queryBuilder->execute();
+
+        if (0 === $rowCount) {
+            return false;
+        }
+
+        return true;
     }
 
     protected function _remove(IKey $key): bool {

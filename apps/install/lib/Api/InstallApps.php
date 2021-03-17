@@ -25,30 +25,27 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\App\Config\Diff;
-use Keestash\Core\Permission\PermissionFactory;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 
 class InstallApps extends AbstractApi {
 
-    /** @var InstallerService */
-    private $installerService;
-
-    /** @var LockHandler */
-    private $lockHandler;
-
-    /** @var HTTPService */
-    private $httpService;
+    private InstallerService $installerService;
+    private LockHandler      $lockHandler;
+    private HTTPService      $httpService;
+    private ILogger          $logger;
 
     public function __construct(
         IL10N $l10n
         , InstallerService $installer
         , LockHandler $lockHandler
         , HTTPService $httpService
+        , ILogger $logger
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
@@ -56,12 +53,11 @@ class InstallApps extends AbstractApi {
         $this->installerService = $installer;
         $this->lockHandler      = $lockHandler;
         $this->httpService      = $httpService;
+        $this->logger           = $logger;
     }
 
     public function onCreate(array $parameters): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {
@@ -94,7 +90,7 @@ class InstallApps extends AbstractApi {
             $this->createAndSetResponse(
                 IResponse::RESPONSE_CODE_OK
                 , [
-                    "route_to" => $this->httpService->getLoginRoute()
+                    "routeTo" => $this->httpService->getLoginRoute()
                 ]
             );
             return;
@@ -113,10 +109,13 @@ class InstallApps extends AbstractApi {
 
     private function install(HashTable $table): bool {
 
+        $this->logger->debug('going to update ' . $table->size() . ' apps');
         if (0 === $table->size()) return true;
 
         $migrationRan = $this->installerService->runMigrations();
+        $this->logger->debug('migration ran: ' . $migrationRan);
         $installed    = $this->installerService->installAll($table);
+        $this->logger->debug('installed: ' . $installed);
 
         return true === $migrationRan && true === $installed;
     }

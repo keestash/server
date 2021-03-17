@@ -57,7 +57,7 @@ class DemoUsersRepository extends AbstractRepository {
             )
             ->execute();
 
-        $lastInsertId = $this->getDoctrineLastInsertId();
+        $lastInsertId = $this->getLastInsertId();
 
         if (null === $lastInsertId) {
             throw new GeneralApiException();

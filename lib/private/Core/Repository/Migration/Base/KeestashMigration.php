@@ -36,25 +36,4 @@ abstract class KeestashMigration extends AbstractMigration {
     // MySQL Option Fields
     public const OPTION_NAME_VALUES = "values";
 
-    protected function addPermission(string $permissionName, int $roleId) {
-        $this->table("permission")
-            ->insert(
-                [
-                    "name" => $permissionName
-                ]
-            )
-            ->save();
-
-        $id = $this->getAdapter()->getConnection()->lastInsertId();
-
-        $this->table("permission_role")
-            ->insert(
-                [
-                    "permission_id" => $id
-                    , "role_id"     => $roleId
-                ]
-            )
-            ->save();
-    }
-
 }

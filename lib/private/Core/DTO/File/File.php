@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\File;
 
-use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 
@@ -37,7 +37,7 @@ class File implements IFile {
     private int               $size;
     private ?string           $content       = null;
     private IUser             $owner;
-    private DateTime          $createTs;
+    private DateTimeInterface $createTs;
 
     public function getFullPath(): string {
         $name      = $this->getName();
@@ -154,11 +154,11 @@ class File implements IFile {
         $this->content = $content;
     }
 
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
-    public function setCreateTs(DateTime $createTs): void {
+    public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
     }
 

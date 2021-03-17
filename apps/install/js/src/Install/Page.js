@@ -24,11 +24,14 @@ export class Page {
                 , {}
                 , (x, y, z) => {
                     const object = JSON.parse(x);
+                    console.log(object);
                     if (RESPONSE_CODE_OK in object) {
-                        const result_object = object[RESPONSE_CODE_OK];
+                        const result_object = object[RESPONSE_CODE_OK]["messages"];
                         let routeTo = result_object['routeTo'];
 
                         console.log("installed all apps. Going to redirect...");
+                        console.log("to " + routeTo);
+                        console.log("to " + routeTo);
 
                         setTimeout(() => {
                             _this.router.routeTo(routeTo);

@@ -23,7 +23,7 @@ namespace KSA\InstallInstance\Api\EndUpdate;
 
 use Keestash;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
@@ -73,9 +73,6 @@ class EndUpdate extends AbstractApi {
 
     public function onCreate(array $parameters): void {
 
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
     }
 
     public function create(): void {

@@ -26,6 +26,8 @@ use Keestash\Core\Logger\Logger;
 use Keestash\Core\Service\Config\ConfigService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
+use Monolog\Formatter\HtmlFormatter;
+use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
 
 /**
@@ -41,13 +43,30 @@ class LoggerManager implements ILoggerManager {
     }
 
     public function getFileLogger(): ILogger {
-        $logger = new Logger(ILoggerManager::FILE_LOGGER);
-        $logger->pushHandler(
-            new StreamHandler(
-                Keestash::getServer()->getLogfilePath()
-                , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)
-            )
+        $logger        = new Logger(ILoggerManager::FILE_LOGGER);
+        $streamHandler = new StreamHandler(
+            Keestash::getServer()->getLogfilePath()
+            , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)
         );
+        $streamHandler->setFormatter(
+            new JsonFormatter()
+        );
+        $logger->pushHandler($streamHandler);
+
+        $logger = $this->addDevHandler($logger);
+        return $logger;
+    }
+
+    private function addDevHandler(Logger $logger): Logger {
+        if (false === $this->configService->getValue("debug", false)) return $logger;
+        $htmlStreamHandlr = new StreamHandler(
+            Keestash::getServer()->getLogfilePath() . ".html"
+            , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)
+        );
+        $htmlStreamHandlr->setFormatter(
+            new HtmlFormatter()
+        );
+        $logger->pushHandler($htmlStreamHandlr);
         return $logger;
     }
 

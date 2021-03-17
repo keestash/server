@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Encryption\Credential;
 
-use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 
 /**
  * Class Credential
@@ -33,31 +33,10 @@ use KSP\Core\DTO\User\IUser;
  */
 class Credential implements ICredential {
 
-    /** @var int */
-    private $id;
-    /** @var string */
-    private $secret;
-    /** @var DateTime */
-    private $createTs;
-    /** @var IUser */
-    private $owner;
-
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize() {
-        return [
-            "id"          => $this->getId()
-            , "secret"    => $this->getSecret()
-            , "create_ts" => $this->getCreateTs()
-            , "owner"     => $this->getOwner()
-        ];
-    }
+    private int               $id;
+    private string            $secret;
+    private DateTimeInterface $createTs;
+    private IKeyHolder        $keyHolder;
 
     public function getId(): int {
         return $this->id;
@@ -75,20 +54,38 @@ class Credential implements ICredential {
         $this->secret = $secret;
     }
 
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
-    public function setCreateTs(DateTime $createTs): void {
+    public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
     }
 
-    public function getOwner(): IUser {
-        return $this->owner;
+    public function getKeyHolder(): IKeyHolder {
+        return $this->keyHolder;
     }
 
-    public function setOwner(IUser $owner): void {
-        $this->owner = $owner;
+    public function setKeyHolder(IKeyHolder $owner): void {
+        $this->keyHolder = $owner;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize(): array {
+        return [
+            "id"          => $this->getId()
+            , "secret"    => $this->getSecret()
+            , "create_ts" => $this->getCreateTs()
+            , "owner"     => $this->getKeyHolder()
+            , "keyholder" => $this->getKeyHolder()
+        ];
     }
 
 }

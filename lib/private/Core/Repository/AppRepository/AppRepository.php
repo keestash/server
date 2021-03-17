@@ -21,98 +21,100 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\AppRepository;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\App\Config\App;
 use Keestash\Core\Repository\AbstractRepository;
 use KSP\App\Config\IApp;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use PDO;
 
 class AppRepository extends AbstractRepository implements IAppRepository {
 
+    private IDateTimeService $dateTimeService;
+
+    public function __construct(
+        IBackend $backend
+        , IDateTimeService $dateTimeService
+    ) {
+        parent::__construct($backend);
+        $this->dateTimeService = $dateTimeService;
+    }
+
     public function getAllApps(): HashTable {
         $map = new HashTable();
-        try {
 
-            $sql = "select 
-                        `app_id`
-                        , `enabled`
-                        , `create_ts`
-                        , `version`
-                 from `app_config`";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'app_id'
+                , 'enabled'
+                , 'create_ts'
+                , 'version'
+            ]
+        )
+            ->from('app_config');
+        $result = $queryBuilder->execute();
+        $users  = $result->fetchAllNumeric();
 
-            $statement = parent::prepareStatement($sql);
+        foreach ($users as $row) {
 
-            if (null === $statement) {
-                return $map;
-            }
-            $statement->execute();
+            $appId    = $row[0];
+            $enabled  = $row[1];
+            $createTs = $row[2];
+            $version  = $row[3];
 
-            while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-                $appId    = $row[0];
-                $enabled  = $row[1];
-                $createTs = $row[2];
-                $version  = $row[3];
+            $app = new App();
+            $app->setId($appId);
+            $app->setEnabled($enabled === IApp::ENABLED_TRUE);
+            $app->setVersion((int) $version);
+            $app->setCreateTs($this->dateTimeService->fromFormat($createTs));
 
-                $app = new App();
-                $app->setId($appId);
-                $app->setEnabled($enabled === IApp::ENABLED_TRUE);
-                $app->setVersion((int) $version);
-                $app->setCreateTs(
-                    DateTimeUtil::fromMysqlDateTime($createTs)
-                );
-
-                $map->put($app->getId(), $app);
-
-            }
-        } catch (\Exception $exception) {
-            return $map;
+            $map->put($app->getId(), $app);
         }
+
         return $map;
     }
 
     public function getApp(string $id): ?IApp {
+        $app          = null;
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'app_id'
+                , 'enabled'
+                , 'create_ts'
+                , 'version'
+            ]
+        )
+            ->from('app_config')
+            ->where('app_id = ?')
+            ->setParameter(0, $id);
+        $result = $queryBuilder->execute();
+        $users  = $result->fetchAllNumeric();
 
-        $tree = null;
-        $sql  = "select 
-                        `app_id`
-                        , `enabled`
-                        , `create_ts`
-                        , `version`
-                 from `app_config`
-                    where `app_id` = :id;
-                 ";
+        foreach ($users as $row) {
 
-        $statement = parent::prepareStatement($sql);
+            $appId    = $row[0];
+            $enabled  = $row[1];
+            $createTs = $row[2];
+            $version  = $row[3];
 
-        if (null === $statement) {
-            return $tree;
+            $app = new App();
+            $app->setId($appId);
+            $app->setEnabled($enabled === IApp::ENABLED_TRUE);
+            $app->setVersion((int) $version);
+            $app->setCreateTs($this->dateTimeService->fromFormat($createTs));
+
         }
-        $statement->bindParam("id", $id);
-        $statement->execute();
-
-
-        if (0 === $statement->rowCount()) return null;
-
-        $row      = $statement->fetch(PDO::FETCH_BOTH);
-        $appId    = $row[0];
-        $enabled  = $row[1];
-        $createTs = $row[2];
-        $version  = $row[3];
-
-        $app = new App();
-        $app->setId($appId);
-        $app->setEnabled($enabled === IApp::ENABLED_TRUE);
-        $app->setVersion((int) $version);
-        $app->setCreateTs(
-            DateTimeUtil::fromMysqlDateTime($createTs)
-        );
 
         return $app;
     }
 
     public function replace(IApp $app): bool {
+        // notice that we can not use any doctrine
+        // support here as this seems to be an
+        // MySQL only thing: https://stackoverflow.com/a/4561615/1966490
         $sql = "
                 replace into `app_config` (
                                           `app_id`
@@ -120,27 +122,15 @@ class AppRepository extends AbstractRepository implements IAppRepository {
                                           , `version`
                                           )
                 values (
-                        :app_id
-                        , :enabled
-                        , :version
+                        '" . $app->getId() . "',
+                        '" . ($app->isEnabled() ? "true" : "false") . "',
+                        '" . $app->getVersion() . "'
                 );
         ";
-
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return false;
-
-        $appId   = $app->getId();
-        $enabled = $app->isEnabled() ? "true" : "false";
-        $version = $app->getVersion();
-
-        $statement->bindParam("app_id", $appId);
-        $statement->bindParam("enabled", $enabled);
-        $statement->bindParam("version", $version);
-        $executed = $statement->execute();
-
-        if (false === $executed) return false;
-
-        return false === $this->hasErrors($statement->errorCode());
+        $this->rawQuery($sql);
+        // There is otherwise an exception thrown.
+        // Do not know how to handle this better for now
+        return true;
     }
 
 }

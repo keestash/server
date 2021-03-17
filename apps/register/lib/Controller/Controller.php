@@ -27,7 +27,7 @@ use KSA\Register\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\L10N\IL10N;
 
 class Controller extends StaticAppController {
@@ -37,14 +37,12 @@ class Controller extends StaticAppController {
 
     private ITemplateManager      $templateManager;
     private IL10N                 $translator;
-    private IPermissionRepository $permissionRepository;
     private ILoader               $loader;
     private ConfigService         $configService;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionRepository
         , ILoader $loader
         , ConfigService $configService
     ) {
@@ -55,16 +53,13 @@ class Controller extends StaticAppController {
 
         $this->templateManager      = $templateManager;
         $this->translator           = $translator;
-        $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->configService        = $configService;
 
     }
 
     public function onCreate(): void {
-        $this->setPermission(
-            $this->permissionRepository->getPermission(Application::PERMISSION_REGISTER)
-        );
+
     }
 
     public function create(): void {

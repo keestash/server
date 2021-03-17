@@ -19,7 +19,8 @@ apt-get -y install mysql-server
 sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
 
 mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME"
-mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'%' identified by '$DBPASSWD'"
+mysql -uroot -p$DBPASSWD -e "CREATE USER '$DBUSER'@'%' IDENTIFIED BY '$DBPASSWD';"
+mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'%' WITH GRANT OPTION;"
 mysql -uroot -p$DBPASSWD -e "flush privileges"
 
 sudo apt-get -y install apache2 php7.4 php7.4-mysql php7.4-mbstring php7.4-dom php7.4-sqlite php7.4-zip php7.4-curl php7.4-intl php7.4-redis redis-server

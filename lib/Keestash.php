@@ -20,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use DI\DependencyException;
+use DI\NotFoundException;
 use doganoo\DI\HTTP\IHTTPService;
 use Keestash\Api\Response\MaintenanceResponse;
 use Keestash\Api\Response\NeedsUpgrade;
@@ -78,6 +80,8 @@ class Keestash {
 
     /**
      * @return bool
+     * @throws DependencyException
+     * @throws NotFoundException
      */
     public static function requestWeb(): bool {
         Keestash::$mode = Keestash::MODE_WEB;
@@ -89,7 +93,7 @@ class Keestash {
 
         try {
             $persisted = $persistenceService->isPersisted("user_id");
-        } catch (PDOException $exception) {
+        } catch (Throwable $exception) {
             $logger->error('error during persistence request ' . $exception->getMessage() . ': ' . $exception->getTraceAsString());
             $persisted = false;
         }
@@ -114,7 +118,6 @@ class Keestash {
         session_set_save_handler(
             Keestash::getServer()->query(SessionHandlerInterface::class)
         );
-
         // step3 has to be: is configured!
         //      this contains stuff like is writable,
         //      has file permissions, etc
@@ -354,10 +357,12 @@ class Keestash {
                 $logger->error(
                     json_encode(
                         [
-                            "id"        => $id
-                            , "message" => $message
-                            , "file"    => $file
-                            , "line"    => $line
+                            "id"                => $id
+                            , "message"         => $message
+                            , "file"            => $file
+                            , "line"            => $line
+                            , "context"         => $context
+                            , "debug_backtrace" => debug_backtrace()
                         ]
                     ),
                     $context

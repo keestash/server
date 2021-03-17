@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,12 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Permission;
+namespace KSP\Core\Service\HTTP;
 
-/**
- * Interface IContext
- * @package KSP\Core\Permission
- */
-interface IContext extends \doganoo\SimpleRBAC\Common\IContext {
+interface IPersistenceService {
+
+    public function getSessionValue(string $key, ?string $default = null): ?string;
+
+    public function getCookieValue(string $key, ?string $default = null): ?string;
+
+    public function getValue(string $key, ?string $default = null): ?string;
+
+    public function setSessionValue(string $key, string $value): bool;
+
+    public function setCookieValue(string $key, string $value, int $expireTs = 0): bool;
+
+    public function isPersisted(string $key): bool;
+
+    public function killAll(): void;
+
+    public function setPersistenceValue(string $key, string $value, int $expireTs = 0): bool;
 
 }

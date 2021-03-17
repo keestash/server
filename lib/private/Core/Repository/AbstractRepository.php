@@ -24,8 +24,6 @@ namespace Keestash\Core\Repository;
 use Doctrine\DBAL\Query\QueryBuilder;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\IRepository;
-use PDO;
-use PDOStatement;
 
 /**
  * Class AbstractRepository
@@ -35,12 +33,10 @@ use PDOStatement;
 class AbstractRepository implements IRepository {
 
     private IBackend $backend;
-    private ?PDO     $connection;
 
     public function __construct(IBackend $backend) {
         $this->backend = $backend;
         $this->connect();
-        $this->connection = $this->backend->getConnection();
     }
 
     protected function connect(): bool {
@@ -48,73 +44,23 @@ class AbstractRepository implements IRepository {
     }
 
     protected function getQueryBuilder(): QueryBuilder {
-        return $this->backend->getDoctrineConnection()->createQueryBuilder();
+        return $this->backend->getConnection()->createQueryBuilder();
     }
 
-    protected function getDoctrineLastInsertId(): ?string {
-        return $this->backend->getDoctrineConnection()->lastInsertId();
+    protected function getLastInsertId(): ?string {
+        return $this->backend->getConnection()->lastInsertId();
     }
 
-    /**
-     * @param string|null $name
-     * @return string|null
-     * @deprecated
-     */
-    protected function getLastInsertId(?string $name = null): ?string {
-        return $this->connection->lastInsertId($name);
-    }
-
-    /**
-     * @param string $sql
-     * @param array  $parameters
-     * @return bool
-     * @deprecated
-     */
-    protected function query(string $sql, array $parameters = []): bool {
-        $statement = $this->prepareStatement($sql);
-        if (null === $statement) return false;
-
-        foreach ($parameters as $key => $value) {
-            if (false === is_string($key)) continue;
-            $statement->bindParam($key, $value);
-        }
-
-        $statement->execute();
-        return false === $this->hasErrors($statement->errorCode());
-    }
-
-    /**
-     * @param string $statement
-     * @return PDOStatement|null
-     * @deprecated
-     */
-    protected function prepareStatement(string $statement): ?PDOStatement {
-        if (false === $this->backend->isConnected()) return null;
-        $statement = $this->connection->prepare($statement);
-        if ($statement instanceof PDOStatement) return $statement;
-        return null;
-    }
-
-    /**
-     * @param string $errorCode
-     * @return bool
-     * @deprecated
-     */
-    protected function hasErrors(string $errorCode): bool {
-        return $errorCode !== "00000";
+    protected function rawQuery(string $query) {
+        return $this->backend->getConnection()->executeQuery($query);
     }
 
     protected function getSchemaName(): string {
         return $this->backend->getSchemaName();
     }
 
-    /**
-     * @param string $sql
-     * @return false|int
-     * @deprecated
-     */
-    protected function rawQuery(string $sql) {
-        return $this->connection->exec($sql);
+    protected function getTables(): array {
+        return $this->backend->getTables();
     }
 
 }

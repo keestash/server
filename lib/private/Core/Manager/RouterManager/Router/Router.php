@@ -30,7 +30,6 @@ use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\RouterManager\IRouter;
-use KSP\Core\Permission\IPermission;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\UrlMatcher;

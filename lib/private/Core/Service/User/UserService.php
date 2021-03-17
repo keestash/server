@@ -43,7 +43,6 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 
@@ -55,7 +54,6 @@ class UserService {
     private IApiLogRepository    $apiLogRepository;
     private IFileRepository      $fileRepository;
     private IUserKeyRepository   $keyRepository;
-    private IRoleRepository      $rolesRepository;
     private IUserRepository      $userRepository;
     private KeyService           $keyService;
     private Legacy               $legacy;
@@ -70,7 +68,6 @@ class UserService {
         IApiLogRepository $apiLogRepository
         , IFileRepository $fileRepository
         , IUserKeyRepository $keyRepository
-        , IRoleRepository $rolesRepository
         , IUserRepository $userRepository
         , KeyService $keyService
         , Legacy $legacy
@@ -84,7 +81,6 @@ class UserService {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
         $this->keyRepository       = $keyRepository;
-        $this->rolesRepository     = $rolesRepository;
         $this->userRepository      = $userRepository;
         $this->keyService          = $keyService;
         $this->legacy              = $legacy;
@@ -101,20 +97,17 @@ class UserService {
         $logsRemoved  = $this->apiLogRepository->removeForUser($user);
         $filesRemoved = $this->fileRepository->removeForUser($user);
         $keysRemoved  = $this->keyRepository->remove($user);
-        $rolesRemoved = $this->rolesRepository->removeUserRoles($user);
         $userRemoved  = $this->userRepository->remove($user);
 
         return [
             "logs_removed"    => $logsRemoved
             , "files_removed" => $filesRemoved
             , "keys_removed"  => $keysRemoved
-            , "roles_removed" => $rolesRemoved
             , "user_removed"  => $user
             , "success"       =>
                 true === $logsRemoved
                 && true === $filesRemoved
                 && true === $keysRemoved
-                && true === $rolesRemoved
                 && true === $userRemoved
         ];
     }

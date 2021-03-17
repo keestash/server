@@ -22,16 +22,25 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\SessionManager;
 
 use doganoo\PHPUtil\HTTP\Session;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\SessionManager\ISessionManager;
 
+/**
+ * Class SessionManager
+ * @package Keestash\Core\Manager\SessionManager
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class SessionManager implements ISessionManager {
 
     private Session $session;
+    private ILogger $logger;
 
-    public function __construct(Session $session) {
+    public function __construct(Session $session, ILogger $logger) {
         $this->session = $session;
+        $this->logger  = $logger;
 
         if (false === $this->session->isStarted()) {
+            $this->logger->debug("session is started. Setting ini values");
             ini_set(
                 ISessionManager::SESSION_GC_MAX_LIFETIME_NAME
                 , (string) ISessionManager::SESSION_GC_MAX_LIFETIME
@@ -47,6 +56,7 @@ class SessionManager implements ISessionManager {
     public function set(string $name, string $value): bool {
         $this->session->start();
         $this->session->set($name, $value);
+        $this->logger->debug("set: $name, $value");
         return true;
     }
 
@@ -57,6 +67,7 @@ class SessionManager implements ISessionManager {
      */
     public function get(string $name, ?string $default = null): ?string {
         $this->session->start();
+        $this->logger->debug("get: $name, $default");
         return $this->session->get($name, $default);
     }
 
@@ -66,6 +77,7 @@ class SessionManager implements ISessionManager {
     }
 
     public function destroy(): void {
+        if (session_status() === PHP_SESSION_NONE) return;
         $this->session->start();
         $this->session->destroy();
     }
@@ -79,6 +91,7 @@ class SessionManager implements ISessionManager {
      * @param string $name
      */
     public function kill(string $name): void {
+        if (session_status() === PHP_SESSION_NONE) return;
         $this->session->start();
         $this->session->remove($name);
     }

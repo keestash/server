@@ -33,6 +33,7 @@ use Keestash\Core\System\Installation\Verification\AbstractVerification;
 use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
 use Keestash\Core\System\Installation\Verification\DatabaseReachable;
 use Keestash\Core\System\Installation\Verification\HasMigrations;
+use KSP\Core\ILogger\ILogger;
 
 class InstallerService {
 
@@ -98,6 +99,9 @@ class InstallerService {
         $addedId   = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
         $addedHash = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, md5(uniqid()));
 
+        $logger = Keestash::getServer()->query(ILogger::class);
+        $logger->debug((string) $addedId);
+        $logger->debug((string) $addedHash);
         return true === $addedId && true === $addedHash;
     }
 

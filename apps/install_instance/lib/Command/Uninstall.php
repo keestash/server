@@ -32,7 +32,9 @@ class Uninstall extends KeestashCommand {
 
     private InstanceRepository $instanceRepository;
 
-    public function __construct(InstanceRepository $instanceRepository) {
+    public function __construct(
+        InstanceRepository $instanceRepository
+    ) {
         parent::__construct("instance:uninstall");
         $this->instanceRepository = $instanceRepository;
     }
@@ -91,8 +93,8 @@ class Uninstall extends KeestashCommand {
         return $removed;
     }
 
-    private function dropTables(OutputInterface $output, bool $includeSchema = false): bool {
-        $dropped = $this->instanceRepository->dropSchema($includeSchema);
+    private function dropTables(OutputInterface $output): bool {
+        $dropped = $this->instanceRepository->dropSchema();
         if (true === $dropped) {
             $this->writeInfo(
                 "dropped all tables"

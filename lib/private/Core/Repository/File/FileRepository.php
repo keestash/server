@@ -23,10 +23,10 @@ namespace Keestash\Core\Repository\File;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\Repository\AbstractRepository;
+use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
@@ -34,7 +34,6 @@ use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use PDO;
 
 class FileRepository extends AbstractRepository implements IFileRepository {
 
@@ -69,55 +68,33 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function add(IFile $file): ?int {
-        $sql = "insert into `file` (
-                   `name`
-                  , `path`
-                  , `mime_type`
-                  , `hash`
-                  , `extension`
-                  , `size`
-                  , `user_id`
-                  , `create_ts`
-                  , `directory`
-                  )
-                  values (
-                          :name
-                          , :path
-                          , :mime_type
-                          , :hash
-                          , :extension
-                          , :size
-                          , :user_id
-                          , :create_ts
-                          , :directory
-                          );";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert("`file`")
+            ->values(
+                [
+                    "`name`"        => '?'
+                    , "`path`"      => '?'
+                    , "`mime_type`" => '?'
+                    , "`hash`"      => '?'
+                    , "`extension`" => '?'
+                    , "`size`"      => '?'
+                    , "`user_id`"   => '?'
+                    , "`create_ts`" => '?'
+                    , "`directory`" => '?'
+                ]
+            )
+            ->setParameter(0, $file->getName())
+            ->setParameter(1, $file->getFullPath())
+            ->setParameter(2, $file->getMimeType())
+            ->setParameter(3, $file->getHash())
+            ->setParameter(4, $file->getExtension())
+            ->setParameter(5, $file->getSize())
+            ->setParameter(6, $file->getOwner()->getId())
+            ->setParameter(7, $this->dateTimeService->toYMDHIS($file->getCreateTs()))
+            ->setParameter(8, $file->getDirectory())
+            ->execute();
 
-        $statement = parent::prepareStatement($sql);
-
-        $name      = $file->getName();
-        $path      = $file->getFullPath();
-        $mimeType  = $file->getMimeType();
-        $hash      = $file->getHash();
-        $extension = $file->getExtension();
-        $size      = $file->getSize();
-        $userId    = $file->getOwner()->getId();
-        $createTs  = $file->getCreateTs();
-        $createTs  = DateTimeUtil::formatMysqlDateTime($createTs);
-        $directory = $file->getDirectory();
-
-        $statement->bindParam("name", $name);
-        $statement->bindParam("path", $path);
-        $statement->bindParam("mime_type", $mimeType);
-        $statement->bindParam("hash", $hash);
-        $statement->bindParam("extension", $extension);
-        $statement->bindParam("size", $size);
-        $statement->bindParam("user_id", $userId);
-        $statement->bindParam("create_ts", $createTs);
-        $statement->bindParam("directory", $directory);
-
-        if (false === $statement->execute()) return null;
-
-        $lastInsertId = (int) parent::getLastInsertId();
+        $lastInsertId = (int) $this->getLastInsertId();
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;
@@ -133,14 +110,11 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function remove(IFile $file): bool {
-        $sql       = "delete from `file` where `id` = :file_id;";
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return false;
-
-        $fileId = $file->getId();
-        $statement->bindParam("file_id", $fileId);
-        return $statement->execute();
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->delete('file')
+            ->where('id = ?')
+            ->setParameter(0, $file->getId())
+            ->execute();
     }
 
     public function getAll(ArrayList $fileIds): FileList {
@@ -157,58 +131,58 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function get(int $id): ?IFile {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'id'
+                , 'mime_type'
+                , 'hash'
+                , 'extension'
+                , 'size'
+                , 'create_ts'
+                , 'directory'
+            ]
+        )
+            ->from('file')
+            ->where('id = ?')
+            ->setParameter(0, $id);
+        $files     = $queryBuilder->execute()->fetchAllAssociative();
+        $fileCount = count($files);
 
-        $sql = "select 
-                        `id`
-                        , `name`
-                        , `mime_type`
-                        , `hash`
-                        , `extension`
-                        , `size`
-                        , `user_id`
-                        , `create_ts`
-                        , `directory`
-                 from `file`
-                    where `id` = :id
-                 ";
-
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) {
+        if (0 === $fileCount) {
             return null;
         }
 
-        $statement->bindParam("id", $id);
-        $statement->execute();
-
-        $file = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $mimeType  = $row[2];
-            $hash      = $row[3];
-            $extension = $row[4];
-            $size      = $row[5];
-            $userId    = $row[6];
-            $createTs  = $row[7];
-            $directory = $row[8];
-
-            $file = new File();
-            $file->setId((int) $id);
-            $file->setName($name);
-            $file->setDirectory($directory);
-            $file->setMimeType($mimeType);
-            $file->setHash($hash);
-            $file->setExtension($extension);
-            $file->setSize((int) $size);
-            $file->setOwner(
-                $this->userRepository->getUserById((string) $userId)
-            );
-            $file->setCreateTs(
-                DateTimeUtil::fromMysqlDateTime($createTs)
-            );
-
+        if ($fileCount > 1) {
+            throw new KeestashException("found more then one user for the given name");
         }
+
+        $row       = $files[0];
+        $id        = $row[0];
+        $name      = $row[1];
+        $mimeType  = $row[2];
+        $hash      = $row[3];
+        $extension = $row[4];
+        $size      = $row[5];
+        $userId    = $row[6];
+        $createTs  = $row[7];
+        $directory = $row[8];
+
+        $file = new File();
+        $file->setId((int) $id);
+        $file->setName($name);
+        $file->setDirectory($directory);
+        $file->setMimeType($mimeType);
+        $file->setHash($hash);
+        $file->setExtension($extension);
+        $file->setSize((int) $size);
+        $file->setOwner(
+            $this->userRepository->getUserById((string) $userId)
+        );
+        $file->setCreateTs(
+            $this->dateTimeService->fromFormat($createTs)
+        );
+
         return $file;
     }
 
@@ -270,14 +244,11 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function removeForUser(IUser $user): bool {
-        $sql       = "DELETE FROM `file` WHERE `user_id` = :user_id;";
-        $statement = $this->prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $userId = $user->getId();
-        $statement->bindParam("user_id", $userId);
-        $statement->execute();
-        return false === $this->hasErrors($statement->errorCode());
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->delete('file')
+            ->where('user_id = ?')
+            ->setParameter(0, $user->getId())
+            ->execute();
     }
 
     /**
@@ -308,7 +279,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             ->setParameter(7, $file->getOwner()->getId())
             ->setParameter(8, $file->getId());
         $rowCount = $queryBuilder->execute();
-        
+
         if (0 === $rowCount) {
             throw new PasswordManagerException('no rows updated');
         }

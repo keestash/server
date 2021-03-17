@@ -24,7 +24,7 @@ namespace KSA\ForgotPassword\Api;
 use DateTime;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -52,9 +52,7 @@ class ResetPassword extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

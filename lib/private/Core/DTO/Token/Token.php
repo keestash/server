@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\Token;
 
 use DateTime;
+use DateTimeInterface;
 use doganoo\PHPUtil\Datatype\StringClass;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
@@ -71,10 +72,8 @@ class Token implements IToken {
         $this->value = $value;
     }
 
-    public function setCreateTs(int $createTs): void {
-        $dateTime = new DateTime();
-        $dateTime->setTimestamp($createTs);
-        $this->timestamp = $dateTime;
+    public function setCreateTs(DateTimeInterface $createTs): void {
+        $this->timestamp = $createTs;
     }
 
     public function valid(): bool {

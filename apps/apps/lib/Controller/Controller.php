@@ -26,21 +26,19 @@ use KSA\Apps\Application\Application;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\L10N\IL10N;
 
 class Controller extends AppController {
 
     public const TEMPLATE_NAME_APPS = "apps.twig";
 
-    private $permissionRepository = null;
     private $appRepository        = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $l10n
         , IAppRepository $appRepository
-        , IPermissionRepository $permissionRepository
     ) {
         parent::__construct(
             $templateManager
@@ -48,14 +46,9 @@ class Controller extends AppController {
         );
 
         $this->appRepository        = $appRepository;
-        $this->permissionRepository = $permissionRepository;
     }
 
     public function onCreate(): void {
-
-        parent::setPermission(
-            $this->permissionRepository->getPermission(Application::PERMISSION_READ_APPS)
-        );
 
     }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,12 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Permission;
+namespace KSP\Core\DTO\Encryption\KeyHolder;
+
+use KSP\Core\DTO\Entity\IObject;
 
 /**
- * Interface IDataProvider
- * @package KSP\Core\Permission
+ * Interface IKeyHolder
+ * @package KSP\Core\DTO\Encryption\KeyHolder
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-interface IDataProvider extends \doganoo\SimpleRBAC\Common\IDataProvider {
+interface IKeyHolder extends IObject {
+
+    public function getId(): int;
 
 }

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Apps\Api;
 
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Permission\PermissionFactory;
+
 use KSP\Api\IResponse;
 use KSP\App\Config\IApp;
 use KSP\Core\DTO\Token\IToken;
@@ -46,10 +46,6 @@ class UpdateApp extends AbstractApi {
 
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
-
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
     }
 
     public function create(): void {
