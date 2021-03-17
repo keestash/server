@@ -32,6 +32,7 @@ use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Controller\Controller;
 use KSP\Core\Manager\RouterManager\IRouterManager;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\HTTP\IPersistenceService;
 
 class Application extends Keestash\App\Application {
 

@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\Backend;
 
+use Doctrine\DBAL\Connection;
+
 interface IBackend {
 
     public function __construct(string $schemaName);
@@ -31,8 +33,10 @@ interface IBackend {
 
     public function isConnected(): bool;
 
-    public function getConnection();
+    public function getConnection(): Connection;
 
     public function getSchemaName(): string;
+
+    public function getTables(): array;
 
 }

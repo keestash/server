@@ -30,7 +30,6 @@ use KSP\Api\IApi;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\File\Upload\IFileList;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Permission\IPermission;
 use KSP\L10N\IL10N;
 
 abstract class AbstractApi implements IApi {
@@ -89,10 +88,9 @@ abstract class AbstractApi implements IApi {
     }
 
     /**
-     * @param IPermission $permission
      * @deprecated
      */
-    public function setPermission(IPermission $permission): void {
+    public function setPermission(): void {
     }
 
     public function createAndSetResponse(int $code, array $messages): void {

@@ -24,7 +24,7 @@ namespace KSA\InstallInstance\Api\Config;
 use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\Instance\InstallerService;
 use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
@@ -53,9 +53,7 @@ class Update extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

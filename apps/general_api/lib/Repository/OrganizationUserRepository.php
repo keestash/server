@@ -93,7 +93,7 @@ class OrganizationUserRepository extends AbstractRepository implements IOrganiza
                 )
                 ->execute();
 
-            $lastInsertId = $this->getDoctrineLastInsertId();
+            $lastInsertId = $this->getLastInsertId();
 
             if (null === $lastInsertId) {
                 throw new GeneralApiException();

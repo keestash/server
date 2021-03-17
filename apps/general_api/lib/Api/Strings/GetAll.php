@@ -23,7 +23,7 @@ namespace KSA\GeneralApi\Api\Strings;
 
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\StringManager\FrontendManager;
-use Keestash\Core\Permission\PermissionFactory;
+
 use KSP\Api\IResponse;
 use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\Token\IToken;
@@ -59,9 +59,7 @@ class GetAll extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

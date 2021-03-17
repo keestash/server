@@ -22,72 +22,34 @@ declare(strict_types=1);
 namespace Keestash\Core\Backend;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Keestash;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
-use PDO;
-use PDOException;
 
 class MySQLBackend implements ISQLBackend {
 
-    private ?PDO       $pdo       = null;
-    private Connection $doctrineConnection;
-    private string     $schemaName;
-    private bool       $connected = false;
-
+    private Connection $connection;
 
     public function __construct(string $schemaName) {
-        $this->schemaName = $schemaName;
+
     }
 
     public function connect(): bool {
-        $config = Keestash::getServer()->getConfig();
-        try {
-            $this->pdo = new PDO(
-                "mysql:host={$config->get("db_host")};dbname={$config->get("db_name")}"
-                , $config->get("db_user")
-                , $config->get("db_password")
-                , [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $config->get("db_charset")
-                   , PDO::ATTR_ERRMODE          => PDO::ERRMODE_EXCEPTION]
-            );
-            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, FALSE);
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $this->connected = true;
-        } catch (PDOException $exception) {
-            Keestash::getServer()->getFileLogger()->error($exception->getMessage());
-            return false;
-        }
-
-        $this->doctrineConnection = DriverManager::getConnection(
-            [
-                'driver'     => 'pdo_mysql'
-                , 'host'     => $config->get('db_host')
-                , 'dbname'   => $this->schemaName
-                , 'port'     => '3306'
-                , 'user'     => $config->get('db_user')
-                , 'password' => $config->get('db_password')
-            ]
-        );
+        $this->connection = Keestash::getServer()->query(Connection::class);
+        $this->connection->connect();
         return true;
     }
 
     public function disconnect(): bool {
-        $this->pdo       = null;
-        $this->connected = false;
+        // TODO implement
         return true;
     }
 
-    public function getConnection() {
-        return $this->pdo;
-    }
-
     public function isConnected(): bool {
-        return $this->connected;
+        return $this->connection->isConnected();
     }
 
     public function getSchemaName(): string {
-        return $this->schemaName;
+        return Keestash::getServer()->getConfig()->get("db_name");
     }
 
     /**
@@ -95,8 +57,12 @@ class MySQLBackend implements ISQLBackend {
      *
      * @return Connection
      */
-    public function getDoctrineConnection(): Connection {
-        return $this->doctrineConnection;
+    public function getConnection(): Connection {
+        return $this->connection;
+    }
+
+    public function getTables(): array {
+        return $this->connection->getSchemaManager()->listDatabases();
     }
 
 }

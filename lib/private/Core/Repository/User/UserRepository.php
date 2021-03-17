@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\User;
 
-use DateTime;
-use Doctrine\DBAL\FetchMode;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
@@ -32,7 +30,7 @@ use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\Permission\IRoleRepository;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 
 /**
@@ -43,20 +41,17 @@ use KSP\Core\Repository\User\IUserRepository;
  */
 class UserRepository extends AbstractRepository implements IUserRepository {
 
-    /** @var null|IRoleRepository $roleManager */
-    private $roleManager;
-
-    /** @var IDateTimeService */
-    private $dateTimeService;
+    private IDateTimeService $dateTimeService;
+    private ILogger          $logger;
 
     public function __construct(
         IBackend $backend
-        , IRoleRepository $roleManager
         , IDateTimeService $dateTimeService
+        , ILogger $logger
     ) {
         parent::__construct($backend);
-        $this->roleManager     = $roleManager;
         $this->dateTimeService = $dateTimeService;
+        $this->logger          = $logger;
     }
 
     /**
@@ -69,7 +64,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      */
     public function getUser(string $name): ?IUser {
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->select(
+        $queryBuilder = $queryBuilder->select(
             [
                 'u.id'
                 , 'u.name'
@@ -89,9 +84,11 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
             ->where('u.name = ?')
             ->setParameter(0, $name);
-        $users     = $queryBuilder->execute()->fetchAll();
+        $result       = $queryBuilder->execute();
+        $users        = $result->fetchAllNumeric();
         $userCount = count($users);
 
+        $this->logger->debug("user count: $userCount");
         if (0 === $userCount) {
             return null;
         }
@@ -103,23 +100,23 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $row = $users[0];
 
         $user = new User();
-        $user->setId((int) $row['id']);
-        $user->setName($row['name']);
-        $user->setPassword($row['password']);
+        $user->setId((int) $row[0]);
+        $user->setName($row[1]);
+        $user->setPassword($row[2]);
         $user->setCreateTs(
-            $this->dateTimeService->fromString($row['create_ts'])
+            $this->dateTimeService->fromString($row[3])
         );
-        $user->setFirstName($row['first_name']);
-        $user->setLastName($row['last_name']);
-        $user->setEmail($row['email']);
-        $user->setPhone($row['phone']);
-        $user->setWebsite($row['website']);
-        $user->setHash($row['hash']);
+        $user->setFirstName($row[4]);
+        $user->setLastName($row[5]);
+        $user->setEmail($row[6]);
+        $user->setPhone($row[7]);
+        $user->setWebsite($row[8]);
+        $user->setHash($row[9]);
         $user->setDeleted(
-            true === (bool) $row['deleted']
+            true === (bool) $row[10]
         );
         $user->setLocked(
-            true === (bool) $row['locked']
+            true === (bool) $row[11]
         );
 
         return $user;
@@ -155,8 +152,8 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->from('user', 'u')
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id');
 
-        $statement = $queryBuilder->execute();
-        $users     = $statement->fetchAll(FetchMode::ASSOCIATIVE);
+        $result = $queryBuilder->execute();
+        $users  = $result->fetchAllAssociative();
 
         foreach ($users as $row) {
 
@@ -189,7 +186,6 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      *
      * @return int|null
      *
-     * TODO insert roles and permissions
      */
     public function insert(IUser $user): ?int {
         $queryBuilder = $this->getQueryBuilder();
@@ -216,7 +212,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->setParameter(7, $user->getHash())
             ->execute();
 
-        $lastInsertId = $this->getDoctrineLastInsertId();
+        $lastInsertId = $this->getLastInsertId();
 
         if (null === $lastInsertId) return null;
         return (int) $lastInsertId;
@@ -288,7 +284,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
             ->where('u.id = ?')
             ->setParameter(0, $id);
-        $users     = $queryBuilder->execute()->fetchAll();
+        $users     = $queryBuilder->execute()->fetchAllAssociative();
         $userCount = count($users);
 
         if (0 === $userCount) {
@@ -313,7 +309,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
         $user->setPhone($row['phone']);
         $user->setWebsite($row['website']);
         $user->setHash($row['hash']);
-       $user->setDeleted(
+        $user->setDeleted(
             true === (bool) $row['deleted']
         );
         $user->setLocked(

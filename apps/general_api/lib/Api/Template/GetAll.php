@@ -24,7 +24,7 @@ namespace KSA\GeneralApi\Api\Template;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\TemplateManager\FrontendManager;
-use Keestash\Core\Permission\PermissionFactory;
+
 use KSP\Api\IResponse;
 use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\Token\IToken;
@@ -48,9 +48,6 @@ class GetAll extends AbstractApi {
     }
 
     public function onCreate(array $parameters): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
 
         $redisKey = "frontendmanagerstrings";
         $data     = null;

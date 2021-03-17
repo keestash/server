@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\App\Config;
 
-use DateTime;
+use DateTimeInterface;
 use doganoo\Backgrounder\BackgroundJob\JobList;
 
 interface IApp {
@@ -35,7 +35,7 @@ interface IApp {
 
     public function getVersion(): int;
 
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
     public function getBackgroundJobs(): JobList;
 

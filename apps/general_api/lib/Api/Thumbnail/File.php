@@ -23,7 +23,7 @@ namespace KSA\GeneralApi\Api\Thumbnail;
 
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\PlainResponse;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
@@ -54,10 +54,6 @@ class File extends AbstractApi {
 
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
-
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
     }
 
     public function create(): void {

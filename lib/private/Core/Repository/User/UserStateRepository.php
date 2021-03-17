@@ -165,7 +165,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             )
             ->execute();
 
-        $lastInsertId = $this->getDoctrineLastInsertId();
+        $lastInsertId = $this->getLastInsertId();
 
         if (null === $lastInsertId) return false;
         return true;

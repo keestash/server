@@ -22,15 +22,13 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Controller\Route;
 
 use Keestash;
-use Keestash\Core\Permission\PermissionFactory;
+
 use KSP\Core\Controller\AppController;
 
 class RouteList extends AppController {
 
     public function onCreate(): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

@@ -25,6 +25,7 @@ use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
@@ -39,29 +40,37 @@ class CredentialService {
     /**
      * Returns an instance of credential for the given user
      *
-     * Please note that this credential is only used to de-/encrypt the
-     * user's key. If you want to de-/encrypt user related stuff, try
-     * encrypting with IKey.
-     *
-     * The Credential is used to encrypt the IKey. The content of IKey
-     * is never changed, but the user's password may change over time.
-     * When changing the password, it is only necessary to re-encrypt
-     * the IKey and not the whole data encrypted so far.
-     *
      * @param IUser $user
      *
      * @return ICredential
      */
-    public function getCredentialForUser(IUser $user): ICredential {
+    private function getCredentialForUser(IUser $user): ICredential {
         $credential = new Credential();
-        $credential->setOwner($user);
+        $credential->setKeyHolder($user);
         $credential->setSecret($user->getPassword());
         $credential->setCreateTs(new DateTime());
         $credential->setId($user->getId());
         return $credential;
     }
 
-    public function getCredentialForOrganization(IOrganization $organization): ICredential {
+    public function getCredential(IKeyHolder $keyHolder): ICredential {
+        if ($keyHolder instanceof IUser) {
+            return $this->getCredentialForUser($keyHolder);
+        } else if ($keyHolder instanceof IOrganization) {
+            return $this->getCredentialForOrganization($keyHolder);
+        }
+        throw new KeestashException();
+    }
+
+    /**
+     * Returns an instance of credential for the given organization
+     *
+     * @param IOrganization $organization
+     *
+     * @return ICredential
+     * @throws KeestashException
+     */
+    private function getCredentialForOrganization(IOrganization $organization): ICredential {
 
         if (0 === $organization->getUsers()->length()) {
             throw new KeestashException();

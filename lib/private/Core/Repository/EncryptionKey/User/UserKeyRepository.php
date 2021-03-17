@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\EncryptionKey\User;
 
-use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
@@ -30,8 +29,12 @@ use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use PDO;
 
+/**
+ * Class UserKeyRepository
+ * @package Keestash\Core\Repository\EncryptionKey\User
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ */
 class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
     private IDateTimeService $dateTimeService;
@@ -64,7 +67,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
         $queryBuilder->execute();
 
-        return null !== $this->getDoctrineLastInsertId();
+        return null !== $this->getLastInsertId();
     }
 
     public function updateKey(IKey $key): bool {
@@ -72,33 +75,29 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
     }
 
     public function getKey(IUser $user): ?IKey {
-        $sql = "select
-                        k.`id`
-                        , k.`value`
-                        , k.`create_ts`
-                from `key` k
-                    join `user_key` uk
-                        on k.`id` = uk.`key_id`
-                where uk.`user_id` = :user_id
-                ";
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'k.`id`'
+                , 'k.`value`'
+                , 'k.`create_ts`'
+            ]
+        )
+            ->from('`key`', 'k')
+            ->join('k', '`user_key`', 'uk', 'k.`id` = uk.`key_id`')
+            ->where('uk.`user_id` = ?')
+            ->setParameter(0, $user->getId());
 
-        $statement = parent::prepareStatement($sql);
-        if (null === $statement) return null;
-        $userId = $user->getId();
-        $statement->bindParam("user_id", $userId);
-        $executed = $statement->execute();
-        if (!$executed) return null;
-        if ($statement->rowCount() === 0) return null;
+        $result = $queryBuilder->execute();
+        $users  = $result->fetchAllNumeric();
 
         $key = null;
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+        foreach ($users as $row) {
             $key = new Key();
             $key->setId((int) $row[0]);
             $key->setSecret($row[1]);
-            $dateTime = new DateTime();
-            $dateTime->setTimestamp((int) $row[2]);
-            $key->setCreateTs($dateTime);
-            $key->setOwner($user);
+            $key->setCreateTs($this->dateTimeService->fromFormat($row[2]));
+            $key->setKeyHolder($user);
         }
 
         return $key;

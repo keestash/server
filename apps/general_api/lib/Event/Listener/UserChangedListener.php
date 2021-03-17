@@ -72,7 +72,7 @@ class UserChangedListener implements IListener {
         }
 
         $key        = $this->organizationKeyRepository->getKey($organization);
-        $credential = $this->credentialService->getCredentialForOrganization($organization);
+        $credential = $this->credentialService->getCredential($organization);
         $secret     = $this->encryptionService->encrypt($credential, $secret);
 
         if (null === $key) {

@@ -35,6 +35,7 @@ export default {
                   console.log("done");
                   const object = response.data;
 
+                  console.log(object)
                   if (RESPONSE_CODE_OK in object) {
                     console.log("success. Routing ....");
                     const routeTo = object[RESPONSE_CODE_OK]['messages']['route_to'];

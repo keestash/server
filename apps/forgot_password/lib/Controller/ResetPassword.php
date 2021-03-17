@@ -28,7 +28,7 @@ use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
 
@@ -36,30 +36,22 @@ class ResetPassword extends StaticAppController {
 
     private const RESET_PASSWORD_TEMPLATE_NAME = "reset_password.twig";
 
-    /** @var IPermissionRepository */
-    private $permissionManager;
-
     private $userStateRepository;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $il10n
-        , IPermissionRepository $permissionRepository
         , IUserStateRepository $userStateRepository
     ) {
         parent::__construct(
             $templateManager
             , $il10n
         );
-
-        $this->permissionManager   = $permissionRepository;
         $this->userStateRepository = $userStateRepository;
     }
 
     public function onCreate(): void {
-        parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_RESET_PASSWORD)
-        );
+
     }
 
     public function create(): void {

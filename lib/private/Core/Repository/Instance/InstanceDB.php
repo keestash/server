@@ -60,7 +60,6 @@ class InstanceDB {
 
         $option = $this->getOption($name);
         if (null === $option) {
-
             return $this->insertOption($name, $value);
         }
         return $this->updateOption($name, $value);

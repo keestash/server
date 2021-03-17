@@ -27,33 +27,26 @@ use Keestash\Api\Response\DefaultResponse;
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Repository\Permission\IPermissionRepository;
 use KSP\L10N\IL10N;
 
 class MinimumCredential extends AbstractApi {
 
-    private array                 $parameters;
-    private UserService           $userService;
-    private IL10N                 $translator;
-    private IPermissionRepository $permissionRepository;
+    private array       $parameters;
+    private UserService $userService;
+    private IL10N       $translator;
 
     public function __construct(
         IL10N $l10n
         , UserService $userService
-        , IPermissionRepository $permissionRepository
         , ?IToken $token = null
     ) {
         parent::__construct($l10n, $token);
-        $this->userService          = $userService;
-        $this->translator           = $l10n;
-        $this->permissionRepository = $permissionRepository;
+        $this->userService = $userService;
+        $this->translator  = $l10n;
     }
 
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
-        parent::setPermission(
-            $this->permissionRepository->getPermission('Public Permission')
-        );
     }
 
     public function create(): void {

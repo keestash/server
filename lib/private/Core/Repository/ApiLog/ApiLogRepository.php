@@ -21,65 +21,58 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\ApiLog;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\AbstractRepository;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 
 class ApiLogRepository extends AbstractRepository implements IApiLogRepository {
 
+    private IDateTimeService $dateTimeService;
+
+    public function __construct(
+        IBackend $backend
+        , IDateTimeService $dateTimeService
+    ) {
+        parent::__construct($backend);
+        $this->dateTimeService = $dateTimeService;
+    }
+
     public function log(IAPIRequest $request): ?int {
-        $sql       = "insert into `apilog` (
-                    `token_name`
-                    , `token`
-                    , `user_id`
-                    , `start_ts`
-                    , `end_ts`
-                    , `route`
-                    )
-                    values (
-                            :token_name
-                            , :token
-                            , :user_id
-                            , :start_ts
-                            , :end_ts
-                            , :route
-)";
-        $statement = parent::prepareStatement($sql);
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->insert("`apilog`")
+            ->values(
+                [
+                    "`token_name`" => '?'
+                    , "`token`"    => '?'
+                    , "`user_id`"  => '?'
+                    , "`start_ts`" => '?'
+                    , "`end_ts`"   => '?'
+                    , "`route`"    => '?'
+                ]
+            )
+            ->setParameter(0, $request->getToken()->getName())
+            ->setParameter(1, $request->getToken()->getValue())
+            ->setParameter(2, $request->getToken()->getUser()->getId())
+            ->setParameter(3, $request->getStart())
+            ->setParameter(4, $request->getEnd())
+            ->setParameter(5, $request->getRoute())
+            ->execute();
 
-        if (null === $statement) return null;
-
-        $tokenName = $request->getToken()->getName();
-        $token     = $request->getToken()->getValue();
-        $userId    = $request->getToken()->getUser()->getId();
-        $startTs   = $request->getStart();
-        $endTs     = $request->getEnd();
-        $route     = $request->getRoute();
-
-        $statement->bindParam("token_name", $tokenName);
-        $statement->bindParam("token", $token);
-        $statement->bindParam("user_id", $userId);
-        $statement->bindParam("start_ts", $startTs);
-        $statement->bindParam("end_ts", $endTs);
-        $statement->bindParam("route", $route);
-
-        if (false === $statement->execute()) return null;
-
-        $lastInsertId = (int) parent::getLastInsertId();
+        $lastInsertId = (int) $this->getLastInsertId();
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;
     }
 
     public function removeForUser(IUser $user): bool {
-        $sql       = "DELETE FROM `apilog` WHERE `user_id` = :user_id;";
-        $statement = $this->prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $userId = $user->getId();
-        $statement->bindParam("user_id", $userId);
-        $statement->execute();
-        return false === $this->hasErrors($statement->errorCode());
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete('apilog')
+                ->where('user_id = ?')
+                ->setParameter(0, $user->getId())
+                ->execute() !== 0;
     }
 
 }

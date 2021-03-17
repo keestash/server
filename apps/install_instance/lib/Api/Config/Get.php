@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Api\Config;
 
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -44,9 +44,6 @@ class Get extends AbstractApi {
 
     public function onCreate(array $parameters): void {
 
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
     }
 
     public function create(): void {

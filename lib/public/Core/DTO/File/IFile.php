@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\File;
 
 use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\User\IUser;
 
@@ -49,6 +50,6 @@ interface IFile extends IJsonObject {
 
     public function getContent(): ?string;
 
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
 }

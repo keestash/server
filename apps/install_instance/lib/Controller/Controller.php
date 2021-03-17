@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Controller;
 
 use Keestash;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\L10N\IL10N;
 
 class Controller extends FullscreenAppController {
@@ -38,7 +38,6 @@ class Controller extends FullscreenAppController {
     public const TEMPLATE_NAME_DIRS_WRITABLE_PART = "dirs_writable.twig";
     public const TEMPLATE_NAME_HAS_DATA_DIRS      = "has_data_dirs.twig";
 
-    private IPermissionRepository $permissionRepository;
     private ITemplateManager      $templateManager;
     private LockHandler           $lockHandler;
     private InstallerService      $installerService;
@@ -46,7 +45,6 @@ class Controller extends FullscreenAppController {
 
     public function __construct(
         ITemplateManager $templateManager
-        , IPermissionRepository $permissionRepository
         , IL10N $translator
         , LockHandler $lockHandler
         , InstallerService $installerService
@@ -58,7 +56,6 @@ class Controller extends FullscreenAppController {
         );
 
         $this->templateManager      = $templateManager;
-        $this->permissionRepository = $permissionRepository;
         $this->lockHandler          = $lockHandler;
         $this->installerService     = $installerService;
         $this->logger               = $logger;
@@ -67,9 +64,6 @@ class Controller extends FullscreenAppController {
 
 
     public function onCreate(): void {
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
 
     }
 

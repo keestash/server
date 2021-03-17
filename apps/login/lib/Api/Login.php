@@ -29,11 +29,10 @@ use Keestash\App\Helper;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\User\UserService;
-use KSA\Login\Application\Application;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
@@ -44,16 +43,16 @@ class Login extends AbstractApi {
 
     private const DEFAULT_USER_LIFETIME = 60 * 60;
 
-    private IUserRepository       $userRepository;
-    private IL10N                 $translator;
-    private UserService           $userService;
-    private ITokenRepository      $tokenManager;
-    private TokenService          $tokenService;
-    private IPermissionRepository $permissionManager;
-    private PersistenceService    $persistenceService;
-    private ConfigService         $configService;
-    private ILocaleService        $localeService;
-    private ILanguageService      $languageService;
+    private IUserRepository    $userRepository;
+    private IL10N              $translator;
+    private UserService        $userService;
+    private ITokenRepository   $tokenManager;
+    private TokenService       $tokenService;
+    private PersistenceService $persistenceService;
+    private ConfigService      $configService;
+    private ILocaleService     $localeService;
+    private ILanguageService   $languageService;
+    private ILogger            $logger;
 
     public function __construct(
         IUserRepository $userRepository
@@ -61,11 +60,11 @@ class Login extends AbstractApi {
         , UserService $userService
         , ITokenRepository $tokenManager
         , TokenService $tokenService
-        , IPermissionRepository $permissionManager
         , PersistenceService $persistenceService
         , ConfigService $configService
         , ILocaleService $localeService
         , ILanguageService $languageService
+        , ILogger $logger
         , ?IToken $token = null
     ) {
         $this->userRepository     = $userRepository;
@@ -73,19 +72,17 @@ class Login extends AbstractApi {
         $this->userService        = $userService;
         $this->tokenManager       = $tokenManager;
         $this->tokenService       = $tokenService;
-        $this->permissionManager  = $permissionManager;
         $this->persistenceService = $persistenceService;
         $this->configService      = $configService;
         $this->localeService      = $localeService;
         $this->languageService    = $languageService;
+        $this->logger             = $logger;
 
         parent::__construct($translator, $token);
     }
 
     public function onCreate(array $parameters): void {
-        parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_LOGIN_SUBMIT)
-        );
+
     }
 
     public function create(): void {
@@ -94,6 +91,7 @@ class Login extends AbstractApi {
 
         $user = $this->userRepository->getUser($userName);
 
+        $this->logger->debug("user is null: " . (null === $user));
         $response = new LoginResponse();
         $response->setCode(Code::OK);
 

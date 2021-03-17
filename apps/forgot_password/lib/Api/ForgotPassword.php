@@ -38,7 +38,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
 
@@ -52,8 +52,6 @@ class ForgotPassword extends AbstractApi {
     private $templateManager;
     /** @var Legacy */
     private $legacy;
-    /** @var IPermissionRepository */
-    private $permissionManager;
     /** @var UserService */
     private $userService;
     /** @var IUserStateRepository */
@@ -64,7 +62,6 @@ class ForgotPassword extends AbstractApi {
         , EmailService $emailService
         , ITemplateManager $templateManager
         , Legacy $legacy
-        , IPermissionRepository $permissionManager
         , UserService $userService
         , IUserStateRepository $userStateRepository
         , ?IToken $token = null
@@ -73,16 +70,12 @@ class ForgotPassword extends AbstractApi {
 
         $this->emailService        = $emailService;
         $this->legacy              = $legacy;
-        $this->permissionManager   = $permissionManager;
         $this->userService         = $userService;
         $this->templateManager     = $templateManager;
         $this->userStateRepository = $userStateRepository;
     }
 
     public function onCreate(array $parameters): void {
-        parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_FORGOT_PASSWORD_SUBMIT)
-        );
     }
 
     public function create(): void {

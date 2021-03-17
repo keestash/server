@@ -23,15 +23,25 @@ namespace Keestash\Core\Repository\Job;
 
 use doganoo\Backgrounder\BackgroundJob\Job;
 use doganoo\Backgrounder\BackgroundJob\JobList;
-use doganoo\PHPUtil\Util\DateTimeUtil;
+use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\AbstractRepository;
+use Keestash\Exception\KeestashException;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\BackgroundJob\IJob;
 use KSP\Core\Repository\Job\IJobRepository;
-use PDO;
 
 class JobRepository extends AbstractRepository implements IJobRepository {
 
-    private ?JobList $jobList = null;
+    private ?JobList         $jobList = null;
+    private IDateTimeService $dateTimeService;
+
+    public function __construct(
+        IBackend $backend
+        , IDateTimeService $dateTimeService
+    ) {
+        parent::__construct($backend);
+        $this->dateTimeService = $dateTimeService;
+    }
 
     public function updateJobs(JobList $jobList): bool {
         $updated = false;
@@ -46,52 +56,35 @@ class JobRepository extends AbstractRepository implements IJobRepository {
     }
 
     public function updateJob(Job $job): bool {
-        $sql = "
-                update `background_job`
-                    set `name`      = :name
-                      , `interval`  = :interval
-                      , `type`      = :type
-                      , `last_run`  = :last_run
-                      , `info`      = :info
-                    where `id` = :id;
-        ";
+        $queryBuilder = $this->getQueryBuilder();
 
-        $statement = parent::prepareStatement($sql);
+        $lastRun = null === $job->getLastRun()
+            ? null
+            : $this->dateTimeService->toYMDHIS($job->getLastRun());
 
-        if (null === $statement) {
-            return false;
+        $info = null === $job->getInfo()
+            ? null
+            : json_encode($job->getInfo());
+
+        $queryBuilder = $queryBuilder->update('background_job')
+            ->set('name', '?')
+            ->set('interval', '?')
+            ->set('type', '?')
+            ->set('last_run', '?')
+            ->set('info', '?')
+            ->where('id = ?')
+            ->setParameter(0, $job->getId())
+            ->setParameter(1, $job->getInterval())
+            ->setParameter(2, $job->getType())
+            ->setParameter(3, $lastRun)
+            ->setParameter(4, $info);
+        $rowCount     = $queryBuilder->execute();
+
+        if (0 === $rowCount) {
+            throw new KeestashException('no rows updated');
         }
 
-        $id       = $job->getId();
-        $name     = $job->getName();
-        $interval = $job->getInterval();
-        $type     = $job->getType();
-        $lastRun  = $job->getLastRun();
-        $info     = $job->getInfo();
-
-        $lastRun = null === $lastRun
-            ? null
-            : DateTimeUtil::formatMysqlDateTime($lastRun);
-
-        $info = null === $info
-            ? null
-            : json_encode($info);
-
-        $statement->bindParam(":name", $name);
-        $statement->bindParam(":interval", $interval);
-        $statement->bindParam(":type", $type);
-        $statement->bindParam(":last_run", $lastRun);
-        $statement->bindParam(":info", $info);
-        $statement->bindParam(":id", $id);
-
-        $statement->execute();
-
-        $this->jobList = null;
-
-        return
-            false === $this->hasErrors($statement->errorCode())
-            && $statement->rowCount() > 0;
-
+        return true;
     }
 
     public function replaceJobs(JobList $jobList): bool {
@@ -124,24 +117,25 @@ class JobRepository extends AbstractRepository implements IJobRepository {
     }
 
     public function getJobList(): JobList {
-
-        if (null !== $this->jobList) return $this->jobList;
-
-        $list      = new JobList();
-        $sql       = "SELECT
-                    b.`id`
-                    , b.`name`
-                    , b.`interval`
-                    , b.`type`
-                    , b.`last_run`
-                    , b.`info`
-                    , b.`create_ts`
-                FROM background_job b;";
-        $statement = $this->prepareStatement($sql);
-        if (null === $statement) return $list;
-        $statement->execute();
         $list = new JobList();
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'b.id'
+                , 'b.name'
+                , 'b.interval'
+                , 'b.type'
+                , 'b.last_run'
+                , 'b.info'
+                , 'b.create_ts'
+            ]
+        )
+            ->from('background_job', 'b');
+        $result         = $queryBuilder->execute();
+        $backgroundJobs = $result->fetchAllAssociative();
+
+        foreach ($backgroundJobs as $row) {
 
             $id       = (int) $row[0];
             $name     = $row[1];
@@ -160,13 +154,9 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             $job->setName($name);
             $job->setInterval($interval);
             $job->setType($type);
-            $job->setLastRun(
-                DateTimeUtil::fromMysqlDateTime($lastRun)
-            );
+            $job->setLastRun($this->dateTimeService->fromFormat($lastRun));
             $job->setInfo($info);
-            $job->setCreateTs(
-                DateTimeUtil::fromMysqlDateTime($createTs)
-            );
+            $job->setCreateTs($this->dateTimeService->fromFormat($createTs));
             $list->add($job);
         }
         $this->jobList = $list;
@@ -174,53 +164,42 @@ class JobRepository extends AbstractRepository implements IJobRepository {
     }
 
     private function insert(Job $job): bool {
-        $sql = "insert into `background_job` (
-                  `name`
-                  , `type`
-                  , `last_run`
-                  , `info`
-                  , `create_ts`
-                  , `interval`
-                  )
-                  values (
-                          :name
-                          , :type
-                          , :last_run
-                          , :info
-                          , :create_ts
-                          , :interval
-                          );";
+        $queryBuilder = $this->getQueryBuilder();
 
-        $statement = parent::prepareStatement($sql);
-
-        $name     = $job->getName();
-        $type     = $job->getType();
-        $lastRun  = $job->getLastRun();
-        $lastRun  = null === $lastRun
+        $lastRun = $job->getLastRun();
+        $lastRun = null === $lastRun
             ? null
-            : DateTimeUtil::formatMysqlDateTime($lastRun);
-        $info     = $job->getInfo();
-        $info     = null === $info
+            : $this->dateTimeService->toYMDHIS($lastRun);
+        $info    = $job->getInfo();
+        $info    = null === $info
             ? null
             : json_encode($info);
-        $createTs = $job->getCreateTs();
-        $createTs = DateTimeUtil::formatMysqlDateTime($createTs);
-        $interval = $job->getInterval();
 
-        $statement->bindParam("name", $name);
-        $statement->bindParam("type", $type);
-        $statement->bindParam("last_run", $lastRun);
-        $statement->bindParam("info", $info);
-        $statement->bindParam("create_ts", $createTs);
-        $statement->bindParam("interval", $interval);
-        $executed = $statement->execute();
-        if (false === $executed) return false;
 
-        $lastInsertId = parent::getLastInsertId();
+        $queryBuilder->insert("`background_job`")
+            ->values(
+                [
+                    "`name`"        => '?'
+                    , "`type`"      => '?'
+                    , "`last_run`"  => '?'
+                    , "`info`"      => '?'
+                    , "`create_ts`" => '?'
+                    , "`interval`"  => '?'
+                ]
+            )
+            ->setParameter(0, $job->getName())
+            ->setParameter(1, $job->getType())
+            ->setParameter(2, $job->getLastRun())
+            ->setParameter(3, $lastRun)
+            ->setParameter(4, $info)
+            ->setParameter(5, $this->dateTimeService->toYMDHIS($job->getCreateTs()))
+            ->setParameter(6, $job->getInterval())
+            ->execute();
 
-        if (null === $lastInsertId) return false;
+        $lastInsertId = (int) $this->getLastInsertId();
+        if (0 === $lastInsertId) return false;
 
-        return false === $this->hasErrors($statement->errorCode());
+        return true;
 
     }
 

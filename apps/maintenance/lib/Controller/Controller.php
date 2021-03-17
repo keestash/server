@@ -24,19 +24,17 @@ namespace KSA\Maintenance\Controller;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\L10N\IL10N;
 
 class Controller extends FullscreenAppController {
 
     private $templateManager   = null;
     private $translator        = null;
-    private $permissionManager = null;
 
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionRepository
     ) {
         parent::__construct(
             $templateManager
@@ -45,13 +43,10 @@ class Controller extends FullscreenAppController {
 
         $this->templateManager   = $templateManager;
         $this->translator        = $translator;
-        $this->permissionManager = $permissionRepository;
     }
 
     public function onCreate(): void {
-        parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_MAINTENANCE)
-        );
+
     }
 
     public function create(): void {

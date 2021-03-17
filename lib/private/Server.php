@@ -26,6 +26,8 @@ use Composer\Autoload\ClassLoader;
 use DI\Container;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use doganoo\Backgrounder\Backgrounder;
 use doganoo\Backgrounder\Service\Log\ILoggerService;
 use doganoo\DI\DateTime\IDateTimeService;
@@ -73,8 +75,6 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Repository\Job\JobRepository;
-use Keestash\Core\Repository\Permission\PermissionRepository;
-use Keestash\Core\Repository\Permission\RoleRepository;
 use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
@@ -137,8 +137,6 @@ use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Job\IJobRepository;
-use KSP\Core\Repository\Permission\IPermissionRepository;
-use KSP\Core\Repository\Permission\IRoleRepository;
 use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -149,6 +147,7 @@ use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
+use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Validation\IValidationService;
@@ -156,10 +155,11 @@ use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
 use KSP\L10N\IL10N;
 use libphonenumber\PhoneNumberUtil;
-use PDOException;
 use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Throwable;
 use xobotyi\MimeType;
+
 
 /**
  * Class Server
@@ -266,13 +266,6 @@ class Server {
             return new EventManager();
         });
 
-        $this->register(IRoleRepository::class, function () {
-            return new RoleRepository(
-                $this->query(IBackend::class)
-                , $this->query(IPermissionRepository::class)
-            );
-        });
-
         $this->register(Server::ALLOWED_MIME_TYPES, function () {
             $png = MimeType::getExtensionMimes(IExtension::PNG);
             $jpg = MimeType::getExtensionMimes(IExtension::JPG);
@@ -313,6 +306,7 @@ class Server {
         $this->register(IApiLogRepository::class, function () {
             return new ApiLogRepository(
                 $this->query(IBackend::class)
+                , $this->query(IDateTimeService::class)
             );
         });
         $this->register(ReflectionService::class, function () {
@@ -336,7 +330,6 @@ class Server {
                 $this->query(IApiLogRepository::class)
                 , $this->query(IFileRepository::class)
                 , $this->query(IUserKeyRepository::class)
-                , $this->query(IRoleRepository::class)
                 , $this->query(IUserRepository::class)
                 , $this->query(KeyService::class)
                 , $this->query(Legacy::class)
@@ -413,10 +406,10 @@ class Server {
         });
 
         $this->register(ITokenRepository::class, function () {
-
             return new TokenRepository(
                 $this->query(IBackend::class)
                 , $this->query(IUserRepository::class)
+                , $this->query(IDateTimeService::class)
             );
         });
 
@@ -431,6 +424,7 @@ class Server {
         $this->register(ISessionManager::class, function () {
             return new SessionManager(
                 $this->query(Session::class)
+                , $this->query(ILogger::class)
             );
         });
 
@@ -441,6 +435,8 @@ class Server {
         $this->register(ISessionRepository::class, function () {
             return new SessionRepository(
                 $this->query(IBackend::class)
+                , $this->query(IDateTimeService::class)
+                , $this->query(ILogger::class)
             );
         });
 
@@ -528,19 +524,13 @@ class Server {
         $this->register(IUserRepository::class, function () {
             return new UserRepository(
                 $this->query(IBackend::class)
-                , $this->query(IRoleRepository::class)
                 , $this->query(IDateTimeService::class)
+                , $this->query(ILogger::class)
             );
         });
 
         $this->register(IDateTimeService::class, function () {
             return new DateTimeService();
-        });
-
-        $this->register(IPermissionRepository::class, function () {
-            return new PermissionRepository(
-                $this->query(IBackend::class)
-            );
         });
 
         $this->register(InstallerService::class, function () {
@@ -578,22 +568,10 @@ class Server {
             );
         });
 
-        $this->register(IDataProvider::class, function () {
-            return new Keestash\Core\Permission\DataProvider(
-                $this->query(User::class)
-                , $this->query(IPermissionRepository::class)
-            );
-        });
-        $this->register(PermissionHandler::class, function () {
-            return new PermissionHandler(
-                $this->query(IDataProvider::class
-                )
-            );
-        });
-
         $this->register(IAppRepository::class, function () {
             return new AppRepository(
                 Keestash::getServer()->query(IBackend::class)
+                , $this->query(IDateTimeService::class)
             );
         });
 
@@ -619,7 +597,12 @@ class Server {
             return new PersistenceService(
                 $this->query(ISessionManager::class)
                 , $this->query(ICookieManager::class)
+                , $this->query(ILogger::class)
             );
+        });
+
+        $this->register(IPersistenceService::class, function () {
+            return Keestash::getServer()->query(PersistenceService::class);
         });
 
         $this->register(PublicFileService::class, function () {
@@ -672,6 +655,7 @@ class Server {
         $this->register(IJobRepository::class, function () {
             return new JobRepository(
                 Keestash::getServer()->query(IBackend::class)
+                , $this->query(IDateTimeService::class)
             );
         });
 
@@ -686,6 +670,21 @@ class Server {
         $this->register(InstanceRepository::class, function () {
             return new InstanceRepository(
                 Keestash::getServer()->query(IBackend::class)
+                , Keestash::getServer()->query(ILogger::class)
+            );
+        });
+
+        $this->register(Connection::class, function () {
+            $config = Keestash::getServer()->getConfig();
+            return DriverManager::getConnection(
+                [
+                    'driver'     => 'pdo_mysql'
+                    , 'host'     => $config->get('db_host')
+                    , 'dbname'   => $config->get('db_name')
+                    , 'port'     => $config->get('db_port')
+                    , 'user'     => $config->get('db_user')
+                    , 'password' => $config->get('db_password')
+                ]
             );
         });
 
@@ -727,6 +726,7 @@ class Server {
         });
 
         $this->register(ICacheService::class, function () {
+            return new NullService();
             /** @var ICacheManager $cacheManager */
             $cacheManager = Keestash::getServer()->query(ICacheManager::class);
 
@@ -797,8 +797,9 @@ class Server {
 
         $userId = null;
         try {
-            $userId = $persistenceService->getValue("user_id", null);
-        } catch (PDOException $exception) {
+            $userId = $persistenceService->getValue("user_id");
+        } catch (Throwable $exception) {
+            $logger->warning("could not find user id. Resuming with no user");
             $logger->error(json_encode($exception));
         }
 

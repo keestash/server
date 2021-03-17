@@ -39,7 +39,7 @@ class MySQLBackendTest extends TestCase {
             PDO::class, $this->mySqlBackend->getConnection()
         );
         $this->assertInstanceOf(
-            Connection::class, $this->mySqlBackend->getDoctrineConnection()
+            Connection::class, $this->mySqlBackend->getConnection()
         );
     }
 

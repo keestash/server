@@ -19,23 +19,39 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Organization;
+namespace KSP\Core\Service\Encryption\Key;
 
-use DateTimeInterface;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
-use KSP\Core\DTO\Entity\IJsonObject;
 
-interface IOrganization extends IJsonObject, IKeyHolder {
+interface IKeyService {
 
-    public function getId(): int;
+    /**
+     * Returns an instance of IKey
+     *
+     * @param ICredential $credential
+     * @param IKeyHolder  $keyHolder
+     *
+     * @return IKey|null
+     */
+    public function createKey(ICredential $credential, IKeyHolder $keyHolder): ?IKey;
 
-    public function getName(): string;
+    /**
+     * Stores a given key
+     *
+     * @param IKeyHolder $keyHolder
+     * @param IKey       $key
+     * @return bool
+     */
+    public function storeKey(IKeyHolder $keyHolder, IKey $key): bool;
 
-    public function getCreateTs(): DateTimeInterface;
-
-    public function getActiveTs(): ?DateTimeInterface;
-
-    public function getUsers(): ArrayList;
+    /**
+     * retrieves a given key
+     *
+     * @param IKeyHolder $keyHolder
+     * @return IKey|null
+     */
+    public function getKey(IKeyHolder $keyHolder): ?IKey;
 
 }

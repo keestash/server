@@ -30,7 +30,7 @@ use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\Manager\TemplateManager\ITemplate;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
 
@@ -40,7 +40,6 @@ class ForgotPassword extends StaticAppController {
 
     private ITemplateManager      $templateManager;
     private IL10N                 $translator;
-    private IPermissionRepository $permissionManager;
     private Legacy                $legacy;
     private IUserStateRepository  $userStateRepository;
     private ILoader               $loader;
@@ -49,7 +48,6 @@ class ForgotPassword extends StaticAppController {
     public function __construct(
         ITemplateManager $templateManager
         , IL10N $translator
-        , IPermissionRepository $permissionRepository
         , Legacy $legacy
         , IUserStateRepository $userStateRepository
         , ILoader $loader
@@ -62,7 +60,6 @@ class ForgotPassword extends StaticAppController {
 
         $this->templateManager     = $templateManager;
         $this->translator          = $translator;
-        $this->permissionManager   = $permissionRepository;
         $this->legacy              = $legacy;
         $this->userStateRepository = $userStateRepository;
         $this->loader              = $loader;
@@ -70,9 +67,7 @@ class ForgotPassword extends StaticAppController {
     }
 
     public function onCreate(): void {
-        parent::setPermission(
-            $this->permissionManager->getPermission(Application::PERMISSION_FORGOT_PASSWORD)
-        );
+
     }
 
     public function create(): void {

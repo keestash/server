@@ -27,7 +27,7 @@ use Exception;
 use Keestash;
 use Keestash\Api\AbstractApi;
 use Keestash\Api\Response\DefaultResponse;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
 use KSP\Api\IResponse;
@@ -35,7 +35,7 @@ use KSP\App\ILoader;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\Permission\IPermissionRepository;
+
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
@@ -46,7 +46,6 @@ class Add extends AbstractApi {
     private UserService           $userService;
     private IUserRepository       $userRepository;
     private IL10N                 $translator;
-    private IPermissionRepository $permissionRepository;
     private ILoader               $loader;
     private IUserStateRepository  $userStateRepository;
     private ILogger               $logger;
@@ -55,7 +54,6 @@ class Add extends AbstractApi {
         IL10N $l10n
         , UserService $userService
         , IUserRepository $userRepository
-        , IPermissionRepository $permissionRepository
         , ILoader $loader
         , IUserStateRepository $userStateRepository
         , ILogger $logger
@@ -66,7 +64,6 @@ class Add extends AbstractApi {
         $this->userService          = $userService;
         $this->userRepository       = $userRepository;
         $this->translator           = $l10n;
-        $this->permissionRepository = $permissionRepository;
         $this->loader               = $loader;
         $this->userStateRepository  = $userStateRepository;
         $this->logger               = $logger;
@@ -75,9 +72,7 @@ class Add extends AbstractApi {
 
 
     public function onCreate(array $parameters): void {
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

@@ -23,16 +23,14 @@ namespace KSA\Register\Api\User;
 
 use Keestash;
 use Keestash\Api\AbstractApi;
-use Keestash\Core\Permission\PermissionFactory;
+
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 
 class Exists extends AbstractApi {
 
     public function onCreate(array $parameters): void {
-        $this->setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
+
     }
 
     public function create(): void {

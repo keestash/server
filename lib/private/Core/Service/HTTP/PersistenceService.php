@@ -21,33 +21,39 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\HTTP;
 
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
+use KSP\Core\Service\HTTP\IPersistenceService;
 
-class PersistenceService {
+class PersistenceService implements IPersistenceService {
 
-    /** @var ISessionManager|null $sessionManager */
-    private $sessionManager = null;
-    /** @var ICookieManager|null $cookieManager */
-    private $cookieManager = null;
+    private ISessionManager $sessionManager;
+    private ICookieManager  $cookieManager;
+    private ILogger         $logger;
 
     public function __construct(
         ISessionManager $sessionManager
         , ICookieManager $cookieManager
+        , ILogger $logger
     ) {
         $this->sessionManager = $sessionManager;
         $this->cookieManager  = $cookieManager;
+        $this->logger         = $logger;
     }
 
     public function getSessionValue(string $key, ?string $default = null): ?string {
+        $this->logger->debug("getSessionValue: key $key, value $default");
         return $this->sessionManager->get($key, $default);
     }
 
     public function getCookieValue(string $key, ?string $default = null): ?string {
+        $this->logger->debug("getCookieValue: key $key, value $default");
         return $this->cookieManager->get($key, $default);
     }
 
     public function getValue(string $key, ?string $default = null): ?string {
+        $this->logger->debug("key $key, value $default");
 
         $sessionValue = $this->sessionManager->get($key, $default);
         $cookieValue  = $this->cookieManager->get($key, $default);
@@ -59,25 +65,30 @@ class PersistenceService {
     }
 
     public function setSessionValue(string $key, string $value): bool {
+        $this->logger->debug("setSessionValue: key $key, value $value");
         return $this->sessionManager->set($key, $value);
     }
 
     public function setCookieValue(string $key, string $value, int $expireTs = 0): bool {
+        $this->logger->debug("setCookieValue: key $key, value $value, expireTs $expireTs");
         return $this->cookieManager->set($key, $value, $expireTs);
     }
 
     public function isPersisted(string $key): bool {
-        $sessionPersisted = $this->getSessionValue($key, null);
-        $cookiePersisted  = $this->getCookieValue($key, null);
+        $this->logger->debug("key $key");
+        $sessionPersisted = $this->getSessionValue($key);
+        $cookiePersisted  = $this->getCookieValue($key);
         return null !== $sessionPersisted || null !== $cookiePersisted;
     }
 
     public function killAll(): void {
+        $this->logger->debug("killing all");
         $this->sessionManager->killAll();
         $this->cookieManager->killAll();
     }
 
     public function setPersistenceValue(string $key, string $value, int $expireTs = 0): bool {
+        $this->logger->debug("setPersistenceValue: key $key, value $value, expireTs $expireTs");
         $sessionPersisted = $this->setSessionValue($key, $value);
         $cookiePersisted  = $this->setCookieValue($key, $value, $expireTs);
         return true === $sessionPersisted && true === $cookiePersisted;

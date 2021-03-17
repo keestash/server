@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Encryption\Credential;
 
-use DateTime;
+use DateTimeInterface;
+use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Entity\IJsonObject;
-use KSP\Core\DTO\User\IUser;
 
 /**
  * Interface ICredential
@@ -53,15 +53,15 @@ interface ICredential extends IJsonObject {
     /**
      * Returns the user to whom the credential belongs to
      *
-     * @return IUser
+     * @return IKeyHolder
      */
-    public function getOwner(): IUser;
+    public function getKeyHolder(): IKeyHolder;
 
     /**
      * Returns the credential's creation date
      *
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
 }

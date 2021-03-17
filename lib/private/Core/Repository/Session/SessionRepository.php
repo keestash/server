@@ -22,92 +22,121 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Session;
 
 use DateTime;
-use doganoo\PHPUtil\Util\DateTimeUtil;
+use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DIP\DateTime\DateTimeService;
+use Exception;
 use Keestash\Core\Repository\AbstractRepository;
+use Keestash\Exception\KeestashException;
+use KSP\Core\Backend\IBackend;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Session\ISessionRepository;
-use PDO;
+use Throwable;
 
 class SessionRepository extends AbstractRepository implements ISessionRepository {
+
+    private IDateTimeService $dateTimeService;
+    private ILogger          $logger;
+
+    public function __construct(
+        IBackend $backend
+        , DateTimeService $dateTimeService
+        , ILogger $logger
+    ) {
+        parent::__construct($backend);
+        $this->dateTimeService = $dateTimeService;
+        $this->logger          = $logger;
+    }
 
     public function open(): bool {
         return true;
     }
 
     public function get(string $id): ?string {
-        $sql       = "SELECT `data` FROM `session` WHERE `id` = :id";
-        $statement = parent::prepareStatement($sql);
+        try {
+            $queryBuilder     = $this->getQueryBuilder();
+            $queryBuilder     = $queryBuilder->select(
+                [
+                    'data'
+                ]
+            )
+                ->from('session')
+                ->where('id = ?')
+                ->setParameter(0, $id);
+            $result           = $queryBuilder->execute();
+            $sessionData      = $result->fetchAllNumeric();
+            $sessionDataCount = count($sessionData);
 
-        if (null === $statement) return null;
-        $statement->bindParam("id", $id);
-        $executed = $statement->execute();
+            if (0 === $sessionDataCount) {
+                $this->logger->debug("no session data found!!");
+                $this->logger->debug(json_encode($sessionData));
+                return "";
+            }
 
-        if (false === $executed) return null;
-        if (true === $this->hasErrors($statement->errorCode())) return null;
+            if ($sessionDataCount > 1) {
+                throw new KeestashException("found more then one user for the given name");
+            }
 
-        $row  = $statement->fetch(PDO::FETCH_BOTH);
-        $data = $row["data"] ?? null;
-        return (string) $data;
+            return (string) $sessionData[0][0] ?? '';
+        } catch (Exception $exception) {
+            $this->logger->error($exception->getMessage() . " " . $exception->getTraceAsString());
+            return "";
+        }
     }
 
     public function getAll(): ?array {
-        $sql       = "SELECT `id`, `data`, `update_ts` FROM `session`;";
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return null;
-        $executed = $statement->execute();
-
-        if (false === $executed) return null;
-        if (true === $this->hasErrors($statement->errorCode())) return null;
-
-        $result = [];
-        while ($row = $statement->fetch(PDO::FETCH_BOTH)) {
-            $result[] = $row;
-        }
-        return $result;
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $queryBuilder->select(
+            [
+                'id'
+                , 'data'
+                , 'update_ts'
+            ]
+        )
+            ->from('session');
+        return $queryBuilder->execute()->fetchAllNumeric();
     }
 
     public function replace(string $id, string $data): bool {
-        $sql       = "REPLACE INTO `session`(`id`, `data`,`update_ts`) VALUES (:id, :the_data, :update_ts)";
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $updateTs = DateTimeUtil::formatMysqlDateTime(new DateTime());
-        $statement->bindParam("id", $id);
-        $statement->bindParam("the_data", $data);
-        $statement->bindParam("update_ts", $updateTs);
-
-        $executed = $statement->execute();
-
-        return
-            true === $executed &&
-            false === $this->hasErrors($statement->errorCode());
+        try {
+            // notice that we can not use any doctrine
+            // support here as this seems to be an
+            // MySQL only thing: https://stackoverflow.com/a/4561615/1966490
+            $updateTs = $this->dateTimeService->toYMDHIS(new DateTime());
+            $sql      = "REPLACE INTO `session`(`id`, `data`,`update_ts`) VALUES ('" . $id . "', '" . $data . "', '" . $updateTs . "')";
+            $result   = $this->rawQuery($sql);
+            return $result->rowCount() > 0;
+        } catch (Throwable $exception) {
+            $this->logger->error('error while replacing session. This can be a normal behaviour (for instance during installation). Please look into the messages in level debug for more information');
+            $this->logger->debug(
+                json_encode(
+                    [
+                        "id"                => $exception->getCode()
+                        , "message"         => $exception->getMessage()
+                        , "file"            => $exception->getFile()
+                        , "line"            => $exception->getLine()
+                        , "trace"           => json_encode($exception->getTrace())
+                        , "trace_as_string" => $exception->getTraceAsString()
+                    ]
+                )
+            );
+        }
+        return false;
     }
 
     public function deleteById(string $id): bool {
-        $sql       = "DELETE FROM `session` WHERE `id` = :id";
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $statement->bindParam("id", $id);
-        $executed = $statement->execute();
-
-        return
-            true === $executed &&
-            false === $this->hasErrors($statement->errorCode());
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete('session')
+                ->where('id = ?')
+                ->setParameter(0, $id)
+                ->execute() !== 0;
     }
 
     public function deleteByLastUpdate(int $maxLifeTime): bool {
-        $sql       = "DELETE FROM `session` WHERE `update_ts` = :update_ts";
-        $statement = parent::prepareStatement($sql);
-
-        if (null === $statement) return false;
-        $updateTs = (new DateTime())->getTimestamp() - $maxLifeTime;
-        $statement->bindParam("update_ts", $updateTs);
-        $executed = $statement->execute();
-
-        return
-            true === $executed &&
-            false === $this->hasErrors($statement->errorCode());
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete('session')
+                ->where('update_ts = ?')
+                ->setParameter(0, (new DateTime())->getTimestamp() - $maxLifeTime)
+                ->execute() !== 0;
     }
 
     public function close(): bool {

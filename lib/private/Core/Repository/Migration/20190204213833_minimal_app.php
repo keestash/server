@@ -22,16 +22,12 @@ declare(strict_types=1);
 
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\Permission\IPermission;
-use KSP\Core\Permission\IRole;
 use Phinx\Migration\AbstractMigration;
 
 class MinimalApp extends AbstractMigration {
 
     public function change() {
         $this->createUser();
-        $this->createPermissionManagement();
-        $this->insertDefaultPermissions();
         $this->createApiLog();
         $this->createToken();
     }
@@ -185,238 +181,6 @@ class MinimalApp extends AbstractMigration {
             ->save();
     }
 
-    private function createPermission(): void {
-        $this->table("permission")
-            ->addColumn(
-                "name"
-                , "string"
-                , [
-                    "null"      => "false"
-                    , "comment" => "The permissions name"
-                ]
-            )
-            ->addColumn(
-                "create_ts"
-                , "datetime"
-                , [
-                    "null"      => false
-                    , "default" => "CURRENT_TIMESTAMP"
-                ]
-            )
-            ->addIndex(
-                "id"
-                , [
-                    "unique" => true
-                ]
-            )
-            ->addIndex(
-                "name"
-                , [
-                    "unique" => true
-                ]
-            )
-            ->save();
-
-    }
-
-
-    private function createRole(): void {
-        $this->table("role")
-            ->addColumn(
-                "name"
-                , "string"
-                , [
-                    "null"    => false
-                    , "after" => "id"
-                ]
-            )
-            ->addColumn(
-                "create_ts"
-                , "datetime"
-                , [
-                    "null"      => false
-                    , "after"   => "name"
-                    , "default" => "CURRENT_TIMESTAMP"
-
-                ]
-            )
-            ->addIndex(
-                "id"
-                , [
-                    "unique" => true
-                ]
-            )
-            ->addIndex(
-                "name"
-                , [
-                    "unique" => true
-                ]
-            )
-            ->save();
-
-    }
-
-
-    private function createRolePermission(): void {
-        $this->table("permission_role")
-            ->addColumn(
-                "permission_id"
-                , "integer"
-                , [
-                    "null"    => false
-                    , "after" => "id"
-                ]
-            )
-            ->addColumn(
-                "role_id"
-                , "integer"
-                , [
-                    "null"    => false
-                    , "after" => "permission_id"
-                ]
-            )
-            ->addColumn(
-                "create_ts"
-                , "datetime"
-                , [
-                    "null"      => false
-                    , "after"   => "name"
-                    , "default" => "CURRENT_TIMESTAMP"
-
-                ]
-            )
-            ->addIndex(
-                "id"
-                , [
-                    "unique" => true
-                ]
-            )
-            ->addForeignKey(
-                "permission_id"
-                , "permission"
-                , "id"
-                , [
-                    'delete'   => 'CASCADE'
-                    , 'update' => 'CASCADE'
-                ]
-            )
-            ->addForeignKey(
-                "role_id"
-                , "role"
-                , "id"
-                , [
-                    'delete'   => 'CASCADE'
-                    , 'update' => 'CASCADE'
-                ]
-            )
-            ->save();
-
-    }
-
-    private function createUserRole(): void {
-
-        $this->table("user_role")
-            ->addColumn(
-                "role_id"
-                , KeestashMigration::INTEGER
-                , [
-                    "null"      => false
-                    , "comment" => "The user's role"
-                ]
-            )
-            ->addColumn(
-                "user_id"
-                , KeestashMigration::INTEGER
-                , [
-                    "null"      => false
-                    , "comment" => "The user"
-                ]
-            )
-            ->addColumn(
-                "create_ts"
-                , KeestashMigration::DATETIME
-                , [
-                    "null"      => false
-                    , "comment" => "The record's create ts"
-                ]
-            )
-            ->addForeignKey(
-                "role_id"
-                , "role"
-                , "id"
-                , [
-                    'delete'   => 'CASCADE'
-                    , 'update' => 'CASCADE'
-                ]
-            )
-            ->addForeignKey(
-                "user_id"
-                , "user"
-                , "id"
-                , [
-                    'delete'   => 'CASCADE'
-                    , 'update' => 'CASCADE'
-                ]
-            )
-            ->save();
-
-    }
-
-
-    private function createPermissionManagement(): void {
-        $this->createPermission();
-        $this->createRole();
-        $this->createRolePermission();
-        $this->createUserRole();
-    }
-
-    private function insertDefaultPermissions(): void {
-        $this->table("permission")
-            ->insert(
-                [
-                    "id"     => IPermission::ID_PUBLIC
-                    , "name" => "Public Permission"
-                ]
-            )
-            ->save();
-
-        $this->table("role")
-            ->insert(
-                [
-                    "id"     => IRole::ID_PUBLIC
-                    , "name" => "Public Role"
-                ]
-            )
-            ->insert(
-                [
-                    "id"     => IRole::ID_ADMIN
-                    , "name" => "Admin Role"
-                ]
-            )
-            ->insert(
-                [
-                    "id"     => IRole::ID_APP_USER
-                    , "name" => "Regular logged in App User Role"
-                ]
-            )
-            ->insert(
-                [
-                    "id"     => IRole::ID_SYSTEM
-                    , "name" => "System User, for System related tasks"
-                ]
-            )
-            ->save();
-
-        $this->table("permission_role")
-            ->insert(
-                [
-                    "permission_id" => IPermission::ID_PUBLIC
-                    , "role_id"     => IRole::ID_PUBLIC
-                ]
-            )
-            ->save();
-    }
-
     private function createApiLog(): void {
 
         $this->table("apilog")
@@ -514,10 +278,11 @@ class MinimalApp extends AbstractMigration {
             )
             ->addColumn(
                 "create_ts"
-                , "integer"
+                , KeestashMigration::DATETIME
                 , [
-                    "null"    => false
-                    , "after" => "user_id"
+                    "null"      => false
+                    , "after"   => "user_id"
+                    , "default" => "CURRENT_TIMESTAMP"
                 ]
             )
             ->addForeignKey(

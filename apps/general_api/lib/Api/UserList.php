@@ -23,7 +23,7 @@ namespace KSA\general_api\lib\Api;
 
 use Keestash\Api\AbstractApi;
 use Keestash\Core\Manager\FileManager\FileManager;
-use Keestash\Core\Permission\PermissionFactory;
+
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
@@ -61,10 +61,6 @@ class UserList extends AbstractApi {
 
     public function onCreate(array $parameters): void {
         $this->parameters = $parameters;
-
-        parent::setPermission(
-            PermissionFactory::getDefaultPermission()
-        );
     }
 
     public function create(): void {
