@@ -46,6 +46,7 @@ class EmailService {
     private HashTable     $recipients;
     private HashTable     $carbonCopy;
     private HashTable     $blindCarbonCopy;
+    private Legacy        $legacy;
 
     public function __construct(
         Legacy $legacy
@@ -59,24 +60,30 @@ class EmailService {
         $this->recipients      = new HashTable();
         $this->carbonCopy      = new HashTable();
         $this->blindCarbonCopy = new HashTable();
+        $this->legacy          = $legacy;
 
+        $this->configService = $configService;
+
+    }
+
+    private function putDefaults(): void {
         //Server settings
         $this->mailer->SMTPDebug = EmailService::PHPMAILER_SMTP_DEBUG_DATA_COMMANDS_AND_CONNECTION_STATUS;
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = $configService->getValue("email_user");
-        $this->mailer->Password   = $configService->getValue("email_password");
-        $this->mailer->Host       = $configService->getValue("email_smtp_host");
+        $this->mailer->Username   = $this->configService->getValue("email_user");
+        $this->mailer->Password   = $this->configService->getValue("email_password");
+        $this->mailer->Host       = $this->configService->getValue("email_smtp_host");
         $this->mailer->SMTPSecure = 'ssl';
         $this->mailer->Port       = 465;
 
         $this->mailer->setFrom(
-            $legacy->getApplication()->get("email")
-            , $legacy->getApplication()->get("name")
+            $this->legacy->getApplication()->get("email")
+            , $this->legacy->getApplication()->get("name")
         );
         $this->mailer->addReplyTo(
-            $legacy->getApplication()->get("email")
-            , $legacy->getApplication()->get("name")
+            $this->legacy->getApplication()->get("email")
+            , $this->legacy->getApplication()->get("name")
         );
         $this->mailer->Debugoutput = function ($message) {
             $this->logger->debug($message);
@@ -84,8 +91,6 @@ class EmailService {
 
         // Global Config
         $this->mailer->isHTML(EmailService::IS_HTML);   // Set email format to HTML
-        $this->configService = $configService;
-
     }
 
     public function addRecipient(string $name, string $email): void {
@@ -110,15 +115,18 @@ class EmailService {
     }
 
     public function send(int $delay = 0): bool {
-        $this->putAllReceivers();
-        $recipients = $this->mailer->getAllRecipientAddresses();
-
-        if (0 === count($recipients)) return false;
-        if (false === $this->hasSubject()) return false;
-        if (false === $this->hasBody()) return false;
 
         try {
             sleep($delay);
+
+            $this->putDefaults();
+            $this->putAllReceivers();
+            $recipients = $this->mailer->getAllRecipientAddresses();
+
+            if (0 === count($recipients)) return false;
+            if (false === $this->hasSubject()) return false;
+            if (false === $this->hasBody()) return false;
+
             $this->mailer->send();
             return true;
         } catch (Exception $e) {
