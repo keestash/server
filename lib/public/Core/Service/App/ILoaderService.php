@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,28 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Repository\Session;
+namespace KSP\Core\Service\App;
 
-use KSP\Core\Repository\IRepository;
+use KSP\App\IApp;
 
-/**
- * Interface ISessionRepository
- * @package KSP\Core\Repository\Session
- */
-interface ISessionRepository extends IRepository {
+interface ILoaderService {
 
-    public function open(): bool;
-
-    public function get(string $id): string;
-
-    public function getAll(): array;
-
-    public function replace(string $id, string $data): bool;
-
-    public function deleteById(string $id): bool;
-
-    public function deleteByLastUpdate(int $maxLifeTime): bool;
-
-    public function close(): bool;
+    public function buildApp(array $info): IApp;
 
 }

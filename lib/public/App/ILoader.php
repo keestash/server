@@ -21,37 +21,23 @@ declare(strict_types=1);
 
 namespace KSP\App;
 
-use Composer\Autoload\ClassLoader;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\Cache\ICacheService;
-use KSP\Core\ILogger\ILogger;
 
 interface ILoader {
 
-    public const APP_NAME_ACCOUNT          = "account";
-    public const APP_NAME_INSTALL          = "install";
-    public const APP_NAME_TNC              = "tnc";
-    public const APP_NAME_ABOUT            = "about";
-    public const APP_NAME_USERS            = "users";
-    public const APP_NAME_GENERAL_VIEW     = "general_view";
-    public const APP_NAME_LOGIN            = "login";
-    public const APP_NAME_MAINTENANCE      = "maintenance";
-    public const APP_NAME_PROMOTION        = "promotion";
-    public const APP_NAME_GENERAL_API      = "general_api";
-    public const APP_NAME_APPS             = "apps";
-    public const APP_NAME_LOGOUT           = "logout";
-    public const APP_NAME_INSTALL_INSTANCE = "install_instance";
-    public const APP_NAME_FORGOT_PASSWORD  = "forgot_password";
-    public const APP_NAME_REGISTER         = "register";
+    public const APP_NAME_INSTALL          = "Install";
+    public const APP_NAME_TNC              = "TNC";
+    public const APP_NAME_ABOUT            = "About";
+    public const APP_NAME_USERS            = "Users";
+    public const APP_NAME_LOGIN            = "Login";
+    public const APP_NAME_GENERAL_API      = "GeneralApi";
+    public const APP_NAME_APPS             = "Apps";
+    public const APP_NAME_LOGOUT           = "Logout";
+    public const APP_NAME_INSTALL_INSTANCE = "InstallInstance";
+    public const APP_NAME_FORGOT_PASSWORD  = "ForgotPassword";
+    public const APP_NAME_REGISTER         = "Register";
 
     public const DIR_NAME_FRONTEND = "frontend";
-
-    public function __construct(
-        ClassLoader $classLoader,
-        ILogger $logger,
-        ICacheService $cacheServer,
-        string $appRoot
-    );
 
     public function loadApps(): void;
 

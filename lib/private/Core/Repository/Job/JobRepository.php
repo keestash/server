@@ -189,11 +189,10 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             )
             ->setParameter(0, $job->getName())
             ->setParameter(1, $job->getType())
-            ->setParameter(2, $job->getLastRun())
-            ->setParameter(3, $lastRun)
-            ->setParameter(4, $info)
-            ->setParameter(5, $this->dateTimeService->toYMDHIS($job->getCreateTs()))
-            ->setParameter(6, $job->getInterval())
+            ->setParameter(2, $lastRun)
+            ->setParameter(3, $info)
+            ->setParameter(4, $this->dateTimeService->toYMDHIS($job->getCreateTs()))
+            ->setParameter(5, $job->getInterval())
             ->execute();
 
         $lastInsertId = (int) $this->getLastInsertId();

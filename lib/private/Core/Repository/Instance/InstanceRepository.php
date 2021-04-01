@@ -53,6 +53,7 @@ class InstanceRepository extends AbstractRepository {
         }
         $queries[] = "SET FOREIGN_KEY_CHECKS = 1";
 
+        $this->logger->debug(implode(";", $queries));
         return $this->rawQuery(implode(";", $queries))
                 ->rowCount() > 0;
     }

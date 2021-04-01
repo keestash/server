@@ -21,10 +21,18 @@ declare(strict_types=1);
  * along with this program.If not, see <https://www.gnu.org/licenses/>.
  */
 
+use doganoo\PHPAlgorithms\Datastructure\Stackqueue\Queue;
 use Keestash\Core\Repository\User\UserRepository;
+use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Edge\Edge;
+use KSA\PasswordManager\Entity\Folder\Folder;
+use KSA\PasswordManager\Entity\Folder\Root;
+use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSP\Core\DTO\User\IUser;
 
 (function () {
 
@@ -42,29 +50,152 @@ use KSA\PasswordManager\Service\Node\NodeService;
     $nodeService = $server->query(NodeService::class);
     /** @var NodeRepository $nodeRepository */
     $nodeRepository = $server->query(NodeRepository::class);
-    /** @var UserRepository $userService */
-    $userService = $server->query(UserRepository::class);
-    $userId      = "2";
-    $user        = $userService->getUserById($userId);
+    /** @var UserRepository $userRepository */
+    $userRepository = $server->query(UserRepository::class);
+    /** @var UserService $userService */
+    $userService = $server->query(UserService::class);
+    /** @var CredentialService $credentialService */
+    $credentialService = $server->query(CredentialService::class);
+
+    $user = $userRepository->getUser("dogano");
 
     if (null === $user) {
-        echo 'no user';
-        return;
+
+        $user = new \Keestash\Core\DTO\User\User();
+        $user->setCreateTs(new DateTime());
+        $user->setWebsite("https://dogan-ucar.de");
+        $user->setPhone("+15755704076");
+        $user->setPassword(
+                $userService->hashPassword("Dogancan1@")
+        );
+        $user->setLocked(false);
+        $user->setHash(md5((string) time()));
+        $user->setLastName("Ucar");
+        $user->setFirstName("Dogan");
+        $user->setEmail("dogan@dogan-ucar.de");
+        $user->setDeleted(false);
+        $user->setName("dogano");
+
+        $user = $userService->createUser($user);
+
     }
 
-    $root = $nodeRepository->getRootForUser($user);
-    $node = $root;
-    while (null !== $node) {
-        $removed = $nodeRepository->remove($node);
+    $root  = $nodeRepository->getRootForUser($user);
+    $queue = new Queue();
+    $queue->enqueue($root);
 
-        if (false === $removed) {
-            throw new Exception('could not remove ' . $node->getName());
+    while ($queue->size() > 0) {
+        /** @var Node $node */
+        $node = $queue->dequeue();
+
+        if ($node instanceof Root) {
+            /** @var Edge $edge */
+            foreach ($node->getEdges() as $edge) {
+                $queue->enqueue($edge->getNode());
+            }
+            continue;
         }
 
-        /** @var Edge $edge */
-        foreach ($root->getEdges() as $edge) {
-            $node = $edge->getNode();
-        }
+        echo 'removing node... ' . $node->getName() . "\n";
+        $nodeRepository->remove($node);
+
     }
+
+    addNodesToParent(
+            $root
+            , $user
+            , 0
+            , 5
+            , $nodeRepository
+            , $nodeService
+            , $credentialService
+    );
+    // 1 create some folder
+    // 2 add some credential
+    // 3 visit all folder and start at 1
+    // repeat X times
+
 
 })();
+
+function addNodesToParent(
+        Folder $parent
+        , IUser $user
+        , int $level
+        , int $maxLevel
+        , NodeRepository $nodeRepository
+        , NodeService $nodeService
+        , CredentialService $credentialService
+) {
+    if ($level > $maxLevel) return;
+
+    $credentials = createCredential($credentialService, $user, $parent);
+//    echo 'added ' . count($credentials) . ' to ' . $parent->getName() . "\n";
+    /** @var Credential $credential */
+    foreach ($credentials as $credential) {
+        $credentialService->insertCredential($credential, $parent);
+    }
+
+    $folders = createFolder($user);
+    /** @var Folder $folder */
+    foreach ($folders as $folder) {
+        $folderId = $nodeRepository->addFolder($folder);
+        $folder->setId((int) $folderId);
+        $nodeRepository->addEdge(
+                $nodeService->prepareRegularEdge(
+                        $folder
+                        , $parent
+                )
+        );
+        addNodesToParent(
+                $folder
+                , $user
+                , $level + 1
+                , $maxLevel
+                , $nodeRepository
+                , $nodeService
+                , $credentialService
+        );
+    }
+
+//    echo 'added ' . count($folders) . ' to ' . $parent->getName() . "\n";
+
+}
+
+function createCredential(
+        CredentialService $credentialService
+        , IUser $user
+        , Folder $parent
+): array {
+//    $credentialSize = rand(1, 5 );
+    $credentialSize = 5;
+    $credentials    = [];
+    for ($i = 0; $i < $credentialSize; $i++) {
+        $credential    = $credentialService->createCredential(
+                md5((string) ($i . time()))
+                , "https://dogan-ucar.de"
+                , md5((string) ($i . time()))
+                , md5((string) ($i . time()))
+                , $user
+                , $parent
+                , md5((string) ($i . time()))
+        );
+        $credentials[] = $credential;
+    }
+    return $credentials;
+}
+
+function createFolder(IUser $user): array {
+//    $folderSize = rand(1, 5);
+    $folderSize = 5;
+    $folders    = [];
+    for ($i = 0; $i < $folderSize; $i++) {
+        $nextFolder = new Folder();
+        $nextFolder->setName(md5((string) ($i . time())));
+        $nextFolder->setType(Node::FOLDER);
+        $nextFolder->setUser($user);
+        $nextFolder->setCreateTs(new DateTime());
+        $folders[] = $nextFolder;
+    }
+    return $folders;
+}
