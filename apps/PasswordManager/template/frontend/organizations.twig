@@ -1,0 +1,14 @@
+<div id="organization___list">
+    <form id="organization--submit">
+        <div class="form-group">
+            <label for="exampleFormControlSelect1">Example select</label>
+            <select class="form-control" id="organization--select">
+                <option value="-1" selected></option>
+                {% for orga in organizations %}
+                    <option value="{{ orga.id }}">{{ orga.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+</div>
+

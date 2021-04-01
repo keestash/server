@@ -1,0 +1,30 @@
+<div class="container mt-5">
+    <div class="container  mb-3">
+        {{ description }}
+    </div>
+    <form>
+        <div class="form-group">
+            <label for="userNameLabel">{{ userNameLabel }}</label>
+            <input type="email" class="form-control" aria-describedby="userNameLabel"
+                   placeholder="{{ userNameInputPlaceholder }}"
+                   value="{{ userNameContent }}"
+            >
+        </div>
+        <div class="form-group">
+            <label for="pwm__password__textfield">{{ password }}</label>
+            <div class="input-group">
+                <input type="password" class="form-control" id="pwm__login__password"
+                       placeholder="{{ passwordPlaceholder }}" readonly=""
+                       data-node-hash="{{ hash }}"
+                       data-visible="false"
+                >
+                <div class="input-group-append" id="pwm__password__eye">
+                    <div class="input-group-text">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </div>
+            </div>
+            <small id="passwordSmall" class="form-text text-muted">{{ passwordSmall }}</small>
+        </div>
+    </form>
+</div>

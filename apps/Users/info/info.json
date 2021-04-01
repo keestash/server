@@ -1,0 +1,30 @@
+{
+  "namespace": "Users",
+  "id": "Users",
+  "name": "Users",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 19,
+  "show-icon": 0,
+  "base_route": "users",
+  "version": 1,
+  "version_string": "1.0.0",
+  "stylesheets": [
+    {
+      "users": "users"
+    }
+  ],
+  "background_jobs": {
+    "KSA\\Users\\BackgroundJob\\UserDeleteTask": {
+      "type": "regular.type.job",
+      "interval": 68400
+    }
+  },
+  "settings": [
+    {
+      "id": "users",
+      "name": "Users"
+    }
+  ],
+  "demonstrate": 0
+}
