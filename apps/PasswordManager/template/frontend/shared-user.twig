@@ -1,0 +1,25 @@
+<li class="list-group-item shared-user " data-share-id="{{ share.id }}">
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-sm-4">
+                <div class="row">
+                    <div class="col-2">
+                        <img src="{{ user.image }}" alt="{{ user.name }}" class="avatar">
+                    </div>
+                    <div class="col">
+                        {{ user.name }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="row justify-content-end pr-1">
+                    <div class="col-1">
+                        <i class="fas fa-times remove" data-share-id="{{ share.id }}"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</li>

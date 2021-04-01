@@ -1,0 +1,56 @@
+<div class="ui modal" id="tl__add__new__book__to__list__modal">
+    <i class="close icon"></i>
+    <div class="header">
+        {{ modalTitle }}
+    </div>
+    <div class="scrolling content">
+        <div id="tl__response__div"></div>
+        <div class="ui header">{{ header }}</div>
+        <p>{{ description }}</p>
+        <form class="ui form" id="tl__new__user__form">
+            <div class="field">
+                <label>{{ userNameLabel }}</label>
+                <input id="tl__user__name" name="tl__user__name" placeholder="{{ userNamePlaceholder }}"
+                       type="text">
+            </div>
+            <div class="field">
+                <label>{{ firstNameLabel }}</label>
+                <input id="tl__first__name" name="tl__first__name" placeholder="{{ firstNamePlaceholder }}"
+                       type="text">
+            </div>
+            <div class="field">
+                <label>{{ lastNameLabel }}</label>
+                <input id="tl__last__name" name="tl__last__name" placeholder="{{ lastNamePlaceholder }}"
+                       type="text">
+            </div>
+            <div class="field">
+                <label>{{ emailLabel }}</label>
+                <input id="tl__email" name="tl__email" placeholder="{{ emailPlaceholder }}" type="text">
+            </div>
+            <div class="field">
+                <label>{{ phoneLabel }}</label>
+                <input id="tl__phone" name="tl__phone" placeholder="{{ phonePlaceholder }}" type="text">
+            </div>
+            <div class="field">
+                <label>{{ passwordLabel }}</label>
+                <input id="tl__password" name="tl__password" placeholder="{{ passwordPlaceholder }}"
+                       type="password">
+            </div>
+            <div class="field">
+                <label>{{ passwordRepeatLabel }}</label>
+                <input id="tl__password__repeat" name="tl__password__repeat"
+                       placeholder="{{ passwordRepeatPlaceholder }}"
+                       type="password">
+            </div>
+            <div class="field">
+                <label>{{ websiteLabel }}</label>
+                <input id="tl__website__name" name="tl__website__name" placeholder="{{ websitePlaceholder }}"
+                       type="text">
+            </div>
+        </form>
+    </div>
+    <div class="actions">
+        <div class="ui tiny button deny">{{ cancel }}</div>
+        <div class="ui tiny green button approve">{{ addUser }}</div>
+    </div>
+</div>
