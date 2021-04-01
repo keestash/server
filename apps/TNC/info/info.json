@@ -1,0 +1,18 @@
+{
+  "namespace": "TNC",
+  "id": "TNC",
+  "name": "TNC",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 15,
+  "show-icon": 0,
+  "base_route": "tnc",
+  "version": 1,
+  "version_string": "1.0.0",
+  "demonstrate": 1,
+  "stylesheets": [
+    {
+      "tnc": "style"
+    }
+  ]
+}

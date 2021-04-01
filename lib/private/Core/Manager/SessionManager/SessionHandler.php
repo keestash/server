@@ -21,14 +21,12 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\SessionManager;
 
-use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Repository\Session\ISessionRepository;
 use SessionHandlerInterface;
 
 class SessionHandler implements SessionHandlerInterface {
 
-    /** @var ISessionRepository|AbstractRepository */
-    private $sessionRepository = null;
+    private ISessionRepository $sessionRepository;
 
     public function __construct(ISessionRepository $sessionRepository) {
         $this->sessionRepository = $sessionRepository;

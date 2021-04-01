@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,28 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Repository\Session;
+use KSA\TNC\Application;
 
-use KSP\Core\Repository\IRepository;
-
-/**
- * Interface ISessionRepository
- * @package KSP\Core\Repository\Session
- */
-interface ISessionRepository extends IRepository {
-
-    public function open(): bool;
-
-    public function get(string $id): string;
-
-    public function getAll(): array;
-
-    public function replace(string $id, string $data): bool;
-
-    public function deleteById(string $id): bool;
-
-    public function deleteByLastUpdate(int $maxLifeTime): bool;
-
-    public function close(): bool;
-
-}
+$application = new Application($app);
+$application->register();

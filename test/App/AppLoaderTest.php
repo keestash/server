@@ -33,7 +33,6 @@ class AppLoaderTest extends TestCase {
         $app->setBaseRoute("unit_test_route");
         $app->setFAIconClass("fa fa-unit-test");
         $app->setTemplatePath(__DIR__);
-        $app->setNamespace(__NAMESPACE__);
         $app->setAppPath(__DIR__);
         $app->setOrder(1);
 
@@ -43,7 +42,6 @@ class AppLoaderTest extends TestCase {
         $this->assertTrue($app->getBaseRoute() === "unit_test_route");
         $this->assertTrue($app->getFAIconClass() === "fa fa-unit-test");
         $this->assertTrue($app->getTemplatePath() === __DIR__);
-        $this->assertTrue($app->getNamespace() === __NAMESPACE__);
         $this->assertTrue($app->getAppPath() === __DIR__);
         $this->assertTrue($app->getOrder() === 1);
     }

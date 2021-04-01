@@ -19,28 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Repository\Session;
+namespace KSA\TNC;
 
-use KSP\Core\Repository\IRepository;
+use KSA\TNC\Controller\Controller;
 
-/**
- * Interface ISessionRepository
- * @package KSP\Core\Repository\Session
- */
-interface ISessionRepository extends IRepository {
+class Application extends \Keestash\App\Application {
 
-    public function open(): bool;
+    public const TERMS_AND_CONDITIONS = "tnc";
 
-    public function get(string $id): string;
-
-    public function getAll(): array;
-
-    public function replace(string $id, string $data): bool;
-
-    public function deleteById(string $id): bool;
-
-    public function deleteByLastUpdate(int $maxLifeTime): bool;
-
-    public function close(): bool;
+    public function register(): void {
+        $this->registerRoute(Application::TERMS_AND_CONDITIONS, Controller::class);
+        $this->registerPublicRoute(Application::TERMS_AND_CONDITIONS);
+    }
 
 }

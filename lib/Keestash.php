@@ -40,6 +40,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
+use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Instance\MaintenanceService;
 use Keestash\Core\Service\Router\Installation\App\InstallAppService;
 use Keestash\Core\Service\Router\Installation\Instance\InstallInstanceService;
@@ -115,9 +116,15 @@ class Keestash {
         Keestash::init();
 
         set_time_limit(0);
-        session_set_save_handler(
-            Keestash::getServer()->query(SessionHandlerInterface::class)
-        );
+        /** @var InstallerService $installerService */
+        $installerService = Keestash::getServer()->query(InstallerService::class);
+        $hasIdAndHash     = $installerService->hasIdAndHash();
+
+        if (true === $hasIdAndHash) {
+            session_set_save_handler(
+                Keestash::getServer()->query(SessionHandlerInterface::class)
+            );
+        }
         // step3 has to be: is configured!
         //      this contains stuff like is writable,
         //      has file permissions, etc
@@ -592,7 +599,7 @@ class Keestash {
         echo $html;
     }
 
-    private static function loadTemplates() {
+    private static function loadTemplates(): void {
         $appRoot      = Keestash::getAppRoot();
         $templatePath = null;
         $frontendPath = null;
@@ -619,7 +626,6 @@ class Keestash {
         Keestash::getServer()
             ->getFrontendTemplateManager()
             ->addPath($frontendPath);
-
     }
 
     private static function initTemplates(): void {

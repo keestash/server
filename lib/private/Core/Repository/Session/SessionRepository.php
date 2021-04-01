@@ -24,7 +24,6 @@ namespace Keestash\Core\Repository\Session;
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DIP\DateTime\DateTimeService;
-use Exception;
 use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
@@ -51,10 +50,10 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
         return true;
     }
 
-    public function get(string $id): ?string {
+    public function get(string $id): string {
         try {
-            $queryBuilder     = $this->getQueryBuilder();
-            $queryBuilder     = $queryBuilder->select(
+            $queryBuilder = $this->getQueryBuilder();
+            $queryBuilder = $queryBuilder->select(
                 [
                     'data'
                 ]
@@ -62,6 +61,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
                 ->from('session')
                 ->where('id = ?')
                 ->setParameter(0, $id);
+
             $result           = $queryBuilder->execute();
             $sessionData      = $result->fetchAllNumeric();
             $sessionDataCount = count($sessionData);
@@ -77,13 +77,24 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
             }
 
             return (string) $sessionData[0][0] ?? '';
-        } catch (Exception $exception) {
-            $this->logger->error($exception->getMessage() . " " . $exception->getTraceAsString());
+        } catch (Throwable $exception) {
+            $this->logger->error(
+                json_encode(
+                    [
+                        "id"                => $exception->getCode()
+                        , "message"         => $exception->getMessage()
+                        , "file"            => $exception->getFile()
+                        , "line"            => $exception->getLine()
+                        , "trace"           => json_encode($exception->getTrace())
+                        , "trace_as_string" => $exception->getTraceAsString()
+                    ]
+                )
+            );
             return "";
         }
     }
 
-    public function getAll(): ?array {
+    public function getAll(): array {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [

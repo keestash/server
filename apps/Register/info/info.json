@@ -1,0 +1,18 @@
+{
+  "namespace": "Register",
+  "id": "Register",
+  "name": "Register",
+  "type": "app",
+  "fa-icon-class": "fas fa-key",
+  "order": 14,
+  "show-icon": 0,
+  "base_route": "register",
+  "version": 1,
+  "version_string": "1.0.0",
+  "demonstrate": 0,
+  "stylesheets": [
+    {
+      "register": "register"
+    }
+  ]
+}

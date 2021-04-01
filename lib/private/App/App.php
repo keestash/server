@@ -25,7 +25,6 @@ use KSP\App\IApp;
 
 class App implements IApp {
 
-    public const TYPE_APP = "app";
     private string $id;
     private int    $order          = 0;
     private string $name;
@@ -66,14 +65,6 @@ class App implements IApp {
 
     public function setName(string $name): void {
         $this->name = $name;
-    }
-
-    public function getNamespace(): string {
-        return (string) $this->namespace;
-    }
-
-    public function setNamespace(string $namespace): void {
-        $this->namespace = $namespace;
     }
 
     public function getAppPath(): string {
@@ -198,6 +189,27 @@ class App implements IApp {
      */
     public function setDemonstratable(bool $demonstratable): void {
         $this->demonstratable = $demonstratable;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'id'                => $this->getId()
+            , 'order'           => $this->getOrder()
+            , 'name'            => $this->getName()
+            , 'app_path'        => $this->getAppPath()
+            , 'template_path'   => $this->getTemplatePath()
+            , 'string_path'     => $this->getStringPath()
+            , 'fa_icon_class'   => $this->getFAIconClass()
+            , 'base_root'       => $this->getBaseRoot()
+            , 'version'         => $this->getVersion()
+            , 'version_string'  => $this->getVersionString()
+            , 'type'            => $this->getType()
+            , 'show_icon'       => $this->showIcon()
+            , 'background_jobs' => $this->getBackgroundJobs()
+            , 'settings'        => $this->getSettings()
+            , 'stylesheets'     => $this->getStyleSheets()
+            , 'demostratable'   => $this->isDemonstrateable()
+        ];
     }
 
 }

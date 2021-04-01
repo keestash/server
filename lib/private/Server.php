@@ -41,7 +41,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\PHPUtil\HTTP\Session;
 use doganoo\SimpleRBAC\Handler\PermissionHandler;
 use Keestash;
-use Keestash\App\Loader;
+use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
 use Keestash\Core\Cache\RedisService;
@@ -79,6 +79,7 @@ use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
+use Keestash\Core\Service\App\LoaderService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\Core\Language\LanguageService;
@@ -141,6 +142,7 @@ use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Encryption\IEncryptionService;
@@ -155,6 +157,7 @@ use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
 use KSP\L10N\IL10N;
 use libphonenumber\PhoneNumberUtil;
+use Psr\Container\ContainerInterface;
 use SessionHandlerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Throwable;
@@ -741,8 +744,15 @@ class Server {
         $this->register(NullService::class, function () {
             return new NullService();
         });
+
+        $this->register(ILoaderService::class, function () {
+            return new LoaderService(Keestash::getServer()->getAppRoot());
+        });
     }
 
+    public function getContainer():ContainerInterface{
+        return $this->container;
+    }
     public function register(string $name, Closure $closure): bool {
         $this->container->set($name, $closure);
         return true;

@@ -21,11 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\App;
 
-interface IApp {
+use KSP\Core\DTO\Entity\IJsonObject;
+
+interface IApp extends IJsonObject {
 
     public const FIELD_ID                       = "id";
     public const FIELD_ORDER                    = "order";
-    public const FIELD_NAMESPACE                = "namespace";
     public const FIELD_NAME                     = "name";
     public const FIELD_DISABLE                  = "disable";
     public const FIELD_BASE_ROUTE               = "base_route";
@@ -46,8 +47,6 @@ interface IApp {
     public function getOrder(): int;
 
     public function getName(): string;
-
-    public function getNamespace(): string;
 
     public function getAppPath(): string;
 
