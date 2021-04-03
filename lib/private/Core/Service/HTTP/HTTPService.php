@@ -22,19 +22,30 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\HTTP;
 
 use Keestash;
+use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 
 class HTTPService {
 
+    private HTTPRouter $router;
+
+    public function __construct(HTTPRouter $router) {
+        $this->router = $router;
+    }
+
     public function routeToInstallInstance(): void {
-        Keestash::getServer()
-            ->getHTTPRouter()
+        $this->router
             ->routeTo("install_instance");
         exit();
         die();
     }
 
     public function buildWebRoute(string $base): string {
-        return Keestash::getBaseURL(true, true) . "/" . $base;
+        $scriptName          = "index.php";
+        $scriptNameToReplace = $scriptName;
+        $url                 = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $position            = strpos($url, $scriptName);
+        $position            = false === $position ? 0 : $position;
+        return substr($url, 0, $position) . $scriptNameToReplace . "/" . $base;
     }
 
     public function getLoginRoute(): string {

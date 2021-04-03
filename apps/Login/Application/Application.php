@@ -44,32 +44,16 @@ class Application extends Keestash\App\Application {
             , [IRouterManager::GET]
         );
 
-        parent::registerApiRoute(
-            Application::LOGIN_SUBMIT
-            , Login::class
-            , [IRouterManager::POST]
-        );
-
         parent::registerPublicRoute(
             Application::LOGIN
-        );
-
-        parent::registerPublicApiRoute(
-            Application::LOGIN_SUBMIT
         );
 
         parent::addJavascript(
             Application::LOGIN
         );
 
-        $this->registerServices();
     }
 
-    private function registerServices(): void {
-        Keestash::getServer()->register(TokenService::class, function () {
-            return new TokenService();
-        }
-        );
-    }
+
 
 }

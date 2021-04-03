@@ -28,6 +28,7 @@ use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
 
 /**
  * Class CredentialService
@@ -35,7 +36,7 @@ use KSP\Core\DTO\User\IUser;
  * @package Keestash\Core\Service\Encryption\Credential
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class CredentialService {
+class CredentialService implements ICredentialService {
 
     /**
      * Returns an instance of credential for the given user

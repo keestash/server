@@ -22,52 +22,48 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Api\Config;
 
 use Exception;
-use Keestash;
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Laminas\Config\Config;
 use PDO;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class UpdateConfig
  * @package KSA\InstallInstance\Api
  */
-class Update extends AbstractApi {
+class Update implements RequestHandlerInterface {
 
     private const DEFAULT_USER_LIFETIME = 15 * 24 * 60 * 60;
 
     private InstallerService $installerService;
+    private Config           $config;
 
     public function __construct(
-        IL10N $l10n
-        , InstallerService $installerService
-        , ?IToken $token = null
+        InstallerService $installerService
+        , Config $config
     ) {
-        parent::__construct($l10n, $token);
-
         $this->installerService = $installerService;
+        $this->config           = $config;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-
-        $host         = $this->getParameter("host", null);
-        $user         = $this->getParameter("user", null);
-        $password     = $this->getParameter("password", null);
-        $schemaName   = $this->getParameter("schema_name", null);
-        $port         = $this->getParameter("port", null);
-        $charSet      = $this->getParameter("charset", null);
-        $logRequests  = $this->getParameter("log_requests", null);
-        $smtpHost     = $this->getParameter("smtp_host", null);
-        $smtpUser     = $this->getParameter("smtp_user", null);
-        $smtpPassword = $this->getParameter("smtp_password", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters   = json_decode($request->getBody()->getContents(), true);
+        $host         = $parameters["host"] ?? null;
+        $user         = $parameters["user"] ?? null;
+        $password     = $parameters["password"] ?? null;
+        $schemaName   = $parameters["schema_name"] ?? null;
+        $port         = $parameters["port"] ?? null;
+        $charSet      = $parameters["charset"] ?? null;
+        $logRequests  = $parameters["log_requests"] ?? null;
+        $smtpHost     = $parameters["smtp_host"] ?? null;
+        $smtpUser     = $parameters["smtp_user"] ?? null;
+        $smtpPassword = $parameters["smtp_password"] ?? null;
 
         if (
             false === $this->isValid($host)
@@ -79,7 +75,7 @@ class Update extends AbstractApi {
             || false === $this->validLogRequestOption($logRequests)
         ) {
 
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     'invalid options' => [
@@ -93,7 +89,6 @@ class Update extends AbstractApi {
                     ]
                 ]
             );
-            return;
 
         }
 
@@ -107,13 +102,12 @@ class Update extends AbstractApi {
 
         if (false === $databaseConnection) {
 
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "could not connect to database"
                 ]
             );
-            return;
 
         }
 
@@ -135,7 +129,6 @@ class Update extends AbstractApi {
             , "redis_port"      => 6379
         ];
 
-        $configRoot = Keestash::getServer()->getConfigRoot();
         $content    = '<?php' . "\n";
         $content    .= 'declare(strict_types=1);' . "\n";
         $content    .= '/**
@@ -160,7 +153,7 @@ class Update extends AbstractApi {
         $content    .= '$CONFIG = ' . "\n";
         $content    .= var_export($config, true);
         $content    .= ';';
-        $configFile = realpath($configRoot . "/config.php");
+        $configFile = realpath($this->config->get(ConfigProvider::CONFIG_PATH) . "/config.php");
 
         $put = file_put_contents(
             $configFile
@@ -168,16 +161,15 @@ class Update extends AbstractApi {
         );
 
         if (false === $put) {
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "could not create config file. Please check permissiosn and try again"
                 ]
             );
-            return;
         }
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "message" => "updated"
@@ -213,10 +205,6 @@ class Update extends AbstractApi {
         } catch (Exception $e) {
             return false;
         }
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

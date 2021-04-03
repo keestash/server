@@ -21,41 +21,35 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Demo;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Service\User\UserService;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\DemoUsersRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class AddEmailAddress extends AbstractApi {
+class AddEmailAddress implements RequestHandlerInterface {
 
     private DemoUsersRepository $demoUsersRepository;
     private UserService         $userService;
     private CookieManager       $cookieManager;
 
     public function __construct(
-        IL10N $l10n
-        , DemoUsersRepository $demoUsersRepository
+        DemoUsersRepository $demoUsersRepository
         , UserService $userService
         , CookieManager $cookieManager
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->demoUsersRepository = $demoUsersRepository;
         $this->userService         = $userService;
         $this->cookieManager       = $cookieManager;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $email = $this->getParameter("email");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode($parameters = $request->getBody()->getContents(), true);
+        $email      = $parameters['email'] ?? null;
 
         if (false === $this->userService->validEmail($email)) {
             throw new GeneralApiException('invalid email');
@@ -64,17 +58,13 @@ class AddEmailAddress extends AbstractApi {
         $this->demoUsersRepository->add($email);
         $put = $this->cookieManager->set("demo-submitted", "true");
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => "ok"
+                "message"  => "ok"
                 , "cookie" => $put
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -27,7 +27,7 @@ use KSP\L10N\IL10N;
 class GetText implements IL10N {
 
     public function __construct() {
-        \Keestash::getServer()->getFileLogger()->debug("il10n not implemented");
+
     }
 
     public function translate(string $text): string {

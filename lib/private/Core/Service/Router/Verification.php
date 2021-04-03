@@ -21,29 +21,26 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Router;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\Manager\RouterManager\Router\APIRouter;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
+use KSP\Core\Repository\User\IUserRepository;
 
 class Verification {
 
-    /** @var ITokenRepository $tokenRepository */
-    private $tokenRepository = null;
-    /** @var HashTable $userHashes */
-    private $userHashes = null;
+    private ITokenRepository $tokenRepository;
+    private IUserRepository  $userRepository;
 
     public function __construct(
         ITokenRepository $tokenRepository
-        , ?HashTable $userHashes
+        , IUserRepository $userRepository
     ) {
         $this->tokenRepository = $tokenRepository;
-        $this->userHashes      = $userHashes;
+        $this->userRepository  = $userRepository;
     }
 
     public function verifyToken(array $parameters): ?IToken {
-
-        if (null === $this->userHashes) return null;
 
         $tokenString = $parameters[APIRouter::FIELD_NAME_TOKEN] ?? null;
         $userHash    = $parameters[APIRouter::FIELD_NAME_USER_HASH] ?? null;
@@ -51,7 +48,21 @@ class Verification {
         if (null === $tokenString) return null;
         if (null === $userHash) return null;
 
-        if (false === $this->userHashes->containsKey($userHash)) return null;
+        $users = $this->userRepository->getAll();
+
+        if (0 === $users->length()) return null;
+
+        $hashVerified = false;
+        /** @var IUser $user */
+        foreach ($users as $user) {
+            if ($user->getHash() === $userHash) {
+                $hashVerified = true;
+                break;
+            }
+        }
+
+        if (false === $hashVerified) return null;
+
         $token = $this->tokenRepository->getByHash((string) $tokenString);
 
         if (null === $token) return null;

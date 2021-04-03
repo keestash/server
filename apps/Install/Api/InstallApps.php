@@ -22,49 +22,49 @@ declare(strict_types=1);
 namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\App\Config\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
+use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use KSP\Core\Repository\AppRepository\IAppRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class InstallApps extends AbstractApi {
+class InstallApps implements RequestHandlerInterface {
 
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
     private HTTPService      $httpService;
     private ILogger          $logger;
+    private ILoader          $loader;
+    private IAppRepository   $appRepository;
 
     public function __construct(
-        IL10N $l10n
-        , InstallerService $installer
+        InstallerService $installer
         , LockHandler $lockHandler
         , HTTPService $httpService
         , ILogger $logger
-        , ?IToken $token = null
+        , ILoader $loader
+        , IAppRepository $appRepository
     ) {
-        parent::__construct($l10n, $token);
-
         $this->installerService = $installer;
         $this->lockHandler      = $lockHandler;
         $this->httpService      = $httpService;
         $this->logger           = $logger;
+        $this->loader           = $loader;
+        $this->appRepository    = $appRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
         // We only check loadedApps if the system is
         // installed
-        $loadedApps    = Keestash::getServer()->getAppLoader()->getApps();
-        $installedApps = Keestash::getServer()->getAppRepository()->getAllApps();
+        $loadedApps    = $this->loader->getApps();
+        $installedApps = $this->appRepository->getAllApps();
 
         $diff = new Diff();
 
@@ -87,16 +87,15 @@ class InstallApps extends AbstractApi {
         if (true === $installed && true === $updated) {
             $this->lockHandler->unlock();
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_OK
                 , [
                     "routeTo" => $this->httpService->getLoginRoute()
                 ]
             );
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_NOT_OK
             , [
                 "message" => [
@@ -114,14 +113,10 @@ class InstallApps extends AbstractApi {
 
         $migrationRan = $this->installerService->runMigrations();
         $this->logger->debug('migration ran: ' . $migrationRan);
-        $installed    = $this->installerService->installAll($table);
+        $installed = $this->installerService->installAll($table);
         $this->logger->debug('installed: ' . $installed);
 
         return true === $migrationRan && true === $installed;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

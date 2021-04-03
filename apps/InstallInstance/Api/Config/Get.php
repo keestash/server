@@ -21,46 +21,31 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Api\Config;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
     private InstallerService $installerService;
 
-    public function __construct(
-        IL10N $l10n
-        , InstallerService $installerService
-        , ?IToken $token = null
-    ) {
-        parent::__construct($l10n, $token);
-
+    public function __construct(InstallerService $installerService) {
         $this->installerService = $installerService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
         $data = $this->installerService->verifyConfigurationFile();
-
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "config_data" => json_encode($data)
                 , "length"    => count($data)
             ]
         );
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

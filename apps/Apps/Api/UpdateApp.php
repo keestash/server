@@ -21,95 +21,68 @@ declare(strict_types=1);
 
 namespace KSA\Apps\Api;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSP\Api\IResponse;
 use KSP\App\Config\IApp;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class UpdateApp extends AbstractApi {
+class UpdateApp implements RequestHandlerInterface {
 
-    private $parameters    = null;
-    private $appRepository = null;
+    private IAppRepository $appRepository;
 
-    public function __construct(
-        IL10N $l10n
-        , IAppRepository $appRepository
-        , ?IToken $token = null
-    ) {
-        parent::__construct($l10n, $token);
-
+    public function __construct(IAppRepository $appRepository) {
         $this->appRepository = $appRepository;
     }
 
-    public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-    }
-
-    public function create(): void {
-        $appId    = $this->parameters["app_id"] ?? null;
-        $activate = $this->parameters["activate"] ?? null;
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = $request->getParsedBody();
+        $appId      = $parameters["app_id"] ?? null;
+        $activate   = $parameters["activate"] ?? null;
 
 
-        if (null === $activate || false === is_bool($activate)) {
-            $response = parent::createResponse(
+        if (null === is_string($activate)) {
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "No Action Defined"
                 ]
             );
-
-            parent::setResponse($response);
-            return;
         }
 
         if (false === is_string($appId)) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "No App Id Given"
                 ]
             );
-
-            parent::setResponse($response);
-            return;
         }
 
         /** @var IApp|null $app */
         $app = $this->appRepository->getApp($appId);
 
         if (null === $app) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "No App Found"
                 ]
             );
-
-            parent::setResponse($response);
-            return;
         }
 
         $app->setEnabled($activate === IApp::ENABLED_TRUE);
 
         $replaced = $this->appRepository->replace($app);
 
-        $response = parent::createResponse(
+        return LegacyResponse::fromData(
             $replaced ? IResponse::RESPONSE_CODE_OK : IResponse::RESPONSE_CODE_NOT_OK
             , [
                 "message" => $replaced ? "App updated" : "No App Found"
             ]
         );
-
-        parent::setResponse($response);
-        return;
-
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

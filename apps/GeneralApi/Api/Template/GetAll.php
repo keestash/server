@@ -22,32 +22,28 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Template;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\TemplateManager\FrontendManager;
-
 use KSP\Api\IResponse;
 use KSP\Core\Cache\ICacheService;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class GetAll extends AbstractApi {
+class GetAll implements RequestHandlerInterface {
 
     private FrontendManager $frontendManager;
     private ICacheService   $cacheServer;
 
     public function __construct(
-        IL10N $l10n
-        , FrontendManager $frontendManager
+        FrontendManager $frontendManager
         , ICacheService $cacheServer
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->frontendManager = $frontendManager;
         $this->cacheServer     = $cacheServer;
     }
 
-    public function onCreate(array $parameters): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
         $redisKey = "frontendmanagerstrings";
         $data     = null;
@@ -65,7 +61,7 @@ class GetAll extends AbstractApi {
                 , json_encode($data)
             );
         }
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "data" => $data
@@ -85,12 +81,5 @@ class GetAll extends AbstractApi {
         return $array;
     }
 
-    public function create(): void {
-
-    }
-
-    public function afterCreate(): void {
-
-    }
 
 }

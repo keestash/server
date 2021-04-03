@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,14 +20,64 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
+use KSP\App\IApp;
+use KSP\Core\DTO\Http\IVerb;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Event\IEventDispatcher;
+use Laminas\Config\Config;
+use Mezzio\Application;
+use Psr\Container\ContainerInterface;
+
 (function () {
 
     chdir(dirname(__DIR__));
 
-    require_once __DIR__ . '/lib/versioncheck.php';
-    require_once __DIR__ . '/lib/filecheck.php';
-    require_once __DIR__ . '/lib/extensioncheck.php';
-    require_once __DIR__ . '/config/config.php';
-    require_once __DIR__ . '/lib/Keestash.php';
-    Keestash::requestApi();
+    set_time_limit(0);
+
+    /** @var ContainerInterface $container */
+    $container = require_once __DIR__ . '/lib/start.php';
+    /** @var Config $config */
+    $config = $container->get(Config::class);
+    /** @var Application $app */
+    $app = $container->get(Application::class);
+    /** @var IEnvironmentService $environmentService */
+    $environmentService = $container->get(IEnvironmentService::class);
+    $environmentService->setEnv(ConfigProvider::ENVIRONMENT_API);
+
+    (require_once __DIR__ . '/config/config/pipeline.php')($app);
+
+    $router = $config->get(IApp::CONFIG_PROVIDER_API_ROUTER);
+
+    /** @var Config $route */
+    foreach ($router[IApp::CONFIG_PROVIDER_ROUTES] as $route) {
+        $method     = strtolower((string) $route->get('method'));
+        $middleware = $route->get('middleware');
+        $name       = $route->get('name');
+        $path       = $route->get('path');
+
+        switch ($method) {
+            case IVerb::GET:
+                $app->get(
+                    $path
+                    , $middleware
+                    , $name
+                );
+                break;
+            case IVerb::POST:
+                $app->post(
+                    $path
+                    , $middleware
+                    , $name
+                );
+                break;
+            default:
+                throw new Exception('unknown method ' . $method);
+        }
+    }
+
+    /** @var IEventDispatcher $eventDispatcher */
+    $eventDispatcher = $container->get(IEventDispatcher::class);
+    $eventDispatcher->register($config->get(IApp::CONFIG_PROVIDER_EVENTS)->toArray());
+    $app->run();
 })();

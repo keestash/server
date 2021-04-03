@@ -55,7 +55,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
                 , 'o.active_ts'
             ]
         )
-            ->from('organization', 'o');
+            ->from('`organization`', 'o');
         $rows         = $queryBuilder->execute();
 
         foreach ($rows as $row) {

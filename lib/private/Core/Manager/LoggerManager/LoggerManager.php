@@ -24,6 +24,7 @@ namespace Keestash\Core\Manager\LoggerManager;
 use Keestash;
 use Keestash\Core\Logger\Logger;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Legacy\Legacy;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use Monolog\Formatter\HtmlFormatter;
@@ -37,15 +38,25 @@ use Monolog\Handler\StreamHandler;
 class LoggerManager implements ILoggerManager {
 
     private ConfigService $configService;
+    private Legacy        $legacy;
 
-    public function __construct(ConfigService $configService) {
+    public function __construct(
+        ConfigService $configService
+        , Legacy $legacy
+    ) {
         $this->configService = $configService;
+        $this->legacy        = $legacy;
+    }
+
+    private function getLogfilePath(): string {
+        $name = $this->legacy->getApplication()->get("name_internal");
+        return realpath(__DIR__ . '/../../../../../data/') . "/$name.log";
     }
 
     public function getFileLogger(): ILogger {
         $logger        = new Logger(ILoggerManager::FILE_LOGGER);
         $streamHandler = new StreamHandler(
-            Keestash::getServer()->getLogfilePath()
+            $this->getLogfilePath()
             , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)
         );
         $streamHandler->setFormatter(
@@ -59,14 +70,14 @@ class LoggerManager implements ILoggerManager {
 
     private function addDevHandler(Logger $logger): Logger {
         if (false === $this->configService->getValue("debug", false)) return $logger;
-        $htmlStreamHandlr = new StreamHandler(
-            Keestash::getServer()->getLogfilePath() . ".html"
+        $htmlStreamHandler = new StreamHandler(
+            $this->getLogfilePath() . ".html"
             , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)
         );
-        $htmlStreamHandlr->setFormatter(
+        $htmlStreamHandler->setFormatter(
             new HtmlFormatter()
         );
-        $logger->pushHandler($htmlStreamHandlr);
+        $logger->pushHandler($htmlStreamHandler);
         return $logger;
     }
 

@@ -49,14 +49,12 @@ use Keestash\Core\DTO\BackgroundJob\Logger;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Manager\ActionBarManager\ActionBarManager;
 use Keestash\Core\Manager\CacheManager\CacheManager;
-use Keestash\Core\Manager\ConsoleManager\ConsoleManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\EventManager\EventManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\ResponseManager\JSONResponseManager;
-use Keestash\Core\Manager\RouterManager\Router\APIRouter;
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Manager\RouterManager\Router\Router;
 use Keestash\Core\Manager\RouterManager\RouterManager;
@@ -120,7 +118,6 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\ActionBarManager\IActionBarManager;
 use KSP\Core\Manager\CacheManager\ICacheManager;
-use KSP\Core\Manager\ConsoleManager\IConsoleManager;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\FileManager\IFileManager;
@@ -131,7 +128,6 @@ use KSP\Core\Manager\SessionManager\ISessionManager;
 use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Manager\StylesheetManager\IStylesheetManager;
 use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Permission\IDataProvider;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
@@ -156,6 +152,7 @@ use KSP\Core\Service\Validation\IValidationService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
 use KSP\L10N\IL10N;
+use Laminas\Config\Config;
 use libphonenumber\PhoneNumberUtil;
 use Psr\Container\ContainerInterface;
 use SessionHandlerInterface;
@@ -255,7 +252,7 @@ class Server {
         $this->register(Verification::class, function () {
             return new Verification(
                 Keestash::getServer()->getTokenManager()
-                , Keestash::getServer()->getUserHashes()
+                , Keestash::getServer()->query(IUserRepository::class)
             );
         });
 
@@ -295,15 +292,6 @@ class Server {
                 )
             );
 
-            $routerManager->add(
-                IRouterManager::API_ROUTER
-                , new APIRouter(
-                    $loggerManager
-                    , $reflectionService
-                    , Keestash::getServer()->getFileLogger()
-                )
-            );
-
             return $routerManager;
         });
         $this->register(IApiLogRepository::class, function () {
@@ -322,8 +310,7 @@ class Server {
         });
         $this->register(ILoader::class, function () {
             return new Loader(
-                $this->classLoader
-                , Keestash::getServer()->getFileLogger()
+                Keestash::getServer()->getFileLogger()
                 , $this->getCache()
                 , $this->appRoot
             );
@@ -342,12 +329,14 @@ class Server {
                 , $this->query(CredentialService::class)
                 , $this->query(IDateTimeService::class)
                 , $this->query(ILogger::class)
+                , $this->query(IEventManager::class)
             );
         });
 
         $this->register(IBackend::class, function () {
-            self::getSystem()->createConfig();
-            return new MySQLBackend((string) self::getConfig()->get("db_name"));
+            return new MySQLBackend(
+                $this->query(Connection::class)
+            );
         });
 
         $this->register(TwigManager::class, function () {
@@ -401,7 +390,10 @@ class Server {
         });
 
         $this->register(InstanceDB::class, function () {
-            return new InstanceDB();
+            $config = new Config([
+                ConfigProvider::INSTANCE_DB_PATH => realpath(__DIR__ . '/../../config/.instance.sqlite'),
+            ]);
+            return new InstanceDB($config);
         });
 
         $this->register(HTTPService::class, function () {
@@ -720,7 +712,8 @@ class Server {
         });
         $this->register(ILoggerManager::class, function () {
             return new Keestash\Core\Manager\LoggerManager\LoggerManager(
-                Keestash::getServer()->query(ConfigService::class)
+                Keestash::getServer()->query(ConfigService::class),
+                Keestash::getServer()->query(Legacy::class),
             );
         });
 
@@ -750,9 +743,10 @@ class Server {
         });
     }
 
-    public function getContainer():ContainerInterface{
+    public function getContainer(): ContainerInterface {
         return $this->container;
     }
+
     public function register(string $name, Closure $closure): bool {
         $this->container->set($name, $closure);
         return true;
@@ -898,10 +892,6 @@ class Server {
 
     public function getNavigationManager(): NavigationManager {
         return $this->query(NavigationManager::class);
-    }
-
-    public function getConsoleManager(): IConsoleManager {
-        return $this->query(IConsoleManager::class);
     }
 
     public function getRouter(): Router {

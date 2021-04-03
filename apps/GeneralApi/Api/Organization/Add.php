@@ -23,34 +23,26 @@ namespace KSA\GeneralApi\Api\Organization;
 
 use DateTime;
 use Keestash;
-use Keestash\Api\AbstractApi;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Add extends AbstractApi {
+class Add implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
 
-    public function __construct(
-        IOrganizationRepository $organizationRepository
-        , IL10N $l10n
-        , ?IToken $token = null
-    ) {
-        parent::__construct($l10n, $token);
+    public function __construct(IOrganizationRepository $organizationRepository) {
         $this->organizationRepository = $organizationRepository;
     }
 
-    public function onCreate(array $parameters): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
-    }
-
-    public function create(): void {
-
-        $name = $this->getParameter("organization");
+        $parameters = json_decode($request->getBody()->getContents(), true);
+        $name       = $parameters["organization"];
 
         if (null === $name || "" === $name) {
             throw new GeneralApiException('no organization found');
@@ -61,7 +53,7 @@ class Add extends AbstractApi {
         $organization->setActiveTs(new DateTime());
         $organization = $this->organizationRepository->insert($organization);
 
-        $this->createAndSetResponse(
+        return Keestash\Api\Response\LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "organization" => $organization
@@ -69,8 +61,5 @@ class Add extends AbstractApi {
         );
     }
 
-    public function afterCreate(): void {
-
-    }
 
 }

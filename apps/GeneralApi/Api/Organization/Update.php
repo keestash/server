@@ -21,16 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Organization;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Organization\IOrganizationService;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Update extends AbstractApi {
+class Update implements RequestHandlerInterface {
 
     private IOrganizationService    $organizationService;
     private IOrganizationRepository $organizationRepository;
@@ -39,22 +40,16 @@ class Update extends AbstractApi {
     public function __construct(
         IOrganizationService $organizationService
         , IOrganizationRepository $organizationRepository
-        , IL10N $l10n
         , ILogger $logger
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
         $this->organizationService    = $organizationService;
         $this->logger                 = $logger;
         $this->organizationRepository = $organizationRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $organization = $this->getParameter('organization');
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters   = json_decode($request->getBody()->getContents(), true);
+        $organization = $parameters['organization'] ?? null;
         $organization = json_decode($organization, true);
 
         if (null === $organization) {
@@ -64,16 +59,12 @@ class Update extends AbstractApi {
         $organization = $this->organizationService->toOrganization($organization);
         $organization = $this->organizationRepository->update($organization);
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 'organization' => $organization
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

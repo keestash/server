@@ -21,43 +21,33 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Thumbnail;
 
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\PlainResponse;
-
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Exception\InstanceNotInstalledException;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\FileManager\IFileManager;
-use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\TextResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class File extends AbstractApi {
+class File implements RequestHandlerInterface {
 
-    private $parameters     = null;
-    private $fileManager    = null;
-    private $rawFileService = null;
-    private $fileService    = null;
+    private IFileManager   $fileManager;
+    private RawFileService $rawFileService;
+    private FileService    $fileService;
 
     public function __construct(
-        IFileManager $fileRepository
+        IFileManager $fileManager
         , FileService $uploadFileService
         , RawFileService $rawFileService
-        , IL10N $l10n
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->fileService    = $uploadFileService;
-        $this->fileManager    = $fileRepository;
+        $this->fileManager    = $fileManager;
         $this->rawFileService = $rawFileService;
     }
 
-    public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-    }
-
-    public function create(): void {
-        // TODO implement
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
         $file = $this->fileManager->read(
             $this->rawFileService->stringToUri(
@@ -65,18 +55,17 @@ class File extends AbstractApi {
             )
         );
 
-        $defaultResponse = new PlainResponse();
-        $defaultResponse->addHeader(
-            IResponse::HEADER_CONTENT_TYPE
-            , $file->getMimeType()
+        if (null === $file) {
+            throw new InstanceNotInstalledException();
+        }
+
+        return new TextResponse(
+            file_get_contents($file->getFullPath())
+            , 200
+            , [
+                IResponse::HEADER_CONTENT_TYPE => $file->getMimeType()
+            ]
         );
-        $defaultResponse->setMessage(file_get_contents($file->getFullPath()));
-
-        parent::setResponse($defaultResponse);
-    }
-
-    public function afterCreate(): void {
-        // TODO: Implement afterCreate() method.
     }
 
 }

@@ -28,7 +28,6 @@ use Keestash\Api\Response\NeedsUpgrade;
 use Keestash\Api\Response\SessionExpired;
 use Keestash\App\Config\Diff;
 use Keestash\App\Helper;
-use Keestash\Command\KeestashCommand;
 use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
 use Keestash\Core\Manager\NavigationManager\NavigationManager;
 use Keestash\Core\Manager\RouterManager\Route;
@@ -57,7 +56,6 @@ use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IBag;
-use Symfony\Component\Console\Application;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
 
@@ -469,8 +467,6 @@ class Keestash {
 
     private static function renderTemplates() {
         Keestash::renderWebTemplates();
-        Keestash::renderApiTemplates();
-        Keestash::renderConsoleTemplates();
     }
 
     private static function renderWebTemplates() {
@@ -704,7 +700,7 @@ class Keestash {
      * @return string
      */
     public static function getBaseURL(bool $withScript = true, bool $forceIndex = false): ?string {
-        if (true === in_array(Keestash::getMode(), [Keestash::MODE_NONE, Keestash::MODE_CONSOLE], true)) return null;
+//        if (true === in_array(Keestash::getMode(), [Keestash::MODE_NONE, Keestash::MODE_CONSOLE], true)) return null;
         $scriptName          = "index.php";
         $scriptNameToReplace = $scriptName;
         if (self::$mode === self::MODE_API) {
@@ -771,88 +767,6 @@ class Keestash {
         $baseURL = Keestash::getBaseURL(true, false);
         if (null === $baseURL) return null;
         return str_replace("index.php", "api.php", $baseURL);
-    }
-
-    private static function renderApiTemplates() {
-        if (self::$mode !== Keestash::MODE_API) return;
-        Keestash::loadTemplates();
-    }
-
-    private static function renderConsoleTemplates() {
-        if (self::$mode !== Keestash::MODE_CONSOLE) return;
-        Keestash::loadTemplates();
-    }
-
-    public static function requestConsole(): void {
-        Keestash::$mode = Keestash::MODE_CONSOLE;
-        Keestash::initRequest();
-        Keestash::renderTemplates();
-
-        $consoleManager = Keestash::getServer()->getConsoleManager();
-        $commands       = $consoleManager->getSet();
-        $cliVersion     = "1.0.0";
-
-        $application = new Application(
-            Keestash::getServer()->getLegacy()->getApplication()->get("name") . " CLI Tools"
-            , $cliVersion
-        );
-
-        /** @var KeestashCommand $command */
-        foreach ($commands->getCommands() as $command) {
-            $application->add($command);
-        }
-
-        $application->run();
-
-    }
-
-    public static function requestApi(): void {
-        Keestash::$mode = Keestash::MODE_API;
-        Keestash::initRequest();
-        Keestash::renderTemplates();
-
-        /** @var APIRouter $router */
-        $router    = Keestash::getServer()->getRouterManager()->get(IRouterManager::API_ROUTER);
-        $parameter = $router->getRequiredParameter();
-
-        /** @var Verification $verification */
-        $verification = self::getServer()->query(Verification::class);
-        $token        = $verification->verifyToken($parameter);
-
-        if (null !== $token || $router->isPublicRoute()) {
-            $router->route($token);
-        } else {
-
-            self::getServer()->getResponseManager()->add(
-                new SessionExpired(
-                    Keestash::getServer()->getL10N()
-                )
-            );
-
-        }
-
-        Keestash::validateApi();
-        Keestash::flushOutput();
-    }
-
-    private static function validateApi() {
-        $responses = Keestash::getServer()->getResponseManager()->getResponses();
-        /** @var IResponse $response */
-        $response = $responses->get(0);
-
-        /** @var IHTTPService $httpService */
-        $httpService = Keestash::getServer()->query(IHTTPService::class);
-        $code        = $response->getCode();
-        $description = $httpService->translateCode($code);
-
-        header('Access-Control-Allow-Origin: *');
-        header("HTTP/1.1 $code $description");
-
-        foreach ($response->getHeaders() as $key => $header) {
-            header("$key: $header");
-        }
-        echo $response->getMessage();
-
     }
 
 }

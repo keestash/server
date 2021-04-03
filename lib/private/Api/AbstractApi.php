@@ -87,12 +87,6 @@ abstract class AbstractApi implements IApi {
         $this->response = $response;
     }
 
-    /**
-     * @deprecated
-     */
-    public function setPermission(): void {
-    }
-
     public function createAndSetResponse(int $code, array $messages): void {
         $response = $this->createResponse($code, $messages);
         $this->setResponse($response);

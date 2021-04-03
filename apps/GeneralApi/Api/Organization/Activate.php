@@ -22,39 +22,34 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Organization;
 
 use DateTime;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Activate extends AbstractApi {
+class Activate implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
     private ILogger                 $logger;
 
     public function __construct(
         IOrganizationRepository $organizationRepository
-        , IL10N $l10n
         , ILogger $logger
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
         $this->organizationRepository = $organizationRepository;
         $this->logger                 = $logger;
     }
 
-    public function onCreate(array $parameters): void {
 
-    }
-
-    public function create(): void {
-
-        $id       = $this->getParameter("id");
-        $activate = $this->getParameter('activate');
-        $activate = $activate === 'true';
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode($request->getBody()->getContents(), true);
+        $id         = $parameters['id'] ?? null;
+        $activate   = $parameters['activate'] ?? null;
+        $activate   = $activate === 'true';
 
         if (null === $id || "" === $id || false === is_numeric($id)) {
             throw new GeneralApiException('no id provided');
@@ -74,7 +69,7 @@ class Activate extends AbstractApi {
 
         $this->organizationRepository->update($organization);
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "organization" => $organization
@@ -82,8 +77,5 @@ class Activate extends AbstractApi {
         );
     }
 
-    public function afterCreate(): void {
-
-    }
 
 }

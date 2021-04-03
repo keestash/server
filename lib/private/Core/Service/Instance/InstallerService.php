@@ -34,22 +34,23 @@ use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
 use Keestash\Core\System\Installation\Verification\DatabaseReachable;
 use Keestash\Core\System\Installation\Verification\HasMigrations;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Config\IConfigService;
 
 class InstallerService {
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
-    private $messages      = null;
-    private $lockHandler   = null;
-    private $migrator      = null;
-    private $instanceDB    = null;
-    private $configService = null;
+    private array          $messages;
+    private LockHandler    $lockHandler;
+    private Migrator       $migrator;
+    private InstanceDB     $instanceDB;
+    private IConfigService $configService;
 
     public function __construct(
         LockHandler $lockHandler
         , Migrator $migrator
         , InstanceDB $instanceDB
-        , ConfigService $configService
+        , IConfigService $configService
     ) {
         $this->messages      = [];
         $this->lockHandler   = $lockHandler;
@@ -105,7 +106,7 @@ class InstallerService {
         return true === $addedId && true === $addedHash;
     }
 
-    public function writeProductionMode():bool{
+    public function writeProductionMode(): bool {
         return $this->instanceDB->addOption(InstanceDB::OPTION_NAME_PRODUCTION_MODE, (new DateTime())->format(DateTimeInterface::ATOM));
     }
 

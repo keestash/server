@@ -25,6 +25,13 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IApp extends IJsonObject {
 
+    public const CONFIG_PROVIDER_API_ROUTER    = 'router.api.provider.config';
+    public const CONFIG_PROVIDER_WEB_ROUTER    = 'router.web.provider.config';
+    public const CONFIG_PROVIDER_EVENTS        = 'events.provider.config';
+    public const CONFIG_PROVIDER_COMMANDS      = 'commands.provider.config';
+    public const CONFIG_PROVIDER_ROUTES        = 'routes.provider.config';
+    public const CONFIG_PROVIDER_PUBLIC_ROUTES = 'routes.public.provider.config';
+
     public const FIELD_ID                       = "id";
     public const FIELD_ORDER                    = "order";
     public const FIELD_NAME                     = "name";

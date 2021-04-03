@@ -29,6 +29,7 @@ use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\File\IFileService;
+use Laminas\Config\Config;
 
 class FileService implements IFileService {
 
@@ -39,9 +40,14 @@ class FileService implements IFileService {
 
     // TODO include default ?!
     private RawFileService $rawFileService;
+    private Config         $config;
 
-    public function __construct(RawFileService $rawFileService) {
+    public function __construct(
+        RawFileService $rawFileService
+        , Config $config
+    ) {
         $this->rawFileService = $rawFileService;
+        $this->config         = $config;
     }
 
     public function getProfileImagePath(?IUser $user): string {
@@ -62,7 +68,7 @@ class FileService implements IFileService {
 
     public function getDefaultImage(): IFile {
         $name = FileService::DEFAULT_PROFILE_PICTURE;
-        $dir  = Keestash::getServer()->getAssetRoot() . "/img/";
+        $dir  = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/';
         $dir  = str_replace("//", "/", $dir);
         $path = "$dir/$name.png";
 
@@ -78,15 +84,15 @@ class FileService implements IFileService {
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize(filesize($path));
-        $file->setOwner(
-            Keestash::getServer()->getSystemUser()
-        );
+//        $file->setOwner(
+//            $this->userService->getSystemUser()
+//        );
         return $file;
     }
 
     public function getProfileImage(IUser $user): string {
         $name = $this->getProfileImageName($user);
-        $path = Keestash::getServer()->getImageRoot() . "/" . $name;
+        $path = (string) $this->config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/" . $name;
         return str_replace("//", "/", $path);
     }
 
@@ -101,7 +107,7 @@ class FileService implements IFileService {
     public function getDefaultNodeAvatar(): IFile {
         $name      = FileService::DEFAULT_NODE_AVATAR;
         $extension = IExtension::JPG;
-        $dir       = Keestash::getServer()->getAssetRoot() . "/img/";
+        $dir       = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH) . "/img/";
         $dir       = str_replace("//", "/", $dir);
         $path      = "$dir/$name.$extension";
 
@@ -117,9 +123,9 @@ class FileService implements IFileService {
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize(filesize($path));
-        $file->setOwner(
-            Keestash::getServer()->getSystemUser()
-        );
+//        $file->setOwner(
+//            $this->userService->getSystemUser()
+//        );
         return $file;
     }
 

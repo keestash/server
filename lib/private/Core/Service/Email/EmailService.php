@@ -27,9 +27,10 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Email\IEmailService;
 use PHPMailer\PHPMailer\PHPMailer;
 
-class EmailService {
+class EmailService implements IEmailService {
 
     public const HAS_EXCEPTIONS                                           = true;
     public const IS_HTML                                                  = true;

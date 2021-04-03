@@ -46,7 +46,6 @@ use SplFileInfo;
  */
 class Loader implements ILoader {
 
-    private ClassLoader   $classLoader;
     private string        $appRoot;
     private HashTable     $apps;
     private LRUCache      $lruAppCache;
@@ -55,12 +54,10 @@ class Loader implements ILoader {
     private ICacheService $cacheServer;
 
     public function __construct(
-        ClassLoader $classLoader
-        , ILogger $logger
+         ILogger $logger
         , ICacheService $cacheServer
         , string $appRoot
     ) {
-        $this->classLoader = $classLoader;
         $this->appRoot     = $appRoot;
         $this->logger      = $logger;
         $this->apps        = new HashTable();

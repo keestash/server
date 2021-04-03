@@ -25,8 +25,6 @@ use Doctrine\DBAL\Connection;
 
 interface IBackend {
 
-    public function __construct(string $schemaName);
-
     public function connect(): bool;
 
     public function disconnect(): bool;
