@@ -33,11 +33,8 @@ use KSP\Core\Repository\User\IUserStateRepository;
 
 class UserStateRepository extends AbstractRepository implements IUserStateRepository {
 
-    /** @var IUserRepository */
-    private $userRepository;
-
-    /** @var IDateTimeService */
-    private $dateTimeService;
+    private IUserRepository  $userRepository;
+    private IDateTimeService $dateTimeService;
 
     public function __construct(
         IBackend $backend

@@ -31,12 +31,9 @@ use KSP\Core\Repository\Job\IJobRepository;
 
 class InstallerService {
 
-    /** @var Migrator $migrator */
-    private $migrator;
-    /** @var IAppRepository $appRepository */
-    private $appRepository;
-    /** @var IJobRepository $jobRepository */
-    private $jobRepository;
+    private Migrator       $migrator;
+    private IAppRepository $appRepository;
+    private IJobRepository $jobRepository;
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 

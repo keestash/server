@@ -55,7 +55,7 @@ return [
     , 'migration_base_class' => KeestashMigration::class
     , "paths"                => [
         "migrations" => [
-            "$dirname/apps/*/lib/Repository/Migration"
+            "$dirname/apps/*/Repository/Migration"
         ]
     ]
 ];

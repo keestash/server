@@ -24,6 +24,8 @@ namespace Keestash\Core\Repository\Instance;
 use DateTime;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
+use Keestash\ConfigProvider;
+use Laminas\Config\Config;
 use PDO;
 
 class InstanceDB {
@@ -35,14 +37,14 @@ class InstanceDB {
     private string $path;
     private PDO    $database;
 
-    public function __construct() {
-        $this->path     = InstanceDB::getPath();
+    public function __construct(Config $config) {
+        $this->path     = $config->get(ConfigProvider::INSTANCE_DB_PATH);
         $this->database = new PDO("sqlite:{$this->path}");
         $this->createTable();
     }
 
     public static function getPath(): string {
-        return Keestash::getServer()->getConfigRoot() . "/.instance.sqlite";
+        return ConfigProvider::INSTANCE_DB_PATH;
     }
 
     private function createTable(): void {

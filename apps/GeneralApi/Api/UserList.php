@@ -19,51 +19,43 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\general_api\lib\Api;
+namespace KSA\GeneralApi\Api;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\FileManager\FileManager;
-
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class UserList extends AbstractApi {
+class UserList implements RequestHandlerInterface {
 
     public const USER_TYPE_ALL  = "all";
     public const USER_TYPE_SEEN = "seen";
 
-    private $parameters     = null;
-    private $userRepository = null;
-    private $fileService    = null;
-    private $rawFileService = null;
-    private $fileManager    = null;
+    private IUserRepository $userRepository;
+    private FileService     $fileService;
+    private RawFileService  $rawFileService;
+    private FileManager     $fileManager;
 
     public function __construct(
-        IL10N $l10n
-        , IUserRepository $userRepository
+        IUserRepository $userRepository
         , FileService $fileService
         , RawFileService $rawFileService
         , FileManager $fileManager
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->userRepository = $userRepository;
         $this->rawFileService = $rawFileService;
         $this->fileService    = $fileService;
         $this->fileManager    = $fileManager;
     }
 
-    public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-    }
 
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
         $all          = $this->userRepository->getAll();
         $pictureTable = [];
 
@@ -81,20 +73,13 @@ class UserList extends AbstractApi {
             $pictureTable[$user->getId()] = $picture;
         }
 
-
-        $response = parent::createResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "user_list"  => $all
                 , "pictures" => $pictureTable
             ]
         );
-
-        parent::setResponse($response);
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

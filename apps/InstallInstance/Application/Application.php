@@ -22,17 +22,7 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Application;
 
 use Keestash;
-use Keestash\Core\Repository\Instance\InstanceRepository;
-use Keestash\Core\Service\User\UserService;
-use KSA\InstallInstance\Api\Config\Get;
-use KSA\InstallInstance\Api\Config\Update;
-use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
-use KSA\InstallInstance\Command\DemoMode;
-use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Controller\Controller;
-use KSP\Core\Manager\RouterManager\IRouterManager;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\HTTP\IPersistenceService;
 
 class Application extends Keestash\App\Application {
 
@@ -52,36 +42,8 @@ class Application extends Keestash\App\Application {
             , Controller::class
         );
 
-        $this->registerApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
-            , Update::class
-            , [IRouterManager::POST]
-        );
-
-        $this->registerApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
-            , Get::class
-            , [IRouterManager::GET]
-        );
-
-        $this->registerApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_END_UPDATE
-            , EndUpdate::class
-            , [IRouterManager::POST]
-        );
-
         $this->registerPublicRoute(
             Application::ROUTE_INSTALL_INSTANCE
-        );
-        $this->registerPublicApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_UPDATE_CONFIG
-        );
-
-        $this->registerPublicApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_END_UPDATE
-        );
-        $this->registerPublicApiRoute(
-            Application::ROUTE_INSTALL_INSTANCE_CONFIG_DATA
         );
 
         $this->addJavaScriptFor(
@@ -89,21 +51,6 @@ class Application extends Keestash\App\Application {
             , "install_instance"
             , Application::ROUTE_INSTALL_INSTANCE
         );
-        $this->registerCommands();
     }
-
-    private function registerCommands(): void {
-        $this->registerCommand(
-            new Uninstall(
-                Keestash::getServer()->query(InstanceRepository::class)
-            )
-        );
-        $this->registerCommand(new DemoMode(
-            Keestash::getServer()->getInstanceDB()
-            , Keestash::getServer()->query(UserService::class)
-            , Keestash::getServer()->query(IUserRepository::class)
-        ));
-    }
-
 
 }

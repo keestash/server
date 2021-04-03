@@ -3,5 +3,8 @@
         <testsuite name="Keestash">
             <directory>test</directory>
         </testsuite>
+        <testsuite name="Apps">
+            <directory>apps/*/Test</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

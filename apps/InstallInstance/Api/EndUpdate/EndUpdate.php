@@ -22,8 +22,7 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Api\EndUpdate;
 
 use Keestash;
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
@@ -31,12 +30,14 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class EndUpdate extends AbstractApi {
+class EndUpdate implements RequestHandlerInterface {
 
     private InstallerService   $installerService;
     private LockHandler        $lockHandler;
@@ -46,6 +47,7 @@ class EndUpdate extends AbstractApi {
     private IUserRepository    $userRepository;
     private PersistenceService $persistenceService;
     private HTTPService        $httpService;
+    private IL10N              $translator;
 
     public function __construct(
         IL10N $l10n
@@ -57,10 +59,7 @@ class EndUpdate extends AbstractApi {
         , IUserRepository $userRepository
         , PersistenceService $persistenceService
         , HTTPService $httpService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->installerService   = $installerService;
         $this->lockHandler        = $lockHandler;
         $this->fileRepository     = $fileRepository;
@@ -69,24 +68,20 @@ class EndUpdate extends AbstractApi {
         $this->userRepository     = $userRepository;
         $this->persistenceService = $persistenceService;
         $this->httpService        = $httpService;
+        $this->translator         = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
         $isInstalled = $this->installerService->isInstalled();
 
         if (false === $isInstalled) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("The instance is not finally installed. Aborting (2)")
+                    "message" => $this->translator->translate("The instance is not finally installed. Aborting (2)")
                 ]
             );
-            return;
         }
 
         $ran     = $this->installerService->runCoreMigrations();
@@ -99,13 +94,12 @@ class EndUpdate extends AbstractApi {
         }
 
         if (false === $added) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("Could not do final steps")
+                    "message" => $this->translator->translate("Could not do final steps")
                 ]
             );
-            return;
         }
 
         $this->lockHandler->unlock();
@@ -119,7 +113,7 @@ class EndUpdate extends AbstractApi {
             $this->fileService->getDefaultImage()
         );
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "message"    => "Ok"
@@ -128,11 +122,6 @@ class EndUpdate extends AbstractApi {
                 )
             ]
         );
-        return;
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

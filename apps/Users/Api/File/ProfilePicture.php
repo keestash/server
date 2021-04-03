@@ -21,24 +21,22 @@ declare(strict_types=1);
 
 namespace KSA\Users\Api\File;
 
-use Keestash;
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\PlainResponse;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\FileManager\FileManager;
-
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class ProfilePicture
  * @package KSA\Users\Api\File
  */
-class ProfilePicture extends AbstractApi {
+class ProfilePicture implements RequestHandlerInterface {
 
     private IUserRepository $userRepository;
     private FileService     $fileService;
@@ -46,32 +44,24 @@ class ProfilePicture extends AbstractApi {
     private FileManager     $fileManager;
 
     public function __construct(
-        IL10N $l10n
-        , IUserRepository $userRepository
+        IUserRepository $userRepository
         , FileService $fileService
         , RawFileService $rawFileService
         , FileManager $fileManager
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->userRepository = $userRepository;
         $this->fileService    = $fileService;
         $this->fileManager    = $fileManager;
         $this->rawFileService = $rawFileService;
     }
 
-    public function onCreate(array $parameters): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
-    }
-
-    public function create(): void {
-
-        $targetId = (int) $this->getParameter('targetId');
+        $targetId = (int) $request->getQueryParams()['targetId'];
 
         $user = null;
 
-        $users = Keestash::getServer()->getUsersFromCache();
+        $users = $this->userRepository->getAll();
         /** @var IUser $iUser */
         foreach ($users as $iUser) {
             if ($targetId === $iUser->getId()) {
@@ -80,19 +70,17 @@ class ProfilePicture extends AbstractApi {
             }
         }
 
-        
+
         if (null === $user) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "No user found"
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
-        
+
         // error in logic: we are trying to read default image
         // from DB which does not exist :(
         $file = $this->fileManager->read(
@@ -101,34 +89,23 @@ class ProfilePicture extends AbstractApi {
             )
         );
 
-        
         if (null === $file) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "No picture found"
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
-        
-        $defaultResponse = new PlainResponse();
-        $defaultResponse->addHeader(
-            IResponse::HEADER_CONTENT_TYPE
-            , $file->getMimeType()
+        return LegacyResponse::fromData(
+            IResponse::RESPONSE_CODE_OK
+            , [file_get_contents("{$file->getDirectory()}/{$file->getName()}")]
+            , 200
+            , [
+                IResponse::HEADER_CONTENT_TYPE => $file->getMimeType()
+            ]
         );
-//        $defaultResponse->setMessage(file_get_contents($file->getFullPath()));
-        $defaultResponse->setMessage(file_get_contents("{$file->getDirectory()}/{$file->getName()}"));
-
-        
-        parent::setResponse($defaultResponse);
-    }
-
-    public function afterCreate(): void {
-
-        
     }
 
 }

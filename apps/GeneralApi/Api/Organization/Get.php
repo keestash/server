@@ -22,38 +22,35 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use KSP\Core\Repository\User\IUserRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
     private ILogger                 $logger;
+    private IUserRepository         $userRepository;
 
     public function __construct(
         IOrganizationRepository $organizationRepository
-        , IL10N $l10n
         , ILogger $logger
-        , ?IToken $token = null
+        , IUserRepository $userRepository
     ) {
-        parent::__construct($l10n, $token);
         $this->organizationRepository = $organizationRepository;
         $this->logger                 = $logger;
+        $this->userRepository         = $userRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $id = $this->getParameter("id");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $id = $request->getQueryParams()['id'] ?? null;
 
         if (null === $id || "" === $id || false === is_numeric($id)) {
             throw new GeneralApiException('no id found');
@@ -61,7 +58,7 @@ class Get extends AbstractApi {
 
         $organization = $this->organizationRepository->get((int) $id);
 
-        $users      = Keestash::getServer()->getUsersFromCache();
+        $users      = $this->userRepository->getAll();
         $candidates = new ArrayList();
 
         /** @var IUser $user */
@@ -81,17 +78,13 @@ class Get extends AbstractApi {
             }
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 'organization' => $organization
                 , 'users'      => $candidates
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

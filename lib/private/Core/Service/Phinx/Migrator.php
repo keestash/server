@@ -24,17 +24,27 @@ namespace Keestash\Core\Service\Phinx;
 use Keestash;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Config\IConfigService;
+use Laminas\Config\Config;
 use Phinx\Console\PhinxApplication;
 use Phinx\Wrapper\TextWrapper;
 
 class Migrator {
 
-    private string  $phinxRoot;
-    private ILogger $logger;
+    private string         $phinxRoot;
+    private ILogger        $logger;
+    private Config         $config;
+    private IConfigService $configService;
 
-    public function __construct(ILogger $logger) {
-        $this->phinxRoot = Keestash::getServer()->getPhinxRoot();
-        $this->logger    = $logger;
+    public function __construct(
+        ILogger $logger
+        , Config $config
+        , IConfigService $configService
+    ) {
+        $this->logger        = $logger;
+        $this->config        = $config;
+        $this->phinxRoot     = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
+        $this->configService = $configService;
     }
 
     public function runCore() {
@@ -66,8 +76,8 @@ class Migrator {
 
     private function run(string $configPath): bool {
 
-        $config   = Keestash::getServer()->getConfig();
-        $phinxEnv = (true === $config->get("debug")) ? "development" : "production";
+        $debug    = $this->configService->getValue("debug", false);
+        $phinxEnv = (true === $debug) ? "development" : "production";
 
         $phinxApp         = new PhinxApplication();
         $phinxTextWrapper = new TextWrapper($phinxApp);

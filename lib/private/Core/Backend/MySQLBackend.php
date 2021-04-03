@@ -29,12 +29,11 @@ class MySQLBackend implements ISQLBackend {
 
     private Connection $connection;
 
-    public function __construct(string $schemaName) {
-
+    public function __construct(Connection $connection) {
+        $this->connection = $connection;
     }
 
     public function connect(): bool {
-        $this->connection = Keestash::getServer()->query(Connection::class);
         $this->connection->connect();
         return true;
     }

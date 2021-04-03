@@ -22,19 +22,19 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Event\Organization\UserChangedEvent;
-use KSA\GeneralApi\Event\Organization\UserRemovedEvent;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\GeneralApi\Repository\IOrganizationUserRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class User extends AbstractApi {
+class User implements RequestHandlerInterface {
 
     public const MODE_ADD    = 'add.mode';
     public const MODE_REMOVE = 'remove.mode';
@@ -42,28 +42,26 @@ class User extends AbstractApi {
     private IOrganizationRepository     $organizationRepository;
     private IOrganizationUserRepository $organizationUserRepository;
     private IUserRepository             $userRepository;
+    private IEventManager               $eventManager;
 
     public function __construct(
-        IL10N $l10n
-        , IOrganizationRepository $organizationRepository
+        IOrganizationRepository $organizationRepository
         , IOrganizationUserRepository $organizationUserRepository
         , IUserRepository $userRepository
-        , ?IToken $token = null
+        , IEventManager $eventManager
     ) {
-        parent::__construct($l10n, $token);
         $this->organizationUserRepository = $organizationUserRepository;
         $this->organizationRepository     = $organizationRepository;
         $this->userRepository             = $userRepository;
+        $this->eventManager               = $eventManager;
     }
 
-    public function onCreate(array $parameters): void {
 
-    }
-
-    public function create(): void {
-        $mode           = $this->getParameter("mode");
-        $organizationId = $this->getParameter("organization_id");
-        $userId         = $this->getParameter("user_id");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters     = json_decode($request->getBody()->getContents(), true);
+        $mode           = $parameters["mode"] ?? null;
+        $organizationId = $parameters["organization_id"] ?? null;
+        $userId         = $parameters["user_id"] ?? null;
 
         if (null === $organizationId || "" === $organizationId || false === is_numeric($organizationId)) {
             throw new GeneralApiException('no organization');
@@ -98,22 +96,17 @@ class User extends AbstractApi {
                 throw new GeneralApiException('no mode given');
         }
 
-        Keestash::getServer()
-            ->getEventManager()
+        $this->eventManager
             ->execute(
                 new UserChangedEvent($organization)
             );
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 'messages' => 'ok'
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

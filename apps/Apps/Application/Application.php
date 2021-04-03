@@ -22,25 +22,13 @@ declare(strict_types=1);
 namespace KSA\Apps\Application;
 
 use Keestash;
-use KSA\Apps\Api\UpdateApp;
 use KSA\Apps\Controller\Controller;
-use KSP\Core\Manager\RouterManager\IRouterManager;
 
-class Application extends \Keestash\App\Application {
+class Application extends Keestash\App\Application {
 
     public const APPS = "apps";
 
-    public const PERMISSION_READ_APPS = "core_app_permission_read_apps";
-
-    public const UPDATE_APPS = "apps/update";
-
     public function register(): void {
-
-        parent::registerApiRoute(
-            Application::UPDATE_APPS
-            , UpdateApp::class
-            , [IRouterManager::POST]
-        );
 
         parent::registerRoute(Application::APPS, Controller::class);
         parent::addJavascript("apps");

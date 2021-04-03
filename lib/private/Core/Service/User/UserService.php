@@ -40,13 +40,15 @@ use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserService;
 
-class UserService {
+class UserService implements IUserService {
 
     /** @var int */
     public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
@@ -63,6 +65,7 @@ class UserService {
     private CredentialService    $credentialService;
     private IDateTimeService     $dateTimeService;
     private ILogger              $logger;
+    private IEventManager        $eventManager;
 
     public function __construct(
         IApiLogRepository $apiLogRepository
@@ -77,6 +80,7 @@ class UserService {
         , CredentialService $credentialService
         , IDateTimeService $dateTimeService
         , ILogger $logger
+        , IEventManager $eventManager
     ) {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
@@ -90,6 +94,7 @@ class UserService {
         $this->credentialService   = $credentialService;
         $this->dateTimeService     = $dateTimeService;
         $this->logger              = $logger;
+        $this->eventManager        = $eventManager;
     }
 
     public function removeUser(IUser $user): array {
@@ -273,9 +278,7 @@ class UserService {
 
         $user->setId($userId);
 
-        Keestash::getServer()
-            ->getEventManager()
-            ->execute(new UserCreatedEvent($user));
+        $this->eventManager->execute(new UserCreatedEvent($user));
 
         if (false === $user->isLocked()) return $user;
 
@@ -323,15 +326,13 @@ class UserService {
     public function updateUser(IUser $updatedUser, IUser $oldUser): bool {
         $updated = $this->userRepository->update($updatedUser);
 
-        Keestash::getServer()
-            ->getEventManager()
-            ->execute(
-                new UserUpdatedEvent(
-                    $updatedUser
-                    , $oldUser
-                    , $updated
-                )
-            );
+        $this->eventManager->execute(
+            new UserUpdatedEvent(
+                $updatedUser
+                , $oldUser
+                , $updated
+            )
+        );
 
         return $updated;
     }

@@ -22,19 +22,11 @@ declare(strict_types=1);
 namespace KSA\Install\Application;
 
 use Keestash;
-use Keestash\Core\Repository\Instance\InstanceRepository;
-use Keestash\Core\Service\Phinx\Migrator;
-use Keestash\Core\Service\User\UserService;
-use Keestash\Core\System\Installation\App\LockHandler;
-use KSA\Install\Api\InstallApps;
-use KSA\Install\Command\Uninstall;
 use KSA\Install\Controller\Controller;
-use KSP\Core\Manager\RouterManager\IRouter;
 
 class Application extends Keestash\App\Application {
 
-    public const INSTALL          = "install";
-    public const INSTALL_ALL_APPS = "install/apps/all/";
+    public const INSTALL = "install";
 
     public function register(): void {
 
@@ -47,28 +39,7 @@ class Application extends Keestash\App\Application {
             Application::INSTALL
         );
 
-        $this->registerApiRoute(
-            Application::INSTALL_ALL_APPS
-            , InstallApps::class
-            , [
-                IRouter::POST
-            ]
-        );
-
-        $this->registerPublicApiRoute(
-            Application::INSTALL_ALL_APPS
-        );
-
         parent::addJavaScript("install");
-
-        $this->registerCommand(
-            new Uninstall(
-                Keestash::getServer()->query(InstanceRepository::class)
-                , Keestash::getServer()->query(LockHandler::class)
-                , Keestash::getServer()->query(Migrator::class)
-                , Keestash::getServer()->query(UserService::class)
-            )
-        );
 
     }
 

@@ -21,41 +21,28 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Organization;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class ListAll extends AbstractApi {
+class ListAll implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
 
-    public function __construct(
-        IOrganizationRepository $organizationRepository
-        , IL10N $l10n
-        , ?IToken $token = null
-    ) {
-        parent::__construct($l10n, $token);
-
+    public function __construct(IOrganizationRepository $organizationRepository) {
         $this->organizationRepository = $organizationRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $this->createAndSetResponse(
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "organizations" => $this->organizationRepository->getAll()
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

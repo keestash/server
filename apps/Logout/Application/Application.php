@@ -22,8 +22,6 @@ declare(strict_types=1);
 namespace KSA\Logout\Application;
 
 use Keestash;
-use KSA\Logout\Controller\Logout;
-use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends Keestash\App\Application {
 
@@ -32,14 +30,6 @@ class Application extends Keestash\App\Application {
     public const LOGOUT            = "logout";
 
     public function register(): void {
-
-        $this->registerRoute(
-            Application::LOGOUT
-            , Logout::class
-            , [IRouterManager::GET]
-        );
-
-        $this->registerPublicRoute(Application::LOGOUT);
 
         $this->addSetting(
             self::LOGOUT

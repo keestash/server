@@ -21,84 +21,64 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api;
 
-use doganoo\PHPUtil\HTTP\Code;
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\DefaultResponse;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class MinimumCredential extends AbstractApi {
+class MinimumCredential implements RequestHandlerInterface {
 
-    private array       $parameters;
     private UserService $userService;
     private IL10N       $translator;
 
     public function __construct(
         IL10N $l10n
         , UserService $userService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
         $this->userService = $userService;
         $this->translator  = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-    }
-
-    public function create(): void {
-        $password = $this->parameters["password"] ?? null;
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $password = $request->getQueryParams()["password"] ?? null;
         $message  = null;
 
         if (null === $password) {
-            $this->setResponseHelper(
+            return $this->setResponseHelper(
                 $this->translator->translate("No password provided")
                 , IResponse::RESPONSE_CODE_NOT_OK
             );
-            return;
         }
 
         $hasRequirements = $this->userService->passwordHasMinimumRequirements($password);
 
         if (false == $hasRequirements) {
 
-            $this->setResponseHelper(
+            return $this->setResponseHelper(
                 $this->translator->translate("Your password does not fulfill the minimum requirements")
                 , IResponse::RESPONSE_CODE_NOT_OK
             );
-            return;
 
         }
 
-        $this->setResponseHelper(
+        return $this->setResponseHelper(
             $this->translator->translate("Password is valid")
             , IResponse::RESPONSE_CODE_OK
         );
 
-
     }
 
-    private function setResponseHelper(string $message, int $responseCode) {
-        $response = new DefaultResponse();
-        $response->setCode(Code::OK);
-        $response->addMessage(
+    private function setResponseHelper(string $message, int $responseCode): ResponseInterface {
+        return LegacyResponse::fromData(
             $responseCode
             , [
                 "response_code" => $responseCode
                 , "message"     => $message
             ]
         );
-
-        parent::setResponse(
-            $response
-        );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

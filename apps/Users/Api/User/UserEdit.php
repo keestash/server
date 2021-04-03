@@ -21,17 +21,18 @@ declare(strict_types=1);
 
 namespace KSA\Users\Api\User;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
 use KSA\Users\Exception\UsersException;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class UserEdit extends AbstractApi {
+class UserEdit implements RequestHandlerInterface {
 
     const FIRSTNAME = "firstname";
     const LASTNAME  = "lastname";
@@ -42,24 +43,16 @@ class UserEdit extends AbstractApi {
 
     private IUserRepository $userRepository;
     private UserService     $userService;
-    private ILogger         $logger;
+    private IL10N           $translator;
 
     public function __construct(
         IL10N $l10n
         , IUserRepository $userRepository
         , UserService $userService
-        , ILogger $logger
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->userRepository = $userRepository;
         $this->userService    = $userService;
-        $this->logger         = $logger;
-    }
-
-    public function onCreate(array $parameters): void {
-
+        $this->translator     = $l10n;
     }
 
     private function hasDifferences(IUser $repoUser, IUser $newUser): bool {
@@ -73,11 +66,10 @@ class UserEdit extends AbstractApi {
         return false;
     }
 
-    public function create(): void {
-
-        $user     = json_decode($this->getParameter("user"), true);
-        $user     = $this->userService->toUser($user);
-        $repoUser = $this->userRepository->getUserById((string) $user->getId());
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode($request->getBody()->getContents(), true);
+        $user       = $this->userService->toUser($parameters['user']);
+        $repoUser   = $this->userRepository->getUserById((string) $user->getId());
 
         if (null === $repoUser) {
             throw new UsersException();
@@ -86,24 +78,22 @@ class UserEdit extends AbstractApi {
         $oldUser = clone $repoUser;
 
         if (false === $this->hasDifferences($repoUser, $user)) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_OK
                 , [
-                    'message' => $this->getL10N()->translate("no differences detected")
+                    'message' => $this->translator->translate("no differences detected")
                 ]
             );
         }
 
         if (true === $this->userService->isDisabled($repoUser)) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no user found")
+                    "message" => $this->translator->translate("no user found")
                 ]
             );
-
-            return;
         }
 
         $repoUser->setName($user->getName());
@@ -117,27 +107,21 @@ class UserEdit extends AbstractApi {
         $updated = $this->userService->updateUser($repoUser, $oldUser);
 
         if (false === $updated) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("user could not be found")
+                    "message" => $this->translator->translate("user could not be found")
                 ]
             );
-
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->getL10N()->translate("user updated"),
+                "message" => $this->translator->translate("user updated"),
                 "user_id" => $repoUser->getId()
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -21,31 +21,39 @@ declare(strict_types=1);
 
 namespace KST;
 
-use Keestash;
-use Keestash\Server;
-use KST\Api\SimpleApiRunner;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
 class TestCase extends FrameworkTestCase {
 
-    protected function setUp(): void {
-        parent::setUp();
 
-        $keestash = __DIR__ . "/../lib/Keestash.php";
-        $keestash = realpath($keestash);
-        /** @noinspection PhpIncludeInspection */
-        require_once $keestash;
+    protected function getMockedBackend(): MockObject {
+        $backend = $this->getMockBuilder(\Keestash\Core\Backend\MySQLBackend::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(
+                [
+                    'connect'
+                    , 'disconnect'
+                    , 'isConnected'
+                    , 'getSchemaName'
+                    , 'getConnection'
+                    , 'getTables'
+                ]
+            )
+            ->getMock();
 
-        Keestash::init();
+        $backend->method('connect')
+            ->willReturn(true);
+        $backend->method('disconnect')
+            ->willReturn(true);
+        $backend->method('isConnected')
+            ->willReturn(true);
+        $backend->method('getSchemaName')
+            ->willReturn('unittest');
+        $backend->method('getTables')
+            ->willReturn([]);
+
+        return $backend;
     }
-
-    protected function getServer(): Server {
-        return Keestash::getServer();
-    }
-
-    protected function getSimpleApiRunner(): SimpleApiRunner {
-        return new SimpleApiRunner();
-    }
-
 
 }

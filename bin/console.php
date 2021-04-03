@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -20,14 +21,42 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Command\KeestashCommand;
+use Keestash\Legacy\Legacy;
+use KSP\App\IApp;
+use Laminas\Config\Config;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Application;
+
 (function () {
 
     chdir(dirname(__DIR__));
 
+    require_once __DIR__ . '/../vendor/autoload.php';
     require_once __DIR__ . '/../lib/versioncheck.php';
     require_once __DIR__ . '/../lib/filecheck.php';
     require_once __DIR__ . '/../lib/extensioncheck.php';
     require_once __DIR__ . '/../config/config.php';
-    require_once __DIR__ . '/../lib/Keestash.php';
-    Keestash::requestConsole();
+
+    /** @var ContainerInterface $container */
+    $container = require_once __DIR__ . '/../lib/start.php';
+    /** @var Config $config */
+    $config = $container->get(Config::class);
+    /** @var Legacy $legacy */
+    $legacy      = $container->get(Legacy::class);
+    $cliVersion  = "1.0.0";
+    $application = new Application(
+            $legacy->getApplication()->get("name") . " CLI Tools"
+            , $cliVersion
+    );
+
+    foreach ($config->get(IApp::CONFIG_PROVIDER_COMMANDS)->toArray() as $commandClass) {
+
+        /** @var KeestashCommand $command */
+        $command = $container->get($commandClass);
+        $application->add($command);
+    }
+
+    $application->run();
+
 })();

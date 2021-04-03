@@ -22,12 +22,9 @@ declare(strict_types=1);
 namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
-use doganoo\PHPUtil\HTTP\Code;
 use Exception;
 use Keestash;
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\DefaultResponse;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
 use KSP\Api\IResponse;
@@ -35,20 +32,23 @@ use KSP\App\ILoader;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
-
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Add extends AbstractApi {
+class Add implements RequestHandlerInterface {
 
-    private ?IUser                $user;
-    private UserService           $userService;
-    private IUserRepository       $userRepository;
-    private IL10N                 $translator;
-    private ILoader               $loader;
-    private IUserStateRepository  $userStateRepository;
-    private ILogger               $logger;
+    private ?IUser               $user;
+    private UserService          $userService;
+    private IUserRepository      $userRepository;
+    private IL10N                $translator;
+    private ILoader              $loader;
+    private IUserStateRepository $userStateRepository;
+    private ILogger              $logger;
 
     public function __construct(
         IL10N $l10n
@@ -59,23 +59,17 @@ class Add extends AbstractApi {
         , ILogger $logger
         , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
 
-        $this->userService          = $userService;
-        $this->userRepository       = $userRepository;
-        $this->translator           = $l10n;
-        $this->loader               = $loader;
-        $this->userStateRepository  = $userStateRepository;
-        $this->logger               = $logger;
-        $this->user                 = null;
+        $this->userService         = $userService;
+        $this->userRepository      = $userRepository;
+        $this->translator          = $l10n;
+        $this->loader              = $loader;
+        $this->userStateRepository = $userStateRepository;
+        $this->logger              = $logger;
+        $this->user                = null;
     }
 
-
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
         // a little bit out of sense, but
         // we do not want to enable registering
@@ -85,30 +79,26 @@ class Add extends AbstractApi {
 
         if (false === $registerEnabled) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("unknown operation")
+                    "message" => $this->translator->translate("unknown operation")
                 ]
             );
 
-            return;
-
         }
 
-        $msg = new DefaultResponse();
-        $msg->setCode(Code::OK);
         $responseCode = IResponse::RESPONSE_CODE_OK;
         $message      = $this->translator->translate("User successfully registered");
 
-        $firstName          = $this->getParameter("first_name", null);
-        $lastName           = $this->getParameter("last_name", null);
-        $userName           = $this->getParameter("user_name", null);
-        $email              = $this->getParameter("email", null);
-        $password           = $this->getParameter("password", null);
-        $passwordRepeat     = $this->getParameter("password_repeat", null);
-        $termsAndConditions = $this->getParameter("terms_and_conditions", null);
-        $locked             = $this->getParameter("locked", "false") === "true";
+        $firstName          = $this->getParameter("first_name", $request);
+        $lastName           = $this->getParameter("last_name", $request);
+        $userName           = $this->getParameter("user_name", $request);
+        $email              = $this->getParameter("email", $request);
+        $password           = $this->getParameter("password", $request);
+        $passwordRepeat     = $this->getParameter("password_repeat", $request);
+        $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
+        $locked             = $this->getParameter("locked", $request) === "true";
 
         $users      = Keestash::getServer()->getUsersFromCache();
         $nameExists = false;
@@ -176,7 +166,7 @@ class Add extends AbstractApi {
             $user = null;
             try {
                 $user = $this->userService->createUser(
-                    $this->userService->toNewUser($this->getParameters())
+                    $this->userService->toNewUser($request->getParsedBody())
                 );
 
                 if (true === $locked) {
@@ -198,7 +188,7 @@ class Add extends AbstractApi {
 
         }
 
-        $msg->addMessage(
+        return LegacyResponse::fromData(
             $responseCode
             , [
                 "response_code" => $responseCode
@@ -206,10 +196,10 @@ class Add extends AbstractApi {
             ]
         );
 
-        parent::setResponse(
-            $msg
-        );
+    }
 
+    private function getParameter(string $name, RequestInterface $request) {
+        return $request->getParsedBody()[$name] ?? null;
     }
 
     public function afterCreate(): void {

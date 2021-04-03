@@ -21,10 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
-use doganoo\PHPUtil\HTTP\Code;
-use doganoo\PHPUtil\Util\DateTimeUtil;
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\LoginResponse;
+use DateTime;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\App\Helper;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
@@ -38,8 +36,11 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Login extends AbstractApi {
+class Login implements RequestHandlerInterface {
 
     private const DEFAULT_USER_LIFETIME = 60 * 60;
 
@@ -65,7 +66,6 @@ class Login extends AbstractApi {
         , ILocaleService $localeService
         , ILanguageService $languageService
         , ILogger $logger
-        , ?IToken $token = null
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
@@ -77,33 +77,26 @@ class Login extends AbstractApi {
         $this->localeService      = $localeService;
         $this->languageService    = $languageService;
         $this->logger             = $logger;
-
-        parent::__construct($translator, $token);
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $userName = $this->getParameter("user", "");
-        $password = $this->getParameter("password", "");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode($request->getBody()->getContents(), true);
+        $userName   = $parameters["user"] ?? "";
+        $password   = $parameters["password"] ?? "";
 
         $user = $this->userRepository->getUser($userName);
 
         $this->logger->debug("user is null: " . (null === $user));
-        $response = new LoginResponse();
-        $response->setCode(Code::OK);
 
         if (true === $this->userService->isDisabled($user)) {
-            $response->addMessage(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK,
                 [
                     "message" => $this->translator->translate("No User Found")
                 ]
             );
         } else if (false === $this->userService->validatePassword($password, $user->getPassword())) {
-            $response->addMessage(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK,
                 [
                     "message" => $this->translator->translate("Invalid Credentials")
@@ -112,31 +105,27 @@ class Login extends AbstractApi {
         } else {
             $token = $this->tokenService->generate("login", $user);
 
-            $response->addMessage(
+            $response = LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_OK
                 , [
-                    "message"    => $this->translator->translate("Ok")
-                    , "routeTo"  => Helper::getDefaultRoute()
-                    , "settings" => [
-                        "locale"     => $this->localeService->getLocaleForUser($user)
-                        , "language" => $this->languageService->getLanguageForUser($user)
-                    ]
+                "message"    => $this->translator->translate("Ok")
+                , "routeTo"  => Helper::getDefaultRoute()
+                , "settings" => [
+                    "locale"     => $this->localeService->getLocaleForUser($user)
+                    , "language" => $this->languageService->getLanguageForUser($user)
                 ]
-            );
+            ],
+                200,
+                [
+                    "api_token"   => $token->getValue()
+                    , 'user_hash' => $user->getHash()
 
-            $response->addHeader(
-                "api_token"
-                , $token->getValue()
-            );
-
-            $response->addHeader(
-                'user_hash'
-                , $user->getHash()
+                ]
             );
 
             $this->tokenManager->add($token);
 
-            $expireTs = DateTimeUtil::getUnixTimestamp() +
+            $expireTs = (new DateTime())->getTimestamp() +
                 $this->configService->getValue(
                     "user_lifetime"
                     , (string) Login::DEFAULT_USER_LIFETIME
@@ -149,13 +138,7 @@ class Login extends AbstractApi {
 
         }
 
-        parent::setResponse(
-            $response
-        );
-
-    }
-
-    public function afterCreate(): void {
+        return $response;
 
     }
 

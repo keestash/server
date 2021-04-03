@@ -21,21 +21,25 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
-use Keestash;
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\User\IUserRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Exists extends AbstractApi {
+class Exists implements RequestHandlerInterface {
 
-    public function onCreate(array $parameters): void {
+    private IUserRepository $userRepository;
 
+    public function __construct(IUserRepository $userRepository) {
+        $this->userRepository = $userRepository;
     }
 
-    public function create(): void {
-        $userName = $this->getParameter("username", null);
-        $users    = Keestash::getServer()->getUsersFromCache();
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $userName = $request->getAttribute("userName");
+        $users    = $this->userRepository->getAll();
         $user     = null;
 
         /** @var IUser $iUser */
@@ -48,17 +52,12 @@ class Exists extends AbstractApi {
 
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "user_exists" => $user !== null
             ]
         );
-
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

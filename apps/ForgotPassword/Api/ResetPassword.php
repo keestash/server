@@ -22,73 +22,62 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Api;
 
 use DateTime;
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\DefaultResponse;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class ResetPassword extends AbstractApi {
+class ResetPassword implements RequestHandlerInterface {
 
-    /** @var IUserStateRepository */
-    private $userStateRepository;
-    /** @var UserService */
-    private $userService;
+    private IUserStateRepository $userStateRepository;
+    private UserService          $userService;
+    private IL10N                $translator;
 
     public function __construct(
         IL10N $l10n
         , IUserStateRepository $userStateRepository
         , UserService $userService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->userStateRepository = $userStateRepository;
         $this->userService         = $userService;
+        $this->translator          = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $response = new DefaultResponse();
-
-        $hash        = $this->getParameter("hash", null);
-        $newPassword = $this->getParameter("input", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters  = json_decode($request->getBody()->getContents(), true);
+        $hash        = $parameters["hash"] ?? null;
+        $newPassword = $parameters["input"] ?? null;
 
         $userState     = $this->findCandidate($hash);
         $validPassword = $this->userService->passwordHasMinimumRequirements($newPassword);
 
         if (null === $userState) {
 
-            $response->addMessage(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "header"    => $this->getL10N()->translate("User not updated")
-                    , "message" => $this->getL10N()->translate("No user found or session is expired. Please request a new link")
+                    "header"    => $this->translator->translate("User not updated")
+                    , "message" => $this->translator->translate("No user found or session is expired. Please request a new link")
                 ]
             );
-            $this->setResponse($response);
-            return;
 
         }
 
         if (false === $validPassword) {
 
-            $response->addMessage(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "header"    => $this->getL10N()->translate("User not updated")
-                    , "message" => $this->getL10N()->translate("Password minimum requirements not met")
+                    "header"    => $this->translator->translate("User not updated")
+                    , "message" => $this->translator->translate("Password minimum requirements not met")
                 ]
             );
-            $this->setResponse($response);
-            return;
 
         }
 
@@ -105,19 +94,20 @@ class ResetPassword extends AbstractApi {
 
             $this->userStateRepository->revertPasswordChangeRequest($oldUser);
 
-
-            $response->addMessage(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_OK
                 , [
-                    "header"    => $this->getL10N()->translate("User updated")
-                    , "message" => $this->getL10N()->translate("We sent an email to reset your password")
+                    "header"    => $this->translator->translate("User updated")
+                    , "message" => $this->translator->translate("We sent an email to reset your password")
                 ]
             );
-            $this->setResponse($response);
-            return;
 
         }
 
+        return new JsonResponse(
+            [],
+            500
+        );
     }
 
     private function findCandidate(string $hash): ?IUserState {

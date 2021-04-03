@@ -23,14 +23,13 @@ namespace KSA\Users\BackgroundJob;
 
 use DateTime;
 use doganoo\Backgrounder\Task\Task;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\User\Event\UserPreRemovedEvent;
 use Keestash\Core\Service\User\Event\UserRemovedEvent;
 use Keestash\Core\Service\User\UserService;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserStateRepository;
 
 /**
@@ -40,23 +39,23 @@ use KSP\Core\Repository\User\IUserStateRepository;
 class UserDeleteTask extends Task {
 
     private UserService          $userService;
-    private HashTable            $userList;
     private ConfigService        $configService;
     private IUserStateRepository $userStateRepository;
     private ILogger              $logger;
+    private IEventManager        $eventManager;
 
     public function __construct(
         UserService $userService
-        , HashTable $userList
         , ConfigService $configService
         , IUserStateRepository $userStateRepository
         , ILogger $logger
+        , IEventManager $eventManager
     ) {
         $this->userService         = $userService;
-        $this->userList            = $userList;
         $this->configService       = $configService;
         $this->userStateRepository = $userStateRepository;
         $this->logger              = $logger;
+        $this->eventManager        = $eventManager;
     }
 
     protected function onAction(): void {
@@ -66,18 +65,18 @@ class UserDeleteTask extends Task {
     protected function action(): bool {
 
         $daysAfterDelete = $this->configService->getValue("user_delete_delay", 90);
+        $userList        = $this->userStateRepository->getDeletedUsers();
 
-        foreach ($this->userList->keySet() as $key) {
+        foreach ($userList->keySet() as $key) {
             /** @var IUserState $userState */
-            $userState = $this->userList->get($key);
+            $userState = $userList->get($key);
 
             if ($userState->getValidFrom()->diff(new DateTime())->days < $daysAfterDelete) {
                 $this->logger->info("{$userState->getUser()->getId()} is not ready to delete yet");
                 continue;
             }
 
-            Keestash::getServer()
-                ->getEventManager()
+            $this->eventManager
                 ->execute(
                     new UserPreRemovedEvent($userState->getUser())
                 );
@@ -90,8 +89,7 @@ class UserDeleteTask extends Task {
                 $this->logger->info("userstate removed: " . $removedAll);
             }
 
-            Keestash::getServer()
-                ->getEventManager()
+            $this->eventManager
                 ->execute(
                     new UserRemovedEvent($userState->getUser(), $removed)
                 );

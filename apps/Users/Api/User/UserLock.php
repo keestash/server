@@ -21,74 +21,67 @@ declare(strict_types=1);
 
 namespace KSA\Users\Api\User;
 
-use Keestash;
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class UserLock extends AbstractApi {
+class UserLock implements RequestHandlerInterface {
 
-    /** @var IUserRepository $userRepository */
-    private $userRepository;
-
-    /** @var IUserStateRepository $userStateRepository */
-    private $userStateRepository;
+    private IUserRepository      $userRepository;
+    private IUserStateRepository $userStateRepository;
+    private IL10N                $translator;
+    private IEventManager        $eventManager;
 
     public function __construct(
         IL10N $l10n
         , IUserRepository $userRepository
         , IUserStateRepository $userStateRepository
-        , ?IToken $token = null
+        , IEventManager $eventManager
     ) {
-        parent::__construct($l10n, $token);
-
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;
+        $this->translator          = $l10n;
+        $this->eventManager        = $eventManager;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $userId = $this->getParameter('user_id', '');
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode($request->getBody()->getContents(), true);
+        $userId     = $parameters['user_id'] ?? '';
 
         if ("" === $userId) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no parameters given")
+                    "message" => $this->translator->translate("no parameters given")
                 ]
             );
-
-            return;
         }
 
         $user = $this->userRepository->getUserById((string) $userId);
 
         if (null === $user) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no user found")
+                    "message" => $this->translator->translate("no user found")
                 ]
             );
 
-            return;
         }
 
         $locked = $this->userStateRepository->lock($user);
 
-        Keestash::getServer()
-            ->getEventManager()
+        $this->eventManager
             ->execute(
                 new UserStateLockEvent(
                     IUserState::USER_STATE_LOCK
@@ -98,28 +91,20 @@ class UserLock extends AbstractApi {
             );
 
         if (false === $locked) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not delete user")
+                    "message" => $this->translator->translate("could not delete user")
                 ]
             );
-
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->getL10N()->translate("user remove")
+                "message" => $this->translator->translate("user remove")
             ]
         );
-
-        return;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

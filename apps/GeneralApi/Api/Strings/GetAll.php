@@ -21,32 +21,27 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Strings;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\StringManager\FrontendManager;
-
 use KSP\Api\IResponse;
 use KSP\Core\Cache\ICacheService;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\StringManager\IStringManager;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class GetAll extends AbstractApi {
+class GetAll implements RequestHandlerInterface {
 
     private IStringManager $stringManager;
-    private ICacheService   $cacheServer;
+    private ICacheService  $cacheServer;
 
     public function __construct(
-        IL10N $l10n
-        , FrontendManager $frontendManager
+        FrontendManager $frontendManager
         , ICacheService $cacheServer
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->stringManager = $frontendManager;
         $this->cacheServer   = $cacheServer;
     }
-
 
     private function getCachedStrings(string $key): array {
 
@@ -58,22 +53,14 @@ class GetAll extends AbstractApi {
         return $data;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
         $redisKey = "frontendmanagertemplates";
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "data" => $this->getCachedStrings($redisKey)
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -26,7 +26,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 
 abstract class LockHandler {
 
-    private $instanceDb = null;
+    private InstanceDB $instanceDb;
 
     public function __construct(InstanceDB $instanceDB) {
         $this->instanceDb = $instanceDB;

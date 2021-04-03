@@ -21,42 +21,34 @@ declare(strict_types=1);
 
 namespace KSA\Users\Api\User;
 
-use Keestash;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use KSP\Core\Repository\User\IUserRepository;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class GetAll extends AbstractApi {
+class GetAll implements RequestHandlerInterface {
 
-    private ILogger $logger;
+    private ILogger         $logger;
+    private IUserRepository $userRepository;
 
     public function __construct(
-        IL10N $l10n
-        , ILogger $logger
-        , ?IToken $token = null
+        ILogger $logger
+        , IUserRepository $userRepository
     ) {
-        parent::__construct($l10n, $token);
-
-        $this->logger = $logger;
+        $this->logger         = $logger;
+        $this->userRepository = $userRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $this->createAndSetResponse(
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "users" => Keestash::getServer()->getUsersFromCache()
+                "users" => $this->userRepository->getAll()
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

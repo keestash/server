@@ -24,20 +24,13 @@ namespace KSA\ForgotPassword\Application;
 
 use KSA\ForgotPassword\Controller\ForgotPassword;
 use KSA\ForgotPassword\Controller\ResetPassword;
-use KSP\Core\Manager\RouterManager\IRouterManager;
 
 class Application extends \Keestash\App\Application {
 
-    public const PERMISSION_FORGOT_PASSWORD        = "forgot_password";
-    public const PERMISSION_RESET_PASSWORD         = "reset_password";
-    public const PERMISSION_FORGOT_PASSWORD_SUBMIT = "forgot_password_submit";
-    public const FORGOT_PASSWORD_SUBMIT            = "forgot_password/submit";
-    public const FORGOT_PASSWORD                   = "forgot_password";
-    public const RESET_PASSWORD                    = "reset_password/{token}/";
-    public const RESET_PASSWORD_UPDATE             = "/reset_password/update/";
+    public const FORGOT_PASSWORD = "forgot_password";
+    public const RESET_PASSWORD  = "reset_password/{token}/";
 
     public function register(): void {
-
 
         parent::registerRoute(
             self::FORGOT_PASSWORD
@@ -47,16 +40,6 @@ class Application extends \Keestash\App\Application {
         parent::registerRoute(
             self::RESET_PASSWORD
             , ResetPassword::class
-        );
-
-        parent::registerApiRoute(
-            self::FORGOT_PASSWORD_SUBMIT
-            , \KSA\ForgotPassword\Api\ForgotPassword::class
-            , [IRouterManager::POST]
-        );
-
-        parent::registerPublicApiRoute(
-            self::FORGOT_PASSWORD_SUBMIT
         );
 
         parent::registerPublicRoute(
@@ -71,25 +54,12 @@ class Application extends \Keestash\App\Application {
             self::FORGOT_PASSWORD
         );
 
-        $this->registerApiRoute(
-            Application::RESET_PASSWORD_UPDATE
-            , \KSA\ForgotPassword\Api\ResetPassword::class
-            , [IRouterManager::POST]
-        );
-        $this->registerPublicApiRoute(
-            Application::RESET_PASSWORD_UPDATE
-        );
-
         parent::addJavaScriptFor(
             "forgot_password"
             , "reset_password"
             , self::RESET_PASSWORD
         );
 
-    }
-
-    public function isActive(): bool {
-        return true;
     }
 
 }
