@@ -274,3 +274,6 @@ data
 
 lib/scss/dist/*.css
 apps/*/scss/dist/*.css
+
+public/css/*
+public/js/*
