@@ -25,18 +25,22 @@ use Keestash;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
+use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Uninstall extends KeestashCommand {
 
     private InstanceRepository $instanceRepository;
+    private Config             $config;
 
     public function __construct(
         InstanceRepository $instanceRepository
+        , Config $config
     ) {
         parent::__construct("instance:uninstall");
         $this->instanceRepository = $instanceRepository;
+        $this->config             = $config;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -52,10 +56,10 @@ class Uninstall extends KeestashCommand {
     }
 
     private function removeCss(OutputInterface $output): bool {
-        $appRoot = Keestash::getServer()
-            ->getAppRoot();
 
-        $styleSheets = glob($appRoot . '/*/scss/dist/*/css');
+        $styleSheets = glob(
+            $this->config->get(Keestash\ConfigProvider::INSTANCE_PATH) . '/public/css'
+        );
 
         if (false === $styleSheets) {
             $this->writeError('no data found :(', $output);
@@ -111,7 +115,7 @@ class Uninstall extends KeestashCommand {
 
     private function clearConfig(OutputInterface $output): bool {
         $overwritten = false !== file_put_contents(
-                Keestash::getServer()->getConfigRoot() . "/config.php"
+                $this->config->get(Keestash\ConfigProvider::CONFIG_PATH) . "/config.php"
                 , ""
             );
 

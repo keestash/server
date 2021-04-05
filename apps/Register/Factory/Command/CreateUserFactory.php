@@ -25,7 +25,6 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Register\Command\CreateUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\Validation\IValidationService;
 use Psr\Container\ContainerInterface;
 
 class CreateUserFactory {
@@ -34,7 +33,6 @@ class CreateUserFactory {
         return new CreateUser(
             $container->get(IUserRepository::class),
             $container->get(UserService::class),
-            $container->get(IValidationService::class),
             $container->get(IUserStateRepository::class)
         );
     }

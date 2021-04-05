@@ -16,8 +16,7 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\File\Icon\IconService;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -27,13 +26,19 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\L10N\IL10N;
+use Laminas\Config\Config;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
     private IFileRepository $fileRepository;
     private NodeRepository  $nodeRepository;
     private FileRepository  $nodeFileRepository;
     private IconService     $iconService;
+    private IL10N           $translator;
+    private Config          $config;
 
     public function __construct(
         IL10N $l10n
@@ -41,47 +46,43 @@ class Get extends AbstractApi {
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
         , IconService $iconService
-        , ?IToken $token = null
+        , Config $config
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator         = $l10n;
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->iconService        = $iconService;
+        $this->config             = $config;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $nodeId = $this->getParameters()["nodeId"] ?? null;
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $nodeId = $request->getAttribute("nodeId");
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no node id given")
+                    "message" => $this->translator->translate("no node id given")
                 ]
             );
-            return;
         }
 
         $nodeExists = $this->nodeRepository->exists((int) $nodeId);
         if (false === $nodeExists) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no node found")
+                    "message" => $this->translator->translate("no node found")
                 ]
             );
-            return;
         }
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if ($node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
+        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
             throw new PasswordManagerException();
         }
 
@@ -90,7 +91,7 @@ class Get extends AbstractApi {
             , NodeFile::FILE_TYPE_ATTACHMENT
         );
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "fileList" => $list
@@ -102,7 +103,7 @@ class Get extends AbstractApi {
 
     private function addIcons(ArrayList $fileList): array {
         $icons    = [];
-        $assetDir = Keestash::getServer()->getAssetRoot();
+        $assetDir = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH);
         $svgDir   = str_replace("//", "/", "$assetDir/svg/");
 
         /** @var NodeFile $nodeFile */
@@ -113,10 +114,6 @@ class Get extends AbstractApi {
         }
 
         return $icons;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

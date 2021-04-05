@@ -24,17 +24,12 @@ namespace KSA\PasswordManager\Entity;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonSerializable;
-use Keestash;
-use Keestash\Core\Service\Validation\Rule\Numerical;
-use Keestash\Core\Service\Validation\Validator\ValidatorBag;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Entity\Share\Share;
-use KSP\Core\DTO\Entity\IValidatable;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
-use Laminas\Validator\NotEmpty;
 
-abstract class Node implements JsonSerializable, IValidatable {
+abstract class Node implements JsonSerializable {
 
     public const ROOT       = "root";
     public const FOLDER     = "folder";
@@ -123,13 +118,6 @@ abstract class Node implements JsonSerializable, IValidatable {
         $this->organization = $organization;
     }
 
-    public function isSharedToMe(): bool {
-        // TODO find a better solution :(
-        $loggedInUser = Keestash::getServer()->getUserFromSession();
-        if (null === $loggedInUser) return false;
-        return $this->isSharedTo($loggedInUser);
-    }
-
     public function isSharedTo(IUser $user): bool {
         return null !== $this->getShareByUser($user);
     }
@@ -152,32 +140,6 @@ abstract class Node implements JsonSerializable, IValidatable {
         $this->publicShare = $publicShare;
     }
 
-    public function getValidators(): array {
-        $bags = [];
-
-        // id
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->id);
-        $validatorBag->addValidator(new NotEmpty());
-        $validatorBag->addValidator(new Numerical());
-        $bags[] = $validatorBag;
-
-        // name
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->name);
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        // userid
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->getUser()->getId());
-        $validatorBag->addValidator(new NotEmpty());
-        $validatorBag->addValidator(new Numerical());
-        $bags[] = $validatorBag;
-
-        return $bags;
-    }
-
     public function jsonSerialize(): array {
         return [
             "id"                => $this->getId()
@@ -189,7 +151,7 @@ abstract class Node implements JsonSerializable, IValidatable {
             , "icon"            => $this->getIcon()
             , "value"           => $this->getValue()
             , "shared_to"       => $this->getSharedTo()
-            , "is_shared_to_me" => $this->isSharedToMe()
+            , "is_shared_to_me" => false // TODO implement
             , "public_share"    => $this->getPublicShare()
             , "organization"    => $this->getOrganization()
         ];

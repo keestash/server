@@ -33,6 +33,9 @@ use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
+use KSA\GeneralApi\Controller\File\View;
+use KSA\GeneralApi\Controller\Organization\Detail;
+use KSA\GeneralApi\Controller\Route\RouteList;
 use KSA\GeneralApi\Event\Listener\UserChangedListener;
 use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
 use KSA\GeneralApi\Factory\Api\MinimumCredentialFactory;
@@ -49,6 +52,9 @@ use KSA\GeneralApi\Factory\Command\ClearBundleJSFactory;
 use KSA\GeneralApi\Factory\Command\CompilerFactory;
 use KSA\GeneralApi\Factory\Command\MigrateAppsFactory;
 use KSA\GeneralApi\Factory\Command\PHPStanFactory;
+use KSA\GeneralApi\Factory\Controller\Organization\DetailFactory;
+use KSA\GeneralApi\Factory\Controller\File\ViewFactory;
+use KSA\GeneralApi\Factory\Controller\Route\RouteListFactory;
 use KSA\GeneralApi\Factory\Event\Listener\UserChangedListenerFactory;
 use KSA\GeneralApi\Factory\Repository\DemoUsersRepositoryFactory;
 use KSA\GeneralApi\Factory\Repository\OrganizationRepositoryFactory;
@@ -87,7 +93,12 @@ return [
         \KSA\GeneralApi\Api\Organization\User::class => UserFactory::class,
         \KSA\GeneralApi\Api\Strings\GetAll::class    => \KSA\GeneralApi\Factory\Api\Strings\GetAllFactory::class,
         GetAll::class                                => GetAllFactory::class,
-        \KSA\GeneralApi\Api\Thumbnail\File::class    => FileFactory::class
+        \KSA\GeneralApi\Api\Thumbnail\File::class    => FileFactory::class,
+
+        // controller
+        View::class                                  => ViewFactory::class,
+        Detail::class                                => DetailFactory::class,
+        RouteList::class                             => RouteListFactory::class,
     ],
     'aliases'   => [
         IOrganizationRepository::class     => OrganizationRepository::class,

@@ -23,6 +23,9 @@ namespace KSA\GeneralApi;
 
 final class ConfigProvider {
 
+    public const ROUTE_LIST_ALL      = "/route_list/all[/]";
+    public const ORGANIZATION_SINGLE = "/organizations/:id[/]";
+
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';
     }

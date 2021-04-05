@@ -24,39 +24,42 @@ namespace KSA\Register\Event;
 use DateTime;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
-use Keestash;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IListener;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class EmailAfterRegistration implements IListener {
 
     public const TEMPLATE_NAME = "mail.twig";
 
-    private ITemplateManager $templateManager;
-    private EmailService     $emailService;
-    private Legacy           $legacy;
-    private IL10N            $translator;
-    private ILogger          $logger;
+    private TemplateRendererInterface $templateManager;
+    private EmailService              $emailService;
+    private Legacy                    $legacy;
+    private IL10N                     $translator;
+    private ILogger                   $logger;
+    private HTTPService               $httpService;
 
     public function __construct(
-        ITemplateManager $templateManager
+        TemplateRendererInterface $templateManager
         , EmailService $emailService
         , Legacy $legacy
         , IL10N $l10n
         , ILogger $logger
+        , HTTPService $httpService
     ) {
         $this->templateManager = $templateManager;
         $this->emailService    = $emailService;
         $this->legacy          = $legacy;
         $this->translator      = $l10n;
         $this->logger          = $logger;
+        $this->httpService     = $httpService;
     }
 
     /**
@@ -78,22 +81,22 @@ class EmailAfterRegistration implements IListener {
             EmailAfterRegistration::TEMPLATE_NAME,
             [
                 "title"              => $this->translator->translate("Welcome To $appName")
-                , "keestashLogoHref" => Keestash::getBaseURL(false) . "/asset/img/logo.png"
+                , "keestashLogoHref" => $this->httpService->getBaseURL(false) . "/asset/img/logo.png"
                 , "keestashLogoAlt"  => $appName
                 , "salutation"       => $this->translator->translate("Dear {$event->getUser()->getFirstName()},")
                 , "mainInfo"         => $this->translator->translate("You are enabled now for $appName. Log In and start using.")
                 , "detailText"       => $this->translator->translate("You are successfully registered for $appName.")
-                , "ctaHref"          => Keestash::getBaseURL(false) . "/index.php/login/"
+                , "ctaHref"          => $this->httpService->getBaseURL(false) . "/index.php/login/"
                 , "ctaText"          => $this->translator->translate("Login")
                 , "hasCta"           => true
                 , "postCtaFirst"     => $this->translator->translate("")
-                , "postCtaLink"      => Keestash::getBaseURL(false)
+                , "postCtaLink"      => $this->httpService->getBaseURL(false)
                 , "postCtaSecond"    => $this->translator->translate("Follow this link if you have any questions.")
                 , "thankYou"         => $this->translator->translate("Regards,")
                 , "thankYouName"     => $appName
                 , "hasSocialMedia"   => false
                 , "copyRightText"    => (new DateTime())->format("Y") . " " . $appName
-                , "copyRightHref"    => Keestash::getBaseURL(false)
+                , "copyRightHref"    => $this->httpService->getBaseURL(false)
             ]
         );
         $rendered = $this->templateManager->render(EmailAfterRegistration::TEMPLATE_NAME);

@@ -21,56 +21,38 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Avatar;
 
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\FileResponse;
-
 use Keestash\Core\Service\File\FileService as CoreFileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\Entity\File\NodeFile;
-use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository as NodeFileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\TextResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Get
  * @package KSA\PasswordManager\Api\Node\Avatar
  */
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
     private NodeFileRepository $nodeFileRepository;
     private NodeRepository     $nodeRepository;
-    private RawFileService     $rawFileService;
     private CoreFileService    $coreFileService;
 
     public function __construct(
-        IL10N $l10n
-        , NodeFileRepository $nodeFileRepository
+        NodeFileRepository $nodeFileRepository
         , NodeRepository $nodeRepository
-        , RawFileService $rawFileService
         , CoreFileService $coreFileService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->nodeFileRepository = $nodeFileRepository;
         $this->nodeRepository     = $nodeRepository;
-        $this->rawFileService     = $rawFileService;
         $this->coreFileService    = $coreFileService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    /**
-     * @throws PasswordManagerException
-     * @throws InvalidNodeTypeException
-     */
-    public function create(): void {
-        $nodeId = $this->getParameter("nodeId");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $nodeId = $request->getAttribute("nodeId");
 
         if (null === $nodeId) {
             throw new PasswordManagerException();
@@ -93,19 +75,15 @@ class Get extends AbstractApi {
             }
         }
 
-        $file         = null === $avatarFile
+        $file = null === $avatarFile
             ? $this->coreFileService->getDefaultNodeAvatar()
             : $avatarFile->getFile();
-        $fileResponse = new FileResponse(
+
+        return new TextResponse(
             file_get_contents($file->getFullPath())
+            , 200
+            , ['Content-Disposition' => 'inline; filename="' . rawurldecode($file->getName()) . '"']
         );
-        $fileResponse->addHeader('Content-Disposition', 'inline; filename="' . rawurldecode($file->getName()) . '"');
-        $this->setResponse($fileResponse);
-
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

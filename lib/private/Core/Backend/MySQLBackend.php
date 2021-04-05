@@ -24,13 +24,19 @@ namespace Keestash\Core\Backend;
 use Doctrine\DBAL\Connection;
 use Keestash;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
+use KSP\Core\Service\Config\IConfigService;
 
 class MySQLBackend implements ISQLBackend {
 
-    private Connection $connection;
+    private Connection     $connection;
+    private IConfigService $configService;
 
-    public function __construct(Connection $connection) {
-        $this->connection = $connection;
+    public function __construct(
+        Connection $connection
+        , IConfigService $configService
+    ) {
+        $this->connection    = $connection;
+        $this->configService = $configService;
     }
 
     public function connect(): bool {
@@ -48,7 +54,7 @@ class MySQLBackend implements ISQLBackend {
     }
 
     public function getSchemaName(): string {
-        return Keestash::getServer()->getConfig()->get("db_name");
+        return$this->configService->getValue("db_name");
     }
 
     /**

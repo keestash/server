@@ -30,8 +30,8 @@ const baseModule = {
         base: ['babel-polyfill', './lib/js/src/base.js']
     },
     output: {
-        path: __dirname + "/lib/js/dist",
-        filename: 'base.bundle.js'
+        path: __dirname + "/public/js/",
+        filename: '[name].bundle.js'
     },
     module: {
         rules: [
@@ -94,6 +94,7 @@ function toConfig(modules, baseModule) {
         config.node = {fs: 'empty'};
         config.module = Object.assign(baseModule.module, config.module || {});
         config.resolve = Object.assign(baseModule.resolve, config.resolve || {});
+        config.output = baseModule.output;
         conf.push(config);
     }
     return conf;

@@ -21,13 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Delete
@@ -35,79 +37,67 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Delete extends AbstractApi {
+class Delete implements RequestHandlerInterface {
 
     private NodeService    $nodeService;
     private NodeRepository $nodeRepository;
+    private IL10N          $translator;
 
     public function __construct(
         IL10N $l10n
         , NodeService $nodeService
         , NodeRepository $nodeRepository
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator     = $l10n;
         $this->nodeService    = $nodeService;
         $this->nodeRepository = $nodeRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $id   = $this->getParameter("id", (string) 0);
-        $type = $this->getParameter("type", "");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
+        $id         = $parameters["id"] ?? "0";
+        $type       = $parameters["type"] ?? "";
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         $deletable = $this->nodeService->deletableType($type);
         $node      = $this->nodeRepository->getNode((int) $id);
 
         if (false === $deletable) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("type $type is not deletable")
+                    "message" => $this->translator->translate("type $type is not deletable")
                 ]
             );
-
-            return;
         }
 
-        if (null === $node || $node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
-            $this->createAndSetResponse(
+        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no node found")
+                    "message" => $this->translator->translate("no node found")
                 ]
             );
-
-            return;
         }
 
         $deleted = $this->nodeRepository->remove($node);
 
         if (false === $deleted) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("error while deleting")
+                    "message" => $this->translator->translate("error while deleting")
                 ]
             );
-
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->getL10N()->translate("deleted")
+                "message" => $this->translator->translate("deleted")
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

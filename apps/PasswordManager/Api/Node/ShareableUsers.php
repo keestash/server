@@ -15,9 +15,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\FileManager\FileManager;
-
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Exception\InvalidParameterException;
@@ -29,6 +28,9 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class ShareableUsers
@@ -36,8 +38,9 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class ShareableUsers extends AbstractApi {
+class ShareableUsers implements RequestHandlerInterface {
 
+    private IL10N           $translator;
     private IUserRepository $userRepository;
     private NodeRepository  $nodeRepository;
     private FileManager     $fileManager;
@@ -51,10 +54,8 @@ class ShareableUsers extends AbstractApi {
         , FileManager $fileManager
         , RawFileService $rawFileService
         , FileService $fileService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator     = $l10n;
         $this->userRepository = $userRepository;
         $this->nodeRepository = $nodeRepository;
         $this->fileManager    = $fileManager;
@@ -62,12 +63,10 @@ class ShareableUsers extends AbstractApi {
         $this->fileService    = $fileService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $nodeId = $this->getParameter("nodeId", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $nodeId = $request->getAttribute("nodeId");
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
             throw new InvalidParameterException();
@@ -75,7 +74,7 @@ class ShareableUsers extends AbstractApi {
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if (null === $node || $node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
+        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
             throw new InvalidParameterException();
         }
 
@@ -84,16 +83,15 @@ class ShareableUsers extends AbstractApi {
         $pictureTable = $this->createPictureTable($all);
 
         if (null === $all) {
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no users found")
+                    "message" => $this->translator->translate("no users found")
                 ]
             );
-            return;
         }
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "user_list"  => $all
@@ -159,10 +157,6 @@ class ShareableUsers extends AbstractApi {
             $pictureTable[$user->getId()] = $userImage;
         }
         return $pictureTable;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -17,8 +17,15 @@ use Keestash;
 use KSP\App\Config\IApp as InstalledApp;
 use KSP\App\IApp;
 use KSP\App\IApp as LoadedApp;
+use KSP\App\ILoader;
 
 class Diff {
+
+    private ILoader $loader;
+
+    public function __construct(ILoader $loader) {
+        $this->loader = $loader;
+    }
 
     public function needsUpgrade(LoadedApp $loadedApp, InstalledApp $installedApp): bool {
         return $this->isLessVersion($loadedApp, $installedApp);
@@ -74,7 +81,7 @@ class Diff {
             /** @var InstalledApp $app */
             $app = $installedApps->get($key);
             if (false === $app->isEnabled()) {
-                Keestash::getServer()->getAppLoader()->unloadApp($key);
+                $this->loader->unloadApp($key);
                 // just to be sure :-)
                 $loadedApps->remove($key);
             }

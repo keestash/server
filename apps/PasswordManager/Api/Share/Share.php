@@ -21,8 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
@@ -30,74 +29,69 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Share extends AbstractApi {
+class Share implements RequestHandlerInterface {
 
     private NodeRepository  $nodeRepository;
     private IUserRepository $userRepository;
     private NodeService     $nodeService;
+    private IL10N           $translator;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
         , IUserRepository $userRepository
         , NodeService $nodeService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->nodeRepository = $nodeRepository;
         $this->userRepository = $userRepository;
         $this->nodeService    = $nodeService;
+        $this->translator     = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $nodeId = $this->getParameter('node_id', null);
-        $userId = $this->getParameter('user_id_to_share', null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
+        $nodeId     = $parameters['node_id'] ?? null;
+        $userId     = $parameters['user_id_to_share'] ?? null;
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "no node found"
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
         if (null === $userId) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "no user found"
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
         $shareable = $this->nodeService->isShareable((int) $nodeId, (string) $userId);
 
         if (false === $shareable) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("can not share with owner / already shared")
+                    "message" => $this->translator->translate("can not share with owner / already shared")
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
         // TODO not optimal, but we need to check anyhow
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if ($node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
+        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
             throw new PasswordManagerException();
         }
 
@@ -109,14 +103,12 @@ class Share extends AbstractApi {
         );
 
         if (null === $insertId) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not insert")
+                    "message" => $this->translator->translate("could not insert")
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
         $node  = $this->nodeRepository->getNode((int) $nodeId);
@@ -124,18 +116,12 @@ class Share extends AbstractApi {
             $this->userRepository->getUserById((string) $userId)
         );
 
-        $response = parent::createResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "share" => $share
             ]
         );
-
-        parent::setResponse($response);
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

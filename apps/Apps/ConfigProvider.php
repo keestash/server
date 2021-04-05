@@ -22,18 +22,47 @@ declare(strict_types=1);
 namespace KSA\Apps;
 
 use KSA\Apps\Api\UpdateApp;
+use KSA\Apps\Controller\Controller;
 use KSA\Apps\Factory\Api\UpdateAppFactory;
+use KSA\Apps\Factory\Controller\ControllerFactory;
 use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
+
+    public const ROUTE_NAME_APPS = '/apps[/]';
 
     public function __invoke(): array {
         return [
             'dependencies'                   => [
                 'factories' => [
                     // api
-                    UpdateApp::class => UpdateAppFactory::class,
+                    UpdateApp::class  => UpdateAppFactory::class,
+
+                    // controller
+                    Controller::class => ControllerFactory::class,
+                ]
+            ],
+            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
+                IApp::CONFIG_PROVIDER_ROUTES                 => [
+                    [
+                        'path'         => ConfigProvider::ROUTE_NAME_APPS
+                        , 'middleware' => Controller::class
+                        , 'name'       => Controller::class
+                    ]
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                    ConfigProvider::ROUTE_NAME_APPS => 'apps'
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                    ConfigProvider::ROUTE_NAME_APPS => 'apps'
+                ],
+                IApp::CONFIG_PROVIDER_SETTINGS               => [
+                    ConfigProvider::ROUTE_NAME_APPS => [
+                        'name'      => 'apps'
+                        , 'faClass' => "fas fa-user-circle"
+                        , 'order'   => 3
+                    ]
                 ]
             ],
             IApp::CONFIG_PROVIDER_API_ROUTER => [
@@ -44,6 +73,11 @@ final class ConfigProvider {
                         , 'method'     => IVerb::POST
                         , 'name'       => UpdateApp::class
                     ]
+                ]
+            ],
+            'templates'                      => [
+                'paths' => [
+                    'apps' => [__DIR__ . '/template']
                 ]
             ]
         ];

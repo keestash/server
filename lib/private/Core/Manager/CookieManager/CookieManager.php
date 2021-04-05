@@ -21,13 +21,18 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\CookieManager;
 
-
 use DateTime;
 use Keestash;
-use KSP\Core\ILogger\ILogger;
+use Keestash\Core\Service\HTTP\HTTPService;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 
 class CookieManager implements ICookieManager {
+
+    private HTTPService $httpService;
+
+    public function __construct(HTTPService $httpService) {
+        $this->httpService = $httpService;
+    }
 
     public function set(string $key, string $value, int $expireTs = 0): bool {
         return setcookie(
@@ -35,7 +40,7 @@ class CookieManager implements ICookieManager {
             , $value
             , $expireTs
             , ICookieManager::PATH_ENTIRE_DOMAIN
-            , Keestash::getBaseURL(false, false)
+            , $this->httpService->getBaseURL(false, false)
         );
     }
 

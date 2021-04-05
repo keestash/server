@@ -72,7 +72,7 @@ class NavigationManager implements INavigationManager {
                 }
 
                 public function getName(): string {
-                    return \Keestash::getServer()->getL10N()->translate("Settings");
+                    return "Settings";
                 }
 
                 public function getEntries(): ArrayList {

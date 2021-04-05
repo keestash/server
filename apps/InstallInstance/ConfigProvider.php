@@ -26,31 +26,63 @@ use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
 use KSA\InstallInstance\Command\DemoMode;
 use KSA\InstallInstance\Command\Uninstall;
+use KSA\InstallInstance\Controller\Controller;
 use KSA\InstallInstance\Factory\Api\Config\GetFactory;
 use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
 use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\DemoModeFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
+use KSA\InstallInstance\Factory\Controller\ControllerFactory;
 use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
+    public const CONFIG_PROVIDER_INSTALLATION_ROUTES = 'routes.installation.provider.config';
+    public const INSTALL_INSTANCE                    = '/install_instance[/]';
+
     public function __invoke(): array {
         return [
-            'dependencies'                 => [
+            IApp::CONFIG_PROVIDER_WEB_ROUTER                  => [
+                IApp::CONFIG_PROVIDER_ROUTES                 => [
+                    [
+                        'path'         => ConfigProvider::INSTALL_INSTANCE
+                        , 'middleware' => Controller::class
+                        , 'name'       => Controller::class
+                    ],
+                ],
+                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                    ConfigProvider::INSTALL_INSTANCE
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                    ConfigProvider::INSTALL_INSTANCE => 'install_instance'
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                    ConfigProvider::INSTALL_INSTANCE => 'install_instance'
+                ],
+            ],
+            \Keestash\ConfigProvider::INSTALL_INSTANCE_ROUTES => [
+                ConfigProvider::INSTALL_INSTANCE
+                , '/install_instance/update_config[/]'
+                , '/install_instance/config_data[/]'
+                , '/install_instance/end_update[/]'
+            ],
+            'dependencies'                                    => [
                 'factories' => [
                     // api
-                    Get::class       => GetFactory::class,
-                    Update::class    => UpdateFactory::class,
-                    EndUpdate::class => EndUpdateFactory::class,
+                    Get::class        => GetFactory::class,
+                    Update::class     => UpdateFactory::class,
+                    EndUpdate::class  => EndUpdateFactory::class,
 
                     // command
-                    DemoMode::class  => DemoModeFactory::class,
-                    Uninstall::class => UninstallFactory::class,
+                    DemoMode::class   => DemoModeFactory::class,
+                    Uninstall::class  => UninstallFactory::class,
+
+                    // controller
+                    Controller::class => ControllerFactory::class,
                 ]
             ],
-            IApp::CONFIG_PROVIDER_API_ROUTER => [
+            IApp::CONFIG_PROVIDER_API_ROUTER                  => [
                 IApp::CONFIG_PROVIDER_ROUTES        => [
                     [
                         'path'         => '/install_instance/update_config[/]'
@@ -77,9 +109,14 @@ final class ConfigProvider {
                     , '/install_instance/config_data[/]'
                 ]
             ],
-            IApp::CONFIG_PROVIDER_COMMANDS => [
+            IApp::CONFIG_PROVIDER_COMMANDS                    => [
                 Uninstall::class
                 , DemoMode::class
+            ],
+            'templates'                                       => [
+                'paths' => [
+                    'installInstance' => [__DIR__ . '/template']
+                ]
             ]
         ];
     }

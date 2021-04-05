@@ -21,16 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager;
 
+
 final class ConfigProvider {
 
-    public function __invoke(): array {
-        return [
-            'dependencies' => [
-                'factories' => [
+    public const PASSWORD_MANAGER_ATTACHMENTS_VIEW    = "/password_manager/attachments/view/:fileId[/]";
+    public const PASSWORD_MANAGER                     = "/password_manager[/]";
+    public const PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE = "/s/:hash[/]";
 
-                ]
-            ]
-        ];
+    public function __invoke(): array {
+        return require __DIR__ . '/config/config.php';
     }
 
 }

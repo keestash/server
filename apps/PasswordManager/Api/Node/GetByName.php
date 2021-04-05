@@ -21,68 +21,56 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
-use libphonenumber\ValidationResult;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class GetByName
  * @package KSA\PasswordManager\Api\Node
  */
-class GetByName extends AbstractApi {
+class GetByName implements RequestHandlerInterface {
 
     private NodeRepository $nodeRepository;
 
-    public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
-        , ?IToken $token = null
-    ) {
-        parent::__construct($l10n, $token);
+    public function __construct(NodeRepository $nodeRepository) {
         $this->nodeRepository = $nodeRepository;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $name = $this->getParameter('name');
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $name = $request->getAttribute('name');
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $name) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "no username"
                 ]
             );
-            return;
         }
 
-        $list = $this->nodeRepository->getByName($name, 0 ,1);
+        $list = $this->nodeRepository->getByName($name, 0, 1);
 
         /** @var Node $node */
         foreach ($list as $key => $node) {
-            if ($node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
+            if ($node->getUser()->getId() !== $token->getUser()->getId()) {
                 $list->remove($key);
             }
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "message" => $list
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

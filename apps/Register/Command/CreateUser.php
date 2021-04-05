@@ -29,7 +29,6 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Register\Exception\CreateUserException;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\Validation\IValidationService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -45,20 +44,17 @@ class CreateUser extends KeestashCommand {
 
     private IUserRepository      $userRepository;
     private UserService          $userService;
-    private IValidationService   $validationService;
     private IUserStateRepository $userStateRepository;
 
     public function __construct(
         IUserRepository $userRepository
         , UserService $userService
-        , IValidationService $validationService
         , IUserStateRepository $userStateRepository
     ) {
         parent::__construct(null);
 
         $this->userRepository      = $userRepository;
         $this->userService         = $userService;
-        $this->validationService   = $validationService;
         $this->userStateRepository = $userStateRepository;
     }
 
@@ -111,7 +107,7 @@ class CreateUser extends KeestashCommand {
         $user->setCreateTs(new DateTime());
         $user->setDeleted($deleted !== false);
 
-        $errors     = $this->validationService->validate($user);
+        $errors     = []; // TODO implement
         $errorCount = count($errors);
 
         if ($errorCount > 0) {

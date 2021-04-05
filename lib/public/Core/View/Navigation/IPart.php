@@ -41,6 +41,9 @@ interface IPart {
 
     public function getName(): string;
 
+    /**
+     * @return ArrayList<IEntry>
+     */
     public function getEntries(): ArrayList;
 
     public function addEntry(IEntry $entry): void;

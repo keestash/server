@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Comment;
 
 use DateTime;
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Comment\Comment;
@@ -24,10 +23,11 @@ use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Add extends AbstractApi {
+class Add implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private NodeRepository    $nodeRepository;
@@ -35,32 +35,22 @@ class Add extends AbstractApi {
     private UserService       $userService;
 
     public function __construct(
-        IL10N $l10n
-        , CommentRepository $commentRepository
+        CommentRepository $commentRepository
         , NodeRepository $nodeRepository
         , UserRepository $userRepository
         , UserService $userService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
         $this->userRepository    = $userRepository;
         $this->userService       = $userService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    /**
-     * @throws CommentException
-     */
-    public function create(): void {
-        $userId        = $this->getParameter('user_id');
-        $commentString = $this->getParameter('comment');
-        $nodeId        = $this->getParameter('node_id');
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters    = json_decode((string) $request->getBody(), true);
+        $userId        = $parameters['user_id'] ?? null;
+        $commentString = $parameters['comment'] ?? null;
+        $nodeId        = $parameters['node_id'] ?? null;
 
         if (null === $userId) {
             throw new CommentException();
@@ -105,16 +95,12 @@ class Add extends AbstractApi {
             throw new CommentException();
         }
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "comment" => $comment
             ]
         );
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

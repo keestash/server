@@ -24,11 +24,7 @@ module.exports = {
     entry: {
         users: glob.sync(__dirname + "/src/users/*.js")
     },
-    output: {
-        path: path.resolve(__dirname + "/dist/"),
-        filename: '[name].bundle.js'
-    },
-    module: {
+      module: {
         rules: [
             {
                 test: /\.vue$/,

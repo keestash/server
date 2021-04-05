@@ -25,7 +25,6 @@ use DateTimeInterface;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Entity\IComparable;
 use KSP\Core\DTO\Entity\IJsonObject;
-use KSP\Core\DTO\Entity\IValidatable;
 
 /**
  * Interface IUser
@@ -35,7 +34,6 @@ use KSP\Core\DTO\Entity\IValidatable;
 interface IUser extends
     IJsonObject
     , IComparable
-    , IValidatable
     , IKeyHolder
 {
 

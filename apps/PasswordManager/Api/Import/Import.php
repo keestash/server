@@ -12,38 +12,19 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Import;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Import extends AbstractApi {
+class Import implements RequestHandlerInterface {
 
-    private $parameters = null;
-
-    public function __construct(IL10N $l10n, ?IToken $token = null) {
-        parent::__construct($l10n, $token);
-    }
-
-    public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-    }
-
-    public function create(): void {
-
-        parent::setResponse(
-            parent::createResponse(
-                IResponse::RESPONSE_CODE_OK
-                , [
-                    "message" => "ok"
-                ]
-            )
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        return LegacyResponse::fromData(
+            IResponse::RESPONSE_CODE_OK
+            , []
         );
-    }
-
-    public function afterCreate(): void {
-        // TODO: Implement afterCreate() method.
     }
 
 }

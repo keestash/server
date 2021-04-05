@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Repository\Node;
 use Doctrine\DBAL\Driver\ResultStatement;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash;
 use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
@@ -186,7 +185,7 @@ class NodeRepository extends AbstractRepository {
                 throw new InvalidNodeTypeException("no type for $type found for id $id");
         }
 
-        $user = Keestash::getServer()->getUserFromCache((int) $userId);
+        $user = $this->userRepository->getUserById($userId);
         $node->setId((int) $id);
         $node->setName(
             (string) $name

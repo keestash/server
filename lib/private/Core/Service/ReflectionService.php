@@ -22,34 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Core\Service;
 
 use doganoo\DIP\Object\Reflection\ReflectionService as DiServicesReflectionService;
-use Keestash;
-use KSP\Core\DTO\Token\IToken;
-use ReflectionClass;
 
 class ReflectionService extends DiServicesReflectionService {
 
-    /**
-     * @param string      $className
-     * @param IToken|null $token
-     *
-     * @return object
-     */
-    public function createObject(string $className, ?IToken $token = null) {
-        $constructorArgs = [];
-        $instance        = new ReflectionClass($className);
-
-        if (null !== $instance->getConstructor()) {
-            foreach ($instance->getConstructor()->getParameters() as $parameter) {
-                if (true === $parameter->isDefaultValueAvailable()) continue; // TODO validate ?!
-                $className         = $parameter->getClass()->getName();
-                $class             = Keestash::getServer()->query($className);
-                $constructorArgs[] = $class;
-            }
-        }
-
-        $constructorArgs[] = $token;
-        return $instance->newInstanceArgs($constructorArgs);
-    }
-
-
+    // TODO move DI Factories to Library and remove this class
 }

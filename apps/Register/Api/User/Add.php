@@ -23,7 +23,6 @@ namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
 use Exception;
-use Keestash;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Application\Application;
@@ -100,7 +99,7 @@ class Add implements RequestHandlerInterface {
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
         $locked             = $this->getParameter("locked", $request) === "true";
 
-        $users      = Keestash::getServer()->getUsersFromCache();
+        $users      = $this->userRepository->getAll();
         $nameExists = false;
         $mailExists = false;
 

@@ -21,47 +21,29 @@ declare(strict_types=1);
 
 namespace KSA\TNC\Controller;
 
-use KSA\TNC\Application\Application;
 use KSP\Core\Controller\ContextLessAppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
-use KSP\L10N\IL10N;
+use KSP\Core\Service\Controller\IAppRenderer;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends ContextLessAppController {
 
-    private const TEMPLATE_NAME_TNC = "tnc.twig";
+    private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $translator
+        TemplateRendererInterface $templateRenderer
+        , IAppRenderer $appRenderer
     ) {
-        parent::__construct(
-            $templateManager
-            , $translator
-        );
+        parent::__construct($appRenderer);
+        $this->templateRenderer = $templateRenderer;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-
-        $this->getTemplateManager()
-            ->replace(
-                Controller::TEMPLATE_NAME_TNC
-                , [
-
-                ]
+    public function run(ServerRequestInterface $request): string {
+        return $this->templateRenderer
+            ->render(
+                'tnc::tnc'
+                , []
             );
-
-        $this->setAppContent(
-            $this->getTemplateManager()->render(Controller::TEMPLATE_NAME_TNC)
-        );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

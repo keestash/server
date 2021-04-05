@@ -21,36 +21,39 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Controller\Route;
 
-use Keestash;
-
+use KSP\App\IApp;
 use KSP\Core\Controller\AppController;
+use KSP\Core\Service\Controller\IAppRenderer;
+use Laminas\Config\Config;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class RouteList extends AppController {
 
-    public function onCreate(): void {
+    private TemplateRendererInterface $templateRenderer;
+    private Config                    $config;
 
+    public function __construct(
+        IAppRenderer $appRenderer
+        , TemplateRendererInterface $templateRenderer
+        , Config $config
+    ) {
+        parent::__construct($appRenderer);
+
+        $this->templateRenderer = $templateRenderer;
+        $this->config           = $config;
     }
 
-    public function create(): void {
-        $httpRouter = Keestash::getServer()->getHTTPRouter();
-        $apiRouter  = Keestash::getServer()->getApiRouter();
+    public function run(ServerRequestInterface $request): string {
 
-        $this->getTemplateManager()
-            ->replace(
-                "route_list.twig"
+        return $this->templateRenderer
+            ->render(
+                "generalApi::route_list"
                 , [
-                    "httpRoutes"  => $httpRouter->getRoutes()->toArray()
-                    , "apiRoutes" => $apiRouter->getRoutes()->toArray()
+                    "httpRoutes"  => $this->config->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)->get(IApp::CONFIG_PROVIDER_ROUTES)->toArray()
+                    , "apiRoutes" => $this->config->get(IApp::CONFIG_PROVIDER_API_ROUTER)->get(IApp::CONFIG_PROVIDER_ROUTES)->toArray()
                 ]
             );
-
-        $this->setAppContent(
-            $this->getTemplateManager()
-                ->render("route_list.twig")
-        );
-    }
-
-    public function afterCreate(): void {
 
     }
 

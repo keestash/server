@@ -25,7 +25,9 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\System\Installation\Instance\LockHandler;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\Service\Config\IConfigService;
+use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class InstallerServiceFactory {
@@ -36,6 +38,8 @@ class InstallerServiceFactory {
             , $container->get(Migrator::class)
             , $container->get(InstanceDB::class)
             , $container->get(IConfigService::class)
+            , $container->get(Config::class)
+            , $container->get(IBackend::class)
         );
     }
 

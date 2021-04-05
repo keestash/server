@@ -21,72 +21,57 @@ declare(strict_types=1);
 
 namespace KSA\Users\Controller;
 
-
-use KSA\Users\Application\Application;
 use KSP\Core\Controller\AppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class UsersController extends AppController {
 
     public const ALL_USERS = 1;
 
-    private IL10N                  $l10n;
-    private ITemplateManager       $templateManager;
-    private ?IUserRepository       $userManager;
+    private IL10N                     $l10n;
+    private TemplateRendererInterface $templateRenderer;
+    private IUserRepository           $userRepository;
 
     public function __construct(
-        ITemplateManager $templateManager
+        TemplateRendererInterface $templateRenderer
         , IL10N $l10n
         , IUserRepository $userRepository
+        , IAppRenderer $appRenderer
     ) {
-        parent::__construct(
-            $templateManager
-            , $l10n
-        );
+        parent::__construct($appRenderer);
 
-        $this->l10n              = $l10n;
-        $this->templateManager   = $templateManager;
-        $this->userManager       = $userRepository;
+        $this->l10n             = $l10n;
+        $this->templateRenderer = $templateRenderer;
+        $this->userRepository   = $userRepository;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-
-        $this->getTemplateManager()->replace(
-            "users.twig"
-            , [
-                "name"                        => $this->l10n->translate("Name")
-                , "firstName"                 => $this->l10n->translate("First Name")
-                , "lastName"                  => $this->l10n->translate("Last Name")
-                , "hash"                      => $this->l10n->translate("Hash")
-                , "email"                     => $this->l10n->translate("Email")
-                , "website"                   => $this->l10n->translate("Website")
-                , "password"                  => $this->l10n->translate("Password")
-                , "addNewPasswordPlaceholder" => $this->l10n->translate("New Password")
-                , "phone"                     => $this->l10n->translate("Phone")
-                , "registerDate"              => $this->l10n->translate("RegistrationDate")
-                , "delete"                    => $this->l10n->translate("Delete")
-                , "lock"                      => $this->l10n->translate("Lock")
-                , "lockedInfo"                => $this->l10n->translate("This Account is locked")
-                , "deletedInfo"               => $this->l10n->translate("This Account is marked for deletion and will be completly removed from the system once the deadline is reached")
-                , "addUser"                   => $this->l10n->translate("Add User")
-                , "users"                     => $this->userManager->getAll()
-            ]
-        );
-
-        $this->setAppContent(
-            $this->templateManager->render("users.twig")
-        );
-
-    }
-
-    public function afterCreate(): void {
+    public function run(ServerRequestInterface $request): string {
+        return $this->templateRenderer
+            ->render(
+                "users::users"
+                , [
+                    "name"                        => $this->l10n->translate("Name")
+                    , "firstName"                 => $this->l10n->translate("First Name")
+                    , "lastName"                  => $this->l10n->translate("Last Name")
+                    , "hash"                      => $this->l10n->translate("Hash")
+                    , "email"                     => $this->l10n->translate("Email")
+                    , "website"                   => $this->l10n->translate("Website")
+                    , "password"                  => $this->l10n->translate("Password")
+                    , "addNewPasswordPlaceholder" => $this->l10n->translate("New Password")
+                    , "phone"                     => $this->l10n->translate("Phone")
+                    , "registerDate"              => $this->l10n->translate("RegistrationDate")
+                    , "delete"                    => $this->l10n->translate("Delete")
+                    , "lock"                      => $this->l10n->translate("Lock")
+                    , "lockedInfo"                => $this->l10n->translate("This Account is locked")
+                    , "deletedInfo"               => $this->l10n->translate("This Account is marked for deletion and will be completly removed from the system once the deadline is reached")
+                    , "addUser"                   => $this->l10n->translate("Add User")
+                    , "users"                     => $this->userRepository->getAll()
+                ]
+            );
 
     }
 

@@ -21,20 +21,27 @@ declare(strict_types=1);
 
 namespace Keestash\App;
 
-
 use Keestash;
+use KSP\App\ILoader;
 
+/**
+ * Class Helper
+ * @package Keestash\App
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ * @deprecated
+ */
 class Helper {
 
     private function __construct() {
     }
 
-    public static function getDefaultURL(): string {
-        return Keestash::getBaseURL(true, true) . Helper::getDefaultRoute();
-    }
-
-    public static function getDefaultRoute(): string {
-        $defaultApp = Keestash::getServer()->getAppLoader()->getDefaultApp();
+    /**
+     * @param ILoader $loader
+     * @return string
+     * @deprecated
+     */
+    public static function getDefaultRoute(ILoader $loader): string {
+        $defaultApp = $loader->getDefaultApp();
         $route      = (null === $defaultApp) ? "login" : $defaultApp->getBaseRoute();
         return "/$route";
     }

@@ -20,10 +20,8 @@ const glob = require("glob");
 const webpack = require("webpack");
 
 module.exports = {
-    entry: glob.sync(__dirname + "/src/*.js"),
-    output: {
-        path: __dirname + "/dist/",
-        filename: 'apps.bundle.js'
+    entry: {
+        apps: glob.sync(__dirname + "/src/*.js"),
     },
     module: {
         rules: [{

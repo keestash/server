@@ -26,15 +26,15 @@ use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Core\System\Installation\Verification\AbstractVerification;
 use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
 use Keestash\Core\System\Installation\Verification\DatabaseReachable;
 use Keestash\Core\System\Installation\Verification\HasMigrations;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\Service\Config\IConfigService;
+use Laminas\Config\Config;
 
 class InstallerService {
 
@@ -45,18 +45,24 @@ class InstallerService {
     private Migrator       $migrator;
     private InstanceDB     $instanceDB;
     private IConfigService $configService;
+    private Config         $config;
+    private IBackend       $backend;
 
     public function __construct(
         LockHandler $lockHandler
         , Migrator $migrator
         , InstanceDB $instanceDB
         , IConfigService $configService
+        , Config $config
+        , IBackend $backend
     ) {
         $this->messages      = [];
         $this->lockHandler   = $lockHandler;
         $this->migrator      = $migrator;
         $this->instanceDB    = $instanceDB;
         $this->configService = $configService;
+        $this->config        = $config;
+        $this->backend       = $backend;
     }
 
     public function removeInstaller(): bool {
@@ -99,10 +105,6 @@ class InstallerService {
     public function writeIdAndHash(): bool {
         $addedId   = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
         $addedHash = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, md5(uniqid()));
-
-        $logger = Keestash::getServer()->query(ILogger::class);
-        $logger->debug((string) $addedId);
-        $logger->debug((string) $addedHash);
         return true === $addedId && true === $addedHash;
     }
 
@@ -140,8 +142,13 @@ class InstallerService {
 
         $list = new ArrayList();
         $list->add(new ConfigFileReadable());
-        $list->add(new DatabaseReachable());
-        $list->add(new HasMigrations());
+        $list->add(new DatabaseReachable(
+            $this->backend
+        ));
+        $list->add(new HasMigrations(
+            $this->config
+            , $this->configService
+        ));
 
         /** @var AbstractVerification $verification */
         foreach ($list as $verification) {

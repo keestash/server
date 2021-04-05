@@ -35,7 +35,6 @@ $action = $argv[1] ?? 'add';
     compile(realpath(__DIR__ . '/../lib/scss/'));
 
     foreach (glob(__DIR__ . '/../apps/*/scss/') as $directory) {
-        createDirIfNotExists($directory . '/dist/');
 
         if ('add' === $action) {
             compile(realpath($directory));
@@ -74,15 +73,15 @@ function compile(string $source): void {
 //        $compiler->addImportPath($file);
 
         echo "processing file: $file \n";
-        $pathInfo    = pathinfo($file);
-        $destination = $pathInfo['dirname'] . '/dist/' . $pathInfo['filename'] . '.css';
+        $pathInfo = pathinfo($file);
+//        $destination = $pathInfo['dirname'] . '/dist/' . $pathInfo['filename'] . '.css';
+        $destination = realpath(__DIR__ . '/../public/css/') . '/' . $pathInfo['filename'] . '.css';
 
         $css = $compiler->compile(
                 file_get_contents($file)
         );
 
         if (true === is_file($destination)) {
-
             unlink($destination);
         }
         $created = file_put_contents($destination, $css);

@@ -24,6 +24,7 @@ namespace KSA\Login\Factory\Api;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Api\Login;
 use KSA\Login\Service\TokenService;
+use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -48,6 +49,7 @@ class LoginFactory {
             , $container->get(ILocaleService::class)
             , $container->get(ILanguageService::class)
             , $container->get(ILogger::class)
+            , $container->get(ILoader::class)
         );
     }
 

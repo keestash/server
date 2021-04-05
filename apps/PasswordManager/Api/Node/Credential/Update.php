@@ -15,13 +15,16 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential;
 
 use doganoo\DI\Object\String\IStringService;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Update
@@ -29,49 +32,46 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Update extends AbstractApi {
+class Update implements RequestHandlerInterface {
 
     private NodeRepository    $nodeRepository;
     private IStringService    $stringService;
     private CredentialService $credentialService;
+    private IL10N             $translator;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
         , IStringService $stringService
         , CredentialService $credentialService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
         $this->stringService     = $stringService;
         $this->credentialService = $credentialService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $name     = $this->getParameter("username");
-        $url      = $this->getParameter("url");
-        $nodeId   = $this->getParameter("nodeId");
-        $password = $this->getParameter("password");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token      = $request->getAttribute(IToken::class);
+        $parameters = json_decode((string) $request->getBody(), true);
+        $name       = $parameters["username"];
+        $url        = $parameters["url"];
+        $nodeId     = $parameters["nodeId"];
+        $password   = $parameters["password"];
 
         $hasChanges = false;
 
         /** @var Credential $node */
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if (null === $node || $node->getUser()->getId() !== $this->getToken()->getId()) {
-            $this->createAndSetResponse(
+        if (null === $node || $node->getUser()->getId() !== $token->getId()) {
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no node found")
+                    "message" => $this->translator->translate("no node found")
                 ]
             );
-            return;
         }
 
         if (false === $this->stringService->isEmpty($name)) {
@@ -94,10 +94,10 @@ class Update extends AbstractApi {
             , $password
         );
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_NOT_OK
             , [
-                "message"       => $this->getL10N()->translate("updated")
+                "message"       => $this->translator->translate("updated")
                 , "has_changes" => $hasChanges
             ]
         );

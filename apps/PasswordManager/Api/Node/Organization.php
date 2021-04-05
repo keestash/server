@@ -22,21 +22,24 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node;
 
 use Exception;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\Organization as OrganizationNodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Organization extends AbstractApi {
+class Organization implements RequestHandlerInterface {
 
     private OrganizationNodeRepository $organization;
     private IOrganizationRepository    $organizationRepository;
     private NodeRepository             $nodeRepository;
     private ILogger                    $logger;
+    private IL10N                      $translator;
 
     public function __construct(
         IL10N $l10n
@@ -44,22 +47,19 @@ class Organization extends AbstractApi {
         , IOrganizationRepository $organizationRepository
         , NodeRepository $nodeRepository
         , ILogger $logger
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
+        $this->translator             = $l10n;
         $this->organization           = $organization;
         $this->organizationRepository = $organizationRepository;
         $this->nodeRepository         = $nodeRepository;
         $this->logger                 = $logger;
     }
 
-    public function onCreate(array $parameters): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
 
-    }
-
-    public function create(): void {
-        $nodeId         = $this->getParameter('node_id');
-        $organizationId = (int) $this->getParameter('organization_id');
+        $nodeId         = $parameters['node_id'] ?? null;
+        $organizationId = (int) ($parameters['organization_id'] ?? 0);
 
         $organization = $this->organizationRepository->get($organizationId);
         $node         = $this->nodeRepository->getNode((int) $nodeId, 0, 0);
@@ -67,13 +67,12 @@ class Organization extends AbstractApi {
         $orga = $node->getOrganization();
 
         if (null !== $orga) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    'message' => $this->getL10N()->translate('The node belongs already to a organization')
+                    'message' => $this->translator->translate('The node belongs already to a organization')
                 ]
             );
-            return;
         }
 
         $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
@@ -87,11 +86,7 @@ class Organization extends AbstractApi {
             $this->logger->error($exception->getMessage() . ': ' . $exception->getTraceAsString());
         }
 
-        $this->createAndSetResponse($responseCode, []);
+        return LegacyResponse::fromData($responseCode, []);
     }
-
-    public function afterCreate(): void {
-
-    }
-
+    
 }

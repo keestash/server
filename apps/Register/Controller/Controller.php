@@ -21,132 +21,118 @@ declare(strict_types=1);
 
 namespace KSA\Register\Controller;
 
-use Keestash;
 use Keestash\Core\Service\Config\ConfigService;
-use KSA\Register\Application\Application;
+use Keestash\Core\Service\HTTP\HTTPService;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends StaticAppController {
 
     public const TEMPLATE_NAME_REGISTER             = "register.twig";
     public const TEMPLATE_NAME_REGISTER_NOT_ENABLED = "register_not_enabled.twig";
 
-    private ITemplateManager      $templateManager;
-    private IL10N                 $translator;
-    private ILoader               $loader;
-    private ConfigService         $configService;
+    private IL10N                     $translator;
+    private ILoader                   $loader;
+    private ConfigService             $configService;
+    private TemplateRendererInterface $templateRenderer;
+    private HTTPService               $httpService;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $translator
+        IL10N $translator
         , ILoader $loader
         , ConfigService $configService
+        , IAppRenderer $appRenderer
+        , TemplateRendererInterface $templateRenderer
+        , HTTPService $httpService
     ) {
-        parent::__construct(
-            $templateManager
-            , $translator
-        );
+        parent::__construct($appRenderer);
 
-        $this->templateManager      = $templateManager;
-        $this->translator           = $translator;
-        $this->loader               = $loader;
-        $this->configService        = $configService;
-
+        $this->translator       = $translator;
+        $this->loader           = $loader;
+        $this->configService    = $configService;
+        $this->templateRenderer = $templateRenderer;
+        $this->httpService      = $httpService;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
+    public function run(ServerRequestInterface $request): string {
         // a little bit out of sense, but
         // we do not want to enable registering
         // even if someone has found a hacky way
         // to enable this controller!
-        $registerEnabled = $this->loader->hasApp(Application::APP_NAME_REGISTER);
+        $registerEnabled = $this->loader->hasApp('register');
 
         if (true === $registerEnabled) {
-            $this->parseRegularRegister();
-        } else {
-            $this->parseRegisterNotEnabled();
+            return $this->parseRegularRegister();
         }
-
+        return $this->parseRegisterNotEnabled();
     }
 
-    private function parseRegularRegister(): void {
-        $this->templateManager->replace(
-            Controller::TEMPLATE_NAME_REGISTER
-            , [
-            // first name
-            "firstNameLabel"              => $this->translator->translate("First name")
-            , "firstNamePlaceholder"      => $this->translator->translate("First name")
+    private function parseRegularRegister(): string {
+        return $this->templateRenderer
+            ->render(
+                'register::register'
+                , [
+                // first name
+                "firstNameLabel"              => $this->translator->translate("First name")
+                , "firstNamePlaceholder"      => $this->translator->translate("First name")
 
-            // last name
-            , "lastNameLabel"             => $this->translator->translate("Last Name")
-            , "lastNamePlaceholder"       => $this->translator->translate("Last Name")
+                // last name
+                , "lastNameLabel"             => $this->translator->translate("Last Name")
+                , "lastNamePlaceholder"       => $this->translator->translate("Last Name")
 
-            // user name
-            , "userNameLabel"             => $this->translator->translate("Username")
-            , "userNamePlaceholder"       => $this->translator->translate("Username")
+                // user name
+                , "userNameLabel"             => $this->translator->translate("Username")
+                , "userNamePlaceholder"       => $this->translator->translate("Username")
 
-            // email
-            , "emailLabel"                => $this->translator->translate("Email")
-            , "emailPlaceholder"          => $this->translator->translate("Email")
+                // email
+                , "emailLabel"                => $this->translator->translate("Email")
+                , "emailPlaceholder"          => $this->translator->translate("Email")
 
-            // phone
-            , "phoneLabel"                => $this->translator->translate("Phone")
-            , "phonePlaceholder"          => $this->translator->translate("Phone")
+                // phone
+                , "phoneLabel"                => $this->translator->translate("Phone")
+                , "phonePlaceholder"          => $this->translator->translate("Phone")
 
-            // website
-            , "websiteLabel"              => $this->translator->translate("Website")
-            , "websitePlaceholder"        => $this->translator->translate("Website")
+                // website
+                , "websiteLabel"              => $this->translator->translate("Website")
+                , "websitePlaceholder"        => $this->translator->translate("Website")
 
-            // password
-            , "passwordLabel"             => $this->translator->translate("Password")
-            , "passwordRepeatLabel"       => $this->translator->translate("Repeat Password")
+                // password
+                , "passwordLabel"             => $this->translator->translate("Password")
+                , "passwordRepeatLabel"       => $this->translator->translate("Repeat Password")
 
-            // terms and conditions
-            , "termsConditionsFirstPart"  => $this->translator->translate("I agree to the")
-            , "termsAndConditions"        => $this->translator->translate("Terms and Conditions")
+                // terms and conditions
+                , "termsConditionsFirstPart"  => $this->translator->translate("I agree to the")
+                , "termsAndConditions"        => $this->translator->translate("Terms and Conditions")
 
-            // stuff
-            , "submit"                    => $this->translator->translate("Register")
-            , "passwordPlaceholder"       => $this->translator->translate("Password")
-            , "passwordRepeatPlaceholder" => $this->translator->translate("Repat Password")
-            , "createNewAccount"          => $this->translator->translate("Create New Account")
-            , "createNewAccountDesc"      => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
-            , "backToLogin"               => $this->translator->translate("Log In")
-            , "backToLoginQuestion"       => $this->translator->translate("Have an account?")
+                // stuff
+                , "submit"                    => $this->translator->translate("Register")
+                , "passwordPlaceholder"       => $this->translator->translate("Password")
+                , "passwordRepeatPlaceholder" => $this->translator->translate("Repat Password")
+                , "createNewAccount"          => $this->translator->translate("Create New Account")
+                , "createNewAccountDesc"      => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
+                , "backToLogin"               => $this->translator->translate("Log In")
+                , "backToLoginQuestion"       => $this->translator->translate("Have an account?")
 
-            // values
-            , "backgroundPath"            => Keestash::getBaseURL(false) . "/asset/img/register-background.jpg"
-            , "logoPath"                  => Keestash::getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
+                // values
+                , "backgroundPath"            => $this->httpService->getBaseURL(false) . "/asset/img/register-background.jpg"
+                , "logoPath"                  => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
 
-            , "termsConditionsLink"       => Keestash::getBaseURL(true) . "/" . \KSA\TNC\Application\Application::TERMS_AND_CONDITIONS
-            , "backToLoginLink"           => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
-            , "newTab"                    => false === $this->configService->getValue('debug', false)
-        ]);
-        $this->setAppContent(
-            $this->templateManager->render(Controller::TEMPLATE_NAME_REGISTER)
-        );
+                , "termsConditionsLink"       => $this->httpService->getBaseURL(true) . "/tnc"
+                , "backToLoginLink"           => $this->httpService->getBaseURL(true) . "/login"
+                , "newTab"                    => false === $this->configService->getValue('debug', false)
+            ]);
     }
 
-    private function parseRegisterNotEnabled(): void {
-        $this->templateManager->replace(
-            Controller::TEMPLATE_NAME_REGISTER_NOT_ENABLED
-            , []
-        );
-        $this->setAppContent(
-            $this->templateManager->render(Controller::TEMPLATE_NAME_REGISTER_NOT_ENABLED)
-        );
-    }
-
-    public function afterCreate(): void {
-
+    private function parseRegisterNotEnabled(): string {
+        return $this->templateRenderer
+            ->render(
+                'register::register_not_enabled'
+                , []
+            );
     }
 
 }

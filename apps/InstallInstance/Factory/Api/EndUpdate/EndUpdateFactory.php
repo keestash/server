@@ -27,6 +27,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
+use KSP\App\ILoader;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IPersistenceService;
@@ -46,6 +47,7 @@ class EndUpdateFactory {
             , $container->get(IUserRepository::class)
             , $container->get(IPersistenceService::class)
             , $container->get(HTTPService::class)
+            , $container->get(ILoader::class)
         );
     }
 

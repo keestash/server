@@ -24,11 +24,7 @@ module.exports = {
         forgot_password: glob.sync(__dirname + "/src/forgot_password.js")
         , reset_password: glob.sync(__dirname + "/src/reset_password.js")
     },
-    output: {
-        path: __dirname + "/dist/",
-        filename: '[name].bundle.js'
-    },
-    module: {
+     module: {
         rules: [{
             exclude: /node_modules/,
             loader: 'babel-loader'

@@ -24,10 +24,6 @@ module.exports = {
     entry: {
         organization_detail: __dirname + "/Organization/Detail/init.js"
     },
-    output: {
-        path: __dirname + "/dist/",
-        filename: '[name].bundle.js'
-    },
     module: {
         rules: [{
             exclude: /node_modules/,

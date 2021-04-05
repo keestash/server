@@ -24,6 +24,7 @@ namespace Keestash\Factory\Core\Backend;
 use Doctrine\DBAL\Connection;
 use Keestash\Core\Backend\MySQLBackend;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\Service\Config\IConfigService;
 use Psr\Container\ContainerInterface;
 
 class MySQLBackendFactory {
@@ -31,6 +32,7 @@ class MySQLBackendFactory {
     public function __invoke(ContainerInterface $container): IBackend {
         return new MySQLBackend(
             $container->get(Connection::class)
+            , $container->get(IConfigService::class)
         );
     }
 

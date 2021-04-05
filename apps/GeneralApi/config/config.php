@@ -30,7 +30,8 @@ use KSP\App\IApp;
 
 return [
     'dependencies'                   => require __DIR__ . '/dependencies.php',
-    IApp::CONFIG_PROVIDER_API_ROUTER => require __DIR__ . '/router.php',
+    IApp::CONFIG_PROVIDER_API_ROUTER => require __DIR__ . '/api_router.php',
+    IApp::CONFIG_PROVIDER_WEB_ROUTER => require __DIR__ . '/web_router.php',
     IApp::CONFIG_PROVIDER_COMMANDS   => [
         MigrateApps::class
         , PHPStan::class
@@ -39,5 +40,10 @@ return [
     ],
     IApp::CONFIG_PROVIDER_EVENTS     => [
         UserChangedEvent::class => UserChangedListener::class
+    ],
+    'templates'                      => [
+        'paths' => [
+            'generalApi' => [__DIR__ . '/../template/']
+        ]
     ]
 ];

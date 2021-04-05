@@ -23,19 +23,45 @@ namespace KSA\Install;
 
 use KSA\Install\Api\InstallApps;
 use KSA\Install\Command\Uninstall;
+use KSA\Install\Controller\Controller;
 use KSA\Install\Factory\Api\InstallAppsFactory;
 use KSA\Install\Factory\Command\UninstallFactory;
+use KSA\Install\Factory\Controller\ControllerFactory;
 use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
+    public const INSTALL = '/install[/]';
+
     public function __invoke(): array {
         return [
-            'dependencies'                 => [
+            'dependencies'                   => [
                 'factories' => [
+                    // api
                     InstallApps::class => InstallAppsFactory::class,
                     Uninstall::class   => UninstallFactory::class,
+
+                    // controller
+                    Controller::class  => ControllerFactory::class,
+                ]
+            ],
+            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
+                IApp::CONFIG_PROVIDER_ROUTES                 => [
+                    [
+                        'path'         => ConfigProvider::INSTALL
+                        , 'middleware' => Controller::class
+                        , 'name'       => Controller::class
+                    ],
+                ],
+                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                    ConfigProvider::INSTALL
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                    ConfigProvider::INSTALL => 'install'
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS => [
+                    ConfigProvider::INSTALL => 'install'
                 ]
             ],
             IApp::CONFIG_PROVIDER_API_ROUTER => [
@@ -51,8 +77,13 @@ final class ConfigProvider {
                     '/install/apps/all[/]'
                 ]
             ],
-            IApp::CONFIG_PROVIDER_COMMANDS => [
+            IApp::CONFIG_PROVIDER_COMMANDS   => [
                 Uninstall::class
+            ],
+            'templates'                      => [
+                'paths' => [
+                    'install' => [__DIR__ . '/template/']
+                ]
             ]
         ];
     }

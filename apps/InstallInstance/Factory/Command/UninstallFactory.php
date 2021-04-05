@@ -23,6 +23,7 @@ namespace KSA\InstallInstance\Factory\Command;
 
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use KSA\InstallInstance\Command\Uninstall;
+use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class UninstallFactory {
@@ -30,6 +31,7 @@ class UninstallFactory {
     public function __invoke(ContainerInterface $container): Uninstall {
         return new Uninstall(
             $container->get(InstanceRepository::class)
+            , $container->get(Config::class)
         );
     }
 

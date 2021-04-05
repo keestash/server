@@ -67,7 +67,7 @@ class UserEdit implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode($request->getBody()->getContents(), true);
+        $parameters = json_decode((string)$request->getBody(), true);
         $user       = $this->userService->toUser($parameters['user']);
         $repoUser   = $this->userRepository->getUserById((string) $user->getId());
 

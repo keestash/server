@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Command\Stylesheet;
 
-use Keestash;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
 use KSP\App\IApp;
@@ -54,7 +53,7 @@ class Compiler extends KeestashCommand {
             ->setHelp("Make sure your scss are located in the correct path");
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         while (true) {
             $this->compileCore();
             $this->compileApps();

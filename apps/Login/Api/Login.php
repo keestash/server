@@ -29,7 +29,7 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
+use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -54,6 +54,7 @@ class Login implements RequestHandlerInterface {
     private ILocaleService     $localeService;
     private ILanguageService   $languageService;
     private ILogger            $logger;
+    private ILoader            $loader;
 
     public function __construct(
         IUserRepository $userRepository
@@ -66,6 +67,7 @@ class Login implements RequestHandlerInterface {
         , ILocaleService $localeService
         , ILanguageService $languageService
         , ILogger $logger
+        , ILoader $loader
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
@@ -77,10 +79,11 @@ class Login implements RequestHandlerInterface {
         $this->localeService      = $localeService;
         $this->languageService    = $languageService;
         $this->logger             = $logger;
+        $this->loader             = $loader;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode($request->getBody()->getContents(), true);
+        $parameters = json_decode((string) $request->getBody(), true);
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
 
@@ -109,7 +112,7 @@ class Login implements RequestHandlerInterface {
                 IResponse::RESPONSE_CODE_OK
                 , [
                 "message"    => $this->translator->translate("Ok")
-                , "routeTo"  => Helper::getDefaultRoute()
+                , "routeTo"  => Helper::getDefaultRoute($this->loader)
                 , "settings" => [
                     "locale"     => $this->localeService->getLocaleForUser($user)
                     , "language" => $this->languageService->getLanguageForUser($user)

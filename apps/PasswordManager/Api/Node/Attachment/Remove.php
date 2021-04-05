@@ -21,38 +21,34 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
-
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Remove extends AbstractApi {
+class Remove implements RequestHandlerInterface {
 
     private const CONTEXT = "node_attachments";
 
     private IFileRepository $fileRepository;
     private DataManager     $dataManager;
     private FileRepository  $nodeFileRepository;
-    private ILogger         $logger;
+    private IL10N           $translator;
 
     public function __construct(
         IFileRepository $fileRepository
         , IL10N $l10n
         , FileRepository $nodeFileRepository
-        , ILogger $logger
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator         = $l10n;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->fileRepository     = $fileRepository;
-        $this->logger             = $logger;
         $this->dataManager        = new DataManager(
             Application::APP_ID
             , Remove::CONTEXT
@@ -60,89 +56,73 @@ class Remove extends AbstractApi {
 
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-
-        $fileId = $this->getParameter("fileId", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
+        $fileId     = $parameters["fileId"] ?? null;
 
         if (null === $fileId) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no subject id given")
+                    "message" => $this->translator->translate("no subject id given")
                 ]
             );
 
-            return;
         }
 
         $file = $this->fileRepository->get((int) $fileId);
 
         if (null == $file) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no file found")
+                    "message" => $this->translator->translate("no file found")
                 ]
             );
-
-            return;
         }
 
         $removed = $this->dataManager->remove($file);
 
         if (false === $removed) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not remove from file system")
+                    "message" => $this->translator->translate("could not remove from file system")
                 ]
             );
-
-            return;
         }
 
         $removed = $this->nodeFileRepository->removeByFile($file);
 
         if (false === $removed) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could unlink to node")
+                    "message" => $this->translator->translate("could unlink to node")
                 ]
             );
 
-            return;
         }
 
         $removed = $this->fileRepository->remove($file);
 
         if (false === $removed) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not remove")
+                    "message" => $this->translator->translate("could not remove")
                 ]
             );
-
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->getL10N()->translate("file removed")
+                "message" => $this->translator->translate("file removed")
                 , "file"  => $file
             ]
         );
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

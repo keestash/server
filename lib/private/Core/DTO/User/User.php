@@ -23,12 +23,7 @@ namespace Keestash\Core\DTO\User;
 
 use DateTimeInterface;
 use Exception;
-use Keestash\Core\Service\Validation\Rule\Password;
-use Keestash\Core\Service\Validation\Rule\Phone;
-use Keestash\Core\Service\Validation\Rule\Username;
-use Keestash\Core\Service\Validation\Validator\ValidatorBag;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Service\Validation\Validator\IValidatorBag;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\NotEmpty;
 use Laminas\Validator\Uri;
@@ -236,59 +231,6 @@ class User implements IUser {
 
     public function setDeleted(bool $deleted): void {
         $this->deleted = $deleted;
-    }
-
-    /**
-     * @return IValidatorBag[]
-     */
-    public function getValidators(): array {
-        $bags = [];
-
-        // name
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->name);
-        $validatorBag->addValidator(new Username());
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        // password
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->password);
-        $validatorBag->addValidator(new Password());
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        // first name
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->firstName);
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        // last name
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->lastName);
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        // email
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->email);
-        $validatorBag->addValidator(new EmailAddress());
-        $bags[] = $validatorBag;
-
-        // phone
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->phone);
-        $validatorBag->addValidator(new Phone());
-        $bags[] = $validatorBag;
-
-        // website
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->website);
-        $validatorBag->addValidator(new Uri());
-        $bags[] = $validatorBag;
-
-        return $bags;
     }
 
 }

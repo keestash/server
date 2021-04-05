@@ -21,81 +21,65 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\AbstractApi;
-use Keestash\Core\Service\Encryption\Key\KeyService;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class PublicShareSingle extends AbstractApi {
+class PublicShareSingle implements RequestHandlerInterface {
 
     private PublicShareRepository $shareRepository;
     private NodeRepository        $nodeRepository;
-    private IUserRepository       $userRepository;
-    private KeyService            $keyService;
-    private EncryptionService     $encryptionService;
     private CredentialService     $credentialService;
+    private IL10N                 $translator;
 
     public function __construct(
         IL10N $l10n
         , PublicShareRepository $shareRepository
         , NodeRepository $nodeRepository
-        , IUserRepository $userRepository
-        , KeyService $keyService
-        , EncryptionService $encryptionService
         , CredentialService $credentialService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator        = $l10n;
         $this->shareRepository   = $shareRepository;
         $this->nodeRepository    = $nodeRepository;
-        $this->userRepository    = $userRepository;
-        $this->keyService        = $keyService;
-        $this->encryptionService = $encryptionService;
         $this->credentialService = $credentialService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $hash = $this->getParameter('hash');
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = $request->getQueryParams();
+        $hash       = $parameters['hash'] ?? null;
 
         if (null === $hash) {
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no password found for hash")
+                    "message" => $this->translator->translate("no password found for hash")
                     , "hash"  => $hash
                 ]
             );
-            return;
         }
 
         $share = $this->shareRepository->getShare($hash);
 
         if (null === $share || $share->isExpired()) {
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no share found")
+                    "message" => $this->translator->translate("no share found")
                 ]
             );
-            return;
         }
 
         /** @var Credential $node */
         $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "response_code" => IResponse::RESPONSE_CODE_OK
@@ -103,10 +87,6 @@ class PublicShareSingle extends AbstractApi {
             ]
         );
 
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

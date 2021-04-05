@@ -21,19 +21,16 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Controller\PasswordManager;
 
-use Keestash;
 use Keestash\View\ActionBar\ActionBarBuilder;
-use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Controller\PasswordManager\Segment\Helper as SegmentHelper;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Controller\AppController;
-use KSP\Core\DTO\User\IUser;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IBag;
 use KSP\Core\View\ActionBar\IElement;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Controller
@@ -43,81 +40,64 @@ use KSP\L10N\IL10N;
  */
 class Controller extends AppController {
 
-    public const TEMPLATE_NAME = "password_manager.twig";
-
-    private IUser                 $user;
-    private NodeRepository        $nodeRepository;
+    private NodeRepository            $nodeRepository;
+    private TemplateRendererInterface $templateRenderer;
+    private IL10N                     $translator;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IUser $user
+        TemplateRendererInterface $templateRenderer
         , IL10N $translator
         , NodeRepository $nodeRepository
+        , IAppRenderer $appRenderer
     ) {
-        parent::__construct(
-            $templateManager
-            , $translator
-        );
-
-        $this->user                 = $user;
-        $this->nodeRepository       = $nodeRepository;
+        parent::__construct($appRenderer);
+        $this->nodeRepository   = $nodeRepository;
+        $this->translator       = $translator;
+        $this->templateRenderer = $templateRenderer;
     }
 
     public function onCreate(): void {
 
-        parent::setHasAppNavigation(false);
-        $segmentHelper = new SegmentHelper($this->getL10N());
+        $segmentHelper = new SegmentHelper($this->translator);
 
         $this->buildActionBar();
         $this->setAppNavigation(
             $segmentHelper->buildAppNavigation()
         );
-
     }
 
     private function buildActionBar(): void {
-        $actionBarBag = Keestash::getServer()->getActionBarManager()->get(IBag::ACTION_BAR_TOP);
-        $actionBar    = $actionBarBag->get(IActionBar::TYPE_PLUS);
-
-        $actionBarBuilder = new ActionBarBuilder($actionBar);
+        $actionBarBuilder = new ActionBarBuilder(IActionBar::TYPE_PLUS);
         $actionBarBuilder
             ->withElement(
-                $this->getL10N()->translate("New Password")
+                $this->translator->translate("New Password")
                 , "pwm__new__password"
                 , null
                 , IElement::TYPE_KEY
             )
             ->withElement(
-                $this->getL10N()->translate("New Folder")
+                $this->translator->translate("New Folder")
                 , "pwm__new__folder"
                 , null
                 , IElement::TYPE_FOLDER
             )
             ->withId("password__manager__add")
             ->withDescription(
-                $this->getL10N()->translate("Create")
+                $this->translator->translate("Create")
             )
             ->build();
     }
 
-    public function create(): void {
-
-        $this->getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME
+    public function run(ServerRequestInterface $request): string {
+        return $this->templateRenderer->render(
+            'passwordManager::password_manager'
             , [
-                "rootId"                      => Application::ROOT_FOLDER
-                , "nothingClicked"            => $this->getL10N()->translate("No Password Selected")
-                , "nothingClickedDescription" => $this->getL10N()->translate("Please select a password or create a new one")
-                , "searchPasswords"           => $this->getL10N()->translate("Search Passwords")
+                "rootId"                      => 'root'
+                , "nothingClicked"            => $this->translator->translate("No Password Selected")
+                , "nothingClickedDescription" => $this->translator->translate("Please select a password or create a new one")
+                , "searchPasswords"           => $this->translator->translate("Search Passwords")
             ]
         );
-
-        $string = $this->getTemplateManager()->render(Controller::TEMPLATE_NAME);
-        parent::setAppContent($string);
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -22,21 +22,37 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\HTTP;
 
 use Keestash;
-use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 
 class HTTPService {
 
-    private HTTPRouter $router;
+    private IEnvironmentService $environmentService;
 
-    public function __construct(HTTPRouter $router) {
-        $this->router = $router;
+    public function __construct(IEnvironmentService $environmentService) {
+        $this->environmentService = $environmentService;
     }
 
-    public function routeToInstallInstance(): void {
-        $this->router
-            ->routeTo("install_instance");
-        exit();
-        die();
+    public function getBaseURL(bool $withScript = true, bool $forceIndex = false): string {
+        $scriptName          = "index.php";
+        $scriptNameToReplace = $scriptName;
+        if (true === $this->environmentService->isApi()) {
+            $scriptName          = "api.php";
+            $scriptNameToReplace = $scriptName;
+        }
+        if (true === $forceIndex) {
+            $scriptNameToReplace = "index.php";
+        }
+
+        $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        $position = strpos($url, $scriptName);
+        $position = false === $position ? 0 : $position;
+
+        if ($withScript) {
+            return substr($url, 0, $position) . $scriptNameToReplace;
+        } else {
+            return substr($url, 0, $position) . "";
+        }
     }
 
     public function buildWebRoute(string $base): string {
@@ -46,6 +62,12 @@ class HTTPService {
         $position            = strpos($url, $scriptName);
         $position            = false === $position ? 0 : $position;
         return substr($url, 0, $position) . $scriptNameToReplace . "/" . $base;
+    }
+
+    public function getBaseAPIURL(): ?string {
+        $baseURL = $this->getBaseURL();
+        if (null === $baseURL) return null;
+        return str_replace("index.php", "api.php", $baseURL);
     }
 
     public function getLoginRoute(): string {

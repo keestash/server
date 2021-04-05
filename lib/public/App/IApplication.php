@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\App;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-
 interface IApplication {
 
     public const CONFIG_PROVIDER_APPLICATION     = 'keestash.application.config';
@@ -36,11 +34,5 @@ interface IApplication {
     public const CONFIG_PROVIDER_CONTEXT_SETTING = 'keestash.application.context.setting';
     public const CONFIG_PROVIDER_SERVICES        = 'keestash.application.services';
     public const CONFIG_PROVIDER_EVENTS          = 'keestash.application.events';
-
-    public function __construct(IApp $app);
-
-    public function register(): void;
-
-    public function getFrontendTemplates(): HashTable;
 
 }

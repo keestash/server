@@ -21,14 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Avatar;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
-
 use Keestash\Core\Service\File\FileService as CoreFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\File\NodeFile;
-use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Exception\Node\Credential\FileNotMovedException;
 use KSA\PasswordManager\Exception\Node\Credential\InvalidFileException;
@@ -41,9 +39,11 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Update extends AbstractApi {
+class Update implements RequestHandlerInterface {
 
     public const CONTEXT = "nodeAvatar";
 
@@ -56,16 +56,13 @@ class Update extends AbstractApi {
     private CoreFileService    $coreFileService;
 
     public function __construct(
-        IL10N $l10n
-        , IUploadFileService $uploadFileService
+        IUploadFileService $uploadFileService
         , IFileRepository $fileRepository
         , FileRepository $nodeFileRepository
         , NodeRepository $nodeRepository
         , RawFileService $rawFileService
         , CoreFileService $coreFileService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
         $this->uploadFileService  = $uploadFileService;
         $this->fileRepository     = $fileRepository;
         $this->nodeFileRepository = $nodeFileRepository;
@@ -78,25 +75,18 @@ class Update extends AbstractApi {
         );
     }
 
-    public function onCreate(array $parameters): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $files     = $request->getUploadedFiles();
+        $fileCount = count($files);
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
-    }
-
-    /**
-     * @throws CredentialException
-     * @throws FileNotMovedException
-     * @throws InvalidFileException
-     * @throws NoFileException
-     * @throws NodeNotFoundException
-     * @throws InvalidNodeTypeException
-     */
-    public function create(): void {
-        if (0 === $this->getFiles()->getSize()) {
+        if (0 === $fileCount) {
             throw new NoFileException();
         }
 
-        $nodeAvatar = $this->getFiles()->getFiles()[0] ?? null;
-        $nodeId     = $this->getParameter("nodeId");
+        $nodeAvatar = $files[0] ?? null;
+        $nodeId     = $request->getAttribute("nodeId");
 
         if (null === $nodeAvatar) {
             throw new InvalidFileException("no file found");
@@ -112,7 +102,7 @@ class Update extends AbstractApi {
             throw new NodeNotFoundException("no node found for $nodeId");
         }
 
-        if ($this->getToken()->getUser()->getId() !== $node->getUser()->getId()) {
+        if ($token->getUser()->getId() !== $node->getUser()->getId()) {
             throw new NodeNotFoundException("node does not belong to user");
         }
 
@@ -140,7 +130,7 @@ class Update extends AbstractApi {
             $this->dataManager->getPath()
         );
         $file->setOwner(
-            $this->getToken()->getUser()
+            $token->getUser()
         );
 
         $moved = $this->uploadFileService->moveUploadedFile($file);
@@ -173,16 +163,12 @@ class Update extends AbstractApi {
             $this->fileRepository->update($nodeFile->getFile());
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "base64" => $this->rawFileService->stringToBase64($avatarFile->getFile()->getFullPath())
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

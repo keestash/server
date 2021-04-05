@@ -27,6 +27,9 @@ interface ISegment {
 
     public function getTitle(): string;
 
+    /**
+     * @return ArrayList<IEntry>
+     */
     public function getEntries(): ArrayList;
 
     public function getId(): ?string;

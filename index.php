@@ -22,15 +22,47 @@ declare(strict_types=1);
 // we want to keep the global namespace clean.
 // Therefore, we call our framework within an
 // anonymous function.
+use Keestash\ConfigProvider;
+use KSP\App\IApp;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Event\IEventDispatcher;
+use Laminas\Config\Config;
+use Mezzio\Application;
+use Psr\Container\ContainerInterface;
+
 (function () {
     chdir(dirname(__DIR__));
 
-    require_once __DIR__ . '/lib/versioncheck.php';
-    require_once __DIR__ . '/lib/filecheck.php';
-    require_once __DIR__ . '/lib/extensioncheck.php';
-    require_once __DIR__ . '/config/config.php';
-    require_once __DIR__ . '/lib/Keestash.php';
+    /** @var ContainerInterface $container */
+    $container = require_once __DIR__ . '/lib/start.php';
+    /** @var Config $config */
+    $config = $container->get(Config::class);
+    /** @var Application $app */
+    $app = $container->get(Application::class);
+    /** @var IEnvironmentService $environmentService */
+    $environmentService = $container->get(IEnvironmentService::class);
+    $environmentService->setEnv(ConfigProvider::ENVIRONMENT_WEB);
 
-    Keestash::requestWeb();
-    return true;
+    (require_once __DIR__ . '/config/config/pipeline.php')($app);
+
+    $router = $config->get(IApp::CONFIG_PROVIDER_WEB_ROUTER);
+
+    /** @var Config $route */
+    foreach ($router[IApp::CONFIG_PROVIDER_ROUTES] as $route) {
+        $middleware = $route->get('middleware');
+        $name       = $route->get('name');
+        $path       = $route->get('path');
+
+        $app->get(
+            $path
+            , $middleware
+            , $name
+        );
+    }
+
+    /** @var IEventDispatcher $eventDispatcher */
+    $eventDispatcher = $container->get(IEventDispatcher::class);
+    $eventDispatcher->register($config->get(IApp::CONFIG_PROVIDER_EVENTS)->toArray());
+    $app->run();
+    
 })();

@@ -23,18 +23,12 @@ namespace Keestash\Factory\App\Loader;
 
 use Keestash\App\Loader\Loader;
 use KSP\App\ILoader;
-use KSP\Core\Cache\ICacheService;
-use KSP\Core\ILogger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class LoaderFactory {
 
     public function __invoke(ContainerInterface $container): ILoader {
-        return new Loader(
-            $container->get(ILogger::class),
-            $container->get(ICacheService::class),
-            realpath(__DIR__ . '/../../../../../apps/')
-        );
+        return new Loader();
     }
 
 }

@@ -58,7 +58,7 @@ class User implements RequestHandlerInterface {
 
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters     = json_decode($request->getBody()->getContents(), true);
+        $parameters     = json_decode((string)$request->getBody(), true);
         $mode           = $parameters["mode"] ?? null;
         $organizationId = $parameters["organization_id"] ?? null;
         $userId         = $parameters["user_id"] ?? null;

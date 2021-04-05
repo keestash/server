@@ -31,9 +31,7 @@ use Keestash\Core\Manager\EventManager\EventManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\LoggerManager\LoggerManager;
 use Keestash\Core\Manager\SessionManager\SessionManager;
-use Keestash\Core\Manager\StringManager\FrontendManager;
-use Keestash\Core\Manager\StringManager\StringManager;
-use Keestash\Core\Manager\TemplateManager\TwigManager;
+use Keestash\Core\Manager\SettingManager\SettingManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
@@ -45,19 +43,20 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
+use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
+use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Core\Service\Validation\ValidationService;
-use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
 use Keestash\L10N\GetText;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
@@ -68,8 +67,7 @@ use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Manager\SessionManager\ISessionManager;
-use KSP\Core\Manager\StringManager\IStringManager;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
+use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
@@ -81,6 +79,7 @@ use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
@@ -92,8 +91,8 @@ use KSP\Core\Service\Event\IEventDispatcher;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Organization\IOrganizationService;
+use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
-use KSP\Core\Service\Validation\IValidationService;
 use KSP\L10N\IL10N;
 
 return [
@@ -108,7 +107,7 @@ return [
     IUserRepository::class            => UserRepository::class,
     ILoggerManager::class             => LoggerManager::class,
     IUserKeyRepository::class         => UserKeyRepository::class,
-    IKeyService::class                => KeyServiceFactory::class,
+    IKeyService::class                => KeyService::class,
     IEncryptionService::class         => KeestashEncryptionService::class,
     IOrganizationKeyRepository::class => OrganizationKeyRepository::class,
     IUserStateRepository::class       => UserStateRepository::class,
@@ -119,15 +118,11 @@ return [
     ICacheService::class              => NullService::class,
     ITokenRepository::class           => TokenRepository::class,
     IEventDispatcher::class           => EventDispatcher::class,
-    ITemplateManager::class           => TwigManager::class,
     IEmailService::class              => EmailService::class,
-    IValidationService::class         => ValidationService::class,
     IAppRepository::class             => AppRepository::class,
     ICookieManager::class             => CookieManager::class,
     IOrganizationService::class       => OrganizationService::class,
     IFileManager::class               => FileManager::class,
-    IStringManager::class             => StringManager::class,
-    FrontendManager::class            => StringManager::class,
     IJobRepository::class             => JobRepository::class,
     IPersistenceService::class        => PersistenceService::class,
     ISessionManager::class            => SessionManager::class,
@@ -135,5 +130,8 @@ return [
     ILanguageService::class           => LanguageService::class,
     SessionHandlerInterface::class    => SessionHandler::class,
     ISessionRepository::class         => SessionRepository::class,
-    IEnvironmentService::class        => EnvironmentService::class
+    IEnvironmentService::class        => EnvironmentService::class,
+    IRouterService::class             => RouterService::class,
+    IAppRenderer::class               => AppRenderer::class,
+    ISettingManager::class            => SettingManager::class
 ];

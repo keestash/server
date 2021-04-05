@@ -26,9 +26,7 @@ use KSP\Core\DTO\File\IFile;
 use KSP\Core\Manager\IManager;
 
 interface IDataManager extends IManager {
-
-    public function __construct(string $appId, ?string $context = null);
-
+    
     public function store(IFile $file): bool;
 
     public function storeAll(FileList $fileList): bool;
