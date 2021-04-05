@@ -43,6 +43,7 @@ class InstallApps implements RequestHandlerInterface {
     private ILogger          $logger;
     private ILoader          $loader;
     private IAppRepository   $appRepository;
+    private Diff             $diff;
 
     public function __construct(
         InstallerService $installer
@@ -51,6 +52,7 @@ class InstallApps implements RequestHandlerInterface {
         , ILogger $logger
         , ILoader $loader
         , IAppRepository $appRepository
+        , Diff $diff
     ) {
         $this->installerService = $installer;
         $this->lockHandler      = $lockHandler;
@@ -58,6 +60,7 @@ class InstallApps implements RequestHandlerInterface {
         $this->logger           = $logger;
         $this->loader           = $loader;
         $this->appRepository    = $appRepository;
+        $this->diff             = $diff;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -66,13 +69,11 @@ class InstallApps implements RequestHandlerInterface {
         $loadedApps    = $this->loader->getApps();
         $installedApps = $this->appRepository->getAllApps();
 
-        $diff = new Diff();
-
         // Step 1: we remove all apps that are disabled in our db
-        $loadedApps = $diff->removeDisabledApps($loadedApps, $installedApps);
+        $loadedApps = $this->diff->removeDisabledApps($loadedApps, $installedApps);
 
         // Step 2: we determine all apps that needs to be installed
-        $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
+        $appsToInstall = $this->diff->getNewlyAddedApps($loadedApps, $installedApps);
 
         // Step 3: Install them!
         $installed = $this->install($appsToInstall);
@@ -80,7 +81,7 @@ class InstallApps implements RequestHandlerInterface {
         // Step 4: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
-        $appsToUpgrade = $diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
+        $appsToUpgrade = $this->diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
 
         $updated = $this->install($appsToUpgrade);
 

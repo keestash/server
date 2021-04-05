@@ -22,37 +22,33 @@ declare(strict_types=1);
 namespace KSA\Apps\Controller;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSA\Apps\Application\Application;
 use KSP\Core\Controller\AppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends AppController {
 
-    public const TEMPLATE_NAME_APPS = "apps.twig";
-
-    private $appRepository        = null;
+    private TemplateRendererInterface $templateRenderer;
+    private IAppRepository            $appRepository;
+    private IL10N                     $translator;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $l10n
+        IL10N $l10n
         , IAppRepository $appRepository
+        , TemplateRendererInterface $templateRenderer
+        , IAppRenderer $appRenderer
     ) {
-        parent::__construct(
-            $templateManager
-            , $l10n
-        );
+        parent::__construct($appRenderer);
 
-        $this->appRepository        = $appRepository;
+        $this->appRepository    = $appRepository;
+        $this->templateRenderer = $templateRenderer;
+        $this->translator       = $l10n;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
+    public function run(ServerRequestInterface $request): string {
 
         $apps   = $this->appRepository->getAllApps();
         $result = new ArrayList();
@@ -60,23 +56,16 @@ class Controller extends AppController {
             $result->add($apps->get($key));
         }
 
-        parent::getTemplateManager()->replace(
-            Controller::TEMPLATE_NAME_APPS
-            , [
-                "appId"      => $this->getL10N()->translate("App Id")
-                , "enabled"  => $this->getL10N()->translate("Active")
-                , "version"  => $this->getL10N()->translate("Version")
-                , "createTs" => $this->getL10N()->translate("CreateTs")
-                , "apps"     => $result
-            ]
-        );
-
-        parent::render(Controller::TEMPLATE_NAME_APPS);
-    }
-
-
-    public function afterCreate(): void {
-
+        return $this->templateRenderer
+            ->render('apps::apps'
+                , [
+                    "appId"      => $this->translator->translate("App Id")
+                    , "enabled"  => $this->translator->translate("Active")
+                    , "version"  => $this->translator->translate("Version")
+                    , "createTs" => $this->translator->translate("CreateTs")
+                    , "apps"     => $result
+                ]
+            );
     }
 
 }

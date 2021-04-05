@@ -14,37 +14,33 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Comment;
 
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private NodeRepository    $nodeRepository;
 
     public function __construct(
-        IL10N $l10n
-        , CommentRepository $commentRepository
+        CommentRepository $commentRepository
         , NodeRepository $nodeRepository
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
     }
 
-    public function onCreate(array $parameters): void {
-     
-    }
-
-    public function create(): void {
-        $nodeId = $this->getParameter("nodeId");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = $request->getQueryParams();
+        $nodeId     = $parameters["nodeId"] ?? null;
+        $token      = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
             throw new CommentException();
@@ -56,22 +52,18 @@ class Get extends AbstractApi {
             throw new CommentException();
         }
 
-        if ($this->getToken()->getUser()->getId() !== $node->getUser()->getId()) {
+        if ($token->getUser()->getId() !== $node->getUser()->getId()) {
             throw new CommentException();
         }
 
         $comments = $this->commentRepository->getCommentsByNode($node);
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "comments" => $comments
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

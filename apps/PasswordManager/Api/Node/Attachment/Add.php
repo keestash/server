@@ -23,9 +23,8 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use DateTime;
 use Keestash;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
-
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
@@ -38,9 +37,12 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\Upload\IFileService;
-use KSP\L10N\IL10N;
+use Laminas\Config\Config;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Add extends AbstractApi {
+class Add implements RequestHandlerInterface {
 
     public const FIELD_NAME_NAME     = "name";
     public const FIELD_NAME_TYPE     = "type";
@@ -64,41 +66,40 @@ class Add extends AbstractApi {
     private IFileService    $uploadFileService;
     private IIconService    $iconService;
     private ILogger         $logger;
+    private Config          $config;
 
     public function __construct(
-        IL10N $l10n
-        , IFileRepository $uploadFileRepository
+        IFileRepository $uploadFileRepository
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
         , IFileService $uploadFileService
         , IIconService $iconService
         , ILogger $logger
-        , ?IToken $token = null
+        , Config $config
     ) {
-        parent::__construct($l10n, $token);
-
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->uploadFileService  = $uploadFileService;
         $this->iconService        = $iconService;
         $this->logger             = $logger;
+        $this->config             = $config;
         $this->dataManager        = new DataManager(
             Application::APP_ID
             , Add::CONTEXT
         );
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $nodeId         = $this->getParameter("node_id", null);
-        $fileList       = $this->getFiles();
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters     = json_decode((string) $request->getBody(), true);
+        $nodeId         = $parameters["node_id"] ?? null;
+        $fileList       = $request->getUploadedFiles();
+        $fileCount      = count($fileList);
         $processedFiles = [];
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
-        if (0 === $fileList->getSize()) {
+        if (0 === $fileCount) {
             throw new NoFileException();
         }
 
@@ -112,11 +113,11 @@ class Add extends AbstractApi {
             throw new CredentialException();
         }
 
-        if ($node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
+        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
             throw new CredentialException();
         }
 
-        foreach ($fileList->getFiles() as $file) {
+        foreach ($fileList as $file) {
             // TODO check content
             // TODO allowed extensions
 
@@ -131,7 +132,7 @@ class Add extends AbstractApi {
                 $this->dataManager->getPath()
             );
             $coreFile->setOwner(
-                $this->getToken()->getUser()
+                $token->getUser()
             );
 
             $moved = $this->uploadFileService->moveUploadedFile($coreFile);
@@ -159,7 +160,7 @@ class Add extends AbstractApi {
             $processedFiles[] = $nodeFile;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "files"   => $processedFiles
@@ -170,7 +171,7 @@ class Add extends AbstractApi {
 
     private function addIcons(array $fileList): array {
         $icons    = [];
-        $assetDir = Keestash::getServer()->getAssetRoot();
+        $assetDir = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH);
         $svgDir   = str_replace("//", "/", "$assetDir/svg/");
 
         /** @var NodeFile $nodeFile */
@@ -181,10 +182,6 @@ class Add extends AbstractApi {
         }
 
         return $icons;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -24,10 +24,6 @@ module.exports = {
     entry: {
         install_instance: glob.sync(__dirname + "/src/install_instance.js")
     },
-    output: {
-        path: __dirname + "/dist/",
-        filename: '[name].bundle.js'
-    },
     module: {
         rules: [
             {

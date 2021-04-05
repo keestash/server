@@ -14,20 +14,19 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential;
 
-use Keestash\Api\AbstractApi;
-use Keestash\Core\Service\Encryption\Key\KeyService;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node as NodeObject;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class CredentialCreate
@@ -35,60 +34,48 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Create extends AbstractApi {
+class Create implements RequestHandlerInterface {
 
-    private NodeRepository        $nodeRepository;
-    private EncryptionService     $encryptionService;
-    private NodeService           $nodeService;
-    private KeyService            $keyService;
-    private CredentialService     $credentialService;
-    private SanitizerService      $sanitizerService;
+    private IL10N             $translator;
+    private NodeRepository    $nodeRepository;
+    private CredentialService $credentialService;
+    private SanitizerService  $sanitizerService;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
-        , EncryptionService $encryptionService
-        , NodeService $nodeService
-        , KeyService $keyService
         , CredentialService $credentialService
         , SanitizerService $sanitizerService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
-        $this->nodeRepository       = $nodeRepository;
-        $this->encryptionService    = $encryptionService;
-        $this->nodeService          = $nodeService;
-        $this->keyService           = $keyService;
-        $this->credentialService    = $credentialService;
-        $this->sanitizerService     = $sanitizerService;
+        $this->translator        = $l10n;
+        $this->nodeRepository    = $nodeRepository;
+        $this->credentialService = $credentialService;
+        $this->sanitizerService  = $sanitizerService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $title    = $this->getParameter("title", '');
-        $userName = $this->getParameter("user_name", '');
-        $password = $this->getParameter("password", '');
-        $notes    = $this->getParameter("notes", '');
-        $folder   = $this->getParameter("parent", '');
-        $url      = $this->getParameter("url", '');
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token      = $request->getAttribute(IToken::class);
+        $parameters = json_decode((string) $request->getBody(), true);
+        $title      = $parameters["title"] ?? '';
+        $userName   = $parameters["user_name"] ?? '';
+        $password   = $parameters["password"] ?? '';
+        $notes      = $parameters["notes"] ?? '';
+        $folder     = $parameters["parent"] ?? '';
+        $url        = $parameters["url"] ?? '';
 
         if (false === $this->isValid($title)) {
 
-            parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("No Title")
+                    "message" => $this->translator->translate("No Title")
                 ]
             );
-            return;
 
         }
 
-        $parent = $this->getParentNode($folder);
+        $parent = $this->getParentNode($folder, $token);
 
         if (
             // no parent found
@@ -96,17 +83,15 @@ class Create extends AbstractApi {
             // parent is not an folder
             || !$parent instanceof Folder
             // parent does not belong to me
-            || $parent->getUser()->getId() !== $this->getToken()->getUser()->getId()
+            || $parent->getUser()->getId() !== $token->getUser()->getId()
         ) {
 
-            parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no parent found")
+                    "message" => $this->translator->translate("no parent found")
                 ]
             );
-
-            return;
 
         }
 
@@ -115,7 +100,7 @@ class Create extends AbstractApi {
             , $url
             , $userName
             , $title
-            , $this->getToken()->getUser()
+            , $token->getUser()
             , $parent
             , $this->sanitizerService->sanitize($notes)
         );
@@ -123,19 +108,18 @@ class Create extends AbstractApi {
         $inserted = $this->credentialService->insertCredential($credential, $parent);
 
         if (false === $inserted) {
-            parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not link edges")
+                    "message" => $this->translator->translate("could not link edges")
                 ]
             );
-            return;
         }
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->getL10N()->translate("success")
+                "message" => $this->translator->translate("success")
             ]
         );
     }
@@ -146,16 +130,12 @@ class Create extends AbstractApi {
         return true;
     }
 
-    private function getParentNode($parent): ?NodeObject {
+    private function getParentNode($parent, IToken $token): ?NodeObject {
 
         if (Application::ROOT_FOLDER === $parent) {
-            return $this->nodeRepository->getRootForUser($this->getToken()->getUser());
+            return $this->nodeRepository->getRootForUser($token->getUser());
         }
         return $this->nodeRepository->getNode((int) $parent);
-    }
-
-    public function afterCreate(): void {
-        // silence is golden
     }
 
 }

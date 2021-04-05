@@ -29,6 +29,7 @@ use KSA\Users\Api\User\UserEdit;
 use KSA\Users\Api\User\UserLock;
 use KSA\Users\Api\User\UserRemove;
 use KSA\Users\BackgroundJob\UserDeleteTask;
+use KSA\Users\Controller\UsersController;
 use KSA\Users\Event\Listener\PostStateChange;
 use KSA\Users\Factory\Api\File\ProfilePictureFactory;
 use KSA\Users\Factory\Api\User\GetAllFactory;
@@ -37,11 +38,22 @@ use KSA\Users\Factory\Api\User\UserEditFactory;
 use KSA\Users\Factory\Api\User\UserLockFactory;
 use KSA\Users\Factory\Api\User\UserRemoveFactory;
 use KSA\Users\Factory\BackgroundJob\UserDeleteTaskFactory;
+use KSA\Users\Factory\Controller\UsersControllerFactory;
 use KSA\Users\Factory\Event\Listener\PostStateChangeFactory;
 use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
+
+    public const USERS = "/users[/]";
+
+    // TODO register background jobs
+    //"background_jobs": {
+    //"KSA\\Users\\BackgroundJob\\UserDeleteTask": {
+    //"type": "regular.type.job",
+    //"interval": 68400
+    //}
+    //}
 
     public function __invoke(): array {
         return [
@@ -60,6 +72,9 @@ final class ConfigProvider {
 
                     // listener
                     PostStateChange::class => PostStateChangeFactory::class,
+
+                    // controller
+                    UsersController::class => UsersControllerFactory::class
                 ]
             ],
             IApp::CONFIG_PROVIDER_API_ROUTER => [
@@ -102,8 +117,35 @@ final class ConfigProvider {
                     ],
                 ]
             ],
+            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
+                IApp::CONFIG_PROVIDER_ROUTES                 => [
+                    [
+                        'path'         => ConfigProvider::USERS
+                        , 'middleware' => UsersController::class
+                        , 'name'       => UsersController::class
+                    ],
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                    ConfigProvider::USERS => 'users'
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                    ConfigProvider::USERS => 'users'
+                ],
+                IApp::CONFIG_PROVIDER_SETTINGS               => [
+                    ConfigProvider::USERS => [
+                        'name'      => 'users'
+                        , 'faClass' => 'fas fa-user-circle'
+                        , 'order'   => 1
+                    ]
+                ]
+            ],
             IApp::CONFIG_PROVIDER_EVENTS     => [
                 UserStateDeleteEvent::class => PostStateChange::class
+            ],
+            'templates'                      => [
+                'paths' => [
+                    'users' => [__DIR__ . '/template']
+                ]
             ]
         ];
     }

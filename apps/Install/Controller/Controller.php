@@ -22,49 +22,57 @@ declare(strict_types=1);
 namespace KSA\Install\Controller;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash;
 use Keestash\App\Config\Diff;
-
 use Keestash\Legacy\Legacy;
+use KSP\App\ILoader;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
+use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends FullscreenAppController {
 
-    public const TEMPLATE_INSTALL_APPS                 = "install.twig";
     public const INSTALL_TYPE_NOTHING_TO_UPDATE        = 0;
     public const INSTALL_TYPE_INSTALL_APPS             = 1;
     public const INSTALL_TYPE_UPDATE_APPS              = 2;
     public const INSTALL_TYPE_INSTALL_AND_UPGRADE_APPS = 3;
     public const INSTALL_TYPE_ERROR                    = 4;
 
-    private $legacy = null;
+    private Legacy                    $legacy;
+    private ILoader                   $loader;
+    private IAppRepository            $appRepository;
+    private TemplateRendererInterface $templateRenderer;
+    private IL10N                     $translator;
+    private Diff                      $diff;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $l10n
+        IL10N $l10n
         , Legacy $legacy
+        , ILoader $loader
+        , IAppRepository $appRepository
+        , TemplateRendererInterface $templateRenderer
+        , IAppRenderer $appRenderer
+        , Diff $diff
     ) {
-        parent::__construct(
-            $templateManager
-            , $l10n
-        );
+        parent::__construct($appRenderer);
 
-        $this->legacy = $legacy;
+        $this->legacy           = $legacy;
+        $this->loader           = $loader;
+        $this->appRepository    = $appRepository;
+        $this->templateRenderer = $templateRenderer;
+        $this->translator       = $l10n;
+        $this->diff             = $diff;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
+    public function run(ServerRequestInterface $request): string {
         // We only check loadedApps if the system is
         // installed
-        $loadedApps    = Keestash::getServer()->getAppLoader()->getApps();
-        $installedApps = Keestash::getServer()->getAppRepository()->getAllApps();
+        $loadedApps    = $this->loader->getApps();
+        $installedApps = $this->appRepository->getAllApps();
 
-        $diff = new Diff();
+        $diff = $this->diff;
 
         // Step 1: we remove all apps that are disabled in our db
         $loadedApps = $diff->removeDisabledApps($loadedApps, $installedApps);
@@ -77,29 +85,26 @@ class Controller extends FullscreenAppController {
         // apps
         $appsToUpgrade = $diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
 
-        $this->getTemplateManager()
-            ->replace(
-                Controller::TEMPLATE_INSTALL_APPS
+        return $this->templateRenderer
+            ->render(
+                'install::install'
                 , [
-                    "installationHeader"                    => $this->getL10N()->translate("Installing Apps")
-                    , "installationDescription"             => $this->getL10N()->translate("Your {$this->legacy->getApplication()->get('name')} instance is not fully installed yet. Follow the instructions below to complete the installation.")
-                    , "installInstructionInstallApps"       => $this->getL10N()->translate("The following apps are going to be installed. Please click on \"Install\" to finish the process.")
-                    , "installInstructionNothingToUpdate"   => $this->getL10N()->translate("Your {$this->legacy->getApplication()->get('name')} instance is installed. Please click on \"End\" to start using {$this->legacy->getApplication()->get('name')}.")
-                    , "installInstructionUpdateApps"        => $this->getL10N()->translate("The following apps are going to be updated. Please click on \"Install\" to finish the process.")
-                    , "installInstructionInstallUpdateApps" => $this->getL10N()->translate("The following apps are going to be installed and updated. Please click on \"Install\" to finish the process.")
-                    , "installationDescriptionError"        => $this->getL10N()->translate("It seems to be that the installer has an error and could not install or update your apps. Please consult your server admin or try installing {$this->legacy->getApplication()->get('name')} again.")
-                    , "updateInstruction"                   => $this->getL10N()->translate("The following apps are going to be updated. Please click on \"Install\" to finish the process.")
-                    , "endUpdate"                           => $this->getL10N()->translate("End")
-                    , "installApps"                         => $this->getL10N()->translate("Install")
-                    , "updateApps"                          => $this->getL10N()->translate("Update")
+                    "installationHeader"                    => $this->translator->translate("Installing Apps")
+                    , "installationDescription"             => $this->translator->translate("Your {$this->legacy->getApplication()->get('name')} instance is not fully installed yet. Follow the instructions below to complete the installation.")
+                    , "installInstructionInstallApps"       => $this->translator->translate("The following apps are going to be installed. Please click on \"Install\" to finish the process.")
+                    , "installInstructionNothingToUpdate"   => $this->translator->translate("Your {$this->legacy->getApplication()->get('name')} instance is installed. Please click on \"End\" to start using {$this->legacy->getApplication()->get('name')}.")
+                    , "installInstructionUpdateApps"        => $this->translator->translate("The following apps are going to be updated. Please click on \"Install\" to finish the process.")
+                    , "installInstructionInstallUpdateApps" => $this->translator->translate("The following apps are going to be installed and updated. Please click on \"Install\" to finish the process.")
+                    , "installationDescriptionError"        => $this->translator->translate("It seems to be that the installer has an error and could not install or update your apps. Please consult your server admin or try installing {$this->legacy->getApplication()->get('name')} again.")
+                    , "updateInstruction"                   => $this->translator->translate("The following apps are going to be updated. Please click on \"Install\" to finish the process.")
+                    , "endUpdate"                           => $this->translator->translate("End")
+                    , "installApps"                         => $this->translator->translate("Install")
+                    , "updateApps"                          => $this->translator->translate("Update")
                     , "appsToInstall"                       => $this->hashTableToArray($appsToInstall)
                     , "appsToUpdate"                        => $this->hashTableToArray($appsToUpgrade)
                     , "installType"                         => $this->getInstallType($appsToInstall, $appsToUpgrade)
                 ]
             );
-        $this->setAppContent(
-            $this->getTemplateManager()->render(Controller::TEMPLATE_INSTALL_APPS)
-        );
     }
 
     private function hashTableToArray(HashTable $hashTable): array {
@@ -116,10 +121,6 @@ class Controller extends FullscreenAppController {
         if (0 === $appsToInstall->size() && $appsToUpgrade->size() > 0) return Controller::INSTALL_TYPE_UPDATE_APPS;
         if ($appsToInstall->size() > 0 && $appsToUpgrade->size() > 0) return Controller::INSTALL_TYPE_INSTALL_AND_UPGRADE_APPS;
         return self::INSTALL_TYPE_ERROR;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

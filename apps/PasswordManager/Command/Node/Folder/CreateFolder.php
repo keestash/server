@@ -22,25 +22,30 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Command\Node\Folder;
 
 use DateTime;
-use Keestash;
 use Keestash\Command\KeestashCommand;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateFolder extends KeestashCommand {
 
-    private NodeRepository $nodeRepository;
+    private NodeRepository  $nodeRepository;
+    private IUserRepository $userRepository;
 
-    public function __construct(NodeRepository $nodeRepository) {
-        parent::__construct(null);
+    public function __construct(
+        NodeRepository $nodeRepository
+        , IUserRepository $userRepository
+    ) {
+        parent::__construct();
 
         $this->nodeRepository = $nodeRepository;
+        $this->userRepository = $userRepository;
     }
 
     protected function configure() {
@@ -56,7 +61,7 @@ class CreateFolder extends KeestashCommand {
         $name   = $input->getArgument("name");
         $parent = (int) $input->getArgument("parent");
 
-        $users = Keestash::getServer()->getUsersFromCache();
+        $users = $this->userRepository->getAll();
         $user  = null;
 
         /** @var IUser $cachedUser */

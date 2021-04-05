@@ -48,7 +48,7 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters   = json_decode($request->getBody()->getContents(), true);
+        $parameters   = json_decode((string)$request->getBody(), true);
         $organization = $parameters['organization'] ?? null;
         $organization = json_decode($organization, true);
 

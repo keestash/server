@@ -13,12 +13,7 @@
 
     {% block scripts %}
         <script src="{{ baseJs }}" type="application/javascript"></script>
-        {% for key, value in scripts %}
-        <script src="{{ app_asset('') }}{{ key }}" type="{{ value }}"></script>
-        {% endfor %}
-        {% for key, value in appScripts %}
-        <script src="{{ app_asset(key) }}" type="{{ value }}"></script>
-        {% endfor %}
+        <script src="{{ appScript }}" type="application/javascript"></script>
     {% endblock %}
 
     <title>{{ title }}</title>

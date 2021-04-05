@@ -21,34 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Controller\File;
 
-
 use KSP\Core\Controller\AppController;
-use KSP\Core\Manager\FileManager\IFileManager;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\Core\Repository\File\IFileRepository;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class View
  * @package KSA\GeneralApi\Controller\File
- * @TODO    needs to be implemented for public files, such as icons or default images!
  */
 class View extends AppController {
 
-    public function __construct(ITemplateManager $templateManager, IL10N $l10n) {
-        parent::__construct($templateManager, $l10n);
-    }
-
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-        $fileId = $this->getParameter("file_id");
-    }
-
-    public function afterCreate(): void {
-
+    public function run(ServerRequestInterface $request): string {
+        return '';
     }
 
 }

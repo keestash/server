@@ -25,13 +25,24 @@ use KSP\App\IApp;
 use Laminas\ConfigAggregator\ConfigAggregator;
 
 return [
-    ConfigAggregator::CACHE_FILEMODE => 777,
-    ConfigAggregator::ENABLE_CACHE   => false,
-    ConfigProvider::INSTANCE_DB_PATH => realpath(__DIR__ . '/../../config/.instance.sqlite'),
-    ConfigProvider::CONFIG_PATH      => realpath(__DIR__ . '/../../config/'),
-    ConfigProvider::ASSET_PATH       => realpath(__DIR__ . '/../../asset/'),
-    ConfigProvider::IMAGE_PATH       => realpath(__DIR__ . '/../../data/image/'),
-    ConfigProvider::PHINX_PATH       => realpath(__DIR__ . '/../../config/phinx/'),
-    'dependencies'                   => require __DIR__ . '/dependencies.php',
-    IApp::CONFIG_PROVIDER_API_ROUTER => require __DIR__ . '/router.php'
+    ConfigAggregator::CACHE_FILEMODE         => 777
+    , ConfigAggregator::ENABLE_CACHE         => false
+    , ConfigProvider::INSTANCE_DB_PATH       => __DIR__ . '/../../config/.instance.sqlite'
+    , ConfigProvider::CONFIG_PATH            => realpath(__DIR__ . '/../../config/')
+    , ConfigProvider::ASSET_PATH             => realpath(__DIR__ . '/../../asset/')
+    , ConfigProvider::IMAGE_PATH             => realpath(__DIR__ . '/../../data/image/')
+    , ConfigProvider::PHINX_PATH             => realpath(__DIR__ . '/../../config/phinx/')
+    , ConfigProvider::DATA_PATH              => realpath(__DIR__ . '/../../data/')
+    , ConfigProvider::INSTANCE_PATH              => realpath(__DIR__ . '/../../')
+    , ConfigProvider::APP_PATH              => realpath(__DIR__ . '/../../apps/')
+    , ConfigProvider::INSTALL_INSTANCE_ROUTE => 'install_instance'
+    , 'dependencies'                         => require __DIR__ . '/dependencies.php'
+    , IApp::CONFIG_PROVIDER_API_ROUTER       => require __DIR__ . '/router.php'
+    , 'templates'                            => [
+        'extension' => 'twig'
+        , 'paths'   => [
+            'root'    => [__DIR__ . '/../../template/app/']
+            , 'email' => [__DIR__ . '/../../template/email/']
+        ]
+    ]
 ];

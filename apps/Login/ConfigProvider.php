@@ -21,58 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\Login;
 
-use KSA\Login\Api\Login;
-use KSA\Login\Controller\Logout;
-use KSA\Login\Factory\Api\LoginFactory;
-use KSA\Login\Factory\Controller\LogoutFactory;
-use KSA\Login\Service\TokenService;
-use KSP\App\IApp;
-use KSP\Core\DTO\Http\IVerb;
-use Laminas\ServiceManager\Factory\InvokableFactory;
-
 final class ConfigProvider {
 
+    public const LOGIN  = '/login[/]';
+    public const LOGOUT = '/logout[/]';
+
     public function __invoke(): array {
-        return [
-            'dependencies'                   => [
-                'factories' => [
-                    // api
-                    Login::class        => LoginFactory::class,
-
-                    // controller
-                    Logout::class       => LogoutFactory::class,
-
-                    // service
-                    TokenService::class => InvokableFactory::class
-                ]
-            ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES        => [
-                    [
-                        'path'         => '/logout[/]'
-                        , 'middleware' => Logout::class
-                        , 'method'     => IVerb::GET
-                        , 'name'       => Logout::class
-                    ],
-                ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
-                    '/logout[/]'
-                ]
-            ],
-            IApp::CONFIG_PROVIDER_API_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES        => [
-                    [
-                        'path'         => '/login/submit[/]'
-                        , 'middleware' => Login::class
-                        , 'method'     => IVerb::POST
-                        , 'name'       => Login::class
-                    ],
-                ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
-                    '/login/submit[/]'
-                ]
-            ]
-        ];
+        return require __DIR__ . '/config/config.php';
     }
 
 }

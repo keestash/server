@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Install\Factory\Api;
 
+use Keestash\App\Config\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
@@ -40,6 +41,7 @@ class InstallAppsFactory {
             , $container->get(ILogger::class)
             , $container->get(ILoader::class)
             , $container->get(IAppRepository::class)
+            , $container->get(Diff::class)
         );
     }
 

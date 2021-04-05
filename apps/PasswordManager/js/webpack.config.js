@@ -25,11 +25,7 @@ module.exports = {
         password_manager: glob.sync(__dirname + "/src/password_manager/*.js")
         , public_share: glob.sync(__dirname + "/src/public_share/*.js")
     },
-    output: {
-        path: __dirname + "/dist/",
-        filename: '[name].bundle.js'
-    },
-    module: {
+      module: {
         rules: [
             {
                 exclude: /node_modules/,

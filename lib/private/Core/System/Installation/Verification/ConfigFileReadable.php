@@ -23,6 +23,7 @@ namespace Keestash\Core\System\Installation\Verification;
 
 use doganoo\PHPUtil\FileSystem\DirHandler;
 use Keestash;
+use Laminas\Config\Config;
 
 /**
  * Class ConfigFileReadable
@@ -51,8 +52,14 @@ class ConfigFileReadable extends AbstractVerification {
         , "config.sample.php"
     ];
 
+    private Config $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
+
     public function hasProperty(): bool {
-        $configRoot = Keestash::getServer()->getConfigRoot();
+        $configRoot = (string) $this->config->get(Keestash\ConfigProvider::CONFIG_PATH);
         $dirHandler = new DirHandler($configRoot);
 
         if (false === $this->hasFiles($dirHandler)) return false;

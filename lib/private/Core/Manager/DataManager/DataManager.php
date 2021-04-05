@@ -27,6 +27,7 @@ use Keestash\Core\DTO\File\FileList;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Manager\DataManager\IDataManager;
+use Laminas\Config\Config;
 
 /**
  * Class DataManager
@@ -38,16 +39,22 @@ class DataManager implements IDataManager {
     private string  $appId;
     private ?string $context;
     private string  $path;
+    private Config  $config;
 
-    public function __construct(string $appId, ?string $context = null) {
+    public function __construct(
+        string $appId
+        , Config $config
+        , ?string $context = null
+    ) {
         $this->appId   = $appId;
         $this->context = $context;
+        $this->config  = $config;
         $this->buildPath();
         $this->createDir($this->path);
     }
 
-    private function buildPath() {
-        $path = Keestash::getServer()->getDataRoot() . "/" . $this->appId;
+    private function buildPath(): void {
+        $path = (string) $this->config->get(Keestash\ConfigProvider::DATA_PATH) . "/" . $this->appId;
 
         if (null !== $this->context) {
             $path = $path . "/" . $this->context;

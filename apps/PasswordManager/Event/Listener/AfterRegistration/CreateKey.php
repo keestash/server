@@ -34,11 +34,8 @@ use KSP\Core\DTO\User\IUser;
  */
 class CreateKey {
 
-    /** @var KeyService */
-    private $keyService;
-
-    /** @var CredentialService */
-    private $credentialService;
+    private KeyService        $keyService;
+    private CredentialService $credentialService;
 
     /**
      * CreateKey constructor.

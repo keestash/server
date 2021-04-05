@@ -21,13 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Command;
 
-use Keestash;
 use Keestash\Command\KeestashCommand;
+use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\User\UserService;
 use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,16 +37,19 @@ class DemoMode extends KeestashCommand {
     private InstanceDB      $instanceDb;
     private UserService     $userService;
     private IUserRepository $userRepository;
+    private Config          $config;
 
     public function __construct(
         InstanceDB $instanceDB
         , UserService $userService
         , IUserRepository $userRepository
+        , Config $config
     ) {
         parent::__construct("instance:demomode");
         $this->instanceDb     = $instanceDB;
         $this->userService    = $userService;
         $this->userRepository = $userRepository;
+        $this->config         = $config;
     }
 
     private function enable(string $path): bool {
@@ -82,7 +86,7 @@ class DemoMode extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $dataRoot     = Keestash::getServer()->getDataRoot();
+        $dataRoot     = (string) $this->config->get(ConfigProvider::DATA_PATH);
         $dataRoot     = realpath($dataRoot);
         $demoModePath = $dataRoot . "/.mode.demo";
 

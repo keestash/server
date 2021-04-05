@@ -21,68 +21,61 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class PublicShare
  * @package KSA\PasswordManager\Api\Share
  */
-class PublicShare extends AbstractApi {
+class PublicShare implements RequestHandlerInterface {
 
     private NodeRepository        $nodeRepository;
     private ShareService          $shareService;
     private PublicShareRepository $shareRepository;
 
     public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
+        NodeRepository $nodeRepository
         , ShareService $shareService
         , PublicShareRepository $shareRepository
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->nodeRepository  = $nodeRepository;
         $this->shareService    = $shareService;
         $this->shareRepository = $shareRepository;
     }
 
-    public function onCreate(array $parameters): void {
 
-    }
-
-    public function create(): void {
-        $nodeId = $this->getParameter("node_id");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
+        $nodeId     = $parameters["node_id"] ?? null;
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "no node found"
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if (null === $node || $node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
-            $response = parent::createResponse(
+        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "no node found 2"
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
         $publicShare = new \KSA\PasswordManager\Entity\Share\PublicShare();
@@ -96,23 +89,19 @@ class PublicShare extends AbstractApi {
         if (null !== $share && false === $share->isExpired()) {
             // TODO unshare
         }
+
         $node = $this->shareRepository->shareNode($node);
 
         if (null === $node) {
             // TODO handle
         }
 
-        $response = parent::createResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "share" => $node->getPublicShare()
             ]
         );
-        parent::setResponse($response);
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

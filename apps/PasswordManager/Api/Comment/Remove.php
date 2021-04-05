@@ -21,66 +21,56 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Comment;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Remove extends AbstractApi {
+class Remove implements RequestHandlerInterface {
 
-    /** @var array $parameters */
-    private $parameters;
-
-    /** @var CommentRepository */
-    private $commentRepository;
+    private CommentRepository $commentRepository;
+    private IL10N             $translator;
 
     public function __construct(
         IL10N $l10n
         , CommentRepository $commentRepository
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->commentRepository = $commentRepository;
+        $this->translator        = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-        $this->parameters = $parameters;
-    }
-
-    public function create(): void {
-        $subjectId = $this->parameters["subject_id"] ?? null;
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
+        $subjectId  = $parameters["subject_id"] ?? null;
 
         if (null === $subjectId) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no subject given")
+                    "message" => $this->translator->translate("no subject given")
                 ]
             );
-            return;
 
         }
-
 
         $removed = $this->commentRepository->remove((string) $subjectId);
 
         if (false === $removed) {
 
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not remove node")
+                    "message" => $this->translator->translate("could not remove node")
                 ]
             );
-            return;
 
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "message" => $this->getL10N()->translate("node removed")
@@ -88,9 +78,5 @@ class Remove extends AbstractApi {
         );
 
     }
-
-    public function afterCreate(): void {
-
-    }
-
+    
 }

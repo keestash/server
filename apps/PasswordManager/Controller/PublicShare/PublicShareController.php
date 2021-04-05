@@ -20,46 +20,45 @@ use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class PublicShareController extends FullscreenAppController {
 
-    public const TEMPLATE_NAME_PUBLIC_SHARE_NO_PASSWORD     = "public_share_no_password.twig";
-    public const TEMPLATE_NAME_PUBLIC_SHARE_SINGLE_PASSWORD = "public_share_single.twig";
+    public const TEMPLATE_NAME_PUBLIC_SHARE_NO_PASSWORD = "public_share_no_password.twig";
 
-    private NodeRepository        $nodeRepository;
-    private PublicShareRepository $shareRepository;
-    private IUserRepository       $userRepository;
+    private NodeRepository            $nodeRepository;
+    private PublicShareRepository     $shareRepository;
+    private IUserRepository           $userRepository;
+    private TemplateRendererInterface $templateRenderer;
+    private IL10N                     $translator;
 
     public function __construct(
-        ITemplateManager $templateManager
+        TemplateRendererInterface $templateRenderer
+        , IAppRenderer $appRenderer
         , IL10N $l10n
         , NodeRepository $nodeRepository
         , PublicShareRepository $shareRepository
         , IUserRepository $userRepository
     ) {
-        parent::__construct($templateManager, $l10n);
+        parent::__construct($appRenderer);
 
-        $this->nodeRepository  = $nodeRepository;
-        $this->shareRepository = $shareRepository;
-        $this->userRepository  = $userRepository;
+        $this->nodeRepository   = $nodeRepository;
+        $this->shareRepository  = $shareRepository;
+        $this->userRepository   = $userRepository;
+        $this->templateRenderer = $templateRenderer;
+        $this->translator       = $l10n;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-        $hash = $this->getParameter("hash");
+    public function run(ServerRequestInterface $request): string {
+        $hash = $request->getAttribute("hash");
 
         $content = null;
         if (null === $hash) {
-            $this->setAppContent(
-                $this->renderNoPassword()
-            );
-            return;
+            return $this->renderNoPassword();
         }
 
         $publicShare = $this->shareRepository->getShare($hash);
@@ -68,10 +67,7 @@ class PublicShareController extends FullscreenAppController {
             null === $publicShare
             || true === $publicShare->isExpired()
         ) {
-            $this->setAppContent(
-                $this->renderNoPassword()
-            );
-            return;
+            return $this->renderNoPassword();
         }
 
         $node = $this->nodeRepository->getNode($publicShare->getNodeId());
@@ -80,42 +76,31 @@ class PublicShareController extends FullscreenAppController {
         //   aka do he own/is shared to him/her?
 
         $content = $this->renderPassword($publicShare, $node);
-
-        parent::setAppContent(
-            $content
-
-        );
+        return $content;
     }
 
     private function renderNoPassword(): string {
-        $this->getTemplateManager()->replace(
-            PublicShareController::TEMPLATE_NAME_PUBLIC_SHARE_NO_PASSWORD
+        return $this->templateRenderer->render(
+            'passwordManager::public_share_no_password'
             , []
         );
-        return $this->getTemplateManager()->render(PublicShareController::TEMPLATE_NAME_PUBLIC_SHARE_NO_PASSWORD);
     }
 
     private function renderPassword(PublicShare $publicShare, Credential $node): string {
 
-        $owner = $node->getUser();
-
-        $this->getTemplateManager()->replace(
-            PublicShareController::TEMPLATE_NAME_PUBLIC_SHARE_SINGLE_PASSWORD
+        return $this->templateRenderer->render(
+            'passwordManager::public_share_no_password'
             , [
-                "password"              => $this->getL10N()->translate("Password")
+                "password"              => $this->translator->translate("Password")
                 , "passwordPlaceholder" => $node->getPassword()->getPlaceholder()
-                , "description"         => $this->getL10N()->translate("This password is shared with you by {$owner->getName()}.")
+                , "description"         => $this->translator->translate("This password is shared with you by {$node->getUser()->getName()}.")
                 , "hash"                => $publicShare->getHash()
-                , "userNameLabel"       => $this->getL10N()->translate("Username")
-                , "userNamePlaceholder" => $this->getL10N()->translate("Username")
+                , "userNameLabel"       => $this->translator->translate("Username")
+                , "userNamePlaceholder" => $this->translator->translate("Username")
                 , "userNameContent"     => $node->getUsername()
-                , "passwordSmall"       => $this->getL10N()->translate("Please handle the password shared with you sensitively.")
+                , "passwordSmall"       => $this->translator->translate("Please handle the password shared with you sensitively.")
             ]
         );
-        return $this->getTemplateManager()->render(PublicShareController::TEMPLATE_NAME_PUBLIC_SHARE_SINGLE_PASSWORD);
-    }
-
-    public function afterCreate(): void {
 
     }
 

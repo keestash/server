@@ -23,13 +23,9 @@ namespace KSA\PasswordManager\Command\Node\Credential;
 
 use Exception;
 use Keestash\Command\KeestashCommand;
-use KSA\PasswordManager\Application\Application;
-use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Validation\IValidationService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -43,13 +39,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CreateCredential extends KeestashCommand {
 
     private IUserRepository    $userRepository;
-    private IValidationService $validationService;
     private CredentialService  $credentialService;
     private NodeRepository     $nodeRepository;
 
     public function __construct(
         IUserRepository $userRepository
-        , IValidationService $validationService
         , CredentialService $credentialService
         , NodeRepository $nodeRepository
     ) {

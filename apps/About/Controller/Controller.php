@@ -21,113 +21,110 @@ declare(strict_types=1);
 
 namespace KSA\About\Controller;
 
-use Keestash;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends FullscreenAppController {
 
-    public const TEMPLATE_NAME_ABOUT = "about.twig";
-
-    private Legacy $legacy;
+    private Legacy                    $legacy;
+    private TemplateRendererInterface $renderer;
+    private IL10N                     $translator;
+    private HTTPService               $httpService;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $translator
+        TemplateRendererInterface $templateRenderer
+        , HTTPService $httpService
         , Legacy $legacy
+        , IL10N $translator
+        , IAppRenderer $appRenderer
     ) {
-        parent::__construct(
-            $templateManager
-            , $translator
+        $this->legacy      = $legacy;
+        $this->renderer    = $templateRenderer;
+        $this->translator  = $translator;
+        $this->httpService = $httpService;
+
+        parent::__construct($appRenderer);
+    }
+
+    public function run(ServerRequestInterface $request): string {
+        return $this->renderer->render(
+            'about::about'
+            , $this->getData()
         );
 
-        $this->legacy = $legacy;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-        $this->getTemplateManager()
-            ->replace(
-                Controller::TEMPLATE_NAME_ABOUT
-                , [
-                    "image"        => [
-                        "logoPath"  => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
-                        , "altName" => $this->legacy->getApplication()->get("name")
+    private function getData(): array {
+        return [
+            "image"        => [
+                "logoPath"  => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "altName" => $this->legacy->getApplication()->get("name")
+            ]
+            , "product"    => [
+                "headline"       => $this->translator->translate("Open Source Password Manager")
+                , "description"  => $this->translator->translate("Keestash stores your password encrypted and secure. Easily install on a server in your company, at home or let us host it for you!")
+                , "global"       => $this->translator->translate("on-premise or cloud subscription")
+                , "openStandard" => $this->translator->translate("Open Standards and Legacy Integration")
+                , "openSource"   => $this->translator->translate("100% Open Source")
+            ]
+            , "interested" => [
+                "headline"      => $this->translator->translate("Interested?")
+                , "description" => $this->translator->translate("We easily integrate Keestash in your existing IT infrastructure or set up a new environment - on-premise or cloud based, hosted by us!")
+                , "letstalk"    => [
+                    "headline"  => $this->translator->translate("Let's talk!")
+                    , "website" => [
+                        "href"   => $this->legacy->getApplication()->get("web")
+                        , "name" => $this->legacy->getApplication()->get("name") . ".com"
                     ]
-                    , "product"    => [
-                        "headline"       => $this->getL10N()->translate("Open Source Password Manager")
-                        , "description"  => $this->getL10N()->translate("Keestash stores your password encrypted and secure. Easily install on a server in your company, at home or let us host it for you!")
-                        , "global"       => $this->getL10N()->translate("on-premise or cloud subscription")
-                        , "openStandard" => $this->getL10N()->translate("Open Standards and Legacy Integration")
-                        , "openSource"   => $this->getL10N()->translate("100% Open Source")
+                    , "phone"   => [
+                        "href"   => $this->legacy->getApplication()->get("phone")
+                        , "name" => $this->legacy->getApplication()->get("phone")
                     ]
-                    , "interested" => [
-                        "headline"      => $this->getL10N()->translate("Interested?")
-                        , "description" => $this->getL10N()->translate("We easily integrate Keestash in your existing IT infrastructure or set up a new environment - on-premise or cloud based, hosted by us!")
-                        , "letstalk"    => [
-                            "headline"  => $this->getL10N()->translate("Let's talk!")
-                            , "website" => [
-                                "href"   => $this->legacy->getApplication()->get("web")
-                                , "name" => $this->legacy->getApplication()->get("name") . ".com"
-                            ]
-                            , "phone"   => [
-                                "href"   => $this->legacy->getApplication()->get("phone")
-                                , "name" => $this->legacy->getApplication()->get("phone")
-                            ]
-                            , "email"   => [
-                                "href"   => $this->legacy->getApplication()->get("email")
-                                , "name" => $this->legacy->getApplication()->get("email")
-                            ]
-                        ]
-                        , "socialmedia" => [
-                            "headline"   => $this->getL10N()->translate("Social Media")
-                            , "twitter"  => [
-                                "href"   => $this->legacy->getApplication()->get("twitterPage")
-                                , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("twitterPage"))
-                            ]
-                            , "facebook" => [
-                                "href"   => $this->legacy->getApplication()->get("facebookPage")
-                                , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("facebookPage"))
-                            ]
-                            , "linkedin" => [
-                                "href"   => $this->legacy->getApplication()->get("linkedInPage")
-                                , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("linkedInPage"))
-                            ]
-                        ]
-                    ]
-                    , "whitepaper" => [
-                        "headline"             => $this->getL10N()->translate("Keestash Whitepaper")
-                        , "description"        => $this->getL10N()->translate("Download our whitepaper describing our product and services.")
-                        , "productAndServices" => [
-                            "english"  => [
-                                "link"       => ""
-                                , "name"     => "An Open Source Enterprise Platform For Secure Password Management"
-                                , "language" => "English Version"
-                                , "version"  => "1.0.0"
-                            ]
-                            , "german" => [
-                                "link"       => ""
-                                , "name"     => "Eine Open-Source-Unternehmensplattform für die sichere Passwortverwaltung"
-                                , "language" => "English Version"
-                                , "version"  => "1.0.0"
-                            ]
-                        ]
+                    , "email"   => [
+                        "href"   => $this->legacy->getApplication()->get("email")
+                        , "name" => $this->legacy->getApplication()->get("email")
                     ]
                 ]
-            );
-        $this->setAppContent(
-            $this->getTemplateManager()
-                ->render(Controller::TEMPLATE_NAME_ABOUT)
-        );
-    }
-
-    public function afterCreate(): void {
-
+                , "socialmedia" => [
+                    "headline"   => $this->translator->translate("Social Media")
+                    , "twitter"  => [
+                        "href"   => $this->legacy->getApplication()->get("twitterPage")
+                        , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("twitterPage"))
+                    ]
+                    , "facebook" => [
+                        "href"   => $this->legacy->getApplication()->get("facebookPage")
+                        , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("facebookPage"))
+                    ]
+                    , "linkedin" => [
+                        "href"   => $this->legacy->getApplication()->get("linkedInPage")
+                        , "name" => str_replace("https://www.", "", $this->legacy->getApplication()->get("linkedInPage"))
+                    ]
+                ]
+            ]
+            , "whitepaper" => [
+                "headline"             => $this->translator->translate("Keestash Whitepaper")
+                , "description"        => $this->translator->translate("Download our whitepaper describing our product and services.")
+                , "productAndServices" => [
+                    "english"  => [
+                        "link"       => ""
+                        , "name"     => "An Open Source Enterprise Platform For Secure Password Management"
+                        , "language" => "English Version"
+                        , "version"  => "1.0.0"
+                    ]
+                    , "german" => [
+                        "link"       => ""
+                        , "name"     => "Eine Open-Source-Unternehmensplattform für die sichere Passwortverwaltung"
+                        , "language" => "English Version"
+                        , "version"  => "1.0.0"
+                    ]
+                ]
+            ]
+        ];
     }
 
 }

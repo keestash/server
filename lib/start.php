@@ -21,13 +21,17 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\About\ConfigProvider as AboutConfigProvider;
 use KSA\Apps\ConfigProvider as AppsConfigProvider;
+use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
 use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
 use KSA\Install\ConfigProvider as InstallConfigProvider;
 use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
+use KSA\Settings\ConfigProvider as SettingsConfigProvider;
+use KSA\TNC\ConfigProvider as TNCConfigProvider;
 use KSA\Users\ConfigProvider as UsersConfigProvider;
 use Laminas\Config\Config;
 use Laminas\ConfigAggregator\ConfigAggregator;
@@ -44,6 +48,7 @@ require_once __DIR__ . '/../lib/extensioncheck.php';
 
 $configs = [
     // framework
+    \Mezzio\Twig\ConfigProvider::class,
     \Laminas\HttpHandlerRunner\ConfigProvider::class,
     \Mezzio\Router\LaminasRouter\ConfigProvider::class,
     \Laminas\Router\ConfigProvider::class,
@@ -55,14 +60,17 @@ $configs = [
 
     // Keestash
     CoreConfigProvider::class,
-
+    AboutConfigProvider::class,
     AppsConfigProvider::class,
+    ForgotPasswordConfigProvider::class,
     GeneralApiConfigProvider::class,
     InstallConfigProvider::class,
     InstallInstanceConfigProvider::class,
     LoginConfigProvider::class,
     PasswordManagerConfigProvider::class,
     RegisterConfigProvider::class,
+    SettingsConfigProvider::class,
+    TNCConfigProvider::class,
     UsersConfigProvider::class,
 ];
 
@@ -74,8 +82,11 @@ $configAggregator = new ConfigAggregator(
 $config       = $configAggregator->getMergedConfig();
 $configObject = new Config($config);
 
+$dependencies                       = $config['dependencies'];
+$dependencies['services']['config'] = $config;
+
 $serviceManager = new ServiceManager(
-    $config['dependencies']
+    $dependencies
 );
 
 unset($config['dependencies']);

@@ -29,6 +29,9 @@ use KSP\Core\Repository\User\IUserRepository;
 
 class Verification {
 
+    public const FIELD_NAME_USER_HASH = "user_hash";
+    public const FIELD_NAME_TOKEN     = "token";
+
     private ITokenRepository $tokenRepository;
     private IUserRepository  $userRepository;
 
@@ -42,8 +45,8 @@ class Verification {
 
     public function verifyToken(array $parameters): ?IToken {
 
-        $tokenString = $parameters[APIRouter::FIELD_NAME_TOKEN] ?? null;
-        $userHash    = $parameters[APIRouter::FIELD_NAME_USER_HASH] ?? null;
+        $tokenString = $parameters[Verification::FIELD_NAME_TOKEN] ?? null;
+        $userHash    = $parameters[Verification::FIELD_NAME_USER_HASH] ?? null;
 
         if (null === $tokenString) return null;
         if (null === $userHash) return null;

@@ -33,13 +33,12 @@ use KSP\Core\View\Navigation\IPart;
  */
 class Part implements IPart {
 
-    private $id;
-    private $name;
-    private $faClass;
-    private $entries;
-    private $colorCode;
-    private $href;
-    private $iconClass;
+    private int       $id;
+    private string    $name;
+    private string    $faClass;
+    private ArrayList $entries;
+    private string    $colorCode;
+    private ?string   $iconClass;
 
     public function __construct() {
         $this->name    = "";
@@ -95,13 +94,6 @@ class Part implements IPart {
 
     public function size(): int {
         return $this->entries->length();
-    }
-
-    /**
-     * @param string $href
-     */
-    public function setHref(string $href): void {
-        $this->href = $href;
     }
 
     public function getIconClass(): ?string {

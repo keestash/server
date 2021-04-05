@@ -22,31 +22,33 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Controller\Organization;
 
 use KSP\Core\Controller\AppController;
+use KSP\Core\Service\Controller\IAppRenderer;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class Detail extends AppController {
 
     public const TEMPLATE_NAME_ORGANIZATION_DETAIL = "organization_detail.twig";
 
-    public function onCreate(): void {
+    private TemplateRendererInterface $templateRenderer;
 
+    public function __construct(
+        IAppRenderer $appRenderer
+        , TemplateRendererInterface $templateRenderer
+    ) {
+        parent::__construct($appRenderer);
+
+        $this->templateRenderer = $templateRenderer;
     }
 
-    public function create(): void {
-        $this->getTemplateManager()
-            ->replace(
-                Detail::TEMPLATE_NAME_ORGANIZATION_DETAIL
+    public function run(ServerRequestInterface $request): string {
+        return $this->templateRenderer
+            ->render(
+                'generalApi::organization_detail'
                 , [
-                    "id" => $this->getParameter("id")
+                    "id" => $request->getAttribute("id")
                 ]
             );
-        $this->setAppContent(
-            $this->getTemplateManager()
-                ->render(Detail::TEMPLATE_NAME_ORGANIZATION_DETAIL)
-        );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

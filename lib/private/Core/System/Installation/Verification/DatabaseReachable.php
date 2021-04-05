@@ -26,10 +26,14 @@ use KSP\Core\Backend\IBackend;
 
 class DatabaseReachable extends AbstractVerification {
 
+    private IBackend $backend;
+
+    public function __construct(IBackend $backend) {
+        $this->backend = $backend;
+    }
+
     public function hasProperty(): bool {
-        /** @var IBackend $backend */
-        $backend   = Keestash::getServer()->query(IBackend::class);
-        $connected = $this->isConnected($backend);
+        $connected = $this->isConnected($this->backend);
         if (false === $connected) {
             parent::addMessage(
                 "database_reachable", "Database is not reachable"

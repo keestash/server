@@ -22,92 +22,66 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Controller;
 
-use Keestash;
 use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Legacy\Legacy;
-use KSA\ForgotPassword\Application\Application;
+use Keestash\Core\Service\HTTP\HTTPService;
+use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
-use KSP\Core\Manager\TemplateManager\ITemplate;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
-use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ForgotPassword extends StaticAppController {
 
-    public const TEMPLATE_NAME = "forgot_password.twig";
-
-    private ITemplateManager      $templateManager;
-    private IL10N                 $translator;
-    private Legacy                $legacy;
-    private IUserStateRepository  $userStateRepository;
-    private ILoader               $loader;
-    private ConfigService         $configService;
+    private IL10N                     $translator;
+    private ILoader                   $loader;
+    private ConfigService             $configService;
+    private HTTPService               $httpService;
+    private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $translator
-        , Legacy $legacy
-        , IUserStateRepository $userStateRepository
+        IL10N $translator
         , ILoader $loader
         , ConfigService $configService
+        , IAppRenderer $renderer
+        , HTTPService $httpService
+        , TemplateRendererInterface $templateRenderer
     ) {
-        parent::__construct(
-            $templateManager
-            , $translator
-        );
+        parent::__construct($renderer);
 
-        $this->templateManager     = $templateManager;
-        $this->translator          = $translator;
-        $this->legacy              = $legacy;
-        $this->userStateRepository = $userStateRepository;
-        $this->loader              = $loader;
-        $this->configService       = $configService;
+        $this->translator       = $translator;
+        $this->loader           = $loader;
+        $this->configService    = $configService;
+        $this->httpService      = $httpService;
+        $this->templateRenderer = $templateRenderer;
     }
 
-    public function onCreate(): void {
+    public function run(ServerRequestInterface $request): string {
+        $token = $request->getAttribute("token");
 
-    }
-
-    public function create(): void {
-        $token = $this->getParameter("token", null);
-
-        $this->getTemplateManager()->replace(
-            ForgotPassword::TEMPLATE_NAME
-            , [
+        return $this->templateRenderer
+            ->render(
+                'forgotPassword::forgot_password'
+                , [
                 // strings
-                "resetPassword"                   => $this->getL10N()->translate("Reset")
-                , "usernameOrPasswordPlaceholder" => $this->getL10N()->translate("Username or Email Address")
-                , "createNewAccountText"          => $this->getL10N()->translate("Not registered Yet?")
-                , "createNewAccountActionText"    => $this->getL10N()->translate("Sign Up")
-                , "loginToApp"                    => $this->getL10N()->translate("Reset password")
-                , "backToLogin"                   => $this->getL10N()->translate("Back To Login")
+                "resetPassword"                   => $this->translator->translate("Reset")
+                , "usernameOrPasswordPlaceholder" => $this->translator->translate("Username or Email Address")
+                , "createNewAccountText"          => $this->translator->translate("Not registered Yet?")
+                , "createNewAccountActionText"    => $this->translator->translate("Sign Up")
+                , "loginToApp"                    => $this->translator->translate("Reset password")
+                , "backToLogin"                   => $this->translator->translate("Back To Login")
 
                 // values
-                , "backgroundPath"                => Keestash::getBaseURL(false) . "/asset/img/forgot-password-background.jpg"
-                , "logoPath"                      => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
-                , "backToLoginLink"               => Keestash::getBaseURL(true) . "/" . \KSA\Login\Application\Application::LOGIN
-                , "newAccountLink"                => Keestash::getBaseURL(true) . "/register"
-                , "forgotPasswordLink"            => Keestash::getBaseURL(true) . "/forgot_password"
-                , "registeringEnabled"            => $this->loader->hasApp(\KSA\Login\Application\Application::APP_NAME_REGISTER)
-                , "forgotPasswordEnabled"         => $this->loader->hasApp(\KSA\Login\Application\Application::APP_NAME_FORGOT_PASSWORD)
+                , "backgroundPath"                => $this->httpService->getBaseURL(false) . "/asset/img/forgot-password-background.jpg"
+                , "logoPath"                      => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "backToLoginLink"               => $this->httpService->getBaseURL(true) . "/" . Application::LOGIN
+                , "newAccountLink"                => $this->httpService->getBaseURL(true) . "/register"
+                , "forgotPasswordLink"            => $this->httpService->getBaseURL(true) . "/forgot_password"
+                , "registeringEnabled"            => $this->loader->hasApp(Application::APP_NAME_REGISTER)
+                , "forgotPasswordEnabled"         => $this->loader->hasApp(Application::APP_NAME_FORGOT_PASSWORD)
                 , "newTab"                        => false === $this->configService->getValue('debug', false)
-            ]
-        );
-
-        $string = $this->getTemplateManager()
-            ->render(ForgotPassword::TEMPLATE_NAME);
-
-        $this->getTemplateManager()->replace(
-            ITemplate::APP_CONTENT
-            , [
-                "appContent" => $string
-            ]
-        );
-    }
-
-    public function afterCreate(): void {
+            ]);
 
     }
 

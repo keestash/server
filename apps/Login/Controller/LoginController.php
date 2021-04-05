@@ -21,70 +21,73 @@ declare(strict_types=1);
 
 namespace KSA\Login\Controller;
 
-use Keestash;
-use Keestash\App\Helper;
-use Keestash\Core\Manager\CookieManager\CookieManager;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Legacy\Legacy;
-use KSA\Login\Application\Application;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Manager\TemplateManager\ITemplate;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class LoginController extends StaticAppController {
 
-    public const TEMPLATE_NAME_LOGIN = "login.twig";
-
-    private ILoader               $loader;
-    private PersistenceService    $persistenceService;
-    private Legacy                $legacy;
-    private ConfigService         $configService;
-    private InstanceDB            $instanceDb;
-    private CookieManager         $cookieManager;
+    private ILoader                   $loader;
+    private PersistenceService        $persistenceService;
+    private Legacy                    $legacy;
+    private ConfigService             $configService;
+    private InstanceDB                $instanceDb;
+    private IUserRepository           $userRepository;
+    private TemplateRendererInterface $templateRenderer;
+    private IL10N                     $translator;
+    private HTTPService               $httpService;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $translator
+        IL10N $translator
         , ILoader $loader
         , PersistenceService $persistenceService
         , Legacy $legacy
         , ConfigService $configService
-        , CookieManager $cookieManager
         , InstanceDB $instanceDB
+        , IAppRenderer $appRenderer
+        , IUserRepository $userRepository
+        , TemplateRendererInterface $templateRenderer
+        , HTTPService $httpService
     ) {
-        $this->loader               = $loader;
-        $this->persistenceService   = $persistenceService;
-        $this->legacy               = $legacy;
-        $this->configService        = $configService;
-        $this->instanceDb           = $instanceDB;
-        $this->cookieManager        = $cookieManager;
+        $this->loader             = $loader;
+        $this->persistenceService = $persistenceService;
+        $this->legacy             = $legacy;
+        $this->configService      = $configService;
+        $this->instanceDb         = $instanceDB;
+        $this->userRepository     = $userRepository;
+        $this->templateRenderer   = $templateRenderer;
+        $this->translator         = $translator;
+        $this->httpService        = $httpService;
 
-        parent::__construct(
-            $templateManager
-            , $translator
-        );
+        parent::__construct($appRenderer);
     }
 
-    public function onCreate(...$params): void {
-
-    }
-
-    public function create(): void {
-
+    public function run(ServerRequestInterface $request): string {
         $userId = $this->persistenceService->getValue("user_id");
-        $hashes = Keestash::getServer()->getUserHashes();
+        $users  = $this->userRepository->getAll();
+        $hashes = new HashTable();
+
+        /** @var IUser $user */
+        foreach ($users as $user) {
+            $hashes->put(
+                $user->getHash()
+                , $user->getId()
+            );
+        }
 
         if (null !== $userId && $hashes->containsValue((int) $userId)) {
-            Keestash::getServer()->getHTTPRouter()->routeTo(
-                Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
-            );
-            exit();
+            // TODO redirect to $this->loader->getDefaultApp()->getBaseRoute()
         }
 
         $isDemoMode = $this->instanceDb->getOption("demo") === "true";
@@ -92,49 +95,38 @@ class LoginController extends StaticAppController {
             ? md5(uniqid())
             : null;
 
-        $this->getTemplateManager()->replace(
-            LoginController::TEMPLATE_NAME_LOGIN
-            , [
-                // strings
-                "signIn"                       => $this->getL10N()->translate("Sign In")
-                , "passwordPlaceholder"        => $this->getL10N()->translate("Password")
-                , "userNamePlaceholder"        => $this->getL10N()->translate("Username")
-                , "createNewAccountText"       => $this->getL10N()->translate("Create New Account")
-                , "createNewAccountActionText" => $this->getL10N()->translate("Sign Up")
-                , "forgotPasswordText"         => $this->getL10N()->translate("Forgot your password?")
-                , "forgotPasswordActionText"   => $this->getL10N()->translate("Request")
-                , "loginToApp"                 => $this->getL10N()->translate("Login to {$this->legacy->getApplication()->get('name')}")
-                , "newAccountLink"             => Keestash::getBaseURL(true) . "/register"
-                , "forgotPasswordLink"         => Keestash::getBaseURL(true) . "/forgot_password"
-                , "registeringEnabled"         => $this->loader->hasApp(Application::APP_NAME_REGISTER)
+        return $this->templateRenderer
+            ->render(
+                'login::login'
+                , [
+                    // strings
+                    "signIn"                       => $this->translator->translate("Sign In")
+                    , "passwordPlaceholder"        => $this->translator->translate("Password")
+                    , "userNamePlaceholder"        => $this->translator->translate("Username")
+                    , "createNewAccountText"       => $this->translator->translate("Create New Account")
+                    , "createNewAccountActionText" => $this->translator->translate("Sign Up")
+                    , "forgotPasswordText"         => $this->translator->translate("Forgot your password?")
+                    , "forgotPasswordActionText"   => $this->translator->translate("Request")
+                    , "loginToApp"                 => $this->translator->translate("Login to {$this->legacy->getApplication()->get('name')}")
+                    , "newAccountLink"             => $this->httpService->getBaseURL(true) . "/register"
+                    , "forgotPasswordLink"         => $this->httpService->getBaseURL(true) . "/forgot_password"
+                    , "registeringEnabled"         => $this->loader->hasApp(ILoader::APP_NAME_REGISTER)
 
-                // values
-                , "backgroundPath"             => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
-                , "logoPath"                   => Keestash::getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
-                , "newTab"                     => false === $this->configService->getValue('debug', false)
-                , "demo"                       => $demo
-                , "tncLink"                    => Keestash::getBaseURL(true) . "/tnc/"
-                , "demoMode"                   => [
-                    "isDemoMode"      => $isDemoMode
-                    , "sensitiveData" => $this->getL10N()->translate("Please do not input sensitive data as this the instance you are logging in is only for demonstration purposes!")
-                    , "deleteInfo"    => $this->getL10N()->translate("The data submitted here will be deleted after 60 minutes.")
-                    , "adminUser"     => $this->getL10N()->translate("Username: " . IUser::DEMO_USER_NAME)
-                    , "adminPassword" => $this->getL10N()->translate("Password: " . IUser::DEMO_PASSWORD)
+                    // values
+                    , "backgroundPath"             => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
+                    , "logoPath"                   => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
+                    , "newTab"                     => false === $this->configService->getValue('debug', false)
+                    , "demo"                       => $demo
+                    , "tncLink"                    => $this->httpService->getBaseURL(true) . "/tnc/"
+                    , "demoMode"                   => [
+                        "isDemoMode"      => $isDemoMode
+                        , "sensitiveData" => $this->translator->translate("Please do not input sensitive data as this the instance you are logging in is only for demonstration purposes!")
+                        , "deleteInfo"    => $this->translator->translate("The data submitted here will be deleted after 60 minutes.")
+                        , "adminUser"     => $this->translator->translate("Username: " . IUser::DEMO_USER_NAME)
+                        , "adminPassword" => $this->translator->translate("Password: " . IUser::DEMO_PASSWORD)
+                    ]
                 ]
-            ]
-        );
-
-        $string = $this->getTemplateManager()
-            ->render(LoginController::TEMPLATE_NAME_LOGIN);
-        $this->getTemplateManager()->replace(
-            ITemplate::APP_CONTENT
-            , [
-                "appContent" => $string
-            ]
-        );
-    }
-
-    public function afterCreate(): void {
+            );
 
     }
 

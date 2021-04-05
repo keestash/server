@@ -39,16 +39,6 @@ interface ILoader {
 
     public const DIR_NAME_FRONTEND = "frontend";
 
-    public function loadApps(): void;
-
-    public function loadAppsAndFlush(): void;
-
-    public function loadCoreApps(): void;
-
-    public function loadCoreAppsAndFlush(): void;
-
-    public function loadApp(string $appId): bool;
-
     public function getApps(): HashTable;
 
     public function hasApp(string $name): bool;
@@ -56,7 +46,5 @@ interface ILoader {
     public function getDefaultApp(): ?IApp;
 
     public function unloadApp(string $key): bool;
-
-    public function flush(): void;
 
 }

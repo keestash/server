@@ -22,46 +22,45 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Controller;
 
 use DateTime;
-use Keestash;
+use Keestash\Core\Service\HTTP\HTTPService;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\Manager\TemplateManager\ITemplate;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class ResetPassword extends StaticAppController {
 
-    private const RESET_PASSWORD_TEMPLATE_NAME = "reset_password.twig";
-
-    private $userStateRepository;
+    private IUserStateRepository      $userStateRepository;
+    private TemplateRendererInterface $templateRenderer;
+    private IL10N                     $translator;
+    private HTTPService               $httpService;
 
     public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $il10n
+        IL10N $il10n
         , IUserStateRepository $userStateRepository
+        , IAppRenderer $appRenderer
+        , TemplateRendererInterface $templateRenderer
+        , HTTPService $httpService
     ) {
-        parent::__construct(
-            $templateManager
-            , $il10n
-        );
+        parent::__construct($appRenderer);
         $this->userStateRepository = $userStateRepository;
+        $this->templateRenderer    = $templateRenderer;
+        $this->translator          = $il10n;
+        $this->httpService         = $httpService;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-        $rendered = null;
-        $token    = $this->getParameter("token", null);
-        $user     = null;
+    public function run(ServerRequestInterface $request): string {
+        $parameters = $request->getQueryParams();
+        $rendered   = null;
+        $token      = $parameters["token"] ?? null;
+        $user       = null;
 
         if (null === $token) {
-            $this->render(ITemplate::ERROR);
-            return;
+            return '';
         }
 
         $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
@@ -76,37 +75,26 @@ class ResetPassword extends StaticAppController {
         }
 
         if (null === $user) {
-            $this->render(ITemplate::ERROR);
-            return;
+            return '';
         }
 
-        $this->getTemplateManager()->replace(
-            ResetPassword::RESET_PASSWORD_TEMPLATE_NAME
+        return $this->templateRenderer->render(
+            'forgotPassword::reset_password'
             , [
                 // strings
-                "title"            => $this->getL10N()->translate("Reset password for {$user->getName()}")
-                , "passwordLabel"  => $this->getL10n()->translate("New Password")
-                , "resetPassword"  => $this->getL10n()->translate("Reset Password")
-                , "noHashFound"    => $this->getL10N()->translate("Link seems to be expired. Please request a new one")
+                "title"            => $this->translator->translate("Reset password for {$user->getName()}")
+                , "passwordLabel"  => $this->translator->translate("New Password")
+                , "resetPassword"  => $this->translator->translate("Reset Password")
+                , "noHashFound"    => $this->translator->translate("Link seems to be expired. Please request a new one")
 
                 // values
-                , "backgroundPath" => Keestash::getBaseURL(false) . "/asset/img/login-background.jpg"
-                , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "backgroundPath" => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
+                , "logoPath"       => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "token"          => $token
                 , "hasHash"        => $this->hasHash($token)
 
             ]
         );
-
-        $string = $this->getTemplateManager()
-            ->render(ResetPassword::RESET_PASSWORD_TEMPLATE_NAME);
-        $this->getTemplateManager()->replace(
-            ITemplate::APP_CONTENT
-            , [
-                "appContent" => $string
-            ]
-        );
-
 
     }
 
@@ -128,10 +116,6 @@ class ResetPassword extends StaticAppController {
         }
 
         return false;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

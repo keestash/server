@@ -23,13 +23,55 @@ namespace KSA\ForgotPassword;
 
 use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Api\ResetPassword;
+use KSA\ForgotPassword\Factory\Api\ForgotPasswordFactory;
+use KSA\ForgotPassword\Factory\Api\ResetPasswordFactory;
 use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
+    public const FORGOT_PASSWORD = "/forgot_password[/]";
+    public const RESET_PASSWORD  = "/reset_password/:token[/]";
+
     public function __invoke(): array {
         return [
+            'dependencies'                   => [
+                'factories' => [
+                    // api
+                    ForgotPassword::class              => ForgotPasswordFactory::class
+                    , ResetPassword::class             => ResetPasswordFactory::class
+
+                    // controller
+                    , Controller\ForgotPassword::class => Factory\Controller\ForgotPasswordFactory::class
+                    , Controller\ResetPassword::class  => Factory\Controller\ResetPasswordFactory::class
+                ]
+            ],
+            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
+                IApp::CONFIG_PROVIDER_ROUTES                 => [
+                    [
+                        'path'         => ConfigProvider::FORGOT_PASSWORD
+                        , 'middleware' => Controller\ForgotPassword::class
+                        , 'name'       => Controller\ForgotPassword::class
+                    ],
+                    [
+                        'path'         => ConfigProvider::RESET_PASSWORD
+                        , 'middleware' => Controller\ResetPassword::class
+                        , 'name'       => Controller\ResetPassword::class
+                    ]
+                ],
+                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                    ConfigProvider::FORGOT_PASSWORD
+                    , ConfigProvider::RESET_PASSWORD
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                    ConfigProvider::FORGOT_PASSWORD  => 'forgot_password'
+                    , ConfigProvider::RESET_PASSWORD => 'reset_password'
+                ],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                    ConfigProvider::FORGOT_PASSWORD  => 'forgot_password'
+                    , ConfigProvider::RESET_PASSWORD => 'reset_password'
+                ]
+            ],
             IApp::CONFIG_PROVIDER_API_ROUTER => [
                 IApp::CONFIG_PROVIDER_ROUTES        => [
                     [
@@ -48,6 +90,11 @@ final class ConfigProvider {
                 IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
                     '/forgot_password/submit[/]',
                     '/reset_password/update[/]'
+                ]
+            ],
+            'templates'                      => [
+                'paths' => [
+                    'forgotPassword' => [__DIR__ . '/template/']
                 ]
             ]
         ];

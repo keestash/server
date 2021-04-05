@@ -25,80 +25,75 @@ namespace KSA\PasswordManager\Controller\Attachment;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Controller\AppController;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class View extends AppController {
 
-    public const TEMPLATE_NAME_ERROR = "error.twig";
-
-    private FileRepository  $nodeFileRepository;
-    private IFileRepository $fileRepository;
-    private IUser           $user;
+    private FileRepository            $nodeFileRepository;
+    private IFileRepository           $fileRepository;
+    private IUser                     $user;
+    private IL10N                     $translator;
+    private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
-        ITemplateManager $templateManager
+        TemplateRendererInterface $templateRenderer
         , IL10N $l10n
         , FileRepository $nodeFileRepository
-        , IUser $user
         , IFileRepository $fileRepository
+        , IAppRenderer $appRenderer
     ) {
-        parent::__construct($templateManager, $l10n);
+        parent::__construct($appRenderer);
 
         $this->nodeFileRepository = $nodeFileRepository;
         $this->fileRepository     = $fileRepository;
-        $this->user               = $user;
+        $this->translator         = $l10n;
+        $this->templateRenderer   = $templateRenderer;
     }
 
-    public function onCreate(): void {
-
-    }
-
-    public function create(): void {
-        $fileId = $this->getParameter("fileId", null);
+    public function run(ServerRequestInterface $request): string {
+        $fileId = $request->getAttribute("fileId");
+        /** @var IUser $user */
+        $user = $request->getAttribute(IUser::class);
 
         if (null === $fileId) {
-            $this->renderError(
-                $this->getL10N()->translate("No file found")
+            return $this->renderError(
+                $this->translator->translate("No file found")
             );
-            return;
         }
 
         $file = $this->fileRepository->get((int) $fileId);
 
         if (null === $file) {
-            $this->renderError(
-                $this->getL10N()->translate("No file found (2)")
+            return $this->renderError(
+                $this->translator->translate("No file found (2)")
             );
-            return;
         }
 
         $node = $this->nodeFileRepository->getNode($file);
 
         if (null === $node) {
-            $this->renderError(
-                $this->getL10N()->translate("No file found (3)")
+            return $this->renderError(
+                $this->translator->translate("No file found (3)")
             );
-            return;
         }
-
 
         if (
             $node->getUser()->getId() !== $this->user->getId()
-            && false === $node->isSharedToMe()
+            && false === $node->isSharedTo($user)
         ) {
-            $this->renderError(
-                $this->getL10N()->translate("No file found (4)")
+            return $this->renderError(
+                $this->translator->translate("No file found (4)")
             );
-            return;
         }
 
         if (false === file_exists($file->getFullPath())) {
-            $this->renderError(
-                $this->getL10N()->translate("No file found (5)")
+            return $this->renderError(
+                $this->translator->translate("No file found (5)")
             );
-            return;
         }
 
         header('Content-Description: File Transfer');
@@ -110,23 +105,17 @@ class View extends AppController {
         header('Pragma: public');
         header('Content-Length: ' . $file->getSize());
         readfile($file->getFullPath());
+        // TODO find a better way
+        return '';
     }
 
-    private function renderError(string $message): void {
-        $this->getTemplateManager()->replace(
-            View::TEMPLATE_NAME_ERROR
+    private function renderError(string $message): string {
+        return $this->templateRenderer->render(
+            'passwordManager::error'
             , [
                 "message" => $message
             ]
         );
-        $this->setAppContent(
-            $this->getTemplateManager()->render(View::TEMPLATE_NAME_ERROR)
-        );
-
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

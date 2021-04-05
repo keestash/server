@@ -313,7 +313,7 @@ class UserService implements IUserService {
      * @return bool
      */
     public function userExistsByName(string $name): bool {
-        $users = Keestash::getServer()->getUsersFromCache();
+        $users = $this->userRepository->getAll();
 
         /** @var IUser $user */
         foreach ($users as $user) {

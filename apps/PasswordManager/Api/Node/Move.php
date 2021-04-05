@@ -14,13 +14,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Move
@@ -28,27 +30,27 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Move extends AbstractApi {
+class Move implements RequestHandlerInterface {
 
     private NodeRepository $nodeRepository;
+    private IL10N          $translator;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
+        $this->translator     = $l10n;
         $this->nodeRepository = $nodeRepository;
     }
 
-    public function onCreate(array $parameters): void {
 
-    }
-
-    public function create(): void {
-        $nodeId       = $this->getParameter("id", null);
-        $targetNodeId = $this->getParameter("target_node_id", null);
-        $parentNodeId = $this->getParameter("parent_node_id", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters   = json_decode((string) $request->getBody(), true);
+        $nodeId       = $parameters["id"] ?? null;
+        $targetNodeId = $parameters["target_node_id"] ?? null;
+        $parentNodeId = $parameters["parent_node_id"] ?? null;
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
         /** @var Folder|null $targetNode */
@@ -56,42 +58,39 @@ class Move extends AbstractApi {
         /** @var Folder|null $parentNode */
         $parentNode = $this->nodeRepository->getNode((int) $parentNodeId);
 
-        if (null === $node || $node->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
-            $this->createAndSetResponse(
+        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("node does not exist")
+                    "message" => $this->translator->translate("node does not exist")
                 ]
             );
-            return;
         }
 
         if (
             null === $targetNode
-            || $targetNode->isSharedTo($this->getToken()->getUser())
-            || $targetNode->getUser()->getId() !== $this->getToken()->getUser()->getId()
+            || $targetNode->isSharedTo($token->getUser())
+            || $targetNode->getUser()->getId() !== $token->getUser()->getId()
         ) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("target does not exist")
+                    "message" => $this->translator->translate("target does not exist")
                 ]
             );
-            return;
         }
 
         if (
             null === $parentNode
-            || $targetNode->isSharedTo($this->getToken()->getUser())
-            || $targetNode->getUser()->getId() !== $this->getToken()->getUser()->getId()
+            || $targetNode->isSharedTo($token->getUser())
+            || $targetNode->getUser()->getId() !== $token->getUser()->getId()
         ) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("parent does not exist")
+                    "message" => $this->translator->translate("parent does not exist")
                 ]
             );
-            return;
         }
 
         $moved = $this->nodeRepository->move(
@@ -101,25 +100,20 @@ class Move extends AbstractApi {
         );
 
         if (false === $moved) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "could not move node"
                 ]
             );
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "message" => "moved node"
             ]
         );
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

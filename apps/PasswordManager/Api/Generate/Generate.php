@@ -14,37 +14,34 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Generate;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Generate extends AbstractApi {
+class Generate implements RequestHandlerInterface {
 
     private PasswordService $passwordService;
+    private IL10N           $translator;
 
     public function __construct(
         IL10N $l10n
         , PasswordService $passwordService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->passwordService = $passwordService;
+        $this->translator      = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-        $length       = $this->getParameter("length", null);
-        $upperCase    = $this->getParameter("upperCase", null);
-        $lowerCase    = $this->getParameter("lowerCase", null);
-        $digit        = $this->getParameter("digit", null);
-        $specialChars = $this->getParameter("specialChars", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters   = $request->getQueryParams();
+        $length       = $parameters["length"] ?? null;
+        $upperCase    = $parameters["upperCase"] ?? null;
+        $lowerCase    = $parameters["lowerCase"] ?? null;
+        $digit        = $parameters["digit"] ?? null;
+        $specialChars = $parameters["specialChars"] ?? null;
 
         $valid = $this->validParameters(
             $length
@@ -55,13 +52,12 @@ class Generate extends AbstractApi {
         );
 
         if (false === $valid) {
-            parent::createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => "invalid parameters"
                 ]
             );
-            return;
         }
 
         $password = $this->passwordService->generatePassword(
@@ -72,16 +68,16 @@ class Generate extends AbstractApi {
             , $specialChars === "true"
         );
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "response" => [
                     "password"  => $password
                     , "strings" => [
                         "quality" => [
-                            "-1"  => $this->getL10N()->translate("Bad")
-                            , "0" => $this->getL10N()->translate("Good")
-                            , "1" => $this->getL10N()->translate("Perfect")
+                            "-1"  => $this->translator->translate("Bad")
+                            , "0" => $this->translator->translate("Good")
+                            , "1" => $this->translator->translate("Perfect")
                         ]
                     ]
                 ]
@@ -118,10 +114,6 @@ class Generate extends AbstractApi {
         if (null === $length || false === is_numeric($length)) return false;
 
         return true;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

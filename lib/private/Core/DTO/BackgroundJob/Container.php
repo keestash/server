@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\BackgroundJob;
 
 use Keestash;
-use KSP\Core\ILogger\ILogger;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class Container
@@ -30,10 +30,10 @@ use KSP\Core\ILogger\ILogger;
  */
 class Container extends \doganoo\Backgrounder\Util\Container {
 
-    private ILogger $logger;
+    private ContainerInterface $container;
 
-    public function __construct(ILogger $logger) {
-        $this->logger = $logger;
+    public function __construct(ContainerInterface $container) {
+        $this->container = $container;
     }
 
     /**
@@ -43,7 +43,7 @@ class Container extends \doganoo\Backgrounder\Util\Container {
      * @throws \DI\NotFoundException
      */
     public function query(string $name) {
-        return Keestash::getServer()->query($name);
+        return $this->container->get($name);
     }
 
 }

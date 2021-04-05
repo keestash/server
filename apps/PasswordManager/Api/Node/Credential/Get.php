@@ -21,14 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential;
 
-use doganoo\PHPUtil\HTTP\Code;
-use Keestash\Api\AbstractApi;
-use Keestash\Api\Response\DefaultResponse;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Credential
@@ -36,47 +36,39 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
     private NodeRepository    $nodeRepository;
     private CredentialService $credentialService;
 
     public function __construct(
-        IL10N $l10n
-        , CredentialService $credentialService
-        , ?IToken $token = null
+        CredentialService $credentialService
+        , NodeRepository $nodeRepository
     ) {
-        parent::__construct($l10n, $token);
         $this->credentialService = $credentialService;
+        $this->nodeRepository    = $nodeRepository;
     }
 
-    public function onCreate(array $parameters): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
 
-    }
-
-    public function create(): void {
-
-        $nodeId = (int) $this->getParameter("id");
+        /** @var IToken $token */
+        $token  = $request->getAttribute(IToken::class);
+        $nodeId = (int) $request->getAttribute("id", 0);
 
         $node = $this->nodeRepository->getNode($nodeId, 1);
-        if (null === $node || $node->getUser()->getId() !== $this->getToken()->getUser()->getId()) return;
+        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
+            return LegacyResponse::fromData(
+                404
+                , []
+                , 404
+            );
+        }
 
-        $msg = new DefaultResponse();
-        $msg->setCode(Code::OK);
-        $msg->addMessage(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
-            , [
-                "response_code" => IResponse::RESPONSE_CODE_OK
-                , "decrypted"   => $this->credentialService->getDecryptedPassword($node)
-            ]
+            , ["response_code" => IResponse::RESPONSE_CODE_OK
+               , "decrypted"   => $this->credentialService->getDecryptedPassword($node)]
         );
-
-        $this->setResponse($msg);
-
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

@@ -24,6 +24,7 @@ namespace Keestash\Middleware;
 use Keestash\Core\Service\Router\Verification;
 use KSP\App\IApp;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Laminas\Config\Config;
 use Laminas\Diactoros\Response\JsonResponse;
 use Mezzio\Router\Route;
@@ -35,18 +36,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class KeestashHeaderMiddleware implements MiddlewareInterface {
 
-    private RouterInterface $router;
-    private Config          $config;
-    private Verification    $verification;
+    private RouterInterface     $router;
+    private Config              $config;
+    private Verification        $verification;
+    private IEnvironmentService $environmentService;
 
     public function __construct(
-        RouterInterface $router,
-        Config $config,
-        Verification $verification
+        RouterInterface $router
+        , Config $config
+        , Verification $verification
+        , IEnvironmentService $environmentService
     ) {
-        $this->router       = $router;
-        $this->config       = $config;
-        $this->verification = $verification;
+        $this->router             = $router;
+        $this->config             = $config;
+        $this->verification       = $verification;
+        $this->environmentService = $environmentService;
     }
 
     private function getMatchedPath(ServerRequestInterface $request): string {
@@ -58,14 +62,33 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
         return '';
     }
 
+    private function getPublicRoutes(): array {
+        if (true === $this->environmentService->isWeb()) {
+            return $publicRoutes = $this->config
+                ->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)
+                ->get(IApp::CONFIG_PROVIDER_PUBLIC_ROUTES)
+                ->toArray();
+        }
+
+        if (true === $this->environmentService->isApi()) {
+            return $publicRoutes = $this->config
+                ->get(IApp::CONFIG_PROVIDER_API_ROUTER)
+                ->get(IApp::CONFIG_PROVIDER_PUBLIC_ROUTES)
+                ->toArray();
+        }
+        return [];
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
 
-        $publicRoutes = $this->config
-            ->get(IApp::CONFIG_PROVIDER_API_ROUTER)
-            ->get(IApp::CONFIG_PROVIDER_PUBLIC_ROUTES);
+        if (true === $this->environmentService->isWeb()) {
+            return $handler->handle($request);
+        }
+
+        $publicRoutes = $this->getPublicRoutes();
         $currentPath  = $this->getMatchedPath($request);
 
-        foreach ($publicRoutes->toArray() as $publicRoute) {
+        foreach ($publicRoutes as $publicRoute) {
             if ($currentPath === $publicRoute) {
                 return $handler->handle($request);
             }

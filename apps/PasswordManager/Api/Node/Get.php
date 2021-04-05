@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Api\Node;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
@@ -31,12 +31,13 @@ use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Node as NodeEntity;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
-use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
-use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\DTO\User\IUser;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class Node
@@ -44,87 +45,66 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Get extends AbstractApi {
+class Get implements RequestHandlerInterface {
 
+    private IL10N             $translator;
     private NodeRepository    $nodeRepository;
-    private NodeService       $nodeService;
-    private ICacheService     $cacheServer;
-    private ILogger           $logger;
     private BreadCrumbService $breadCrumbService;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
-        , NodeService $nodeService
-        , ICacheService $cacheServer
-        , ILogger $logger
         , BreadCrumbService $breadCrumbService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
+        $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
-        $this->nodeService       = $nodeService;
-        $this->cacheServer       = $cacheServer;
-        $this->logger            = $logger;
         $this->breadCrumbService = $breadCrumbService;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
+    public function handle(ServerRequestInterface $request): ResponseInterface {
         $root = null;
 
-        $rootId = $this->getParameter("id");
+        /** @var IToken $token */
+        $token  = $request->getAttribute(IToken::class);
+        $rootId = $request->getAttribute("id");
 
         if (null === $rootId) {
-            $response = parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no root id given. Could not retrieve data")
+                    "message" => $this->translator->translate("no root id given. Could not retrieve data")
                 ]
             );
-            parent::setResponse($response);
-            return;
         }
 
-//        if ($this->cacheServer->exists($rootId)) {
-//            $root = unserialize($this->cacheServer->get($rootId));
-//        } else {
-        $root = $this->prepareNode();
-//            $this->cacheServer->set($rootId, serialize($root));
-//        }
+        $root = $this->prepareNode($request, $token);
 
-        if ($root->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
-            $this->createAndSetResponse(
+        if ($root->getUser()->getId() !== $token->getUser()->getId()) {
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    'message' => $this->getL10N()->translate('unauthorized')
+                    'message' => $this->translator->translate('unauthorized')
                     , 'root'  => $root->getUser()->getId()
-                    , 'token' => $this->getToken()->getUser()->getId()
+                    , 'token' => $this->translator->getUser()->getId()
                 ]
             );
-            return;
         }
 
-//        $this->logger->debug($root->getId() . ' has ' . $root->);
-        $response = parent::createResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "breadCrumb" => $this->breadCrumbService->getBreadCrumbs($root, $this->getToken()->getUser())
-                , "message"  => $this->getL10N()->translate("Ok")
+                , "message"  => $this->translator->translate("Ok")
                 , "node"     => $root
             ]
         );
 
-        parent::setResponse($response);
-
     }
 
-    private function prepareNode(): NodeEntity {
-        $id = $this->getParameter("id");
+    private function prepareNode(ServerRequestInterface $request, IToken $token): NodeEntity {
+        $id = $request->getAttribute("id");
+        /** @var IUser $user */
+        $user = $request->getAttribute(IUser::class);
 
         // base case 1: we are requesting a regular node.
         //      select and return
@@ -133,13 +113,13 @@ class Get extends AbstractApi {
         }
 
         $root = $this->nodeRepository->getRootForUser(
-            $this->getToken()->getUser()
+            $token->getUser()
             , 0
             , 1
         );
 
         // base case 2: we are requesting the root. No need to do the following stuff
-        if ($id === Application::ROOT_FOLDER) {
+        if ($id === 'root') {
             return $root;
         }
 
@@ -173,7 +153,7 @@ class Get extends AbstractApi {
                 foreach ($root->getEdges() as $edge) {
 
                     $node = $edge->getNode();
-                    if (true === $node->isSharedToMe()) {
+                    if (true === $node->isSharedTo($user)) {
                         $newEdges->add($node);
                     }
                 }
@@ -182,10 +162,6 @@ class Get extends AbstractApi {
         }
 
         return $root;
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

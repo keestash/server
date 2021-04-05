@@ -23,9 +23,7 @@ namespace KSA\PasswordManager\Entity\Password;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonSerializable;
-use Keestash\Core\Service\Validation\Validator\ValidatorBag;
 use KSA\PasswordManager\Entity\Node;
-use KSP\Core\DTO\Entity\IValidatable;
 use Laminas\Validator\NotEmpty;
 
 /**
@@ -34,7 +32,7 @@ use Laminas\Validator\NotEmpty;
  * @package KSA\PasswordManager\Entity\Password
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Credential extends Node implements JsonSerializable, IValidatable {
+class Credential extends Node implements JsonSerializable {
 
     private string     $username     = "";
     private Password   $password;
@@ -127,24 +125,6 @@ class Credential extends Node implements JsonSerializable, IValidatable {
 
     public function setCredentialId(int $credentialId): void {
         $this->credentialId = $credentialId;
-    }
-
-    public function getValidators(): array {
-        $bags = parent::getValidators();
-
-        // username
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->username);
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        // password
-        $validatorBag = new ValidatorBag();
-        $validatorBag->setValue($this->password->getPlain());
-        $validatorBag->addValidator(new NotEmpty());
-        $bags[] = $validatorBag;
-
-        return $bags;
     }
 
     /**

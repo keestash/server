@@ -23,7 +23,6 @@ namespace Keestash\Core\Manager\FileManager;
 
 use Keestash;
 use Keestash\Core\DTO\URI\URI;
-use Keestash\Server;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Manager\FileManager\IFileManager;
@@ -59,21 +58,8 @@ class FileManager implements IFileManager {
 
     public function verifyFile(IFile $file): bool {
         if ($file->getSize() <= 0) return false;
-
         return true;
-
-        // TODO mime type returns always stream/octet - fix it!
-
-        $allowedMimeTypes = Keestash::getServer()->query(Server::ALLOWED_MIME_TYPES);
-        $f                = finfo_open();
-        $mimeType         = finfo_buffer(
-            $f
-            , $file->getContent()
-            , FILEINFO_MIME_TYPE
-        );
-
-        return true === in_array($mimeType, $allowedMimeTypes);
-
+        // TODO check for allowed extensions / mime types
     }
 
     public function read(?IUniformResourceIdentifier $uri): ?IFile {

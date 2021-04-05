@@ -1,9 +1,7 @@
 parameters:
-	autoload_files:
-		- %rootDir%/../../autoload.php
 	excludes_analyse:
 	    - %rootDir%/../../
 	    - %rootDir%/../../../lib/private/Core/Repository/Migration/*
 	    - %rootDir%/../../../apps/*/lib/Repository/Migration/*
 	    - %rootDir%/../../../apps/*/info/*
-	bootstrap: %rootDir%/../../../config/phpstan/bootstrap.php
+	checkMissingIterableValueType: false

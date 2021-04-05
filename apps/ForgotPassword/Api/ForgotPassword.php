@@ -25,60 +25,61 @@ namespace KSA\ForgotPassword\Api;
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
 use doganoo\PHPUtil\Util\StringUtil;
-use Keestash;
+use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
-use KSA\ForgotPassword\Application\Application;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class ForgotPassword implements RequestHandlerInterface {
 
-    private const FORGOT_EMAIL_TEMPLATE_NAME = "forgot_email.twig";
-
-    private EmailService         $emailService;
-    private ITemplateManager     $templateManager;
-    private Legacy               $legacy;
-    private UserService          $userService;
-    private IUserStateRepository $userStateRepository;
-    private IL10N                $translator;
-    private IUserRepository      $userRepository;
+    private EmailService              $emailService;
+    private Legacy                    $legacy;
+    private UserService               $userService;
+    private IUserStateRepository      $userStateRepository;
+    private IL10N                     $translator;
+    private IUserRepository           $userRepository;
+    private TemplateRendererInterface $templateRenderer;
+    private HTTPService               $httpService;
 
     public function __construct(
         EmailService $emailService
-        , ITemplateManager $templateManager
         , Legacy $legacy
         , UserService $userService
         , IUserStateRepository $userStateRepository
         , IL10N $translator
         , IUserRepository $userRepository
+        , TemplateRendererInterface $templateRenderer
+        , HTTPService $httpService
     ) {
         $this->emailService        = $emailService;
         $this->legacy              = $legacy;
         $this->userService         = $userService;
-        $this->templateManager     = $templateManager;
         $this->userStateRepository = $userStateRepository;
         $this->translator          = $translator;
         $this->userRepository      = $userRepository;
+        $this->templateRenderer    = $templateRenderer;
+        $this->httpService         = $httpService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
 
-        $parameters     = json_decode($request->getBody()->getContents(), true);
+        $parameters     = json_decode((string) $request->getBody(), true);
         $input          = $parameters["input"] ?? null;
         $responseHeader = $this->translator->translate("Password reset");
 
         if (null === $input || "" === $input) {
-            return Keestash\Api\Response\LegacyResponse::fromData(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "header"    => $responseHeader
@@ -105,7 +106,7 @@ class ForgotPassword implements RequestHandlerInterface {
         }
 
         if (null === $user) {
-            return Keestash\Api\Response\LegacyResponse::fromData(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "header"    => $responseHeader
@@ -116,7 +117,7 @@ class ForgotPassword implements RequestHandlerInterface {
 
         if (true === $this->userService->isDisabled($user)) {
 
-            return Keestash\Api\Response\LegacyResponse::fromData(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "header"    => $responseHeader
@@ -140,7 +141,7 @@ class ForgotPassword implements RequestHandlerInterface {
 
         if (true === $alreadyRequested) {
 
-            return Keestash\Api\Response\LegacyResponse::fromData(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "header"    => $responseHeader
@@ -153,17 +154,12 @@ class ForgotPassword implements RequestHandlerInterface {
         $appName   = $this->legacy->getApplication()->get("name");
         $appSlogan = $this->legacy->getApplication()->get("slogan");
 
-        $baseUrl = Keestash::getBaseURL(true, true);
+        $baseUrl = $this->httpService->getBaseURL(true, true);
 
-        $resetPassword = str_replace(
-            "{token}"
-            , $uuid
-            , Application::RESET_PASSWORD
-        );
-        $ctaLink       = $baseUrl . "/" . $resetPassword;
+        $ctaLink = $baseUrl . "/reset_password/" . $uuid;
 
-        $this->templateManager->replace(
-            ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME
+        $rendered = $this->templateRenderer->render(
+            'forgotPassword::forgot_email'
             , [
                 // changeable
                 "appName"          => $appName
@@ -183,16 +179,12 @@ class ForgotPassword implements RequestHandlerInterface {
                 , "poweredByText"  => $this->translator->translate("Powered By $appName")
 
                 // values
-                , "logoPath"       => Keestash::getBaseURL(false) . "/asset/img/logo_inverted.png"
+                , "logoPath"       => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
                 , "ctaLink"        => $ctaLink
                 , "baseUrl"        => $baseUrl
                 , "hasUnsubscribe" => false
             ]
         );
-
-
-        $rendered = $this->templateManager->render(ForgotPassword::FORGOT_EMAIL_TEMPLATE_NAME);
-
 
         // TODO check them
         //   make sure that there is no bot triggering a lot of mails
@@ -209,7 +201,7 @@ class ForgotPassword implements RequestHandlerInterface {
             $this->userStateRepository->requestPasswordReset($user, $uuid);
         }
 
-        return Keestash\Api\Response\LegacyResponse::fromData(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "header"    => $responseHeader

@@ -21,116 +21,46 @@ declare(strict_types=1);
 
 namespace KSP\Core\Controller;
 
-use Keestash;
-use Keestash\Core\Manager\NavigationManager\App\NavigationManager as AppNavigationManager;
-use Keestash\Core\Service\HTTP\Input\SanitizerService as InputSanitizer;
 use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\Manager\TemplateManager\ITemplate;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\Controller\IAppRenderer;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-abstract class AppController implements IAppController {
+abstract class AppController implements IAppController, RequestHandlerInterface {
 
-    private ITemplateManager $templateManager;
-    private int              $controllerType      = IAppController::CONTROLLER_TYPE_NORMAL;
-    private IL10N            $l10n;
-    private array            $parameters;
-    private bool             $parametersSanitized = false;
-    private InputSanitizer   $inputSanitizer;
+    private IAppRenderer $appRenderer;
 
-    public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $l10n
-    ) {
-        $this->templateManager = $templateManager;
-        $this->l10n            = $l10n;
-        $this->setParameters([]);
-        // TODO inject via constructor once you are ready to adapt all extending classes
-        $this->inputSanitizer = Keestash::getServer()->query(InputSanitizer::class);
+    private NavigationList $navigationList;
+
+    public function __construct(IAppRenderer $appRenderer) {
+        $this->appRenderer    = $appRenderer;
+        $this->navigationList = new NavigationList();
     }
 
-    public function getControllerType(): int {
-        return $this->controllerType;
-    }
+    public abstract function run(ServerRequestInterface $request): string;
 
-    protected function setControllerType(int $controllerType): void {
-        if (true === in_array(
-                $controllerType
-                , [
-                    IAppController::CONTROLLER_TYPE_NORMAL
-                    , IAppController::CONTROLLER_TYPE_FULL_SCREEN
-                    , IAppController::CONTROLLER_TYPE_STATIC
-                    , IAppController::CONTROLLER_TYPE_CONTEXTLESS
-                ]
-            )
-        ) {
-            $this->controllerType = $controllerType;
-        }
-    }
-
-    public function setHasAppNavigation(bool $hasAppNavigation): void {
-        $this->templateManager->replace(
-            ITemplate::APP_NAVIGATION
-            , [
-                "hasAppNavigationInput" => $hasAppNavigation
-            ]
-        );
-    }
-
-    /**
-     * @deprecated
-     */
-    protected function setPermission(): void {
-
-    }
 
     protected function setAppNavigation(NavigationList $navigationList): void {
-        if (Keestash::getMode() !== Keestash::MODE_WEB) return;
-
-        /** @var AppNavigationManager $appNavigation */
-        $appNavigation = Keestash::getServer()
-            ->query(AppNavigationManager::class);
-        $appNavigation->setList($navigationList);
+        $this->navigationList = $navigationList;
     }
 
-    protected function render(string $templateName): void {
-        $this->setAppContent(
-            $this->getTemplateManager()->render($templateName)
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $hasAppNavigation =
+            (static::class === AppController::class)
+            && $this->navigationList->length() > 0;
+        $static = $this instanceof StaticAppController
+        || $this instanceof  ContextLessAppController;
+        return new HtmlResponse(
+            $this->appRenderer->render(
+                $request
+                , $hasAppNavigation
+                , $this->run($request)
+                , $static
+                , $this->navigationList
+            )
         );
-    }
-
-    protected function setAppContent(string $content): void {
-        $this->templateManager->replace(
-            ITemplate::APP_CONTENT
-            , [
-                "appContent" => $content
-            ]
-        );
-    }
-
-    protected function getTemplateManager(): ITemplateManager {
-        return $this->templateManager;
-    }
-
-    protected function getL10N(): IL10N {
-        return $this->l10n;
-    }
-
-    protected function getParameter(string $name, ?string $default = null): ?string {
-        return $this->getParameters()[$name] ?? $default;
-    }
-
-    protected function getParameters(): array {
-        if (false === $this->parametersSanitized) {
-            $this->parameters          = $this->inputSanitizer->sanitizeAll($this->parameters);
-            $this->parametersSanitized = true;
-        }
-        return $this->parameters;
-    }
-
-    public function setParameters(array $parameters): void {
-        $this->parameters          = $parameters;
-        $this->parametersSanitized = false;
     }
 
 }

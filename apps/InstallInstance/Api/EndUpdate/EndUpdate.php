@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Api\EndUpdate;
 
-use Keestash;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\HTTPService;
@@ -30,6 +29,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
+use KSP\App\ILoader;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -48,6 +48,7 @@ class EndUpdate implements RequestHandlerInterface {
     private PersistenceService $persistenceService;
     private HTTPService        $httpService;
     private IL10N              $translator;
+    private ILoader            $loader;
 
     public function __construct(
         IL10N $l10n
@@ -59,6 +60,7 @@ class EndUpdate implements RequestHandlerInterface {
         , IUserRepository $userRepository
         , PersistenceService $persistenceService
         , HTTPService $httpService
+        , ILoader $loader
     ) {
         $this->installerService   = $installerService;
         $this->lockHandler        = $lockHandler;
@@ -69,6 +71,7 @@ class EndUpdate implements RequestHandlerInterface {
         $this->persistenceService = $persistenceService;
         $this->httpService        = $httpService;
         $this->translator         = $l10n;
+        $this->loader             = $loader;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -118,7 +121,7 @@ class EndUpdate implements RequestHandlerInterface {
             , [
                 "message"    => "Ok"
                 , "route_to" => $this->httpService->buildWebRoute(
-                    Keestash::getServer()->getAppLoader()->getDefaultApp()->getBaseRoute()
+                    $this->loader->getDefaultApp()->getBaseRoute()
                 )
             ]
         );

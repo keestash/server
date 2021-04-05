@@ -21,24 +21,11 @@ declare(strict_types=1);
 
 namespace KSP\Core\Controller;
 
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
-use KSP\L10N\IL10N;
-
 /**
  * Class ContextLessAppController
  * @package KSP\Core\Controller
  */
 abstract class ContextLessAppController extends AppController {
 
-    public function __construct(
-        ITemplateManager $templateManager
-        , IL10N $l10n
-    ) {
-        parent::__construct(
-            $templateManager
-            , $l10n
-        );
-        parent::setControllerType(IAppController::CONTROLLER_TYPE_CONTEXTLESS);
-    }
 
 }

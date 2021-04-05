@@ -23,6 +23,8 @@ namespace Keestash\Core\System\Installation\Verification;
 
 use Keestash;
 use Keestash\Core\Service\App\InstallerService;
+use KSP\Core\Service\Config\IConfigService;
+use Laminas\Config\Config;
 use Phinx\Console\PhinxApplication;
 use Phinx\Wrapper\TextWrapper;
 
@@ -31,17 +33,27 @@ class HasMigrations extends AbstractVerification {
     private const PHINX_DEVELOPMENT = "development";
     private const PHINX_PRODUCTION  = "production";
 
+    private Config         $config;
+    private IConfigService $configService;
+
+    public function __construct(
+        Config $config
+        , IConfigService $configService
+    ) {
+        $this->config        = $config;
+        $this->configService = $configService;
+    }
+
     public function hasProperty(): bool {
         return true;
 //        return $this->migrate();
     }
 
     private function migrate(): bool {
-        $phinxRoot = Keestash::getServer()->getPhinxRoot();
+        $phinxRoot = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
         $phinxPath = $phinxRoot . "instance.php";
-        $config    = Keestash::getServer()->getConfig();
 
-        $phinxEnv = (true === $config->get("debug")) ?
+        $phinxEnv = (true === $this->configService->getValue("debug")) ?
             HasMigrations::PHINX_DEVELOPMENT :
             HasMigrations::PHINX_PRODUCTION;
 

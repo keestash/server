@@ -22,22 +22,24 @@ declare(strict_types=1);
 namespace KSA\Register\Factory\Event\Listener;
 
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Event\EmailAfterRegistration;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\TemplateManager\ITemplateManager;
 use KSP\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
 class EmailAfterRegistrationListenerFactory {
 
     public function __invoke(ContainerInterface $container): EmailAfterRegistration {
         return new EmailAfterRegistration(
-            $container->get(ITemplateManager::class),
-            $container->get(EmailService::class),
-            $container->get(Legacy::class),
-            $container->get(IL10N::class),
-            $container->get(ILogger::class)
+            $container->get(TemplateRendererInterface::class)
+            , $container->get(EmailService::class)
+            , $container->get(Legacy::class)
+            , $container->get(IL10N::class)
+            , $container->get(ILogger::class)
+            , $container->get(HTTPService::class)
         );
     }
 

@@ -23,6 +23,7 @@ namespace Keestash\Factory\Middleware;
 
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Middleware\KeestashHeaderMiddleware;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
@@ -33,7 +34,8 @@ class KeestashHeaderMiddlewareFactory {
         return new KeestashHeaderMiddleware(
             $container->get(RouterInterface::class),
             $container->get(Config::class),
-            $container->get(Verification::class)
+            $container->get(Verification::class),
+            $container->get(IEnvironmentService::class)
         );
     }
 

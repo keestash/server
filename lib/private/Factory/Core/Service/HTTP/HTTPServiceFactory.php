@@ -23,13 +23,14 @@ namespace Keestash\Factory\Core\Service\HTTP;
 
 use Keestash\Core\Manager\RouterManager\Router\HTTPRouter;
 use Keestash\Core\Service\HTTP\HTTPService;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Psr\Container\ContainerInterface;
 
 class HTTPServiceFactory {
 
     public function __invoke(ContainerInterface $container): HTTPService {
         return new HTTPService(
-            $container->get(HTTPRouter::class)
+            $container->get(IEnvironmentService::class)
         );
     }
 

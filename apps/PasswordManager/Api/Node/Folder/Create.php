@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTime;
-use Keestash\Api\AbstractApi;
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
@@ -30,8 +30,10 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * Class NodeCreate
@@ -39,61 +41,56 @@ use KSP\L10N\IL10N;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Create extends AbstractApi {
+class Create implements RequestHandlerInterface {
 
-    private NodeRepository        $nodeRepository;
-    private NodeService           $nodeService;
+    private IL10N          $translator;
+    private NodeRepository $nodeRepository;
+    private NodeService    $nodeService;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
         , NodeService $nodeService
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
-        $this->nodeRepository       = $nodeRepository;
-        $this->nodeService          = $nodeService;
+        $this->translator     = $l10n;
+        $this->nodeRepository = $nodeRepository;
+        $this->nodeService    = $nodeService;
     }
 
-    public function onCreate(array $parameters): void {
 
-    }
-
-    public function create(): void {
-        $title  = $this->getParameter("title");
-        $parent = $this->getParameter("parent");
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token      = $request->getAttribute(IToken::class);
+        $parameters = json_decode((string) $request->getBody(), true);
+        $title      = $parameters["title"] ?? null;
+        $parent     = $parameters["parent"] ?? null;
 
         if (false === $this->isValid($title) || false === $this->isValid($parent)) {
 
-            parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no parameters set")
+                    "message" => $this->translator->translate("no parameters set")
                 ]
             );
-
-            return;
 
         }
 
-        $parentEdge = $this->getParentEdge($parent);
+        $parentEdge = $this->getParentEdge($parent, $token);
 
-        if (null === $parentEdge || $parentEdge->getUser()->getId() !== $this->getToken()->getUser()->getId()) {
+        if (null === $parentEdge || $parentEdge->getUser()->getId() !== $token->getUser()->getId()) {
 
-            parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no parent found")
+                    "message" => $this->translator->translate("no parent found")
                 ]
             );
-
-            return;
 
         }
 
         $folder = new Folder();
-        $folder->setUser($this->getToken()->getUser());
+        $folder->setUser($token->getUser());
         $folder->setName((string) $title);
         $folder->setType(Node::FOLDER);
         $folder->setCreateTs(new DateTime());
@@ -101,13 +98,12 @@ class Create extends AbstractApi {
         $lastId = $this->nodeRepository->addFolder($folder);
 
         if (null === $lastId || 0 === $lastId) {
-            parent::createResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not add")
+                    "message" => $this->translator->translate("could not add")
                 ]
             );
-            return;
         }
 
         $folder->setId($lastId);
@@ -119,10 +115,10 @@ class Create extends AbstractApi {
             )
         );
 
-        parent::createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message"       => $this->getL10N()->translate("success")
+                "message"       => $this->translator->translate("success")
                 , "folder"      => $folder
                 , "parent_edge" => $parentEdge
             ]
@@ -136,17 +132,13 @@ class Create extends AbstractApi {
         return true;
     }
 
-    private function getParentEdge($parent): ?Node {
+    private function getParentEdge($parent, IToken $token): ?Node {
 
         if (Application::ROOT_FOLDER === $parent) {
-            return $this->nodeRepository->getRootForUser($this->getToken()->getUser());
+            return $this->nodeRepository->getRootForUser($token->getUser());
         }
 
         return $this->nodeRepository->getNode((int) $parent);
-    }
-
-    public function afterCreate(): void {
-
     }
 
 }

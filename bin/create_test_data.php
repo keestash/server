@@ -42,10 +42,7 @@ use KSP\Core\DTO\User\IUser;
     require_once __DIR__ . '/../lib/filecheck.php';
     require_once __DIR__ . '/../lib/extensioncheck.php';
     require_once __DIR__ . '/../config/config.php';
-    require_once __DIR__ . '/../lib/Keestash.php';
 
-    Keestash::init();
-    $server = Keestash::getServer();
     /** @var NodeService $nodeService */
     $nodeService = $server->query(NodeService::class);
     /** @var NodeRepository $nodeRepository */

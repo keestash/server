@@ -21,68 +21,57 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\AbstractApi;
-
+use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class Remove extends AbstractApi {
+class Remove implements RequestHandlerInterface {
 
     private NodeRepository $nodeRepository;
+    private IL10N          $translator;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
-        , ?IToken $token = null
     ) {
-        parent::__construct($l10n, $token);
-
         $this->nodeRepository = $nodeRepository;
+        $this->translator     = $l10n;
     }
 
-    public function onCreate(array $parameters): void {
-
-    }
-
-    public function create(): void {
-
-        $shareId = $this->getParameter("shareId", null);
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $parameters = json_decode((string) $request->getBody(), true);
+        $shareId    = $parameters["shareId"] ?? null;
 
         if (null === $shareId) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("no edge found")
+                    "message" => $this->translator->translate("no edge found")
                 ]
             );
-
-            return;
         }
 
         $removed = $this->nodeRepository->removeEdge((string) $shareId);
 
         if (false === $removed) {
-            $this->createAndSetResponse(
+            return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
-                    "message" => $this->getL10N()->translate("could not remove edge")
+                    "message" => $this->translator->translate("could not remove edge")
                 ]
             );
-            return;
         }
 
-        $this->createAndSetResponse(
+        return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "shareId" => $shareId
             ]
         );
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

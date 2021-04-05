@@ -31,17 +31,5 @@ use Keestash\Core\Service\Config\ConfigService;
     require_once __DIR__ . '/../lib/filecheck.php';
     require_once __DIR__ . '/../lib/extensioncheck.php';
     require_once __DIR__ . '/../config/config.php';
-    require_once __DIR__ . '/../lib/Keestash.php';
-    Keestash::init();
 
-    $backgrounder  = Keestash::getServer()->getBackgrounder();
-    $jobRepository = Keestash::getServer()->getJobRepository();
-    /** @var ConfigService $configService */
-    $configService = Keestash::getServer()->query(ConfigService::class);
-
-    $backgrounder->setDebug(
-            (bool) $configService->getValue("debug", false)
-    );
-
-    $jobRepository->updateJobs($backgrounder->run());
 })();
