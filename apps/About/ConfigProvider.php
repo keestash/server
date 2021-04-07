@@ -47,16 +47,18 @@ final class ConfigProvider {
                 IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::ABOUT => 'about'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [],
+                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                    ConfigProvider::ABOUT => 'about'
+                ],
                 IApp::CONFIG_PROVIDER_SETTINGS               => [
                     ConfigProvider::ABOUT => [
                         'name'      => 'about'
                         , 'faClass' => 'fas fa-info'
                         , 'order'   => 3
                     ]
-                ]
+                ],
             ],
-            'templates' => [
+            'templates'                      => [
                 'paths' => [
                     'about' => [__DIR__ . '/template'],
                 ],

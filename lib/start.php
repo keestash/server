@@ -35,11 +35,16 @@ use KSA\TNC\ConfigProvider as TNCConfigProvider;
 use KSA\Users\ConfigProvider as UsersConfigProvider;
 use Laminas\Config\Config;
 use Laminas\ConfigAggregator\ConfigAggregator;
-use Laminas\Diactoros\ConfigProvider;
+use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
+use Laminas\HttpHandlerRunner\ConfigProvider as HttpHandlerRunnerConfigProvider;
+use Laminas\Router\ConfigProvider as LaminasRouterConfigProvider;
 use Laminas\ServiceManager\ServiceManager;
+use Laminas\Validator\ConfigProvider as ValidatorConfigProvider;
 use Mezzio\ConfigProvider as MezzioConfigProvider;
 use Mezzio\Helper\ConfigProvider as HelperConfigProvider;
 use Mezzio\Router\ConfigProvider as RouterConfigProvider;
+use Mezzio\Router\LaminasRouter\ConfigProvider as MezzioRouterConfigProvider;
+use Mezzio\Twig\ConfigProvider as TwigConfigProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../lib/versioncheck.php';
@@ -48,12 +53,12 @@ require_once __DIR__ . '/../lib/extensioncheck.php';
 
 $configs = [
     // framework
-    \Mezzio\Twig\ConfigProvider::class,
-    \Laminas\HttpHandlerRunner\ConfigProvider::class,
-    \Mezzio\Router\LaminasRouter\ConfigProvider::class,
-    \Laminas\Router\ConfigProvider::class,
-    \Laminas\Validator\ConfigProvider::class,
-    ConfigProvider::class,
+    TwigConfigProvider::class,
+    HttpHandlerRunnerConfigProvider::class,
+    LaminasRouterConfigProvider::class,
+    MezzioRouterConfigProvider::class,
+    ValidatorConfigProvider::class,
+    DiactorosConfigProvider::class,
     RouterConfigProvider::class,
     HelperConfigProvider::class,
     MezzioConfigProvider::class,
