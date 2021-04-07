@@ -31,7 +31,14 @@ const baseModule = {
     },
     output: {
         path: __dirname + "/public/js/",
-        filename: '[name].bundle.js'
+        filename: '[name].bundle.js',
+        chunkFilename: '[name].chunk.js',
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'async'
+        },
+        usedExports: true,
     },
     module: {
         rules: [
@@ -41,6 +48,7 @@ const baseModule = {
             },
             {
                 test: /\.js$/,
+                exclude: /node_modules/,
                 loader: 'babel-loader'
             },
             {
@@ -90,6 +98,7 @@ function toConfig(modules, baseModule) {
     for (let i = 0; i < modules.length; i++) {
         const configPath = modules[i];
         const config = require(configPath);
+
         config.mode = baseModule.mode;
         config.node = {fs: 'empty'};
         config.module = Object.assign(baseModule.module, config.module || {});
