@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Controller\PasswordManager;
 
 use Keestash\View\ActionBar\ActionBarBuilder;
 use KSA\PasswordManager\Controller\PasswordManager\Segment\Helper as SegmentHelper;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\View\ActionBar\IActionBar;
@@ -40,24 +39,20 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Controller extends AppController {
 
-    private NodeRepository            $nodeRepository;
     private TemplateRendererInterface $templateRenderer;
     private IL10N                     $translator;
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
         , IL10N $translator
-        , NodeRepository $nodeRepository
         , IAppRenderer $appRenderer
     ) {
         parent::__construct($appRenderer);
-        $this->nodeRepository   = $nodeRepository;
         $this->translator       = $translator;
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function onCreate(): void {
-
+    private function buildAppNavigation(): void {
         $segmentHelper = new SegmentHelper($this->translator);
 
         $this->buildActionBar();
@@ -89,6 +84,8 @@ class Controller extends AppController {
     }
 
     public function run(ServerRequestInterface $request): string {
+        $this->buildAppNavigation();
+        $this->buildActionBar();
         return $this->templateRenderer->render(
             'passwordManager::password_manager'
             , [

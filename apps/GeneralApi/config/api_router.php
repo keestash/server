@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 
+use Keestash\ConfigProvider;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\Api\MinimumCredential;
 use KSA\GeneralApi\Api\Organization\Activate;
@@ -32,11 +33,10 @@ use KSA\GeneralApi\Api\Organization\User;
 use KSA\GeneralApi\Api\Strings\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Api\UserList;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES        => [
+    ConfigProvider::ROUTES => [
         [
             'path'         => '/organizations/user/change[/]'
             , 'middleware' => User::class
@@ -110,7 +110,7 @@ return [
             , 'name'       => Get::class
         ],
     ],
-    IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
+    ConfigProvider::PUBLIC_ROUTES => [
         '/password_requirements[/]'
         , '/demousers/user/add[/]'
         , '/frontend_strings/all[/]'

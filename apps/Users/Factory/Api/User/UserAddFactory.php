@@ -24,6 +24,7 @@ namespace KSA\Users\Factory\Api\User;
 use Keestash\Core\Service\User\UserService;
 use KSA\Users\Api\User\UserAdd;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
 class UserAddFactory {
@@ -32,6 +33,7 @@ class UserAddFactory {
         return new UserAdd(
             $container->get(UserService::class)
             , $container->get(IUserRepository::class)
+            , $container->get(IUserRepositoryService::class)
         );
     }
 

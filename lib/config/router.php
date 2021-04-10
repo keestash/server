@@ -21,10 +21,10 @@ declare(strict_types=1);
  */
 
 use Keestash\Api\PingHandler;
-use KSP\App\IApp;
+use Keestash\ConfigProvider;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES        => [
+    ConfigProvider::ROUTES => [
         [
             'path'       => '/ping[/]',
             'middleware' => PingHandler::class,
@@ -32,7 +32,7 @@ return [
             'method'     => 'get'
         ]
     ],
-    IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
+    ConfigProvider::PUBLIC_ROUTES => [
         '/ping[/]'
     ]
 ];

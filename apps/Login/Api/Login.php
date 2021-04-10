@@ -23,7 +23,6 @@ namespace KSA\Login\Api;
 
 use DateTime;
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\App\Helper;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\User\UserService;
@@ -36,6 +35,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\L10N\IL10N;
+use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -55,6 +55,7 @@ class Login implements RequestHandlerInterface {
     private ILanguageService   $languageService;
     private ILogger            $logger;
     private ILoader            $loader;
+    private RouterInterface    $router;
 
     public function __construct(
         IUserRepository $userRepository
@@ -68,6 +69,7 @@ class Login implements RequestHandlerInterface {
         , ILanguageService $languageService
         , ILogger $logger
         , ILoader $loader
+        , RouterInterface $router
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
@@ -80,6 +82,7 @@ class Login implements RequestHandlerInterface {
         $this->languageService    = $languageService;
         $this->logger             = $logger;
         $this->loader             = $loader;
+        $this->router             = $router;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -89,7 +92,8 @@ class Login implements RequestHandlerInterface {
 
         $user = $this->userRepository->getUser($userName);
 
-        $this->logger->debug("user is null: " . (null === $user));
+        $this->logger->debug("test");
+        $this->logger->debug(json_encode($request));
 
         if (true === $this->userService->isDisabled($user)) {
             return LegacyResponse::fromData(
@@ -98,48 +102,48 @@ class Login implements RequestHandlerInterface {
                     "message" => $this->translator->translate("No User Found")
                 ]
             );
-        } else if (false === $this->userService->validatePassword($password, $user->getPassword())) {
+        }
+
+        if (false === $this->userService->validatePassword($password, $user->getPassword())) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK,
                 [
                     "message" => $this->translator->translate("Invalid Credentials")
                 ]
             );
-        } else {
-            $token = $this->tokenService->generate("login", $user);
-
-            $response = LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_OK
-                , [
-                "message"    => $this->translator->translate("Ok")
-                , "routeTo"  => Helper::getDefaultRoute($this->loader)
-                , "settings" => [
-                    "locale"     => $this->localeService->getLocaleForUser($user)
-                    , "language" => $this->languageService->getLanguageForUser($user)
-                ]
-            ],
-                200,
-                [
-                    "api_token"   => $token->getValue()
-                    , 'user_hash' => $user->getHash()
-
-                ]
-            );
-
-            $this->tokenManager->add($token);
-
-            $expireTs = (new DateTime())->getTimestamp() +
-                $this->configService->getValue(
-                    "user_lifetime"
-                    , (string) Login::DEFAULT_USER_LIFETIME
-                );
-            $this->persistenceService->setPersistenceValue(
-                "user_id"
-                , (string) $user->getId()
-                , (int) $expireTs
-            );
-
         }
+        $token = $this->tokenService->generate("login", $user);
+
+        $response = LegacyResponse::fromData(
+            IResponse::RESPONSE_CODE_OK
+            , [
+            "message"    => $this->translator->translate("Ok")
+            , "routeTo"  => '/password_manager/'
+            , "settings" => [
+                "locale"     => $this->localeService->getLocaleForUser($user)
+                , "language" => $this->languageService->getLanguageForUser($user)
+            ]
+        ],
+            200,
+            [
+                "api_token"   => $token->getValue()
+                , 'user_hash' => $user->getHash()
+
+            ]
+        );
+
+        $this->tokenManager->add($token);
+
+        $expireTs = (new DateTime())->getTimestamp() +
+            $this->configService->getValue(
+                "user_lifetime"
+                , (string) Login::DEFAULT_USER_LIFETIME
+            );
+        $this->persistenceService->setPersistenceValue(
+            "user_id"
+            , (string) $user->getId()
+            , (int) $expireTs
+        );
 
         return $response;
 

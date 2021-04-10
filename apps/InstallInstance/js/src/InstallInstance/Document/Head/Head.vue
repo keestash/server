@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import {ASSET_READER, StartUp} from "../../../../../../../lib/js/src/StartUp";
-import {Container} from "../../../../../../../lib/js/src/DI/Container";
 
 export default {
   name: "Head",
@@ -18,16 +16,7 @@ export default {
     }
   },
   async created() {
-    const startUp = new StartUp(
-        new Container()
-    );
-    startUp.setUp();
-
-    this.container = startUp.getContainer();
-    const assetReader = this.container.query(ASSET_READER);
-    const assets = await assetReader.read(true);
-    const strings = JSON.parse(assets[1].install_instance).strings;
-
+    const strings = require(__dirname + '/../../../../../string/frontend/strings.json').strings;
     this.head.value = strings.head.value;
   }
 }

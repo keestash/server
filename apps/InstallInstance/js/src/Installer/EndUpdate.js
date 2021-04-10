@@ -86,7 +86,7 @@ export class EndUpdate {
                         _this.routes.getInstallInstanceEndUpdate()
                         , {}
                         , function (x, y, z) {
-                            const object = JSON.parse(x);
+                            const object = x;
 
                             if (RESPONSE_CODE_OK in object) {
                                 const routeTo = object[RESPONSE_CODE_OK]['messages']['route_to'];

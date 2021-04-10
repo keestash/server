@@ -27,6 +27,7 @@ use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Legacy\Legacy;
+use KSA\Register\ConfigProvider;
 use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
@@ -110,7 +111,7 @@ class LoginController extends StaticAppController {
                     , "loginToApp"                 => $this->translator->translate("Login to {$this->legacy->getApplication()->get('name')}")
                     , "newAccountLink"             => $this->httpService->getBaseURL(true) . "/register"
                     , "forgotPasswordLink"         => $this->httpService->getBaseURL(true) . "/forgot_password"
-                    , "registeringEnabled"         => $this->loader->hasApp(ILoader::APP_NAME_REGISTER)
+                    , "registeringEnabled"         => $this->loader->hasApp(ConfigProvider::APP_ID)
 
                     // values
                     , "backgroundPath"             => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"

@@ -21,9 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Template;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Manager\TemplateManager\FrontendManager;
 use KSP\Api\IResponse;
 use KSP\Core\Cache\ICacheService;
 use Psr\Http\Message\ResponseInterface;
@@ -32,53 +30,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class GetAll implements RequestHandlerInterface {
 
-    private FrontendManager $frontendManager;
-    private ICacheService   $cacheServer;
+    private ICacheService $cacheServer;
 
-    public function __construct(
-        FrontendManager $frontendManager
-        , ICacheService $cacheServer
-    ) {
-        $this->frontendManager = $frontendManager;
-        $this->cacheServer     = $cacheServer;
+    public function __construct(ICacheService $cacheServer) {
+        $this->cacheServer = $cacheServer;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
 
-        $redisKey = "frontendmanagerstrings";
-        $data     = null;
-        if (true === $this->cacheServer->exists($redisKey)) {
-            $data = json_decode(
-                $this->cacheServer->get($redisKey)
-                , true
-            );
-        } else {
-            $data = $this->hashTableToArray(
-                $this->frontendManager->getAllRaw()
-            );
-            $this->cacheServer->set(
-                $redisKey
-                , json_encode($data)
-            );
-        }
+        $data = null;
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "data" => $data
+                "data" => []
             ]
         );
-    }
-
-    private function hashTableToArray(HashTable $table): array {
-        $array = [];
-        foreach ($table->keySet() as $key) {
-            $name         = basename($key);
-            $name         = str_replace(".twig", "", $name);
-            $array[$name] =
-                ($table->get($key));
-//            '';
-        }
-        return $array;
     }
 
 

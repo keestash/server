@@ -21,7 +21,6 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use KSP\App\IApp;
 use Laminas\ConfigAggregator\ConfigAggregator;
 
 return [
@@ -33,16 +32,16 @@ return [
     , ConfigProvider::IMAGE_PATH             => realpath(__DIR__ . '/../../data/image/')
     , ConfigProvider::PHINX_PATH             => realpath(__DIR__ . '/../../config/phinx/')
     , ConfigProvider::DATA_PATH              => realpath(__DIR__ . '/../../data/')
-    , ConfigProvider::INSTANCE_PATH              => realpath(__DIR__ . '/../../')
-    , ConfigProvider::APP_PATH              => realpath(__DIR__ . '/../../apps/')
+    , ConfigProvider::INSTANCE_PATH          => realpath(__DIR__ . '/../../')
+    , ConfigProvider::APP_PATH               => realpath(__DIR__ . '/../../apps/')
     , ConfigProvider::INSTALL_INSTANCE_ROUTE => 'install_instance'
     , 'dependencies'                         => require __DIR__ . '/dependencies.php'
-    , IApp::CONFIG_PROVIDER_API_ROUTER       => require __DIR__ . '/router.php'
+    , ConfigProvider::API_ROUTER             => require __DIR__ . '/router.php'
     , 'templates'                            => [
         'extension' => 'twig'
         , 'paths'   => [
-            'root'    => [__DIR__ . '/../../template/app/']
-            , 'email' => [__DIR__ . '/../../template/email/']
+            'root'    => [realpath(__DIR__ . '/../../template/app/')]
+            , 'email' => [realpath(__DIR__ . '/../../template/email/')]
         ]
     ]
 ];

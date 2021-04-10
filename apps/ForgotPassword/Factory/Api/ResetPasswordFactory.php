@@ -24,6 +24,7 @@ namespace KSA\ForgotPassword\Factory\Api;
 use KSA\ForgotPassword\Api\ResetPassword;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -34,6 +35,7 @@ class ResetPasswordFactory {
             $container->get(IL10N::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(IUserService::class)
+            , $container->get(IUserRepositoryService::class)
         );
     }
 

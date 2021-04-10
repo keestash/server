@@ -17,40 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 const glob = require("glob");
-const path = require("path");
-const { VueLoaderPlugin } = require("vue-loader");
 
 module.exports = {
     entry: {
         users: glob.sync(__dirname + "/src/users/*.js")
-    },
-      module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                exclude: /node_modules/,
-                loader: ['vue-loader']
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
-        ]
-    },
-    resolve: {
-        alias: {
-            '@users': path.resolve(__dirname + '/src/users/'),
-            'vue$': 'vue/dist/vue.esm.js'
-        },
-        extensions: ['.js', '.vue'],
-    },
-    plugins: [
-        new VueLoaderPlugin()
-    ]
+    }
 };

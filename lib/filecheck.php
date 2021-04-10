@@ -48,3 +48,10 @@ if ($missingFileSize > 0) {
     echo "Check our docs for further information: https://keestash.com" . PHP_EOL;
     exit();
 }
+if (0 === filesize($config)) {
+    echo 'The config file is empty. ' . PHP_EOL;
+    echo 'Please look into : ' . realpath($configSample) . 'and set the necessary variables' . PHP_EOL;
+    echo PHP_EOL;
+    echo "Check our docs for further information: https://keestash.com" . PHP_EOL;
+    exit();
+}

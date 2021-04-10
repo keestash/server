@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
@@ -33,41 +34,49 @@ use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\DemoModeFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
 use KSA\InstallInstance\Factory\Controller\ControllerFactory;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
     public const CONFIG_PROVIDER_INSTALLATION_ROUTES = 'routes.installation.provider.config';
     public const INSTALL_INSTANCE                    = '/install_instance[/]';
+    public const APP_ID                              = 'install_instance';
 
     public function __invoke(): array {
         return [
-            IApp::CONFIG_PROVIDER_WEB_ROUTER                  => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::APP_LIST                => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 6,
+                    CoreConfigProvider::APP_NAME       => 'Install Instance',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::INSTALL_INSTANCE,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            CoreConfigProvider::WEB_ROUTER              => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::INSTALL_INSTANCE
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                CoreConfigProvider::PUBLIC_ROUTES          => [
                     ConfigProvider::INSTALL_INSTANCE
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::INSTALL_INSTANCE => 'install_instance'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::INSTALL_INSTANCE => 'install_instance'
                 ],
             ],
-            \Keestash\ConfigProvider::INSTALL_INSTANCE_ROUTES => [
+            CoreConfigProvider::INSTALL_INSTANCE_ROUTES => [
                 ConfigProvider::INSTALL_INSTANCE
                 , '/install_instance/update_config[/]'
                 , '/install_instance/config_data[/]'
                 , '/install_instance/end_update[/]'
             ],
-            'dependencies'                                    => [
+            'dependencies'                              => [
                 'factories' => [
                     // api
                     Get::class        => GetFactory::class,
@@ -82,8 +91,8 @@ final class ConfigProvider {
                     Controller::class => ControllerFactory::class,
                 ]
             ],
-            IApp::CONFIG_PROVIDER_API_ROUTER                  => [
-                IApp::CONFIG_PROVIDER_ROUTES        => [
+            CoreConfigProvider::API_ROUTER              => [
+                CoreConfigProvider::ROUTES        => [
                     [
                         'path'         => '/install_instance/update_config[/]'
                         , 'middleware' => Update::class
@@ -103,17 +112,17 @@ final class ConfigProvider {
                         , 'name'       => EndUpdate::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
+                CoreConfigProvider::PUBLIC_ROUTES => [
                     '/install_instance/end_update[/]'
                     , '/install_instance/update_config[/]'
                     , '/install_instance/config_data[/]'
                 ]
             ],
-            IApp::CONFIG_PROVIDER_COMMANDS                    => [
+            CoreConfigProvider::COMMANDS                => [
                 Uninstall::class
                 , DemoMode::class
             ],
-            'templates'                                       => [
+            'templates'                                 => [
                 'paths' => [
                     'installInstance' => [__DIR__ . '/template']
                 ]

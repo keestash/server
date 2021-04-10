@@ -119,7 +119,9 @@ class InstallerService {
         if (true === $isInstalled && false === $force) return $messages;
 
         /** @var AbstractVerification $verifier */
-        $verifier = new $name();
+        $verifier = new $name(
+            $this->config
+        );
         $verifier->hasProperty();
         $messages     = $verifier->getMessages();
         $messagesSize = count($messages);
@@ -141,7 +143,9 @@ class InstallerService {
         if (true === $isInstalled) return true;
 
         $list = new ArrayList();
-        $list->add(new ConfigFileReadable());
+        $list->add(new ConfigFileReadable(
+            $this->config
+        ));
         $list->add(new DatabaseReachable(
             $this->backend
         ));

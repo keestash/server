@@ -19,12 +19,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\App;
+namespace KSP\Core\Service\User\Repository;
 
-use KSP\App\IApp;
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\User\IUser;
 
-interface ILoaderService {
+interface IUserRepositoryService {
 
-    public function buildApp(array $info): IApp;
+    public function removeUser(IUser $user): array;
+
+    public function createSystemUser(IUser $user): bool;
+
+    public function createUser(IUser $user, ?IFile $file = null): IUser;
+
+    public function userExistsByName(string $name): bool;
+
+    public function updateUser(IUser $updatedUser, IUser $oldUser): bool;
 
 }

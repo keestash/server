@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
@@ -35,11 +36,10 @@ use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Share\Share;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES        => [
+    ConfigProvider::ROUTES => [
         [
             'path'         => '/password_manager/comment/add[/]'
             , 'middleware' => Add::class
@@ -185,7 +185,7 @@ return [
             , 'name'       => \KSA\PasswordManager\Api\Node\Folder\Create::class
         ],
     ],
-    IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
+    ConfigProvider::PUBLIC_ROUTES => [
         '/password_manager/node/get/avatar/:nodeId[/]'
         , '/password_manager/public_share/decrypt/:hash[/]'
         , '/password_manager/credential/get/:id[/]'

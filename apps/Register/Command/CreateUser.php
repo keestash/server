@@ -29,6 +29,7 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Register\Exception\CreateUserException;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,20 +43,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CreateUser extends KeestashCommand {
 
-    private IUserRepository      $userRepository;
-    private UserService          $userService;
-    private IUserStateRepository $userStateRepository;
+    private IUserRepository        $userRepository;
+    private UserService            $userService;
+    private IUserStateRepository   $userStateRepository;
+    private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         IUserRepository $userRepository
         , UserService $userService
         , IUserStateRepository $userStateRepository
+        , IUserRepositoryService $userRepositoryService
     ) {
-        parent::__construct(null);
+        parent::__construct();
 
-        $this->userRepository      = $userRepository;
-        $this->userService         = $userService;
-        $this->userStateRepository = $userStateRepository;
+        $this->userRepository        = $userRepository;
+        $this->userService           = $userService;
+        $this->userStateRepository   = $userStateRepository;
+        $this->userRepositoryService = $userRepositoryService;
     }
 
     protected function configure() {
@@ -118,7 +122,7 @@ class CreateUser extends KeestashCommand {
         }
 
         try {
-            $this->userService->createUser($user);
+            $this->userRepositoryService->createUser($user);
 
             if (true === $locked) {
                 $this->userStateRepository->lock($user);

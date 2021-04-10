@@ -26,7 +26,6 @@ namespace Keestash\Middleware;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\Instance\InstallerService;
-use KSP\App\IApp;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
@@ -85,8 +84,8 @@ class LoggedInMiddleware implements MiddlewareInterface {
         }
 
         $publicRoutes = $publicRoutes = $this->config
-            ->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)
-            ->get(IApp::CONFIG_PROVIDER_PUBLIC_ROUTES)
+            ->get(ConfigProvider::WEB_ROUTER)
+            ->get(ConfigProvider::PUBLIC_ROUTES)
             ->toArray();
 
         $currentPath = $this->getMatchedPath($request);
@@ -107,7 +106,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
         }
 
         $user = $this->userRepository->getUserById((string) $userId);
-
+        
         if (true === $persisted
             && null !== $user
         ) {

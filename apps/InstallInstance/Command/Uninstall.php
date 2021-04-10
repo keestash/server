@@ -21,9 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Command;
 
-use Keestash;
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
@@ -48,6 +47,8 @@ class Uninstall extends KeestashCommand {
         $this->removeInstanceDB($output);
         $output->writeln("unlinking scss files");
         $this->removeCss($output);
+        $output->writeln("unlinking js files");
+        $this->removeJs($output);
         $output->writeln("dropping tables");
         $this->dropTables($output);
         $output->writeln("clearing config file");
@@ -56,32 +57,48 @@ class Uninstall extends KeestashCommand {
     }
 
     private function removeCss(OutputInterface $output): bool {
-
-        $styleSheets = glob(
-            $this->config->get(Keestash\ConfigProvider::INSTANCE_PATH) . '/public/css'
+        $files        = glob(
+            $this->config->get(ConfigProvider::INSTANCE_PATH) . '/public/css/*'
+        );
+        $removedCount = $this->removeFiles(
+            $files
+            , $output
         );
 
-        if (false === $styleSheets) {
-            $this->writeError('no data found :(', $output);
-            return false;
-        }
+        return count($files) === $removedCount;
+    }
 
-        foreach ($styleSheets as $styleSheet) {
-            if (true === is_file($styleSheet)) {
-                $removed = @unlink($styleSheet);
+    private function removeJs(OutputInterface $output): bool {
+        $files        = glob(
+            $this->config->get(ConfigProvider::INSTANCE_PATH) . '/public/js/*'
+        );
+        $removedCount = $this->removeFiles(
+            $files
+            , $output
+        );
+
+        return count($files) === $removedCount;
+    }
+
+    private function removeFiles(array $files, OutputInterface $output): int {
+        $count = 0;
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                $removed = @unlink($file);
 
                 if (false === $removed) {
-                    $this->writeInfo('removed ' . $styleSheet, $output);
+                    $count++;
+                    $this->writeInfo('removed ' . $file, $output);
                 }
                 continue;
             }
-            $this->writeError($styleSheet . ' is not a file', $output);
+            $this->writeError($file . ' is not a file', $output);
         }
-        return true;
+        return $count;
     }
 
     private function removeInstanceDB(OutputInterface $output): bool {
-        $removed = @unlink(InstanceDB::getPath());
+        $removed = @unlink($this->config->get(ConfigProvider::INSTANCE_DB_PATH));
 
         if (true === $removed) {
             $this->writeInfo(
@@ -115,7 +132,7 @@ class Uninstall extends KeestashCommand {
 
     private function clearConfig(OutputInterface $output): bool {
         $overwritten = false !== file_put_contents(
-                $this->config->get(Keestash\ConfigProvider::CONFIG_PATH) . "/config.php"
+                $this->config->get(ConfigProvider::CONFIG_PATH) . "/config.php"
                 , ""
             );
 

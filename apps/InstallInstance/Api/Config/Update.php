@@ -25,7 +25,6 @@ use Exception;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Instance\InstallerService;
-use KSA\InstallInstance\Application\Application;
 use KSP\Api\IResponse;
 use Laminas\Config\Config;
 use PDO;
@@ -53,7 +52,7 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters   = json_decode((string)$request->getBody(), true);
+        $parameters   = json_decode((string) $request->getBody(), true);
         $host         = $parameters["host"] ?? null;
         $user         = $parameters["user"] ?? null;
         $password     = $parameters["password"] ?? null;
@@ -120,7 +119,7 @@ class Update implements RequestHandlerInterface {
             , 'db_name'         => $schemaName
             , 'db_port'         => $port
             , 'db_charset'      => $charSet
-            , 'log_requests'    => $logRequests === Application::LOG_REQUESTS_ENABLED ? true : false
+            , 'log_requests'    => $logRequests === ConfigProvider::LOG_REQUESTS_ENABLED ? true : false
             , "user_lifetime"   => Update::DEFAULT_USER_LIFETIME
             , "email_smtp_host" => $smtpHost
             , "email_user"      => $smtpUser
@@ -181,8 +180,8 @@ class Update implements RequestHandlerInterface {
     private function validLogRequestOption($val): bool {
         if (false === $this->isValid($val)) return false;
 
-        if ($val === Application::LOG_REQUESTS_ENABLED) return true;
-        if ($val === Application::LOG_REQUESTS_DISABLED) return true;
+        if ($val === \Keestash\ConfigProvider::LOG_REQUESTS_ENABLED) return true;
+        if ($val === \Keestash\ConfigProvider::LOG_REQUESTS_DISABLED) return true;
 
         return false;
     }

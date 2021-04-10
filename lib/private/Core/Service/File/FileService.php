@@ -29,6 +29,7 @@ use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\File\IFileService;
+use KSP\Core\Service\User\IUserService;
 use Laminas\Config\Config;
 
 class FileService implements IFileService {
@@ -41,13 +42,16 @@ class FileService implements IFileService {
     // TODO include default ?!
     private RawFileService $rawFileService;
     private Config         $config;
+    private IUserService   $userService;
 
     public function __construct(
         RawFileService $rawFileService
         , Config $config
+        , IUserService $userService
     ) {
         $this->rawFileService = $rawFileService;
         $this->config         = $config;
+        $this->userService    = $userService;
     }
 
     public function getProfileImagePath(?IUser $user): string {
@@ -84,9 +88,9 @@ class FileService implements IFileService {
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize(filesize($path));
-//        $file->setOwner(
-//            $this->userService->getSystemUser()
-//        );
+        $file->setOwner(
+            $this->userService->getSystemUser()
+        );
         return $file;
     }
 
@@ -123,9 +127,9 @@ class FileService implements IFileService {
         $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize(filesize($path));
-//        $file->setOwner(
-//            $this->userService->getSystemUser()
-//        );
+        $file->setOwner(
+            $this->userService->getSystemUser()
+        );
         return $file;
     }
 

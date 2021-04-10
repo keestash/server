@@ -20,13 +20,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider as ConfigProviderAlias;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Controller\Attachment\View;
 use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
-use KSP\App\IApp;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES                 => [
+    ConfigProviderAlias::ROUTES => [
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_VIEW
             , 'middleware' => View::class
@@ -43,11 +43,11 @@ return [
             , 'name'       => PublicShareController::class
         ],
     ],
-    IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+    ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::PASSWORD_MANAGER                       => 'password_manager'
         , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE => 'public_share'
     ],
-    IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+    ConfigProviderAlias::WEB_ROUTER_SCRIPTS => [
         ConfigProvider::PASSWORD_MANAGER                       => 'password_manager'
         , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE => 'public_share'
     ]

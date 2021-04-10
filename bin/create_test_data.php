@@ -33,6 +33,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 (function () {
 
@@ -51,6 +52,8 @@ use KSP\Core\DTO\User\IUser;
     $userRepository = $server->query(UserRepository::class);
     /** @var UserService $userService */
     $userService = $server->query(UserService::class);
+    /** @var IUserRepositoryService $userRepositoryService */
+    $userRepositoryService = $server->query(IUserRepositoryService::class);
     /** @var CredentialService $credentialService */
     $credentialService = $server->query(CredentialService::class);
 
@@ -73,7 +76,7 @@ use KSP\Core\DTO\User\IUser;
         $user->setDeleted(false);
         $user->setName("dogano");
 
-        $user = $userService->createUser($user);
+        $user = $userRepositoryService->createUser($user);
 
     }
 

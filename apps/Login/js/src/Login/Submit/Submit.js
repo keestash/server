@@ -17,13 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Request";
-import {STRING_LOADER, TEMPLATE_LOADER} from "../../../../../../lib/js/src/StartUp";
+import {RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
 
 export class Submit {
 
     constructor(
         router
-        , request
+        , axios
         , appStorage
         , routes
         , globalRoutes
@@ -33,7 +33,7 @@ export class Submit {
         , miniModal
     ) {
         this.router = router;
-        this.request = request;
+        this.axios = axios;
         this.appStorage = appStorage;
         this.routes = routes;
         this.globalRoutes = globalRoutes;
@@ -71,70 +71,63 @@ export class Submit {
                     , 'password': password.val().trim()
                 };
 
-                _this.request.post(
+                _this.axios.post(
                     _this.routes.getLoginSubmit()
                     , data
-                    , (html, status, xhr) => {
-                        let object = JSON.parse(html);
-                        let result_object = null;
+                )
+                    .then((response) => {
 
-                        if (RESPONSE_CODE_OK in object) {
-                            result_object = object[RESPONSE_CODE_OK];
-                            let routeTo = result_object['routeTo'];
-                            let token = xhr.getResponseHeader('api_token');
-                            let userHash = xhr.getResponseHeader('user_hash');
-                            let locale = result_object["settings"]["locale"];
-                            let language = result_object["settings"]["language"];
+                        if (RESPONSE_CODE_NOT_OK in response.data) {
+                            return []
+                        }
 
-                            _this.appStorage.storeAPICredentials(
-                                token
-                                , userHash
-                            );
+                        return {
+                            data: response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES]
+                            , headers: {
+                                api_token: response.headers.api_token
+                                , user_hash: response.headers.user_hash
+                            }
+                        };
+                    })
+                    .then((data) => {
 
-                            _this.appStorage.storeLocale(locale);
-                            _this.appStorage.storeLanguage(language);
-
+                        if (0 === data.length) {
+                            // _this.miniModal.show(
+                            //     'Error'
+                            //     , 'Ok'
+                            //     , 'Not Ok'
+                            //     , 'Error'
+                            // );
+                            alert("no data!");
+                            _this.appStorage.clearAPICredentials();
                             _this.buttonService.disable(
                                 signIn
-                                , false
+                                , true
                             );
-
-                            _this.loadProperties()
-                                .then(() => {
-                                    _this.router.routeTo(routeTo);
-                                })
-
                             return;
-                        } else if (RESPONSE_CODE_NOT_OK in object) {
-                            result_object = object[RESPONSE_CODE_NOT_OK];
-                            _this.miniModal.show(
-                                'Error'
-                                , 'Ok'
-                                , 'Not Ok'
-                                , result_object['message']
-                            );
-                            _this.appStorage.clearAPICredentials();
-                            _this.buttonService.disable(
-                                signIn
-                                , false
-                            );
                         }
 
-                        if (result_object === null) {
-                            _this.miniModal.show(
-                                'Error'
-                                , 'Ok'
-                                , 'Not Ok'
-                                , "There was an error. Please try again or contact our support"
-                            );
-                            _this.appStorage.clearAPICredentials();
-                        }
+                        _this.appStorage.storeAPICredentials(
+                            data.headers.api_token
+                            , data.headers.user_hash
+                        );
+
+                        console.log(data);
+                        console.log(data.settings);
+
+                        _this.appStorage.storeLocale(data.data.settings.locale);
+                        _this.appStorage.storeLanguage(data.data.settings.language);
+
                         _this.buttonService.disable(
                             signIn
-                            , true
+                            , false
                         );
-                    }
-                    , (html, status, xhr) => {
+
+                        _this.router.routeTo(data.data.routeTo);
+
+                    })
+                    .catch((data) => {
+                        console.log(data);
                         _this.miniModal.show(
                             'Error'
                             , 'Ok'
@@ -146,20 +139,10 @@ export class Submit {
                             signIn
                             , false
                         );
-                    }
-                );
+                    })
             });
 
 
-    }
-
-    async loadProperties() {
-        const diContainer = Keestash.Main.getContainer();
-        const templateLoader = diContainer.query(TEMPLATE_LOADER);
-        const stringLoader = diContainer.query(STRING_LOADER);
-
-        await templateLoader.load(true);
-        await stringLoader.load(true);
     }
 
 }

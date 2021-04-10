@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Controller\Route;
 
-use KSP\App\IApp;
+use Keestash\ConfigProvider;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Service\Controller\IAppRenderer;
 use Laminas\Config\Config;
@@ -50,8 +50,8 @@ class RouteList extends AppController {
             ->render(
                 "generalApi::route_list"
                 , [
-                    "httpRoutes"  => $this->config->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)->get(IApp::CONFIG_PROVIDER_ROUTES)->toArray()
-                    , "apiRoutes" => $this->config->get(IApp::CONFIG_PROVIDER_API_ROUTER)->get(IApp::CONFIG_PROVIDER_ROUTES)->toArray()
+                    "httpRoutes"  => $this->config->get(ConfigProvider::WEB_ROUTER)->get(ConfigProvider::ROUTES)->toArray()
+                    , "apiRoutes" => $this->config->get(ConfigProvider::API_ROUTER)->get(ConfigProvider::ROUTES)->toArray()
                 ]
             );
 

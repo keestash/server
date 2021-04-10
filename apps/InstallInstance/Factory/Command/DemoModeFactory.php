@@ -25,6 +25,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\User\UserService;
 use KSA\InstallInstance\Command\DemoMode;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -36,6 +37,7 @@ class DemoModeFactory {
             , $container->get(UserService::class)
             , $container->get(IUserRepository::class)
             , $container->get(Config::class)
+            , $container->get(IUserRepositoryService::class)
         );
     }
 

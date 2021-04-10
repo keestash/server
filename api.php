@@ -21,7 +21,6 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventDispatcher;
@@ -47,10 +46,10 @@ use Psr\Container\ContainerInterface;
 
     (require_once __DIR__ . '/config/config/pipeline.php')($app);
 
-    $router = $config->get(IApp::CONFIG_PROVIDER_API_ROUTER);
+    $router = $config->get(ConfigProvider::API_ROUTER);
 
     /** @var Config $route */
-    foreach ($router[IApp::CONFIG_PROVIDER_ROUTES] as $route) {
+    foreach ($router[ConfigProvider::ROUTES] as $route) {
         $method     = strtolower((string) $route->get('method'));
         $middleware = $route->get('middleware');
         $name       = $route->get('name');
@@ -78,6 +77,6 @@ use Psr\Container\ContainerInterface;
 
     /** @var IEventDispatcher $eventDispatcher */
     $eventDispatcher = $container->get(IEventDispatcher::class);
-    $eventDispatcher->register($config->get(IApp::CONFIG_PROVIDER_EVENTS)->toArray());
+    $eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
     $app->run();
 })();

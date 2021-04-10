@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Controller;
 
 use DateTime;
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
-use KSP\App\IApp;
 use KSP\Core\Controller\ContextLessAppController;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
@@ -85,11 +85,11 @@ class AppRenderer implements IAppRenderer {
 
     public function renderHead(ServerRequestInterface $request): string {
         $route       = $this->routerService->getMatchedPath($request);
-        $styleSheets = $this->config->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)
-            ->get(IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS)
+        $styleSheets = $this->config->get(ConfigProvider::WEB_ROUTER)
+            ->get(ConfigProvider::WEB_ROUTER_STYLESHEETS)
             ->toArray();
-        $scripts     = $this->config->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)
-            ->get(IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS)
+        $scripts     = $this->config->get(ConfigProvider::WEB_ROUTER)
+            ->get(ConfigProvider::WEB_ROUTER_SCRIPTS)
             ->toArray();
 
         return $this->templateRenderer
@@ -127,8 +127,8 @@ class AppRenderer implements IAppRenderer {
                     // TODO these are added only when not public route
                     , "vendorName"  => $this->legacy->getApplication()->get("name")
                     , "settings"    => $this->config
-                        ->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)
-                        ->get(IApp::CONFIG_PROVIDER_SETTINGS)
+                        ->get(ConfigProvider::WEB_ROUTER)
+                        ->get(ConfigProvider::SETTINGS)
                         ->toArray()
                     , "menu"        => $this->translator->translate("Menu")
                     , "baseURL"     => $this->httpService->getBaseURL()

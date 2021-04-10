@@ -22,8 +22,9 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Command\Stylesheet;
 
 use Keestash\Command\KeestashCommand;
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
-use KSP\App\IApp;
+use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,16 +37,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Compiler extends KeestashCommand {
 
     private StylesheetCompiler $stylesheetCompiler;
-    private string             $scssRoot;
+    private Config             $config;
 
     public function __construct(
         StylesheetCompiler $compiler
-        , string $scssRoot
+        , Config $config
     ) {
         parent::__construct("general-api:compile-scss");
 
         $this->stylesheetCompiler = $compiler;
-        $this->scssRoot           = $scssRoot;
+        $this->config             = $config;
     }
 
     protected function configure() {
@@ -54,8 +55,8 @@ class Compiler extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
+
         while (true) {
-            $this->compileCore();
             $this->compileApps();
             $this->writeInfo("compiled all", $output);
             sleep(5);
@@ -63,26 +64,20 @@ class Compiler extends KeestashCommand {
         return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
-    private function compileCore(): void {
-        $this->stylesheetCompiler->compile(
-            $this->scssRoot
-            , $this->scssRoot . "dist/style.css"
-        );
-    }
-
     private function compileApps(): void {
-        $apps = Keestash::getServer()
-            ->getStylesheetManager()
-            ->getApps();
 
-        foreach ($apps->keySet() as $key) {
+        $files = glob(
+            $this->config->get(ConfigProvider::INSTANCE_PATH) . '/apps/*/scss/*.scss'
+        );
 
-            /** @var IApp $app */
-            $app = $apps->get($key);
+        foreach ($files as $file) {
+
+            $pathInfo    = pathinfo($file);
+            $destination = realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/public/css/') . '/' . $pathInfo['filename'] . '.css';
 
             $this->stylesheetCompiler->compile(
-                $app->getAppPath() . "/scss/"
-                , $app->getAppPath() . "/scss/dist/style.css"
+                $file
+                , $destination
             );
 
         }

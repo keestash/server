@@ -46,7 +46,7 @@ export class PublicShare {
                         )
                         , {}
                         , (response) => {
-                            const object = JSON.parse(response);
+                            const object = (response);
                             const success = object[RESPONSE_CODE_OK];
 
                             passwordField.setValue(success['messages']['decrypted']);

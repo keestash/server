@@ -26,11 +26,11 @@ use doganoo\Backgrounder\Task\Task;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\User\Event\UserPreRemovedEvent;
 use Keestash\Core\Service\User\Event\UserRemovedEvent;
-use Keestash\Core\Service\User\UserService;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 /**
  * Class UserDeleteJob
@@ -38,14 +38,14 @@ use KSP\Core\Repository\User\IUserStateRepository;
  */
 class UserDeleteTask extends Task {
 
-    private UserService          $userService;
-    private ConfigService        $configService;
-    private IUserStateRepository $userStateRepository;
-    private ILogger              $logger;
-    private IEventManager        $eventManager;
+    private IUserRepositoryService $userService;
+    private ConfigService          $configService;
+    private IUserStateRepository   $userStateRepository;
+    private ILogger                $logger;
+    private IEventManager          $eventManager;
 
     public function __construct(
-        UserService $userService
+        IUserRepositoryService $userService
         , ConfigService $configService
         , IUserStateRepository $userStateRepository
         , ILogger $logger

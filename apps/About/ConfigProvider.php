@@ -21,36 +21,45 @@ declare(strict_types=1);
 
 namespace KSA\About;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\About\Controller\Controller;
 use KSA\About\Factory\Controller\ControllerFactory;
-use KSP\App\IApp;
 
 final class ConfigProvider {
 
-    public const ABOUT = '/about[/]';
+    public const ABOUT  = '/about[/]';
+    public const APP_ID = 'about';
 
     public function __invoke(): array {
         return [
-            'dependencies'                   => [
+            CoreConfigProvider::APP_LIST   => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 0,
+                    CoreConfigProvider::APP_NAME       => 'About',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ABOUT,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            'dependencies'                 => [
                 'factories' => [
                     Controller::class => ControllerFactory::class,
                 ]
             ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::WEB_ROUTER => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::ABOUT
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
                     ]
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::ABOUT => 'about'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::ABOUT => 'about'
                 ],
-                IApp::CONFIG_PROVIDER_SETTINGS               => [
+                CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::ABOUT => [
                         'name'      => 'about'
                         , 'faClass' => 'fas fa-info'
@@ -58,7 +67,7 @@ final class ConfigProvider {
                     ]
                 ],
             ],
-            'templates'                      => [
+            'templates'                    => [
                 'paths' => [
                     'about' => [__DIR__ . '/template'],
                 ],

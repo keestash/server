@@ -33,6 +33,7 @@ use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\L10N\IL10N;
+use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
 class LoginFactory {
@@ -50,6 +51,7 @@ class LoginFactory {
             , $container->get(ILanguageService::class)
             , $container->get(ILogger::class)
             , $container->get(ILoader::class)
+            , $container->get(RouterInterface::class)
         );
     }
 

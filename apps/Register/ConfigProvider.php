@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Register;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;
@@ -34,15 +35,23 @@ use KSA\Register\Factory\Api\MailExistsFactory;
 use KSA\Register\Factory\Command\CreateUserFactory;
 use KSA\Register\Factory\Controller\ControllerFactory;
 use KSA\Register\Factory\Event\Listener\EmailAfterRegistrationListenerFactory;
-use KSP\App\IApp;
 
 final class ConfigProvider {
 
     public const REGISTER = '/register[/]';
+    public const APP_ID   = 'register';
 
     public function __invoke(): array {
         return [
-            'dependencies'                   => [
+            CoreConfigProvider::APP_LIST   => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 9,
+                    CoreConfigProvider::APP_NAME       => 'About',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::REGISTER,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            'dependencies'                 => [
                 'factories' => [
                     Exists::class                 => ExistsFactory::class,
                     Add::class                    => AddFactory::class,
@@ -54,29 +63,29 @@ final class ConfigProvider {
                     Controller::class             => ControllerFactory::class,
                 ]
             ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::WEB_ROUTER => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::REGISTER
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                CoreConfigProvider::PUBLIC_ROUTES          => [
                     ConfigProvider::REGISTER
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::REGISTER => 'register'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::REGISTER => 'register'
                 ]
             ],
-            IApp::CONFIG_PROVIDER_API_ROUTER => [
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
+            CoreConfigProvider::API_ROUTER => [
+                CoreConfigProvider::PUBLIC_ROUTES => [
                     '/register/add[/]',
                 ],
-                IApp::CONFIG_PROVIDER_ROUTES        => [
+                CoreConfigProvider::ROUTES        => [
                     [
                         'path'       => '/register/add[/]',
                         'middleware' => Add::class,
@@ -97,13 +106,13 @@ final class ConfigProvider {
                     ],
                 ]
             ],
-            IApp::CONFIG_PROVIDER_EVENTS     => [
+            CoreConfigProvider::EVENTS     => [
                 UserCreatedEvent::class => EmailAfterRegistration::class
             ],
-            IApp::CONFIG_PROVIDER_COMMANDS   => [
+            CoreConfigProvider::COMMANDS   => [
                 CreateUser::class
             ],
-            'templates'                      => [
+            'templates'                    => [
                 'paths' => [
                     'register' => [__DIR__ . '/template']
                 ]

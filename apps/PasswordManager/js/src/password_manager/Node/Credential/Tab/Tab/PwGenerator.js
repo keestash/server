@@ -97,7 +97,7 @@ export class PwGenerator {
                             route
                             , {}
                             , (x, y, z) => {
-                                const object = JSON.parse(x);
+                                const object = (x);
 
                                 if (!(RESPONSE_CODE_OK in object)) {
                                     return;

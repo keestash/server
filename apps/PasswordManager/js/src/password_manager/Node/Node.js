@@ -23,6 +23,7 @@ import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Request";
 import "./ContextMenu/ContextMenu";
 import {ContextMenu} from "./ContextMenu/ContextMenu";
 import {AddToOrganization} from "./ContextMenu/Organization/AddToOrganization";
+import glob from "glob";
 
 export const NODE_TYPE_CREDENTIAL = "credential";
 export const NODE_TYPE_FOLDER = "folder";
@@ -78,7 +79,7 @@ export class Node {
         return Util.isSet(id) ? id : NODE_ID_ROOT;
     }
 
-    loadDetails(id = NODE_ID_ROOT) {
+    async loadDetails(id = NODE_ID_ROOT) {
         const _this = this;
         let rootId = _this.determineNodeType(id);
         _this.tableBody.html("");
@@ -89,59 +90,53 @@ export class Node {
             , rootId
         );
 
-        Keestash.Main.readAssets(true)
-            .then(
-                (assets) => {
+        const templates = await glob.sync(__dirname + '/../../../../template/frontend/*.twig')
+        const strings = require(__dirname + '/../../../../string/frontend/strings.json').password_manager;
 
-                    const templates = assets[0];
-                    const strings = JSON.parse(assets[1].password_manager);
+        _this.credentialListener.parseNotClickedNode(
+            templates
+            , strings
+        );
 
-                    _this.credentialListener.parseNotClickedNode(
-                        templates
+        _this.request.get(
+            _this.routes.getNode(rootId)
+            , {}
+            , (x, y, z) => {
+                const object = (x);
+
+                if (RESPONSE_CODE_OK in object) {
+                    const node = object[RESPONSE_CODE_OK]['messages']['node'];
+                    const breadCrumb = object[RESPONSE_CODE_OK]['messages']['breadCrumb'];
+
+                    _this.breadCrumbService.parse(
+                        breadCrumb
+                        , (id) => {
+                            _this.loadDetails(id);
+                        }
+                    );
+
+                    _this.parseTemplate(
+                        node
+                        , id
+                        , templates
                         , strings
                     );
 
-                    _this.request.get(
-                        _this.routes.getNode(rootId)
-                        , {}
-                        , (x, y, z) => {
-                            const object = JSON.parse(x);
-
-                            if (RESPONSE_CODE_OK in object) {
-                                const node = object[RESPONSE_CODE_OK]['messages']['node'];
-                                const breadCrumb = object[RESPONSE_CODE_OK]['messages']['breadCrumb'];
-
-                                _this.breadCrumbService.parse(
-                                    breadCrumb
-                                    , (id) => {
-                                        _this.loadDetails(id);
-                                    }
-                                );
-
-                                _this.parseTemplate(
-                                    node
-                                    , id
-                                    , templates
-                                    , strings
-                                );
-
-                                _this.spinner.removeClass("d-flex");
-                                _this.spinner.addClass("d-none");
-
-                            }
-
-                        }
-                        , (x, y, z) => {
-                            console.log(x)
-                        }
-                        , () => {
-                            _this.spinner.addClass("d-flex");
-                            _this.spinner.removeClass("d-none");
-                        }
-                    );
+                    _this.spinner.removeClass("d-flex");
+                    _this.spinner.addClass("d-none");
 
                 }
-            )
+
+            }
+            , (x, y, z) => {
+                console.log(x)
+            }
+            , () => {
+                _this.spinner.addClass("d-flex");
+                _this.spinner.removeClass("d-none");
+            }
+        );
+
 
     }
 

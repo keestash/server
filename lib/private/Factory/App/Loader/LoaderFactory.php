@@ -23,12 +23,17 @@ namespace Keestash\Factory\App\Loader;
 
 use Keestash\App\Loader\Loader;
 use KSP\App\ILoader;
+use KSP\Core\Service\App\IAppService;
+use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class LoaderFactory {
 
     public function __invoke(ContainerInterface $container): ILoader {
-        return new Loader();
+        return new Loader(
+            $container->get(Config::class)
+            , $container->get(IAppService::class)
+        );
     }
 
 }

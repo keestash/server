@@ -45,19 +45,23 @@ class InstanceRepository extends AbstractRepository {
             return true;
         }
 
-        $queries   = [];
-        $queries[] = "SET FOREIGN_KEY_CHECKS = 0";
-        foreach ($this->getTables() as $table) {
-            $this->logger->debug($table);
-            $queries[] = "DROP TABLE IF EXISTS `$table`;";
+
+        $tables = $this->getTables();
+        if (0 === count($tables)) {
+            return true;
         }
-        $queries[] = "SET FOREIGN_KEY_CHECKS = 1";
+
+        $queries   = [];
+        $this->rawQuery("SET FOREIGN_KEY_CHECKS = 0");
+        foreach ($tables as $table) {
+            $this->logger->debug($table);
+            $this->rawQuery("DROP TABLE IF EXISTS `$table`;");
+        }
+        $this->rawQuery("SET FOREIGN_KEY_CHECKS = 1");
 
         $this->logger->debug(implode(";", $queries));
-        return $this->rawQuery(implode(";", $queries))
-                ->rowCount() > 0;
+        return true;
     }
-
 
     public function rawQuery(string $query) {
         return parent::rawQuery($query);

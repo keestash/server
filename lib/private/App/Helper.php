@@ -43,7 +43,7 @@ class Helper {
     public static function getDefaultRoute(ILoader $loader): string {
         $defaultApp = $loader->getDefaultApp();
         $route      = (null === $defaultApp) ? "login" : $defaultApp->getBaseRoute();
-        return "/$route";
+        return "$route";
     }
 
     private function __clone() {

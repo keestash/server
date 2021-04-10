@@ -47,16 +47,17 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $hasAppNavigation =
-            (static::class === AppController::class)
-            && $this->navigationList->length() > 0;
-        $static = $this instanceof StaticAppController
-        || $this instanceof  ContextLessAppController;
+        // it is important to run "run" at the very beginning
+        // in order to get the navigation list and maybe
+        // other stuff in the future
+        $static = $this instanceof StaticAppController ||$this instanceof ContextLessAppController;
+        $content          = $this->run($request);
+        $hasAppNavigation = $this->navigationList->length() > 0;
         return new HtmlResponse(
             $this->appRenderer->render(
                 $request
                 , $hasAppNavigation
-                , $this->run($request)
+                , $content
                 , $static
                 , $this->navigationList
             )

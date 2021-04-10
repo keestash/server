@@ -23,98 +23,23 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
-use Keestash\Core\Repository\Instance\InstanceRepository;
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use Keestash\Core\Service\Encryption\Key\KeyService;
-use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\User\Event\UserCreatedEvent;
-use Keestash\Core\Service\User\Event\UserUpdatedEvent;
-use Keestash\Exception\KeyNotCreatedException;
-use Keestash\Exception\UserNotCreatedException;
-use Keestash\Exception\UserNotDeletedException;
-use Keestash\Exception\UserNotLockedException;
 use Keestash\Legacy\Legacy;
-use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
-use KSP\Core\Repository\ApiLog\IApiLogRepository;
-use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\IUserService;
 
 class UserService implements IUserService {
 
-    /** @var int */
-    public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
-
-    private IApiLogRepository    $apiLogRepository;
-    private IFileRepository      $fileRepository;
-    private IUserKeyRepository   $keyRepository;
-    private IUserRepository      $userRepository;
-    private KeyService           $keyService;
-    private Legacy               $legacy;
-    private IUserStateRepository $userStateRepository;
-    private FileService          $fileService;
-    private InstanceRepository   $instanceRepository;
-    private CredentialService    $credentialService;
-    private IDateTimeService     $dateTimeService;
-    private ILogger              $logger;
-    private IEventManager        $eventManager;
+    private Legacy           $legacy;
+    private IDateTimeService $dateTimeService;
 
     public function __construct(
-        IApiLogRepository $apiLogRepository
-        , IFileRepository $fileRepository
-        , IUserKeyRepository $keyRepository
-        , IUserRepository $userRepository
-        , KeyService $keyService
-        , Legacy $legacy
-        , IUserStateRepository $userStateRepository
-        , FileService $fileService
-        , InstanceRepository $instanceRepository
-        , CredentialService $credentialService
+        Legacy $legacy
         , IDateTimeService $dateTimeService
-        , ILogger $logger
-        , IEventManager $eventManager
     ) {
-        $this->apiLogRepository    = $apiLogRepository;
-        $this->fileRepository      = $fileRepository;
-        $this->keyRepository       = $keyRepository;
-        $this->userRepository      = $userRepository;
-        $this->keyService          = $keyService;
-        $this->legacy              = $legacy;
-        $this->userStateRepository = $userStateRepository;
-        $this->fileService         = $fileService;
-        $this->instanceRepository  = $instanceRepository;
-        $this->credentialService   = $credentialService;
-        $this->dateTimeService     = $dateTimeService;
-        $this->logger              = $logger;
-        $this->eventManager        = $eventManager;
-    }
-
-    public function removeUser(IUser $user): array {
-
-        $logsRemoved  = $this->apiLogRepository->removeForUser($user);
-        $filesRemoved = $this->fileRepository->removeForUser($user);
-        $keysRemoved  = $this->keyRepository->remove($user);
-        $userRemoved  = $this->userRepository->remove($user);
-
-        return [
-            "logs_removed"    => $logsRemoved
-            , "files_removed" => $filesRemoved
-            , "keys_removed"  => $keysRemoved
-            , "user_removed"  => $user
-            , "success"       =>
-                true === $logsRemoved
-                && true === $filesRemoved
-                && true === $keysRemoved
-                && true === $userRemoved
-        ];
+        $this->legacy          = $legacy;
+        $this->dateTimeService = $dateTimeService;
     }
 
     public function validatePassword(string $password, string $hash): bool {
@@ -124,7 +49,7 @@ class UserService implements IUserService {
     public function passwordHasMinimumRequirements(string $password): bool {
         $passwordLength = strlen($password);
 
-        if (true === $passwordLength < UserService::MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD) return false;
+        if (true === $passwordLength < IUserService::MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD) return false;
 
         // minimum 1 number
         if (strlen(preg_replace('/([^0-9]*)/', '', $password)) < 1) return false;
@@ -240,101 +165,8 @@ class UserService implements IUserService {
         return $user;
     }
 
-    /**
-     * @param IUser|User $user
-     *
-     * @return bool
-     */
-    public function createSystemUser(IUser $user): bool {
-        $user->setLocked(true);
-        $file = $this->fileService->getDefaultImage();
-        $file->setOwner($user);
-        try {
-            $this->createUser($user, $file);
-            return true;
-        } catch (Exception $exception) {
-            $this->logger->error(json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
-            return false;
-        }
-    }
-
-    /**
-     * @param IUser      $user
-     * @param IFile|null $file
-     *
-     * @return IUser
-     * @throws KeyNotCreatedException
-     * @throws UserNotCreatedException
-     * @throws UserNotLockedException
-     * @throws UserNotDeletedException
-     */
-    public function createUser(IUser $user, ?IFile $file = null): IUser {
-
-        $userId = $this->userRepository->insert($user);
-
-        if (null === $userId) {
-            throw new UserNotCreatedException();
-        }
-
-        $user->setId($userId);
-
-        $this->eventManager->execute(new UserCreatedEvent($user));
-
-        if (false === $user->isLocked()) return $user;
-
-        $locked = $this->userStateRepository->lock($user);
-
-        if (false === $locked) {
-            throw new UserNotLockedException();
-        }
-
-        if (false === $user->isDeleted()) return $user;
-
-        $deleted = $this->userStateRepository->delete($user);
-
-        if (false === $deleted) {
-            throw new UserNotDeletedException();
-        }
-
-        if (null === $file) return $user;
-
-        $this->fileRepository->add($file);
-
-        return $user;
-    }
-
     public function isDisabled(?IUser $user): bool {
         return null === $user || true === $user->isLocked();
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function userExistsByName(string $name): bool {
-        $users = $this->userRepository->getAll();
-
-        /** @var IUser $user */
-        foreach ($users as $user) {
-            if ($user->getName() === $name) return true;
-        }
-
-        return false;
-    }
-
-    public function updateUser(IUser $updatedUser, IUser $oldUser): bool {
-        $updated = $this->userRepository->update($updatedUser);
-
-        $this->eventManager->execute(
-            new UserUpdatedEvent(
-                $updatedUser
-                , $oldUser
-                , $updated
-            )
-        );
-
-        return $updated;
     }
 
 }

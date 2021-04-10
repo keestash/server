@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\Router\Verification;
-use KSP\App\IApp;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Laminas\Config\Config;
@@ -65,15 +65,15 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
     private function getPublicRoutes(): array {
         if (true === $this->environmentService->isWeb()) {
             return $publicRoutes = $this->config
-                ->get(IApp::CONFIG_PROVIDER_WEB_ROUTER)
-                ->get(IApp::CONFIG_PROVIDER_PUBLIC_ROUTES)
+                ->get(ConfigProvider::WEB_ROUTER)
+                ->get(ConfigProvider::PUBLIC_ROUTES)
                 ->toArray();
         }
 
         if (true === $this->environmentService->isApi()) {
             return $publicRoutes = $this->config
-                ->get(IApp::CONFIG_PROVIDER_API_ROUTER)
-                ->get(IApp::CONFIG_PROVIDER_PUBLIC_ROUTES)
+                ->get(ConfigProvider::API_ROUTER)
+                ->get(ConfigProvider::PUBLIC_ROUTES)
                 ->toArray();
         }
         return [];

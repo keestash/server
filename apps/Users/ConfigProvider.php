@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Users;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use KSA\Users\Api\File\ProfilePicture;
 use KSA\Users\Api\User\GetAll;
@@ -40,12 +41,12 @@ use KSA\Users\Factory\Api\User\UserRemoveFactory;
 use KSA\Users\Factory\BackgroundJob\UserDeleteTaskFactory;
 use KSA\Users\Factory\Controller\UsersControllerFactory;
 use KSA\Users\Factory\Event\Listener\PostStateChangeFactory;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
-    public const USERS = "/users[/]";
+    public const USERS  = "/users[/]";
+    public const APP_ID = 'users';
 
     // TODO register background jobs
     //"background_jobs": {
@@ -57,7 +58,15 @@ final class ConfigProvider {
 
     public function __invoke(): array {
         return [
-            'dependencies'                   => [
+            CoreConfigProvider::APP_LIST   => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 12,
+                    CoreConfigProvider::APP_NAME       => 'About',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::USERS,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            'dependencies'                 => [
                 'factories' => [
                     // api
                     ProfilePicture::class  => ProfilePictureFactory::class,
@@ -77,8 +86,8 @@ final class ConfigProvider {
                     UsersController::class => UsersControllerFactory::class
                 ]
             ],
-            IApp::CONFIG_PROVIDER_API_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES => [
+            CoreConfigProvider::API_ROUTER => [
+                CoreConfigProvider::ROUTES => [
                     [
                         'path'       => '/users/add[/]',
                         'middleware' => UserAdd::class,
@@ -117,21 +126,21 @@ final class ConfigProvider {
                     ],
                 ]
             ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::WEB_ROUTER => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::USERS
                         , 'middleware' => UsersController::class
                         , 'name'       => UsersController::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::USERS => 'users'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::USERS => 'users'
                 ],
-                IApp::CONFIG_PROVIDER_SETTINGS               => [
+                CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::USERS => [
                         'name'      => 'users'
                         , 'faClass' => 'fas fa-user-circle'
@@ -139,10 +148,10 @@ final class ConfigProvider {
                     ]
                 ]
             ],
-            IApp::CONFIG_PROVIDER_EVENTS     => [
+            CoreConfigProvider::EVENTS     => [
                 UserStateDeleteEvent::class => PostStateChange::class
             ],
-            'templates'                      => [
+            'templates'                    => [
                 'paths' => [
                     'users' => [__DIR__ . '/template']
                 ]

@@ -50,7 +50,6 @@ class CreateCredential extends KeestashCommand {
         parent::__construct();
 
         $this->userRepository    = $userRepository;
-        $this->validationService = $validationService;
         $this->credentialService = $credentialService;
         $this->nodeRepository    = $nodeRepository;
     }

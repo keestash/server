@@ -52,7 +52,9 @@ class AbstractRepository implements IRepository {
     }
 
     protected function rawQuery(string $query) {
-        return $this->backend->getConnection()->executeQuery($query);
+        return $this->backend->getConnection()
+            ->prepare($query)
+            ->execute();
     }
 
     protected function getSchemaName(): string {

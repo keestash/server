@@ -20,13 +20,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider as ConfigProviderAlias;
 use KSA\GeneralApi\ConfigProvider;
 use KSA\GeneralApi\Controller\Organization\Detail;
 use KSA\GeneralApi\Controller\Route\RouteList;
-use KSP\App\IApp;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES                 => [
+    ConfigProviderAlias::ROUTES => [
         [
             'path'         => ConfigProvider::ROUTE_LIST_ALL
             , 'middleware' => RouteList::class
@@ -38,10 +38,10 @@ return [
             , 'name'       => Detail::class
         ],
     ],
-    IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+    ConfigProviderAlias::WEB_ROUTER_SCRIPTS => [
         ConfigProvider::ORGANIZATION_SINGLE => 'organization_detail'
     ],
-    IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+    ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::ROUTE_LIST_ALL        => 'route_list'
         , ConfigProvider::ORGANIZATION_SINGLE => 'detail'
     ],

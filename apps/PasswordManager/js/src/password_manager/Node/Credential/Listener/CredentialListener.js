@@ -65,7 +65,7 @@ export class CredentialListener {
                 const templates = assets[0];
                 const strings = assets[1];
 
-                let passwordManager = JSON.parse(strings["password_manager"]);
+                let passwordManager = strings["password_manager"];
 
                 _this.listenElementClick(
                     element
@@ -97,7 +97,7 @@ export class CredentialListener {
                     _this.routes.getNode(id)
                     , {}
                     , (x, y, z) => {
-                        let object = JSON.parse(x);
+                        let object = x;
                         const node = object[RESPONSE_CODE_OK]['messages']['node'];
 
                         _this.onTemplateLoad(

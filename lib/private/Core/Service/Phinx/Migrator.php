@@ -31,7 +31,6 @@ use Phinx\Wrapper\TextWrapper;
 
 class Migrator {
 
-    private string         $phinxRoot;
     private ILogger        $logger;
     private Config         $config;
     private IConfigService $configService;
@@ -43,12 +42,11 @@ class Migrator {
     ) {
         $this->logger        = $logger;
         $this->config        = $config;
-        $this->phinxRoot     = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
         $this->configService = $configService;
     }
 
-    public function runCore() {
-        $file   = $this->phinxRoot . "/instance.php";
+    public function runCore(): bool {
+        $file   = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH) . "/instance.php";
         $exists = $this->checkFile($file);
         if (false === $exists) {
             $this->logger->debug("file $file does not exist");
@@ -57,8 +55,8 @@ class Migrator {
         return $this->run($file);
     }
 
-    public function runApps() {
-        $file   = $this->phinxRoot . "/apps.php";
+    public function runApps(): bool {
+        $file   = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH) . "/apps.php";
         $exists = $this->checkFile($file);
         if (false === $exists) {
             return false;
@@ -89,6 +87,10 @@ class Migrator {
         $log = $phinxTextWrapper->getMigrate();
 
         $this->logger->debug($log);
+        $this->logger->debug($phinxTextWrapper->getExitCode());
+        $this->logger->debug(
+            $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE
+        );
 
         return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;
     }

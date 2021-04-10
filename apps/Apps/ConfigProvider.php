@@ -21,20 +21,29 @@ declare(strict_types=1);
 
 namespace KSA\Apps;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Apps\Api\UpdateApp;
 use KSA\Apps\Controller\Controller;
 use KSA\Apps\Factory\Api\UpdateAppFactory;
 use KSA\Apps\Factory\Controller\ControllerFactory;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
     public const ROUTE_NAME_APPS = '/apps[/]';
+    public const APP_ID          = 'apps';
 
     public function __invoke(): array {
         return [
-            'dependencies'                   => [
+            CoreConfigProvider::APP_LIST   => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 1,
+                    CoreConfigProvider::APP_NAME       => 'Apps',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ROUTE_NAME_APPS,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            'dependencies'                 => [
                 'factories' => [
                     // api
                     UpdateApp::class  => UpdateAppFactory::class,
@@ -43,21 +52,21 @@ final class ConfigProvider {
                     Controller::class => ControllerFactory::class,
                 ]
             ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::WEB_ROUTER => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::ROUTE_NAME_APPS
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
                     ]
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::ROUTE_NAME_APPS => 'apps'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::ROUTE_NAME_APPS => 'apps'
                 ],
-                IApp::CONFIG_PROVIDER_SETTINGS               => [
+                CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::ROUTE_NAME_APPS => [
                         'name'      => 'apps'
                         , 'faClass' => "fas fa-user-circle"
@@ -65,8 +74,8 @@ final class ConfigProvider {
                     ]
                 ]
             ],
-            IApp::CONFIG_PROVIDER_API_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES => [
+            CoreConfigProvider::API_ROUTER => [
+                CoreConfigProvider::ROUTES => [
                     [
                         'path'         => '/apps/update[/]'
                         , 'middleware' => UpdateApp::class
@@ -75,7 +84,7 @@ final class ConfigProvider {
                     ]
                 ]
             ],
-            'templates'                      => [
+            'templates'                    => [
                 'paths' => [
                     'apps' => [__DIR__ . '/template']
                 ]
