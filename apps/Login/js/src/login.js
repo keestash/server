@@ -48,7 +48,7 @@ import {Login} from "./Login/Login";
 
             const submit = new Submit(
                 diContainer.query(ROUTER)
-                , diContainer.query(REQUEST)
+                , diContainer.query(AXIOS)
                 , diContainer.query(APP_STORAGE)
                 , routes
                 , diContainer.query(GLOBAL_ROUTES)

@@ -36,10 +36,32 @@ final class ConfigProvider {
     public const ENVIRONMENT_WEB         = 'web.environment';
     public const ENVIRONMENT_CONSOLE     = 'console.environment';
     public const INSTALL_INSTANCE_ROUTE  = 'install_instance';
-    public const INSTALL_APPS_ROUTE      = 'install_apps';
     public const INSTALL_LOGIN_ROUTE     = 'login';
     public const INSTALL_INSTANCE_ROUTES = 'routes.instance.install';
     public const INSTALL_APPS_ROUTES     = 'routes.instance.install';
+    public const ROUTES                  = 'routes';
+    public const COMMANDS                = 'commands';
+    public const SETTINGS                = 'settings';
+    public const PUBLIC_ROUTES           = 'routes.public';
+    public const WEB_ROUTER_STYLESHEETS  = 'stylesheets.router.web';
+    public const EVENTS                  = 'events';
+    public const WEB_ROUTER_SCRIPTS      = 'scripts.router.web';
+    public const WEB_ROUTER              = 'router.web';
+    public const API_ROUTER              = 'router.api';
+    public const DEPENDENCIES            = 'dependencies';
+    public const FACTORIES               = 'factories';
+    public const TEMPLATES               = 'templates';
+    public const PATHS                   = 'paths';
+
+    public const APP_LIST       = 'list.app';
+    public const APP_ID         = 'id.app';
+    public const APP_ORDER      = 'order.app';
+    public const APP_NAME       = 'name.app';
+    public const APP_BASE_ROUTE = 'route.base.app';
+    public const APP_VERSION    = 'version.app';
+
+    public const LOG_REQUESTS_ENABLED  = "enabled";
+    public const LOG_REQUESTS_DISABLED = "disabled";
 
     public function __invoke(): array {
         return require __DIR__ . '/../config/config.php';

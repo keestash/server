@@ -43,7 +43,7 @@ export class ForgotPassword {
                     _this.routes.getForgotPasswordSubmit()
                     , values
                     , (response, status, xhr) => {
-                        const object = JSON.parse(response);
+                        const object = response;
                         let result = null;
 
                         if (RESPONSE_CODE_OK in object) {

@@ -24,8 +24,11 @@ namespace Keestash\App\Loader;
 use doganoo\PHPAlgorithms\Datastructure\Cache\LRUCache;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
+use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\App\IApp;
 use KSP\App\ILoader;
+use KSP\Core\Service\App\IAppService;
+use Laminas\Config\Config;
 
 /**
  * Class Loader
@@ -33,27 +36,66 @@ use KSP\App\ILoader;
  */
 class Loader implements ILoader {
 
-    private HashTable $apps;
-    private LRUCache  $lruAppCache;
+    private HashTable   $apps;
+    private LRUCache    $lruAppCache;
+    private Config      $config;
+    private IAppService $appService;
 
-    public function __construct() {
+    public function __construct(
+        Config $config
+        , IAppService $appService
+    ) {
         $this->apps        = new HashTable();
         $this->lruAppCache = new LRUCache();
+        $this->config      = $config;
+        $this->appService  = $appService;
     }
 
     public function getApps(): HashTable {
+        $this->loadApps();
         return $this->apps;
     }
 
+    private function loadApps(bool $force = false): void {
+        if (0 === $this->apps->size() || true === $force) {
+            $appList = $this->config->get(Keestash\ConfigProvider::APP_LIST)
+                ->toArray();
+
+            foreach ($appList as $id => $app) {
+                $app = $this->appService->toApp((string) $id, (array) $app);
+                $this->overrideDefaultApp($app);
+                $this->apps->put($app->getId(), $app);
+            }
+        }
+    }
+
+    private function overrideDefaultApp(IApp $app): void {
+        $currentAppKey = $this->lruAppCache->last();
+        /** @var IApp|null $currentApp */
+        $currentApp = $this->lruAppCache->get($currentAppKey);
+
+        if (null === $currentApp) {
+            $this->lruAppCache->put($app->getId(), $app);
+            return;
+        }
+
+        if ($app->getOrder() === $currentApp->getOrder() && $app->getId() !== $currentApp->getId()) {
+            throw new DuplicatedSameOrderException("there are two apps with the same order ({$app->getName()} and {$currentApp->getName()})");
+        }
+        if ($app->getOrder() < $currentApp->getOrder()) {
+            $this->lruAppCache->put($app->getId(), $app);
+        }
+    }
 
     public function getDefaultApp(): ?IApp {
+        $this->loadApps();
         return $this->lruAppCache->get(
             $this->lruAppCache->last()
         );
     }
 
     public function hasApp(string $name): bool {
-        if (null === $this->apps) return false;
+        $this->loadApps();
         return $this->apps->containsKey($name);
     }
 

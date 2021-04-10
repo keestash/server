@@ -21,37 +21,46 @@ declare(strict_types=1);
 
 namespace KSA\TNC;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\TNC\Controller\Controller;
 use KSA\TNC\Factory\Controller\ControllerFactory;
-use KSP\App\IApp;
 
 final class ConfigProvider {
 
     public const TERMS_AND_CONDITIONS = "/tnc[/]";
+    public const APP_ID               = 'tnc';
 
     public function __invoke(): array {
         return [
-            'dependencies'                   => [
+            CoreConfigProvider::APP_LIST   => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 11,
+                    CoreConfigProvider::APP_NAME       => 'About',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::TERMS_AND_CONDITIONS,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            'dependencies'                 => [
                 'factories' => [
                     Controller::class => ControllerFactory::class
                 ]
             ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::WEB_ROUTER => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::TERMS_AND_CONDITIONS
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                CoreConfigProvider::PUBLIC_ROUTES          => [
                     ConfigProvider::TERMS_AND_CONDITIONS
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::TERMS_AND_CONDITIONS => 'tnc'
                 ],
             ],
-            'templates'                      => [
+            'templates'                    => [
                 'paths' => [
                     'tnc' => [__DIR__ . '/template']
                 ]

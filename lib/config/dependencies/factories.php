@@ -44,6 +44,7 @@ use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
+use Keestash\Core\Service\App\AppService;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
@@ -64,6 +65,8 @@ use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Stylesheet\Compiler;
+use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Factory\App\Config\DiffFactory;
@@ -105,6 +108,8 @@ use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
+use Keestash\Factory\Core\Service\Stylesheet\CompilerFactory;
+use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
@@ -124,6 +129,7 @@ use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Middleware\KeestashHeaderMiddleware;
 use Keestash\Middleware\LoggedInMiddleware;
 use Keestash\Middleware\SessionHandlerMiddleware;
+use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
@@ -187,4 +193,8 @@ return [
     AppRenderer::class                                             => AppRendererFactory::class,
     SettingManager::class                                          => InvokableFactory::class,
     Diff::class                                                    => DiffFactory::class,
+    AppService::class                                              => InvokableFactory::class,
+    Compiler::class                                                => CompilerFactory::class,
+    EdgeService::class                                             => InvokableFactory::class,
+    UserRepositoryService::class                                   => UserRepositoryServiceFactory::class
 ];

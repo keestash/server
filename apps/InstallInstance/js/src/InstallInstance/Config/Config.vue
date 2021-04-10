@@ -294,7 +294,7 @@ export default {
 
       const assetReader = this.container.query(ASSET_READER);
       const assets = await assetReader.read(true);
-      const strings = JSON.parse(assets[1].install_instance).strings;
+      const strings = (assets[1].install_instance).strings;
 
       this.head.value = strings.config.header;
 

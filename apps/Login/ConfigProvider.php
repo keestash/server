@@ -23,8 +23,10 @@ namespace KSA\Login;
 
 final class ConfigProvider {
 
-    public const LOGIN  = '/login[/]';
-    public const LOGOUT = '/logout[/]';
+    public const LOGIN        = '/login[/]';
+    public const LOGIN_SUBMIT = '/login/submit[/]';
+    public const LOGOUT       = '/logout[/]';
+    public const APP_ID       = 'login';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

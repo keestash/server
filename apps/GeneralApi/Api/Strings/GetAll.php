@@ -22,43 +22,25 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Strings;
 
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Manager\StringManager\FrontendManager;
 use KSP\Api\IResponse;
 use KSP\Core\Cache\ICacheService;
-use KSP\Core\Manager\StringManager\IStringManager;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class GetAll implements RequestHandlerInterface {
 
-    private IStringManager $stringManager;
-    private ICacheService  $cacheServer;
+    private ICacheService $cacheServer;
 
-    public function __construct(
-        FrontendManager $frontendManager
-        , ICacheService $cacheServer
-    ) {
-        $this->stringManager = $frontendManager;
-        $this->cacheServer   = $cacheServer;
-    }
-
-    private function getCachedStrings(string $key): array {
-
-        if (true === $this->cacheServer->exists($key)) {
-            return json_decode($this->cacheServer->get($key), true);
-        }
-        $data = $this->stringManager->load();
-        $this->cacheServer->set($key, json_encode($data));
-        return $data;
+    public function __construct(ICacheService $cacheServer) {
+        $this->cacheServer = $cacheServer;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $redisKey = "frontendmanagertemplates";
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "data" => $this->getCachedStrings($redisKey)
+                "data" => []
             ]
         );
     }

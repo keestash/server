@@ -17,43 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 const glob = require("glob");
-const webpack = require("webpack");
-const { VueLoaderPlugin } = require("vue-loader");
 
 module.exports = {
     entry: {
         install_instance: glob.sync(__dirname + "/src/install_instance.js")
-    },
-    module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                exclude: /node_modules/,
-                loader: ['vue-loader']
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
-        ]
-    },
-    resolve: {
-        alias: {
-            'vue$':'vue/dist/vue.esm.js'
-        },
-        extensions: ['.js', '.vue']
-    },
-    plugins: [
-        new VueLoaderPlugin(),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
-    ]
+    }
 };

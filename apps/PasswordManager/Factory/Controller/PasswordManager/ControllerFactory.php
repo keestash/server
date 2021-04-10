@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Controller\PasswordManager;
 
 use KSA\PasswordManager\Controller\PasswordManager\Controller;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
@@ -34,7 +33,6 @@ class ControllerFactory {
         return new Controller(
             $container->get(TemplateRendererInterface::class)
             , $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
             , $container->get(IAppRenderer::class)
         );
     }

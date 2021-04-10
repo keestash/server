@@ -20,27 +20,35 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
-use KSP\App\IApp;
 
 return [
-    'dependencies'                   => require __DIR__ . '/dependencies.php',
-    IApp::CONFIG_PROVIDER_API_ROUTER => require __DIR__ . '/api_router.php',
-    IApp::CONFIG_PROVIDER_WEB_ROUTER => require __DIR__ . '/web_router.php',
-    IApp::CONFIG_PROVIDER_EVENTS     => [
+    'dependencies'             => require __DIR__ . '/dependencies.php',
+    ConfigProvider::API_ROUTER => require __DIR__ . '/api_router.php',
+    ConfigProvider::WEB_ROUTER => require __DIR__ . '/web_router.php',
+    ConfigProvider::APP_LIST   => [
+        \KSA\PasswordManager\ConfigProvider::APP_ID => [
+            ConfigProvider::APP_ORDER      => 8,
+            ConfigProvider::APP_NAME       => 'Password Manager',
+            ConfigProvider::APP_BASE_ROUTE => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER,
+            ConfigProvider::APP_VERSION    => 1,
+        ],
+    ],
+    ConfigProvider::EVENTS     => [
         UserCreatedEvent::class   => AfterRegistration::class
         , UserUpdatedEvent::class => AfterPasswordChanged::class
     ],
-    IApp::CONFIG_PROVIDER_COMMANDS   => [
+    ConfigProvider::COMMANDS   => [
         CreateFolder::class
         , CreateCredential::class
     ],
-    'templates'                      => [
+    'templates'                => [
         'paths' => [
             'passwordManager' => [__DIR__ . '/../template']
         ]

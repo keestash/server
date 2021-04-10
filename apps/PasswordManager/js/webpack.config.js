@@ -17,42 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 const glob = require("glob");
-const webpack = require("webpack");
-const {VueLoaderPlugin} = require("vue-loader");
 
 module.exports = {
     entry: {
         password_manager: glob.sync(__dirname + "/src/password_manager/*.js")
         , public_share: glob.sync(__dirname + "/src/public_share/*.js")
-    },
-      module: {
-        rules: [
-            {
-                exclude: /node_modules/,
-                loader: 'babel-loader'
-            },
-            {
-                test: /\.vue$/,
-                exclude: /node_modules/,
-                loader: ['vue-loader']
-            },
-            {
-                test: /\.scss$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
-            },
-        ]
-    },
-    plugins: [
-        new VueLoaderPlugin(),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
-    ]
+    }
 };

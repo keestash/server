@@ -27,6 +27,7 @@ use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -35,22 +36,25 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ResetPassword implements RequestHandlerInterface {
 
-    private IUserStateRepository $userStateRepository;
-    private UserService          $userService;
-    private IL10N                $translator;
+    private IUserStateRepository   $userStateRepository;
+    private UserService            $userService;
+    private IL10N                  $translator;
+    private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         IL10N $l10n
         , IUserStateRepository $userStateRepository
         , UserService $userService
+        , IUserRepositoryService $userRepositoryService
     ) {
-        $this->userStateRepository = $userStateRepository;
-        $this->userService         = $userService;
-        $this->translator          = $l10n;
+        $this->userStateRepository   = $userStateRepository;
+        $this->userService           = $userService;
+        $this->translator            = $l10n;
+        $this->userRepositoryService = $userRepositoryService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters  = json_decode((string)$request->getBody(), true);
+        $parameters  = json_decode((string) $request->getBody(), true);
         $hash        = $parameters["hash"] ?? null;
         $newPassword = $parameters["input"] ?? null;
 
@@ -88,7 +92,7 @@ class ResetPassword implements RequestHandlerInterface {
             $this->userService->hashPassword($newPassword)
         );
 
-        $updated = $this->userService->updateUser($newUser, $oldUser);
+        $updated = $this->userRepositoryService->updateUser($newUser, $oldUser);
 
         if (true === $updated) {
 

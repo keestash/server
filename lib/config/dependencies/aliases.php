@@ -42,6 +42,7 @@ use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
+use Keestash\Core\Service\App\AppService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
@@ -56,6 +57,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Router\RouterService;
+use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\L10N\GetText;
 use KSP\App\ILoader;
@@ -78,6 +80,7 @@ use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
@@ -93,6 +96,7 @@ use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 
 return [
@@ -133,5 +137,7 @@ return [
     IEnvironmentService::class        => EnvironmentService::class,
     IRouterService::class             => RouterService::class,
     IAppRenderer::class               => AppRenderer::class,
-    ISettingManager::class            => SettingManager::class
+    ISettingManager::class            => SettingManager::class,
+    IAppService::class                => AppService::class,
+    IUserRepositoryService::class     => UserRepositoryService::class
 ];

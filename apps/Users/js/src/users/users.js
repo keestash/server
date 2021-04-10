@@ -23,8 +23,8 @@
     }
 
     Keestash.Apps.AllUsers = {
-        init: () => {
-
+        init: function () {
+            console.log('implement me :(');
         },
     }
 })();

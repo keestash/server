@@ -23,7 +23,7 @@ export class Page {
                 _this.routes.getInstallAppsAll()
                 , {}
                 , (x, y, z) => {
-                    const object = JSON.parse(x);
+                    const object = x;
                     console.log(object);
                     if (RESPONSE_CODE_OK in object) {
                         const result_object = object[RESPONSE_CODE_OK]["messages"];

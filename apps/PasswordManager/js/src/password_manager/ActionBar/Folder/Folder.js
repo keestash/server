@@ -71,7 +71,6 @@ export class Folder {
                                     , parent: parent
                                 }
                                 , (r) => {
-                                    r = JSON.parse(r);
 
                                     if (RESPONSE_CODE_OK in r) {
                                         _this.longModal.showSuccess(strings['insertedAlertText']);
@@ -94,7 +93,7 @@ export class Folder {
             .then(
                 (assets) => {
                     const templates = assets[0];
-                    const strings = JSON.parse(assets[1].password_manager);
+                    const strings = assets[1].password_manager;
                     _this.handleClick(templates, strings.strings.folder);
                 })
     }

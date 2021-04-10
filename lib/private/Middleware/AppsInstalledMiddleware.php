@@ -23,17 +23,16 @@ namespace Keestash\Middleware;
 
 use Keestash\App\Config\Diff;
 use Keestash\ConfigProvider;
+use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
-use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Router\Route;
-use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -41,43 +40,51 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AppsInstalledMiddleware implements MiddlewareInterface {
 
-    private InstanceLockHandler $lockHandler;
-    private ILoader             $loader;
-    private IAppRepository      $appRepository;
+    private HTTPService         $httpService;
+    private InstanceLockHandler $instanceLockHandler;
     private AppLockHandler      $appLockHandler;
     private Config              $config;
-    private RouterInterface     $router;
-    private IEnvironmentService $environmentService;
-    private HTTPService         $httpService;
+    private ILoader             $loader;
+    private IAppRepository      $appRepository;
     private Diff                $diff;
+    private InstallerService    $appsInstallerService;
+    private IEnvironmentService $environmentService;
+    private IRouterService      $routerService;
 
     public function __construct(
-        InstanceLockHandler $lockHandler
+        HTTPService $httpService
+        , InstanceLockHandler $instanceLockHandler
+        , Config $config
         , ILoader $loader
         , IAppRepository $appRepository
-        , AppLockHandler $appLockHandler
-        , Config $config
-        , RouterInterface $router
-        , IEnvironmentService $environmentService
-        , HTTPService $httpService
         , Diff $diff
+        , AppLockHandler $appLockHandler
+        , InstallerService $appsInstallerService
+        , IEnvironmentService $environmentService
+        , IRouterService $routerService
     ) {
-        $this->lockHandler        = $lockHandler;
-        $this->loader             = $loader;
-        $this->appRepository      = $appRepository;
-        $this->appLockHandler     = $appLockHandler;
-        $this->config             = $config;
-        $this->router             = $router;
-        $this->environmentService = $environmentService;
-        $this->httpService        = $httpService;
-        $this->diff               = $diff;
+        $this->httpService          = $httpService;
+        $this->instanceLockHandler  = $instanceLockHandler;
+        $this->config               = $config;
+        $this->loader               = $loader;
+        $this->appRepository        = $appRepository;
+        $this->diff                 = $diff;
+        $this->appLockHandler       = $appLockHandler;
+        $this->appsInstallerService = $appsInstallerService;
+        $this->environmentService   = $environmentService;
+        $this->routerService        = $routerService;
     }
 
     private function routesToInstallation(ServerRequestInterface $request): bool {
-        $currentRoute       = $this->getMatchedPath($request);
-        $installationRoutes = $this->config
-            ->get(ConfigProvider::INSTALL_APPS_ROUTES)
-            ->toArray();
+        $currentRoute       = $this->routerService->getMatchedPath($request);
+        $installationRoutes = array_merge(
+            $this->config
+                ->get(ConfigProvider::INSTALL_APPS_ROUTES)
+                ->toArray()
+            , $this->config
+            ->get(ConfigProvider::INSTALL_INSTANCE_ROUTES)
+            ->toArray()
+        );
 
         foreach ($installationRoutes as $publicRoute) {
             if ($currentRoute === $publicRoute) {
@@ -88,23 +95,20 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         return false;
     }
 
-    private function getMatchedPath(ServerRequestInterface $request): string {
-        $matchedRoute = $this->router->match($request)->getMatchedRoute();
-
-        if ($matchedRoute instanceof Route) {
-            return $this->router->match($request)->getMatchedRoute()->getPath();
-        }
-        return '';
-    }
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $instanceLocked = $this->lockHandler->isLocked();
+        $instanceLocked       = $this->instanceLockHandler->isLocked();
+        $appsLocked           = $this->appLockHandler->isLocked();
+        $routesToInstallation = $this->routesToInstallation($request);
 
         // if we are actually installing the instance,
         // we need to make sure that Keestash does not want
         // to Install the apps
-        if (true === $instanceLocked) {
-            $handler->handle($request);
+        if (true === $instanceLocked || true === $appsLocked) {
+
+            if (true === $routesToInstallation) {
+                return $handler->handle($request);
+            }
+
         }
 
         // We only check loadedApps if the system is
@@ -112,63 +116,34 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         $loadedApps    = $this->loader->getApps();
         $installedApps = $this->appRepository->getAllApps();
 
-        $diff          = $this->diff;
-        $appsToInstall = $diff->getNewlyAddedApps($loadedApps, $installedApps);
+        $appsToInstall = $this->diff->getNewlyAddedApps($loadedApps, $installedApps);
 
         // Step 1: we check if we have new apps to Install
         if ($appsToInstall->size() > 0) {
-            return $this->handleNeedsUpgrade($request, $handler);
+            return $this->handleInstall();
         }
 
         // Step 2: we remove all apps that are disabled in our db
-        $loadedApps = $diff->removeDisabledApps($loadedApps, $installedApps);
+        $loadedApps = $this->diff->removeDisabledApps($loadedApps, $installedApps);
 
         // Step 3: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
-        $appsToUpgrade = $diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
+        $appsToUpgrade = $this->diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
 
         if ($appsToUpgrade->size() > 0) {
-            return $this->handleNeedsUpgrade($request, $handler);
+            return $this->handleInstall();
         }
 
         return $handler->handle($request);
+
     }
 
-    private function handleNeedsUpgrade(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $appsLocked           = $this->lockHandler->isLocked();
-        $routesToInstallation = $this->routesToInstallation($request);
-
-        if (true === $appsLocked && true === $routesToInstallation) {
-            return $handler->handle($request);
-        }
-
-        // in this case, we redirect to the Install page
-        // since the user is logged in and is in web mode
-        if (true === $this->environmentService->isWeb()) {
-            $this->appLockHandler->lock();
-            return new RedirectResponse(
-                $this->httpService->buildWebRoute(
-                    ConfigProvider::INSTALL_APPS_ROUTE
-                )
-            );
-        }
-
-        // in all other cases, we simply return an
-        // "need to upgrade" JSON String (except for the
-        // case where we already route to installation)
-        if (
-            true === $this->environmentService->isApi()
-            && false === $routesToInstallation
-        ) {
-            return new JsonResponse(
-                [
-                    'you need to upgrade your apps. Implement me and I will help you'
-                ]
-            );
-        }
-
-        return $handler->handle($request);
+    private function handleInstall(): ResponseInterface {
+        $this->appLockHandler->lock();
+        return new RedirectResponse(
+            $this->httpService->buildWebRoute('install')
+        );
     }
 
 }

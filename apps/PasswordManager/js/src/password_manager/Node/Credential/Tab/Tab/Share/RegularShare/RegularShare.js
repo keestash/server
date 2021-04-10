@@ -275,7 +275,7 @@ export class RegularShare {
                                 shareId: shareId
                             }
                             , (response) => {
-                                const object = JSON.parse(response);
+                                const object = (response);
 
                                 if (RESPONSE_CODE_OK in object) {
 

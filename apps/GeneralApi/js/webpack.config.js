@@ -16,25 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-const glob = require("glob");
-const webpack = require("webpack");
-const {VueLoaderPlugin} = require("vue-loader");
 
 module.exports = {
     entry: {
         organization_detail: __dirname + "/Organization/Detail/init.js"
-    },
-    module: {
-        rules: [{
-            exclude: /node_modules/,
-            loader: 'babel-loader'
-        }]
-    },
-    plugins: [
-        new VueLoaderPlugin(),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
-    ]
+    }
 };

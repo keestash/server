@@ -20,14 +20,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSP\App\IApp;
+use Keestash\ConfigProvider;
+use KSA\Login\ConfigProvider as LoginConfigProvider;
 
 return [
-    'dependencies'                   => require __DIR__ . '/dependencies.php',
-    IApp::CONFIG_PROVIDER_WEB_ROUTER => require __DIR__ . '/web_router.php',
-    IApp::CONFIG_PROVIDER_API_ROUTER => require __DIR__ . '/api_router.php',
-    'templates'                      => [
-        'paths' => [
+    ConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
+    ConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php',
+    ConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php',
+    ConfigProvider::APP_LIST     => [
+        LoginConfigProvider::APP_ID => [
+            ConfigProvider::APP_ORDER      => 7,
+            ConfigProvider::APP_NAME       => 'Login',
+            ConfigProvider::APP_BASE_ROUTE => LoginConfigProvider::LOGIN,
+            ConfigProvider::APP_VERSION    => 1,
+        ],
+    ],
+    ConfigProvider::TEMPLATES    => [
+        ConfigProvider::PATHS => [
             'login' => [__DIR__ . '/../template']
         ]
     ]

@@ -20,13 +20,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider as ConfigProviderAlias;
 use KSA\Login\ConfigProvider;
 use KSA\Login\Controller\LoginController;
 use KSA\Login\Controller\Logout;
-use KSP\App\IApp;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES                 => [
+    ConfigProviderAlias::ROUTES => [
         [
             'path'         => ConfigProvider::LOGOUT
             , 'middleware' => Logout::class
@@ -38,18 +38,18 @@ return [
             , 'name'       => LoginController::class
         ],
     ],
-    IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+    ConfigProviderAlias::PUBLIC_ROUTES => [
         ConfigProvider::LOGOUT
         , ConfigProvider::LOGIN
     ],
-    IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+    ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::LOGIN => 'login'
     ],
-    IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS     => [
+    ConfigProviderAlias::WEB_ROUTER_SCRIPTS => [
         ConfigProvider::LOGIN => 'login'
         ,ConfigProvider::LOGOUT => 'logout'
     ],
-    IApp::CONFIG_PROVIDER_SETTINGS               => [
+    ConfigProviderAlias::SETTINGS => [
         ConfigProvider::LOGOUT => [
             'name'      => 'logout'
             , 'faClass' => "fas fa-sign-out-alt"

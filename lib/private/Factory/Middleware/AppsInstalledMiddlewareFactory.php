@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Middleware;
 
 use Keestash\App\Config\Diff;
+use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
@@ -29,23 +30,24 @@ use Keestash\Middleware\AppsInstalledMiddleware;
 use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
-use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
 class AppsInstalledMiddlewareFactory {
 
     public function __invoke(ContainerInterface $container): AppsInstalledMiddleware {
         return new AppsInstalledMiddleware(
-            $container->get(InstanceLockHandler::class)
+            $container->get(HTTPService::class)
+            , $container->get(InstanceLockHandler::class)
+            , $container->get(Config::class)
             , $container->get(ILoader::class)
             , $container->get(IAppRepository::class)
-            , $container->get(AppLockHandler::class)
-            , $container->get(Config::class)
-            , $container->get(RouterInterface::class)
-            , $container->get(IEnvironmentService::class)
-            , $container->get(HTTPService::class)
             , $container->get(Diff::class)
+            , $container->get(AppLockHandler::class)
+            , $container->get(InstallerService::class)
+            , $container->get(IEnvironmentService::class)
+            , $container->get(IRouterService::class)
         );
     }
 

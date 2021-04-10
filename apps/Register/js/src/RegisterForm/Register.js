@@ -70,7 +70,7 @@ export class Register {
                     _this.routes.getRegisterAdd()
                     , values
                     , (response) => {
-                        let object = JSON.parse(response);
+                        let object = (response);
                         let data = null;
 
                         if (RESPONSE_CODE_OK in object) {

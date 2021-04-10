@@ -26,12 +26,14 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,16 +41,18 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class EndUpdate implements RequestHandlerInterface {
 
-    private InstallerService   $installerService;
-    private LockHandler        $lockHandler;
-    private IFileRepository    $fileRepository;
-    private FileService        $fileService;
-    private UserService        $userService;
-    private IUserRepository    $userRepository;
-    private PersistenceService $persistenceService;
-    private HTTPService        $httpService;
-    private IL10N              $translator;
-    private ILoader            $loader;
+    private InstallerService       $installerService;
+    private LockHandler            $lockHandler;
+    private IFileRepository        $fileRepository;
+    private FileService            $fileService;
+    private IUserService           $userService;
+    private IUserRepository        $userRepository;
+    private PersistenceService     $persistenceService;
+    private HTTPService            $httpService;
+    private IL10N                  $translator;
+    private ILoader                $loader;
+    private ILogger                $logger;
+    private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         IL10N $l10n
@@ -56,22 +60,26 @@ class EndUpdate implements RequestHandlerInterface {
         , LockHandler $lockHandler
         , IFileRepository $fileRepository
         , FileService $fileService
-        , UserService $userService
+        , IUserService $userService
         , IUserRepository $userRepository
         , PersistenceService $persistenceService
         , HTTPService $httpService
         , ILoader $loader
+        , ILogger $logger
+        , IUserRepositoryService $userRepositoryService
     ) {
-        $this->installerService   = $installerService;
-        $this->lockHandler        = $lockHandler;
-        $this->fileRepository     = $fileRepository;
-        $this->fileService        = $fileService;
-        $this->userService        = $userService;
-        $this->userRepository     = $userRepository;
-        $this->persistenceService = $persistenceService;
-        $this->httpService        = $httpService;
-        $this->translator         = $l10n;
-        $this->loader             = $loader;
+        $this->installerService      = $installerService;
+        $this->lockHandler           = $lockHandler;
+        $this->fileRepository        = $fileRepository;
+        $this->fileService           = $fileService;
+        $this->userService           = $userService;
+        $this->userRepository        = $userRepository;
+        $this->persistenceService    = $persistenceService;
+        $this->httpService           = $httpService;
+        $this->translator            = $l10n;
+        $this->loader                = $loader;
+        $this->logger                = $logger;
+        $this->userRepositoryService = $userRepositoryService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -91,7 +99,10 @@ class EndUpdate implements RequestHandlerInterface {
         $removed = $this->installerService->removeInstaller();
         $added   = false;
 
-        if (true === $ran && true === $removed) {
+        if (
+            true === $ran
+            && true === $removed
+        ) {
             $added = $this->installerService->writeIdAndHash();
             // $this->installerService->writeProductionMode(); TODO not sure actually how to enable, need to differentiate between dev mode and production
         }
@@ -101,6 +112,7 @@ class EndUpdate implements RequestHandlerInterface {
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => $this->translator->translate("Could not do final steps")
+                    , "added" => $added
                 ]
             );
         }
@@ -108,7 +120,7 @@ class EndUpdate implements RequestHandlerInterface {
         $this->lockHandler->unlock();
         $this->persistenceService->killAll();
 
-        $this->userService->createSystemUser(
+        $this->userRepositoryService->createSystemUser(
             $this->userService->getSystemUser()
         );
 

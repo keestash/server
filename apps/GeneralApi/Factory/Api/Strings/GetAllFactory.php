@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Factory\Api\Strings;
 
-use Keestash\Core\Manager\StringManager\FrontendManager;
 use KSA\GeneralApi\Api\Strings\GetAll;
 use KSP\Core\Cache\ICacheService;
 use Psr\Container\ContainerInterface;
@@ -29,10 +28,7 @@ use Psr\Container\ContainerInterface;
 class GetAllFactory {
 
     public function __invoke(ContainerInterface $container): GetAll {
-        return new GetAll(
-            $container->get(FrontendManager::class)
-            , $container->get(ICacheService::class)
-        );
+        return new GetAll($container->get(ICacheService::class));
     }
 
 }

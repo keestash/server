@@ -27,7 +27,6 @@ use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node as NodeObject;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Entity\Password\Password;
-use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;

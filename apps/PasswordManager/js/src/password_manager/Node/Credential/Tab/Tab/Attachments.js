@@ -53,7 +53,7 @@ export class Attachments {
                     _this.routes.getAttachments(node.id)
                     , {}
                     , (x, y, z) => {
-                        const object = JSON.parse(x);
+                        const object = x;
 
                         if (RESPONSE_CODE_OK in object) {
                             let fileList = object[RESPONSE_CODE_OK]['messages']['fileList'];
@@ -133,7 +133,7 @@ export class Attachments {
                                 fileId: fileId
                             }
                             , (response) => {
-                                const object = JSON.parse(response);
+                                const object = response;
 
                                 if (RESPONSE_CODE_OK in object) {
 

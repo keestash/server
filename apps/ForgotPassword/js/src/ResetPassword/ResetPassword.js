@@ -53,7 +53,7 @@ export class ResetPassword {
                     _this.routes.getResetPasswordSubmit()
                     , values
                     , (response, status, xhr) => {
-                        const object = JSON.parse(response);
+                        const object = response;
                         let result = null;
 
                         if (RESPONSE_CODE_OK in object) {

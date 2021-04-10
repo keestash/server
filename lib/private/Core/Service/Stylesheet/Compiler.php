@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Stylesheet;
 
+use Keestash\ConfigProvider;
 use Keestash\Exception\StylesheetsNotCompiledException;
+use Laminas\Config\Config;
 use ScssPhp\ScssPhp\Compiler as ScssCompiler;
 
 /**
@@ -32,6 +34,12 @@ use ScssPhp\ScssPhp\Compiler as ScssCompiler;
  */
 class Compiler {
 
+    private Config $config;
+
+    public function __construct(Config $config) {
+        $this->config = $config;
+    }
+
     /**
      * @param string $source
      * @param string $destination
@@ -40,8 +48,13 @@ class Compiler {
      */
     public function compile(string $source, string $destination): void {
         $compiler = new ScssCompiler();
-        $compiler->addImportPath($source);
-        $css = $compiler->compile('@import "style.scss";');
+        $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/vendor/twitter/bootstrap/scss'));
+        $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/lib/scss/'));
+
+//        $compiler->addImportPath($source);
+        $css = $compiler->compile(
+            file_get_contents($source)
+        );
 
         if (true === is_file($destination)) {
             unlink($destination);

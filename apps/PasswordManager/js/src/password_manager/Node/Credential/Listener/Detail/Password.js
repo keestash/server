@@ -55,7 +55,7 @@ export class Password extends Text {
                         )
                         , {}
                         , function (response, status, xhr) {
-                            const object = JSON.parse(response);
+                            const object = response;
                             const success = object[RESPONSE_CODE_OK];
 
                             passwordField.setValue(success['decrypted']);

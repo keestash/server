@@ -19,24 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Install\Factory\Command;
+namespace KSP\Core\Service\App;
 
-use Keestash\Core\Repository\Instance\InstanceRepository;
-use Keestash\Core\Service\Phinx\Migrator;
-use Keestash\Core\Service\User\UserService;
-use Keestash\Core\System\Installation\LockHandler;
-use KSA\Install\Command\Uninstall;
-use Psr\Container\ContainerInterface;
+use KSP\App\IApp;
 
-class UninstallFactory {
+interface IAppService {
 
-    public function __invoke(ContainerInterface $container): Uninstall {
-        return new Uninstall(
-            $container->get(InstanceRepository::class)
-            , $container->get(LockHandler::class)
-            , $container->get(Migrator::class)
-            , $container->get(UserService::class)
-        );
-    }
+    public function toApp(string $id, array $data): IApp;
 
 }

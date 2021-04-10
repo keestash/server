@@ -36,7 +36,7 @@ class AppFactory {
         $configApp->setVersion($app->getVersion());
         $configApp->setBackgroundJobs(
             AppFactory::buildBackgroundJobs(
-                $app->getBackgroundJobs()
+                [] // TODO implement me
             )
         );
         return $configApp;

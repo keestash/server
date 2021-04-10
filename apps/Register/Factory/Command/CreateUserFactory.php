@@ -25,15 +25,17 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Register\Command\CreateUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
 class CreateUserFactory {
 
     public function __invoke(ContainerInterface $container): CreateUser {
         return new CreateUser(
-            $container->get(IUserRepository::class),
-            $container->get(UserService::class),
-            $container->get(IUserStateRepository::class)
+            $container->get(IUserRepository::class)
+            , $container->get(UserService::class)
+            , $container->get(IUserStateRepository::class)
+            , $container->get(IUserRepositoryService::class)
         );
     }
 

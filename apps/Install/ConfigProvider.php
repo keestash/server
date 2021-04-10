@@ -21,66 +21,75 @@ declare(strict_types=1);
 
 namespace KSA\Install;
 
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Install\Api\InstallApps;
-use KSA\Install\Command\Uninstall;
 use KSA\Install\Controller\Controller;
 use KSA\Install\Factory\Api\InstallAppsFactory;
-use KSA\Install\Factory\Command\UninstallFactory;
 use KSA\Install\Factory\Controller\ControllerFactory;
-use KSP\App\IApp;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
-    public const INSTALL = '/install[/]';
+    public const INSTALL     = '/install[/]';
+    public const INSTALL_ALL = '/install/apps/all[/]';
+    public const APP_ID      = 'install';
 
     public function __invoke(): array {
         return [
-            'dependencies'                   => [
+            CoreConfigProvider::APP_LIST            => [
+                ConfigProvider::APP_ID => [
+                    CoreConfigProvider::APP_ORDER      => 4,
+                    CoreConfigProvider::APP_NAME       => 'Install',
+                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::INSTALL,
+                    CoreConfigProvider::APP_VERSION    => 1,
+                ],
+            ],
+            'dependencies'                          => [
                 'factories' => [
                     // api
                     InstallApps::class => InstallAppsFactory::class,
-                    Uninstall::class   => UninstallFactory::class,
 
                     // controller
                     Controller::class  => ControllerFactory::class,
                 ]
             ],
-            IApp::CONFIG_PROVIDER_WEB_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES                 => [
+            CoreConfigProvider::WEB_ROUTER          => [
+                CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::INSTALL
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES          => [
+                CoreConfigProvider::PUBLIC_ROUTES          => [
                     ConfigProvider::INSTALL
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_STYLESHEETS => [
+                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::INSTALL => 'install'
                 ],
-                IApp::CONFIG_PROVIDER_WEB_ROUTER_SCRIPTS => [
+                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::INSTALL => 'install'
                 ]
             ],
-            IApp::CONFIG_PROVIDER_API_ROUTER => [
-                IApp::CONFIG_PROVIDER_ROUTES        => [
+            CoreConfigProvider::API_ROUTER          => [
+                CoreConfigProvider::ROUTES        => [
                     [
-                        'path'         => '/install/apps/all[/]'
+                        'path'         => ConfigProvider::INSTALL_ALL
                         , 'middleware' => InstallApps::class
                         , 'method'     => IVerb::POST
                         , 'name'       => InstallApps::class
                     ],
                 ],
-                IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
-                    '/install/apps/all[/]'
-                ]
+                CoreConfigProvider::PUBLIC_ROUTES => [
+                    ConfigProvider::INSTALL_ALL
+                    , ConfigProvider::INSTALL
+                ],
             ],
-            IApp::CONFIG_PROVIDER_COMMANDS   => [
-                Uninstall::class
+            CoreConfigProvider::INSTALL_APPS_ROUTES => [
+                ConfigProvider::INSTALL
+                , ConfigProvider::INSTALL_ALL
             ],
-            'templates'                      => [
+            'templates'                             => [
                 'paths' => [
                     'install' => [__DIR__ . '/template/']
                 ]

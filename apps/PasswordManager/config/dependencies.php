@@ -69,6 +69,7 @@ use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\PublicShareRepositoryFactory;
 use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
+use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
@@ -76,6 +77,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
@@ -131,6 +133,7 @@ return [
         EncryptionService::class                                          => EncryptionServiceFactory::class,
         NodeService::class                                                => NodeServiceFactory::class,
         BreadCrumbService::class                                          => BreadCrumbServiceFactory::class,
+        CredentialService::class                                          => CredentialServiceFactory::class,
 
         // event
         // ---- listener

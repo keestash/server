@@ -20,30 +20,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
 use KSA\GeneralApi\Event\Listener\UserChangedListener;
 use KSA\GeneralApi\Event\Organization\UserChangedEvent;
-use KSP\App\IApp;
 
 return [
-    'dependencies'                   => require __DIR__ . '/dependencies.php',
-    IApp::CONFIG_PROVIDER_API_ROUTER => require __DIR__ . '/api_router.php',
-    IApp::CONFIG_PROVIDER_WEB_ROUTER => require __DIR__ . '/web_router.php',
-    IApp::CONFIG_PROVIDER_COMMANDS   => [
+    'dependencies'             => require __DIR__ . '/dependencies.php',
+    ConfigProvider::API_ROUTER => require __DIR__ . '/api_router.php',
+    ConfigProvider::WEB_ROUTER => require __DIR__ . '/web_router.php',
+    ConfigProvider::COMMANDS   => [
         MigrateApps::class
         , PHPStan::class
         , ClearBundleJS::class
         , Compiler::class
     ],
-    IApp::CONFIG_PROVIDER_EVENTS     => [
+    ConfigProvider::EVENTS     => [
         UserChangedEvent::class => UserChangedListener::class
     ],
-    'templates'                      => [
+    'templates'                => [
         'paths' => [
             'generalApi' => [__DIR__ . '/../template/']
         ]
-    ]
+    ],
+    ConfigProvider::APP_LIST   => [
+        \KSA\GeneralApi\ConfigProvider::APP_ID => [
+            ConfigProvider::APP_ORDER      => 3,
+            ConfigProvider::APP_NAME       => 'General Api',
+            ConfigProvider::APP_BASE_ROUTE => '',
+            ConfigProvider::APP_VERSION    => 1,
+        ],
+    ],
 ];

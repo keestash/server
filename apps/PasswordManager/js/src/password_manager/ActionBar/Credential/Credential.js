@@ -51,7 +51,7 @@ export class Credential {
 
                 _this.handleNewPassword(
                     templates
-                    , JSON.parse(strings.password_manager).strings.credential
+                    , strings.password_manager.strings.credential
                 );
             })
     }
@@ -99,7 +99,7 @@ export class Credential {
                             _this.routes.getPasswordManagerCreate()
                             , data
                             , (x, y, z) => {
-                                let json = JSON.parse(x);
+                                let json = x;
 
                                 if (RESPONSE_CODE_OK in json) {
                                     _this.longModal.showSuccess(

@@ -51,7 +51,7 @@ export class Comment {
                     _this.routes.getComments(node.id)
                     , {}
                     , (x, y, z) => {
-                        const object = JSON.parse(x);
+                        const object = (x);
 
                         if (RESPONSE_CODE_OK in object) {
                             let comments = object[RESPONSE_CODE_OK]["messages"]["comments"];
@@ -137,7 +137,7 @@ export class Comment {
                             , comment: text
                         }
                         , function (x, y, z) {
-                            const object = JSON.parse(x);
+                            const object = (x);
 
                             if (RESPONSE_CODE_OK in object) {
                                 const comment = object[RESPONSE_CODE_OK]['messages']['comment'];

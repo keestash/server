@@ -21,13 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\User;
 
-use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\IService;
 
 interface IUserService extends IService {
 
-    public function removeUser(IUser $user): array;
+    public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
 
     public function validatePassword(string $password, string $hash): bool;
 
@@ -49,14 +48,6 @@ interface IUserService extends IService {
 
     public function toNewUser(array $userArray): IUser;
 
-    public function createSystemUser(IUser $user): bool;
-
-    public function createUser(IUser $user, ?IFile $file = null): IUser;
-
     public function isDisabled(?IUser $user): bool;
-
-    public function userExistsByName(string $name): bool;
-
-    public function updateUser(IUser $updatedUser, IUser $oldUser): bool;
 
 }

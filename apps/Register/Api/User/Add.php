@@ -25,14 +25,14 @@ use doganoo\PHPUtil\Datatype\StringClass;
 use Exception;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
-use KSA\Register\Application\Application;
+use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -41,13 +41,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private ?IUser               $user;
-    private UserService          $userService;
-    private IUserRepository      $userRepository;
-    private IL10N                $translator;
-    private ILoader              $loader;
-    private IUserStateRepository $userStateRepository;
-    private ILogger              $logger;
+    private UserService            $userService;
+    private IUserRepository        $userRepository;
+    private IL10N                  $translator;
+    private ILoader                $loader;
+    private IUserStateRepository   $userStateRepository;
+    private ILogger                $logger;
+    private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         IL10N $l10n
@@ -56,16 +56,16 @@ class Add implements RequestHandlerInterface {
         , ILoader $loader
         , IUserStateRepository $userStateRepository
         , ILogger $logger
-        , ?IToken $token = null
+        , IUserRepositoryService $userRepositoryService
     ) {
 
-        $this->userService         = $userService;
-        $this->userRepository      = $userRepository;
-        $this->translator          = $l10n;
-        $this->loader              = $loader;
-        $this->userStateRepository = $userStateRepository;
-        $this->logger              = $logger;
-        $this->user                = null;
+        $this->userService           = $userService;
+        $this->userRepository        = $userRepository;
+        $this->translator            = $l10n;
+        $this->loader                = $loader;
+        $this->userStateRepository   = $userStateRepository;
+        $this->logger                = $logger;
+        $this->userRepositoryService = $userRepositoryService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -74,7 +74,7 @@ class Add implements RequestHandlerInterface {
         // we do not want to enable registering
         // even if someone has found a hacky way
         // to enable this controller!
-        $registerEnabled = $this->loader->hasApp(Application::APP_NAME_REGISTER);
+        $registerEnabled = $this->loader->hasApp(ConfigProvider::APP_ID);
 
         if (false === $registerEnabled) {
 
@@ -164,7 +164,7 @@ class Add implements RequestHandlerInterface {
 
             $user = null;
             try {
-                $user = $this->userService->createUser(
+                $user = $this->userRepositoryService->createUser(
                     $this->userService->toNewUser($request->getParsedBody())
                 );
 
@@ -177,8 +177,6 @@ class Add implements RequestHandlerInterface {
                 $this->logger->error($exception->getTraceAsString());
                 $user = null;
             }
-
-            $this->user = $user;
 
             if (null === $user) {
                 $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
@@ -199,10 +197,6 @@ class Add implements RequestHandlerInterface {
 
     private function getParameter(string $name, RequestInterface $request) {
         return $request->getParsedBody()[$name] ?? null;
-    }
-
-    public function afterCreate(): void {
-        if (null === $this->user) return;
     }
 
 }

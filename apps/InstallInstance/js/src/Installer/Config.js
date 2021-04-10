@@ -116,7 +116,7 @@ export class Config extends Base {
                     _this.routes.getInstallInstanceUpdateConfig()
                     , value
                     , function (x, y, z) {
-                        const object = JSON.parse(x);
+                        const object = x;
 
                         if (RESPONSE_CODE_OK in object) {
                             _this.removeAllExceptFirst(

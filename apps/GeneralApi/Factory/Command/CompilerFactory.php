@@ -22,14 +22,15 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Factory\Command;
 
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
+use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class CompilerFactory {
 
     public function __invoke(ContainerInterface $container): Compiler {
         return new Compiler(
-            $container->get(\Keestash\Core\Service\Stylesheet\Compiler::class),
-            realpath(__DIR__ . '/../../../../lib/scss/')
+            $container->get(\Keestash\Core\Service\Stylesheet\Compiler::class)
+            , $container->get(Config::class)
         );
     }
 

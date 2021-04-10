@@ -29,21 +29,25 @@ use Keestash\Core\Service\User\UserService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class UserAdd implements RequestHandlerInterface {
 
-    private UserService     $userService;
-    private IUserRepository $userRepository;
+    private UserService            $userService;
+    private IUserRepository        $userRepository;
+    private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         UserService $userService
         , IUserRepository $userManager
+        , IUserRepositoryService $userRepositoryService
     ) {
-        $this->userService    = $userService;
-        $this->userRepository = $userManager;
+        $this->userService           = $userService;
+        $this->userRepository        = $userManager;
+        $this->userRepositoryService = $userRepositoryService;
     }
 
     private function toUser($params): IUser {
@@ -71,7 +75,7 @@ class UserAdd implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
 
-        $parameters     = json_decode((string)$request->getBody(), true);
+        $parameters     = json_decode((string) $request->getBody(), true);
         $passwordRepeat = $parameters["password_repeat"];
         $user           = $this->toUser($parameters);
 
@@ -80,7 +84,7 @@ class UserAdd implements RequestHandlerInterface {
             , []
         );
         if (null === $user) return $response;
-        if (true === $this->userService->userExistsByName($user->getName())) return $response;
+        if (true === $this->userRepositoryService->userExistsByName($user->getName())) return $response;
         if (false === (new StringClass($user->getPassword()))->equals($passwordRepeat)) return $response;
         if (false === $this->userService->passwordHasMinimumRequirements($user->getPassword())) return $response;
         if (false === $this->userService->validEmail($user->getEmail())) return $response;

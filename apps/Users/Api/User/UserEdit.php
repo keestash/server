@@ -27,6 +27,7 @@ use KSA\Users\Exception\UsersException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,25 +35,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class UserEdit implements RequestHandlerInterface {
 
-    const FIRSTNAME = "firstname";
-    const LASTNAME  = "lastname";
-    const PASSWORD  = "password";
-    const EMAIL     = "email";
-    const PHONE     = "phone";
-    const WEBSITE   = "website";
-
-    private IUserRepository $userRepository;
-    private UserService     $userService;
-    private IL10N           $translator;
+    private IUserRepository        $userRepository;
+    private UserService            $userService;
+    private IL10N                  $translator;
+    private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         IL10N $l10n
         , IUserRepository $userRepository
         , UserService $userService
+        , IUserRepositoryService $userRepositoryService
     ) {
-        $this->userRepository = $userRepository;
-        $this->userService    = $userService;
-        $this->translator     = $l10n;
+        $this->userRepository        = $userRepository;
+        $this->userService           = $userService;
+        $this->translator            = $l10n;
+        $this->userRepositoryService = $userRepositoryService;
     }
 
     private function hasDifferences(IUser $repoUser, IUser $newUser): bool {
@@ -67,7 +64,7 @@ class UserEdit implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string)$request->getBody(), true);
+        $parameters = json_decode((string) $request->getBody(), true);
         $user       = $this->userService->toUser($parameters['user']);
         $repoUser   = $this->userRepository->getUserById((string) $user->getId());
 
@@ -104,7 +101,7 @@ class UserEdit implements RequestHandlerInterface {
         $repoUser->setLocked($user->isLocked());
         $repoUser->setDeleted($user->isDeleted());
 
-        $updated = $this->userService->updateUser($repoUser, $oldUser);
+        $updated = $this->userRepositoryService->updateUser($repoUser, $oldUser);
 
         if (false === $updated) {
             return LegacyResponse::fromData(

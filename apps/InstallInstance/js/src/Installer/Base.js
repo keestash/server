@@ -55,7 +55,7 @@ export class Base {
             , {}
             , async (e) => {
 
-                const response = JSON.parse(e);
+                const response = e;
 
                 if (RESPONSE_CODE_NOT_OK in response) {
                     _this.updateView("error during request");
@@ -67,8 +67,8 @@ export class Base {
                     const raw = response[RESPONSE_CODE_OK]['messages'][keyName];
                     const rawStrings = response[RESPONSE_CODE_OK]['messages']["strings"];
 
-                    const object = JSON.parse(raw);
-                    const strings = JSON.parse(rawStrings);
+                    const object = raw;
+                    const strings = rawStrings;
 
                     const indices = Object.keys(object);
                     const indicesLength = indices.length;

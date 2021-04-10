@@ -19,8 +19,8 @@
 const glob = require("glob");
 const webpack = require("webpack");
 const appModules = glob.sync("./apps/*/js/webpack.config.js");
-const appSettings = glob.sync("./apps/*/js/src/Settings/settings.js");
 const {VueLoaderPlugin} = require("vue-loader");
+const path = require("path");
 
 const env = process.env.NODE_ENV;
 
@@ -43,28 +43,14 @@ const baseModule = {
     module: {
         rules: [
             {
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader'
-            },
-            {
                 test: /\.vue$/,
-                exclude: /node_modules/,
+                exclude: path.resolve(__dirname, "node_modules"),
                 loader: ['vue-loader']
             },
             {
-                test: /\.scss$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader',
-                    {
-                        loader: 'sass-loader',
-                    },
-                ],
+                test: /\.js$/,
+                exclude: path.resolve(__dirname, "node_modules"),
+                loader: ['babel-loader']
             },
         ]
     },
@@ -87,9 +73,10 @@ const baseModule = {
 };
 
 const webpackConfig = [].concat(
-    baseModule
-    , toConfig(appModules, baseModule)
+    baseModule,
+    toConfig(appModules, baseModule)
 );
+
 
 module.exports = webpackConfig;
 
@@ -100,11 +87,14 @@ function toConfig(modules, baseModule) {
         const config = require(configPath);
 
         config.mode = baseModule.mode;
-        config.node = {fs: 'empty'};
-        config.module = Object.assign(baseModule.module, config.module || {});
-        config.resolve = Object.assign(baseModule.resolve, config.resolve || {});
+        config.node = baseModule.node;
+        config.module = baseModule.module;
+        config.resolve = baseModule.resolve;
         config.output = baseModule.output;
+        config.plugins = baseModule.plugins;
+        config.optimization = baseModule.optimization;
         conf.push(config);
     }
     return conf;
 }
+

@@ -17,22 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 const glob = require("glob");
-const webpack = require("webpack");
 
 module.exports = {
     entry: {
         register: glob.sync(__dirname + "/src/register.js"),
-    },
-    module: {
-        rules: [{
-            exclude: /node_modules/,
-            loader: 'babel-loader'
-        }]
-    },
-    plugins: [
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
-    ]
+    }
 };

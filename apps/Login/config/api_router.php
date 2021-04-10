@@ -20,20 +20,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\Login\Api\Login;
-use KSP\App\IApp;
+use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
-    IApp::CONFIG_PROVIDER_ROUTES        => [
+    ConfigProvider::ROUTES        => [
         [
-            'path'         => '/login/submit[/]'
+            'path'         => LoginConfigProvider::LOGIN_SUBMIT
             , 'middleware' => Login::class
             , 'method'     => IVerb::POST
             , 'name'       => Login::class
         ],
     ],
-    IApp::CONFIG_PROVIDER_PUBLIC_ROUTES => [
-        '/login/submit[/]'
+    ConfigProvider::PUBLIC_ROUTES => [
+        LoginConfigProvider::LOGIN_SUBMIT
     ]
 ];

@@ -79,7 +79,7 @@
         <template v-if="this.state.value === this.state.states.STATE_LOADED">
           <b-select v-model="candidates.selected" @change="optionSelected">
             <b-select-option disabled value="">Please select one</b-select-option>
-            <option :value="size.id" v-for="size in candidates.values">{{ size.name }}</option>
+            <option :value="size.id" v-for="size in candidates.values" v-bind:key="candidates.id">{{ size.name }}</option>
           </b-select>
         </template>
         <Skeleton :height="this.state.height" v-else/>

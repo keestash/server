@@ -132,6 +132,7 @@ class InstanceDB {
     }
 
     public function removeOption(string $name): bool {
+        if (null === $this->getOption($name)) return true;
         if (false === $this->isValid()) return false;
         $sql       = 'DELETE FROM `instance` WHERE `name` = :the_name';
         $statement = $this->database->prepare($sql);

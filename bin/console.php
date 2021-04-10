@@ -22,8 +22,8 @@ declare(strict_types=1);
  */
 
 use Keestash\Command\KeestashCommand;
+use Keestash\ConfigProvider;
 use Keestash\Legacy\Legacy;
-use KSP\App\IApp;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
@@ -50,7 +50,7 @@ use Symfony\Component\Console\Application;
             , $cliVersion
     );
 
-    foreach ($config->get(IApp::CONFIG_PROVIDER_COMMANDS)->toArray() as $commandClass) {
+    foreach ($config->get(ConfigProvider::COMMANDS)->toArray() as $commandClass) {
 
         /** @var KeestashCommand $command */
         $command = $container->get($commandClass);
