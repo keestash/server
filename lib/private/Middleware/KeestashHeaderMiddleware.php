@@ -95,11 +95,10 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
         }
 
         $token = $this->verification->verifyToken(
-            array_merge(
-                $request->getHeaders()
-                , $request->getParsedBody()
-                , $request->getQueryParams()
-            )
+            [
+                Verification::FIELD_NAME_TOKEN => $request->getHeader(Verification::FIELD_NAME_TOKEN)[0] ?? ''
+                , Verification::FIELD_NAME_USER_HASH => $request->getHeader(Verification::FIELD_NAME_USER_HASH)[0] ?? ''
+            ]
         );
 
         if (null === $token) {

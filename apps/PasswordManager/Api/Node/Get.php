@@ -85,7 +85,7 @@ class Get implements RequestHandlerInterface {
                 , [
                     'message' => $this->translator->translate('unauthorized')
                     , 'root'  => $root->getUser()->getId()
-                    , 'token' => $this->translator->getUser()->getId()
+                    , 'token' => $token->getUser()->getId()
                 ]
             );
         }
@@ -93,7 +93,7 @@ class Get implements RequestHandlerInterface {
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "breadCrumb" => $this->breadCrumbService->getBreadCrumbs($root, $this->getToken()->getUser())
+                "breadCrumb" => $this->breadCrumbService->getBreadCrumbs($root, $token->getUser())
                 , "message"  => $this->translator->translate("Ok")
                 , "node"     => $root
             ]
@@ -103,8 +103,6 @@ class Get implements RequestHandlerInterface {
 
     private function prepareNode(ServerRequestInterface $request, IToken $token): NodeEntity {
         $id = $request->getAttribute("id");
-        /** @var IUser $user */
-        $user = $request->getAttribute(IUser::class);
 
         // base case 1: we are requesting a regular node.
         //      select and return

@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Command\QualityTool;
 
 use Keestash\Command\KeestashCommand;
+use Keestash\ConfigProvider;
+use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -29,20 +31,11 @@ class ClearBundleJS extends KeestashCommand {
 
     protected static $defaultName = "general-api:clear-js";
 
-    /** @var string $appRoot */
-    private $appRoot = null;
+    private Config $config;
 
-    /** @var string $serverRoot */
-    private $serverRoot = null;
-
-    public function __construct(
-        string $serverRoot
-        , string $appRoot
-    ) {
+    public function __construct(Config $config) {
         parent::__construct(ClearBundleJS::$defaultName);
-
-        $this->appRoot    = $appRoot;
-        $this->serverRoot = $serverRoot;
+        $this->config = $config;
     }
 
     protected function configure() {
@@ -52,15 +45,13 @@ class ClearBundleJS extends KeestashCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
 
-        $baseDist = "{$this->serverRoot}/lib/js/dist/base.bundle.js";
-        $files    = glob($this->appRoot . "/*/js/dist/*.js");
+        $files = glob($this->config->get(ConfigProvider::INSTANCE_PATH) . "/public/js/*.js");
 
         $this->writeInfo(
             json_encode($files)
             , $output
         );
 
-        $files[]   = $baseDist;
         $fileCount = 0;
 
         foreach ($files as $file) {

@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Comment;
 use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
@@ -36,6 +37,7 @@ class AddFactory {
             , $container->get(NodeRepository::class)
             , $container->get(IUserRepository::class)
             , $container->get(IUserService::class)
+            , $container->get(ILogger::class)
         );
     }
 

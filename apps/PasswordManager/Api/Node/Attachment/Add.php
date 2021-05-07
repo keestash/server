@@ -25,7 +25,7 @@ use DateTime;
 use Keestash;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
-use KSA\PasswordManager\Application\Application;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Exception\Node\Credential\NoFileException;
@@ -40,6 +40,7 @@ use KSP\Core\Service\File\Upload\IFileService;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class Add implements RequestHandlerInterface {
@@ -85,15 +86,16 @@ class Add implements RequestHandlerInterface {
         $this->logger             = $logger;
         $this->config             = $config;
         $this->dataManager        = new DataManager(
-            Application::APP_ID
+            ConfigProvider::APP_ID
+            , $config
             , Add::CONTEXT
         );
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters     = json_decode((string) $request->getBody(), true);
-        $nodeId         = $parameters["node_id"] ?? null;
-        $fileList       = $request->getUploadedFiles();
+        $nodeId   = $request->getParsedBody()["node_id"];
+        $fileList = $request->getUploadedFiles();
+
         $fileCount      = count($fileList);
         $processedFiles = [];
         /** @var IToken $token */
@@ -117,14 +119,16 @@ class Add implements RequestHandlerInterface {
             throw new CredentialException();
         }
 
+        /** @var UploadedFileInterface $file */
         foreach ($fileList as $file) {
             // TODO check content
             // TODO allowed extensions
 
+            $file    = $this->uploadFileService->toFile($file);
             $isValid = $this->uploadFileService->validateUploadedFile($file);
 
             if (false === $isValid) {
-                $this->logger->error('invalid file with name ' . $file->getName());
+                $this->logger->error('invalid file with name ' . $file->getClientFilename());
                 continue;
             }
             $coreFile = $this->uploadFileService->toCoreFile($file);

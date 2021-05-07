@@ -29,8 +29,8 @@ use KSP\Core\Repository\User\IUserRepository;
 
 class Verification {
 
-    public const FIELD_NAME_USER_HASH = "user_hash";
-    public const FIELD_NAME_TOKEN     = "token";
+    public const FIELD_NAME_USER_HASH = "x-keestash-user";
+    public const FIELD_NAME_TOKEN     = "x-keestash-token";
 
     private ITokenRepository $tokenRepository;
     private IUserRepository  $userRepository;

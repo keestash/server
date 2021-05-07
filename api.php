@@ -48,6 +48,10 @@ use Psr\Container\ContainerInterface;
 
     $router = $config->get(ConfigProvider::API_ROUTER);
 
+    /** @var IEventDispatcher $eventDispatcher */
+    $eventDispatcher = $container->get(IEventDispatcher::class);
+    $eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
+
     /** @var Config $route */
     foreach ($router[ConfigProvider::ROUTES] as $route) {
         $method     = strtolower((string) $route->get('method'));
@@ -75,8 +79,5 @@ use Psr\Container\ContainerInterface;
         }
     }
 
-    /** @var IEventDispatcher $eventDispatcher */
-    $eventDispatcher = $container->get(IEventDispatcher::class);
-    $eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
     $app->run();
 })();

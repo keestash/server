@@ -9,7 +9,6 @@ apt-get -y install software-properties-common
 add-apt-repository -y ppa:ondrej/php
 apt-get update
 
-
 apt-get update
 
 debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
@@ -23,7 +22,7 @@ mysql -uroot -p$DBPASSWD -e "CREATE USER '$DBUSER'@'%' IDENTIFIED BY '$DBPASSWD'
 mysql -uroot -p$DBPASSWD -e "GRANT ALL PRIVILEGES ON $DBNAME.* TO '$DBUSER'@'%' WITH GRANT OPTION;"
 mysql -uroot -p$DBPASSWD -e "flush privileges"
 
-sudo apt-get -y install apache2 php7.4 php7.4-mysql php7.4-mbstring php7.4-dom php7.4-sqlite php7.4-zip php7.4-curl php7.4-intl php7.4-redis redis-server
+sudo apt-get -y install apache2 php7.4 php7.4-mysql php7.4-mbstring php7.4-dom php7.4-sqlite php7.4-zip php7.4-curl php7.4-intl php7.4-redis redis-server php-xdebug
 
 sudo apt-get -y install curl composer zip unzip
 

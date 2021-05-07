@@ -27,6 +27,8 @@ use Keestash\Core\Service\Config\IniConfigService;
 use KSP\Core\DTO\File\IFile as ICoreFile;
 use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\Service\File\Upload\IFileService;
+use Laminas\Diactoros\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\Mime\MimeTypes;
 
 class FileService implements IFileService {
@@ -37,7 +39,22 @@ class FileService implements IFileService {
         $this->iniConfigService = $iniConfigService;
     }
 
+    public function toFile(UploadedFileInterface $file): IFile {
+        $uri = $file->getStream()->getMetadata('uri');
+
+        /** @var \Keestash\Core\DTO\File\Upload\File $file */
+        $file = \Keestash\Core\DTO\File\Upload\File::fromUploadedFile($file);
+        $file->setTmpName(
+            $uri
+        );
+        $file->setType(
+            mime_content_type($uri)
+        );
+        return $file;
+    }
+
     public function validateUploadedFile(IFile $file): bool {
+        /** @var UploadedFile $file */
         $error          = $file->getError();
         $tmpName        = $file->getTmpName();
         $type           = $file->getType();
@@ -63,7 +80,7 @@ class FileService implements IFileService {
         $coreFile->setHash(md5_file($file->getTmpName()));
         $coreFile->setTemporaryPath($file->getTmpName());
         $coreFile->setMimeType($file->getType());
-        $coreFile->setName($file->getName());
+        $coreFile->setName($file->getClientFilename());
         $coreFile->setSize($file->getSize());
         $coreFile->setCreateTs(new DateTime());
         return $coreFile;

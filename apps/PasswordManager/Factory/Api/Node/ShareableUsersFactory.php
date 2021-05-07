@@ -25,6 +25,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
@@ -40,6 +41,7 @@ class ShareableUsersFactory {
             , $container->get(IFileManager::class)
             , $container->get(RawFileService::class)
             , $container->get(FileService::class)
+            , $container->get(ILogger::class)
         );
     }
 

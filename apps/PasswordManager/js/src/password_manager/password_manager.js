@@ -16,66 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import $ from 'jquery';
-import {NODE_ID_ROOT, STORAGE_ID_ROOT} from "./Node/Node";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import Vuex from "vuex";
+import App from "./App";
+import i18n from "./../i18n/index";
+import store from "../config/store";
 
-import {BREADCRUMB_SERVICE, TEMPORARY_STORAGE} from "../../../../../lib/js/src/StartUp";
-import {
-    ACTION_BAR_CREDENTIAL,
-    ACTION_BAR_FOLDER,
-    Container,
-    PASSWORD_LIST_SEARCH,
-    PWM_NODE
-} from "../Common/Container/Container";
+window.addEventListener(
+    'DOMContentLoaded'
+    , async () => {
+        const vueConfig = {
+            store,
+            i18n,
+            render: h => h(App)
+        };
 
-(function () {
-    if (!Keestash.Apps.PasswordManager) {
-        Keestash.Apps.PasswordManager = {};
+        Vue.use(BootstrapVue);
+        Vue.use(IconsPlugin);
+        Vue.use(Vuex);
+        new Vue(
+            vueConfig
+        )
+            .$mount("#pwm");
     }
-    Keestash.Apps.PasswordManager = {
-        init: async () => {
-
-            const container = new Container();
-            container.register();
-
-            const diContainer = Keestash.Main.getContainer();
-            const temporaryStorage = diContainer.query(TEMPORARY_STORAGE);
-            const node = diContainer.query(PWM_NODE);
-            const breadCrumbService = diContainer.query(BREADCRUMB_SERVICE);
-
-            breadCrumbService.show();
-
-            const rootId = temporaryStorage.get(
-                STORAGE_ID_ROOT
-                , NODE_ID_ROOT
-            );
-
-            node.loadDetails(
-                rootId
-            );
-
-            Keestash.Main.setAppNavigationListener(
-                (id) => {
-                    node.loadDetails(id);
-                }
-            );
-
-
-            Keestash.Main.initActionBar(
-                [
-                    diContainer.query(ACTION_BAR_CREDENTIAL)
-                    , diContainer.query(ACTION_BAR_FOLDER)
-                ]
-                , "password__manager__add"
-            );
-
-            const searchPasswordList = diContainer.query(PASSWORD_LIST_SEARCH);
-            searchPasswordList.init();
-        },
-    }
-})();
-
-
-$(document).ready(async () => {
-    await Keestash.Apps.PasswordManager.init();
-});
+);

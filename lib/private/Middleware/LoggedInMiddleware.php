@@ -83,7 +83,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
             return $handler->handle($request);
         }
 
-        $publicRoutes = $publicRoutes = $this->config
+        $publicRoutes = $this->config
             ->get(ConfigProvider::WEB_ROUTER)
             ->get(ConfigProvider::PUBLIC_ROUTES)
             ->toArray();
@@ -106,7 +106,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
         }
 
         $user = $this->userRepository->getUserById((string) $userId);
-        
+
         if (true === $persisted
             && null !== $user
         ) {

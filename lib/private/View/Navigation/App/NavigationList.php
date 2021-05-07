@@ -31,6 +31,11 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
  */
 class NavigationList extends ArrayList {
 
+    /**
+     * @param $item
+     * @return bool
+     * @phpstan-ignore-next-line
+     */
     public function add($item): bool {
         if ($item instanceof Segment) {
             return parent::add($item);
@@ -49,6 +54,12 @@ class NavigationList extends ArrayList {
         return false;
     }
 
+    /**
+     * @param int $index
+     * @param     $item
+     * @return bool
+     * @phpstan-ignore-next-line
+     */
     public function addToIndex(int $index, $item): bool {
         if ($item instanceof Segment) {
             return parent::addToIndex($index, $item);

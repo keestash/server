@@ -362,7 +362,7 @@ class NodeRepository extends AbstractRepository {
                     and e.`expire_ts` > CURRENT_TIMESTAMP
         ";
 
-        $result = $this->rawQuery($sql);
+        $result = $this->raw($sql);
 
         foreach ($result->fetchAllNumeric() as $row) {
             $share    = new Share();
@@ -491,7 +491,7 @@ ORDER BY d.`level`;
 
         $nodes = [];
 
-        $result = $this->rawQuery($sql);
+        $result = $this->raw($sql);
         foreach ($result->fetchAllNumeric() as $row) {
             $nodes[] = [
                 'name' => $row[0]

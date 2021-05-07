@@ -25,8 +25,18 @@ interface ICacheService {
 
     public function connect(): void;
 
+    /**
+     * @param string $key
+     * @param        $value
+     * @return bool
+     * @phpstan-ignore-next-line
+     */
     public function set(string $key, $value): bool;
 
+    /**
+     * @param string $key
+     * @return mixed
+     */
     public function get(string $key);
 
     public function exists(string $key): bool;

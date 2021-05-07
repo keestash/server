@@ -22,28 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\File\Upload;
 
 use KSP\Core\DTO\File\Upload\IFile;
+use Laminas\Diactoros\UploadedFile;
+use Psr\Http\Message\UploadedFileInterface;
 
-class File implements IFile {
+class File extends UploadedFile implements IFile {
 
-    private string $name;
     private string $type;
     private string $tmpName;
-    private int    $error;
-    private int    $size;
-
-    /**
-     * @return string
-     */
-    public function getName(): string {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void {
-        $this->name = $name;
-    }
 
     /**
      * @return string
@@ -73,32 +58,14 @@ class File implements IFile {
         $this->tmpName = $tmpName;
     }
 
-    /**
-     * @return int
-     */
-    public function getError(): int {
-        return $this->error;
-    }
-
-    /**
-     * @param int $error
-     */
-    public function setError(int $error): void {
-        $this->error = $error;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSize(): int {
-        return $this->size;
-    }
-
-    /**
-     * @param int $size
-     */
-    public function setSize(int $size): void {
-        $this->size = $size;
+    public static function fromUploadedFile(UploadedFileInterface $file): IFile {
+        return new File(
+            $file->getStream()
+            , $file->getSize()
+            , $file->getError()
+            , $file->getClientFilename()
+            , $file->getClientMediaType()
+        );
     }
 
 }

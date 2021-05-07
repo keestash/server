@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use Psr\Container\ContainerInterface;
 
 class CreateKeyFactory {

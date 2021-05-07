@@ -162,7 +162,6 @@ class Add implements RequestHandlerInterface {
 
         if ($responseCode === IResponse::RESPONSE_CODE_OK) {
 
-            $user = null;
             try {
                 $user = $this->userRepositoryService->createUser(
                     $this->userService->toNewUser($request->getParsedBody())

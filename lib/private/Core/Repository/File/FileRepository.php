@@ -135,12 +135,15 @@ class FileRepository extends AbstractRepository implements IFileRepository {
         $queryBuilder->select(
             [
                 'id'
+                , 'name'
+                , 'directory'
+                , 'path'
                 , 'mime_type'
                 , 'hash'
                 , 'extension'
                 , 'size'
                 , 'create_ts'
-                , 'directory'
+                , 'user_id'
             ]
         )
             ->from('file')
@@ -157,16 +160,17 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             throw new KeestashException("found more then one user for the given name");
         }
 
+
         $row       = $files[0];
-        $id        = $row[0];
-        $name      = $row[1];
-        $mimeType  = $row[2];
-        $hash      = $row[3];
-        $extension = $row[4];
-        $size      = $row[5];
-        $userId    = $row[6];
-        $createTs  = $row[7];
-        $directory = $row[8];
+        $id        = $row["id"];
+        $name      = $row["name"];
+        $directory = $row["directory"];
+        $mimeType  = $row["mime_type"];
+        $hash      = $row["hash"];
+        $extension = $row["extension"];
+        $size      = $row["size"];
+        $createTs  = $row["create_ts"];
+        $userId    = $row["user_id"];
 
         $file = new File();
         $file->setId((int) $id);

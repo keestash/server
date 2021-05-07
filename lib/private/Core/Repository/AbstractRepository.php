@@ -51,10 +51,16 @@ class AbstractRepository implements IRepository {
         return $this->backend->getConnection()->lastInsertId();
     }
 
-    protected function rawQuery(string $query) {
+    protected function execute(string $query) {
         return $this->backend->getConnection()
             ->prepare($query)
             ->execute();
+    }
+
+    protected function raw(string $query) {
+        return $this->backend
+            ->getConnection()
+            ->executeQuery($query);
     }
 
     protected function getSchemaName(): string {

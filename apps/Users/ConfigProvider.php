@@ -149,7 +149,9 @@ final class ConfigProvider {
                 ]
             ],
             CoreConfigProvider::EVENTS     => [
-                UserStateDeleteEvent::class => PostStateChange::class
+                UserStateDeleteEvent::class => [
+                    PostStateChange::class
+                ]
             ],
             'templates'                    => [
                 'paths' => [

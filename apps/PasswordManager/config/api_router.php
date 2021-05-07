@@ -131,7 +131,7 @@ return [
             , 'name'       => ShareableUsers::class
         ],
         [
-            'path'         => '/password_manager/attachments/add/:token/:user_hash[/]'
+            'path'         => '/password_manager/attachments/add[/]'
             , 'middleware' => \KSA\PasswordManager\Api\Node\Attachment\Add::class
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Add::class
@@ -188,6 +188,5 @@ return [
     ConfigProvider::PUBLIC_ROUTES => [
         '/password_manager/node/get/avatar/:nodeId[/]'
         , '/password_manager/public_share/decrypt/:hash[/]'
-        , '/password_manager/credential/get/:id[/]'
     ]
 ];

@@ -40,8 +40,8 @@ class InstanceRepository extends AbstractRepository {
     public function dropSchema(bool $includeSchema = false): bool {
 
         if (true === $includeSchema) {
-            $this->rawQuery("DROP SCHEMA {$this->getSchemaName()};");
-            $this->rawQuery("CREATE SCHEMA {$this->getSchemaName()};");
+            $this->execute("DROP SCHEMA {$this->getSchemaName()};");
+            $this->execute("CREATE SCHEMA {$this->getSchemaName()};");
             return true;
         }
 
@@ -52,19 +52,19 @@ class InstanceRepository extends AbstractRepository {
         }
 
         $queries   = [];
-        $this->rawQuery("SET FOREIGN_KEY_CHECKS = 0");
+        $this->execute("SET FOREIGN_KEY_CHECKS = 0");
         foreach ($tables as $table) {
             $this->logger->debug($table);
-            $this->rawQuery("DROP TABLE IF EXISTS `$table`;");
+            $this->execute("DROP TABLE IF EXISTS `$table`;");
         }
-        $this->rawQuery("SET FOREIGN_KEY_CHECKS = 1");
+        $this->execute("SET FOREIGN_KEY_CHECKS = 1");
 
         $this->logger->debug(implode(";", $queries));
         return true;
     }
 
-    public function rawQuery(string $query) {
-        return parent::rawQuery($query);
+    public function execute(string $query) {
+        return parent::execute($query);
     }
 
 }

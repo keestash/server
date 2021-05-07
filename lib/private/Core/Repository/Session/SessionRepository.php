@@ -114,7 +114,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
             // MySQL only thing: https://stackoverflow.com/a/4561615/1966490
             $updateTs = $this->dateTimeService->toYMDHIS(new DateTime());
             $sql      = "REPLACE INTO `session`(`id`, `data`,`update_ts`) VALUES ('" . $id . "', '" . $data . "', '" . $updateTs . "')";
-            return $this->rawQuery($sql);
+            return $this->execute($sql);
         } catch (Throwable $exception) {
             $this->logger->error('error while replacing session. This can be a normal behaviour (for instance during installation). Please look into the messages in level debug for more information');
             $this->logger->debug(
