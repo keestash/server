@@ -38,9 +38,8 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getQueryParams();
-        $nodeId     = $parameters["nodeId"] ?? null;
-        $token      = $request->getAttribute(IToken::class);
+        $nodeId = $request->getAttribute("nodeId");
+        $token  = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
             throw new CommentException();

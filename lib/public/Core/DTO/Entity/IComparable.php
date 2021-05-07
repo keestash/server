@@ -23,6 +23,11 @@ namespace KSP\Core\DTO\Entity;
 
 interface IComparable {
 
+    /**
+     * @param $object
+     * @return bool
+     * @phpstan-ignore-next-line
+     */
     public function equals($object): bool;
 
 }

@@ -17,7 +17,6 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Service\File\Icon\IconService;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
@@ -25,6 +24,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\File\Icon\IIconService;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
@@ -36,7 +36,7 @@ class Get implements RequestHandlerInterface {
     private IFileRepository $fileRepository;
     private NodeRepository  $nodeRepository;
     private FileRepository  $nodeFileRepository;
-    private IconService     $iconService;
+    private IIconService    $iconService;
     private IL10N           $translator;
     private Config          $config;
 
@@ -45,7 +45,7 @@ class Get implements RequestHandlerInterface {
         , IFileRepository $uploadFileRepository
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
-        , IconService $iconService
+        , IIconService $iconService
         , Config $config
     ) {
         $this->translator         = $l10n;

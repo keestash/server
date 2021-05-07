@@ -39,7 +39,9 @@ return [
         , Compiler::class
     ],
     ConfigProvider::EVENTS     => [
-        UserChangedEvent::class => UserChangedListener::class
+        UserChangedEvent::class => [
+            UserChangedListener::class
+        ]
     ],
     'templates'                => [
         'paths' => [

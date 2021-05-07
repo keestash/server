@@ -54,6 +54,7 @@ use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Router\RouterService;
@@ -91,6 +92,7 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\IEventDispatcher;
+use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Organization\IOrganizationService;
@@ -100,44 +102,46 @@ use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 
 return [
-    IL10N::class                      => GetText::class,
-    IUserService::class               => UserService::class,
-    IApiLogRepository::class          => ApiLogRepository::class,
-    ISQLBackend::class                => MySQLBackend::class,
-    IBackend::class                   => ISQLBackend::class,
-    IConfigService::class             => ConfigService::class,
-    IDateTimeService::class           => DateTimeService::class,
-    IFileRepository::class            => FileRepository::class,
-    IUserRepository::class            => UserRepository::class,
-    ILoggerManager::class             => LoggerManager::class,
-    IUserKeyRepository::class         => UserKeyRepository::class,
-    IKeyService::class                => KeyService::class,
-    IEncryptionService::class         => KeestashEncryptionService::class,
-    IOrganizationKeyRepository::class => OrganizationKeyRepository::class,
-    IUserStateRepository::class       => UserStateRepository::class,
-    IFileService::class               => FileService::class,
-    ICredentialService::class         => CredentialService::class,
-    IEventManager::class              => EventManager::class,
-    ILoader::class                    => Loader::class,
-    ICacheService::class              => NullService::class,
-    ITokenRepository::class           => TokenRepository::class,
-    IEventDispatcher::class           => EventDispatcher::class,
-    IEmailService::class              => EmailService::class,
-    IAppRepository::class             => AppRepository::class,
-    ICookieManager::class             => CookieManager::class,
-    IOrganizationService::class       => OrganizationService::class,
-    IFileManager::class               => FileManager::class,
-    IJobRepository::class             => JobRepository::class,
-    IPersistenceService::class        => PersistenceService::class,
-    ISessionManager::class            => SessionManager::class,
-    ILocaleService::class             => LocaleService::class,
-    ILanguageService::class           => LanguageService::class,
-    SessionHandlerInterface::class    => SessionHandler::class,
-    ISessionRepository::class         => SessionRepository::class,
-    IEnvironmentService::class        => EnvironmentService::class,
-    IRouterService::class             => RouterService::class,
-    IAppRenderer::class               => AppRenderer::class,
-    ISettingManager::class            => SettingManager::class,
-    IAppService::class                => AppService::class,
-    IUserRepositoryService::class     => UserRepositoryService::class
+    IL10N::class                                      => GetText::class,
+    IUserService::class                               => UserService::class,
+    IApiLogRepository::class                          => ApiLogRepository::class,
+    ISQLBackend::class                                => MySQLBackend::class,
+    IBackend::class                                   => ISQLBackend::class,
+    IConfigService::class                             => ConfigService::class,
+    IDateTimeService::class                           => DateTimeService::class,
+    IFileRepository::class                            => FileRepository::class,
+    IUserRepository::class                            => UserRepository::class,
+    ILoggerManager::class                             => LoggerManager::class,
+    IUserKeyRepository::class                         => UserKeyRepository::class,
+    IKeyService::class                                => KeyService::class,
+    IEncryptionService::class                         => KeestashEncryptionService::class,
+    IOrganizationKeyRepository::class                 => OrganizationKeyRepository::class,
+    IUserStateRepository::class                       => UserStateRepository::class,
+    IFileService::class                               => FileService::class,
+    ICredentialService::class                         => CredentialService::class,
+    IEventManager::class                              => EventManager::class,
+    ILoader::class                                    => Loader::class,
+    ICacheService::class                              => NullService::class,
+    ITokenRepository::class                           => TokenRepository::class,
+    IEventDispatcher::class                           => EventDispatcher::class,
+    IEmailService::class                              => EmailService::class,
+    IAppRepository::class                             => AppRepository::class,
+    ICookieManager::class                             => CookieManager::class,
+    IOrganizationService::class                       => OrganizationService::class,
+    IFileManager::class                               => FileManager::class,
+    IJobRepository::class                             => JobRepository::class,
+    IPersistenceService::class                        => PersistenceService::class,
+    ISessionManager::class                            => SessionManager::class,
+    ILocaleService::class                             => LocaleService::class,
+    ILanguageService::class                           => LanguageService::class,
+    SessionHandlerInterface::class                    => SessionHandler::class,
+    ISessionRepository::class                         => SessionRepository::class,
+    IEnvironmentService::class                        => EnvironmentService::class,
+    IRouterService::class                             => RouterService::class,
+    IAppRenderer::class                               => AppRenderer::class,
+    ISettingManager::class                            => SettingManager::class,
+    IAppService::class                                => AppService::class,
+    IUserRepositoryService::class                     => UserRepositoryService::class,
+    IIconService::class                               => IconService::class,
+    \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class
 ];

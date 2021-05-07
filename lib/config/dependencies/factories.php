@@ -55,8 +55,10 @@ use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
+use Keestash\Core\Service\Encryption\Password\PasswordService;
 use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
@@ -196,5 +198,9 @@ return [
     AppService::class                                              => InvokableFactory::class,
     Compiler::class                                                => CompilerFactory::class,
     EdgeService::class                                             => InvokableFactory::class,
-    UserRepositoryService::class                                   => UserRepositoryServiceFactory::class
+    UserRepositoryService::class                                   => UserRepositoryServiceFactory::class,
+    IconService::class                                             => InvokableFactory::class,
+    PasswordService::class                                         => InvokableFactory::class,
+    \Keestash\Core\Service\File\Upload\FileService::class          => \Keestash\Factory\Core\Service\Upload\FileServiceFactory::class,
+    \Keestash\Core\Service\Config\IniConfigService::class          => InvokableFactory::class,
 ];

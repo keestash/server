@@ -127,7 +127,7 @@ class AppRepository extends AbstractRepository implements IAppRepository {
                         '" . $app->getVersion() . "'
                 );
         ";
-        $this->rawQuery($sql);
+        $this->execute($sql);
         // There is otherwise an exception thrown.
         // Do not know how to handle this better for now
         return true;

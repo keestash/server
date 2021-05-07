@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\Event;
 
 use Keestash\Core\Service\Event\EventDispatcher;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Event\IEventDispatcher;
 use Psr\Container\ContainerInterface;
@@ -30,8 +31,9 @@ class EventDispatcherFactory {
 
     public function __invoke(ContainerInterface $container): IEventDispatcher {
         return new EventDispatcher(
-            $container->get(IEventManager::class),
-            $container
+            $container->get(IEventManager::class)
+            , $container
+            , $container->get(ILogger::class)
         );
     }
 

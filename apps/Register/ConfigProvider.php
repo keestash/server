@@ -107,7 +107,9 @@ final class ConfigProvider {
                 ]
             ],
             CoreConfigProvider::EVENTS     => [
-                UserCreatedEvent::class => EmailAfterRegistration::class
+                UserCreatedEvent::class => [
+                    EmailAfterRegistration::class
+                ]
             ],
             CoreConfigProvider::COMMANDS   => [
                 CreateUser::class

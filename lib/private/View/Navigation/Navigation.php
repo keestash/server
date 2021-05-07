@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\View\Navigation;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\View\Navigation\INavigation;
 use KSP\Core\View\Navigation\IPart;
 
@@ -33,13 +32,10 @@ use KSP\Core\View\Navigation\IPart;
  */
 class Navigation implements INavigation {
 
-    private $parts = null;
-
-    private $actionAttributes = null;
+    private ArrayList $parts;
 
     public function __construct() {
-        $this->parts            = new ArrayList();
-        $this->actionAttributes = new HashTable();
+        $this->parts = new ArrayList();
     }
 
     public function addAll(ArrayList $list): bool {

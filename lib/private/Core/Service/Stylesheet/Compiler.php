@@ -50,6 +50,7 @@ class Compiler {
         $compiler = new ScssCompiler();
         $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/vendor/twitter/bootstrap/scss'));
         $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/lib/scss/'));
+        $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/node_modules/'));
 
 //        $compiler->addImportPath($source);
         $css = $compiler->compile(

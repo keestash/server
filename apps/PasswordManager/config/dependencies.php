@@ -134,6 +134,7 @@ return [
         NodeService::class                                                => NodeServiceFactory::class,
         BreadCrumbService::class                                          => BreadCrumbServiceFactory::class,
         CredentialService::class                                          => CredentialServiceFactory::class,
+        \KSA\PasswordManager\Service\Node\Share\ShareService::class       => InvokableFactory::class,
 
         // event
         // ---- listener

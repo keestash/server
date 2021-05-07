@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
-use Keestash\Core\Service\File\Icon\IconService;
 use KSA\PasswordManager\Api\Node\Attachment\Get;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\File\Icon\IIconService;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -38,7 +38,7 @@ class GetFactory {
             , $container->get(IFileRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(FileRepository::class)
-            , $container->get(IconService::class)
+            , $container->get(IIconService::class)
             , $container->get(Config::class)
         );
     }

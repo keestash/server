@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Request";
-import {RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
+import {HEADER_NAME_TOKEN, HEADER_NAME_USER, RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
 
 export class Submit {
 
@@ -84,8 +84,8 @@ export class Submit {
                         return {
                             data: response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES]
                             , headers: {
-                                api_token: response.headers.api_token
-                                , user_hash: response.headers.user_hash
+                                [HEADER_NAME_TOKEN]: response.headers[HEADER_NAME_TOKEN]
+                                , [HEADER_NAME_USER]: response.headers[HEADER_NAME_USER]
                             }
                         };
                     })
@@ -108,8 +108,8 @@ export class Submit {
                         }
 
                         _this.appStorage.storeAPICredentials(
-                            data.headers.api_token
-                            , data.headers.user_hash
+                            data.headers[HEADER_NAME_TOKEN]
+                            , data.headers[HEADER_NAME_USER]
                         );
 
                         console.log(data);

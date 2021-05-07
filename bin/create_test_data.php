@@ -34,6 +34,7 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Psr\Container\ContainerInterface;
 
 (function () {
 
@@ -43,19 +44,23 @@ use KSP\Core\Service\User\Repository\IUserRepositoryService;
     require_once __DIR__ . '/../lib/filecheck.php';
     require_once __DIR__ . '/../lib/extensioncheck.php';
     require_once __DIR__ . '/../config/config.php';
+    require_once __DIR__ . '/../config/config.php';
+
+    /** @var ContainerInterface $container */
+    $container = require_once __DIR__ . '/../lib/start.php';
 
     /** @var NodeService $nodeService */
-    $nodeService = $server->query(NodeService::class);
+    $nodeService = $container->get(NodeService::class);
     /** @var NodeRepository $nodeRepository */
-    $nodeRepository = $server->query(NodeRepository::class);
+    $nodeRepository = $container->get(NodeRepository::class);
     /** @var UserRepository $userRepository */
-    $userRepository = $server->query(UserRepository::class);
+    $userRepository = $container->get(UserRepository::class);
     /** @var UserService $userService */
-    $userService = $server->query(UserService::class);
+    $userService = $container->get(UserService::class);
     /** @var IUserRepositoryService $userRepositoryService */
-    $userRepositoryService = $server->query(IUserRepositoryService::class);
+    $userRepositoryService = $container->get(IUserRepositoryService::class);
     /** @var CredentialService $credentialService */
-    $credentialService = $server->query(CredentialService::class);
+    $credentialService = $container->get(CredentialService::class);
 
     $user = $userRepository->getUser("dogano");
 
@@ -168,7 +173,7 @@ function createCredential(
         , Folder $parent
 ): array {
 //    $credentialSize = rand(1, 5 );
-    $credentialSize = 5;
+    $credentialSize = 3;
     $credentials    = [];
     for ($i = 0; $i < $credentialSize; $i++) {
         $credential    = $credentialService->createCredential(
@@ -187,7 +192,7 @@ function createCredential(
 
 function createFolder(IUser $user): array {
 //    $folderSize = rand(1, 5);
-    $folderSize = 5;
+    $folderSize = 3;
     $folders    = [];
     for ($i = 0; $i < $folderSize; $i++) {
         $nextFolder = new Folder();

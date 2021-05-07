@@ -26,6 +26,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
@@ -37,6 +38,8 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ *
+ * TODO improve performance
  */
 class ShareableUsers implements RequestHandlerInterface {
 
@@ -46,6 +49,7 @@ class ShareableUsers implements RequestHandlerInterface {
     private FileManager     $fileManager;
     private RawFileService  $rawFileService;
     private FileService     $fileService;
+    private ILogger         $logger;
 
     public function __construct(
         IL10N $l10n
@@ -54,6 +58,7 @@ class ShareableUsers implements RequestHandlerInterface {
         , FileManager $fileManager
         , RawFileService $rawFileService
         , FileService $fileService
+        , ILogger $logger
     ) {
         $this->translator     = $l10n;
         $this->userRepository = $userRepository;
@@ -61,9 +66,11 @@ class ShareableUsers implements RequestHandlerInterface {
         $this->fileManager    = $fileManager;
         $this->rawFileService = $rawFileService;
         $this->fileService    = $fileService;
+        $this->logger         = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        $start  = microtime(true);
         $nodeId = $request->getAttribute("nodeId");
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
@@ -78,9 +85,10 @@ class ShareableUsers implements RequestHandlerInterface {
             throw new InvalidParameterException();
         }
 
-        $all          = $this->userRepository->getAll();
-        $all          = $this->excludeInvalidUsers($node, $all);
-        $pictureTable = $this->createPictureTable($all);
+        $all = $this->userRepository->getAll();
+        $all = $this->excludeInvalidUsers($node, $all);
+//        $pictureTable = $this->createPictureTable($all);
+        $pictureTable = [];
 
         if (null === $all) {
             return LegacyResponse::fromData(
@@ -91,11 +99,14 @@ class ShareableUsers implements RequestHandlerInterface {
             );
         }
 
+        $duration = microtime(true) - $start;
+        $this->logger->debug('all users duration: ' . $duration);
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "user_list"  => $all
                 , "pictures" => $pictureTable
+                , "duration" => $duration
             ]
         );
     }

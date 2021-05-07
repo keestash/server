@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\View\Navigation;
 
-use DateTime;
+use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
 
 interface IEntry extends IComparable {
@@ -34,9 +34,9 @@ interface IEntry extends IComparable {
 
     public function getFAClass(): ?string;
 
-    public function getStartDate(): ?DateTime;
+    public function getStartDate(): ?DateTimeInterface;
 
-    public function getEndDate(): ?DateTime;
+    public function getEndDate(): ?DateTimeInterface;
 
     public function isFavorite(): bool;
 

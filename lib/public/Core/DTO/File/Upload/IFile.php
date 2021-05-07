@@ -21,16 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\File\Upload;
 
-interface IFile {
+use Psr\Http\Message\UploadedFileInterface;
 
-    public function getName(): string;
+interface IFile extends UploadedFileInterface {
 
     public function getType(): string;
 
     public function getTmpName(): string;
-
-    public function getError(): int;
-
-    public function getSize(): int;
 
 }

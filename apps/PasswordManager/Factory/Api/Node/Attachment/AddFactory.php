@@ -38,7 +38,7 @@ class AddFactory {
             $container->get(IFileRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(FileRepository::class)
-            , $container->get(IFileService::class)
+            , $container->get(\KSP\Core\Service\File\Upload\IFileService::class)
             , $container->get(IIconService::class)
             , $container->get(ILogger::class)
             , $container->get(Config::class)

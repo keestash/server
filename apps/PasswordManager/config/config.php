@@ -29,10 +29,10 @@ use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 
 return [
-    'dependencies'             => require __DIR__ . '/dependencies.php',
-    ConfigProvider::API_ROUTER => require __DIR__ . '/api_router.php',
-    ConfigProvider::WEB_ROUTER => require __DIR__ . '/web_router.php',
-    ConfigProvider::APP_LIST   => [
+    ConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
+    ConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php',
+    ConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php',
+    ConfigProvider::APP_LIST     => [
         \KSA\PasswordManager\ConfigProvider::APP_ID => [
             ConfigProvider::APP_ORDER      => 8,
             ConfigProvider::APP_NAME       => 'Password Manager',
@@ -40,15 +40,19 @@ return [
             ConfigProvider::APP_VERSION    => 1,
         ],
     ],
-    ConfigProvider::EVENTS     => [
-        UserCreatedEvent::class   => AfterRegistration::class
-        , UserUpdatedEvent::class => AfterPasswordChanged::class
+    ConfigProvider::EVENTS       => [
+        UserCreatedEvent::class   => [
+            AfterRegistration::class
+        ]
+        , UserUpdatedEvent::class => [
+            AfterPasswordChanged::class
+        ]
     ],
-    ConfigProvider::COMMANDS   => [
+    ConfigProvider::COMMANDS     => [
         CreateFolder::class
         , CreateCredential::class
     ],
-    'templates'                => [
+    'templates'                  => [
         'paths' => [
             'passwordManager' => [__DIR__ . '/../template']
         ]

@@ -25,6 +25,7 @@ use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
+use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
@@ -126,8 +127,8 @@ class Login implements RequestHandlerInterface {
         ],
             200,
             [
-                "api_token"   => $token->getValue()
-                , 'user_hash' => $user->getHash()
+                Verification::FIELD_NAME_TOKEN       => $token->getValue()
+                , Verification::FIELD_NAME_USER_HASH => $user->getHash()
 
             ]
         );

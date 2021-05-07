@@ -22,32 +22,33 @@ declare(strict_types=1);
 namespace Keestash\View\Navigation;
 
 use DateTime;
+use DateTimeInterface;
 use KSP\Core\View\Navigation\IEntry;
 
 class Entry implements IEntry {
 
-    private $id;
-    private $name;
-    private $order;
-    private $faClass;
-    private $startDate;
-    private $endDate;
-    private $favorite;
-    private $visible;
+    private string             $id;
+    private string             $name;
+    private int                $order;
+    private ?string            $faClass;
+    private ?DateTimeInterface $startDate;
+    private ?DateTimeInterface $endDate;
+    private bool               $favorite;
+    private bool               $visible;
 
-    public function getStartDate(): ?DateTime {
+    public function getStartDate(): ?DateTimeInterface {
         return $this->startDate;
     }
 
-    public function setStartDate(?DateTime $startDate): void {
+    public function setStartDate(?DateTimeInterface $startDate): void {
         $this->startDate = $startDate;
     }
 
-    public function getEndDate(): ?DateTime {
+    public function getEndDate(): ?DateTimeInterface {
         return $this->endDate;
     }
 
-    public function setEndDate(?DateTime $endDate): void {
+    public function setEndDate(?DateTimeInterface $endDate): void {
         $this->endDate = $endDate;
     }
 

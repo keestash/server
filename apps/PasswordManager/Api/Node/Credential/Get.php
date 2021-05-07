@@ -56,6 +56,7 @@ class Get implements RequestHandlerInterface {
         $nodeId = (int) $request->getAttribute("id", 0);
 
         $node = $this->nodeRepository->getNode($nodeId, 1);
+
         if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
             return LegacyResponse::fromData(
                 404

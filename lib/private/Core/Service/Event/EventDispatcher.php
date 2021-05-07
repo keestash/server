@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Event;
 
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Event\IEventDispatcher;
 use Psr\Container\ContainerInterface;
@@ -29,23 +30,27 @@ class EventDispatcher implements IEventDispatcher {
 
     private IEventManager      $eventManager;
     private ContainerInterface $container;
+    private ILogger            $logger;
 
     public function __construct(
         IEventManager $eventManager
         , ContainerInterface $container
+        , ILogger $logger
     ) {
         $this->eventManager = $eventManager;
         $this->container    = $container;
+        $this->logger       = $logger;
     }
 
     public function register(array $events): void {
 
-        foreach ($events as $event => $listener) {
-            $this->eventManager->registerListener(
-                $event
-                , $this->container->get($listener)
-            );
-
+        foreach ($events as $event => $listeners) {
+            foreach ($listeners as $listener) {
+                $this->eventManager->registerListener(
+                    $event
+                    , $this->container->get($listener)
+                );
+            }
         }
     }
 

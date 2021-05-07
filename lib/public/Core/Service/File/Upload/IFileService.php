@@ -23,10 +23,13 @@ namespace KSP\Core\Service\File\Upload;
 
 use KSP\Core\DTO\File\IFile as ICoreFile;
 use KSP\Core\DTO\File\Upload\IFile;
+use Psr\Http\Message\UploadedFileInterface;
 
 interface IFileService {
 
     public function validateUploadedFile(IFile $file): bool;
+
+    public function toFile(UploadedFileInterface $file): IFile;
 
     public function toCoreFile(IFile $file): ICoreFile;
 
