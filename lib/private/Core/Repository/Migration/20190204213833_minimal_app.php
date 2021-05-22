@@ -113,6 +113,10 @@ class MinimalApp extends AbstractMigration {
                     , "after" => "phone"
                 ]
             )
+            ->addIndex(
+                ['name']
+                , ['unique' => true]
+            )
             ->save();
 
         $this->createUserState();

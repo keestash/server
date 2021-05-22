@@ -34,7 +34,7 @@ final class ConfigProvider {
         return [
             CoreConfigProvider::APP_LIST   => [
                 ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 0,
+                    CoreConfigProvider::APP_ORDER      => 8,
                     CoreConfigProvider::APP_NAME       => 'About',
                     CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ABOUT,
                     CoreConfigProvider::APP_VERSION    => 1,

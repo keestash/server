@@ -53,7 +53,7 @@ use Psr\Container\ContainerInterface;
     $eventDispatcher = $container->get(IEventDispatcher::class);
     $eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
 
-    $userAmount = 50;
+    $userAmount = 5;
 
     for ($i = 0; $i < $userAmount; $i++) {
         $user = createUser(
@@ -65,9 +65,9 @@ use Psr\Container\ContainerInterface;
 
 function createUser(Legacy $legacy): IUser {
     $user = new User();
-    $user->setName(IUser::DEMO_USER_NAME);
+    $user->setName(hash("md5", uniqid("", true)));
     $user->setHash(
-            hash("md5", uniqid())
+            hash("md5", uniqid("", true))
     );
     $user->setCreateTs(new DateTime());
     $user->setEmail((string) $legacy->getApplication()->get("email"));

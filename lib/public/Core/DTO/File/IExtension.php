@@ -25,13 +25,14 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IExtension extends IJsonObject {
 
-    public const DOC  = "doc";
-    public const DOCX = "docx";
-    public const PNG  = "png";
-    public const JPG  = "jpg";
-    public const JPEG = "jpeg";
-    public const PDF  = "pdf";
-    public const TWIG = "twig";
-    public const JSON = "json";
+    public const DOC               = "doc";
+    public const DOCX              = "docx";
+    public const PNG               = "png";
+    public const JPG               = "jpg";
+    public const JPEG              = "jpeg";
+    public const PDF               = "pdf";
+    public const TWIG              = "twig";
+    public const JSON              = "json";
+    public const TEXT = "text";
 
 }

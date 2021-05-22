@@ -36,6 +36,8 @@ interface IUserRepository extends IRepository {
 
     public function getUserById(string $id): ?IUser;
 
+    public function getUserByHash(string $hash): ?IUser;
+
     public function getAll(): ArrayList;
 
     public function insert(IUser $user): ?int;
@@ -43,5 +45,7 @@ interface IUserRepository extends IRepository {
     public function update(IUser $user): bool;
 
     public function remove(IUser $user): bool;
+
+    public function searchUsers(string $name): ArrayList;
 
 }

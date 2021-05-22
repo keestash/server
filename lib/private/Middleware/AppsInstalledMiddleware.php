@@ -47,8 +47,6 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
     private ILoader             $loader;
     private IAppRepository      $appRepository;
     private Diff                $diff;
-    private InstallerService    $appsInstallerService;
-    private IEnvironmentService $environmentService;
     private IRouterService      $routerService;
 
     public function __construct(
@@ -59,8 +57,6 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         , IAppRepository $appRepository
         , Diff $diff
         , AppLockHandler $appLockHandler
-        , InstallerService $appsInstallerService
-        , IEnvironmentService $environmentService
         , IRouterService $routerService
     ) {
         $this->httpService          = $httpService;
@@ -70,8 +66,6 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         $this->appRepository        = $appRepository;
         $this->diff                 = $diff;
         $this->appLockHandler       = $appLockHandler;
-        $this->appsInstallerService = $appsInstallerService;
-        $this->environmentService   = $environmentService;
         $this->routerService        = $routerService;
     }
 

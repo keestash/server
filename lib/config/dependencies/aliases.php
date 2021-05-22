@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
+use doganoo\DIP\Object\String\StringService;
 use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
@@ -143,5 +145,6 @@ return [
     IAppService::class                                => AppService::class,
     IUserRepositoryService::class                     => UserRepositoryService::class,
     IIconService::class                               => IconService::class,
-    \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class
+    \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class,
+    IStringService::class                             => StringService::class,
 ];

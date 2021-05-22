@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\User;
 
 use doganoo\DI\DateTime\IDateTimeService;
+use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\Service\User\IUserService;
@@ -31,8 +33,10 @@ class UserServiceFactory {
 
     public function __invoke(ContainerInterface $container): IUserService {
         return new UserService(
-            $container->get(Legacy::class),
-            $container->get(IDateTimeService::class)
+            $container->get(Legacy::class)
+            , $container->get(IDateTimeService::class)
+            , $container->get(HTTPService::class)
+            , $container->get(InstanceDB::class)
         );
     }
 

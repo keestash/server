@@ -22,11 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\User;
 
 use DateTimeInterface;
-use Exception;
 use KSP\Core\DTO\User\IUser;
-use Laminas\Validator\EmailAddress;
-use Laminas\Validator\NotEmpty;
-use Laminas\Validator\Uri;
 
 /**
  * Class User
@@ -48,6 +44,21 @@ class User implements IUser {
     private string            $hash;
     private bool              $locked  = false;
     private bool              $deleted = false;
+    private ?string           $jwt     = null;
+
+    /**
+     * @return string|null
+     */
+    public function getJwt(): ?string {
+        return $this->jwt;
+    }
+
+    /**
+     * @param string|null $jwt
+     */
+    public function setJWT(?string $jwt): void {
+        $this->jwt = $jwt;
+    }
 
     /**
      * @return string
@@ -88,7 +99,7 @@ class User implements IUser {
      * Specify data which should be serialized to JSON
      *
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
@@ -106,6 +117,7 @@ class User implements IUser {
                 , "hash"       => $this->getHash()
                 , "locked"     => $this->isLocked()
                 , "deleted"    => $this->isDeleted()
+                , 'jwt'        => $this->getJwt()
             ];
     }
 
@@ -132,8 +144,6 @@ class User implements IUser {
 
     /**
      * @param DateTimeInterface $createTs
-     *
-     * @throws Exception
      */
     public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;

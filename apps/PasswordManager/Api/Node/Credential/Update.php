@@ -21,6 +21,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,17 +39,20 @@ class Update implements RequestHandlerInterface {
     private IStringService    $stringService;
     private CredentialService $credentialService;
     private IL10N             $translator;
+    private ILogger           $logger;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
         , IStringService $stringService
         , CredentialService $credentialService
+        , ILogger $logger
     ) {
         $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
         $this->stringService     = $stringService;
         $this->credentialService = $credentialService;
+        $this->logger            = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -60,12 +64,13 @@ class Update implements RequestHandlerInterface {
         $nodeId     = $parameters["nodeId"];
         $password   = $parameters["password"];
 
+        $this->logger->debug(json_encode($parameters));
         $hasChanges = false;
 
         /** @var Credential $node */
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if (null === $node || $node->getUser()->getId() !== $token->getId()) {
+        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -95,7 +100,7 @@ class Update implements RequestHandlerInterface {
         );
 
         return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_NOT_OK
+            IResponse::RESPONSE_CODE_OK
             , [
                 "message"       => $this->translator->translate("updated")
                 , "has_changes" => $hasChanges

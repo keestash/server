@@ -64,14 +64,14 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
 
     private function getPublicRoutes(): array {
         if (true === $this->environmentService->isWeb()) {
-            return $publicRoutes = $this->config
+            return $this->config
                 ->get(ConfigProvider::WEB_ROUTER)
                 ->get(ConfigProvider::PUBLIC_ROUTES)
                 ->toArray();
         }
 
         if (true === $this->environmentService->isApi()) {
-            return $publicRoutes = $this->config
+            return $this->config
                 ->get(ConfigProvider::API_ROUTER)
                 ->get(ConfigProvider::PUBLIC_ROUTES)
                 ->toArray();
@@ -96,13 +96,13 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
 
         $token = $this->verification->verifyToken(
             [
-                Verification::FIELD_NAME_TOKEN => $request->getHeader(Verification::FIELD_NAME_TOKEN)[0] ?? ''
+                Verification::FIELD_NAME_TOKEN       => $request->getHeader(Verification::FIELD_NAME_TOKEN)[0] ?? ''
                 , Verification::FIELD_NAME_USER_HASH => $request->getHeader(Verification::FIELD_NAME_USER_HASH)[0] ?? ''
             ]
         );
 
         if (null === $token) {
-            return new JsonResponse(['session expired'], 401);
+//            return new JsonResponse(['session expired'], 401);
         }
 
         return $handler->handle($request->withAttribute(IToken::class, $token));

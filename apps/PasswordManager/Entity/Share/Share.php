@@ -25,9 +25,9 @@ class Share implements IJsonObject {
     private DateTimeInterface $createTs;
 
     /**
-     * @return array|mixed
+     * @return array
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()
             , "user"      => $this->getUser()

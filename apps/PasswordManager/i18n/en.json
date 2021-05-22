@@ -29,6 +29,7 @@
       "commentLabel": "Comment",
       "sharesLabel": "Sharing",
       "sharePublicly": "Share Publicly",
+      "copyPublicShareLink": "Copy Public Share",
       "notesLabel": "Notes",
       "sharePlaceholder": "Search Users ...",
       "loadingShares": "Loading Shared Users",
@@ -50,7 +51,16 @@
       "commentHeader": "Comments",
       "loadingAttachments": "Attachments",
       "createdAt": "Created At:",
-      "updatedAt": "Updated At:"
+      "updatedAt": "Updated At:",
+      "share": {
+        "sharedDateTimeLabel": "Shared with User at ",
+        "modal": {
+          "title": "Removing User",
+          "content": "Do you really want to remove this user?",
+          "negativeButton": "Cancel",
+          "positiveButton": "Yes"
+        }
+      }
     },
     "sharePublicly": {
       "passwordShareHeader": "Share Password Publicly",

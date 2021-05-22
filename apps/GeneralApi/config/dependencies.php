@@ -33,6 +33,7 @@ use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
+use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\File\View;
 use KSA\GeneralApi\Controller\Organization\Detail;
 use KSA\GeneralApi\Controller\Route\RouteList;
@@ -52,8 +53,9 @@ use KSA\GeneralApi\Factory\Command\ClearBundleJSFactory;
 use KSA\GeneralApi\Factory\Command\CompilerFactory;
 use KSA\GeneralApi\Factory\Command\MigrateAppsFactory;
 use KSA\GeneralApi\Factory\Command\PHPStanFactory;
-use KSA\GeneralApi\Factory\Controller\Organization\DetailFactory;
+use KSA\GeneralApi\Factory\Controller\Common\DefaultRouteControllerFactory;
 use KSA\GeneralApi\Factory\Controller\File\ViewFactory;
+use KSA\GeneralApi\Factory\Controller\Organization\DetailFactory;
 use KSA\GeneralApi\Factory\Controller\Route\RouteListFactory;
 use KSA\GeneralApi\Factory\Event\Listener\UserChangedListenerFactory;
 use KSA\GeneralApi\Factory\Repository\DemoUsersRepositoryFactory;
@@ -94,11 +96,13 @@ return [
         \KSA\GeneralApi\Api\Strings\GetAll::class    => \KSA\GeneralApi\Factory\Api\Strings\GetAllFactory::class,
         GetAll::class                                => GetAllFactory::class,
         \KSA\GeneralApi\Api\Thumbnail\File::class    => FileFactory::class,
+        \KSA\GeneralApi\Api\Thumbnail\Get::class     => \KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory::class,
 
         // controller
         View::class                                  => ViewFactory::class,
         Detail::class                                => DetailFactory::class,
         RouteList::class                             => RouteListFactory::class,
+        DefaultRouteController::class                => DefaultRouteControllerFactory::class,
     ],
     'aliases'   => [
         IOrganizationRepository::class     => OrganizationRepository::class,

@@ -15,90 +15,57 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Controller\PublicShare;
 
 
+use DateTime;
 use KSA\PasswordManager\Entity\Password\Credential;
-use KSA\PasswordManager\Entity\Share\PublicShare;
+use KSA\PasswordManager\Event\PublicShare\ControllerOpened;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSP\Core\Controller\FullScreen\FullscreenAppController;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Controller\ContextLessAppController;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class PublicShareController extends FullscreenAppController {
+class PublicShareController extends ContextLessAppController {
 
-    public const TEMPLATE_NAME_PUBLIC_SHARE_NO_PASSWORD = "public_share_no_password.twig";
-
-    private NodeRepository            $nodeRepository;
-    private PublicShareRepository     $shareRepository;
-    private IUserRepository           $userRepository;
     private TemplateRendererInterface $templateRenderer;
-    private IL10N                     $translator;
+    private PublicShareRepository     $publicShareRepository;
+    private NodeRepository            $nodeRepository;
+    private IEventManager             $eventManager;
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
         , IAppRenderer $appRenderer
-        , IL10N $l10n
+        , PublicShareRepository $publicShareRepository
         , NodeRepository $nodeRepository
-        , PublicShareRepository $shareRepository
-        , IUserRepository $userRepository
+        , IEventManager $eventManager
     ) {
         parent::__construct($appRenderer);
 
-        $this->nodeRepository   = $nodeRepository;
-        $this->shareRepository  = $shareRepository;
-        $this->userRepository   = $userRepository;
-        $this->templateRenderer = $templateRenderer;
-        $this->translator       = $l10n;
+        $this->templateRenderer      = $templateRenderer;
+        $this->publicShareRepository = $publicShareRepository;
+        $this->nodeRepository        = $nodeRepository;
+        $this->eventManager          = $eventManager;
     }
 
     public function run(ServerRequestInterface $request): string {
-        $hash = $request->getAttribute("hash");
 
-        $content = null;
-        if (null === $hash) {
-            return $this->renderNoPassword();
-        }
+        $this->eventManager->execute(new ControllerOpened($_SERVER, new DateTime()));
 
-        $publicShare = $this->shareRepository->getShare($hash);
-
-        if (
-            null === $publicShare
-            || true === $publicShare->isExpired()
-        ) {
-            return $this->renderNoPassword();
-        }
-
-        $node = $this->nodeRepository->getNode($publicShare->getNodeId());
-
-        // TODO does the user has access to the node?
-        //   aka do he own/is shared to him/her?
-
-        $content = $this->renderPassword($publicShare, $node);
-        return $content;
-    }
-
-    private function renderNoPassword(): string {
-        return $this->templateRenderer->render(
-            'passwordManager::public_share_no_password'
-            , []
-        );
-    }
-
-    private function renderPassword(PublicShare $publicShare, Credential $node): string {
+        $hash  = $request->getAttribute("hash");
+        $share = $this->publicShareRepository->getShare($hash);
+        /** @var Credential $node */
+        $node = $this->nodeRepository->getNode($share->getNodeId());
 
         return $this->templateRenderer->render(
-            'passwordManager::public_share_no_password'
+            'publicShare::public_share'
             , [
-                "password"              => $this->translator->translate("Password")
-                , "passwordPlaceholder" => $node->getPassword()->getPlaceholder()
-                , "description"         => $this->translator->translate("This password is shared with you by {$node->getUser()->getName()}.")
-                , "hash"                => $publicShare->getHash()
-                , "userNameLabel"       => $this->translator->translate("Username")
-                , "userNamePlaceholder" => $this->translator->translate("Username")
-                , "userNameContent"     => $node->getUsername()
-                , "passwordSmall"       => $this->translator->translate("Please handle the password shared with you sensitively.")
+                'hash'   => $hash
+                , 'node' => [
+                    'name'       => $node->getName()
+                    , 'username' => $node->getUsername()
+                    , 'owner'    => $node->getUser()
+                ]
             ]
         );
 

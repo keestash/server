@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-tabs content-class="mt-3">
+    <b-tabs content-class="mt-3" lazy>
       <b-tab
           :title="$t('credential.detail.sharesLabel')"
           v-if="false === this.edge.node.is_shared_to_me"
@@ -9,7 +9,7 @@
         <Share v-if="false === this.edge.node.is_shared_to_me"></Share>
       </b-tab>
       <b-tab :title="$t('credential.detail.pwGeneratorLabel')">
-        <PasswordGenerator></PasswordGenerator>
+        <PasswordGenerator @passwordUsed="passwordUsed"></PasswordGenerator>
       </b-tab>
       <b-tab :title="$t('credential.detail.commentLabel')">
         <Comment></Comment>
@@ -41,6 +41,11 @@ export default {
       }
     })
   },
+  methods: {
+    passwordUsed(password) {
+      this.$emit("passwordUsed", password);
+    }
+  }
 }
 </script>
 

@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Controller\Attachment;
 
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Controller\AppController;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
@@ -35,7 +36,6 @@ class View extends AppController {
 
     private FileRepository            $nodeFileRepository;
     private IFileRepository           $fileRepository;
-    private IUser                     $user;
     private IL10N                     $translator;
     private TemplateRendererInterface $templateRenderer;
 
@@ -82,7 +82,7 @@ class View extends AppController {
         }
 
         if (
-            $node->getUser()->getId() !== $this->user->getId()
+            $node->getUser()->getId() !== $user->getId()
             && false === $node->isSharedTo($user)
         ) {
             return $this->renderError(

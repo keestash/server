@@ -86,7 +86,7 @@ class PublicShareRepository extends AbstractRepository {
         $publicShare = new PublicShare();
         $publicShare->setId((int) $shareId);
         $publicShare->setHash((string) $shareHash);
-        $publicShare->setExpireTs($this->dateTimeService->toDateTime((int) $expireTs));
+        $publicShare->setExpireTs($this->dateTimeService->fromFormat($expireTs));
         $publicShare->setNodeId((int) $nodeId);
 
         return $publicShare;

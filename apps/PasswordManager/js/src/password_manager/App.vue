@@ -25,13 +25,18 @@
             </div>
             <div class="d-flex justify-content-between align-items-start flex-grow-1 b-b coll flex-column"
                  id="pwm__node__container">
-              <Edge
-                  v-for="edge in edges"
-                  :key="edge.id"
-                  :edge="edge"
-                  @wasClicked="selectRow(edge)"
-                  class="edge"
-              ></Edge>
+              <div class="container">
+                <template v-if="state.value === state.states.STATE_LOADED">
+                  <Edge
+                      v-for="edge in edges"
+                      :key="edge.id"
+                      :edge="edge"
+                      @wasClicked="selectRow(edge)"
+                      class="edge"
+                  ></Edge>
+                </template>
+                <Skeleton :count=15 height="25px" v-else/>
+              </div>
             </div>
           </div>
         </div>
@@ -54,17 +59,30 @@ import {ROUTES} from "../config/routes";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/src/Backend/Axios";
 import NoNodeSelected from "./Node/NoNodeSelected";
 import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
+import {Skeleton} from "vue-loading-skeleton";
 
 export const NODE_ID_ROOT = "root";
 export const STORAGE_ID_ROOT = "root.id.storage";
 
+const STATE_LOADING = 1;
+const STATE_LOADED = 2;
+
 export default {
   name: "App",
-  components: {EdgeDetail, NoNodeSelected, Edge},
+  components: {EdgeDetail, NoNodeSelected, Edge, Skeleton},
   data: () => {
     return {
       breadCrumbs: [],
-      selected: null
+      selected: null,
+      container: null,
+      axios: null,
+      state: {
+        value: STATE_LOADING,
+        states: {
+          STATE_LOADING: STATE_LOADING,
+          STATE_LOADED: STATE_LOADED
+        }
+      }
     }
   },
   created() {
@@ -72,29 +90,9 @@ export default {
         new Container()
     );
     startUp.setUp();
-    const container = startUp.getContainer();
-    const temporaryStorage = container.query(TEMPORARY_STORAGE);
-    const axios = container.query(AXIOS);
-
-    const rootId = temporaryStorage.get(
-        STORAGE_ID_ROOT
-        , NODE_ID_ROOT
-    );
-
-    axios.request(
-        ROUTES.getNode(rootId)
-    ).then((response) => {
-      if (RESPONSE_CODE_OK in response.data) {
-        return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-      }
-      return [];
-    })
-        .then((data) => {
-          this.parseBreadCrumb(data.breadCrumb)
-          this.parseEdges(data.node, temporaryStorage);
-        })
-    ;
-
+    this.container = startUp.getContainer();
+    this.axios = this.container.query(AXIOS);
+    this.loadEdge(NODE_ID_ROOT);
   },
   computed: {
     noEdgeSelectedVisible() {
@@ -105,8 +103,30 @@ export default {
     }
   },
   methods: {
+    loadEdge(rootId){
+      const temporaryStorage = this.container.query(TEMPORARY_STORAGE);
 
+      this.axios.request(
+          ROUTES.getNode(rootId)
+      ).then((response) => {
+        if (RESPONSE_CODE_OK in response.data) {
+          return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+        }
+        return [];
+      })
+          .then((data) => {
+            this.state.value = this.state.states.STATE_LOADED;
+            this.parseBreadCrumb(data.breadCrumb)
+            this.parseEdges(data.node, temporaryStorage);
+          })
+      ;
+
+    },
     selectRow(edge) {
+      if (edge. node.type === 'folder') {
+        this.loadEdge(edge.node.id);
+        return;
+      }
       this.selected = edge;
       this.$store.dispatch("selectEdge", edge);
     },
@@ -125,11 +145,6 @@ export default {
           , node.id
       );
 
-      // for (let index in node.edges.content) {
-      //   if (node.edges.content.hasOwnProperty(index)) {
-      //     this.edges.push(node.edges.content[index])
-      //   }
-      // }
       this.$store.dispatch("setEdges", node.edges.content);
     }
   }

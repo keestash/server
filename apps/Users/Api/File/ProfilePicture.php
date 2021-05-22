@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\Users\Api\File;
 
+use Keestash\Api\Response\ImageResponse;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,19 +57,8 @@ class ProfilePicture implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
 
-        $targetId = (int) $request->getQueryParams()['targetId'];
-
-        $user = null;
-
-        $users = $this->userRepository->getAll();
-        /** @var IUser $iUser */
-        foreach ($users as $iUser) {
-            if ($targetId === $iUser->getId()) {
-                $user = $iUser;
-                break;
-            }
-        }
-
+        $userId = (string) $request->getAttribute('userId');
+        $user   = $this->userRepository->getUserById($userId);
 
         if (null === $user) {
             return LegacyResponse::fromData(
@@ -98,13 +87,10 @@ class ProfilePicture implements RequestHandlerInterface {
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [file_get_contents("{$file->getDirectory()}/{$file->getName()}")]
-            , 200
-            , [
-                IResponse::HEADER_CONTENT_TYPE => $file->getMimeType()
-            ]
+        $path = "{$file->getDirectory()}/{$file->getName()}.{$file->getExtension()}";
+        return new ImageResponse(
+            $path
+            , mime_content_type($path)
         );
     }
 

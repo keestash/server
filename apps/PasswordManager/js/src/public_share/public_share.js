@@ -16,35 +16,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {PublicShare} from "./PublicShare";
-import {MINI_MODAL, REQUEST} from "../../../../../lib/js/src/StartUp";
-import {Routes} from "../Public/Routes";
+import store from "../config/store";
+import i18n from "../i18n";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import Vuex from "vuex";
+import App from "./App";
 
-(() => {
-    if (!Keestash.Apps.PasswordManager) {
-        Keestash.Apps.PasswordManager = {};
-    }
+window.addEventListener(
+    'DOMContentLoaded'
+    , async () => {
+        const vueConfig = {
+            store,
+            i18n,
+            render: h => h(App)
+        };
 
-    if (!Keestash.Apps.PasswordManager.SinglePassword) {
-        Keestash.Apps.PasswordManager.SinglePassword = {};
-    }
-    Keestash.Apps.PasswordManager.SinglePassword = {
-        init: () => {
-            const diContainer = Keestash.Main.getContainer();
-
-            const publicShare = new PublicShare(
-                diContainer.query(REQUEST)
-                , diContainer.query(MINI_MODAL)
-                , new Routes()
-            );
-            publicShare.init();
-        }
-    }
-})();
-
-
-$(document).ready(
-    async () => {
-        Keestash.Apps.PasswordManager.SinglePassword.init();
+        Vue.use(BootstrapVue);
+        Vue.use(IconsPlugin);
+        Vue.use(Vuex);
+        new Vue(
+            vueConfig
+        )
+            .$mount("#public_share");
     }
 );

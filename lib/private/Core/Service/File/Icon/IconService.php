@@ -49,8 +49,13 @@ class IconService implements IIconService {
                 $icon = "pdf-svgrepo-com.svg";
                 break;
             case IExtension::DOCX:
+                $icon = "pdf-svgrepo-com.svg";
+                break;
             case IExtension::DOC:
                 $icon = "ms-word-svgrepo-com.svg";
+                break;
+            case IExtension::TEXT:
+                $icon = "text-svgrepo-com.svg";
                 break;
             default:
                 $icon = "pdf-svgrepo-com.svg";

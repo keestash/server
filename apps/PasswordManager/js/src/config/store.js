@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import _ from "lodash";
 
 Vue.use(Vuex);
 
@@ -41,6 +42,10 @@ export default new Vuex.Store({
             if (store_p !== null) {
                 store_p = edge;
             }
+        },
+        UPDATE_SELECTED_NODE(state, newNode) {
+            const currentNode = state.selectedEdge.node;
+            state.selectedEdge.node = _.merge(currentNode, newNode);
         }
     },
     actions: {
@@ -52,6 +57,9 @@ export default new Vuex.Store({
         },
         updateEdge(context, edge) {
             context.commit("UPDATE_EDGE", edge);
+        },
+        updateSelectedNode(context, node) {
+            context.commit("UPDATE_SELECTED_NODE", node);
         },
         setAttachments(context, attachments) {
             context.commit("SET_ATTACHMENTS", attachments);

@@ -6,9 +6,9 @@
         <div class="dropbox">
           <input type="file" multiple :name="uploadFieldName" :disabled="isSaving"
                  @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
-                 accept="image/*" class="input-file">
+                 class="input-file">
           <p v-if="isInitial">
-            {{message}}
+            {{ message }}
           </p>
           <p v-if="isSaving">
             Uploading {{ fileCount }} files...
@@ -44,7 +44,7 @@
 const STATUS_INITIAL = 0, STATUS_SAVING = 1, STATUS_SUCCESS = 2, STATUS_FAILED = 3;
 export default {
   name: 'FileUpload',
-  props:{
+  props: {
     message: '',
     header: ""
   },

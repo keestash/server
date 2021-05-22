@@ -86,7 +86,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->setParameter(0, $name);
         $result       = $queryBuilder->execute();
         $users        = $result->fetchAllNumeric();
-        $userCount = count($users);
+        $userCount    = count($users);
 
         $this->logger->debug("user count: $userCount");
         if (0 === $userCount) {
@@ -320,6 +320,72 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     }
 
     /**
+     * Returns an instance of IUser or null, if not found
+     *
+     * @param string $id
+     *
+     * @return IUser|null
+     * @throws KeestashException
+     */
+    public function getUserByHash(string $hash): ?IUser {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'u.id'
+                , 'u.name'
+                , 'u.password'
+                , 'u.create_ts'
+                , 'u.first_name'
+                , 'u.last_name'
+                , 'u.email'
+                , 'u.phone'
+                , 'u.website'
+                , 'u.hash'
+                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+            ]
+        )
+            ->from('user', 'u')
+            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
+            ->where('u.hash = ?')
+            ->setParameter(0, $hash);
+        $users     = $queryBuilder->execute()->fetchAllAssociative();
+        $userCount = count($users);
+
+        if (0 === $userCount) {
+            return null;
+        }
+
+        if ($userCount > 1) {
+            throw new KeestashException("found more then one user for the given name");
+        }
+
+        $row  = $users[0];
+        $user = new User();
+        $user->setId((int) $row['id']);
+        $user->setName($row['name']);
+        $user->setPassword($row['password']);
+        $user->setCreateTs(
+            $this->dateTimeService->fromString($row['create_ts'])
+        );
+        $user->setFirstName($row['first_name']);
+        $user->setLastName($row['last_name']);
+        $user->setEmail($row['email']);
+        $user->setPhone($row['phone']);
+        $user->setWebsite($row['website']);
+        $user->setHash($row['hash']);
+        $user->setDeleted(
+            true === (bool) $row['deleted']
+        );
+        $user->setLocked(
+            true === (bool) $row['locked']
+        );
+
+        return $user;
+    }
+
+
+    /**
      * Removes an instance of IUser
      *
      * @param IUser $user
@@ -332,6 +398,58 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                 ->where('id = ?')
                 ->setParameter(0, $user->getId())
                 ->execute() !== 0;
+    }
+
+    public function searchUsers(string $name): ArrayList {
+        $list = new ArrayList();
+
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder->select(
+            [
+                'u.id'
+                , 'u.name'
+                , 'u.password'
+                , 'u.create_ts'
+                , 'u.first_name'
+                , 'u.last_name'
+                , 'u.email'
+                , 'u.phone'
+                , 'u.website'
+                , 'u.hash'
+                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+            ]
+        )
+            ->from('user', 'u')
+            ->where('u.name like ?')
+            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
+            ->setParameter(0, '%' . $name . '%');
+
+        $result = $queryBuilder->execute();
+        $users  = $result->fetchAllAssociative();
+
+        foreach ($users as $row) {
+
+            $user = new User();
+            $user->setId((int) $row['id']);
+            $user->setName($row['name']);
+            $user->setPassword($row['password']);
+            $user->setCreateTs(
+                $this->dateTimeService->fromString($row['create_ts'])
+            );
+            $user->setFirstName($row['first_name']);
+            $user->setLastName($row['last_name']);
+            $user->setEmail($row['email']);
+            $user->setPhone($row['phone']);
+            $user->setWebsite($row['website']);
+            $user->setHash($row['hash']);
+            $user->setDeleted((bool) $row['deleted']);
+            $user->setLocked((bool) $row['locked']);
+
+            $list->add($user);
+        }
+
+        return $list;
     }
 
 }

@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Login\Factory\Controller;
 
+use Keestash\Core\Manager\SessionManager\SessionManager;
 use KSA\Login\Controller\Logout;
 use KSP\Core\Repository\Token\ITokenRepository;
 use Psr\Container\ContainerInterface;
@@ -30,6 +31,7 @@ class LogoutFactory {
     public function __invoke(ContainerInterface $container): Logout {
         return new Logout(
             $container->get(ITokenRepository::class)
+            , $container->get(SessionManager::class)
         );
     }
 

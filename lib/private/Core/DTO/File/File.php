@@ -40,13 +40,12 @@ class File implements IFile {
     private DateTimeInterface $createTs;
 
     public function getFullPath(): string {
-        $name      = $this->getName();
-        $dir       = $this->getDirectory();
-        $extension = $this->getExtension();
+        $name          = $this->getName();
+        $dir           = $this->getDirectory();
+        $extension     = $this->getExtension();
 
         $path = "$dir/$name.$extension";
-        $path = str_replace("//", "/", $path);
-        return $path;
+        return str_replace("//", "/", $path);
 
     }
 

@@ -119,7 +119,7 @@ final class ConfigProvider {
                         'name'       => UserLock::class
                     ],
                     [
-                        'path'       => '/users/profile_pictures/:token/:user_hash/:targetId[/]',
+                        'path'       => '/users/profile_pictures/:userId[/]',
                         'middleware' => ProfilePicture::class,
                         'method'     => IVerb::GET,
                         'name'       => ProfilePicture::class
