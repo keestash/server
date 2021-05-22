@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Router;
 
+use Keestash\ConfigProvider;
 use KSP\Core\Service\Router\IRouterService;
+use Laminas\Config\Config;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,9 +31,14 @@ use Psr\Http\Message\ServerRequestInterface;
 class RouterService implements IRouterService {
 
     private RouterInterface $router;
+    private Config          $config;
 
-    public function __construct(RouterInterface $router) {
+    public function __construct(
+        RouterInterface $router
+        , Config $config
+    ) {
         $this->router = $router;
+        $this->config = $config;
     }
 
     public function getMatchedPath(ServerRequestInterface $request): string {
@@ -41,6 +48,19 @@ class RouterService implements IRouterService {
             return $this->router->match($request)->getMatchedRoute()->getPath();
         }
         return '';
+    }
+
+    public function getRouteByPath(string $path): array {
+        $webRoutes = $this->config->get(ConfigProvider::WEB_ROUTER);
+        $apiRoutes = $this->config->get(ConfigProvider::API_ROUTER);
+        $allRoutes = array_merge_recursive($webRoutes->toArray(), $apiRoutes->toArray());
+
+        foreach ($allRoutes[ConfigProvider::ROUTES] as $route) {
+            if ($route['path'] === $path) {
+                return $route;
+            }
+        }
+        return [];
     }
 
 }

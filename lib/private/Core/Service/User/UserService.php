@@ -23,8 +23,11 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
+use Firebase\JWT\JWT;
 use Keestash;
 use Keestash\Core\DTO\User\User;
+use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\IUserService;
@@ -33,13 +36,19 @@ class UserService implements IUserService {
 
     private Legacy           $legacy;
     private IDateTimeService $dateTimeService;
+    private HTTPService      $httpService;
+    private InstanceDB       $instanceDB;
 
     public function __construct(
         Legacy $legacy
         , IDateTimeService $dateTimeService
+        , HTTPService $httpService
+        , InstanceDB $instanceDB
     ) {
         $this->legacy          = $legacy;
         $this->dateTimeService = $dateTimeService;
+        $this->httpService     = $httpService;
+        $this->instanceDB      = $instanceDB;
     }
 
     public function validatePassword(string $password, string $hash): bool {
@@ -167,6 +176,21 @@ class UserService implements IUserService {
 
     public function isDisabled(?IUser $user): bool {
         return null === $user || true === $user->isLocked();
+    }
+
+    public function getJWT(IUser $user): string {
+        $payLoad = [
+            'iss'   => $this->httpService->getBaseURL(false, false)
+            , 'aud' => $user->getId()
+            , 'iat' => (new DateTime())->getTimestamp()
+            , 'nbf' => (new DateTime())->getTimestamp() - 1
+        ];
+
+        return JWT::encode(
+            $payLoad
+            , $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+        );
+
     }
 
 }

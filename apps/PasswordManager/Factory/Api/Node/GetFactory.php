@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 use KSA\PasswordManager\Api\Node\Get;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -34,6 +35,7 @@ class GetFactory {
             $container->get(IL10N::class)
             , $container->get(NodeRepository::class)
             , $container->get(BreadCrumbService::class)
+            , $container->get(ILogger::class)
         );
     }
 

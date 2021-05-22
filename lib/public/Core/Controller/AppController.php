@@ -50,7 +50,8 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
         // it is important to run "run" at the very beginning
         // in order to get the navigation list and maybe
         // other stuff in the future
-        $static = $this instanceof StaticAppController ||$this instanceof ContextLessAppController;
+        $static           = $this instanceof StaticAppController;
+        $contextLess      = $this instanceof ContextLessAppController;
         $content          = $this->run($request);
         $hasAppNavigation = $this->navigationList->length() > 0;
         return new HtmlResponse(
@@ -59,6 +60,7 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
                 , $hasAppNavigation
                 , $content
                 , $static
+                , $contextLess
                 , $this->navigationList
             )
         );

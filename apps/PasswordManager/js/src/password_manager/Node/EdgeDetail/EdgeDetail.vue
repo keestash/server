@@ -12,14 +12,15 @@
               <input type="file" id="my_file" style="display: none;"/>
             </form>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 d-flex align-items-center">
             <div class="row">
               <div class="col">
-                {{ this.edge.node.name }}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
+                <input
+                    type="text"
+                    class="form-control border-0"
+                    :value="this.edge.node.name"
+                    @change="onNameChange"
+                >
               </div>
             </div>
           </div>
@@ -30,6 +31,7 @@
             <input type="text"
                    class="form-control"
                    :value="this.edge.node.username"
+                   @change="onUsernameChange"
             >
           </div>
           <div class="form-group">
@@ -39,6 +41,7 @@
                      id="pwm__login__password"
                      :readonly="!passwordField.visible"
                      :value="this.password"
+                     autocomplete="off"
               >
               <div class="input-group-append" id="pwm__password__eye" @click="loadPassword">
                 <div class="input-group-text">
@@ -67,7 +70,7 @@
             </div>
           </div>
 
-          <Tab></Tab>
+          <Tab @passwordUsed="passwordUsed"></Tab>
 
         </form>
 
@@ -86,6 +89,7 @@ import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/A
 import Tab from "./Tab";
 import {mapState} from "vuex";
 import moment from "moment";
+import _ from "lodash"
 
 export default {
   name: "EdgeDetail",
@@ -104,28 +108,85 @@ export default {
         let edge = state.selectedEdge;
         edge.node.url = encodeURI(edge.node.url);
         edge.node.createdFormatted = moment(edge.node.create_ts.date).format();
+
         return edge;
       }
     })
   },
-  watch: {
-
-    username: function (o, n) {
-      if (o === n) return;
-      this.doWork()
-    },
-    password: function (o, n) {
-      if (o === n || n === this.edge.node.password.placeholder) return;
-      if (false === this.passwordField.visible) return;
-      this.doWork()
-    }
-  },
   created() {
     this.doWork = _.debounce(this.onChange, 500);
-    this.password =this.edge.node.password.placeholder;
+    this.password = this.edge.node.password.placeholder;
+
+    const startUp = new StartUp(
+        new Container()
+    );
+    startUp.setUp();
+
+    this.container = startUp.getContainer();
+    this.axios = this.container.query(AXIOS);
+
   },
 
   methods: {
+    passwordUsed(p) {
+
+      _.debounce(
+          () => {
+            this.axios.post(
+                ROUTES.getPasswordManagerUsersUpdate()
+                , {
+                  username: this.edge.node.username
+                  , url: this.edge.node.url
+                  , nodeId: this.edge.node.id
+                  , password: p
+                }
+            ).then((response) => {
+              console.log(response)
+              if (RESPONSE_CODE_OK in response.data) {
+                return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+              }
+              return [];
+            }).then((data) => {
+              if (true === data.has_changes) {
+                this.updatePassword(p, true);
+              }
+            })
+          },
+          250
+      )();
+
+    },
+    onNameChange(event) {
+
+      _.debounce(
+          () => {
+            const newName = event.target.value;
+            if (newName === this.edge.node.name || newName === "") return;
+
+            this.$store.dispatch(
+                "updateSelectedNode"
+                , {
+                  name: newName
+                }
+            );
+          }, 500
+      )();
+    },
+    onUsernameChange(event) {
+      _.debounce(
+          () => {
+            const newUserName = event.target.value;
+            if (newUserName === this.edge.node.username || newUserName === "") return;
+
+            this.$store.dispatch(
+                "updateSelectedNode"
+                , {
+                  username: newUserName
+                }
+            );
+          }, 500
+      )();
+    },
     openUrl() {
       const startUp = new StartUp(
           new Container()
@@ -149,31 +210,42 @@ export default {
       const container = startUp.getContainer();
       const axios = container.query(AXIOS);
 
-      if (false === this.passwordField.visible) {
-        axios.request(
-            ROUTES.getCredential(
-                this.edge.node.id
-            )
-        )
-            .then((response) => {
-              if (RESPONSE_CODE_OK in response.data) {
-                return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-              }
-              return [];
-            })
-            .then((data) => {
-              this.password = data.decrypted;
-              this.passwordField.visible = true;
-            })
-      } else {
-        this.password = this.edge.node.password.placeholder;
-        this.passwordField.visible = false;
+      if (true === this.passwordField.visible) {
+        this.updatePassword(
+            this.passwordField
+            , false
+        );
+        return;
       }
+
+      axios.request(
+          ROUTES.getCredential(
+              this.edge.node.id
+          )
+      )
+          .then((response) => {
+            if (RESPONSE_CODE_OK in response.data) {
+              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+            }
+            return [];
+          })
+          .then((data) => {
+            this.updatePassword(
+                data.decrypted
+                , true
+            );
+          })
+
+    },
+    updatePassword(password, visible) {
+      this.password = password;
+      this.passwordField.visible = visible;
     },
     onChange: function (form) {
       // TODO update on server
       // this.$store.dispatch("updateEdge", edge);
       console.log("test");
+      console.log(form)
     }
   }
 }

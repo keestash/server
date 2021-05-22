@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use DateTime;
-use Keestash;
+use InvalidArgumentException;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
 use KSA\PasswordManager\ConfigProvider;
@@ -42,6 +42,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use RuntimeException;
 
 class Add implements RequestHandlerInterface {
 
@@ -167,25 +168,9 @@ class Add implements RequestHandlerInterface {
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "files"   => $processedFiles
-                , "icons" => $this->addIcons($processedFiles)
+                "files" => $processedFiles
             ]
         );
-    }
-
-    private function addIcons(array $fileList): array {
-        $icons    = [];
-        $assetDir = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH);
-        $svgDir   = str_replace("//", "/", "$assetDir/svg/");
-
-        /** @var NodeFile $nodeFile */
-        foreach ($fileList as $nodeFile) {
-            $icons[$nodeFile->getFile()->getId()] = file_get_contents(
-                $svgDir . $this->iconService->getIconForExtension($nodeFile->getFile()->getExtension())
-            );
-        }
-
-        return $icons;
     }
 
 }

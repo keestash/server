@@ -36,12 +36,18 @@ use KSA\GeneralApi\Api\UserList;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
-    ConfigProvider::ROUTES => [
+    ConfigProvider::ROUTES        => [
         [
             'path'         => '/organizations/user/change[/]'
             , 'middleware' => User::class
             , 'method'     => IVerb::POST
             , 'name'       => User::class
+        ],
+        [
+            'path'         => \KSA\GeneralApi\ConfigProvider::THUMBNAIL_BY_EXTENSION
+            , 'middleware' => \KSA\GeneralApi\Api\Thumbnail\Get::class
+            , 'method'     => IVerb::GET
+            , 'name'       => \KSA\GeneralApi\Api\Thumbnail\Get::class
         ],
         [
             'path'         => '/demousers/user/add[/]'

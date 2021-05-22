@@ -31,6 +31,7 @@ interface IAppRenderer {
         , bool $hasAppNavigation
         , string $appContent
         , bool $static
+        , bool $contextLess
         , NavigationList $navigationList
     ): string;
 

@@ -3,37 +3,46 @@
 
     <div class="results mt-3 rounded border tab_result_box" id="comment__result">
       <ul class="list-group list-group-flush">
-        <div class="spinner-border" role="status" v-if="this.loading"></div>
+        <div class="container-fluid">
+          <template v-if="!this.loading">
+            <li class="list-group-item border-0" v-if="loading === false && (edge.node.attachments || []).length > 0"
+                v-for="attachment in edge.node.attachments || []">
+
+              <div class="row justify-content-between">
+
+                <div class="col-sm">
+                  <div class="row">
+                    <div class="col d-flex flex-row">
+                        <Thumbnail :source="getThumbnailUrl(attachment.file.extension)"
+                                   :description="attachment.file.name"></Thumbnail>
+                      <b-link :href="getAttachmentUrl(attachment.file.id)" target="_blank">{{
+                          attachment.file.name
+                        }}
+                      </b-link>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-sm-4">
+                  <div class="row justify-content-end pr-1">
+                    <div class="col-1">
+                      <i class="fas fa-times remove"></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </li>
+          </template>
+          <Skeleton :count=9 height="25px" v-else/>
+        </div>
+
         <div class="row mx-auto justify-content-center align-items-center flex-column h-100"
              v-if="loading === false && (edge.node.attachments || []).length === 0"
         >
           {{ noAttachments }}
         </div>
 
-        <li class="list-group-item " v-if="loading === false && (edge.node.attachments || []).length > 0"
-            v-for="attachment in edge.node.attachments || []">
-          <div class="container">
-            <div class="row justify-content-between">
-
-              <div class="col-sm">
-                <div class="row">
-                  <div class="col">
-                    {{ attachment.file.name }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-sm-4">
-                <div class="row justify-content-end pr-1">
-                  <div class="col-1">
-                    <i class="fas fa-times remove"></i>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </li>
 
       </ul>
     </div>
@@ -53,15 +62,16 @@ import {ROUTES} from "../../../../config/routes";
 import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
 import {mapState} from "vuex";
 import FileUpload from "../../../../../../../../lib/js/src/Components/FileUpload";
+import {Skeleton} from 'vue-loading-skeleton';
+import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 
 export default {
   name: "Attachments",
-  components: {FileUpload},
+  components: {Thumbnail, FileUpload, Skeleton},
   computed: {
     ...mapState({
       edge: function (state) {
-        let edge = state.selectedEdge;
-        return edge;
+        return state.selectedEdge;
       }
     })
   },
@@ -92,6 +102,12 @@ export default {
     }
   },
   methods: {
+    getAttachmentUrl: function (fileId) {
+      return ROUTES.getNodeAttachment(fileId);
+    },
+    getThumbnailUrl: function (extension) {
+      return ROUTES.getThumbNailByExtension(extension);
+    },
     getData() {
       this.axios.request(
           ROUTES.getAttachments(this.edge.node.id)
@@ -103,8 +119,9 @@ export default {
             return [];
           })
           .then((data) => {
-                console.log(data.fileList.content);
-                this.$store.dispatch("setAttachments", data.fileList.content);
+                this.$store.dispatch("updateSelectedNode", {
+                  attachments: data.fileList.content
+                });
                 this.loading = false;
               }
           )
@@ -117,7 +134,6 @@ export default {
           'node_id', this.edge.node.id
       )
 
-      console.log(formData)
       this.axios.post(
           ROUTES.putAttachments()
           , formData
@@ -129,10 +145,20 @@ export default {
             return [];
           })
       ).then((data) => {
-        this.$store.dispatch("addAttachments", data.files);
+        let newAttachments = {};
+
+        for (let i = 0; i < data.files.length; i++) {
+          newAttachments[i + this.edge.node.attachments.length] = data.files[i];
+        }
+
+        this.$store.dispatch(
+            "updateSelectedNode"
+            , {
+              attachments: newAttachments
+            }
+        );
         this.icons = data.icons;
       })
-      console.log(formData)
     },
   }
 }

@@ -27,4 +27,6 @@ interface IRouterService {
 
     public function getMatchedPath(ServerRequestInterface $request): string;
 
+    public function getRouteByPath(string $path): array;
+
 }

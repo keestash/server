@@ -108,11 +108,17 @@ class AppRenderer implements IAppRenderer {
             );
     }
 
-    public function renderNavBar(ServerRequestInterface $request, bool $static): string {
+    public function renderNavBar(
+        ServerRequestInterface $request
+        , bool $static
+        , bool $contextLess
+    ): string {
         if (true === $static) return '';
 
         $profileImage = $this->getProfileImage(
             $request->getAttribute(IUser::class)
+            , $static
+            , $contextLess
         );
 
         return $this->templateRenderer
@@ -122,7 +128,7 @@ class AppRenderer implements IAppRenderer {
                     "logopath"      => $this->httpService->getBaseURL(false) . "/asset/img/logo_no_name.png"
                     , "logoutURL"   => $this->httpService->getBaseURL() . "logout"
                     , "userImage"   => $profileImage
-                    , 'contextless' => static::class === ContextLessAppController::class
+                    , 'contextless' => $contextLess
 
                     // TODO these are added only when not public route
                     , "vendorName"  => $this->legacy->getApplication()->get("name")
@@ -137,10 +143,10 @@ class AppRenderer implements IAppRenderer {
             );
     }
 
-    private function getProfileImage(?IUser $user): string {
+    private function getProfileImage(?IUser $user, bool $static, bool $contextLess): string {
         if (
-            static::class === ContextLessAppController::class
-            || static::class === StaticAppController::class
+            true === $static
+            || true === $contextLess
             || true === $this->lockHandler->isLocked()
             || null === $user
         ) {
@@ -169,6 +175,7 @@ class AppRenderer implements IAppRenderer {
     public function renderBody(
         ServerRequestInterface $request
         , bool $static
+        , bool $contextLess
         , bool $hasAppNavigation
         , string $appContent
         , NavigationList $navigationList
@@ -178,12 +185,13 @@ class AppRenderer implements IAppRenderer {
             ->render(
                 'root::body'
                 , [
-                    "navigation"      => $this->renderNavBar($request, $static)
+                    "navigation"      => $this->renderNavBar($request, $static, $contextLess)
                     , "content"       => $this->renderContent(
                         $hasAppNavigation
                         , $appContent
                         , $navigationList
                         , $static
+                        , $contextLess
                     )
                     , "noContext"     => true === $static
                     , "staticContext" => true === $static
@@ -213,12 +221,18 @@ class AppRenderer implements IAppRenderer {
         , string $appContent
         , NavigationList $navigationList
         , bool $static
+        , bool $contextLess
     ): string {
         return $this->templateRenderer
             ->render(
                 'root::content'
                 , [
-                    "appNavigation"      => $this->renderAppNavigation($hasAppNavigation, $navigationList, $static)
+                    "appNavigation"      => $this->renderAppNavigation(
+                        $hasAppNavigation
+                        , $navigationList
+                        , $static
+                        , $contextLess
+                    )
                     , "appContent"       => $appContent
                     , "hasAppNavigation" => $hasAppNavigation
                     , "hasBreadcrumbs"   => false
@@ -231,6 +245,7 @@ class AppRenderer implements IAppRenderer {
         bool $hasAppNavigation
         , NavigationList $navigationList
         , bool $static
+        , bool $contextLess
     ): string {
 
         return $this->templateRenderer
@@ -239,14 +254,14 @@ class AppRenderer implements IAppRenderer {
                 , [
                     "appNavigation"      => $navigationList->toArray(false)
                     , "hasAppNavigation" => $hasAppNavigation
-                    , "actionBar"        => $this->renderActionBars($static)
+                    , "actionBar"        => $this->renderActionBars($static, $contextLess)
                     , "hasActionBars"    => false // TODO
                 ]
             );
     }
 
-    private function renderActionBars(bool $static): string {
-        if (true === $static) return '';
+    private function renderActionBars(bool $static, bool $contextLess): string {
+        if (true === $static || true === $contextLess) return '';
         return '';
 //        return $this->templateRenderer->render(
 //            'root::actionbar'
@@ -259,6 +274,7 @@ class AppRenderer implements IAppRenderer {
         , bool $hasAppNavigation
         , string $appContent
         , bool $static
+        , bool $contextLess
         , NavigationList $navigationList
     ): string {
 
@@ -272,6 +288,7 @@ class AppRenderer implements IAppRenderer {
                     , "body"      => $this->renderBody(
                         $request
                         , $static
+                        , $contextLess
                         , $hasAppNavigation
                         , $appContent
                         , $navigationList

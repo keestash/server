@@ -1,0 +1,13 @@
+<div class="container">
+    <div>
+        <small class="form-text text-muted">Name</small>
+        {{ node.name }}
+    </div>
+    <div>
+        <small class="form-text text-muted">Username</small>
+        {{ node.username }}
+    </div>
+    <div id="public_share"></div>
+    <small class="form-text text-muted">This password is shared with you by {{ node.owner.name }}</small>
+    <div id="pwm_ps_data_node" data-hash="{{ hash }}"></div>
+</div>

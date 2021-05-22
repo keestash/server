@@ -44,6 +44,7 @@ use Psr\Container\ContainerInterface;
 
     (require_once __DIR__ . '/config/config/pipeline.php')($app);
 
+    /** @var Config $router */
     $router = $config->get(ConfigProvider::WEB_ROUTER);
 
     /** @var Config $route */
@@ -63,5 +64,5 @@ use Psr\Container\ContainerInterface;
     $eventDispatcher = $container->get(IEventDispatcher::class);
     $eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
     $app->run();
-    
+
 })();

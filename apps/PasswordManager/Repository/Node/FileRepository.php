@@ -139,7 +139,7 @@ class FileRepository extends AbstractRepository {
                 'node_id'
             ]
         )
-            ->from('pwm_node_files')
+            ->from('pwm_node_file')
             ->where('file_id = ?')
             ->setParameter(0, $file->getId());
 

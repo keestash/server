@@ -22,8 +22,8 @@ const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT = "/password_manager/public_share/de
 const PASSWORD_MANAGER_GENERATE_PASSWORD = "/password_manager/generate_password/{length}/{upperCase}/{lowerCase}/{digit}/{specialChars}/";
 const PASSWORD_MANAGER_ADD_COMMENT = "/password_manager/comment/add/";
 const PASSWORD_MANAGER_GET_COMMENT = "/password_manager/comment/get/{nodeId}/";
-const USER_PROFILE_PICTURE = "/users/profile_pictures/{token}/{userHash}/{targetId}/";
-const PASSWORD_MANAGER_SHAREABLE_USERS = "/password_manager/users/shareable/{nodeId}/";
+const USER_PROFILE_PICTURE = "/users/profile_pictures/{userId}/";
+const PASSWORD_MANAGER_SHAREABLE_USERS = "/password_manager/users/shareable/{nodeId}/{query}/";
 const PASSWORD_MANAGER_ATTACHMENTS_REMOVE = "/password_manager/attachments/remove/";
 const PASSWORD_MANAGER_ATTACHMENTS_GET = "/password_manager/attachments/get/{nodeId}/";
 const PASSWORD_MANAGER_USERS_UPDATE = "/password_manager/users/update/";
@@ -37,6 +37,7 @@ const PASSWORD_MANAGER_SHARE = "/password_manager/share/";
 const PASSWORD_MANAGER_NODE_CREATE = "/password_manager/node/create/";
 const ORGANIZATIONS_ALL = "/organizations/all/";
 const PASSWORD_MANAGER_ORGANIZATION_ADD_NODE = "/password_manager/organization/node/add/";
+const PASSWORD_MANAGER_THUMBNAIL_EXTENSION = "/thumbnail/{extension}/";
 
 const host = new Host();
 
@@ -46,16 +47,16 @@ export const ROUTES = {
         return host.getApiHost() + "/password_manager/node/get/" + id + "/";
     },
 
-    // getPublicShareDecrypt(hash) {
-    //     let route = PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT;
-    //     route = route.replace("{hash}", hash);
-    //     return host.getApiHost() + route;
-    // }
-    //
-    // getPasswordManagerUsersUpdate() {
-    //     return host.getApiHost() + PASSWORD_MANAGER_USERS_UPDATE;
-    // }
-    //
+    getPublicShareDecrypt(hash) {
+        let route = PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT;
+        route = route.replace("{hash}", hash);
+        return host.getApiHost() + route;
+    },
+
+    getPasswordManagerUsersUpdate() {
+        return host.getApiHost() + PASSWORD_MANAGER_USERS_UPDATE;
+    },
+
     getGeneratePassword(length, upperCase, lowerCase, digit, specialCharacter) {
         let route = PASSWORD_MANAGER_GENERATE_PASSWORD;
         route = route.replace("{length}", length);
@@ -81,18 +82,21 @@ export const ROUTES = {
         route = route.replace("{nodeId}", nodeId);
         return host.getApiHost() + route;
     },
-    //
-    // getUserProfilePicture(token, userHash, targetId) {
-    //     let route = USER_PROFILE_PICTURE;
-    //     route = route.replace("{token}", token);
-    //     route = route.replace("{userHash}", userHash);
-    //     route = route.replace("{targetId}", targetId);
-    //     return host.getApiHost() + route;
-    // }
-    //
-    getShareableUsers(nodeId) {
+
+    getUserProfilePicture(userId) {
+        let route = USER_PROFILE_PICTURE;
+        route = route.replace("{userId}", userId);
+        return host.getApiHost() + route;
+    },
+
+    getAssetUrl(jsonWebToken) {
+        return 'http://keestash.local/asset.php?token=' + jsonWebToken;
+    },
+
+    getShareableUsers(nodeId, query) {
         let route = PASSWORD_MANAGER_SHAREABLE_USERS;
         route = route.replace("{nodeId}", nodeId);
+        route = route.replace("{query}", query);
         return host.getApiHost() + route;
     },
 
@@ -153,12 +157,12 @@ export const ROUTES = {
     getPublicShareLink(hash) {
         return host.getHost() + "/s/" + hash + "/";
     },
-    //
-    // getNodeAttachment(fileId) {
-    //     let route = PASSWORD_MANAGER_ATTACHMENTS_VIEW;
-    //     route = route.replace("{fileId}", fileId);
-    //     return host.getHost() + route;
-    // }
+
+    getNodeAttachment(fileId) {
+        let route = PASSWORD_MANAGER_ATTACHMENTS_VIEW;
+        route = route.replace("{fileId}", fileId);
+        return host.getHost() + route;
+    },
     //
     // getNodeAttachmentRemove() {
     //     return host.getApiHost() + PASSWORD_MANAGER_ATTACHMENTS_REMOVE;
@@ -171,4 +175,9 @@ export const ROUTES = {
     // getOrganizationsAddNode() {
     //     return host.getApiHost() + PASSWORD_MANAGER_ORGANIZATION_ADD_NODE;
     // }
+    getThumbNailByExtension(extension) {
+        let route = PASSWORD_MANAGER_THUMBNAIL_EXTENSION;
+        route = route.replace("{extension}", extension);
+        return host.getApiHost() + route;
+    }
 }

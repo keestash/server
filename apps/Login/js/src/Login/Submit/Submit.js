@@ -112,9 +112,6 @@ export class Submit {
                             , data.headers[HEADER_NAME_USER]
                         );
 
-                        console.log(data);
-                        console.log(data.settings);
-
                         _this.appStorage.storeLocale(data.data.settings.locale);
                         _this.appStorage.storeLanguage(data.data.settings.language);
 

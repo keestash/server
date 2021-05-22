@@ -45,8 +45,6 @@ class AppsInstalledMiddlewareFactory {
             , $container->get(IAppRepository::class)
             , $container->get(Diff::class)
             , $container->get(AppLockHandler::class)
-            , $container->get(InstallerService::class)
-            , $container->get(IEnvironmentService::class)
             , $container->get(IRouterService::class)
         );
     }

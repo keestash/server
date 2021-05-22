@@ -33,7 +33,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,19 +50,21 @@ class Get implements RequestHandlerInterface {
     private IL10N             $translator;
     private NodeRepository    $nodeRepository;
     private BreadCrumbService $breadCrumbService;
+    private ILogger           $logger;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
         , BreadCrumbService $breadCrumbService
+        , ILogger $logger
     ) {
         $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
         $this->breadCrumbService = $breadCrumbService;
+        $this->logger            = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $root = null;
 
         /** @var IToken $token */
         $token  = $request->getAttribute(IToken::class);

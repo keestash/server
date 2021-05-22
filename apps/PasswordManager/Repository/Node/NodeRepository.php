@@ -42,6 +42,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\IUserService;
 
 class NodeRepository extends AbstractRepository {
 
@@ -52,6 +53,7 @@ class NodeRepository extends AbstractRepository {
     private EncryptionService       $encryptionService;
     private KeyService              $keyService;
     private IOrganizationRepository $organizationRepository;
+    private IUserService            $userService;
 
     public function __construct(
         IBackend $backend
@@ -62,6 +64,7 @@ class NodeRepository extends AbstractRepository {
         , EncryptionService $encryptionService
         , KeyService $keyService
         , IOrganizationRepository $organizationRepository
+        , IUserService $userService
     ) {
         parent::__construct($backend);
 
@@ -72,6 +75,7 @@ class NodeRepository extends AbstractRepository {
         $this->encryptionService      = $encryptionService;
         $this->keyService             = $keyService;
         $this->organizationRepository = $organizationRepository;
+        $this->userService            = $userService;
     }
 
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Root {
@@ -162,8 +166,6 @@ class NodeRepository extends AbstractRepository {
             return null;
         }
         $row = $rows[0];
-
-        $node = null;
 
         $id       = $row[0];
         $name     = $row[1];
@@ -375,6 +377,10 @@ class NodeRepository extends AbstractRepository {
 
             if (null === $user) continue;
             if (null === $createTs) continue;
+
+            $user->setJWT(
+                $this->userService->getJWT($user)
+            );
 
             $share->setId((int) $id);
             $share->setUser($user);

@@ -77,7 +77,7 @@ return [
             , 'name'       => PublicShare::class
         ],
         [
-            'path'         => '/password_manager/public_share/decrypt/:hash[/]'
+            'path'         => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
             , 'middleware' => PublicShareSingle::class
             , 'method'     => IVerb::GET
             , 'name'       => PublicShareSingle::class
@@ -125,7 +125,7 @@ return [
             , 'name'       => Organization::class
         ],
         [
-            'path'         => '/password_manager/users/shareable/:nodeId[/]'
+            'path'         => '/password_manager/users/shareable/:nodeId/:query/'
             , 'middleware' => ShareableUsers::class
             , 'method'     => IVerb::GET
             , 'name'       => ShareableUsers::class
@@ -187,6 +187,6 @@ return [
     ],
     ConfigProvider::PUBLIC_ROUTES => [
         '/password_manager/node/get/avatar/:nodeId[/]'
-        , '/password_manager/public_share/decrypt/:hash[/]'
+        , \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
     ]
 ];

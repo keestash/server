@@ -3,37 +3,42 @@
 
     <div class="results mt-3 rounded border tab_result_box" id="comment__result">
       <ul class="list-group list-group-flush">
-        <div class="spinner-border" role="status" v-if="this.loading"></div>
-        <div class="row mx-auto justify-content-center align-items-center flex-column h-100"
-             v-if="loading === false && (edge.node.comments || []).length === 0"
-        >
-          {{ noComments }}
+
+        <div class="container-fluid">
+          <template v-if="!this.loading">
+            <li class="list-group-item border-0" v-if="loading === false && (edge.node.comments || []).length > 0"
+                v-for="comment in edge.node.comments || []">
+              <div class="container">
+                <div class="row justify-content-between">
+
+                  <div class="col-sm">
+                    <div class="row">
+                      <div class="col d-flex flex-row">
+                        <Thumbnail :source="getThumbnail()"></Thumbnail>
+                        {{ comment.comment }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-4">
+                    <div class="row justify-content-end pr-1">
+                      <div class="col-1">
+                        <i class="fas fa-times remove"></i>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </li>
+          </template>
+          <Skeleton :count=9 height="25px" v-else/>
         </div>
 
-        <li class="list-group-item " v-if="loading === false && (edge.node.comments || []).length > 0"
-            v-for="comment in edge.node.comments || []">
-          <div class="container">
-            <div class="row justify-content-between">
-
-              <div class="col-sm">
-                <div class="row">
-                  <div class="col">
-                    {{ comment.comment }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-sm-4">
-                <div class="row justify-content-end pr-1">
-                  <div class="col-1">
-                    <i class="fas fa-times remove"></i>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </li>
+        <NoDataFound
+            :visible="loading === false && (edge.node.comments || []).length === 0"
+            :text="noComments"
+        ></NoDataFound>
 
       </ul>
     </div>
@@ -61,9 +66,13 @@ import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../../../config/routes";
 import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
 import {mapState} from "vuex";
+import {Skeleton} from 'vue-loading-skeleton';
+import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
+import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFound";
 
 export default {
   name: "Comment",
+  components: {Thumbnail, Skeleton, NoDataFound},
   computed: {
     ...mapState({
       edge: function (state) {
@@ -96,6 +105,9 @@ export default {
     }
   },
   methods: {
+    getThumbnail() {
+      return ROUTES.getThumbNailByExtension('text');
+    },
     getData() {
       this.axios.request(
           ROUTES.getComments(this.edge.node.id)

@@ -139,14 +139,7 @@ class UserRepositoryService implements IUserRepositoryService {
     }
 
     public function userExistsByName(string $name): bool {
-        $users = $this->userRepository->getAll();
-
-        /** @var IUser $user */
-        foreach ($users as $user) {
-            if ($user->getName() === $name) return true;
-        }
-
-        return false;
+        return null !== $this->userRepository->getUser($name);
     }
 
     public function updateUser(IUser $updatedUser, IUser $oldUser): bool {

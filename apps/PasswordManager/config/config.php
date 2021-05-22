@@ -34,7 +34,7 @@ return [
     ConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php',
     ConfigProvider::APP_LIST     => [
         \KSA\PasswordManager\ConfigProvider::APP_ID => [
-            ConfigProvider::APP_ORDER      => 8,
+            ConfigProvider::APP_ORDER      => 0,
             ConfigProvider::APP_NAME       => 'Password Manager',
             ConfigProvider::APP_BASE_ROUTE => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER,
             ConfigProvider::APP_VERSION    => 1,
@@ -54,7 +54,8 @@ return [
     ],
     'templates'                  => [
         'paths' => [
-            'passwordManager' => [__DIR__ . '/../template']
+            'passwordManager' => [__DIR__ . '/../template/password_manager']
+            , 'publicShare'   => [__DIR__ . '/../template/public_share']
         ]
     ]
 

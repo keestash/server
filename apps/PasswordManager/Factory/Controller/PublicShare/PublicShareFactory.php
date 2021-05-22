@@ -24,9 +24,8 @@ namespace KSA\PasswordManager\Factory\Controller\PublicShare;
 use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
@@ -36,10 +35,9 @@ class PublicShareFactory {
         return new PublicShareController(
             $container->get(TemplateRendererInterface::class)
             , $container->get(IAppRenderer::class)
-            , $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
             , $container->get(PublicShareRepository::class)
-            , $container->get(IUserRepository::class)
+            , $container->get(NodeRepository::class)
+            , $container->get(IEventManager::class)
         );
     }
 

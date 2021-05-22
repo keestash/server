@@ -22,15 +22,26 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as ConfigProviderAlias;
 use KSA\GeneralApi\ConfigProvider;
+use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\Organization\Detail;
 use KSA\GeneralApi\Controller\Route\RouteList;
 
 return [
-    ConfigProviderAlias::ROUTES => [
+    ConfigProviderAlias::ROUTES                 => [
         [
             'path'         => ConfigProvider::ROUTE_LIST_ALL
             , 'middleware' => RouteList::class
             , 'name'       => RouteList::class
+        ],
+        [
+            'path'         => ConfigProvider::DEFAULT
+            , 'middleware' => DefaultRouteController::class
+            , 'name'       => ConfigProvider::DEFAULT
+        ],
+        [
+            'path'         => ConfigProvider::DEFAULT_SLASH
+            , 'middleware' => DefaultRouteController::class
+            , 'name'       => ConfigProvider::DEFAULT_SLASH
         ],
         [
             'path'         => ConfigProvider::ORGANIZATION_SINGLE
@@ -38,7 +49,7 @@ return [
             , 'name'       => Detail::class
         ],
     ],
-    ConfigProviderAlias::WEB_ROUTER_SCRIPTS => [
+    ConfigProviderAlias::WEB_ROUTER_SCRIPTS     => [
         ConfigProvider::ORGANIZATION_SINGLE => 'organization_detail'
     ],
     ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [

@@ -21,27 +21,21 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
-use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
 
 class ShareableUsersFactory {
 
     public function __invoke(ContainerInterface $container): ShareableUsers {
         return new ShareableUsers(
-            $container->get(IL10N::class)
-            , $container->get(IUserRepository::class)
+            $container->get(IUserRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(IFileManager::class)
-            , $container->get(RawFileService::class)
-            , $container->get(FileService::class)
             , $container->get(ILogger::class)
+            , $container->get(IUserService::class)
         );
     }
 

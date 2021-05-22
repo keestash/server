@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use Doctrine\DBAL\Connection;
 use doganoo\DIP\DateTime\DateTimeService;
+use doganoo\DIP\Object\String\StringService;
 use Keestash\App\Config\Diff;
 use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
@@ -47,6 +48,7 @@ use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\App\AppService;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
@@ -202,5 +204,6 @@ return [
     IconService::class                                             => InvokableFactory::class,
     PasswordService::class                                         => InvokableFactory::class,
     \Keestash\Core\Service\File\Upload\FileService::class          => \Keestash\Factory\Core\Service\Upload\FileServiceFactory::class,
-    \Keestash\Core\Service\Config\IniConfigService::class          => InvokableFactory::class,
+    IniConfigService::class                                        => InvokableFactory::class,
+    StringService::class                                           => InvokableFactory::class,
 ];

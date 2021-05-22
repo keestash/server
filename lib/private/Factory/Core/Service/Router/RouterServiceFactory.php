@@ -23,6 +23,7 @@ namespace Keestash\Factory\Core\Service\Router;
 
 use Keestash\Core\Service\Router\RouterService;
 use KSP\Core\Service\Router\IRouterService;
+use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
@@ -31,6 +32,7 @@ class RouterServiceFactory {
     public function __invoke(ContainerInterface $container): IRouterService {
         return new RouterService(
             $container->get(RouterInterface::class)
+            , $container->get(Config::class)
         );
     }
 

@@ -21,12 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
+use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,24 +41,35 @@ class PublicShareSingle implements RequestHandlerInterface {
     private NodeRepository        $nodeRepository;
     private CredentialService     $credentialService;
     private IL10N                 $translator;
+    private IEventManager         $eventManager;
 
     public function __construct(
         IL10N $l10n
         , PublicShareRepository $shareRepository
         , NodeRepository $nodeRepository
         , CredentialService $credentialService
+        , IEventManager $eventManager
     ) {
         $this->translator        = $l10n;
         $this->shareRepository   = $shareRepository;
         $this->nodeRepository    = $nodeRepository;
         $this->credentialService = $credentialService;
+        $this->eventManager      = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getQueryParams();
-        $hash       = $parameters['hash'] ?? null;
+        $hash = $request->getAttribute('hash');
 
         if (null === $hash) {
+            $this->eventManager->execute(
+                new PasswordViewed(
+                    array_merge(
+                        $_SERVER
+                        , ['passwordSeen' => false]
+                    )
+                    , new DateTime()
+                )
+            );
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -68,6 +82,19 @@ class PublicShareSingle implements RequestHandlerInterface {
         $share = $this->shareRepository->getShare($hash);
 
         if (null === $share || $share->isExpired()) {
+            $this->eventManager->execute(
+                new PasswordViewed(
+                    array_merge(
+                        $_SERVER
+                        , [
+                            'passwordSeen'   => false
+                            , 'shareExists'  => null === $share
+                            , 'shareExpired' => null !== $share ? $share->isExpired() : null
+                        ]
+                    )
+                    , new DateTime()
+                )
+            );
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -78,6 +105,16 @@ class PublicShareSingle implements RequestHandlerInterface {
 
         /** @var Credential $node */
         $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
+
+        $this->eventManager->execute(
+            new PasswordViewed(
+                array_merge(
+                    $_SERVER
+                    , ['passwordSeen' => true]
+                )
+                , new DateTime()
+            )
+        );
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
