@@ -29,7 +29,6 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\Controller\ContextLessAppController;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
@@ -285,6 +284,7 @@ class AppRenderer implements IAppRenderer {
                     "head"        => $this->renderHead($request)
                     , "host"      => $this->httpService->getBaseURL()
                     , "apiHost"   => $this->httpService->getBaseAPIURL()
+                    , "assetHost" => $this->httpService->getAssetURL()
                     , "body"      => $this->renderBody(
                         $request
                         , $static

@@ -111,10 +111,10 @@ class FileRepository extends AbstractRepository implements IFileRepository {
 
     public function remove(IFile $file): bool {
         $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->delete('file')
-            ->where('id = ?')
-            ->setParameter(0, $file->getId())
-            ->execute();
+        return $queryBuilder->delete('file')
+                ->where('id = ?')
+                ->setParameter(0, $file->getId())
+                ->execute() > 0;
     }
 
     public function getAll(ArrayList $fileIds): FileList {

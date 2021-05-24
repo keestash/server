@@ -30,7 +30,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Container\ContainerInterface;
 
 class NodeRepositoryFactory {
@@ -45,7 +45,7 @@ class NodeRepositoryFactory {
             , $container->get(EncryptionService::class)
             , $container->get(IKeyService::class)
             , $container->get(IOrganizationRepository::class)
-            , $container->get(IUserService::class)
+            , $container->get(IJWTService::class)
         );
     }
 

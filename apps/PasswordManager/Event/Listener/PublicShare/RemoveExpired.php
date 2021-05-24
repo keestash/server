@@ -19,26 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Comment;
+namespace KSA\PasswordManager\Event\Listener\PublicShare;
 
-use KSA\PasswordManager\Api\Comment\Add;
-use KSA\PasswordManager\Repository\CommentRepository;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\User\IUserService;
-use Psr\Container\ContainerInterface;
+use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
+use KSA\PasswordManager\Repository\PublicShareRepository;
+use KSP\Core\Manager\EventManager\IListener;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class AddFactory {
+class RemoveExpired implements IListener {
 
-    public function __invoke(ContainerInterface $container): Add {
-        return new Add(
-            $container->get(CommentRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(IUserService::class)
-            , $container->get(ILogger::class)
-            , $container->get(IJWTService::class)
-        );
+    private PublicShareRepository $publicShareRepository;
+
+    public function __construct(PublicShareRepository $publicShareRepository) {
+        $this->publicShareRepository = $publicShareRepository;
+    }
+
+    /**
+     * @param ApplicationStartedEvent $event
+     */
+    public function execute(Event $event): void {
+        $this->publicShareRepository->removeOutdated();
     }
 
 }

@@ -26,6 +26,7 @@ use Keestash\Core\Repository\User\UserRepository;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Container\ContainerInterface;
 
 class CommentRepositoryFactory {
@@ -36,6 +37,7 @@ class CommentRepositoryFactory {
             , $container->get(NodeRepository::class)
             , $container->get(UserRepository::class)
             , $container->get(IDateTimeService::class)
+            , $container->get(IJWTService::class)
         );
     }
 

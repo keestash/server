@@ -19,29 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
+namespace Keestash\Factory\Core\Service\HTTP;
 
-use KSA\PasswordManager\Api\Node\Attachment\Add;
-use KSA\PasswordManager\Repository\Node\FileRepository;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Service\File\Upload\IFileService;
+use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\JWTService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
-class AddFactory {
+class JWTServiceFactory {
 
-    public function __invoke(ContainerInterface $container): Add {
-        return new Add(
-            $container->get(IFileRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(FileRepository::class)
-            , $container->get(IFileService::class)
-            , $container->get(ILogger::class)
-            , $container->get(Config::class)
-            , $container->get(IJWTService::class)
+    public function __invoke(ContainerInterface $container): IJWTService {
+        return new JWTService(
+            $container->get(HTTPService::class)
+            , $container->get(InstanceDB::class)
         );
     }
 

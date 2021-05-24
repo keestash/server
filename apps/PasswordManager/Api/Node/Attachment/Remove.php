@@ -23,11 +23,12 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
-use KSA\PasswordManager\Application\Application;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\L10N\IL10N;
+use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -45,15 +46,17 @@ class Remove implements RequestHandlerInterface {
         IFileRepository $fileRepository
         , IL10N $l10n
         , FileRepository $nodeFileRepository
+        , Config $config
     ) {
         $this->translator         = $l10n;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->fileRepository     = $fileRepository;
-        $this->dataManager        = new DataManager(
-            Application::APP_ID
+
+        $this->dataManager = new DataManager(
+            ConfigProvider::APP_ID
+            , $config
             , Remove::CONTEXT
         );
-
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

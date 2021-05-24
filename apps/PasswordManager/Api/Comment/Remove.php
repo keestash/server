@@ -44,9 +44,9 @@ class Remove implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = json_decode((string) $request->getBody(), true);
-        $subjectId  = $parameters["subject_id"] ?? null;
+        $commentId  = $parameters["commentId"] ?? null;
 
-        if (null === $subjectId) {
+        if (null === $commentId) {
 
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -57,7 +57,7 @@ class Remove implements RequestHandlerInterface {
 
         }
 
-        $removed = $this->commentRepository->remove((string) $subjectId);
+        $removed = $this->commentRepository->remove((int) $commentId);
 
         if (false === $removed) {
 
@@ -73,10 +73,11 @@ class Remove implements RequestHandlerInterface {
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->getL10N()->translate("node removed")
+                "message"     => $this->translator->translate("node removed")
+                , "commentId" => $commentId
             ]
         );
 
     }
-    
+
 }

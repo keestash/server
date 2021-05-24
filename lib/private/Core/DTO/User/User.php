@@ -49,7 +49,7 @@ class User implements IUser {
     /**
      * @return string|null
      */
-    public function getJwt(): ?string {
+    public function getJWT(): ?string {
         return $this->jwt;
     }
 
@@ -117,7 +117,7 @@ class User implements IUser {
                 , "hash"       => $this->getHash()
                 , "locked"     => $this->isLocked()
                 , "deleted"    => $this->isDeleted()
-                , 'jwt'        => $this->getJwt()
+                , 'jwt'        => $this->getJWT()
             ];
     }
 

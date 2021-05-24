@@ -23,7 +23,6 @@ use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
@@ -33,7 +32,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private IFileRepository $fileRepository;
     private NodeRepository  $nodeRepository;
     private FileRepository  $nodeFileRepository;
     private IIconService    $iconService;
@@ -42,14 +40,12 @@ class Get implements RequestHandlerInterface {
 
     public function __construct(
         IL10N $l10n
-        , IFileRepository $uploadFileRepository
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
         , IIconService $iconService
         , Config $config
     ) {
         $this->translator         = $l10n;
-        $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->iconService        = $iconService;

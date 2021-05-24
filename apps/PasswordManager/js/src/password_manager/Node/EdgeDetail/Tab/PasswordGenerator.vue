@@ -202,6 +202,7 @@ export default {
 
     this.defaultValue = this.maxPasswordCharacters / 2;
     this.characterCount = this.defaultValue;
+    this.checkboxes.value = this.defaultValue;
 
     this.doWork = _.debounce(this.onChange, 900);
   },
@@ -219,10 +220,10 @@ export default {
       this.state.value = STATE_LOADING;
       this.checkboxes = {
         value: (type === 'value') ? e.target.value : this.checkboxes.value,
-        upperCase: (type === 'upperCase' && e.target.checked) || this.checkboxes.upperCase
-        , lowerCase: (type === 'lowerCase' && e.target.checked) || this.checkboxes.lowerCase
-        , digit: (type === 'digit' && e.target.checked) || this.checkboxes.digit
-        , specialChar: (type === 'specialChar' && e.target.checked) || this.checkboxes.specialChar
+        upperCase: (type === 'upperCase') ? e.target.checked : this.checkboxes.upperCase
+        , lowerCase: (type === 'lowerCase') ? e.target.checked : this.checkboxes.lowerCase
+        , digit: (type === 'digit') ? e.target.checked : this.checkboxes.digit
+        , specialChar: (type === 'specialChar') ? e.target.checked : this.checkboxes.specialChar
       }
 
       this.doWork();

@@ -25,6 +25,7 @@ use DateTimeInterface;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Entity\IComparable;
 use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\Entity\JWT;
 
 /**
  * Interface IUser
@@ -35,7 +36,7 @@ interface IUser extends
     IJsonObject
     , IComparable
     , IKeyHolder
-{
+    , JWT {
 
     public const SYSTEM_USER_ID                                                              = 1;
     public const DEMO_USER_NAME                                                              = "demo";

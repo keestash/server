@@ -14,36 +14,20 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Entity\Comment;
 
-use DateTime;
+use DateTimeInterface;
 use KSA\PasswordManager\Entity\Node;
 use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\Entity\JWT;
 use KSP\Core\DTO\User\IUser;
 
-class Comment implements IJsonObject {
+class Comment implements IJsonObject, JWT {
 
-    private int      $id;
-    private string   $comment;
-    private Node     $node;
-    private IUser    $user;
-    private DateTime $createTs;
-
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize() {
-        return [
-            "id"          => $this->getId()
-            , "comment"   => $this->getComment()
-            , "node"      => $this->getNode()
-            , "user"      => $this->getUser()
-            , "create_ts" => $this->getCreateTs()
-        ];
-    }
+    private int               $id;
+    private string            $comment;
+    private Node              $node;
+    private IUser             $user;
+    private DateTimeInterface $createTs;
+    private ?string           $jwt = null;
 
     /**
      * @return int
@@ -102,17 +86,44 @@ class Comment implements IJsonObject {
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
     /**
-     * @param DateTime $createTs
+     * @param DateTimeInterface $createTs
      */
-    public function setCreateTs(DateTime $createTs): void {
+    public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
+    }
+
+    public function setJWT(?string $jwt): void {
+        $this->jwt = $jwt;
+    }
+
+    public function getJWT(): ?string {
+        return $this->jwt;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return array data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize(): array {
+        return [
+            "id"          => $this->getId()
+            , "comment"   => $this->getComment()
+            , "node"      => $this->getNode()
+            , "user"      => $this->getUser()
+            , "create_ts" => $this->getCreateTs()
+            , 'jwt'       => $this->getJWT()
+        ];
     }
 
 }

@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use DateTime;
-use InvalidArgumentException;
 use Keestash\Api\Response\LegacyResponse;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Manager\DataManager\DataManager;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
@@ -32,17 +32,17 @@ use KSA\PasswordManager\Exception\Node\Credential\NoFileException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\Upload\IFileService;
+use KSP\Core\Service\HTTP\IJWTService;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use RuntimeException;
 
 class Add implements RequestHandlerInterface {
 
@@ -66,26 +66,24 @@ class Add implements RequestHandlerInterface {
     private DataManager     $dataManager;
     private FileRepository  $nodeFileRepository;
     private IFileService    $uploadFileService;
-    private IIconService    $iconService;
     private ILogger         $logger;
-    private Config          $config;
+    private IJWTService     $jwtService;
 
     public function __construct(
         IFileRepository $uploadFileRepository
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
         , IFileService $uploadFileService
-        , IIconService $iconService
         , ILogger $logger
         , Config $config
+        , IJWTService $jwtService
     ) {
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->uploadFileService  = $uploadFileService;
-        $this->iconService        = $iconService;
         $this->logger             = $logger;
-        $this->config             = $config;
+        $this->jwtService         = $jwtService;
         $this->dataManager        = new DataManager(
             ConfigProvider::APP_ID
             , $config
@@ -150,6 +148,14 @@ class Add implements RequestHandlerInterface {
             $nodeFile->setNode($node);
             $nodeFile->setFile($coreFile);
             $nodeFile->setCreateTs(new DateTime());
+            $nodeFile->setJwt(
+                $this->jwtService->getJWT(
+                    new Audience(
+                        IAudience::TYPE_ASSET
+                        , $nodeFile->getFile()->getExtension()
+                    )
+                )
+            );
             $nodeFile->setType(NodeFile::FILE_TYPE_ATTACHMENT);
 
             $id = $this->fileRepository->add($nodeFile->getFile());

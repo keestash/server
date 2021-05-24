@@ -13,8 +13,8 @@
                 <div class="col-sm">
                   <div class="row">
                     <div class="col d-flex flex-row">
-                        <Thumbnail :source="getThumbnailUrl(attachment.file.extension)"
-                                   :description="attachment.file.name"></Thumbnail>
+                      <Thumbnail :source="getThumbnailUrl(attachment.jwt)"
+                                 :description="attachment.file.name"></Thumbnail>
                       <b-link :href="getAttachmentUrl(attachment.file.id)" target="_blank">{{
                           attachment.file.name
                         }}
@@ -25,7 +25,7 @@
 
                 <div class="col-sm-4">
                   <div class="row justify-content-end pr-1">
-                    <div class="col-1">
+                    <div class="col-1 mr-2" @click="removeAttachment(attachment)">
                       <i class="fas fa-times remove"></i>
                     </div>
                   </div>
@@ -51,6 +51,21 @@
         @upload="upload"
         :message="infoBox"
     ></FileUpload>
+
+    <div>
+      <b-modal ref="attachment-modal" hide-footer hide-backdrop no-fade>
+        <template>
+          {{ $t('credential.detail.share.modal.title') }}
+        </template>
+        <div class="d-block text-center">
+          <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
+        </div>
+        <b-button class="mt-3 btn-primary" block @click="doRemoveAttachment">
+          {{ $t('credential.detail.share.modal.positiveButton') }}
+        </b-button>
+      </b-modal>
+    </div>
+
   </div>
 </template>
 
@@ -64,10 +79,12 @@ import {mapState} from "vuex";
 import FileUpload from "../../../../../../../../lib/js/src/Components/FileUpload";
 import {Skeleton} from 'vue-loading-skeleton';
 import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
+import ContentList from "../../../../../../../../lib/js/src/Components/ContentList";
+import _ from "lodash";
 
 export default {
   name: "Attachments",
-  components: {Thumbnail, FileUpload, Skeleton},
+  components: {ContentList, Thumbnail, FileUpload, Skeleton},
   computed: {
     ...mapState({
       edge: function (state) {
@@ -99,14 +116,54 @@ export default {
       noAttachments: "there are no attachments",
       infoBox: "click here to upload or drag",
       newComment: "",
+      attachmentToDelete: null
     }
   },
   methods: {
+    removeAttachment(attachment) {
+      this.attachmentToDelete = attachment;
+      this.$refs['attachment-modal'].show();
+    },
+    doRemoveAttachment() {
+      this.axios.post(
+          ROUTES.getPasswordManagerAttachmentRemove()
+          , {
+            fileId: this.attachmentToDelete.file.id
+          }
+      )
+          .then((response) => {
+            if (RESPONSE_CODE_OK in response.data) {
+              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+            }
+            return [];
+          })
+          .then((data) => {
+
+            let newNode = _.cloneDeep(this.edge.node);
+
+            for (let i = 0; i < newNode.attachments.length; i++) {
+              const attachment = newNode.attachments[i];
+              if (parseInt(attachment.file.id) === parseInt(data.file.id)) {
+                newNode.attachments.splice(i, 1);
+                break;
+              }
+            }
+
+            this.$store.dispatch("setSelectedNode", newNode);
+            this.hideModal();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+    },
+    hideModal() {
+      this.$refs['attachment-modal'].hide();
+    },
     getAttachmentUrl: function (fileId) {
       return ROUTES.getNodeAttachment(fileId);
     },
     getThumbnailUrl: function (extension) {
-      return ROUTES.getThumbNailByExtension(extension);
+      return ROUTES.getAssetUrl(extension);
     },
     getData() {
       this.axios.request(
@@ -145,17 +202,19 @@ export default {
             return [];
           })
       ).then((data) => {
-        let newAttachments = {};
+
+        let newNode = _.cloneDeep(this.edge.node);
 
         for (let i = 0; i < data.files.length; i++) {
-          newAttachments[i + this.edge.node.attachments.length] = data.files[i];
+          if (!Array.isArray(newNode.attachments)) {
+            newNode.attachments = [];
+          }
+          newNode.attachments.push(data.files[i]);
         }
 
         this.$store.dispatch(
-            "updateSelectedNode"
-            , {
-              attachments: newAttachments
-            }
+            "setSelectedNode"
+            , newNode
         );
         this.icons = data.icons;
       })

@@ -90,7 +90,7 @@ export const ROUTES = {
     },
 
     getAssetUrl(jsonWebToken) {
-        return 'http://keestash.local/asset.php?token=' + jsonWebToken;
+        return host.getAssetUrl() + '?token=' + jsonWebToken;
     },
 
     getShareableUsers(nodeId, query) {
@@ -140,13 +140,13 @@ export const ROUTES = {
     //     return host.getApiHost() + PASSWORD_MANAGER_NODE_UPDATE_AVATAR;
     // }
     //
-    // getPasswordManagerCommentRemove() {
-    //     return host.getApiHost() + PASSWORD_MANAGER_COMMENT_REMOVE;
-    // }
-    //
-    // getPasswordManagerAttachmentRemove() {
-    //     return host.getApiHost() + PASSWORD_MANAGER_ATTACHMENTS_REMOVE;
-    // }
+    getPasswordManagerCommentRemove() {
+        return host.getApiHost() + PASSWORD_MANAGER_COMMENT_REMOVE;
+    },
+
+    getPasswordManagerAttachmentRemove() {
+        return host.getApiHost() + PASSWORD_MANAGER_ATTACHMENTS_REMOVE;
+    },
     //
     // getNodeAvatar(nodeId) {
     //     let route = PASSWORD_MANAGER_NODE_GET_AVATAR;

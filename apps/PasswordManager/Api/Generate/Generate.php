@@ -90,7 +90,7 @@ class Generate implements RequestHandlerInterface {
         , ?string $lowerCase
         , ?string $digit
         , ?string $specialChars
-    ) {
+    ): bool {
         $validOptions = [
             "true"
             , "false"

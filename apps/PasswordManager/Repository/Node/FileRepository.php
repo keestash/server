@@ -22,30 +22,35 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository\Node;
 
 use DateTime;
-use doganoo\DIP\DateTime\DateTimeService;
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Repository\File\FileRepository as CoreFileRepository;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Entity\Node;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\HTTP\IJWTService;
 
 class FileRepository extends AbstractRepository {
 
     private NodeRepository     $nodeRepository;
-    private DateTimeService    $dateTimeService;
+    private IDateTimeService   $dateTimeService;
     private CoreFileRepository $fileRepository;
     private ILogger            $logger;
+    private IJWTService        $jwtService;
 
     public function __construct(
         IBackend $backend
         , NodeRepository $nodeRepository
-        , DateTimeService $dateTimeService
+        , IDateTimeService $dateTimeService
         , CoreFileRepository $fileRepository
         , ILogger $logger
+        , IJWTService $jwtService
     ) {
         parent::__construct($backend);
 
@@ -53,6 +58,7 @@ class FileRepository extends AbstractRepository {
         $this->dateTimeService = $dateTimeService;
         $this->fileRepository  = $fileRepository;
         $this->logger          = $logger;
+        $this->jwtService      = $jwtService;
     }
 
     public function connectFilesToNode(FileList $fileList): bool {
@@ -97,14 +103,16 @@ class FileRepository extends AbstractRepository {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
-                'id'
-                , 'file_id'
-                , 'node_id'
-                , 'type'
-                , 'create_ts'
+                'pnf.`id`'
+                , 'pnf.`file_id`'
+                , 'pnf.`node_id`'
+                , 'pnf.`type`'
+                , 'pnf.`create_ts`'
+                , 'f.`extension`'
             ]
         )
-            ->from('pwm_node_file')
+            ->from('`pwm_node_file`', 'pnf')
+            ->join('pnf', '`file`', 'f', 'pnf.file_id = f.id')
             ->where('node_id = ?');
 
         $queryBuilder = $queryBuilder
@@ -115,15 +123,24 @@ class FileRepository extends AbstractRepository {
             $queryBuilder = $queryBuilder->setParameter(1, $type);
         }
 
-        $rows = $queryBuilder->execute();
+        $result = $queryBuilder->execute();
+        $rows   = $result->fetchAllNumeric();
 
         foreach ($rows as $row) {
             $nodeFile = new NodeFile();
-            $nodeFile->setFile($this->fileRepository->get((int) $row['file_id']));
-            $nodeFile->setNode($this->nodeRepository->getNode((int) $row['node_id'], 0, 1));
-            $nodeFile->setType($row['type']);
+            $nodeFile->setFile($this->fileRepository->get((int) $row[1]));
+            $nodeFile->setNode($this->nodeRepository->getNode((int) $row[2], 0, 1));
+            $nodeFile->setType($row[3]);
             $nodeFile->setCreateTs(
-                $this->dateTimeService->fromFormat($row['create_ts'])
+                $this->dateTimeService->fromFormat($row[4])
+            );
+            $nodeFile->setJwt(
+                $this->jwtService->getJWT(
+                    new Audience(
+                        IAudience::TYPE_ASSET
+                        , $row[5]
+                    )
+                )
             );
             $list->add($nodeFile);
         }

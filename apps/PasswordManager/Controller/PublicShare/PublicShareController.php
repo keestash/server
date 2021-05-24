@@ -54,6 +54,14 @@ class PublicShareController extends ContextLessAppController {
 
         $hash  = $request->getAttribute("hash");
         $share = $this->publicShareRepository->getShare($hash);
+
+        if (null === $share || $share->isExpired()) {
+            return $this->templateRenderer->render(
+                'publicShare::public_share_expired'
+                , []
+            );
+        }
+
         /** @var Credential $node */
         $node = $this->nodeRepository->getNode($share->getNodeId());
 

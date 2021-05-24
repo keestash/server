@@ -57,6 +57,7 @@ export default {
         }
         return [];
       }).then((otherData) => {
+        console.log(otherData);
         data.visible = true;
         data.value = otherData.decrypted;
       })

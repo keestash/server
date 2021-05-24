@@ -21,7 +21,7 @@
                   <div class="d-center d-flex flex-row">
                     <Thumbnail
                         :skip-cache="true"
-                        :source="getUserProfilePicture(option.jwt)"
+                        :source="getAssetUrl(option.jwt)"
                     ></Thumbnail>
                     {{ option.name }}
                   </div>
@@ -40,7 +40,7 @@
               <button
                   class="btn btn-primary btn-circle btn-sm btn-public-share"
                   @click="sharePublicly"
-                  v-if="edge.node.public_share === null"
+                  v-if="edge.node.public_share === null "
               >
                 <i class="fas fa-share"></i>
               </button>
@@ -59,7 +59,7 @@
           <Skeleton height="25px" v-else/>
         </div>
 
-        <div class="results mt-3 rounded border tab_result_box" id="share__results">
+        <div class="results mt-3 rounded border tab_result_box">
           <ul class="list-group list-group-flush">
 
             <NoDataFound
@@ -77,7 +77,7 @@
                     <div class="row">
                       <div class="col-2">
                         <Thumbnail
-                            :source="getUserProfilePicture(share.user.jwt)"
+                            :source="getAssetUrl(share.user.jwt)"
                         ></Thumbnail>
                       </div>
                       <div class="col">
@@ -113,17 +113,20 @@
 
       </div>
     </div>
-    <b-modal ref="my-modal" hide-footer :title="$t('credential.detail.share.modal.title')">
-      <div class="d-block text-center">
-        <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
-      </div>
-      <b-button class="mt-3" variant="outline-danger" block @click="hideModal">
-        {{ $t('credential.detail.share.modal.negativeButton') }}
-      </b-button>
-      <b-button class="mt-2" variant="outline-warning" block @click="doRemoveShare()">
-        {{ $t('credential.detail.share.modal.positiveButton') }}
-      </b-button>
-    </b-modal>
+    <div>
+      <b-modal ref="unshare-modal" hide-footer hide-backdrop no-fade>
+        <template>
+          {{ $t('credential.detail.share.modal.title') }}
+        </template>
+        <div class="d-block text-center">
+          <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
+        </div>
+        <b-button class="mt-3 btn-primary" block @click="doRemoveShare">
+          {{ $t('credential.detail.share.modal.positiveButton') }}
+        </b-button>
+      </b-modal>
+    </div>
+
   </div>
 </template>
 
@@ -149,8 +152,7 @@ export default {
   computed: {
     ...mapState({
       edge: function (state) {
-        let edge = state.selectedEdge;
-        return edge;
+        return state.selectedEdge;
       }
     })
   },
@@ -183,17 +185,18 @@ export default {
     this.container = startUp.getContainer();
     this.axios = this.container.query(AXIOS);
     this.dateTimeService = this.container.query(DATE_TIME_SERVICE);
+
   },
   methods: {
     getPublicShareButtonDescription() {
       return this.edge.node.public_share === null ? this.$t('credential.detail.sharePublicly') : this.$t('credential.detail.copyPublicShareLink');
     },
-    getUserProfilePicture(jsonWebToken) {
+    getAssetUrl(jsonWebToken) {
       return ROUTES.getAssetUrl(jsonWebToken);
     },
     removeShare(share) {
       this.shareToDelete = share;
-      this.$refs['my-modal'].show();
+      this.$refs['unshare-modal'].show();
     },
     doRemoveShare() {
       this.axios.post(
@@ -211,19 +214,18 @@ export default {
           })
           .then((data) => {
 
-            let newSharedTo = _.cloneDeep(this.edge.shared_to);
+            let newNode = _.cloneDeep(this.edge.node);
 
-            for (let i = 0; i < newSharedTo.content.length; i++) {
-              const sharedTo = newSharedTo.content[i];
+            for (let i = 0; i < newNode.shared_to.content.length; i++) {
+              const sharedTo = newNode.shared_to.content[i];
               if (parseInt(sharedTo.id) === parseInt(data.shareId)) {
-                newSharedTo = this.removeAtWithSlice(newSharedTo.content, i);
+                newNode.shared_to.content.splice(i, 1);
+                --newNode.shared_to.length;
                 break;
               }
             }
 
-            this.$store.dispatch("updateSelectedNode", {
-              shared_to: newSharedTo
-            });
+            this.$store.dispatch("setSelectedNode", newNode);
             this.hideModal();
           })
           .catch((error) => {
@@ -231,10 +233,10 @@ export default {
           })
     },
     hideModal() {
-      this.$refs['my-modal'].hide();
+      this.$refs['unshare-modal'].hide();
     },
     removeAtWithSlice(array, index) {
-      return array.slice(index).contact(array.slice(index + 1));
+      return array.slice(index).concat(array.slice(index + 1));
     },
     sharePublicly(e) {
       e.preventDefault();
@@ -348,14 +350,13 @@ export default {
           )
       )
           .then((response) => {
-            console.log(response)
                 if (RESPONSE_CODE_OK in response.data) {
                   return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
                 }
                 return [];
               }
           ).then((data) => {
-            console.log(data)
+        console.log(data)
         this.users = Object.values(
             data.user_list.content
         );
