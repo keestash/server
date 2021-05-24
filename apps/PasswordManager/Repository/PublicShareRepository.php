@@ -18,17 +18,21 @@ use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 
 class PublicShareRepository extends AbstractRepository {
 
     private IDateTimeService $dateTimeService;
+    private ILogger          $logger;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
+        , ILogger $logger
     ) {
         parent::__construct($backend);
         $this->dateTimeService = $dateTimeService;
+        $this->logger          = $logger;
     }
 
     public function shareNode(Node $node): ?Node {
@@ -159,7 +163,7 @@ class PublicShareRepository extends AbstractRepository {
         $publicShare = new PublicShare();
         $publicShare->setId((int) $shareId);
         $publicShare->setHash((string) $shareHash);
-        $publicShare->setExpireTs($this->dateTimeService->toDateTime((int) $expireTs));
+        $publicShare->setExpireTs($this->dateTimeService->fromFormat($expireTs));
         $publicShare->setNodeId((int) $nodeId);
 
         $node->setPublicShare($publicShare);
@@ -173,6 +177,14 @@ class PublicShareRepository extends AbstractRepository {
                                 SELECT DISTINCT n.`id` FROM `pwm_node` n WHERE n.`user_id` = ?
                         )')
                 ->setParameter(0, $user->getId())
+                ->execute() !== 0;
+    }
+
+    public function removeOutdated(): bool {
+        $queryBuilder = $this->getQueryBuilder();
+
+        return $queryBuilder->delete('pwm_public_share', 'pps')
+                ->where('pps.`expire_ts` < NOW()')
                 ->execute() !== 0;
     }
 

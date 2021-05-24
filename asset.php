@@ -23,6 +23,8 @@ declare(strict_types=1);
 use Firebase\JWT\JWT;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\File\FileService;
+use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\Service\File\Icon\IIconService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -33,6 +35,8 @@ $container = require_once __DIR__ . '/lib/start.php';
 $instanceDB = $container->get(InstanceDB::class);
 /** @var Config $config */
 $config = $container->get(Config::class);
+/** @var IIconService $iconService */
+$iconService = $container->get(IIconService::class);
 
 $token = $_GET['token'] ?? null;
 
@@ -49,17 +53,37 @@ $decoded = JWT::decode(
 
 $then = new DateTime();
 $then->setTimestamp((int) $decoded->iat);
-$then->modify('+3 minutes');
-
+$then->modify('+5 minutes');
 if ((new DateTime()) > $then) {
     header("HTTP/1.0 404 Not Found");
     die();
 }
 
-$file = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/profile_image_" . $decoded->aud;
-if (!is_file($file)) {
-    $file = $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/' . FileService::DEFAULT_PROFILE_PICTURE . ".png";
+$audience = $decoded->aud;
+
+$file = null;
+if ($audience->type === IAudience::TYPE_USER) {
+    $file = loadTypeUser($config, (int) $audience->value);
+} else if ($audience->type === IAudience::TYPE_ASSET) {
+    $file = loadTypeAsset($config, $iconService, $audience->value);
 }
+//dump($file);
+//dump(is_file($file));
+//exit();
 header('Content-Type:' . mime_content_type($file));
 header('Content-Length: ' . filesize($file));
 readfile($file);
+
+
+function loadTypeUser(Config $config, int $userId): string {
+    $file = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/profile_image_" . $userId;
+    if (!is_file($file)) {
+        $file = $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/' . FileService::DEFAULT_PROFILE_PICTURE . ".png";
+    }
+    return $file;
+}
+
+function loadTypeAsset(Config $config, IIconService $iconService, string $name): string {
+    $fileName = $iconService->getIconForExtension($name);
+    return $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/svg/' . $fileName;
+}

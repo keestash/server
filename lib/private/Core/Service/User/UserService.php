@@ -178,19 +178,4 @@ class UserService implements IUserService {
         return null === $user || true === $user->isLocked();
     }
 
-    public function getJWT(IUser $user): string {
-        $payLoad = [
-            'iss'   => $this->httpService->getBaseURL(false, false)
-            , 'aud' => $user->getId()
-            , 'iat' => (new DateTime())->getTimestamp()
-            , 'nbf' => (new DateTime())->getTimestamp() - 1
-        ];
-
-        return JWT::encode(
-            $payLoad
-            , $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-        );
-
-    }
-
 }

@@ -21,12 +21,14 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
+use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
+use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 
 return [
     ConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
@@ -41,11 +43,14 @@ return [
         ],
     ],
     ConfigProvider::EVENTS       => [
-        UserCreatedEvent::class   => [
+        UserCreatedEvent::class          => [
             AfterRegistration::class
         ]
-        , UserUpdatedEvent::class => [
+        , UserUpdatedEvent::class        => [
             AfterPasswordChanged::class
+        ]
+        , ApplicationStartedEvent::class => [
+            RemoveExpired::class
         ]
     ],
     ConfigProvider::COMMANDS     => [

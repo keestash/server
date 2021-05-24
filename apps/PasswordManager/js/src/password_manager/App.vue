@@ -132,6 +132,7 @@ export default {
     },
 
     parseBreadCrumb(breadCrumbs) {
+      this.breadCrumbs = [];
       for (let index in breadCrumbs) {
         if (breadCrumbs.hasOwnProperty(index)) {
           this.breadCrumbs.push(breadCrumbs[index])

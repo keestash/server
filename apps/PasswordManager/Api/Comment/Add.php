@@ -16,16 +16,17 @@ namespace KSA\PasswordManager\Api\Comment;
 
 use DateTime;
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Repository\User\UserRepository;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,22 +35,22 @@ class Add implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private NodeRepository    $nodeRepository;
-    private UserRepository    $userRepository;
     private UserService       $userService;
     private ILogger           $logger;
+    private IJWTService       $jwtService;
 
     public function __construct(
         CommentRepository $commentRepository
         , NodeRepository $nodeRepository
-        , UserRepository $userRepository
         , UserService $userService
         , ILogger $logger
+        , IJWTService $jwtService
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
-        $this->userRepository    = $userRepository;
         $this->userService       = $userService;
         $this->logger            = $logger;
+        $this->jwtService        = $jwtService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -69,7 +70,7 @@ class Add implements RequestHandlerInterface {
         }
 
         /** @var IToken $token */
-        $token          = $request->getAttribute(IToken::class);
+        $token         = $request->getAttribute(IToken::class);
         $node          = $this->nodeRepository->getNode((int) $nodeId);
         $commentString = trim($commentString);
 
@@ -94,6 +95,14 @@ class Add implements RequestHandlerInterface {
         $comment->setCreateTs(new DateTime());
         $comment->setNode($node);
         $comment->setUser($token->getUser());
+        $comment->setJWT(
+            $this->jwtService->getJWT(
+                new Audience(
+                    IAudience::TYPE_ASSET
+                    , 'default'
+                )
+            )
+        );
         $comment = $this->commentRepository->addComment($comment);
 
         if (null === $comment) {

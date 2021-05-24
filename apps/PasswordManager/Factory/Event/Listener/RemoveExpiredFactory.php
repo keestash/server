@@ -19,25 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Comment;
+namespace KSA\PasswordManager\Factory\Event\Listener;
 
-use KSA\PasswordManager\Api\Comment\Add;
-use KSA\PasswordManager\Repository\CommentRepository;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\User\IUserService;
+use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
+use KSA\PasswordManager\Repository\PublicShareRepository;
 use Psr\Container\ContainerInterface;
 
-class AddFactory {
+class RemoveExpiredFactory {
 
-    public function __invoke(ContainerInterface $container): Add {
-        return new Add(
-            $container->get(CommentRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(IUserService::class)
-            , $container->get(ILogger::class)
-            , $container->get(IJWTService::class)
+    public function __invoke(ContainerInterface $container): RemoveExpired {
+        return new RemoveExpired(
+            $container->get(PublicShareRepository::class)
         );
     }
 

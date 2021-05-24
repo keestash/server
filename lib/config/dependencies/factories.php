@@ -63,6 +63,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
@@ -107,6 +108,7 @@ use Keestash\Factory\Core\Service\Event\EventDispatcherFactory;
 use Keestash\Factory\Core\Service\File\FileServiceFactory;
 use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
+use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\PersistenceServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
@@ -206,4 +208,5 @@ return [
     \Keestash\Core\Service\File\Upload\FileService::class          => \Keestash\Factory\Core\Service\Upload\FileServiceFactory::class,
     IniConfigService::class                                        => InvokableFactory::class,
     StringService::class                                           => InvokableFactory::class,
+    JWTService::class                                              => JWTServiceFactory::class,
 ];

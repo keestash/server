@@ -25,6 +25,7 @@ use KSA\PasswordManager\Api\Node\Attachment\Remove;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\L10N\IL10N;
+use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class RemoveFactory {
@@ -34,6 +35,7 @@ class RemoveFactory {
             $container->get(IFileRepository::class)
             , $container->get(IL10N::class)
             , $container->get(FileRepository::class)
+            , $container->get(Config::class)
         );
     }
 

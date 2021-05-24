@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Repository\Node;
 use Doctrine\DBAL\Driver\ResultStatement;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
@@ -39,10 +40,11 @@ use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\HTTP\IJWTService;
 
 class NodeRepository extends AbstractRepository {
 
@@ -53,7 +55,7 @@ class NodeRepository extends AbstractRepository {
     private EncryptionService       $encryptionService;
     private KeyService              $keyService;
     private IOrganizationRepository $organizationRepository;
-    private IUserService            $userService;
+    private IJWTService             $jwtService;
 
     public function __construct(
         IBackend $backend
@@ -64,7 +66,7 @@ class NodeRepository extends AbstractRepository {
         , EncryptionService $encryptionService
         , KeyService $keyService
         , IOrganizationRepository $organizationRepository
-        , IUserService $userService
+        , IJWTService $jwtService
     ) {
         parent::__construct($backend);
 
@@ -75,7 +77,7 @@ class NodeRepository extends AbstractRepository {
         $this->encryptionService      = $encryptionService;
         $this->keyService             = $keyService;
         $this->organizationRepository = $organizationRepository;
-        $this->userService            = $userService;
+        $this->jwtService             = $jwtService;
     }
 
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Root {
@@ -361,7 +363,7 @@ class NodeRepository extends AbstractRepository {
                 where e.`node_id` = " . $node->getId() . "
                     and e.`type` = '" . Edge::TYPE_SHARE . "'
                     and e.`expire_ts` is not null
-                    and e.`expire_ts` > CURRENT_TIMESTAMP
+                    and e.`expire_ts` >= NOW()
         ";
 
         $result = $this->raw($sql);
@@ -379,7 +381,12 @@ class NodeRepository extends AbstractRepository {
             if (null === $createTs) continue;
 
             $user->setJWT(
-                $this->userService->getJWT($user)
+                $this->jwtService->getJWT(
+                    new Audience(
+                        IAudience::TYPE_USER
+                        , (string) $user->getId()
+                    )
+                )
             );
 
             $share->setId((int) $id);
@@ -389,9 +396,7 @@ class NodeRepository extends AbstractRepository {
             $node->shareTo($share);
         }
 
-        $node = $this->publicShareRepository->addShareInfo($node);
-
-        return $node;
+        return $this->publicShareRepository->addShareInfo($node);
     }
 
     public function addRoot(Root $root): ?int {

@@ -42,6 +42,7 @@ use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
+use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 use KSA\PasswordManager\Factory\Api\Comment\AddFactory;
 use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
 use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
@@ -63,6 +64,7 @@ use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFacto
 use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CreateKeyFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CreateStarterPasswordFactory;
+use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
@@ -79,6 +81,7 @@ use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\Node\Share\ShareService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -134,7 +137,7 @@ return [
         NodeService::class                                                => NodeServiceFactory::class,
         BreadCrumbService::class                                          => BreadCrumbServiceFactory::class,
         CredentialService::class                                          => CredentialServiceFactory::class,
-        \KSA\PasswordManager\Service\Node\Share\ShareService::class       => InvokableFactory::class,
+        ShareService::class                                               => InvokableFactory::class,
 
         // event
         // ---- listener
@@ -142,6 +145,7 @@ return [
         CreateStarterPassword::class                                      => CreateStarterPasswordFactory::class,
         AfterRegistration::class                                          => AfterRegistrationFactory::class,
         AfterPasswordChanged::class                                       => AfterPasswordChangedListenerFactory::class,
+        RemoveExpired::class                                              => RemoveExpiredFactory::class,
 
         // command
         CreateFolder::class                                               => CreateFolderFactory::class,

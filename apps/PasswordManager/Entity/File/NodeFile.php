@@ -21,36 +21,27 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Entity\File;
 
-use DateTime;
+use DateTimeInterface;
 use Exception;
 use KSA\PasswordManager\Entity\Node;
-use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\Entity\JWT;
 use KSP\Core\DTO\File\IFile;
 
-class NodeFile implements IJsonObject {
+class NodeFile implements JWT {
 
     public const FILE_TYPE_AVATAR     = "avatar.type.file";
     public const FILE_TYPE_ATTACHMENT = "attachment.type.file";
 
-    private IFile    $file;
-    private Node     $node;
-    private string   $type;
-    private DateTime $createTs;
+    private IFile             $file;
+    private Node              $node;
+    private string            $type;
+    private DateTimeInterface $createTs;
+    private ?string           $jwt = null;
 
     private array $types = [
         NodeFile::FILE_TYPE_ATTACHMENT
         , NodeFile::FILE_TYPE_AVATAR
     ];
-
-    public function jsonSerialize() {
-        return [
-            'file'          => $this->getFile()
-            , 'node'        => $this->getNode()
-            , 'type'        => $this->getType()
-            , 'create_ts'   => $this->getCreateTs()
-            , 'valid_types' => $this->types
-        ];
-    }
 
     /**
      * @return IFile
@@ -100,17 +91,42 @@ class NodeFile implements IJsonObject {
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
     /**
-     * @param DateTime $createTs
+     * @param DateTimeInterface $createTs
      */
-    public function setCreateTs(DateTime $createTs): void {
+    public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getJwt(): ?string {
+        return $this->jwt;
+    }
+
+    /**
+     * @param string|null $jwt
+     */
+    public function setJwt(?string $jwt): void {
+        $this->jwt = $jwt;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'file'          => $this->getFile()
+            , 'node'        => $this->getNode()
+            , 'type'        => $this->getType()
+            , 'create_ts'   => $this->getCreateTs()
+            , 'valid_types' => $this->types
+            , 'jwt'         => $this->getJwt()
+        ];
     }
 
 }

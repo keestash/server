@@ -16,16 +16,17 @@ namespace KSA\PasswordManager\Api\Node;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Exception\InvalidParameterException;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\User\IUserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,18 +43,18 @@ class ShareableUsers implements RequestHandlerInterface {
     private IUserRepository $userRepository;
     private NodeRepository  $nodeRepository;
     private ILogger         $logger;
-    private IUserService    $userService;
+    private IJWTService     $jwtService;
 
     public function __construct(
         IUserRepository $userRepository
         , NodeRepository $nodeRepository
         , ILogger $logger
-        , IUserService $userService
+        , IJWTService $jwtService
     ) {
         $this->userRepository = $userRepository;
         $this->nodeRepository = $nodeRepository;
         $this->logger         = $logger;
-        $this->userService    = $userService;
+        $this->jwtService     = $jwtService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -112,7 +113,12 @@ class ShareableUsers implements RequestHandlerInterface {
             }
 
             $user->setJWT(
-                $this->userService->getJWT($user)
+                $this->jwtService->getJWT(
+                    new Audience(
+                        IAudience::TYPE_USER
+                        , (string) $user->getId()
+                    )
+                )
             );
 
             $usersFormatted->add($user);

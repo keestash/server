@@ -18,7 +18,11 @@ use KSA\PasswordManager\Entity\Node;
 class ShareService {
 
     public function generateSharingHash(Node $node): string {
-        return hash("md5", $node->getId() . $node->getType());
+        return hash_hmac(
+            'sha256'
+            , uniqid("", true) . (new DateTime())->getTimestamp()
+            , $node->getUser()->getPassword()
+        );
     }
 
     public function getDefaultExpireDate(): DateTime {

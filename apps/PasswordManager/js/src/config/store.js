@@ -19,23 +19,8 @@ export default new Vuex.Store({
         SET_EDGES(state, edges) {
             state.edges = edges;
         },
-        SET_COMMENTS(state, comments) {
-            state.comments = comments;
-        },
-        ADD_COMMENT(state, comment) {
-            state.comments.push(comment)
-        },
         SELECT_EDGE(state, edge) {
             state.selectedEdge = edge;
-        },
-        SET_ATTACHMENTS(state, attachments) {
-            state.selectedEdge.node.attachments = attachments;
-        },
-        ADD_ATTACHMENTS(state, attachments) {
-            state.selectedEdge.node.attachments = state.selectedEdge.node.attachments.concat(attachments);
-        },
-        ADD_ATTACHMENT(state, attachment) {
-            state.selectedEdge.node.attachments.push(attachment);
         },
         UPDATE_EDGE(state, edge) {
             let store_p = state.edges.find(p => p.id === edge.id);
@@ -46,6 +31,9 @@ export default new Vuex.Store({
         UPDATE_SELECTED_NODE(state, newNode) {
             const currentNode = state.selectedEdge.node;
             state.selectedEdge.node = _.merge(currentNode, newNode);
+        },
+        SET_SELECTED_NODE(state, newNode) {
+            state.selectedEdge.node = newNode;
         }
     },
     actions: {
@@ -61,20 +49,8 @@ export default new Vuex.Store({
         updateSelectedNode(context, node) {
             context.commit("UPDATE_SELECTED_NODE", node);
         },
-        setAttachments(context, attachments) {
-            context.commit("SET_ATTACHMENTS", attachments);
-        },
-        addAttachment(context, attachment) {
-            context.commit("ADD_ATTACHMENT", attachment);
-        },
-        addAttachments(context, attachments) {
-            context.commit("ADD_ATTACHMENTS", attachments);
-        },
-        setComments(context, comments) {
-            context.commit("SET_COMMENTS", comments);
-        },
-        addComment(context, comment) {
-            context.commit("ADD_COMMENT", comment);
+        setSelectedNode(context, node) {
+            context.commit("SET_SELECTED_NODE", node);
         },
         setEdges(context, edges) {
             context.commit("SET_EDGES", edges);

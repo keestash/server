@@ -14,7 +14,7 @@
                   <div class="col-sm">
                     <div class="row">
                       <div class="col d-flex flex-row">
-                        <Thumbnail :source="getThumbnail()"></Thumbnail>
+                        <Thumbnail :source="getThumbnail(comment.jwt)"></Thumbnail>
                         {{ comment.comment }}
                       </div>
                     </div>
@@ -22,7 +22,7 @@
 
                   <div class="col-sm-4">
                     <div class="row justify-content-end pr-1">
-                      <div class="col-1">
+                      <div class="col-1 mr-2" @click="removeComment(comment)">
                         <i class="fas fa-times remove"></i>
                       </div>
                     </div>
@@ -50,12 +50,27 @@
                   rows="3" v-model="newComment"></textarea>
       </div>
 
-      <button
-          class="btn btn-primary"
+      <b-button
+          variant="primary"
+          block
           @click.prevent="addComment"
       >{{ $t('credential.detail.addComment') }}
-      </button>
+      </b-button>
     </form>
+
+    <div>
+      <b-modal ref="comment-modal" hide-footer hide-backdrop no-fade>
+        <template #modal-title>
+          {{ $t('credential.detail.share.modal.title') }}
+        </template>
+        <div class="d-block text-center">
+          <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
+        </div>
+        <b-button class="mt-3 btn-primary" block @click="doRemoveComment">
+          {{ $t('credential.detail.share.modal.positiveButton') }}
+        </b-button>
+      </b-modal>
+    </div>
   </div>
 </template>
 
@@ -69,6 +84,7 @@ import {mapState} from "vuex";
 import {Skeleton} from 'vue-loading-skeleton';
 import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFound";
+import _ from "lodash";
 
 export default {
   name: "Comment",
@@ -105,8 +121,51 @@ export default {
     }
   },
   methods: {
-    getThumbnail() {
-      return ROUTES.getThumbNailByExtension('text');
+    removeComment(comment) {
+      this.commentToDelete = comment;
+      this.$refs['comment-modal'].show();
+    },
+    doRemoveComment() {
+      this.axios.post(
+          ROUTES.getPasswordManagerCommentRemove()
+          , {
+            commentId: this.commentToDelete.id
+          }
+      )
+          .then((response) => {
+            if (RESPONSE_CODE_OK in response.data) {
+              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+            }
+            return [];
+          })
+          .then((data) => {
+
+            let newNode = _.cloneDeep(this.edge.node);
+
+            for (let i = 0; i < newNode.comments.length; i++) {
+              const comment = newNode.comments[i];
+              if (parseInt(comment.id) === parseInt(data.commentId)) {
+                newNode.comments.splice(i, 1);
+                break;
+              }
+            }
+
+            this.$store.dispatch("setSelectedNode", newNode);
+            this.hideModal();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+    },
+    hideModal() {
+      this.$refs['comment-modal'].hide();
+    },
+    removeAtWithSlice(array, index) {
+      return array.slice(index).concat(array.slice(index + 1));
+    },
+
+    getThumbnail(jwt) {
+      return ROUTES.getAssetUrl(jwt);
     },
     getData() {
       this.axios.request(
@@ -152,9 +211,7 @@ export default {
           })
           .catch((e) => {
             console.log(e)
-          })
-      ;
-
+          });
 
     }
   }

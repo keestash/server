@@ -50,6 +50,4 @@ interface IUserService extends IService {
 
     public function isDisabled(?IUser $user): bool;
 
-    public function getJWT(IUser $user):string;
-
 }

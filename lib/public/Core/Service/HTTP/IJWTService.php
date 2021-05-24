@@ -19,26 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Comment;
+namespace KSP\Core\Service\HTTP;
 
-use KSA\PasswordManager\Api\Comment\Add;
-use KSA\PasswordManager\Repository\CommentRepository;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\User\IUserService;
-use Psr\Container\ContainerInterface;
+use KSP\Core\DTO\Http\JWT\IAudience;
 
-class AddFactory {
+interface IJWTService {
 
-    public function __invoke(ContainerInterface $container): Add {
-        return new Add(
-            $container->get(CommentRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(IUserService::class)
-            , $container->get(ILogger::class)
-            , $container->get(IJWTService::class)
-        );
-    }
+    public function getJWT(IAudience $audience): string;
 
 }

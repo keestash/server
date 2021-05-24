@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Api\Node;
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\LegacyResponse;
-use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Node;

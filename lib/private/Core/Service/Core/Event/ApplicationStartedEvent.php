@@ -19,26 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Comment;
+namespace Keestash\Core\Service\Core\Event;
 
-use KSA\PasswordManager\Api\Comment\Add;
-use KSA\PasswordManager\Repository\CommentRepository;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\User\IUserService;
-use Psr\Container\ContainerInterface;
+use DateTime;
+use DateTimeInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class AddFactory {
+class ApplicationStartedEvent extends Event {
 
-    public function __invoke(ContainerInterface $container): Add {
-        return new Add(
-            $container->get(CommentRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(IUserService::class)
-            , $container->get(ILogger::class)
-            , $container->get(IJWTService::class)
-        );
+    private DateTimeInterface $dateTime;
+
+    public function __construct(DateTimeInterface $dateTime) {
+        $this->dateTime = $dateTime;
+    }
+
+    public function getDateTime(): DateTimeInterface {
+        return $this->dateTime;
     }
 
 }

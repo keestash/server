@@ -16,6 +16,7 @@ namespace KSA\PasswordManager\Repository;
 
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use KSA\PasswordManager\Entity\Comment\Comment;
@@ -23,25 +24,30 @@ use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Exception\Node\Comment\CommentRepositoryException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\HTTP\IJWTService;
 
 class CommentRepository extends AbstractRepository {
 
     private NodeRepository  $nodeRepository;
     private UserRepository  $userRepository;
     private DateTimeService $dateTimeService;
+    private IJWTService     $jwtService;
 
     public function __construct(
         IBackend $backend
         , NodeRepository $nodeRepository
         , UserRepository $userRepository
         , DateTimeService $dateTimeService
+        , IJWTService $jwtService
     ) {
         parent::__construct($backend);
 
         $this->nodeRepository  = $nodeRepository;
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
+        $this->jwtService      = $jwtService;
     }
 
     /**
@@ -117,6 +123,14 @@ class CommentRepository extends AbstractRepository {
             $comment->setComment($commentString);
             $comment->setNode($node);
             $comment->setUser($user);
+            $comment->setJWT(
+                $this->jwtService->getJWT(
+                    new Audience(
+                        IAudience::TYPE_ASSET
+                        , 'default'
+                    )
+                )
+            );
             $comment->setCreateTs(
                 $this->dateTimeService->fromFormat($createTs)
             );
@@ -127,11 +141,11 @@ class CommentRepository extends AbstractRepository {
         return $list;
     }
 
-    public function remove(Comment $comment): bool {
+    public function remove(int $id): bool {
         $queryBuilder = $this->getQueryBuilder();
         return $queryBuilder->delete('pwm_comment')
                 ->where('id = ?')
-                ->setParameter(0, $comment->getId())
+                ->setParameter(0, $id)
                 ->execute() !== 0;
     }
 

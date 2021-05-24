@@ -25,7 +25,7 @@ use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Container\ContainerInterface;
 
 class ShareableUsersFactory {
@@ -35,7 +35,7 @@ class ShareableUsersFactory {
             $container->get(IUserRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(ILogger::class)
-            , $container->get(IUserService::class)
+            , $container->get(IJWTService::class)
         );
     }
 
