@@ -18,11 +18,10 @@
  */
 
 import {Page} from "./Install/Page";
-import {Request} from "../../../../lib/js/src/Backend/Request";
-import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
 import {Router} from "../../../../lib/js/src/Route/Router";
 import {Host} from "../../../../lib/js/src/Backend/Host";
 import {Routes} from "./Public/Routes";
+import {AXIOS} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.Apps.Install) {
@@ -33,15 +32,13 @@ import {Routes} from "./Public/Routes";
 
         init: function () {
 
+            const container = Keestash.Main.getContainer();
             const router = new Router(
                 new Host()
             );
 
             const page = new Page(
-                new Request(
-                    new AppStorage()
-                    , router
-                )
+                container.query(AXIOS)
                 , new Routes()
                 , router
             );

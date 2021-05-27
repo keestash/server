@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
+use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 use KSA\PasswordManager\Repository\PublicShareRepository;
+use KSP\Core\ILogger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class RemoveExpiredFactory {
@@ -30,6 +32,8 @@ class RemoveExpiredFactory {
     public function __invoke(ContainerInterface $container): RemoveExpired {
         return new RemoveExpired(
             $container->get(PublicShareRepository::class)
+            , $container->get(InstallerService::class)
+            , $container->get(ILogger::class)
         );
     }
 

@@ -60,6 +60,7 @@ import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/s
 import NoNodeSelected from "./Node/NoNodeSelected";
 import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
 import {Skeleton} from "vue-loading-skeleton";
+import {EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../../lib/js/src/base";
 
 export const NODE_ID_ROOT = "root";
 export const STORAGE_ID_ROOT = "root.id.storage";
@@ -85,7 +86,8 @@ export default {
       }
     }
   },
-  created() {
+
+created: function () {
     const startUp = new StartUp(
         new Container()
     );
@@ -93,6 +95,12 @@ export default {
     this.container = startUp.getContainer();
     this.axios = this.container.query(AXIOS);
     this.loadEdge(NODE_ID_ROOT);
+
+    document.addEventListener(
+        EVENT_NAME_APP_NAVIGATION_CLICKED
+        , (data) => {
+          this.loadEdge(data.detail.dataset.type);
+        });
   },
   computed: {
     noEdgeSelectedVisible() {
@@ -103,7 +111,9 @@ export default {
     }
   },
   methods: {
-    loadEdge(rootId){
+    loadEdge: function (rootId) {
+      const _this = this;
+      this.state.states = this.state.states.STATE_LOADING;
       const temporaryStorage = this.container.query(TEMPORARY_STORAGE);
 
       this.axios.request(
@@ -115,7 +125,7 @@ export default {
         return [];
       })
           .then((data) => {
-            this.state.value = this.state.states.STATE_LOADED;
+            _this.state.value = _this.state.states.STATE_LOADED;
             this.parseBreadCrumb(data.breadCrumb)
             this.parseEdges(data.node, temporaryStorage);
           })
@@ -123,7 +133,7 @@ export default {
 
     },
     selectRow(edge) {
-      if (edge. node.type === 'folder') {
+      if (edge.node.type === 'folder') {
         this.loadEdge(edge.node.id);
         return;
       }

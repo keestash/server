@@ -152,7 +152,7 @@ class Get implements RequestHandlerInterface {
                 foreach ($root->getEdges() as $edge) {
 
                     $node = $edge->getNode();
-                    if (true === $node->isSharedTo($user)) {
+                    if (true === $node->isSharedTo($token->getUser())) {
                         $newEdges->add($node);
                     }
                 }

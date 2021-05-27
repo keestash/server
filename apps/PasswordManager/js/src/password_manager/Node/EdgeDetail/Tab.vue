@@ -3,10 +3,9 @@
     <b-tabs content-class="mt-3" lazy>
       <b-tab
           :title="$t('credential.detail.sharesLabel')"
-          v-if="false === this.edge.node.is_shared_to_me"
           active
       >
-        <Share v-if="false === this.edge.node.is_shared_to_me"></Share>
+        <Share></Share>
       </b-tab>
       <b-tab :title="$t('credential.detail.pwGeneratorLabel')">
         <PasswordGenerator @passwordUsed="passwordUsed"></PasswordGenerator>
@@ -40,6 +39,16 @@ export default {
         return edge;
       }
     })
+  },
+  data() {
+    return {
+      container: {
+        container: null,
+        services: {
+          storage: null
+        }
+      }
+    }
   },
   methods: {
     passwordUsed(password) {

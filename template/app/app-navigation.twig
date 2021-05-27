@@ -16,7 +16,8 @@
                         </li>
                         {% for id2, entry in segment.getEntries() %}
                             <li
-                                    class="list-group-item"
+                                    class="list-group-item clickable-navigation-item"
+                                    data-type="{{ entry.getSelector() }}"
                             >
                                 <a
                                         id="{{ entry.getSelector() }}"

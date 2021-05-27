@@ -21,24 +21,40 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event\Listener\PublicShare;
 
+use Exception;
 use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
+use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IListener;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class RemoveExpired implements IListener {
 
     private PublicShareRepository $publicShareRepository;
+    private InstallerService      $installerService;
+    private ILogger               $logger;
 
-    public function __construct(PublicShareRepository $publicShareRepository) {
+    public function __construct(
+        PublicShareRepository $publicShareRepository
+        , InstallerService $installerService
+        , ILogger $logger
+    ) {
         $this->publicShareRepository = $publicShareRepository;
+        $this->installerService      = $installerService;
+        $this->logger                = $logger;
     }
 
     /**
      * @param ApplicationStartedEvent $event
      */
     public function execute(Event $event): void {
-        $this->publicShareRepository->removeOutdated();
+        if (false === $this->installerService->hasIdAndHash()) return;
+        try {
+            $this->publicShareRepository->removeOutdated();
+        } catch (Exception $exception) {
+            $this->logger->error($exception->getMessage());
+        }
     }
 
 }

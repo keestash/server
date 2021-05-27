@@ -46,7 +46,7 @@ class Migrator {
     }
 
     public function runCore(): bool {
-        $file   = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH) . "/instance.php";
+        $file   = $this->config->get(Keestash\ConfigProvider::PHINX_PATH) . "/instance.php";
         $exists = $this->checkFile($file);
         if (false === $exists) {
             $this->logger->debug("file $file does not exist");

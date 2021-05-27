@@ -15,12 +15,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Comment;
 
 use Keestash\Api\Response\LegacyResponse;
+use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\DTO\User\IUser;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -52,7 +53,7 @@ class Get implements RequestHandlerInterface {
             throw new CommentException();
         }
 
-        if ($token->getUser()->getId() !== $node->getUser()->getId()) {
+        if (false === $this->hasAccess($token->getUser(), $node)) {
             throw new CommentException();
         }
 
@@ -64,6 +65,12 @@ class Get implements RequestHandlerInterface {
                 "comments" => $comments
             ]
         );
+    }
+
+    private function hasAccess(IUser $user, Node $node): bool {
+        if ($node->getUser()->getId() === $user->getId()) return true;
+        if (true === $node->isSharedTo($user)) return true;
+        return false;
     }
 
 }

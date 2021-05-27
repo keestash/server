@@ -21,12 +21,13 @@ export class Page {
 
             _this.request.post(
                 _this.routes.getInstallAppsAll()
-                , {}
-                , (x, y, z) => {
-                    const object = x;
-                    console.log(object);
-                    if (RESPONSE_CODE_OK in object) {
-                        const result_object = object[RESPONSE_CODE_OK]["messages"];
+            )
+                .then((response) => {
+                    console.log(response);
+
+                    if (RESPONSE_CODE_OK in response.data) {
+
+                        const result_object = response.data[RESPONSE_CODE_OK]["messages"];
                         let routeTo = result_object['routeTo'];
 
                         console.log("installed all apps. Going to redirect...");
@@ -41,11 +42,8 @@ export class Page {
                     } else {
                         alert("there was an error :(")
                     }
-                }
-                , (x, y, z) => {
-                    console.log(x)
-                }
-            )
+                })
+
         });
     }
 

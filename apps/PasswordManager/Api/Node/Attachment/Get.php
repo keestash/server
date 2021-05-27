@@ -18,11 +18,13 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\File\NodeFile;
+use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
@@ -32,11 +34,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private NodeRepository  $nodeRepository;
-    private FileRepository  $nodeFileRepository;
-    private IIconService    $iconService;
-    private IL10N           $translator;
-    private Config          $config;
+    private NodeRepository $nodeRepository;
+    private FileRepository $nodeFileRepository;
+    private IIconService   $iconService;
+    private IL10N          $translator;
+    private Config         $config;
 
     public function __construct(
         IL10N $l10n
@@ -78,7 +80,7 @@ class Get implements RequestHandlerInterface {
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
+        if (false === $this->hasAccess($token->getUser(), $node)) {
             throw new PasswordManagerException();
         }
 
@@ -111,5 +113,12 @@ class Get implements RequestHandlerInterface {
 
         return $icons;
     }
+
+    private function hasAccess(IUser $user, Node $node): bool {
+        if ($node->getUser()->getId() === $user->getId()) return true;
+        if (true === $node->isSharedTo($user)) return true;
+        return false;
+    }
+
 
 }
