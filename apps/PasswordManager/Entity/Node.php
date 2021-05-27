@@ -96,7 +96,7 @@ abstract class Node implements JsonSerializable {
 
     public abstract function getIcon(): string;
 
-    public function getValue() {
+    public function getValue(): int {
         return $this->getId();
     }
 

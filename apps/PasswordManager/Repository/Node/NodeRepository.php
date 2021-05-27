@@ -212,8 +212,7 @@ class NodeRepository extends AbstractRepository {
 
         }
 
-        $node = $this->addShareInfo($node);
-        return $node;
+        return $this->addShareInfo($node);
     }
 
     private function addOrganizationInfo(Node $node): Node {

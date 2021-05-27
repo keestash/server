@@ -13,6 +13,7 @@
                   :placeholder="$t('credential.detail.sharePlaceholder')"
                   @option:selected="onShareSelect"
                   class="flex-grow-1"
+                  v-if="isOwner"
               >
                 <template slot="no-options">
                   {{ $t('credential.detail.sharePlaceholder') }}
@@ -32,15 +33,16 @@
                   </div>
                 </template>
               </v-select>
+              <small v-else>You can not share passwords shared to you</small>
             </template>
             <Skeleton height="25px" v-else/>
           </div>
           <template v-if="state.value === state.states.STATE_LOADED">
-            <div class="justify-content-between ml-2">
+            <div class="justify-content-between ml-2" v-if="isOwner">
               <button
                   class="btn btn-primary btn-circle btn-sm btn-public-share"
                   @click="sharePublicly"
-                  v-if="edge.node.public_share === null "
+                  v-if="edge.node.public_share === null"
               >
                 <i class="fas fa-share"></i>
               </button>
@@ -96,7 +98,7 @@
                     </div>
                   </div>
 
-                  <div class="col-sm-4 align-self-center">
+                  <div class="col-sm-4 align-self-center" v-if="isOwner">
                     <div class="row justify-content-end pr-1">
                       <div class="col-1 mr-2" @click="removeShare(share)">
                         <i class="fas fa-times remove"></i>
@@ -131,7 +133,7 @@
 </template>
 
 <script>
-import {AXIOS, DATE_TIME_SERVICE, StartUp} from "../../../../../../../../lib/js/src/StartUp";
+import {APP_STORAGE, AXIOS, DATE_TIME_SERVICE, StartUp} from "../../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../../../config/routes";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
@@ -150,6 +152,16 @@ export default {
   name: "Share",
   components: {NoDataFound, vSelect, Thumbnail, Skeleton},
   computed: {
+    isOwner() {
+      const userHash = this.container.services.appStorage.getUserHash();
+      if (this.edge.node.user.hash === userHash) return true;
+
+      for (let i = 0; i < this.edge.node.shared_to.content.length; i++) {
+        const share = this.edge.node.shared_to.content[i];
+        if (userHash === share.user.hash) return false;
+      }
+      return true;
+    },
     ...mapState({
       edge: function (state) {
         return state.selectedEdge;
@@ -159,8 +171,14 @@ export default {
   data() {
     return {
       searchQuery: '',
-      container: null,
-      axios: null,
+      container: {
+        container: null,
+        services: {
+          axios: null,
+          appStorage: null,
+          dateTimeService: null
+        }
+      },
       users: [],
       awaitingSearch: false,
       state: {
@@ -182,9 +200,10 @@ export default {
     );
     startUp.setUp();
 
-    this.container = startUp.getContainer();
-    this.axios = this.container.query(AXIOS);
-    this.dateTimeService = this.container.query(DATE_TIME_SERVICE);
+    this.container.container = startUp.getContainer();
+    this.container.services.axios = this.container.container.query(AXIOS);
+    this.container.services.dateTimeService = this.container.container.query(DATE_TIME_SERVICE);
+    this.container.services.appStorage = this.container.container.query(APP_STORAGE);
 
   },
   methods: {
@@ -199,7 +218,7 @@ export default {
       this.$refs['unshare-modal'].show();
     },
     doRemoveShare() {
-      this.axios.post(
+      this.container.services.axios.post(
           ROUTES.getPasswordManagerShareeRemove()
           , {
             shareId: this.shareToDelete.id
@@ -247,7 +266,7 @@ export default {
         return true;
       }
 
-      this.axios.post(
+      this.container.services.axios.post(
           ROUTES.getPasswordManagerSharePublicly()
           , {
             node_id: this.edge.node.id
@@ -308,7 +327,7 @@ export default {
     onShareSelect(option) {
       this.state.value = this.state.states.STATE_LOADING;
 
-      this.axios.post(
+      this.container.services.axios.post(
           ROUTES.getShare()
           , {
             'node_id': this.edge.node.id
@@ -343,7 +362,7 @@ export default {
           )
     },
     loadUsers(search) {
-      this.axios.request(
+      this.container.services.axios.request(
           ROUTES.getShareableUsers(
               this.edge.node.id
               , search
@@ -363,7 +382,7 @@ export default {
       });
     },
     formatDate(date) {
-      return this.dateTimeService.format(date);
+      return this.container.services.dateTimeService.format(date);
     }
   }
 }

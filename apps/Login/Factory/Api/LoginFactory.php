@@ -50,8 +50,6 @@ class LoginFactory {
             , $container->get(ILocaleService::class)
             , $container->get(ILanguageService::class)
             , $container->get(ILogger::class)
-            , $container->get(ILoader::class)
-            , $container->get(RouterInterface::class)
         );
     }
 

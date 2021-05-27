@@ -1,12 +1,15 @@
-{% if hasAppNavigation == true %}
-    <div class="col-sm-2 d-flex app-navigation-background">
-        {{ appNavigation|raw }}
-    </div>
-{% endif %}
+<div class="container-fluid">
+    <div class="row">
+        {% if hasAppNavigation == true %}
+            <div class="col-sm-2 d-flex app-navigation-background">
+                {{ appNavigation|raw }}
+            </div>
+        {% endif %}
 
-{# new grid starts here #}
-<div class="row no-gutters flex-grow-1">
-    <div class="col-sm" id="app-content-inner">
-        {{ appContent|raw }}
+        <div class="col no-gutters flex-grow-1">
+            <div class="col-sm">
+                {{ appContent|raw }}
+            </div>
+        </div>
     </div>
 </div>

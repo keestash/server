@@ -55,8 +55,6 @@ class Login implements RequestHandlerInterface {
     private ILocaleService     $localeService;
     private ILanguageService   $languageService;
     private ILogger            $logger;
-    private ILoader            $loader;
-    private RouterInterface    $router;
 
     public function __construct(
         IUserRepository $userRepository
@@ -69,8 +67,6 @@ class Login implements RequestHandlerInterface {
         , ILocaleService $localeService
         , ILanguageService $languageService
         , ILogger $logger
-        , ILoader $loader
-        , RouterInterface $router
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
@@ -82,8 +78,6 @@ class Login implements RequestHandlerInterface {
         $this->localeService      = $localeService;
         $this->languageService    = $languageService;
         $this->logger             = $logger;
-        $this->loader             = $loader;
-        $this->router             = $router;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
