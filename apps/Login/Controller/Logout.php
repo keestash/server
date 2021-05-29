@@ -21,40 +21,67 @@ declare(strict_types=1);
 
 namespace KSA\Login\Controller;
 
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\SessionManager\SessionManager;
-use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
+use KSP\App\ILoader;
 use KSP\Core\Repository\Token\ITokenRepository;
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\HTTP\IPersistenceService;
+use KSP\Core\Service\Router\IRouterService;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class Logout implements RequestHandlerInterface {
 
-    private ITokenRepository $tokenRepository;
-    private SessionManager   $sessionManager;
+    private ITokenRepository    $tokenRepository;
+    private SessionManager      $sessionManager;
+    private IPersistenceService $persistenceService;
+    private IUserRepository     $userRepository;
+    private IRouterService      $routerService;
+    private ILoader             $loader;
+    private RouterInterface     $router;
 
     public function __construct(
         ITokenRepository $tokenRepository
         , SessionManager $sessionManager
+        , IPersistenceService $persistenceService
+        , IUserRepository $userRepository
+        , IRouterService $routerService
+        , ILoader $loader
+        , RouterInterface $router
     ) {
-        $this->tokenRepository = $tokenRepository;
-        $this->sessionManager  = $sessionManager;
+        $this->tokenRepository    = $tokenRepository;
+        $this->sessionManager     = $sessionManager;
+        $this->persistenceService = $persistenceService;
+        $this->userRepository     = $userRepository;
+        $this->routerService      = $routerService;
+        $this->loader             = $loader;
+        $this->router             = $router;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token   = $request->getAttribute(IToken::class);
-        $removed = $this->tokenRepository->remove($token);
+        $userId = $this->persistenceService->getValue("user_id");
+
+        if (null === $userId) {
+            return new RedirectResponse(
+                $this->router->generateUri(
+                    $this->routerService->getRouteByPath($this->loader->getDefaultApp()->getBaseRoute())['name']
+                )
+            );
+        }
+
+        $user = $this->userRepository->getUserById($userId);
+        $this->tokenRepository->removeForUser($user);
         $this->sessionManager->killAll();
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "logged_out" => true === $removed
-            ]
+        return new RedirectResponse(
+            $this->router->generateUri(
+                $this->routerService->getRouteByPath($this->loader->getDefaultApp()->getBaseRoute())['name']
+            )
         );
+
     }
 
 }

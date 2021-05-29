@@ -63,4 +63,8 @@ class RouterService implements IRouterService {
         return [];
     }
 
+    public function getUri(string $name): string {
+        return $this->router->generateUri($name);
+    }
+
 }

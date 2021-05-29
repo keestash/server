@@ -120,6 +120,16 @@ class AppRenderer implements IAppRenderer {
             , $contextLess
         );
 
+        $routes = $this->config
+            ->get(ConfigProvider::WEB_ROUTER)
+            ->get(ConfigProvider::SETTINGS)
+            ->toArray();
+
+        foreach ($routes as $path => $data) {
+            $routeData = $this->routerService->getRouteByPath($path);
+            $routes[$path]['compiled'] = $this->routerService->getUri($routeData['name']);
+        }
+
         return $this->templateRenderer
             ->render(
                 'root::navbar'
@@ -131,11 +141,7 @@ class AppRenderer implements IAppRenderer {
 
                     // TODO these are added only when not public route
                     , "vendorName"  => $this->legacy->getApplication()->get("name")
-                    , "settings"    => $this->config
-                        ->get(ConfigProvider::WEB_ROUTER)
-                        ->get(ConfigProvider::SETTINGS)
-                        ->toArray()
-                    , "menu"        => $this->translator->translate("Menu")
+                    , "settings"    => $routes
                     , "baseURL"     => $this->httpService->getBaseURL()
 
                 ]
