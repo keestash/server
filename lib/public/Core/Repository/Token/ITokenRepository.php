@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\Token;
 
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface ITokenRepository extends IRepository {
@@ -33,5 +34,7 @@ interface ITokenRepository extends IRepository {
     public function add(IToken $token): ?int;
 
     public function remove(IToken $token): bool;
+
+    public function removeForUser(IUser $user): bool;
 
 }

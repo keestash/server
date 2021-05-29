@@ -28,6 +28,7 @@ use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 
@@ -158,6 +159,16 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
             )
                 ->where('id = ?')
                 ->setParameter(0, $token->getId())
+                ->execute() !== 0;
+    }
+
+    public function removeForUser(IUser $user): bool {
+        $queryBuilder = $this->getQueryBuilder();
+        return $queryBuilder->delete(
+                'token'
+            )
+                ->where('user_id = ?')
+                ->setParameter(0, $user->getId())
                 ->execute() !== 0;
     }
 

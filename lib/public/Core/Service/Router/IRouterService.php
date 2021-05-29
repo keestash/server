@@ -29,4 +29,6 @@ interface IRouterService {
 
     public function getRouteByPath(string $path): array;
 
+    public function getUri(string $name): string;
+
 }
