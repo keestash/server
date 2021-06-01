@@ -23,9 +23,8 @@ namespace KSA\Login\Controller;
 
 use Keestash\Core\Manager\SessionManager\SessionManager;
 use KSP\App\ILoader;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Router\RouterInterface;
@@ -35,44 +34,28 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Logout implements RequestHandlerInterface {
 
-    private ITokenRepository    $tokenRepository;
-    private SessionManager      $sessionManager;
-    private IPersistenceService $persistenceService;
-    private IUserRepository     $userRepository;
-    private IRouterService      $routerService;
-    private ILoader             $loader;
-    private RouterInterface     $router;
+    private ITokenRepository $tokenRepository;
+    private SessionManager   $sessionManager;
+    private IRouterService   $routerService;
+    private ILoader          $loader;
+    private RouterInterface  $router;
 
     public function __construct(
         ITokenRepository $tokenRepository
         , SessionManager $sessionManager
-        , IPersistenceService $persistenceService
-        , IUserRepository $userRepository
         , IRouterService $routerService
         , ILoader $loader
         , RouterInterface $router
     ) {
-        $this->tokenRepository    = $tokenRepository;
-        $this->sessionManager     = $sessionManager;
-        $this->persistenceService = $persistenceService;
-        $this->userRepository     = $userRepository;
-        $this->routerService      = $routerService;
-        $this->loader             = $loader;
-        $this->router             = $router;
+        $this->tokenRepository = $tokenRepository;
+        $this->sessionManager  = $sessionManager;
+        $this->routerService   = $routerService;
+        $this->loader          = $loader;
+        $this->router          = $router;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $userId = $this->persistenceService->getValue("user_id");
-
-        if (null === $userId) {
-            return new RedirectResponse(
-                $this->router->generateUri(
-                    $this->routerService->getRouteByPath($this->loader->getDefaultApp()->getBaseRoute())['name']
-                )
-            );
-        }
-
-        $user = $this->userRepository->getUserById($userId);
+        $user = $request->getAttribute(IUser::class);
         $this->tokenRepository->removeForUser($user);
         $this->sessionManager->killAll();
 

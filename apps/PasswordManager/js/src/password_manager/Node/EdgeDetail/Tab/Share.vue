@@ -170,7 +170,6 @@ export default {
   },
   data() {
     return {
-      searchQuery: '',
       container: {
         container: null,
         services: {

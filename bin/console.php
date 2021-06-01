@@ -24,6 +24,7 @@ declare(strict_types=1);
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Legacy\Legacy;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventDispatcher;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -45,6 +46,10 @@ use Symfony\Component\Console\Application;
     $config = $container->get(Config::class);
     /** @var Legacy $legacy */
     $legacy      = $container->get(Legacy::class);
+
+    /** @var IEnvironmentService $environmentService */
+    $environmentService = $container->get(IEnvironmentService::class);
+    $environmentService->setEnv(ConfigProvider::ENVIRONMENT_CONSOLE);
     $cliVersion  = "1.0.0";
     $application = new Application(
             $legacy->getApplication()->get("name") . " CLI Tools"

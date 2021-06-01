@@ -1,6 +1,7 @@
 {
   "nothingClicked": "No Password Selected",
   "nothingClickedDescription": "Please select a password or create a new one",
+  "noEdgesInNodeDescription": "No Passwords here...",
   "searchPasswords": "Search Passwords",
   "credential": {
     "titleLabel": "Title",
@@ -52,6 +53,7 @@
       "loadingAttachments": "Attachments",
       "createdAt": "Created At:",
       "updatedAt": "Updated At:",
+      "tooltip": "The password is shared to you by",
       "share": {
         "sharedDateTimeLabel": "Shared with User at ",
         "modal": {

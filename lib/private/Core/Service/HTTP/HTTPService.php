@@ -33,6 +33,7 @@ class HTTPService {
     }
 
     public function getBaseURL(bool $withScript = true, bool $forceIndex = false): string {
+        if (true === $this->environmentService->isConsole()) return "";
         $scriptName          = "index.php";
         $scriptNameToReplace = $scriptName;
         if (true === $this->environmentService->isApi()) {
