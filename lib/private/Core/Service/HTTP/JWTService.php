@@ -25,20 +25,19 @@ use DateTime;
 use Firebase\JWT\JWT;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\DTO\Http\JWT\IAudience;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
 
 class JWTService implements IJWTService {
 
-    private HTTPService         $httpService;
-    private InstanceDB          $instanceDB;
+    private HTTPService $httpService;
+    private InstanceDB  $instanceDB;
 
     public function __construct(
         HTTPService $httpService
         , InstanceDB $instanceDB
     ) {
-        $this->httpService        = $httpService;
-        $this->instanceDB         = $instanceDB;
+        $this->httpService = $httpService;
+        $this->instanceDB  = $instanceDB;
     }
 
     public function getJWT(IAudience $audience): string {
@@ -54,7 +53,7 @@ class JWTService implements IJWTService {
 
         return JWT::encode(
             $payLoad
-            , $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+            , (string) $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
         );
 
     }

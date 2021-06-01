@@ -25,13 +25,12 @@ use KSP\Core\View\ActionBar\IElement;
 
 class ActionBarIElement implements IElement {
 
-    private $description = null;
-    private $href        = null;
-    private $id          = null;
-    /** @var string */
-    private $type;
+    private string  $description = '';
+    private ?string $href        = null;
+    private ?string $id          = null;
+    private string  $type;
 
-    public function __construct(?string $description = null) {
+    public function __construct(string $description = '') {
         $this->setDescription($description);
     }
 

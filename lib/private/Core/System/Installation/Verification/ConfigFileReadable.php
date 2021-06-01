@@ -108,14 +108,17 @@ class ConfigFileReadable extends AbstractVerification {
         }
 
         $CONFIG = [];
+        /** @phpstan-ignore-next-line */
         include $config->getPath();
 
+        /** @phpstan-ignore-next-line */
         if (false === is_array($CONFIG)) {
             $CONFIG = [];
         }
 
         $conf      = $CONFIG;
         $confCount = count($conf);
+        /** @phpstan-ignore-next-line */
         include $configSample->getPath();
         $confSample      = $CONFIG;
         $confSampleCount = count($confSample);

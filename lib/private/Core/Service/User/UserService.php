@@ -23,11 +23,9 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use Firebase\JWT\JWT;
 use Keestash;
 use Keestash\Core\DTO\User\User;
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\IUserService;
@@ -36,19 +34,13 @@ class UserService implements IUserService {
 
     private Legacy           $legacy;
     private IDateTimeService $dateTimeService;
-    private HTTPService      $httpService;
-    private InstanceDB       $instanceDB;
 
     public function __construct(
         Legacy $legacy
         , IDateTimeService $dateTimeService
-        , HTTPService $httpService
-        , InstanceDB $instanceDB
     ) {
         $this->legacy          = $legacy;
         $this->dateTimeService = $dateTimeService;
-        $this->httpService     = $httpService;
-        $this->instanceDB      = $instanceDB;
     }
 
     public function validatePassword(string $password, string $hash): bool {
@@ -61,17 +53,22 @@ class UserService implements IUserService {
         if (true === $passwordLength < IUserService::MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD) return false;
 
         // minimum 1 number
+        /** @phpstan-ignore-next-line */
         if (strlen(preg_replace('/([^0-9]*)/', '', $password)) < 1) return false;
 
+        /** @phpstan-ignore-next-line */
         if (strlen(preg_replace('/([^a-zA-Z]*)/', '', $password)) < 1) return false;
 
         // Check the number of lower case letters in the password
+        /** @phpstan-ignore-next-line */
         if (strlen(preg_replace('/([^a-z]*)/', '', $password)) < 1) return false;
 
         // Check the number of upper case letters in the password
+        /** @phpstan-ignore-next-line */
         if (strlen(preg_replace('/([^A-Z]*)/', '', $password)) < 1) return false;
 
         // Check the minimum number of symbols in the password.
+        /** @phpstan-ignore-next-line */
         if (strlen(preg_replace('/([a-zA-Z0-9]*)/', '', $password)) < 1) return false;
 
         return true;
@@ -134,7 +131,11 @@ class UserService implements IUserService {
     }
 
     public function hashPassword(string $plain): string {
-        return password_hash($plain, PASSWORD_BCRYPT);
+        $hashed = password_hash($plain, PASSWORD_BCRYPT);
+        if (false === is_string($hashed)) {
+            throw new KeestashException();
+        }
+        return $hashed;
     }
 
     public function toUser(array $userArray): IUser {

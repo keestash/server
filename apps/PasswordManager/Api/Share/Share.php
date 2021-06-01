@@ -95,14 +95,14 @@ class Share implements RequestHandlerInterface {
             throw new PasswordManagerException();
         }
 
-        $insertId = $this->nodeRepository->addEdge(
+        $edge = $this->nodeRepository->addEdge(
             $this->nodeService->prepareSharedEdge(
                 (int) $nodeId
                 , (string) $userId
             )
         );
 
-        if (null === $insertId) {
+        if ($edge->getId() === 0) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [

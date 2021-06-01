@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace KSP\Core\Controller;
 
+use Keestash\View\ActionBar\ActionBar\NullActionBar;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\Core\Service\Controller\IAppRenderer;
+use KSP\Core\View\ActionBar\IActionBar;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,10 +35,12 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
     private IAppRenderer $appRenderer;
 
     private NavigationList $navigationList;
+    private IActionBar     $actionBar;
 
     public function __construct(IAppRenderer $appRenderer) {
         $this->appRenderer    = $appRenderer;
         $this->navigationList = new NavigationList();
+        $this->actionBar      = new NullActionBar();
     }
 
     public abstract function run(ServerRequestInterface $request): string;
@@ -44,6 +48,10 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
 
     protected function setAppNavigation(NavigationList $navigationList): void {
         $this->navigationList = $navigationList;
+    }
+
+    protected function setActionBar(IActionBar $actionBar): void {
+        $this->actionBar = $actionBar;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -62,6 +70,7 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
                 , $static
                 , $contextLess
                 , $this->navigationList
+                , $this->actionBar
             )
         );
     }

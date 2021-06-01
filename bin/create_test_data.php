@@ -150,6 +150,7 @@ function addNodesToParent(
                 $nodeService->prepareRegularEdge(
                         $folder
                         , $parent
+                        , $user
                 )
         );
         addNodesToParent(

@@ -26,10 +26,9 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Router\Route;
-use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,12 +36,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class InstanceInstalledMiddleware implements MiddlewareInterface {
 
-    private HTTPService     $httpService;
-    private InstanceDB      $instanceDB;
-    private LockHandler     $lockHandler;
-    private ILogger         $logger;
-    private Config          $config;
-    private RouterInterface $router;
+    private HTTPService    $httpService;
+    private InstanceDB     $instanceDB;
+    private LockHandler    $lockHandler;
+    private ILogger        $logger;
+    private Config         $config;
+    private IRouterService $routerService;
 
     public function __construct(
         HTTPService $httpService
@@ -50,18 +49,18 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
         , LockHandler $lockHandler
         , ILogger $logger
         , Config $config
-        , RouterInterface $router
+        , IRouterService $routerService
     ) {
-        $this->httpService = $httpService;
-        $this->instanceDB  = $instanceDB;
-        $this->lockHandler = $lockHandler;
-        $this->logger      = $logger;
-        $this->config      = $config;
-        $this->router      = $router;
+        $this->httpService   = $httpService;
+        $this->instanceDB    = $instanceDB;
+        $this->lockHandler   = $lockHandler;
+        $this->logger        = $logger;
+        $this->config        = $config;
+        $this->routerService = $routerService;
     }
 
     private function routesToInstallation(ServerRequestInterface $request): bool {
-        $currentRoute       = $this->getMatchedPath($request);
+        $currentRoute       = $this->routerService->getMatchedPath($request);
         $installationRoutes = $this->config
             ->get(ConfigProvider::INSTALL_INSTANCE_ROUTES)
             ->toArray();
@@ -73,15 +72,6 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
         }
 
         return false;
-    }
-
-    private function getMatchedPath(ServerRequestInterface $request): string {
-        $matchedRoute = $this->router->match($request)->getMatchedRoute();
-
-        if ($matchedRoute instanceof Route) {
-            return $this->router->match($request)->getMatchedRoute()->getPath();
-        }
-        return '';
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {

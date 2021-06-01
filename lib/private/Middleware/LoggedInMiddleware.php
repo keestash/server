@@ -31,9 +31,9 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IPersistenceService;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Router\Route;
 use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,29 +47,29 @@ class LoggedInMiddleware implements MiddlewareInterface {
     private InstallerService    $installerService;
     private ILogger             $logger;
     private Config              $config;
-    private RouterInterface     $router;
     private HTTPService         $httpService;
     private IUserRepository     $userRepository;
     private IEnvironmentService $environmentService;
+    private IRouterService      $routerService;
 
     public function __construct(
         IPersistenceService $persistenceService
         , InstallerService $installerService
         , ILogger $logger
         , Config $config
-        , RouterInterface $router
         , HTTPService $httpService
         , IUserRepository $userRepository
         , IEnvironmentService $environmentService
+        , IRouterService $routerService
     ) {
         $this->persistenceService = $persistenceService;
         $this->installerService   = $installerService;
         $this->logger             = $logger;
         $this->config             = $config;
-        $this->router             = $router;
         $this->httpService        = $httpService;
         $this->userRepository     = $userRepository;
         $this->environmentService = $environmentService;
+        $this->routerService      = $routerService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -88,7 +88,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
             ->get(ConfigProvider::PUBLIC_ROUTES)
             ->toArray();
 
-        $currentPath = $this->getMatchedPath($request);
+        $currentPath = $this->routerService->getMatchedPath($request);
         $userId      = null;
         $persisted   = false;
 
@@ -120,16 +120,5 @@ class LoggedInMiddleware implements MiddlewareInterface {
         );
 
     }
-
-
-    private function getMatchedPath(ServerRequestInterface $request): string {
-        $matchedRoute = $this->router->match($request)->getMatchedRoute();
-
-        if ($matchedRoute instanceof Route) {
-            return $this->router->match($request)->getMatchedRoute()->getPath();
-        }
-        return '';
-    }
-
 
 }

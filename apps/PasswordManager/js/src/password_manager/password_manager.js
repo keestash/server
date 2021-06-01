@@ -39,5 +39,6 @@ window.addEventListener(
             vueConfig
         )
             .$mount("#pwm");
+
     }
 );

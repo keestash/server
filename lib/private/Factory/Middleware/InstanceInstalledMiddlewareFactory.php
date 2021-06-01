@@ -26,20 +26,20 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
-use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
 class InstanceInstalledMiddlewareFactory {
 
     public function __invoke(ContainerInterface $container): InstanceInstalledMiddleware {
         return new InstanceInstalledMiddleware(
-             $container->get(HTTPService::class)
+            $container->get(HTTPService::class)
             , $container->get(InstanceDB::class)
             , $container->get(LockHandler::class)
             , $container->get(ILogger::class)
             , $container->get(Config::class)
-            , $container->get(RouterInterface::class)
+            , $container->get(IRouterService::class)
         );
     }
 

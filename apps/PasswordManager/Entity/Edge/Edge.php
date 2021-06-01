@@ -34,7 +34,7 @@ class Edge implements IJsonObject, IComparable {
     private ?DateTimeInterface $expireTs = null;
     private ?DateTime          $createTs = null;
     private IUser              $owner;
-    private IUser              $sharee;
+    private ?IUser             $sharee   = null;
 
     public function getCreateTs(): ?DateTime {
         return $this->createTs;
@@ -42,26 +42,6 @@ class Edge implements IJsonObject, IComparable {
 
     public function setCreateTs(?DateTime $createTs): void {
         $this->createTs = $createTs;
-    }
-
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize() {
-        return [
-            "id"          => $this->getId()
-            , "node"      => $this->getNode()
-            , "parent"    => $this->getParent()
-            , "type"      => $this->getType()
-            , "expire_ts" => $this->getExpireTs()
-            , "owner"     => $this->getOwner()
-            , "sharee"    => $this->getSharee()
-        ];
     }
 
     public function getId(): int {
@@ -112,14 +92,13 @@ class Edge implements IJsonObject, IComparable {
         $this->owner = $owner;
     }
 
-    public function getSharee(): IUser {
+    public function getSharee(): ?IUser {
         return $this->sharee;
     }
 
-    public function setSharee(IUser $sharee): void {
+    public function setSharee(?IUser $sharee): void {
         $this->sharee = $sharee;
     }
-
 
     public function compareTo($object): int {
         if ($object instanceof Edge) {
@@ -128,6 +107,26 @@ class Edge implements IJsonObject, IComparable {
             if (Comparator::greaterThan($this->getCreateTs(), $object->getCreateTs())) return IComparable::IS_GREATER;
         }
         return IComparable::IS_LESS;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return array data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize(): array {
+        return [
+            "id"          => $this->getId()
+            , "node"      => $this->getNode()
+            , "parent"    => $this->getParent()
+            , "type"      => $this->getType()
+            , "expire_ts" => $this->getExpireTs()
+            , "owner"     => $this->getOwner()
+            , "sharee"    => $this->getSharee()
+        ];
     }
 
 }

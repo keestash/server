@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * server
+ * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,15 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Config;
+namespace Keestash\View\ActionBar\ActionBar;
 
-interface IConfigService {
+class NullActionBar extends ActionBar {
 
-    /**
-     * @param string $key
-     * @param mixed|null   $default
-     * @return mixed
-     */
-    public function getValue(string $key, $default = null);
+    public function __construct() {
+        $this->setType("");
+        $this->setId("");
+        $this->setDescription("");
+        parent::__construct();
+    }
 
 }

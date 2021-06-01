@@ -19,20 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Manager\StringManager;
+namespace Keestash\Factory\Core\Service\HTTP;
 
-use Keestash\Core\Manager\StringManager\FrontendManager;
-use KSP\Core\Cache\ICacheService;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\StringManager\IStringManager;
+use HTMLPurifier;
+use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Psr\Container\ContainerInterface;
 
-class StringManagerFactory {
+class SanitizerServiceFactory {
 
-    public function __invoke(ContainerInterface $container): IStringManager {
-        return new FrontendManager(
-            $container->get(ILogger::class)
-            , $container->get(ICacheService::class)
+    public function __invoke(ContainerInterface $container): SanitizerService {
+        return new SanitizerService(
+            $container->get(HTMLPurifier::class)
         );
     }
 

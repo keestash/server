@@ -28,8 +28,8 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IPersistenceService;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
-use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
 class LoggedInMiddlewareFactory {
@@ -40,10 +40,10 @@ class LoggedInMiddlewareFactory {
             , $container->get(InstallerService::class)
             , $container->get(ILogger::class)
             , $container->get(Config::class)
-            , $container->get(RouterInterface::class)
             , $container->get(HTTPService::class)
             , $container->get(IUserRepository::class)
             , $container->get(IEnvironmentService::class)
+            , $container->get(IRouterService::class)
         );
     }
 

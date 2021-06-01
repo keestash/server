@@ -4,7 +4,8 @@
       <div class="ks-border-bottom" id="breadcrumb-wrapper">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb" id="breadcrumb">
-            <li v-for="breadCrumb in breadCrumbs" :key="breadCrumb.id" class="breadcrumb-item" @click="loadEdge(breadCrumb.id)">
+            <li v-for="breadCrumb in breadCrumbs" :key="breadCrumb.id" class="breadcrumb-item"
+                @click="onBreadCrumbClick(breadCrumb.id)">
               {{ breadCrumb.name }}
             </li>
           </ol>
@@ -48,6 +49,90 @@
         </div>
       </div>
     </div>
+
+    <div>
+      <b-modal ref="new-edge-modal" hide-footer hide-backdrop no-fade @hide="hideModal">
+        <b-form @submit="onEdgeAdd">
+          <b-form-group
+              id="input-group-edge-name"
+              label="Name:"
+              label-for="edge-name"
+              description="The node name"
+          >
+            <b-form-input
+                id="edge-name"
+                v-model="addEdge.form.name"
+                type="text"
+                placeholder="Enter name"
+                required
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              id="input-group-edge-username"
+              label="Username:"
+              label-for="edge-username"
+              description="The username"
+              v-if="addEdge.type === 'pwm__new__password'"
+          >
+            <b-form-input
+                id="edge-username"
+                v-model="addEdge.form.username"
+                type="text"
+                placeholder="Enter Username"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              id="input-group-edge-password"
+              label="Password:"
+              label-for="edge-password"
+              description="The password"
+              v-if="addEdge.type === 'pwm__new__password'"
+          >
+            <b-form-input
+                id="edge-password"
+                v-model="addEdge.form.password"
+                type="text"
+                placeholder="Enter Password"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              id="input-group-edge-url"
+              label="URL:"
+              label-for="edge-url"
+              description="The URL"
+              v-if="addEdge.type === 'pwm__new__password'"
+          >
+            <b-form-input
+                id="edge-url"
+                v-model="addEdge.form.url"
+                type="text"
+                placeholder="Enter URL"
+            ></b-form-input>
+          </b-form-group>
+
+          <b-form-group
+              id="input-group-edge-note"
+              label="Note:"
+              label-for="edge-note"
+              description="The Note"
+              v-if="addEdge.type === 'pwm__new__password'"
+          >
+            <b-form-textarea
+                id="edge-note"
+                v-model="addEdge.form.note"
+                placeholder="Enter URL"
+                rows="3"
+                max-rows="6"
+            ></b-form-textarea>
+          </b-form-group>
+          <b-button type="submit" variant="primary">Submit</b-button>
+        </b-form>
+      </b-modal>
+    </div>
+
   </div>
 </template>
 
@@ -77,7 +162,17 @@ export default {
       axios: null,
       temporaryStorage: null,
       noData: true,
-      state: 1
+      state: 1,
+      addEdge: {
+        type: 1,
+        form: {
+          name: '',
+          username: '',
+          password: '',
+          url: '',
+          note: ''
+        }
+      },
     }
   },
   created: function () {
@@ -89,6 +184,7 @@ export default {
     this.container = startUp.getContainer();
     this.axios = this.container.query(AXIOS);
     this.temporaryStorage = this.container.query(TEMPORARY_STORAGE);
+
     this.loadEdge(
         this.temporaryStorage.get(
             STORAGE_ID_ROOT
@@ -100,8 +196,18 @@ export default {
     document.addEventListener(
         EVENT_NAME_APP_NAVIGATION_CLICKED
         , function (data) {
+          _this.selected = null;
           _this.loadEdge(data.detail.dataset.type);
         });
+
+
+    document.addEventListener(
+        'dasisteingrossertest', (e) => {
+          e.stopImmediatePropagation();
+          this.$refs['new-edge-modal'].show();
+          this.addEdge.type = e.detail.target.id;
+        }
+    )
   },
   computed: {
     noEdgeSelectedVisible: function () {
@@ -112,6 +218,53 @@ export default {
     }
   },
   methods: {
+    onEdgeAdd(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+
+      let route = ROUTES.getPasswordManagerFolderCreate();
+      if (this.addEdge.type === 'pwm__new__password') {
+        route = ROUTES.getPasswordManagerCreate();
+      }
+
+      const data = this.addEdge.form;
+      const parent = this.temporaryStorage.get(
+          STORAGE_ID_ROOT
+          , NODE_ID_ROOT
+      );
+
+      data.parent = parent;
+
+      this.axios.post(
+          route
+          , data
+      ).then((response) => {
+
+        if (RESPONSE_CODE_OK in response.data) {
+          return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+        }
+        return [];
+      })
+          .then((data) => {
+            this.$store.dispatch(
+                "addEdge"
+                , data.edge
+            );
+            this.$refs['new-edge-modal'].hide();
+          });
+    },
+    hideModal() {
+      this.addEdge.form.name = '';
+      this.addEdge.form.username = '';
+      this.addEdge.form.password = '';
+      this.addEdge.form.url = '';
+      this.addEdge.form.note = '';
+    },
+    onBreadCrumbClick: function (rootId) {
+      this.selected = null;
+      this.loadEdge(rootId);
+    },
     loadEdge: function (rootId) {
       this.state = 1;
       const _this = this;

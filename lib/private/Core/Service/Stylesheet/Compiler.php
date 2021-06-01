@@ -48,13 +48,15 @@ class Compiler {
      */
     public function compile(string $source, string $destination): void {
         $compiler = new ScssCompiler();
+        /** @phpstan-ignore-next-line */
         $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/vendor/twitter/bootstrap/scss'));
+        /** @phpstan-ignore-next-line */
         $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/lib/scss/'));
+        /** @phpstan-ignore-next-line */
         $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/node_modules/'));
 
-//        $compiler->addImportPath($source);
-        $css = $compiler->compile(
-            file_get_contents($source)
+        $css = $compiler->compileString(
+            (string) file_get_contents($source)
         );
 
         if (true === is_file($destination)) {

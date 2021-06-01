@@ -647,11 +647,11 @@ ORDER BY d.`level`;
         if (false === $executed) return false;
 
         $targetEdge->setParent($newParent);
-        $added = $this->addEdge($targetEdge);
-        return null !== $added;
+        $edge = $this->addEdge($targetEdge);
+        return 0 !== $edge->getId();
     }
 
-    public function addEdge(Edge $edge): ?int {
+    public function addEdge(Edge $edge): Edge {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder->insert("`pwm_edge`")
             ->values(
@@ -672,7 +672,13 @@ ORDER BY d.`level`;
             )
             ->execute();
 
-        return (int) $this->getLastInsertId();
+        $lastInsertId = $this->getLastInsertId();
+
+        if (null === $lastInsertId || "0" === $lastInsertId) {
+            throw new PasswordManagerException();
+        }
+        $edge->setId((int) $lastInsertId);
+        return $edge;
     }
 
     public function removeForUser(IUser $user): bool {

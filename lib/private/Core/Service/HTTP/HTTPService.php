@@ -67,13 +67,13 @@ class HTTPService {
 
     public function getBaseAPIURL(): ?string {
         $baseURL = $this->getBaseURL();
-        if (null === $baseURL) return null;
+        if ("" === $baseURL) return null;
         return str_replace("index.php", "api.php", $baseURL);
     }
 
     public function getAssetURL(): ?string {
         $baseURL = $this->getBaseURL();
-        if (null === $baseURL) return null;
+        if ("" === $baseURL) return null;
         return str_replace("index.php", "asset.php", $baseURL);
     }
 

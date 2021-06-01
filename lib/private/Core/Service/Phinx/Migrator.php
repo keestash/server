@@ -87,9 +87,9 @@ class Migrator {
         $log = $phinxTextWrapper->getMigrate();
 
         $this->logger->debug($log);
-        $this->logger->debug($phinxTextWrapper->getExitCode());
+        $this->logger->debug((string) $phinxTextWrapper->getExitCode());
         $this->logger->debug(
-            $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE
+            (string) $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE
         );
 
         return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;

@@ -99,9 +99,9 @@ class CreateFolder extends KeestashCommand {
         $edge->setNode($folder);
         $edge->setOwner($user);
         $edge->setType(Edge::TYPE_REGULAR);
-        $edgeId = $this->nodeRepository->addEdge($edge);
+        $edge = $this->nodeRepository->addEdge($edge);
 
-        if (null === $edgeId) {
+        if (0 === $edge->getId()) {
             $this->writeError("Could not link node to parent. Aborting!", $output);
             $this->nodeRepository->remove($folder);
             exit(1);

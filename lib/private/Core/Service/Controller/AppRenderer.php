@@ -35,6 +35,7 @@ use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Router\IRouterService;
+use KSP\Core\View\ActionBar\IActionBar;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Mezzio\Template\TemplateRendererInterface;
@@ -126,7 +127,7 @@ class AppRenderer implements IAppRenderer {
             ->toArray();
 
         foreach ($routes as $path => $data) {
-            $routeData = $this->routerService->getRouteByPath($path);
+            $routeData                 = $this->routerService->getRouteByPath($path);
             $routes[$path]['compiled'] = $this->routerService->getUri($routeData['name']);
         }
 
@@ -184,6 +185,7 @@ class AppRenderer implements IAppRenderer {
         , bool $hasAppNavigation
         , string $appContent
         , NavigationList $navigationList
+        , IActionBar $actionBar
     ): string {
 
         return $this->templateRenderer
@@ -197,6 +199,7 @@ class AppRenderer implements IAppRenderer {
                         , $navigationList
                         , $static
                         , $contextLess
+                        , $actionBar
                     )
                     , "noContext"     => true === $static
                     , "staticContext" => true === $static
@@ -227,6 +230,7 @@ class AppRenderer implements IAppRenderer {
         , NavigationList $navigationList
         , bool $static
         , bool $contextLess
+        , IActionBar $actionBar
     ): string {
         return $this->templateRenderer
             ->render(
@@ -237,6 +241,7 @@ class AppRenderer implements IAppRenderer {
                         , $navigationList
                         , $static
                         , $contextLess
+                        , $actionBar
                     )
                     , "appContent"       => $appContent
                     , "hasAppNavigation" => $hasAppNavigation
@@ -251,6 +256,7 @@ class AppRenderer implements IAppRenderer {
         , NavigationList $navigationList
         , bool $static
         , bool $contextLess
+        , IActionBar $actionBar
     ): string {
 
         return $this->templateRenderer
@@ -259,19 +265,20 @@ class AppRenderer implements IAppRenderer {
                 , [
                     "appNavigation"      => $navigationList->toArray(false)
                     , "hasAppNavigation" => $hasAppNavigation
-                    , "actionBar"        => $this->renderActionBars($static, $contextLess)
-                    , "hasActionBars"    => false // TODO
+                    , "actionBar"        => $this->renderActionBars($static, $contextLess, $actionBar)
+                    , "hasActionBars"    => $actionBar->hasElements()
                 ]
             );
     }
 
-    private function renderActionBars(bool $static, bool $contextLess): string {
+    private function renderActionBars(bool $static, bool $contextLess, IActionBar $actionBar): string {
         if (true === $static || true === $contextLess) return '';
-        return '';
-//        return $this->templateRenderer->render(
-//            'root::actionbar'
-//            , $this->actionBarManager->get(IBag::ACTION_BAR_TOP)
-//        );
+        return $this->templateRenderer->render(
+            'root::actionbar'
+            , [
+                'actionBar' => $actionBar
+            ]
+        );
     }
 
     public function render(
@@ -281,6 +288,7 @@ class AppRenderer implements IAppRenderer {
         , bool $static
         , bool $contextLess
         , NavigationList $navigationList
+        , IActionBar $actionBar
     ): string {
 
         return $this->templateRenderer
@@ -298,6 +306,7 @@ class AppRenderer implements IAppRenderer {
                         , $hasAppNavigation
                         , $appContent
                         , $navigationList
+                        , $actionBar
                     )
                     , "noContext" => static::class === StaticAppController::class
                     , "language"  => $this->localeService->getLocale()

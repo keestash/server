@@ -88,7 +88,7 @@ class InstallerService {
         $insertedAll = false;
 
         foreach ($messages as $key => $value) {
-            $inserted    = $this->instanceDB->addOption($key, json_encode($value));
+            $inserted    = $this->instanceDB->addOption($key, (string) json_encode($value));
             $insertedAll = $insertedAll || $inserted;
         }
 
@@ -130,7 +130,7 @@ class InstallerService {
             return [];
         }
 
-        $this->updateInstaller($name, json_encode($messages));
+        $this->updateInstaller($name, (string) json_encode($messages));
         return $messages;
     }
 
