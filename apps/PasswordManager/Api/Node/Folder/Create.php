@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTime;
 use Keestash\Api\Response\LegacyResponse;
-use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -62,10 +61,10 @@ class Create implements RequestHandlerInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
         $parameters = json_decode((string) $request->getBody(), true);
-        $title      = $parameters["title"] ?? null;
+        $name       = $parameters["name"] ?? null;
         $parent     = $parameters["parent"] ?? null;
 
-        if (false === $this->isValid($title) || false === $this->isValid($parent)) {
+        if (false === $this->isValid($name) || false === $this->isValid($parent)) {
 
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -76,9 +75,9 @@ class Create implements RequestHandlerInterface {
 
         }
 
-        $parentEdge = $this->getParentEdge($parent, $token);
+        $parentNode = $this->getParentNode($parent, $token);
 
-        if (null === $parentEdge || $parentEdge->getUser()->getId() !== $token->getUser()->getId()) {
+        if (null === $parentNode || $parentNode->getUser()->getId() !== $token->getUser()->getId()) {
 
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -91,7 +90,7 @@ class Create implements RequestHandlerInterface {
 
         $folder = new Folder();
         $folder->setUser($token->getUser());
-        $folder->setName((string) $title);
+        $folder->setName((string) $name);
         $folder->setType(Node::FOLDER);
         $folder->setCreateTs(new DateTime());
 
@@ -108,19 +107,20 @@ class Create implements RequestHandlerInterface {
 
         $folder->setId($lastId);
 
-        $this->nodeRepository->addEdge(
-            $this->nodeService->prepareRegularEdge(
-                $folder
-                , $parentEdge
-            )
+        $edge = $this->nodeService->prepareRegularEdge(
+            $folder
+            , $parentNode
+            , $token->getUser()
         );
+
+
+        $edge = $this->nodeRepository->addEdge($edge);
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message"       => $this->translator->translate("success")
-                , "folder"      => $folder
-                , "parent_edge" => $parentEdge
+                "message" => $this->translator->translate("success")
+                , "edge"  => $edge
             ]
         );
 
@@ -132,9 +132,9 @@ class Create implements RequestHandlerInterface {
         return true;
     }
 
-    private function getParentEdge($parent, IToken $token): ?Node {
+    private function getParentNode($parent, IToken $token): ?Folder {
 
-        if (Application::ROOT_FOLDER === $parent) {
+        if (Node::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser());
         }
 

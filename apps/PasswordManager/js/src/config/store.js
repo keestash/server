@@ -14,19 +14,12 @@ export default new Vuex.Store({
     mutations: {
         ADD_EDGE(state, edge) {
             state.edges.push(edge);
-            state.selectedEdge = edge;
         },
         SET_EDGES(state, edges) {
             state.edges = edges;
         },
         SELECT_EDGE(state, edge) {
             state.selectedEdge = edge;
-        },
-        UPDATE_EDGE(state, edge) {
-            let store_p = state.edges.find(p => p.id === edge.id);
-            if (store_p !== null) {
-                store_p = edge;
-            }
         },
         UPDATE_SELECTED_NODE(state, newNode) {
             const currentNode = state.selectedEdge.node;
@@ -43,9 +36,6 @@ export default new Vuex.Store({
         selectEdge(context, edge) {
             context.commit("SELECT_EDGE", edge);
         },
-        updateEdge(context, edge) {
-            context.commit("UPDATE_EDGE", edge);
-        },
         updateSelectedNode(context, node) {
             context.commit("UPDATE_SELECTED_NODE", node);
         },
@@ -53,7 +43,11 @@ export default new Vuex.Store({
             context.commit("SET_SELECTED_NODE", node);
         },
         setEdges(context, edges) {
+            console.log(edges)
             context.commit("SET_EDGES", edges);
+        },
+        addNodeToEdge(context, node) {
+            context.commit('ADD_NODE_TO_EDGE', node);
         }
     },
     getters: {

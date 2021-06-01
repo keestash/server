@@ -45,7 +45,7 @@ class RouterService implements IRouterService {
         $matchedRoute = $this->router->match($request)->getMatchedRoute();
 
         if ($matchedRoute instanceof Route) {
-            return $this->router->match($request)->getMatchedRoute()->getPath();
+            return $matchedRoute->getPath();
         }
         return '';
     }

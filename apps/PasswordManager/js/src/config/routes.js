@@ -115,14 +115,14 @@ export const ROUTES = {
     getCredential(credentialId) {
         return host.getApiHost() + "/password_manager/credential/get/" + credentialId + "/";
     },
-    //
-    // getPasswordManagerFolderCreate() {
-    //     return host.getApiHost() + PASSWORD_MANAGER_NODE_CREATE;
-    // }
-    //
-    // getPasswordManagerCreate() {
-    //     return host.getApiHost() + "/password_manager/node/credential/create/";
-    // }
+
+    getPasswordManagerFolderCreate() {
+        return host.getApiHost() + PASSWORD_MANAGER_NODE_CREATE;
+    },
+
+    getPasswordManagerCreate() {
+        return host.getApiHost() + "/password_manager/node/credential/create/";
+    },
     //
     // getPasswordManagerMoveNode() {
     //     return host.getApiHost() + "/password_manager/node/move/";

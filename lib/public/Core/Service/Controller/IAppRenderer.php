@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Service\Controller;
 
 use Keestash\View\Navigation\App\NavigationList;
+use KSP\Core\View\ActionBar\IActionBar;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface IAppRenderer {
@@ -33,6 +34,7 @@ interface IAppRenderer {
         , bool $static
         , bool $contextLess
         , NavigationList $navigationList
+        , IActionBar $actionBar
     ): string;
 
 }

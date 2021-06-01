@@ -25,6 +25,7 @@ use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -36,6 +37,7 @@ class CreateFactory {
             , $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)
             , $container->get(SanitizerService::class)
+            , $container->get(ILogger::class)
         );
     }
 

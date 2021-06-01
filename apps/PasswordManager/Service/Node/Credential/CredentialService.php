@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Service\Node\Credential;
 
 use DateTime;
 use Keestash\Core\Service\Encryption\Key\KeyService;
+use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node as NodeObject;
 use KSA\PasswordManager\Entity\Password\Credential;
@@ -117,12 +118,11 @@ class CredentialService {
         return str_pad('', $length, "*");
     }
 
-    public function insertCredential(Credential $credential, Folder $parent): bool {
+    public function insertCredential(Credential $credential, Folder $parent): Edge {
         $credential = $this->nodeRepository->addCredential($credential);
-        $lastId     = $this->nodeRepository->addEdge(
+        return $this->nodeRepository->addEdge(
             $this->edgeService->prepareRegularEdge($credential, $parent)
         );
-        return null !== $lastId && 0 !== $lastId;
     }
 
     public function updateCredential(

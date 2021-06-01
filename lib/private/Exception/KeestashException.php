@@ -25,6 +25,7 @@ use Exception;
 
 class KeestashException extends Exception {
 
+    /** @phpstan-ignore-next-line */
     protected $message = 'no message specified ¯\_(ツ)_/¯';
 
 }

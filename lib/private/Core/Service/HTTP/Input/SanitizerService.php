@@ -31,8 +31,8 @@ class SanitizerService {
 
     private HTMLPurifier $purifier;
 
-    public function __construct() {
-        $this->purifier = new HTMLPurifier();
+    public function __construct(HTMLPurifier $purifier) {
+        $this->purifier = $purifier;
     }
 
     /**

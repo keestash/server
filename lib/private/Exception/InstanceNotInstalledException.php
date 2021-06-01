@@ -23,6 +23,7 @@ namespace Keestash\Exception;
 
 class InstanceNotInstalledException extends KeestashException {
 
+    /** @phpstan-ignore-next-line */
     protected $message = 'The Exception occured most likely because your instance is not installed or not finished to install';
 
 }

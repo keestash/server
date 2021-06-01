@@ -33,6 +33,7 @@ class EdgeService {
         $edge->setParent($parent);
         $edge->setType(Edge::TYPE_REGULAR);
         $edge->setExpireTs(null);
+        $edge->setOwner($node->getUser());
         $edge->setCreateTs(new DateTime());
         return $edge;
     }

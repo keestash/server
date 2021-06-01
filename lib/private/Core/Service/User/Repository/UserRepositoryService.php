@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\User\Repository;
 
 use Exception;
+use Keestash\Core\DTO\File\File;
+use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
@@ -98,7 +100,7 @@ class UserRepositoryService implements IUserRepositoryService {
             $this->createUser($user, $file);
             return true;
         } catch (Exception $exception) {
-            $this->logger->error(json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
+            $this->logger->error((string) json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
             return false;
         }
     }

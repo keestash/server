@@ -55,7 +55,6 @@ class Controller extends AppController {
     private function buildAppNavigation(): void {
         $segmentHelper = new SegmentHelper($this->translator);
 
-        $this->buildActionBar();
         $this->setAppNavigation(
             $segmentHelper->buildAppNavigation()
         );
@@ -63,7 +62,7 @@ class Controller extends AppController {
 
     private function buildActionBar(): void {
         $actionBarBuilder = new ActionBarBuilder(IActionBar::TYPE_PLUS);
-        $actionBarBuilder
+        $actionBar = $actionBarBuilder
             ->withElement(
                 $this->translator->translate("New Password")
                 , "pwm__new__password"
@@ -81,6 +80,7 @@ class Controller extends AppController {
                 $this->translator->translate("Create")
             )
             ->build();
+        $this->setActionBar($actionBar);
     }
 
     public function run(ServerRequestInterface $request): string {

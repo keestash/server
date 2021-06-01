@@ -63,6 +63,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
@@ -110,6 +111,7 @@ use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\PersistenceServiceFactory;
+use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
@@ -209,4 +211,6 @@ return [
     IniConfigService::class                                        => InvokableFactory::class,
     StringService::class                                           => InvokableFactory::class,
     JWTService::class                                              => JWTServiceFactory::class,
+    SanitizerService::class                                        => SanitizerServiceFactory::class,
+    HTMLPurifier::class                                            => InvokableFactory::class,
 ];

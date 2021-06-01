@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Entity\Password;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonSerializable;
 use KSA\PasswordManager\Entity\Node;
-use Laminas\Validator\NotEmpty;
 
 /**
  * Class Credential

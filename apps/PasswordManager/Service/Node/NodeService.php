@@ -98,12 +98,13 @@ class NodeService {
         return $edge;
     }
 
-    public function prepareRegularEdge(Node $node, Node $parent): Edge {
+    public function prepareRegularEdge(Node $node, Node $parent, IUser $owner): Edge {
         $edge = new Edge();
         $edge->setNode($node);
         $edge->setParent($parent);
         $edge->setType(Edge::TYPE_REGULAR);
         $edge->setExpireTs(null);
+        $edge->setOwner($owner);
         $edge->setCreateTs(new DateTime());
         return $edge;
     }
@@ -155,7 +156,7 @@ class NodeService {
     public function getOrganization(Node $node): ?IOrganization {
         $parents = $this->nodeRepository->getPathToRoot($node);
         foreach ($parents as $parent) {
-            $nodeObject = $this->nodeRepository->getNode((int)$parent['id'], 0, 0);
+            $nodeObject = $this->nodeRepository->getNode((int) $parent['id'], 0, 0);
             if (null !== $nodeObject->getOrganization()) return $nodeObject->getOrganization();
         }
         return null;

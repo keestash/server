@@ -5,3 +5,4 @@ parameters:
 	    - %rootDir%/../../../apps/*/lib/Repository/Migration/*
 	    - %rootDir%/../../../apps/*/info/*
 	checkMissingIterableValueType: false
+	treatPhpDocTypesAsCertain: false

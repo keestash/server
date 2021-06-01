@@ -33,6 +33,7 @@ class ConfigServiceFactory {
 
         $table = new HashTable();
 
+        /** @phpstan-ignore-next-line */
         foreach ($CONFIG as $key => $value) {
             $table->put($key, $value);
         }

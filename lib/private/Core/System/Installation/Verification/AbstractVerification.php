@@ -23,7 +23,7 @@ namespace Keestash\Core\System\Installation\Verification;
 
 abstract class AbstractVerification {
 
-    private $messages = [];
+    private array $messages = [];
 
     public abstract function hasProperty(): bool;
 

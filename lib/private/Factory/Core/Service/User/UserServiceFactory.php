@@ -35,8 +35,6 @@ class UserServiceFactory {
         return new UserService(
             $container->get(Legacy::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(HTTPService::class)
-            , $container->get(InstanceDB::class)
         );
     }
 

@@ -25,10 +25,8 @@ use Keestash\ConfigProvider;
 use Keestash\Core\Service\Router\Verification;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
-use Laminas\Diactoros\Response\JsonResponse;
-use Mezzio\Router\Route;
-use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -36,30 +34,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class KeestashHeaderMiddleware implements MiddlewareInterface {
 
-    private RouterInterface     $router;
     private Config              $config;
     private Verification        $verification;
     private IEnvironmentService $environmentService;
+    private IRouterService      $routerService;
 
     public function __construct(
-        RouterInterface $router
-        , Config $config
+        Config $config
         , Verification $verification
         , IEnvironmentService $environmentService
+        , IRouterService $routerService
     ) {
-        $this->router             = $router;
         $this->config             = $config;
         $this->verification       = $verification;
         $this->environmentService = $environmentService;
-    }
-
-    private function getMatchedPath(ServerRequestInterface $request): string {
-        $matchedRoute = $this->router->match($request)->getMatchedRoute();
-
-        if ($matchedRoute instanceof Route) {
-            return $this->router->match($request)->getMatchedRoute()->getPath();
-        }
-        return '';
+        $this->routerService      = $routerService;
     }
 
     private function getPublicRoutes(): array {
@@ -86,7 +75,7 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
         }
 
         $publicRoutes = $this->getPublicRoutes();
-        $currentPath  = $this->getMatchedPath($request);
+        $currentPath  = $this->routerService->getMatchedPath($request);
 
         foreach ($publicRoutes as $publicRoute) {
             if ($currentPath === $publicRoute) {

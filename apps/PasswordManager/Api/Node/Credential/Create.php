@@ -18,15 +18,18 @@ use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Folder\Folder;
+use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Node as NodeObject;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 
 /**
  * Class CredentialCreate
@@ -40,31 +43,34 @@ class Create implements RequestHandlerInterface {
     private NodeRepository    $nodeRepository;
     private CredentialService $credentialService;
     private SanitizerService  $sanitizerService;
+    private ILogger           $logger;
 
     public function __construct(
         IL10N $l10n
         , NodeRepository $nodeRepository
         , CredentialService $credentialService
         , SanitizerService $sanitizerService
+        , ILogger $logger
     ) {
         $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
         $this->credentialService = $credentialService;
         $this->sanitizerService  = $sanitizerService;
+        $this->logger            = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
         $parameters = json_decode((string) $request->getBody(), true);
-        $title      = $parameters["title"] ?? '';
-        $userName   = $parameters["user_name"] ?? '';
+        $name       = $parameters["name"] ?? '';
+        $userName   = $parameters["username"] ?? '';
         $password   = $parameters["password"] ?? '';
-        $notes      = $parameters["notes"] ?? '';
+        $notes      = $parameters["note"] ?? '';
         $folder     = $parameters["parent"] ?? '';
         $url        = $parameters["url"] ?? '';
 
-        if (false === $this->isValid($title)) {
+        if (false === $this->isValid($name)) {
 
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -99,15 +105,16 @@ class Create implements RequestHandlerInterface {
             $password
             , $url
             , $userName
-            , $title
+            , $name
             , $token->getUser()
             , $parent
             , $this->sanitizerService->sanitize($notes)
         );
 
-        $inserted = $this->credentialService->insertCredential($credential, $parent);
-
-        if (false === $inserted) {
+        try {
+            $edge = $this->credentialService->insertCredential($credential, $parent);
+        } catch (Throwable $exception) {
+            $this->logger->error($exception->getMessage());
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -119,7 +126,7 @@ class Create implements RequestHandlerInterface {
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "message" => $this->translator->translate("success")
+                "edge" => $edge
             ]
         );
     }
@@ -132,7 +139,7 @@ class Create implements RequestHandlerInterface {
 
     private function getParentNode($parent, IToken $token): ?NodeObject {
 
-        if (Application::ROOT_FOLDER === $parent) {
+        if (NodeObject::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser());
         }
         return $this->nodeRepository->getNode((int) $parent);

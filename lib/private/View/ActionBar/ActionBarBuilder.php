@@ -44,7 +44,7 @@ class ActionBarBuilder {
     /**
      * ActionBarBuilder constructor.
      *
-     * @param $argument
+     * @param string|IActionBar $argument
      *
      * @throws Exception
      */
@@ -53,14 +53,11 @@ class ActionBarBuilder {
         $this->elements = new ArrayList();
         if (is_string($argument)) {
             $this->createActionBar($argument);
+        } else if ($argument instanceof IActionBar) {
+            $this->actionBar = $argument;
         } else {
-            if ($argument instanceof IActionBar) {
-                $this->actionBar = $argument;
-            } else {
-                throw new Exception("no arg");
-            }
+            throw new Exception("no arg");
         }
-
     }
 
     /**
@@ -89,7 +86,7 @@ class ActionBarBuilder {
         string $name
         , ?string $id = null
         , ?string $href = null
-        , ?string $type = IElement::TYPE_CIRCLE
+        , string $type = IElement::TYPE_CIRCLE
     ): ActionBarBuilder {
         $element = new ActionBarIElement($name);
         $element->setId($id);

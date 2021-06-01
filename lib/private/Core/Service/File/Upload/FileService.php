@@ -87,7 +87,9 @@ class FileService implements IFileService {
     }
 
     public function moveUploadedFile(ICoreFile $file): bool {
-        return move_uploaded_file($file->getTemporaryPath(), $file->getFullPath());
+        $temporaryPath = $file->getTemporaryPath();
+        if (null === $temporaryPath) return false;
+        return move_uploaded_file($temporaryPath, $file->getFullPath());
     }
 
 }
