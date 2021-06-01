@@ -37,8 +37,6 @@ class LogoutFactory {
         return new Logout(
             $container->get(ITokenRepository::class)
             , $container->get(SessionManager::class)
-            , $container->get(IPersistenceService::class)
-            , $container->get(IUserRepository::class)
             , $container->get(IRouterService::class)
             , $container->get(ILoader::class)
             , $container->get(RouterInterface::class)

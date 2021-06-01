@@ -26,7 +26,7 @@ use KSA\Login\Controller\LoginController;
 use KSA\Login\Controller\Logout;
 
 return [
-    ConfigProviderAlias::ROUTES => [
+    ConfigProviderAlias::ROUTES                 => [
         [
             'path'         => ConfigProvider::LOGOUT
             , 'middleware' => Logout::class
@@ -38,18 +38,17 @@ return [
             , 'name'       => LoginController::class
         ],
     ],
-    ConfigProviderAlias::PUBLIC_ROUTES => [
-        ConfigProvider::LOGOUT
-        , ConfigProvider::LOGIN
+    ConfigProviderAlias::PUBLIC_ROUTES          => [
+        ConfigProvider::LOGIN
     ],
     ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::LOGIN => 'login'
     ],
-    ConfigProviderAlias::WEB_ROUTER_SCRIPTS => [
-        ConfigProvider::LOGIN => 'login'
-        ,ConfigProvider::LOGOUT => 'logout'
+    ConfigProviderAlias::WEB_ROUTER_SCRIPTS     => [
+        ConfigProvider::LOGIN    => 'login'
+        , ConfigProvider::LOGOUT => 'logout'
     ],
-    ConfigProviderAlias::SETTINGS => [
+    ConfigProviderAlias::SETTINGS               => [
         ConfigProvider::LOGOUT => [
             'name'      => 'logout'
             , 'faClass' => "fas fa-sign-out-alt"

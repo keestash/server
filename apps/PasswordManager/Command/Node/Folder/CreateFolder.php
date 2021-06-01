@@ -27,7 +27,6 @@ use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,20 +56,11 @@ class CreateFolder extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $userId = (int) $input->getArgument("user_id");
+        $userId = (string) $input->getArgument("user_id");
         $name   = $input->getArgument("name");
         $parent = (int) $input->getArgument("parent");
 
-        $users = $this->userRepository->getAll();
-        $user  = null;
-
-        /** @var IUser $cachedUser */
-        foreach ($users as $cachedUser) {
-            if ($cachedUser->getId() === $userId) {
-                $user = $cachedUser;
-                break;
-            }
-        }
+        $user = $this->userRepository->getUserById($userId);
 
         if (null === $user) {
             $this->writeError("No User found for $userId. Aborting!", $output);
