@@ -145,7 +145,7 @@ import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/s
 import NoNodeSelected from "./Node/NoNodeSelected";
 import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
 import {Skeleton} from "vue-loading-skeleton";
-import {EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../../lib/js/src/base";
+import {EVENT_NAME_ACTION_BAR_ITEM_CLICKED, EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../../lib/js/src/base";
 import NoEdges from "./Node/NoEdges";
 
 export const NODE_ID_ROOT = "root";
@@ -202,7 +202,8 @@ export default {
 
 
     document.addEventListener(
-        'dasisteingrossertest', (e) => {
+        EVENT_NAME_ACTION_BAR_ITEM_CLICKED
+        , (e) => {
           e.stopImmediatePropagation();
           this.$refs['new-edge-modal'].show();
           this.addEdge.type = e.detail.target.id;

@@ -48,6 +48,7 @@ use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
 use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\CreateFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdatePasswordFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
@@ -125,8 +126,13 @@ return [
         // ---- Node
         // ---- ---- Credential
         Create::class                                                     => CreateFactory::class,
-        \KSA\PasswordManager\Api\Node\Credential\Get::class               => \KSA\PasswordManager\Factory\Api\Node\Credential\GetFactory::class,
         Update::class                                                     => UpdateFactory::class,
+
+        // ---- Node
+        // ---- ---- Credential
+        // ---- ---- ---- Password
+        \KSA\PasswordManager\Api\Node\Credential\Password\Get::class      => \KSA\PasswordManager\Factory\Api\Node\Credential\Password\GetFactory::class,
+        \KSA\PasswordManager\Api\Node\Credential\Password\Update::class   => UpdatePasswordFactory::class,
 
         // ---- Node
         // ---- ---- Folder

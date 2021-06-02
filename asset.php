@@ -24,6 +24,7 @@ use Firebase\JWT\JWT;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\File\FileService;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\File\Icon\IIconService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -37,6 +38,12 @@ $instanceDB = $container->get(InstanceDB::class);
 $config = $container->get(Config::class);
 /** @var IIconService $iconService */
 $iconService = $container->get(IIconService::class);
+/** @var IConfigService $configService */
+$configService = $container->get(IConfigService::class);
+$lifeTime      = $configService->getValue(
+    'user_lifetime'
+    , \Keestash\ConfigProvider::DEFAULT_USER_LIFETIME
+);
 
 $token = $_GET['token'] ?? null;
 
@@ -52,8 +59,7 @@ $decoded = JWT::decode(
 );
 
 $then = new DateTime();
-$then->setTimestamp((int) $decoded->iat);
-$then->modify('+5 minutes');
+$then->setTimestamp((int) $decoded->iat + (int) $lifeTime);
 if ((new DateTime()) > $then) {
     header("HTTP/1.0 404 Not Found");
     die();

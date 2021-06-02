@@ -38,9 +38,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CreateCredential extends KeestashCommand {
 
-    private IUserRepository    $userRepository;
-    private CredentialService  $credentialService;
-    private NodeRepository     $nodeRepository;
+    private IUserRepository   $userRepository;
+    private CredentialService $credentialService;
+    private NodeRepository    $nodeRepository;
 
     public function __construct(
         IUserRepository $userRepository
@@ -75,10 +75,10 @@ class CreateCredential extends KeestashCommand {
         $url      = $style->ask("URL") ?? "";
         $note     = $style->ask("Note") ?? "";
         $userId   = $style->ask("User ID") ?? "";
-        $parentId = $style->ask("Parent ('Root' or ID)") ?? "";
+        $parentId = $style->ask("Parent ID") ?? "";
 
         $user       = $this->userRepository->getUserById($userId);
-        $parent     = $this->nodeRepository->getParentNode((int) $parentId);
+        $parent     = $this->nodeRepository->getNode((int) $parentId, 0, 1);
         $credential = $this->credentialService->createCredential(
             $password
             , $url
@@ -88,16 +88,6 @@ class CreateCredential extends KeestashCommand {
             , $parent
             , $note
         );
-
-        $errors     = $this->validationService->validate($credential);
-        $errorCount = count($errors);
-
-        if ($errorCount > 0) {
-            foreach ($errors as $error) {
-                $this->writeError($error, $output);
-            }
-            return;
-        }
 
         if ($parent->getUser()->getId() !== $user->getId()) {
             $this->writeError('parent does not belong to user', $output);
@@ -115,6 +105,7 @@ class CreateCredential extends KeestashCommand {
             return;
         }
         $this->writeInfo("$name created", $output);
+        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
 
     }
 

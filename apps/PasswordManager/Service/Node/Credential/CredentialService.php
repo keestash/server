@@ -129,33 +129,35 @@ class CredentialService {
         Credential $credential
         , string $userName
         , string $url
+        , string $name
+    ): Credential {
+        $credential->setUsername(
+            $userName
+        );
+        $credential->setUrl(
+            $url
+        );
+
+        $credential->setName($name);
+        return $this->nodeRepository->updateCredential($credential);
+    }
+
+    public function updatePassword(
+        Credential $credential
         , string $password
     ): Credential {
         $organization = $this->nodeService->getOrganization($credential);
         $keyHolder    = null !== $organization ? $organization : $credential->getUser();
         $key          = $this->keyService->getKey($keyHolder);
 
-        $credential->setUsername(
-            $this->encryptionService->encrypt(
-                $key
-                , $userName
-            )
-        );
-        $credential->setUrl(
-            $this->encryptionService->encrypt(
-                $key
-                , $url
-            )
-        );
         $passwordObject = $credential->getPassword();
-
         $passwordObject->setEncrypted(
             $this->encryptionService->encrypt(
                 $key
                 , $password
             )
         );
-
+        $passwordObject->setPlain($password);
         $credential->setPassword($passwordObject);
         return $this->nodeRepository->updateCredential($credential);
     }

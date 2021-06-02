@@ -19,20 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager;
+namespace KSA\PasswordManager\Factory\Api\Node\Credential\Password;
 
+use KSA\PasswordManager\Api\Node\Credential\Password\Update;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use Psr\Container\ContainerInterface;
 
-final class ConfigProvider {
+class UpdatePasswordFactory {
 
-    public const PASSWORD_MANAGER_ATTACHMENTS_VIEW           = "/password_manager/attachments/view/:fileId[/]";
-    public const PASSWORD_MANAGER                            = "/password_manager[/]";
-    public const PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE        = "/s/:hash[/]";
-    public const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT       = "/password_manager/public_share/decrypt/:hash[/]";
-    public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
-    public const APP_ID                                      = 'passwordManager';
-
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
+    public function __invoke(ContainerInterface $container): Update {
+        return new Update(
+            $container->get(NodeRepository::class)
+            , $container->get(CredentialService::class)
+        );
     }
 
 }

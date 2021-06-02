@@ -118,7 +118,7 @@ class Get implements RequestHandlerInterface {
         );
 
         // base case 2: we are requesting the root. No need to do the following stuff
-        if ($id === 'root') {
+        if (Node::ROOT === $id) {
             return $root;
         }
 
