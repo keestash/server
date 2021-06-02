@@ -21,7 +21,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use ScssPhp\ScssPhp\Compiler as ScssCompiler;
+use Keestash\ConfigProvider;
+use Keestash\Core\Service\Stylesheet\Compiler;
+use Laminas\Config\Config;
+use Psr\Container\ContainerInterface;
 
 $action = $argv[1] ?? 'add';
 
@@ -30,65 +33,28 @@ $action = $argv[1] ?? 'add';
     chdir(dirname(__DIR__));
 
     require_once __DIR__ . '/../vendor/autoload.php';
+    /** @var ContainerInterface $container */
+    $container = require_once __DIR__ . '/../lib/start.php';
 
-    createDirIfNotExists(__DIR__ . '/../lib/scss/dist/');
-    compile(realpath(__DIR__ . '/../lib/scss/'));
+    /** @var Config $config */
+    $config = $container->get(Config::class);
+    /** @var Compiler $compiler */
+    $compiler = $container->get(Compiler::class);
+    $files    = glob(
+            $config->get(ConfigProvider::INSTANCE_PATH) . '/apps/*/scss/*.scss'
+    );
 
-    foreach (glob(__DIR__ . '/../apps/*/scss/') as $directory) {
+    foreach ($files as $file) {
 
-        if ('add' === $action) {
-            compile(realpath($directory));
-        } else {
-            remove($directory . '/dist');
-        }
-    }
+        $pathInfo    = pathinfo($file);
+        $destination = realpath($config->get(ConfigProvider::INSTANCE_PATH) . '/public/css/') . '/' . $pathInfo['filename'] . '.css';
 
-})();
-
-function createDirIfNotExists(string $dir): bool {
-
-    if (true === is_dir($dir)) return true;
-
-    $created = mkdir($dir, 0777, true);
-
-    if (false === $created) {
-        throw new Exception('could not create ' . $dir);
-    }
-    return true;
-}
-
-function remove(string $dir): bool {
-    foreach (glob($dir . '/*.css') as $file) {
-        unlink($file);
-    }
-    return true;
-}
-
-function compile(string $source): void {
-
-    $compiler = new ScssCompiler();
-    $compiler->addImportPath(realpath(__DIR__ . '/../vendor/twitter/bootstrap/scss'));
-    $compiler->addImportPath(realpath(__DIR__ . '/../lib/scss/'));
-    foreach (glob($source . '/*.scss') as $file) {
-//        $compiler->addImportPath($file);
-
-        echo "processing file: $file \n";
-        $pathInfo = pathinfo($file);
-//        $destination = $pathInfo['dirname'] . '/dist/' . $pathInfo['filename'] . '.css';
-        $destination = realpath(__DIR__ . '/../public/css/') . '/' . $pathInfo['filename'] . '.css';
-
-        $css = $compiler->compile(
-                file_get_contents($file)
+        $compiler->compile(
+                $file
+                , $destination
         );
 
-        if (true === is_file($destination)) {
-            unlink($destination);
-        }
-        $created = file_put_contents($destination, $css);
-
-        if (false === $created || false === is_file($destination)) {
-            echo "warning! not created!\n";
-        }
     }
 
-}
+
+})();

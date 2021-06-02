@@ -43,7 +43,6 @@ export default new Vuex.Store({
             context.commit("SET_SELECTED_NODE", node);
         },
         setEdges(context, edges) {
-            console.log(edges)
             context.commit("SET_EDGES", edges);
         },
         addNodeToEdge(context, node) {
