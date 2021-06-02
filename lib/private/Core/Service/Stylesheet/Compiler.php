@@ -55,7 +55,7 @@ class Compiler {
         /** @phpstan-ignore-next-line */
         $compiler->addImportPath(realpath($this->config->get(ConfigProvider::INSTANCE_PATH) . '/node_modules/'));
 
-        $css = $compiler->compileString(
+        $css = $compiler->compile(
             (string) file_get_contents($source)
         );
 
@@ -64,9 +64,14 @@ class Compiler {
         }
 
         $created = file_put_contents($destination, $css);
+        $isFile  = is_file($destination);
 
-        if (false === $created || false === is_file($destination)) {
-            throw new StylesheetsNotCompiledException();
+        if (false === $created || false === $isFile) {
+            throw new StylesheetsNotCompiledException(
+                'created: ' . (true === $created ? 'true' : 'false')
+                . ' is file: ' . (true === $isFile ? 'true' : 'false')
+                . ' at destination: ' . $destination
+            );
         }
     }
 

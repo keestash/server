@@ -135,7 +135,6 @@ export default {
                   , password: p
                 }
             ).then((response) => {
-              console.log(response)
               if (RESPONSE_CODE_OK in response.data) {
                 return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
               }
@@ -167,7 +166,6 @@ export default {
                   return [];
                 }
             ).then((data) => {
-              console.log(data)
               this.$store.dispatch(
                   "updateSelectedNode"
                   , input
@@ -192,7 +190,6 @@ export default {
     onUpdatePassword(event) {
       event.preventDefault();
       if (false === this.passwordField.visible) return;
-      console.log('updating');
       const newPassword = event.target.value;
 
       const axios = this.axios;
@@ -213,7 +210,6 @@ export default {
                   return [];
                 }
             ).then((data) => {
-              console.log(data)
             })
 
           }, 500
