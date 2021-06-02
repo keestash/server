@@ -41,9 +41,8 @@ jobs:
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant test/
           rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
-          rm -rf apps/*/js/src
-          rm -rf apps/*/js/webpack.config.js
-          rm -rf apps/*/scss/*.scss
+          rm -rf apps/*/js/
+          rm -rf apps/*/scss/
           cp config/config.sample.php config/config.php
           zip -r nightly-${{ github.sha }}.zip ../server
 

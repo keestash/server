@@ -49,6 +49,7 @@ $action = $argv[1] ?? 'add';
         $pathInfo    = pathinfo($file);
         $destination = realpath($config->get(ConfigProvider::INSTANCE_PATH) . '/public/css/') . '/' . $pathInfo['filename'] . '.css';
 
+        echo 'compiling ' . $file . ' at destination ' . $destination . '\n';
         $compiler->compile(
                 $file
                 , $destination
