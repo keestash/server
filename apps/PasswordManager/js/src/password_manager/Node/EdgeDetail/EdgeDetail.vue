@@ -4,7 +4,9 @@
       <div class="col">
         <div class="row mt-4 mb-4">
           <div class="col-md-1 align-self-center">
-            <p class="h1"> <b-icon-code-square class="node-logo-color"></b-icon-code-square></p>
+            <p class="h1">
+              <b-icon-code-square class="node-logo-color"></b-icon-code-square>
+            </p>
           </div>
           <div class="col-md-4 d-flex align-items-center">
             <div class="row">
@@ -13,7 +15,7 @@
                     type="text"
                     class="form-control border-0"
                     :value="this.edge.node.name"
-                    @change="onNameChange"
+                    @blur="onNameChange"
                 >
               </div>
             </div>
@@ -25,17 +27,17 @@
             <input type="text"
                    class="form-control"
                    :value="this.edge.node.username"
-                   @change="onUsernameChange"
+                   @blur="onUsernameChange"
             >
           </div>
           <div class="form-group">
             <small class="form-text text-muted">{{ $t('credential.detail.passwordLabel') }}</small>
             <div class="input-group">
               <input :type="passwordField.visible ? 'text' : 'password'" class="form-control"
-                     id="pwm__login__password"
                      :readonly="!passwordField.visible"
                      :value="this.password"
                      autocomplete="off"
+                     @blur="onUpdatePassword"
               >
               <div class="input-group-append" id="pwm__password__eye" @click="loadPassword">
                 <div class="input-group-text">
@@ -53,7 +55,7 @@
                   class="form-control"
                   :placeholder="this.edge.node.url"
                   :value="this.edge.node.url"
-                  id="pwm__login__website"
+                  @blur="onUrlChange"
               >
               <div class="input-group-append" id="pwm__url__button" @click="openUrl">
                 <div class="input-group-text">
@@ -108,7 +110,6 @@ export default {
     })
   },
   created() {
-    this.doWork = _.debounce(this.onChange, 500);
     this.password = this.edge.node.password.placeholder;
 
     const startUp = new StartUp(
@@ -123,7 +124,6 @@ export default {
 
   methods: {
     passwordUsed(p) {
-
       _.debounce(
           () => {
             this.axios.post(
@@ -150,36 +150,95 @@ export default {
       )();
 
     },
-    onNameChange(event) {
+
+    updateCredential(input) {
+      const axios = this.axios;
 
       _.debounce(
           () => {
-            const newName = event.target.value;
-            if (newName === this.edge.node.name || newName === "") return;
-
-            this.$store.dispatch(
-                "updateSelectedNode"
-                , {
-                  name: newName
+            axios.post(
+                ROUTES.getPasswordManagerUsersUpdate()
+                , input
+            ).then(
+                (response) => {
+                  if (RESPONSE_CODE_OK in response.data) {
+                    return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+                  }
+                  return [];
                 }
-            );
+            ).then((data) => {
+              console.log(data)
+              this.$store.dispatch(
+                  "updateSelectedNode"
+                  , input
+              );
+            })
+
           }, 500
       )();
     },
-    onUsernameChange(event) {
+    onNameChange(event) {
+      event.preventDefault();
+      const newName = event.target.value;
+      if (newName === this.edge.node.name || newName === "") return;
+
+      this.updateCredential({
+        name: newName
+        , username: this.edge.node.username
+        , url: this.edge.node.url
+        , nodeId: this.edge.node.id
+      });
+    },
+    onUpdatePassword(event) {
+      event.preventDefault();
+      if (false === this.passwordField.visible) return;
+      console.log('updating');
+      const newPassword = event.target.value;
+
+      const axios = this.axios;
+
       _.debounce(
           () => {
-            const newUserName = event.target.value;
-            if (newUserName === this.edge.node.username || newUserName === "") return;
-
-            this.$store.dispatch(
-                "updateSelectedNode"
+            axios.post(
+                ROUTES.getPasswordManagerCredentialPasswordUpdate()
                 , {
-                  username: newUserName
+                  passwordPlain: newPassword
+                  , nodeId: this.edge.node.id
                 }
-            );
+            ).then(
+                (response) => {
+                  if (RESPONSE_CODE_OK in response.data) {
+                    return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+                  }
+                  return [];
+                }
+            ).then((data) => {
+              console.log(data)
+            })
+
           }, 500
       )();
+
+    },
+    onUsernameChange(event) {
+      const newUserName = event.target.value;
+      if (newUserName === this.edge.node.username || newUserName === "") return;
+      this.updateCredential({
+        name: this.edge.node.name
+        , username: newUserName
+        , url: this.edge.node.url
+        , nodeId: this.edge.node.id
+      });
+    },
+    onUrlChange(event) {
+      const newUrl = event.target.value;
+      if (newUrl === this.edge.node.url || newUrl === "") return;
+      this.updateCredential({
+        name: this.edge.node.name
+        , username: this.edge.node.username
+        , url: newUrl
+        , nodeId: this.edge.node.id
+      });
     },
     openUrl() {
       const startUp = new StartUp(
@@ -235,12 +294,6 @@ export default {
       this.password = password;
       this.passwordField.visible = visible;
     },
-    onChange: function (form) {
-      // TODO update on server
-      // this.$store.dispatch("updateEdge", edge);
-      console.log("test");
-      console.log(form)
-    }
   }
 }
 </script>

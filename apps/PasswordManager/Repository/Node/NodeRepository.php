@@ -284,11 +284,10 @@ class NodeRepository extends AbstractRepository {
             )
         );
         $credential->setNotes(
-//            $this->encryptionService->decrypt(
-//                $key
-//                , (string) $row[6]
-//            )
-            ''
+            $this->encryptionService->decrypt(
+                $key
+                , (string) $row[6]
+            )
         );
 
         $password = new Password();
@@ -445,10 +444,10 @@ class NodeRepository extends AbstractRepository {
                 ]
             )
             ->setParameter(0, $nodeId)
-            ->setParameter(1, (string) $credential->getUsername())
+            ->setParameter(1, $credential->getUsername())
             ->setParameter(2, $credential->getPassword()->getEncrypted())
-            ->setParameter(3, (string) $credential->getUrl())
-            ->setParameter(4, (string) $credential->getNotes())
+            ->setParameter(3, $credential->getUrl())
+            ->setParameter(4, $credential->getNotes())
             ->execute();
 
         $lastInsertId = $this->getLastInsertId();
@@ -587,8 +586,39 @@ ORDER BY d.`level`;
                 ->execute() !== 0;
     }
 
-    public function updateCredential(Credential $credential): Credential {
+    public function updateNode(Node $node): Node {
         $queryBuilder = $this->getQueryBuilder();
+
+        $queryBuilder = $queryBuilder->update('pwm_node')
+            ->set('name', '?')
+            ->where('id = ?')
+            ->setParameter(0, $node->getName())
+            ->setParameter(1, $node->getId());
+        $queryBuilder->execute();
+
+        return $node;
+    }
+
+    public function updateCredential(Credential $credential): Credential {
+        $this->updateNode($credential);
+        $queryBuilder = $this->getQueryBuilder();
+
+        // TODO dirty hack! as we are retrieving in a loop here
+        //  and do not want to loop again later simply because
+        //  of encryption, we will solve this here. Normally, this
+        //  has to be at CredentialService or NodeService
+        $organization = null;
+        $parent       = $this->getParentNode($credential->getId(), 0, 0);
+        while (null !== $parent) {
+            if (null !== $parent->getOrganization()) {
+                $organization = $parent->getOrganization();
+                break;
+            }
+            $parent = $this->getParentNode($parent->getId(), 0, 0);
+        }
+
+        $keyHolder = null !== $organization ? $organization : $credential->getUser();
+        $key       = $this->keyService->getKey($keyHolder);
 
         $queryBuilder = $queryBuilder->update('pwm_credential')
             ->set('username', '?')
@@ -596,16 +626,29 @@ ORDER BY d.`level`;
             ->set('url', '?')
             ->set('note', '?')
             ->where('id = ?')
-            ->setParameter(0, $credential->getUsername())
-            ->setParameter(1, $credential->getPassword()->getEncrypted())
-            ->setParameter(2, $credential->getUrl())
-            ->setParameter(3, $credential->getNotes())
-            ->setParameter(4, $credential->getId());
-        $rowCount     = $queryBuilder->execute();
-
-        if (0 === $rowCount) {
-            throw new PasswordManagerException('no rows updated');
-        }
+            ->setParameter(0,
+                $this->encryptionService->encrypt(
+                    $key
+                    , $credential->getUsername()
+                )
+            )
+            ->setParameter(1,
+                $credential->getPassword()->getEncrypted()
+            )
+            ->setParameter(2,
+                $this->encryptionService->encrypt(
+                    $key
+                    , $credential->getUrl()
+                )
+            )
+            ->setParameter(3,
+                $this->encryptionService->encrypt(
+                    $key
+                    , $credential->getNotes()
+                )
+            )
+            ->setParameter(4, $credential->getCredentialId());
+        $queryBuilder->execute();
 
         return $credential;
     }

@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node\Credential;
+namespace KSA\PasswordManager\Factory\Api\Node\Credential\Password;
 
-use KSA\PasswordManager\Api\Node\Credential\Get;
+use KSA\PasswordManager\Api\Node\Credential\Password\Get;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use Psr\Container\ContainerInterface;

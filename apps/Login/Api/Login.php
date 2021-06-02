@@ -23,6 +23,7 @@ namespace KSA\Login\Api;
 
 use DateTime;
 use Keestash\Api\Response\LegacyResponse;
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Router\Verification;
@@ -132,7 +133,7 @@ class Login implements RequestHandlerInterface {
         $expireTs = (new DateTime())->getTimestamp() +
             $this->configService->getValue(
                 "user_lifetime"
-                , (string) Login::DEFAULT_USER_LIFETIME
+                , (string) ConfigProvider::DEFAULT_USER_LIFETIME
             );
         $this->persistenceService->setPersistenceValue(
             "user_id"

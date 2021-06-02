@@ -39,7 +39,7 @@ use KSA\PasswordManager\Api\Share\Share;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
-    ConfigProvider::ROUTES => [
+    ConfigProvider::ROUTES        => [
         [
             'path'         => '/password_manager/comment/add[/]'
             , 'middleware' => Add::class
@@ -168,9 +168,9 @@ return [
         ],
         [
             'path'         => '/password_manager/credential/get/:id[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Get::class
+            , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
             , 'method'     => IVerb::GET
-            , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Get::class
+            , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
         ],
         [
             'path'         => '/password_manager/users/update[/]'
@@ -183,6 +183,12 @@ return [
             , 'middleware' => \KSA\PasswordManager\Api\Node\Folder\Create::class
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Folder\Create::class
+        ],
+        [
+            'path'         => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
+            , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
+            , 'method'     => IVerb::POST
+            , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
         ],
     ],
     ConfigProvider::PUBLIC_ROUTES => [

@@ -38,6 +38,7 @@ const PASSWORD_MANAGER_NODE_CREATE = "/password_manager/node/create/";
 const ORGANIZATIONS_ALL = "/organizations/all/";
 const PASSWORD_MANAGER_ORGANIZATION_ADD_NODE = "/password_manager/organization/node/add/";
 const PASSWORD_MANAGER_THUMBNAIL_EXTENSION = "/thumbnail/{extension}/";
+const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
 
 const host = new Host();
 
@@ -45,6 +46,10 @@ export const ROUTES = {
 
     getNode: (id) => {
         return host.getApiHost() + "/password_manager/node/get/" + id + "/";
+    },
+
+    getPasswordManagerCredentialPasswordUpdate() {
+        return host.getApiHost() + PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE;
     },
 
     getPublicShareDecrypt(hash) {

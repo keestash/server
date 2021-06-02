@@ -113,6 +113,12 @@ class Create implements RequestHandlerInterface {
 
         try {
             $edge = $this->credentialService->insertCredential($credential, $parent);
+            // tradeoff: we need to re-query as we want to get the decrypted data
+            // normally, this should take place in a service or somewhere else.
+            // should be refactored ASAP
+            $edge->setNode(
+                $this->nodeRepository->getNode($credential->getId())
+            );
         } catch (Throwable $exception) {
             $this->logger->error($exception->getMessage());
             return LegacyResponse::fromData(

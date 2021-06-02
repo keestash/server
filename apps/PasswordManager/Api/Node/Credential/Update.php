@@ -59,12 +59,11 @@ class Update implements RequestHandlerInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
         $parameters = json_decode((string) $request->getBody(), true);
-        $name       = $parameters["username"];
+        $name       = $parameters["name"];
+        $username   = $parameters["username"];
         $url        = $parameters["url"];
         $nodeId     = $parameters["nodeId"];
-        $password   = $parameters["password"];
 
-        $this->logger->debug(json_encode($parameters));
         $hasChanges = false;
 
         /** @var Credential $node */
@@ -79,7 +78,7 @@ class Update implements RequestHandlerInterface {
             );
         }
 
-        if (false === $this->stringService->isEmpty($name)) {
+        if (false === $this->stringService->isEmpty($username)) {
             $hasChanges = true;
         }
 
@@ -87,16 +86,16 @@ class Update implements RequestHandlerInterface {
             $hasChanges = true;
         }
 
-        if (false === $this->stringService->isEmpty($password)) {
+        if (false === $this->stringService->isEmpty($name)) {
             $hasChanges = true;
         }
 
         // TODO abort when no changes?!
         $this->credentialService->updateCredential(
             $node
-            , $name
+            , $username
             , $url
-            , $password
+            , $name
         );
 
         return LegacyResponse::fromData(
