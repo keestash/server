@@ -24,22 +24,21 @@ namespace Keestash\Core\Repository\Job;
 use doganoo\Backgrounder\BackgroundJob\Job;
 use doganoo\Backgrounder\BackgroundJob\JobList;
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\BackgroundJob\IJob;
 use KSP\Core\Repository\Job\IJobRepository;
 
-class JobRepository extends AbstractRepository implements IJobRepository {
+class JobRepository implements IJobRepository {
 
-    private ?JobList         $jobList = null;
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
+        $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
     }
 
@@ -51,12 +50,11 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             $updated = $this->updateJob($job);
         }
 
-        $this->jobList = null;
         return $updated;
     }
 
     public function updateJob(Job $job): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $lastRun = null === $job->getLastRun()
             ? null
@@ -119,7 +117,7 @@ class JobRepository extends AbstractRepository implements IJobRepository {
     public function getJobList(): JobList {
         $list = new JobList();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'b.id'
@@ -159,12 +157,11 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             $job->setCreateTs($this->dateTimeService->fromFormat($createTs));
             $list->add($job);
         }
-        $this->jobList = $list;
         return $list;
     }
 
     private function insert(Job $job): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $lastRun = $job->getLastRun();
         $lastRun = null === $lastRun
@@ -195,7 +192,7 @@ class JobRepository extends AbstractRepository implements IJobRepository {
             ->setParameter(5, $job->getInterval())
             ->execute();
 
-        $lastInsertId = (int) $this->getLastInsertId();
+        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
         if (0 === $lastInsertId) return false;
 
         return true;

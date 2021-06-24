@@ -17,7 +17,6 @@ namespace KSA\PasswordManager\Repository;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Entity\Node;
@@ -28,12 +27,13 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\HTTP\IJWTService;
 
-class CommentRepository extends AbstractRepository {
+class CommentRepository {
 
     private NodeRepository  $nodeRepository;
     private UserRepository  $userRepository;
     private DateTimeService $dateTimeService;
     private IJWTService     $jwtService;
+    private IBackend        $backend;
 
     public function __construct(
         IBackend $backend
@@ -42,12 +42,11 @@ class CommentRepository extends AbstractRepository {
         , DateTimeService $dateTimeService
         , IJWTService $jwtService
     ) {
-        parent::__construct($backend);
-
         $this->nodeRepository  = $nodeRepository;
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
         $this->jwtService      = $jwtService;
+        $this->backend         = $backend;
     }
 
     /**
@@ -58,8 +57,8 @@ class CommentRepository extends AbstractRepository {
      */
     public function addComment(Comment $comment): Comment {
 
-        $this->getQueryBuilder()
-            ->insert('pwm_comment')
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->insert('pwm_comment')
             ->values(
                 [
                     'comment'     => '?'
@@ -78,7 +77,7 @@ class CommentRepository extends AbstractRepository {
             ->setParameter(3, $comment->getUser()->getId())
             ->execute();
 
-        $id = $this->getLastInsertId();
+        $id = $this->backend->getConnection()->lastInsertId();
 
         if (null === $id) {
             throw new CommentRepositoryException();
@@ -91,7 +90,8 @@ class CommentRepository extends AbstractRepository {
     public function getCommentsByNode(Node $node): ?ArrayList {
         $list = new ArrayList();
 
-        $comments = $this->getQueryBuilder()
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $comments = $queryBuilder
             ->select(
                 [
                     'id'
@@ -142,7 +142,7 @@ class CommentRepository extends AbstractRepository {
     }
 
     public function remove(int $id): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('pwm_comment')
                 ->where('id = ?')
                 ->setParameter(0, $id)
@@ -150,7 +150,7 @@ class CommentRepository extends AbstractRepository {
     }
 
     public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('pwm_comment')
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())

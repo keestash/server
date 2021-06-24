@@ -31,6 +31,8 @@ interface IEnvironmentService extends IService {
 
     public function isConsole(): bool;
 
+    public function isUnitTest(): bool;
+
     public function setEnv(string $env): bool;
 
 }

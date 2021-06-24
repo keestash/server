@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Factory\Command;
 
-use Keestash\Core\Service\Phinx\Migrator;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
+use KSP\Core\Service\Phinx\IMigrator;
 use Psr\Container\ContainerInterface;
 
 class MigrateAppsFactory {
 
     public function __invoke(ContainerInterface $container): MigrateApps {
         return new MigrateApps(
-            $container->get(Migrator::class)
+            $container->get(IMigrator::class)
         );
     }
 

@@ -46,7 +46,7 @@
     "phpmailer/phpmailer": "^6.1",
     "psr/log": "^1.1",
     "ramsey/uuid": "^4.1",
-    "robmorgan/phinx": "^0.11",
+    "robmorgan/phinx": "^0.12",
     "scssphp/scssphp": "^1.2",
     "symfony/console": "^5.2",
     "symfony/event-dispatcher": "^5.2",
@@ -57,6 +57,7 @@
   "require-dev": {
     "ergebnis/composer-normalize": "^2.8",
     "filp/whoops": "^2.7",
+    "mockery/mockery": "^1.4",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpstan/phpstan": "^0.12",
     "phpunit/phpunit": "^9.3",
@@ -68,6 +69,7 @@
       "Keestash\\": "lib/private/",
       "KSP\\": "lib/public/",
       "KST\\": "test/",
+      "KST\\Service\\": "test/src/",
       "KSA\\": "apps/"
     }
   },
@@ -76,7 +78,7 @@
     "add-php-compatibility": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
     "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",
     "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 8 --memory-limit=2G",
-    "test": " cd vendor/bin && ./phpunit ../../test/"
+    "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose"
   },
   "support": {
     "email": "dogan@dogan-ucar.de",

@@ -21,14 +21,20 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Repository\Node;
 
-use Keestash\Core\Repository\AbstractRepository;
 use KSA\PasswordManager\Entity\Node;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 
-class Organization extends AbstractRepository {
+class Organization {
+
+    private IBackend $backend;
+
+    public function __construct(IBackend $backend) {
+        $this->backend = $backend;
+    }
 
     public function addNodeToOrganization(Node $node, IOrganization $organization): void {
-        $this->getQueryBuilder()
+        $this->backend->getConnection()->createQueryBuilder()
             ->insert('`organization_node`')
             ->values(
                 [

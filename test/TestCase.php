@@ -21,39 +21,27 @@ declare(strict_types=1);
 
 namespace KST;
 
-use PHPUnit\Framework\MockObject\MockObject;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\User\IUserRepository;
+use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
 class TestCase extends FrameworkTestCase {
 
+    private ServiceManager $serviceManager;
 
-    protected function getMockedBackend(): MockObject {
-        $backend = $this->getMockBuilder(\Keestash\Core\Backend\MySQLBackend::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(
-                [
-                    'connect'
-                    , 'disconnect'
-                    , 'isConnected'
-                    , 'getSchemaName'
-                    , 'getConnection'
-                    , 'getTables'
-                ]
-            )
-            ->getMock();
+    protected function getServiceManager(): ServiceManager {
+        return $this->serviceManager;
+    }
 
-        $backend->method('connect')
-            ->willReturn(true);
-        $backend->method('disconnect')
-            ->willReturn(true);
-        $backend->method('isConnected')
-            ->willReturn(true);
-        $backend->method('getSchemaName')
-            ->willReturn('unittest');
-        $backend->method('getTables')
-            ->willReturn([]);
+    protected function setUp(): void {
+        parent::setUp();
+        $this->serviceManager = require __DIR__ . '/config/service_manager.php';
+    }
 
-        return $backend;
+    protected function getUser(): IUser {
+        return $this->serviceManager->get(IUserRepository::class)
+            ->getUserById((string) Config::TEST_USER_ID);
     }
 
 }

@@ -24,21 +24,21 @@ namespace Keestash\Core\Service\App;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\App\AppFactory;
-use Keestash\Core\Service\Phinx\Migrator;
 use KSP\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\Job\IJobRepository;
+use KSP\Core\Service\Phinx\IMigrator;
 
 class InstallerService {
 
-    private Migrator       $migrator;
+    private IMigrator      $migrator;
     private IAppRepository $appRepository;
     private IJobRepository $jobRepository;
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
     public function __construct(
-        Migrator $migrator
+        IMigrator $migrator
         , IAppRepository $appRepository
         , IJobRepository $jobRepository
     ) {

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\User;
 
 use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 
@@ -91,30 +92,30 @@ class UserState implements IUserState {
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getValidFrom(): DateTime {
+    public function getValidFrom(): DateTimeInterface {
         return $this->validFrom;
     }
 
     /**
-     * @param DateTime $validFrom
+     * @param DateTimeInterface $validFrom
      */
-    public function setValidFrom(DateTime $validFrom): void {
+    public function setValidFrom(DateTimeInterface $validFrom): void {
         $this->validFrom = $validFrom;
     }
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
     /**
-     * @param DateTime $createTs
+     * @param DateTimeInterface $createTs
      */
-    public function setCreateTs(DateTime $createTs): void {
+    public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
     }
 

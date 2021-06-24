@@ -20,6 +20,9 @@
               </div>
             </div>
           </div>
+          <div class="col text-center" v-if="saving">
+            <b-skeleton class="float-md-right" type="avatar"></b-skeleton>
+          </div>
         </div>
         <form id="tab__detail__wrapper">
           <div class="form-group">
@@ -85,14 +88,16 @@ import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/A
 import Tab from "./Tab";
 import {mapState} from "vuex";
 import moment from "moment";
-import _ from "lodash"
+import _ from "lodash";
+import {BSkeleton} from 'bootstrap-vue';
 
 export default {
   name: "EdgeDetail",
-  components: {Tab},
+  components: {Tab, BSkeleton},
   data() {
     return {
       createdFormatted: null,
+      saving: false,
       passwordField: {
         visible: false
       }
@@ -124,30 +129,7 @@ export default {
 
   methods: {
     passwordUsed(p) {
-      _.debounce(
-          () => {
-            this.axios.post(
-                ROUTES.getPasswordManagerUsersUpdate()
-                , {
-                  username: this.edge.node.username
-                  , url: this.edge.node.url
-                  , nodeId: this.edge.node.id
-                  , password: p
-                }
-            ).then((response) => {
-              if (RESPONSE_CODE_OK in response.data) {
-                return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-              }
-              return [];
-            }).then((data) => {
-              if (true === data.has_changes) {
-                this.updatePassword(p, true);
-              }
-            })
-          },
-          250
-      )();
-
+      this.updatePasswordRemote(p);
     },
 
     updateCredential(input) {
@@ -155,11 +137,13 @@ export default {
 
       _.debounce(
           () => {
+            this.saving = true;
             axios.post(
                 ROUTES.getPasswordManagerUsersUpdate()
                 , input
             ).then(
                 (response) => {
+                  this.saving = false;
                   if (RESPONSE_CODE_OK in response.data) {
                     return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
                   }
@@ -187,12 +171,10 @@ export default {
         , nodeId: this.edge.node.id
       });
     },
-    onUpdatePassword(event) {
-      event.preventDefault();
-      if (false === this.passwordField.visible) return;
-      const newPassword = event.target.value;
+    updatePasswordRemote(newPassword) {
 
       const axios = this.axios;
+      this.saving = true;
 
       _.debounce(
           () => {
@@ -204,6 +186,7 @@ export default {
                 }
             ).then(
                 (response) => {
+                  this.saving = false;
                   if (RESPONSE_CODE_OK in response.data) {
                     return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
                   }
@@ -215,6 +198,12 @@ export default {
           }, 500
       )();
 
+    },
+    onUpdatePassword(event) {
+      event.preventDefault();
+      if (false === this.passwordField.visible) return;
+      const newPassword = event.target.value;
+      this.updatePasswordRemote(newPassword)
     },
     onUsernameChange(event) {
       const newUserName = event.target.value;
@@ -251,7 +240,7 @@ export default {
       ).focus();
     },
     loadPassword() {
-
+      this.saving = true;
       const startUp = new StartUp(
           new Container()
       );
@@ -260,6 +249,7 @@ export default {
       const axios = container.query(AXIOS);
 
       if (true === this.passwordField.visible) {
+        this.saving = false;
         this.updatePassword(
             this.passwordField
             , false
@@ -273,6 +263,7 @@ export default {
           )
       )
           .then((response) => {
+            this.saving = false;
             if (RESPONSE_CODE_OK in response.data) {
               return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
             }

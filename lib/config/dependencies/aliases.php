@@ -60,6 +60,7 @@ use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
+use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
@@ -100,6 +101,7 @@ use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Organization\IOrganizationService;
+use KSP\Core\Service\Phinx\IMigrator;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -149,5 +151,6 @@ return [
     IIconService::class                               => IconService::class,
     \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class,
     IStringService::class                             => StringService::class,
-    IJWTService::class                                => JWTService::class
+    IJWTService::class                                => JWTService::class,
+    IMigrator::class                                  => Migrator::class
 ];

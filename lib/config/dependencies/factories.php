@@ -81,6 +81,7 @@ use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
 use Keestash\Factory\Core\Manager\CookieManager\CookieManagerFactory;
+use Keestash\Factory\Core\Manager\EventManager\EventManagerFactory;
 use Keestash\Factory\Core\Manager\FileManager\FileManagerFactory;
 use Keestash\Factory\Core\Manager\Logger\LoggerManagerFactory;
 use Keestash\Factory\Core\Manager\SessionManager\SessionHandlerFactory;
@@ -163,7 +164,8 @@ return [
     RawFileService::class                                          => RawFileServiceFactory::class,
     InstanceRepository::class                                      => InstanceRepositoryFactory::class,
     CredentialService::class                                       => CredentialServiceFactory::class,
-    EventManager::class                                            => InvokableFactory::class,
+    EventManager::class                                            => EventManagerFactory::class,
+    \Symfony\Component\EventDispatcher\EventDispatcher::class      => InvokableFactory::class,
     Loader::class                                                  => LoaderFactory::class,
     NullService::class                                             => InvokableFactory::class,
     KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,

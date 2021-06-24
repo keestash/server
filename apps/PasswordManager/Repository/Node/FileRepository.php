@@ -26,7 +26,6 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Repository\File\FileRepository as CoreFileRepository;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Entity\Node;
@@ -36,13 +35,14 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\HTTP\IJWTService;
 
-class FileRepository extends AbstractRepository {
+class FileRepository {
 
     private NodeRepository     $nodeRepository;
     private IDateTimeService   $dateTimeService;
     private CoreFileRepository $fileRepository;
     private ILogger            $logger;
     private IJWTService        $jwtService;
+    private IBackend           $backend;
 
     public function __construct(
         IBackend $backend
@@ -52,13 +52,12 @@ class FileRepository extends AbstractRepository {
         , ILogger $logger
         , IJWTService $jwtService
     ) {
-        parent::__construct($backend);
-
         $this->nodeRepository  = $nodeRepository;
         $this->dateTimeService = $dateTimeService;
         $this->fileRepository  = $fileRepository;
         $this->logger          = $logger;
         $this->jwtService      = $jwtService;
+        $this->backend         = $backend;
     }
 
     public function connectFilesToNode(FileList $fileList): bool {
@@ -73,7 +72,7 @@ class FileRepository extends AbstractRepository {
     }
 
     public function connectFileToNode(NodeFile $nodeFile): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('pwm_node_file')
             ->values(
                 [
@@ -92,7 +91,7 @@ class FileRepository extends AbstractRepository {
             )
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
         if (null === $lastInsertId) return false;
         return true;
     }
@@ -100,7 +99,7 @@ class FileRepository extends AbstractRepository {
     public function getFilesPerNode(Node $node, ?string $type = null): ArrayList {
         $list = new ArrayList();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'pnf.`id`'
@@ -150,7 +149,7 @@ class FileRepository extends AbstractRepository {
     }
 
     public function getNode(IFile $file): ?Node {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'node_id'
@@ -168,7 +167,7 @@ class FileRepository extends AbstractRepository {
     }
 
     public function removeByFile(IFile $file): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('pwm_node_file')
                 ->where('file_id = ?')
                 ->setParameter(0, $file->getId())

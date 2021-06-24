@@ -21,58 +21,49 @@ declare(strict_types=1);
 
 namespace KST\Core\Repository\ApiLog;
 
+use DateTime;
 use Keestash\Core\DTO\Instance\Request\APIRequest;
 use Keestash\Core\DTO\Token\Token;
-use Keestash\Core\DTO\User\User;
-use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
+use KSP\Core\Repository\User\IUserRepository;
+use KST\Config;
 use KST\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 
 class ApiLogRepositoryTest extends TestCase {
 
-    /** @var MockObject|IApiLogRepository $logRepository */
-    private $logRepository;
-
     public function testLog(): void {
-        $request = new APIRequest();
+        $serviceManager = $this->getServiceManager();
+        /** @var IUserRepository $userRepository */
+        $userRepository = $serviceManager->get(IUserRepository::class);
+
+        $token = new Token();
+        $token->setId(1);
+        $token->setCreateTs(new DateTime());
+        $token->setValue(ApiLogRepositoryTest::class);
+        $token->setName(ApiLogRepositoryTest::class);
+        $token->setUser(
+            $userRepository->getUserById((string) Config::TEST_USER_ID)
+        );
+
+        $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);
+        $request          = new APIRequest();
         $request->setRoute("my/awesome/route");
         $request->setStart(time() - 3600);
         $request->setEnd(time());
-        $request->setToken(new Token());
+        $request->setToken($token);
 
-        $this->logRepository->method("log")
-            ->with($request)
-            ->willReturn(1);
-
-        $id = $this->logRepository->log($request);
+        $id = $apiLogRepository->log($request);
         $this->assertEquals(1, $id);
     }
 
-    public function testRemoveForUser(): void {
-        $user = new User();
-        $this->logRepository->method("removeForUser")
-            ->with($user)
-            ->willReturn(true);
-
-        $this->assertTrue(
-            $this->logRepository->removeForUser($user)
-        );
-
-    }
-
-    protected function setUp(): void {
-        parent::setUp();
-
-        $this->logRepository = $this->getMockBuilder(ApiLogRepository::class)
-            ->onlyMethods(
-                [
-                    "log"
-                    , "removeForUser"
-                ]
-            )
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
+//    public function testRemoveForUser(): void {
+//        $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);
+//        $user             = new User();
+//
+//        $this->assertTrue(
+//            $apiLogRepository->removeForUser($user)
+//        );
+//
+//    }
 
 }

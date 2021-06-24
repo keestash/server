@@ -13,32 +13,32 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository;
 
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\Repository\AbstractRepository;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 
-class PublicShareRepository extends AbstractRepository {
+class PublicShareRepository {
 
     private IDateTimeService $dateTimeService;
     private ILogger          $logger;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
         , ILogger $logger
     ) {
-        parent::__construct($backend);
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
+        $this->backend         = $backend;
     }
 
     public function shareNode(Node $node): ?Node {
         $share = $node->getPublicShare();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`pwm_public_share`")
             ->values(
                 [
@@ -52,7 +52,7 @@ class PublicShareRepository extends AbstractRepository {
             ->setParameter(2, $this->dateTimeService->toYMDHIS($share->getExpireTs()))
             ->execute();
 
-        $shareId = (int) $this->getLastInsertId();
+        $shareId = (int) $this->backend->getConnection()->lastInsertId();
 
         if (0 === $shareId) return null;
         $share->setId($shareId);
@@ -61,7 +61,7 @@ class PublicShareRepository extends AbstractRepository {
     }
 
     public function getShare(string $hash): ?PublicShare {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 's.id'
@@ -97,7 +97,7 @@ class PublicShareRepository extends AbstractRepository {
     }
 
     public function getShareByNode(Node $node): ?PublicShare {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 's.id'
@@ -133,7 +133,7 @@ class PublicShareRepository extends AbstractRepository {
     }
 
     public function addShareInfo(Node $node): Node {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 's.id'
@@ -171,7 +171,7 @@ class PublicShareRepository extends AbstractRepository {
     }
 
     public function removeByUser(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('pwm_public_share', 'pps')
                 ->where('pps.`node_id` IN (
                                 SELECT DISTINCT n.`id` FROM `pwm_node` n WHERE n.`user_id` = ?
@@ -181,7 +181,7 @@ class PublicShareRepository extends AbstractRepository {
     }
 
     public function removeOutdated(): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         return $queryBuilder->delete('pwm_public_share', 'pps')
                 ->where('pps.`expire_ts` < NOW()')

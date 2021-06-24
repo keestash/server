@@ -24,25 +24,25 @@ namespace Keestash\Core\Repository\EncryptionKey;
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\ILogger\ILogger;
 
-abstract class KeyRepository extends AbstractRepository {
+abstract class KeyRepository {
 
     private IDateTimeService $dateTimeService;
     private ILogger          $logger;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
         , ILogger $logger
     ) {
-        parent::__construct($backend);
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
+        $this->backend         = $backend;
     }
 
     /**
@@ -52,7 +52,7 @@ abstract class KeyRepository extends AbstractRepository {
      * @throws Exception
      */
     protected function _storeKey(IKey $key): IKey {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`key`")
             ->values(
                 [
@@ -64,7 +64,7 @@ abstract class KeyRepository extends AbstractRepository {
             ->setParameter(1, $this->dateTimeService->toYMDHIS($key->getCreateTs()))
             ->execute();
 
-        $id = (int) $this->getLastInsertId();
+        $id = (int) $this->backend->getConnection()->lastInsertId();
 
         if (0 === $id) {
             throw new KeestashException('id is not given!! ' . $id);
@@ -74,7 +74,7 @@ abstract class KeyRepository extends AbstractRepository {
     }
 
     protected function _update(IKey $key): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder->update('key')
             ->set('value', '?')
@@ -91,7 +91,7 @@ abstract class KeyRepository extends AbstractRepository {
     }
 
     protected function _remove(IKey $key): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return 0 !== $queryBuilder->delete('`key`')
                 ->where('id = ?')
                 ->setParameter(0, $key->getId())

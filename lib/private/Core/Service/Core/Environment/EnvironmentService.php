@@ -38,6 +38,10 @@ class EnvironmentService implements IEnvironmentService {
         return getenv(ConfigProvider::ENVIRONMENT_KEY) === ConfigProvider::ENVIRONMENT_CONSOLE;
     }
 
+    public function isUnitTest(): bool {
+        return getenv(ConfigProvider::ENVIRONMENT_KEY) === ConfigProvider::ENVIRONMENT_UNIT_TEST;
+    }
+
     public function setEnv(string $env): bool {
         return putenv(ConfigProvider::ENVIRONMENT_KEY . "=" . $env);
     }

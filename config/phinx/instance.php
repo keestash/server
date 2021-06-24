@@ -20,34 +20,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Doctrine\DBAL\Connection;
+use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
+use Laminas\Config\Config;
+use Psr\Container\ContainerInterface;
 
 /** @noinspection PhpIncludeInspection */
 require realpath(__DIR__ . '/../config.php');
-/** @noinspection PhpIncludeInspection */
-require_once realpath(__DIR__ . '/../../lib/versioncheck.php');
 
-$dirname = __DIR__ . '/../../';
-$dirname = realpath($dirname);
+/** @var ContainerInterface $container */
+$container = require __DIR__ . '/../../lib/start.php';
 
-$pdo = new PDO(
-    "mysql:host=" . $CONFIG['db_host'] . ";dbname=" . $CONFIG['db_name']
-    , $CONFIG['db_user']
-    , $CONFIG['db_password']
-);
+/** @var Config $config */
+$config  = $container->get(Config::class);
+$dirname = realpath($config->get(ConfigProvider::INSTANCE_PATH));
+
+/** @var Connection $connection */
+$connection = $container->get(Connection::class);
+$pdo        = $connection->getWrappedConnection();
 
 return [
     'environments'           => [
-        'default_database' => 'development'
-        , 'development'    => [
+        'default_environment' => 'development'
+        , 'development'       => [
             'name'         => $CONFIG['db_name']
             , 'connection' => $pdo
         ]
-        , 'production'     => [
+        , 'production'        => [
             'name'         => $CONFIG['db_name']
             , 'connection' => $pdo
         ]
-        , 'testing'        => [
+        , 'testing'           => [
             'name'         => $CONFIG['db_name']
             , 'connection' => $pdo
         ]

@@ -24,27 +24,27 @@ namespace Keestash\Core\Repository\AppRepository;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\App\Config\App;
-use Keestash\Core\Repository\AbstractRepository;
 use KSP\App\Config\IApp;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 
-class AppRepository extends AbstractRepository implements IAppRepository {
+class AppRepository implements IAppRepository {
 
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
+        $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
     }
 
     public function getAllApps(): HashTable {
         $map = new HashTable();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'app_id'
@@ -78,7 +78,7 @@ class AppRepository extends AbstractRepository implements IAppRepository {
 
     public function getApp(string $id): ?IApp {
         $app          = null;
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'app_id'
@@ -127,7 +127,7 @@ class AppRepository extends AbstractRepository implements IAppRepository {
                         '" . $app->getVersion() . "'
                 );
         ";
-        $this->execute($sql);
+        $this->backend->getConnection()->prepare($sql)->execute();
         // There is otherwise an exception thrown.
         // Do not know how to handle this better for now
         return true;

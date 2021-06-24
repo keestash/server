@@ -38,6 +38,7 @@ use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
@@ -46,12 +47,13 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
         $this->dateTimeService = $dateTimeService;
+        $this->backend         = $backend;
     }
 
     public function storeKey(IUser $user, IKey $key): bool {
         $key = $this->_storeKey($key);
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder
             ->insert('user_key')
             ->values(
@@ -67,7 +69,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
         $queryBuilder->execute();
 
-        return null !== $this->getLastInsertId();
+        return null !== $this->backend->getConnection()->lastInsertId();
     }
 
     public function updateKey(IKey $key): bool {
@@ -75,7 +77,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
     }
 
     public function getKey(IUser $user): ?IKey {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'k.`id`'
@@ -105,7 +107,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
     public function remove(IUser $user): bool {
         $key          = $this->getKey($user);
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->delete('user_key')
             ->where('key_id = ?')
             ->setParameter(0, $key->getId())

@@ -26,7 +26,6 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
@@ -39,17 +38,18 @@ use KSP\Core\Repository\User\IUserRepository;
  * @package Keestash\Core\Repository\User
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class UserRepository extends AbstractRepository implements IUserRepository {
+class UserRepository implements IUserRepository {
 
     private IDateTimeService $dateTimeService;
     private ILogger          $logger;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
         , ILogger $logger
     ) {
-        parent::__construct($backend);
+        $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
     }
@@ -63,7 +63,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      * @throws KeestashException
      */
     public function getUser(string $name): ?IUser {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'u.id'
@@ -132,7 +132,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     public function getAll(): ArrayList {
         $list = new ArrayList();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'u.id'
@@ -188,7 +188,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      *
      */
     public function insert(IUser $user): ?int {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('user')
             ->values(
                 [
@@ -212,7 +212,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
             ->setParameter(7, $user->getHash())
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (null === $lastInsertId) return null;
         return (int) $lastInsertId;
@@ -227,7 +227,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      * TODO update roles and permissions
      */
     public function update(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder->update('user', 'u')
             ->set('u.first_name', '?')
@@ -263,7 +263,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      * @throws KeestashException
      */
     public function getUserById(string $id): ?IUser {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'u.id'
@@ -276,8 +276,10 @@ class UserRepository extends AbstractRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
-                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
-                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+//                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
+//                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+                , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
             ]
         )
             ->from('user', 'u')
@@ -328,7 +330,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      * @throws KeestashException
      */
     public function getUserByHash(string $hash): ?IUser {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'u.id'
@@ -393,7 +395,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
      * @return bool
      */
     public function remove(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('user')
                 ->where('id = ?')
                 ->setParameter(0, $user->getId())
@@ -403,7 +405,7 @@ class UserRepository extends AbstractRepository implements IUserRepository {
     public function searchUsers(string $name): ArrayList {
         $list = new ArrayList();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'u.id'

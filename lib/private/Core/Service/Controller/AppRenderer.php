@@ -29,6 +29,7 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
+use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
@@ -36,8 +37,8 @@ use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\View\ActionBar\IActionBar;
-use KSP\L10N\IL10N;
 use Laminas\Config\Config;
+use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -50,10 +51,11 @@ class AppRenderer implements IAppRenderer {
     private TemplateRendererInterface $templateRenderer;
     private HTTPService               $httpService;
     private Legacy                    $legacy;
-    private IL10N                     $translator;
     private Config                    $config;
     private ILocaleService            $localeService;
     private IRouterService            $routerService;
+    private ILoader                   $loader;
+    private RouterInterface           $router;
 
     public function __construct(
         IRouterService $routerService
@@ -61,13 +63,13 @@ class AppRenderer implements IAppRenderer {
         , TemplateRendererInterface $templateRenderer
         , Legacy $legacy
         , HTTPService $httpService
-        , IL10N $translator
         , LockHandler $lockHandler
         , FileService $fileService
         , RawFileService $rawFileService
         , IFileManager $fileManager
         , ILocaleService $localeService
-
+        , ILoader $loader
+        , RouterInterface $router
     ) {
         $this->lockHandler      = $lockHandler;
         $this->fileService      = $fileService;
@@ -76,11 +78,11 @@ class AppRenderer implements IAppRenderer {
         $this->templateRenderer = $templateRenderer;
         $this->httpService      = $httpService;
         $this->legacy           = $legacy;
-        $this->translator       = $translator;
         $this->config           = $config;
         $this->localeService    = $localeService;
         $this->routerService    = $routerService;
-
+        $this->loader           = $loader;
+        $this->router           = $router;
     }
 
     public function renderHead(ServerRequestInterface $request): string {
@@ -131,6 +133,13 @@ class AppRenderer implements IAppRenderer {
             $routes[$path]['compiled'] = $this->routerService->getUri($routeData['name']);
         }
 
+        uasort(
+            $routes
+            , function (array $a, array $b): int {
+            return $a['order'] - $b['order'];
+        }
+        );
+
         return $this->templateRenderer
             ->render(
                 'root::navbar'
@@ -144,7 +153,11 @@ class AppRenderer implements IAppRenderer {
                     , "vendorName"  => $this->legacy->getApplication()->get("name")
                     , "settings"    => $routes
                     , "baseURL"     => $this->httpService->getBaseURL()
-
+                    , "mainHref"    => $this->router->generateUri(
+                        $this->routerService->getRouteByPath(
+                            $this->loader->getDefaultApp()->getBaseRoute()
+                        )['name']
+                    )
                 ]
             );
     }

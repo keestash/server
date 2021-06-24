@@ -25,7 +25,6 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
@@ -35,20 +34,20 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 
-class FileRepository extends AbstractRepository implements IFileRepository {
+class FileRepository implements IFileRepository {
 
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
-
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
+        $this->backend         = $backend;
     }
 
     public function addAll(FileList &$files): bool {
@@ -68,7 +67,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function add(IFile $file): ?int {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`file`")
             ->values(
                 [
@@ -94,7 +93,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
             ->setParameter(8, $file->getDirectory())
             ->execute();
 
-        $lastInsertId = (int) $this->getLastInsertId();
+        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;
@@ -110,7 +109,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function remove(IFile $file): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('file')
                 ->where('id = ?')
                 ->setParameter(0, $file->getId())
@@ -131,7 +130,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function get(int $id): ?IFile {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'id'
@@ -191,7 +190,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder->select(
             [
@@ -248,11 +247,11 @@ class FileRepository extends AbstractRepository implements IFileRepository {
     }
 
     public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
-        $queryBuilder->delete('file')
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        return $queryBuilder->delete('file')
             ->where('user_id = ?')
             ->setParameter(0, $user->getId())
-            ->execute();
+            ->execute() > 0;
     }
 
     /**
@@ -262,7 +261,7 @@ class FileRepository extends AbstractRepository implements IFileRepository {
      * @throws PasswordManagerException
      */
     public function update(IFile $file): IFile {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->update('file')
             ->set('name', '?')
             ->set('directory', '?')

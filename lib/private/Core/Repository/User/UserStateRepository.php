@@ -24,24 +24,24 @@ use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\User\UserState;
-use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 
-class UserStateRepository extends AbstractRepository implements IUserStateRepository {
+class UserStateRepository implements IUserStateRepository {
 
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
+        $this->backend         = $backend;
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
     }
@@ -68,7 +68,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     public function getAll(?string $state = null): HashTable {
         $table = new HashTable();
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'us.`id`'
@@ -118,7 +118,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     }
 
     public function remove(IUser $user, string $state): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('user_state')
                 ->where('user_id = ?')
                 ->andWhere('state = ?')
@@ -137,8 +137,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
     }
 
     private function insert(IUser $user, string $state, ?string $hash = null): bool {
-
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('user_state')
             ->values(
                 [
@@ -162,7 +161,7 @@ class UserStateRepository extends AbstractRepository implements IUserStateReposi
             )
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (null === $lastInsertId) return false;
         return true;

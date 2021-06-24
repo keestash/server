@@ -30,7 +30,7 @@ use KSP\Core\Service\Encryption\IEncryptionService;
  *
  * @package Keestash\Core\Service\Encryption\Base
  */
-class AESService implements IEncryptionService {
+abstract class AESService implements IEncryptionService {
 
     public const METHOD         = "AES-256-CBC";
     public const HASH_ALGORITHM = "sha256";

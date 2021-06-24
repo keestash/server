@@ -14,11 +14,17 @@
             >
                 <img src="{{ userImage }}" class="avatar">
             </button>
-            <div id="main-menu-dropdown-area" class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+            <div id="main-menu-dropdown-area" class="dropdown-menu dropdown-menu-right"
+                 aria-labelledby="navbarDropdown">
                 {% for data in settings %}
-                    <li><a class="dropdown-item d-flex flex-row" href="{{ data.compiled|lower }}">
-                            <i class="{{ data.faClass }} fa-1x align-self-center justify-content-center text-center ml-1 icon"></i>
-                            <div class="name">&nbsp;{{ data.name }} </div>
+                    <li><a class="dropdown-item d-flex flex-row justify-content-start pl-2"
+                           href="{{ data.compiled|lower }}">
+                            <div class="align-self-center">
+                                <i class="{{ data.faClass }} fa-1x align-self-center justify-content-center text-center ml-1 icon"></i>
+                            </div>
+                            <div class="align-self-start pl-2">
+                                <div class="name">&nbsp;{{ data.name }} </div>
+                            </div>
                         </a>
                     </li>
                 {% endfor %}

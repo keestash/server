@@ -25,7 +25,6 @@ use Doctrine\DBAL\Driver\ResultStatement;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\PasswordManager\Entity\Edge\Edge;
@@ -46,7 +45,7 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 
-class NodeRepository extends AbstractRepository {
+class NodeRepository {
 
     private IUserRepository         $userRepository;
     private PublicShareRepository   $publicShareRepository;
@@ -56,6 +55,7 @@ class NodeRepository extends AbstractRepository {
     private KeyService              $keyService;
     private IOrganizationRepository $organizationRepository;
     private IJWTService             $jwtService;
+    private IBackend                $backend;
 
     public function __construct(
         IBackend $backend
@@ -68,8 +68,6 @@ class NodeRepository extends AbstractRepository {
         , IOrganizationRepository $organizationRepository
         , IJWTService $jwtService
     ) {
-        parent::__construct($backend);
-
         $this->userRepository         = $userRepository;
         $this->publicShareRepository  = $shareRepository;
         $this->dateTimeService        = $dateTimeService;
@@ -78,12 +76,13 @@ class NodeRepository extends AbstractRepository {
         $this->keyService             = $keyService;
         $this->organizationRepository = $organizationRepository;
         $this->jwtService             = $jwtService;
+        $this->backend                = $backend;
     }
 
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Root {
 
         $type         = Node::ROOT;
-        $queryBuilder = $this->getQueryBuilder()
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
                 [
                     'id'
@@ -113,7 +112,7 @@ class NodeRepository extends AbstractRepository {
 
     public function getByName(string $name, int $depth = 0, int $maxDepth = PHP_INT_MAX): ArrayList {
         $list         = new ArrayList();
-        $queryBuilder = $this->getQueryBuilder()
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
                 [
                     'id'
@@ -143,7 +142,7 @@ class NodeRepository extends AbstractRepository {
 
     public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Node {
 
-        $queryBuilder = $this->getQueryBuilder()
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
                 [
                     'id'
@@ -216,7 +215,7 @@ class NodeRepository extends AbstractRepository {
     }
 
     private function addOrganizationInfo(Node $node): Node {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'on1.`organization_id`'
@@ -235,7 +234,7 @@ class NodeRepository extends AbstractRepository {
     }
 
     private function addCredentialInfo(Credential $credential): ?Credential {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'id'
@@ -302,7 +301,7 @@ class NodeRepository extends AbstractRepository {
     }
 
     private function getEdges(Folder $folder, int $depth = 0, int $maxDepth = PHP_INT_MAX): void {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'e.`id`'
@@ -361,10 +360,10 @@ class NodeRepository extends AbstractRepository {
                 where e.`node_id` = " . $node->getId() . "
                     and e.`type` = '" . Edge::TYPE_SHARE . "'
                     and e.`expire_ts` is not null
-                    and e.`expire_ts` >= NOW()
+                    and e.`expire_ts` >= CURRENT_TIMESTAMP
         ";
 
-        $result = $this->raw($sql);
+        $result = $this->backend->getConnection()->executeQuery($sql);
 
         foreach ($result->fetchAllNumeric() as $row) {
             $share    = new Share();
@@ -403,7 +402,7 @@ class NodeRepository extends AbstractRepository {
 
     public function add(Node $node): ?int {
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('pwm_node')
             ->values(
                 [
@@ -417,7 +416,7 @@ class NodeRepository extends AbstractRepository {
             ->setParameter(2, $node->getType())
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (null === $lastInsertId) return null;
         $node->setId((int) $lastInsertId);
@@ -432,7 +431,7 @@ class NodeRepository extends AbstractRepository {
         $nodeId = $this->add($credential);
         if (null === $nodeId) return null;
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('pwm_credential')
             ->values(
                 [
@@ -450,7 +449,7 @@ class NodeRepository extends AbstractRepository {
             ->setParameter(4, $credential->getNotes())
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (null === $lastInsertId) return null;
 
@@ -500,7 +499,7 @@ ORDER BY d.`level`;
 
         $nodes = [];
 
-        $result = $this->raw($sql);
+        $result = $this->backend->getConnection()->executeQuery($sql);
         foreach ($result->fetchAllNumeric() as $row) {
             $nodes[] = [
                 'name' => $row[0]
@@ -511,7 +510,7 @@ ORDER BY d.`level`;
     }
 
     public function getParentNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Node {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'parent_id'
@@ -545,7 +544,7 @@ ORDER BY d.`level`;
             if (false === $credentialRemoved) return false;
         }
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'pwm_node'
             )
@@ -555,7 +554,7 @@ ORDER BY d.`level`;
     }
 
     private function removeEdges(Node $node): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'pwm_edge'
             )
@@ -567,7 +566,7 @@ ORDER BY d.`level`;
     }
 
     private function removeCredential(Credential $credential): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'pwm_credential'
             )
@@ -577,7 +576,7 @@ ORDER BY d.`level`;
     }
 
     public function removeEdge(string $id): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'pwm_edge'
             )
@@ -587,7 +586,7 @@ ORDER BY d.`level`;
     }
 
     public function updateNode(Node $node): Node {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder->update('pwm_node')
             ->set('name', '?')
@@ -601,7 +600,7 @@ ORDER BY d.`level`;
 
     public function updateCredential(Credential $credential): Credential {
         $this->updateNode($credential);
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         // TODO dirty hack! as we are retrieving in a loop here
         //  and do not want to loop again later simply because
@@ -674,7 +673,7 @@ ORDER BY d.`level`;
         }
 
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $executed     = $queryBuilder->delete(
                 'pwm_edge'
             )
@@ -695,7 +694,7 @@ ORDER BY d.`level`;
     }
 
     public function addEdge(Edge $edge): Edge {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`pwm_edge`")
             ->values(
                 [
@@ -715,7 +714,7 @@ ORDER BY d.`level`;
             )
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (null === $lastInsertId || "0" === $lastInsertId) {
             throw new PasswordManagerException();
@@ -729,7 +728,7 @@ ORDER BY d.`level`;
         $removed = $this->publicShareRepository->removeByUser($user);
         if (false === $removed) return false;
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'pwm_edge', 'pe'
             )

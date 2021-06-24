@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\Entity\IObject;
 
 interface IUserState extends IObject {
@@ -41,10 +42,10 @@ interface IUserState extends IObject {
 
     public function getState(): string;
 
-    public function getValidFrom(): DateTime;
+    public function getValidFrom(): DateTimeInterface;
 
     public function getStateHash(): ?string;
 
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
 }

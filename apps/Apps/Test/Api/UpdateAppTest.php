@@ -19,11 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Apps\test\Api;
+namespace KSA\Apps\Test\Api;
 
-use doganoo\DIP\DateTime\DateTimeService;
-use Keestash\Core\Repository\AppRepository\AppRepository;
 use KSA\Apps\Api\UpdateApp;
+use KSP\Core\Repository\AppRepository\IAppRepository;
 use KST\TestCase;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\ServerRequest;
@@ -31,24 +30,9 @@ use Laminas\Diactoros\ServerRequest;
 class UpdateAppTest extends TestCase {
 
     public function testHandle(): void {
-        $appRepository = $this->getMockBuilder(AppRepository::class)
-            ->setConstructorArgs(
-                [$this->getMockedBackend()
-                 , new DateTimeService()]
-            )
-            ->onlyMethods(
-                [
-                    'getApp'
-                    , 'replace'
-                ]
-            )
-            ->getMock();
 
-        $appRepository->method('getApp')
-            ->with(['id' => 1])
-            ->willReturn(null);
-
-        $updateApp = new UpdateApp($appRepository);
+        $appRepository = $this->getServiceManager()->get(IAppRepository::class);
+        $updateApp     = new UpdateApp($appRepository);
         /** @var JsonResponse $response */
         $response = $updateApp->handle(new ServerRequest());
 

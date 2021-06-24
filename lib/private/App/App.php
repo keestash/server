@@ -32,7 +32,7 @@ class App implements IApp {
     private int    $version;
 
     public function getId(): string {
-        return (string) $this->id;
+        return $this->id;
     }
 
     public function setId(string $id): void {

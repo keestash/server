@@ -23,7 +23,6 @@ namespace KSA\GeneralApi\Repository;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\Repository\AbstractRepository;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -31,11 +30,12 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 
-class OrganizationUserRepository extends AbstractRepository implements IOrganizationUserRepository {
+class OrganizationUserRepository implements IOrganizationUserRepository {
 
     private IUserRepository  $userRepository;
     private ILogger          $logger;
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IUserRepository $userRepository
@@ -43,14 +43,14 @@ class OrganizationUserRepository extends AbstractRepository implements IOrganiza
         , ILogger $logger
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
         $this->userRepository  = $userRepository;
         $this->logger          = $logger;
         $this->dateTimeService = $dateTimeService;
+        $this->backend         = $backend;
     }
 
     public function getByOrganization(IOrganization $organization): IOrganization {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'id'
@@ -77,7 +77,7 @@ class OrganizationUserRepository extends AbstractRepository implements IOrganiza
 
         /** @var IUser $user */
         foreach ($organization->getUsers() as $user) {
-            $queryBuilder = $this->getQueryBuilder();
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->insert('user_organization')
                 ->values(
                     [
@@ -93,7 +93,7 @@ class OrganizationUserRepository extends AbstractRepository implements IOrganiza
                 )
                 ->execute();
 
-            $lastInsertId = $this->getLastInsertId();
+            $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
             if (null === $lastInsertId) {
                 throw new GeneralApiException();
@@ -103,7 +103,7 @@ class OrganizationUserRepository extends AbstractRepository implements IOrganiza
     }
 
     public function remove(IUser $user, IOrganization $organization): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('user_organization')
                 ->where('user_id = ?')
                 ->andWhere('organization_id = ?')

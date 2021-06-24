@@ -61,8 +61,8 @@ final class ConfigProvider {
                 ],
                 CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::ABOUT => [
-                        'name'      => 'about'
-                        , 'faClass' => 'fas fa-info'
+                        'name'      => 'About'
+                        , 'faClass' => 'fas fa-info-circle'
                         , 'order'   => 3
                     ]
                 ],

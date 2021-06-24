@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service\Node\Share;
 
 use DateTime;
+use DateTimeInterface;
 use KSA\PasswordManager\Entity\Node;
 
 class ShareService {
@@ -25,7 +26,7 @@ class ShareService {
         );
     }
 
-    public function getDefaultExpireDate(): DateTime {
+    public function getDefaultExpireDate(): DateTimeInterface {
         $dateTime = new DateTime();
         $dateTime->modify("+3 day");
         return $dateTime;

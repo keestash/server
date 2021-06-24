@@ -63,7 +63,7 @@ class CredentialService {
         , string $title
         , IUser $user
         , Folder $parent
-        , ?string $notes = null
+        , string $notes = ""
     ): Credential {
         $organization = $this->nodeService->getOrganization($parent);
         $keyHolder    = null !== $organization ? $organization : $user;

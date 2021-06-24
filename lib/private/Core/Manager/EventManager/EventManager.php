@@ -23,22 +23,30 @@ namespace Keestash\Core\Manager\EventManager;
 
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class EventManager implements IEventManager {
 
-    private EventDispatcher $eventDispatcher;
+    private EventDispatcher     $eventDispatcher;
+    private IEnvironmentService $environmentService;
 
-    public function __construct() {
-        $this->eventDispatcher = new EventDispatcher();
+    public function __construct(
+        IEnvironmentService $environmentService
+        , EventDispatcher $eventDispatcher
+    ) {
+        $this->eventDispatcher    = $eventDispatcher;
+        $this->environmentService = $environmentService;
     }
 
     public function execute(Event $event): void {
+//        if (true === $this->environmentService->isUnitTest()) return;
         $this->eventDispatcher->dispatch($event, get_class($event));
     }
 
     public function registerListener(string $eventName, IListener $event): void {
+//        if (true === $this->environmentService->isUnitTest()) return;
         $this->eventDispatcher->addListener($eventName, [$event, 'execute']);
     }
 

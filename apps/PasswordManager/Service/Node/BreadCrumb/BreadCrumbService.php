@@ -86,7 +86,7 @@ class BreadCrumbService {
     }
 
     private function getRootForUser(IUser $user): string {
-        $cacheKey = str_replace("{userId}", $user->getId(), BreadCrumbService::ROOT_CACHE_KEY);
+        $cacheKey = str_replace("{userId}", (string) $user->getId(), BreadCrumbService::ROOT_CACHE_KEY);
         if ($this->cacheService->exists($cacheKey)) {
             return $this->cacheService->get($cacheKey);
         }

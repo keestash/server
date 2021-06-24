@@ -26,7 +26,6 @@ use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Core\System\Installation\Verification\AbstractVerification;
 use Keestash\Core\System\Installation\Verification\ConfigFileReadable;
@@ -34,6 +33,7 @@ use Keestash\Core\System\Installation\Verification\DatabaseReachable;
 use Keestash\Core\System\Installation\Verification\HasMigrations;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 
 class InstallerService {
@@ -42,7 +42,7 @@ class InstallerService {
 
     private array          $messages;
     private LockHandler    $lockHandler;
-    private Migrator       $migrator;
+    private IMigrator      $migrator;
     private InstanceDB     $instanceDB;
     private IConfigService $configService;
     private Config         $config;
@@ -50,7 +50,7 @@ class InstallerService {
 
     public function __construct(
         LockHandler $lockHandler
-        , Migrator $migrator
+        , IMigrator $migrator
         , InstanceDB $instanceDB
         , IConfigService $configService
         , Config $config

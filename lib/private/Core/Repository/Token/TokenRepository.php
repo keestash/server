@@ -24,7 +24,6 @@ namespace Keestash\Core\Repository\Token;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash;
 use Keestash\Core\DTO\Token\Token;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Token\IToken;
@@ -32,23 +31,24 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 
-class TokenRepository extends AbstractRepository implements ITokenRepository {
+class TokenRepository implements ITokenRepository {
 
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IUserRepository $userRepository
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
+        $this->backend         = $backend;
     }
 
     public function get(int $id): ?IToken {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'id'
@@ -94,7 +94,7 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
 
     public function getByHash(string $hash): ?IToken {
         $token        = null;
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $result       = $queryBuilder->select(
             [
                 'id'
@@ -130,7 +130,7 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
     }
 
     public function add(IToken $token): ?int {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`token`")
             ->values(
                 [
@@ -146,14 +146,14 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
             ->setParameter(3, $this->dateTimeService->toYMDHIS($token->getCreateTs()))
             ->execute();
 
-        $lastInsertId = (int) $this->getLastInsertId();
+        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;
     }
 
     public function remove(IToken $token): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'token'
             )
@@ -163,7 +163,7 @@ class TokenRepository extends AbstractRepository implements ITokenRepository {
     }
 
     public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'token'
             )

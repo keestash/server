@@ -31,6 +31,7 @@ return [
     , ConfigProvider::ASSET_PATH             => realpath(__DIR__ . '/../../asset/')
     , ConfigProvider::IMAGE_PATH             => realpath(__DIR__ . '/../../data/image/')
     , ConfigProvider::PHINX_PATH             => realpath(__DIR__ . '/../../config/phinx/')
+    , ConfigProvider::TEST_PATH              => realpath(__DIR__ . '/../../test/')
     , ConfigProvider::DATA_PATH              => realpath(__DIR__ . '/../../data/')
     , ConfigProvider::INSTANCE_PATH          => realpath(__DIR__ . '/../../')
     , ConfigProvider::APP_PATH               => realpath(__DIR__ . '/../../apps/')

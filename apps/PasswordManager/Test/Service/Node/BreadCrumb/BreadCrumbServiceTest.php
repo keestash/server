@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,35 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\App;
+namespace KSA\PasswordManager\Test\Service\Node\BreadCrumb;
 
-use Keestash;
-use KSP\App\ILoader;
+use KST\TestCase;
 
-/**
- * Class Helper
- * @package Keestash\App
- * @author  Dogan Ucar <dogan@dogan-ucar.de>
- * @deprecated
- */
-class Helper {
-
-    private function __construct() {
-    }
-
-    /**
-     * @param ILoader $loader
-     * @return string
-     * @deprecated
-     */
-    public static function getDefaultRoute(ILoader $loader): string {
-        $defaultApp = $loader->getDefaultApp();
-        $route      = (null === $defaultApp) ? "login" : $defaultApp->getBaseRoute();
-        return "$route";
-    }
-
-    private function __clone() {
-
-    }
+class BreadCrumbServiceTest extends TestCase {
 
 }

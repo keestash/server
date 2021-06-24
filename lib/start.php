@@ -20,67 +20,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\About\ConfigProvider as AboutConfigProvider;
-use KSA\Apps\ConfigProvider as AppsConfigProvider;
-use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
-use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
-use KSA\Install\ConfigProvider as InstallConfigProvider;
-use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
-use KSA\Login\ConfigProvider as LoginConfigProvider;
-use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
-use KSA\Register\ConfigProvider as RegisterConfigProvider;
-use KSA\Settings\ConfigProvider as SettingsConfigProvider;
-use KSA\TNC\ConfigProvider as TNCConfigProvider;
-use KSA\Users\ConfigProvider as UsersConfigProvider;
 use Laminas\Config\Config;
 use Laminas\ConfigAggregator\ConfigAggregator;
-use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
-use Laminas\HttpHandlerRunner\ConfigProvider as HttpHandlerRunnerConfigProvider;
-use Laminas\Router\ConfigProvider as LaminasRouterConfigProvider;
 use Laminas\ServiceManager\ServiceManager;
-use Laminas\Validator\ConfigProvider as ValidatorConfigProvider;
-use Mezzio\ConfigProvider as MezzioConfigProvider;
-use Mezzio\Helper\ConfigProvider as HelperConfigProvider;
-use Mezzio\Router\ConfigProvider as RouterConfigProvider;
-use Mezzio\Router\LaminasRouter\ConfigProvider as MezzioRouterConfigProvider;
-use Mezzio\Twig\ConfigProvider as TwigConfigProvider;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../lib/versioncheck.php';
 require_once __DIR__ . '/../lib/filecheck.php';
 require_once __DIR__ . '/../lib/extensioncheck.php';
 
-$configs = [
-    // framework
-    TwigConfigProvider::class,
-    HttpHandlerRunnerConfigProvider::class,
-    LaminasRouterConfigProvider::class,
-    MezzioRouterConfigProvider::class,
-    ValidatorConfigProvider::class,
-    DiactorosConfigProvider::class,
-    RouterConfigProvider::class,
-    HelperConfigProvider::class,
-    MezzioConfigProvider::class,
-
-    // Keestash
-    CoreConfigProvider::class,
-    AboutConfigProvider::class,
-    AppsConfigProvider::class,
-    ForgotPasswordConfigProvider::class,
-    GeneralApiConfigProvider::class,
-    InstallConfigProvider::class,
-    InstallInstanceConfigProvider::class,
-    LoginConfigProvider::class,
-    PasswordManagerConfigProvider::class,
-    RegisterConfigProvider::class,
-    SettingsConfigProvider::class,
-    TNCConfigProvider::class,
-    UsersConfigProvider::class,
-];
-
 $configAggregator = new ConfigAggregator(
-    $configs
+    require __DIR__ . '/config/provider.php'
     , __DIR__ . '/../config/cache/config-cache.php'
 );
 
@@ -96,8 +46,10 @@ $serviceManager = new ServiceManager(
 
 unset($config['dependencies']);
 
+$serviceManager->setAllowOverride(true);
 $serviceManager->setFactory(
     Config::class, fn() => $configObject
 );
+$serviceManager->setAllowOverride(false);
 
 return $serviceManager;
