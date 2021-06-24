@@ -68,7 +68,7 @@ final class ConfigProvider {
                 ],
                 CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::ROUTE_NAME_APPS => [
-                        'name'      => 'apps'
+                        'name'      => 'Apps'
                         , 'faClass' => "fas fa-user-circle"
                         , 'order'   => 3
                     ]

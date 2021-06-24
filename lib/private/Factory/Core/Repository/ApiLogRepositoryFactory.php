@@ -31,8 +31,7 @@ class ApiLogRepositoryFactory {
 
     public function __invoke(ContainerInterface $container): IApiLogRepository {
         return new ApiLogRepository(
-            $container->get(IBackend::class),
-            $container->get(IDateTimeService::class)
+            $container->get(IBackend::class)
         );
     }
 

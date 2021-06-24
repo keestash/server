@@ -24,16 +24,16 @@ namespace Keestash\Factory\Core\Service\App;
 
 
 use Keestash\Core\Service\App\InstallerService;
-use Keestash\Core\Service\Phinx\Migrator;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\Job\IJobRepository;
+use KSP\Core\Service\Phinx\IMigrator;
 use Psr\Container\ContainerInterface;
 
 class InstallerServiceFactory {
 
     public function __invoke(ContainerInterface $container): InstallerService {
         return new InstallerService(
-            $container->get(Migrator::class)
+            $container->get(IMigrator::class)
             , $container->get(IAppRepository::class)
             , $container->get(IJobRepository::class)
         );

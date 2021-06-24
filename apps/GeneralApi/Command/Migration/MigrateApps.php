@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Command\Migration;
 
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\Service\Phinx\Migrator;
+use KSP\Core\Service\Phinx\IMigrator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,10 +39,9 @@ class MigrateApps extends KeestashCommand {
     private const MODE_APP      = "app";
     private const MODE_INSTANCE = "instance";
 
-    /** @var null|Migrator $migrator */
-    private $migrator = null;
+    private IMigrator $migrator;
 
-    public function __construct(Migrator $migrator) {
+    public function __construct(IMigrator $migrator) {
         parent::__construct(MigrateApps::$defaultName);
         $this->migrator = $migrator;
     }
@@ -58,7 +57,7 @@ class MigrateApps extends KeestashCommand {
 
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $mode = $input->getArgument(MigrateApps::ARGUMENT_MODE);
         $ran  = false;

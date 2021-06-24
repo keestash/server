@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KST\App;
 
 use Keestash\App\App;
+use KSP\App\IApp;
 use KST\TestCase;
 
 class AppLoaderTest extends TestCase {
@@ -31,18 +32,12 @@ class AppLoaderTest extends TestCase {
         $app->setId("id");
         $app->setName("TestApp");
         $app->setBaseRoute("unit_test_route");
-        $app->setFAIconClass("fa fa-unit-test");
-        $app->setTemplatePath(__DIR__);
-        $app->setAppPath(__DIR__);
         $app->setOrder(1);
 
-        $this->assertInstanceOf(App::class, $app);
+        $this->assertInstanceOf(IApp::class, $app);
         $this->assertTrue($app->getId() === "id");
         $this->assertTrue($app->getName() === "TestApp");
         $this->assertTrue($app->getBaseRoute() === "unit_test_route");
-        $this->assertTrue($app->getFAIconClass() === "fa fa-unit-test");
-        $this->assertTrue($app->getTemplatePath() === __DIR__);
-        $this->assertTrue($app->getAppPath() === __DIR__);
         $this->assertTrue($app->getOrder() === 1);
     }
 

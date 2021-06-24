@@ -37,6 +37,7 @@ class MySQLBackend implements ISQLBackend {
     ) {
         $this->connection    = $connection;
         $this->configService = $configService;
+        $this->connect();
     }
 
     public function connect(): bool {
@@ -54,7 +55,7 @@ class MySQLBackend implements ISQLBackend {
     }
 
     public function getSchemaName(): string {
-        return$this->configService->getValue("db_name");
+        return $this->configService->getValue("db_name");
     }
 
     /**

@@ -21,37 +21,37 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Instance;
 
-use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 
-class InstanceRepository extends AbstractRepository {
+class InstanceRepository {
 
-    private ILogger $logger;
+    private ILogger  $logger;
+    private IBackend $backend;
 
     public function __construct(
         IBackend $backend
         , ILogger $logger
     ) {
-        parent::__construct($backend);
-        $this->logger = $logger;
+        $this->logger  = $logger;
+        $this->backend = $backend;
     }
 
     public function dropSchema(bool $includeSchema = false): bool {
 
         if (true === $includeSchema) {
-            $this->execute("DROP SCHEMA {$this->getSchemaName()};");
-            $this->execute("CREATE SCHEMA {$this->getSchemaName()};");
+            $this->execute("DROP SCHEMA {$this->backend->getSchemaName()};");
+            $this->execute("CREATE SCHEMA {$this->backend->getSchemaName()};");
             return true;
         }
 
 
-        $tables = $this->getTables();
+        $tables = $this->backend->getTables();
         if (0 === count($tables)) {
             return true;
         }
 
-        $queries   = [];
+        $queries = [];
         $this->execute("SET FOREIGN_KEY_CHECKS = 0");
         foreach ($tables as $table) {
             $this->logger->debug($table);
@@ -64,7 +64,7 @@ class InstanceRepository extends AbstractRepository {
     }
 
     public function execute(string $query) {
-        return parent::execute($query);
+        return $this->backend->getConnection()->prepare($query)->execute();
     }
 
 }

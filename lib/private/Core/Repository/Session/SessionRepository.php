@@ -24,24 +24,24 @@ namespace Keestash\Core\Repository\Session;
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DIP\DateTime\DateTimeService;
-use Keestash\Core\Repository\AbstractRepository;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Session\ISessionRepository;
 use Throwable;
 
-class SessionRepository extends AbstractRepository implements ISessionRepository {
+class SessionRepository implements ISessionRepository {
 
     private IDateTimeService $dateTimeService;
     private ILogger          $logger;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , DateTimeService $dateTimeService
         , ILogger $logger
     ) {
-        parent::__construct($backend);
+        $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
     }
@@ -52,7 +52,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
 
     public function get(string $id): string {
         try {
-            $queryBuilder = $this->getQueryBuilder();
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder = $queryBuilder->select(
                 [
                     'data'
@@ -95,7 +95,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
     }
 
     public function getAll(): array {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'id'
@@ -114,7 +114,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
             // MySQL only thing: https://stackoverflow.com/a/4561615/1966490
             $updateTs = $this->dateTimeService->toYMDHIS(new DateTime());
             $sql      = "REPLACE INTO `session`(`id`, `data`,`update_ts`) VALUES ('" . $id . "', '" . $data . "', '" . $updateTs . "')";
-            return $this->execute($sql);
+            return $this->backend->getConnection()->prepare($sql)->execute();
         } catch (Throwable $exception) {
             $this->logger->error('error while replacing session. This can be a normal behaviour (for instance during installation). Please look into the messages in level debug for more information');
             $this->logger->debug(
@@ -134,7 +134,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
     }
 
     public function deleteById(string $id): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('session')
                 ->where('id = ?')
                 ->setParameter(0, $id)
@@ -142,7 +142,7 @@ class SessionRepository extends AbstractRepository implements ISessionRepository
     }
 
     public function deleteByLastUpdate(int $maxLifeTime): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('session')
                 ->where('update_ts = ?')
                 ->setParameter(0, (new DateTime())->getTimestamp() - $maxLifeTime)

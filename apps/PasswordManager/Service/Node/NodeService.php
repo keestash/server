@@ -22,10 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service\Node;
 
 use DateTime;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Edge\Edge;
-use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -118,7 +116,7 @@ class NodeService {
         return $root;
     }
 
-    public function deletableType(string $type): bool {
+    public function isDeletable(string $type): bool {
         return
             true === $this->validType($type) &&
             $type !== Node::ROOT;
@@ -134,23 +132,6 @@ class NodeService {
             ]
             , true
         );
-    }
-
-    public function excludeFoldersPreserveCredentials(Folder $folder): Folder {
-
-        $edges = new ArrayList();
-        /** @var Edge $edge */
-        foreach ($folder->getEdges() as $edge) {
-
-            if ($edge->getNode() instanceof Folder) {
-                continue;
-            }
-            $edges->add($edge);
-        }
-
-        $folder->setEdges($edges);
-
-        return $folder;
     }
 
     public function getOrganization(Node $node): ?IOrganization {

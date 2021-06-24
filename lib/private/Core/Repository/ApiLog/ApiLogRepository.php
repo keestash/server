@@ -21,27 +21,21 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\ApiLog;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\Repository\AbstractRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 
-class ApiLogRepository extends AbstractRepository implements IApiLogRepository {
+class ApiLogRepository implements IApiLogRepository {
 
-    private IDateTimeService $dateTimeService;
+    private IBackend $backend;
 
-    public function __construct(
-        IBackend $backend
-        , IDateTimeService $dateTimeService
-    ) {
-        parent::__construct($backend);
-        $this->dateTimeService = $dateTimeService;
+    public function __construct(IBackend $backend) {
+        $this->backend = $backend;
     }
 
     public function log(IAPIRequest $request): ?int {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`apilog`")
             ->values(
                 [
@@ -61,14 +55,14 @@ class ApiLogRepository extends AbstractRepository implements IApiLogRepository {
             ->setParameter(5, $request->getRoute())
             ->execute();
 
-        $lastInsertId = (int) $this->getLastInsertId();
+        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
 
         if (0 === $lastInsertId) return null;
         return $lastInsertId;
     }
 
     public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('apilog')
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())

@@ -23,25 +23,24 @@ namespace KSA\GeneralApi\Repository;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\Repository\AbstractRepository;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSP\Core\Backend\IBackend;
 
-class DemoUsersRepository extends AbstractRepository {
+class DemoUsersRepository {
 
     private IDateTimeService $dateTimeService;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
     ) {
-        parent::__construct($backend);
-
         $this->dateTimeService = $dateTimeService;
+        $this->backend         = $backend;
     }
 
     public function add(string $email): string {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('demo_users')
             ->values(
                 [
@@ -57,7 +56,7 @@ class DemoUsersRepository extends AbstractRepository {
             )
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (null === $lastInsertId) {
             throw new GeneralApiException();

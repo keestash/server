@@ -28,6 +28,7 @@ final class ConfigProvider {
     public const ASSET_PATH              = 'path.asset';
     public const IMAGE_PATH              = 'path.image';
     public const PHINX_PATH              = 'path.phinx';
+    public const TEST_PATH               = 'path.test';
     public const DATA_PATH               = 'path.data';
     public const INSTANCE_PATH           = 'path.instance';
     public const APP_PATH                = 'path.app';
@@ -35,6 +36,7 @@ final class ConfigProvider {
     public const ENVIRONMENT_API         = 'api.environment';
     public const ENVIRONMENT_WEB         = 'web.environment';
     public const ENVIRONMENT_CONSOLE     = 'console.environment';
+    public const ENVIRONMENT_UNIT_TEST   = 'test.unit.environment';
     public const INSTALL_INSTANCE_ROUTE  = 'install_instance';
     public const INSTALL_LOGIN_ROUTE     = 'login';
     public const INSTALL_INSTANCE_ROUTES = 'routes.instance.install';

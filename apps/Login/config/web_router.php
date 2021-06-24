@@ -50,7 +50,7 @@ return [
     ],
     ConfigProviderAlias::SETTINGS               => [
         ConfigProvider::LOGOUT => [
-            'name'      => 'logout'
+            'name'      => 'Logout'
             , 'faClass' => "fas fa-sign-out-alt"
             , 'order'   => 5
         ]

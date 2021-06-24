@@ -1,10 +1,17 @@
-<phpunit bootstrap="../vendor/autoload.php">
+<phpunit
+        bootstrap="bootstrap.php"
+        cacheResultFile="test/test-result"
+        verbose="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+>
     <testsuites>
         <testsuite name="Keestash">
-            <directory>test</directory>
+            <directory>../test</directory>
         </testsuite>
         <testsuite name="Apps">
-            <directory>apps/*/Test</directory>
+            <directory>../apps/*/Test</directory>
         </testsuite>
     </testsuites>
 </phpunit>

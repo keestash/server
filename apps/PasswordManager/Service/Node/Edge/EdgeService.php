@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 /**
- * server
+ * Keestash
  *
  * Copyright (C) <2020> <Dogan Ucar>
  *

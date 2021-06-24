@@ -142,7 +142,7 @@ final class ConfigProvider {
                 ],
                 CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::USERS => [
-                        'name'      => 'users'
+                        'name'      => 'Users'
                         , 'faClass' => 'fas fa-user-circle'
                         , 'order'   => 1
                     ]

@@ -60,7 +60,7 @@ class Delete implements RequestHandlerInterface {
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
 
-        $deletable = $this->nodeService->deletableType($type);
+        $deletable = $this->nodeService->isDeletable($type);
         $node      = $this->nodeRepository->getNode((int) $id);
 
         if (false === $deletable) {

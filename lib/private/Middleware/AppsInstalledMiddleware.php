@@ -23,13 +23,11 @@ namespace Keestash\Middleware;
 
 use Keestash\App\Config\Diff;
 use Keestash\ConfigProvider;
-use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
 use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -59,14 +57,14 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         , AppLockHandler $appLockHandler
         , IRouterService $routerService
     ) {
-        $this->httpService          = $httpService;
-        $this->instanceLockHandler  = $instanceLockHandler;
-        $this->config               = $config;
-        $this->loader               = $loader;
-        $this->appRepository        = $appRepository;
-        $this->diff                 = $diff;
-        $this->appLockHandler       = $appLockHandler;
-        $this->routerService        = $routerService;
+        $this->httpService         = $httpService;
+        $this->instanceLockHandler = $instanceLockHandler;
+        $this->config              = $config;
+        $this->loader              = $loader;
+        $this->appRepository       = $appRepository;
+        $this->diff                = $diff;
+        $this->appLockHandler      = $appLockHandler;
+        $this->routerService       = $routerService;
     }
 
     private function routesToInstallation(ServerRequestInterface $request): bool {

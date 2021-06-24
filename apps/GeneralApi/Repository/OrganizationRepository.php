@@ -24,29 +24,29 @@ namespace KSA\GeneralApi\Repository;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Organization\Organization;
-use Keestash\Core\Repository\AbstractRepository;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 
-class OrganizationRepository extends AbstractRepository implements IOrganizationRepository {
+class OrganizationRepository implements IOrganizationRepository {
 
     private IDateTimeService            $dateTimeService;
     private IOrganizationUserRepository $organizationUserRepository;
+    private IBackend                    $backend;
 
     public function __construct(
         IOrganizationUserRepository $organizationUserRepository
         , IDateTimeService $dateTimeService
         , IBackend $backend
     ) {
-        parent::__construct($backend);
         $this->dateTimeService            = $dateTimeService;
         $this->organizationUserRepository = $organizationUserRepository;
+        $this->backend                    = $backend;
     }
 
     public function getAll(): ArrayList {
         $list         = new ArrayList();
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'o.id'
@@ -77,7 +77,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
     }
 
     public function update(IOrganization $organization): IOrganization {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->update('organization')
             ->set('name', '?')
             ->set('active_ts', '?')
@@ -99,7 +99,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
     }
 
     public function insert(IOrganization $organization): IOrganization {
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('organization')
             ->values(
                 [
@@ -133,7 +133,7 @@ class OrganizationRepository extends AbstractRepository implements IOrganization
 
     public function get(int $id): ?IOrganization {
         $organization = null;
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
                 'id'

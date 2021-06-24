@@ -23,13 +23,16 @@ namespace Keestash\Core\Service\Phinx;
 
 use Keestash;
 use Keestash\Core\Service\Instance\InstallerService;
+use Keestash\Exception\KeestashException;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Phinx\Console\PhinxApplication;
+use Phinx\Db\Adapter\AdapterFactory;
 use Phinx\Wrapper\TextWrapper;
 
-class Migrator {
+class Migrator implements IMigrator {
 
     private ILogger        $logger;
     private Config         $config;
@@ -45,8 +48,12 @@ class Migrator {
         $this->configService = $configService;
     }
 
+    protected function getFilePath(): string {
+        return $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
+    }
+
     public function runCore(): bool {
-        $file   = $this->config->get(Keestash\ConfigProvider::PHINX_PATH) . "/instance.php";
+        $file   = $this->getFilePath() . "/instance.php";
         $exists = $this->checkFile($file);
         if (false === $exists) {
             $this->logger->debug("file $file does not exist");
@@ -56,7 +63,7 @@ class Migrator {
     }
 
     public function runApps(): bool {
-        $file   = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH) . "/apps.php";
+        $file   = $this->getFilePath() . "/apps.php";
         $exists = $this->checkFile($file);
         if (false === $exists) {
             return false;
@@ -89,10 +96,17 @@ class Migrator {
         $this->logger->debug($log);
         $this->logger->debug((string) $phinxTextWrapper->getExitCode());
         $this->logger->debug(
-            (string) $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE
+            (string) ($phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE)
         );
 
-        return $phinxTextWrapper->getExitCode() === InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE;
+        if ($phinxTextWrapper->getExitCode() !== InstallerService::PHINX_MIGRATION_EVERYTHING_WENT_FINE) {
+            throw new KeestashException(
+                "error with phinx migrations. Exit Code: " . $phinxTextWrapper->getExitCode() .
+                "error log: " . $log
+            );
+        }
+
+        return true;
     }
 
 }
