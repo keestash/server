@@ -44,11 +44,10 @@ jobs:
       - name: Clean Up
         run: |
           cp config/config.sample.php config/config.php
-          ls -R *
           cd bin/ && php scss.php && cd ../
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant
-          rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js
+          rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js output.log
           rm -rf test/ apps/*/Test/
           rm -rf apps/*/js/
           rm -rf apps/*/scss/
