@@ -25,10 +25,10 @@ jobs:
           php_version: 7.4
 
       - name: PHPUnit Tests
-        - uses: php-actions/phpunit@v3
-          - with:
-              - configuration: test/phpunit.xml
-              - memory_limit: 256M
+        uses: php-actions/phpunit@v3
+        with:
+          configuration: test/phpunit.xml
+          memory_limit: 256M
 
       - name: Build Project
         uses: actions/setup-node@v2
