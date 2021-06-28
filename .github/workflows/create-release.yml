@@ -24,6 +24,12 @@ jobs:
           args: --profile --ignore-platform-reqs
           php_version: 7.4
 
+      - name: PHPUnit Tests
+        - uses: php-actions/phpunit@v3
+          - with:
+              - configuration: test/phpunit.xml
+              - memory_limit: 256M
+
       - name: Build Project
         uses: actions/setup-node@v2
         with:
@@ -39,6 +45,7 @@ jobs:
         run: |
           cp config/config.sample.php config/config.php
           cd bin/ && php scss.php && cd ../
+          rm -rf test/ apps/*/Test/
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant test/
           rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js

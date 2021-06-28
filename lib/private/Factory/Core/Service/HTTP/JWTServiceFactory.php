@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\HTTP;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\JWTService;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Container\ContainerInterface;
 
@@ -31,7 +31,7 @@ class JWTServiceFactory {
 
     public function __invoke(ContainerInterface $container): IJWTService {
         return new JWTService(
-            $container->get(HTTPService::class)
+            $container->get(IHTTPService::class)
             , $container->get(InstanceDB::class)
         );
     }

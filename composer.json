@@ -68,9 +68,9 @@
     "psr-4": {
       "Keestash\\": "lib/private/",
       "KSP\\": "lib/public/",
+      "KSA\\": "apps/",
       "KST\\": "test/",
-      "KST\\Service\\": "test/src/",
-      "KSA\\": "apps/"
+      "KST\\Service\\": "test/src/"
     }
   },
   "minimum-stability": "stable",

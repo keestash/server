@@ -36,11 +36,11 @@ class Generate implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $length       = $request->getAttribute("length");
-        $upperCase    = $request->getAttribute("upperCase");
-        $lowerCase    = $request->getAttribute("lowerCase");
-        $digit        = $request->getAttribute("digit");
-        $specialChars = $request->getAttribute("specialChars");
+        $length       = (string) $request->getAttribute("length");
+        $upperCase    = (string) $request->getAttribute("upperCase");
+        $lowerCase    = (string) $request->getAttribute("lowerCase");
+        $digit        = (string) $request->getAttribute("digit");
+        $specialChars = (string) $request->getAttribute("specialChars");
 
         $valid = $this->validParameters(
             $length

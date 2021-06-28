@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Service\Node\Share;
+namespace KSA\PasswordManager\Test\Unit\Service\Node\Share;
 
 use DateTime;
 use DateTimeInterface;

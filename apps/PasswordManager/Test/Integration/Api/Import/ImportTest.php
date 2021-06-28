@@ -19,10 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Service\Node\BreadCrumb;
+namespace KSA\PasswordManager\Test\Integration\Api\Import;
 
 use KST\TestCase;
 
-class BreadCrumbServiceTest extends TestCase {
+class ImportTest extends TestCase {
+
+    public function testImport(): void {
+        $this->markTestSkipped('not implemented yet. Implement me :(');
+    }
 
 }

@@ -81,6 +81,6 @@ $user->setLastName((string) $legacy->getApplication()->get("name"));
 $user->setPhone((string) $legacy->getApplication()->get("phone"));
 $user->setWebsite((string) $legacy->getApplication()->get("web"));
 $user->setPassword("");
-$user->setLocked(true);
+$user->setLocked(false);
 
 $userRepositoryService->createUser($user);

@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Factory\Repository\Node;
+namespace KSA\PasswordManager\Test\Service\Factory\Repository\Node;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
@@ -48,7 +48,7 @@ class NodeRepositoryFactory {
             , $container->get(IOrganizationRepository::class)
             , $container->get(IJWTService::class)
         );
-        
+
         $instance = Mockery::mock($instance);
 
         $instance->shouldReceive('getPathToRoot')

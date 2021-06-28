@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -20,12 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\Core\Service\Phinx\IMigrator;
-use KST\Service\Core\Service\HTTP\HTTPService;
-use KST\Service\Core\Service\Phinx\Migrator;
+namespace KSA\PasswordManager\Test\Service;
 
-return [
-    IMigrator::class      => Migrator::class
-    , IHTTPService::class => HTTPService::class
-];
+use KSP\Api\IResponse;
+use Psr\Http\Message\ResponseInterface;
+
+class ResponseService {
+
+    public function isValidResponse(ResponseInterface $response): bool {
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) return false;
+        $body    = json_decode($response->getBody()->getContents(), true);
+        $success = $body[IResponse::RESPONSE_CODE_OK] ?? null;
+        return null !== $success;
+    }
+
+}
