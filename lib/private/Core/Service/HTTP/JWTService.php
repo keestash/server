@@ -25,15 +25,16 @@ use DateTime;
 use Firebase\JWT\JWT;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
 
 class JWTService implements IJWTService {
 
-    private HTTPService $httpService;
+    private IHTTPService $httpService;
     private InstanceDB  $instanceDB;
 
     public function __construct(
-        HTTPService $httpService
+        IHTTPService $httpService
         , InstanceDB $instanceDB
     ) {
         $this->httpService = $httpService;

@@ -22,12 +22,14 @@ declare(strict_types=1);
 namespace KST\config;
 
 use Doctrine\DBAL\Connection;
+use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
+use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
 use KST\Service\Factory\ThirdParty\Doctrine\ConnectionFactory;
 
 return [
-//    MySQLBackend::class => MySQLBackendFactory::class
-Connection::class => ConnectionFactory::class
-, Migrator::class => MigratorFactory::class
+    Connection::class    => ConnectionFactory::class
+    , Migrator::class    => MigratorFactory::class
+    , HTTPService::class => HTTPServiceFactory::class
 ];

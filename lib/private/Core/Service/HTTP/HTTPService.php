@@ -23,8 +23,9 @@ namespace Keestash\Core\Service\HTTP;
 
 use Keestash;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\HTTP\IHTTPService;
 
-class HTTPService {
+class HTTPService implements IHTTPService {
 
     private IEnvironmentService $environmentService;
 

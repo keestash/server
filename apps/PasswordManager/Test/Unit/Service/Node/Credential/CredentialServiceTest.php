@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Service\Node\Credential;
+namespace KSA\PasswordManager\Test\Unit\Service\Node\Credential;
 
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Entity\Edge\Edge;
@@ -133,7 +133,7 @@ class CredentialServiceTest extends TestCase {
         $credential  = $this->getCredential();
         $edge        = $this->credentialService->insertCredential($credential, $this->nodeRepository->getRootForUser($this->getUser()));
         $newPassword = "myNewPassword";
-        
+
         $this->assertIsInt($edge->getNode()->getId());
 
         $credential = $this->credentialService->updatePassword($credential, $newPassword);

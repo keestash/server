@@ -21,48 +21,31 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Comment;
 
-use KSA\PasswordManager\Api\Comment\Add;
+use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use KST\TestCase;
 
-/**
- * Class AddTest
- * @package KSA\PasswordManager\Test\Integration\Api\Comment
- * @author  Dogan Ucar <dogan@dogan-ucar.de>
- */
-class AddTest extends TestCase {
+class GetTest extends TestCase {
 
     public function getData(): array {
         return [
-            [["comment" => "test", 'node_id' => 2], null, true]
-            , [["comment" => null, 'node_id' => 2], CommentException::class, true]
-            , [['node_id' => 2], CommentException::class, true]
-            , [["comment" => "test", 'node_id' => null], CommentException::class, true]
-            , [["comment" => "test", 'node_id' => 9], CommentException::class, true]
-            , [["comment" => "test"], CommentException::class, true]
-            , [[], CommentException::class, true]
+            [2, true, null]
+            , [99999, false, CommentException::class]
         ];
     }
 
     /**
-     * @param array       $parameters
-     * @param string|null $exception
-     * @param bool        $isValid
      * @throws CommentException
      * @dataProvider getData
      *
      * TODO add a test where the user does not own the node/
      *  does not belong to the organization
      */
-    public function testAll(
-        array $parameters
-        , ?string $exception
-        , bool $isValid
-    ): void {
-        /** @var Add $add */
-        $add = $this->getServiceManager()->get(Add::class);
+    public function testGet(int $nodeId, bool $isValid, ?string $exception): void {
+        /** @var Get $get */
+        $get = $this->getServiceManager()->get(Get::class);
         /** @var RequestService $requestService */
         $requestService = $this->getServiceManager()->get(RequestService::class);
         /** @var ResponseService $responseService */
@@ -72,16 +55,13 @@ class AddTest extends TestCase {
             $this->expectException($exception);
         }
 
-        $serverRequest = $requestService->getRequestWithToken(
+        $request  = $requestService->getRequestWithToken(
             $this->getUser()
-            , []
-            , []
-            , $parameters
-            , []
-            , []
+        );
+        $response = $get->handle(
+            $request->withAttribute('nodeId', $nodeId)
         );
 
-        $response = $add->handle($serverRequest);
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
     }
 

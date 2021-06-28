@@ -25,9 +25,9 @@ use Keestash\App\Config\Diff;
 use KSP\App\ILoader;
 use Psr\Container\ContainerInterface;
 
-class DiffFactory
-{
-    public function __invoke(ContainerInterface $container):Diff {
+class DiffFactory {
+
+    public function __invoke(ContainerInterface $container): Diff {
         return new Diff(
             $container->get(ILoader::class)
         );

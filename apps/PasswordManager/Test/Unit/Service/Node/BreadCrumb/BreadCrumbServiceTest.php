@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -20,14 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
-use KSA\PasswordManager\Test\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
+namespace KSA\PasswordManager\Test\Unit\Service\Node\BreadCrumb;
 
-return (function (TestCase $testCase): array {
-    return [
-        EncryptionService::class => function () use ($testCase): MockObject {
+use KST\TestCase;
 
-        }
-    ];
-});
+class BreadCrumbServiceTest extends TestCase {
+
+    public function testXyz(): void {
+        $this->markTestSkipped('implement me :(');
+    }
+
+}

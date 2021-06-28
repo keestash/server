@@ -1,6 +1,9 @@
 <?php
 declare(strict_types=1);
 
+use KSP\Core\Service\HTTP\IHTTPService;
+use KST\Service\Core\Service\HTTP\HTTPService;
+
 /**
  * Keestash
  *
@@ -20,12 +23,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\Core\Service\Phinx\IMigrator;
-use KST\Service\Core\Service\HTTP\HTTPService;
-use KST\Service\Core\Service\Phinx\Migrator;
+namespace KST\Service\Factory\Core\Service\HTTP;
 
-return [
-    IMigrator::class      => Migrator::class
-    , IHTTPService::class => HTTPService::class
-];
+use KSP\Core\Service\HTTP\IHTTPService;
+use KST\Service\Core\Service\HTTP\HTTPService;
+
+class HTTPServiceFactory {
+
+    public function __invoke(): IHTTPService {
+        return new HTTPService();
+    }
+
+}

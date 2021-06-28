@@ -57,6 +57,7 @@ use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
+use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
@@ -98,6 +99,7 @@ use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\IEventDispatcher;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Organization\IOrganizationService;
@@ -152,5 +154,6 @@ return [
     \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class,
     IStringService::class                             => StringService::class,
     IJWTService::class                                => JWTService::class,
-    IMigrator::class                                  => Migrator::class
+    IMigrator::class                                  => Migrator::class,
+    IHTTPService::class                               => HTTPService::class,
 ];

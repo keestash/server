@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -20,12 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\Core\Service\Phinx\IMigrator;
-use KST\Service\Core\Service\HTTP\HTTPService;
-use KST\Service\Core\Service\Phinx\Migrator;
+namespace KSP\Core\Service\HTTP;
 
-return [
-    IMigrator::class      => Migrator::class
-    , IHTTPService::class => HTTPService::class
-];
+interface IHTTPService {
+
+    public function getBaseURL(bool $withScript = true, bool $forceIndex = false): string;
+
+    public function buildWebRoute(string $base): string;
+
+    public function getBaseAPIURL(): ?string;
+
+    public function getAssetURL(): ?string;
+
+    public function getLoginRoute(): string;
+
+}

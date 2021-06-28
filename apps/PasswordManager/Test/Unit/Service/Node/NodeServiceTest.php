@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Service\Node;
+namespace KSA\PasswordManager\Test\Unit\Service\Node;
 
 use DateTime;
 use KSA\PasswordManager\Entity\Edge\Edge;
