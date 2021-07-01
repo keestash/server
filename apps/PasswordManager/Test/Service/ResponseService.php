@@ -28,9 +28,15 @@ class ResponseService {
 
     public function isValidResponse(ResponseInterface $response): bool {
         if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) return false;
-        $body    = json_decode($response->getBody()->getContents(), true);
+        $body    = json_decode((string) $response->getBody(), true);
         $success = $body[IResponse::RESPONSE_CODE_OK] ?? null;
         return null !== $success;
+    }
+
+    public function getResponseData(ResponseInterface $response): array {
+        if (false === $this->isValidResponse($response)) return [];
+        $body = json_decode((string) $response->getBody(), true);
+        return $body[IResponse::RESPONSE_CODE_OK]['messages'] ?? [];
     }
 
 }
