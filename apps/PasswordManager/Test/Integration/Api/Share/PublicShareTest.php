@@ -40,7 +40,7 @@ class PublicShareTest extends TestCase {
     public function provideData(): array {
         return [
             [['node_id' => 845763], false]
-            , [['node_id' => 3], true]
+            , [['node_id' => 2], true]
             , [[], false]
         ];
     }
@@ -68,6 +68,7 @@ class PublicShareTest extends TestCase {
         );
 
         $response = $publicShare->handle($request);
+//        dump($response);
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
 
         if (false === $isValid) return;

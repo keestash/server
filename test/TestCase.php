@@ -21,14 +21,19 @@ declare(strict_types=1);
 
 namespace KST;
 
+use KSA\PasswordManager\Test\Service\RequestService;
+use KSA\PasswordManager\Test\Service\ResponseService;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
+use Psr\Http\Message\ServerRequestInterface;
 
 class TestCase extends FrameworkTestCase {
 
-    private ServiceManager $serviceManager;
+    private ServiceManager  $serviceManager;
+    private ResponseService $responseService;
+    private RequestService  $requestService;
 
     protected function getServiceManager(): ServiceManager {
         return $this->serviceManager;
@@ -36,12 +41,31 @@ class TestCase extends FrameworkTestCase {
 
     protected function setUp(): void {
         parent::setUp();
-        $this->serviceManager = require __DIR__ . '/config/service_manager.php';
+        $this->serviceManager  = require __DIR__ . '/config/service_manager.php';
+        $this->responseService = $this->serviceManager->get(ResponseService::class);
+        $this->requestService  = $this->serviceManager->get(RequestService::class);
+    }
+
+    protected function getResponseService(): ResponseService {
+        return $this->responseService;
+    }
+
+    protected function getRequestService(): RequestService {
+        return $this->requestService;
     }
 
     protected function getUser(): IUser {
         return $this->serviceManager->get(IUserRepository::class)
-            ->getUserById((string) Config::TEST_USER_ID);
+            ->getUserById((string) Service\Service\UserService::TEST_USER_ID_2);
+    }
+
+    protected function getDefaultRequest(array $body = []): ServerRequestInterface {
+        return $this->getRequestService()->getRequestWithToken(
+            $this->getUser()
+            , []
+            , []
+            , $body
+        );
     }
 
 }

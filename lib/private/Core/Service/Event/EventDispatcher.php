@@ -48,7 +48,7 @@ class EventDispatcher implements IEventDispatcher {
             foreach ($listeners as $listener) {
                 $this->eventManager->registerListener(
                     $event
-                    , $this->container->get($listener)
+                    , $listener
                 );
             }
         }

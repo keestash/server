@@ -39,4 +39,10 @@ class ResponseService {
         return $body[IResponse::RESPONSE_CODE_OK]['messages'] ?? [];
     }
 
+    public function getFailedResponseData(ResponseInterface $response): array {
+        if (true === $this->isValidResponse($response)) return [];
+        $body = json_decode((string) $response->getBody(), true);
+        return $body[IResponse::RESPONSE_CODE_NOT_OK]['messages'] ?? [];
+    }
+
 }

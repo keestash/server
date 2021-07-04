@@ -26,7 +26,7 @@ use Keestash\Core\DTO\Instance\Request\APIRequest;
 use Keestash\Core\DTO\Token\Token;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KST\Config;
+use KST\Service\Service\UserService;
 use KST\TestCase;
 
 class ApiLogRepositoryTest extends TestCase {
@@ -42,7 +42,7 @@ class ApiLogRepositoryTest extends TestCase {
         $token->setValue(ApiLogRepositoryTest::class);
         $token->setName(ApiLogRepositoryTest::class);
         $token->setUser(
-            $userRepository->getUserById((string) Config::TEST_USER_ID)
+            $userRepository->getUserById((string)UserService::TEST_USER_ID_2)
         );
 
         $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);

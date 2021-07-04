@@ -78,10 +78,7 @@ class PublicShare implements RequestHandlerInterface {
             );
         }
 
-        $publicShare = new \KSA\PasswordManager\Entity\Share\PublicShare();
-        $publicShare->setHash($this->shareService->generateSharingHash($node));
-        $publicShare->setExpireTs($this->shareService->getDefaultExpireDate());
-        $publicShare->setNodeId($node->getId());
+        $publicShare = $this->shareService->createPublicShare($node);
         $node->setPublicShare($publicShare);
 
         $share = $this->shareRepository->getShareByNode($node);

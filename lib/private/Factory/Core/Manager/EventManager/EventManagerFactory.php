@@ -31,8 +31,8 @@ class EventManagerFactory {
 
     public function __invoke(ContainerInterface $container): IEventManager {
         return new EventManager(
-            $container->get(IEnvironmentService::class)
-            , $container->get(EventDispatcher::class)
+            $container->get(EventDispatcher::class)
+            , $container
         );
     }
 

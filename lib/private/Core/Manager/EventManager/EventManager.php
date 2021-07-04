@@ -23,31 +23,37 @@ namespace Keestash\Core\Manager\EventManager;
 
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\EventManager\IListener;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class EventManager implements IEventManager {
 
-    private EventDispatcher     $eventDispatcher;
-    private IEnvironmentService $environmentService;
+    private EventDispatcher    $eventDispatcher;
+    private ContainerInterface $container;
 
     public function __construct(
-        IEnvironmentService $environmentService
-        , EventDispatcher $eventDispatcher
+        EventDispatcher $eventDispatcher
+        , ContainerInterface $container
     ) {
-        $this->eventDispatcher    = $eventDispatcher;
-        $this->environmentService = $environmentService;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->container       = $container;
     }
 
     public function execute(Event $event): void {
-//        if (true === $this->environmentService->isUnitTest()) return;
-        $this->eventDispatcher->dispatch($event, get_class($event));
+        $listeners = $this->eventDispatcher->getListeners(get_class($event));
+
+        foreach ($listeners as $listener) {
+            $listenerObject = $this->container->get($listener);
+            if ($listenerObject instanceof IListener) {
+                $listenerObject->execute($event);
+            }
+        }
+//        $this->eventDispatcher->dispatch($event, get_class($event));
     }
 
-    public function registerListener(string $eventName, IListener $event): void {
-//        if (true === $this->environmentService->isUnitTest()) return;
-        $this->eventDispatcher->addListener($eventName, [$event, 'execute']);
+    public function registerListener(string $eventName, string $event): void {
+        $this->eventDispatcher->addListener($eventName, $event);
     }
 
 }

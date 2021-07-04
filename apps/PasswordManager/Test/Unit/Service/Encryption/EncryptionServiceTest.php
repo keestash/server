@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Test\Unit\Service\Encryption;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\Repository\User\IUserRepository;
-use KST\Config;
+use KST\Service\Service\UserService;
 use KST\TestCase;
 
 class EncryptionServiceTest extends TestCase {
@@ -41,7 +41,7 @@ class EncryptionServiceTest extends TestCase {
         $keyService = $this->getServiceManager()
             ->get(KeyService::class);
 
-        $user      = $userRepository->getUserById((string) Config::TEST_USER_ID);
+        $user      = $userRepository->getUserById((string)UserService::TEST_USER_ID_2);
         $raw       = 'thisisaverysecretstring';
         $key       = $keyService->getKey($user);
         $encrypted = $encryptionService->encrypt($key, $raw);

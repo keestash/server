@@ -26,10 +26,13 @@ use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
+use KST\Service\Factory\Service\UserServiceFactory;
 use KST\Service\Factory\ThirdParty\Doctrine\ConnectionFactory;
+use KST\Service\Service\UserService;
 
 return [
     Connection::class    => ConnectionFactory::class
     , Migrator::class    => MigratorFactory::class
     , HTTPService::class => HTTPServiceFactory::class
+    , UserService::class => UserServiceFactory::class
 ];
