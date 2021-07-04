@@ -19,10 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KST;
+namespace KST\Service\Factory\Service;
 
-final class Config {
+use Keestash\Legacy\Legacy;
+use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use KST\Service\Service\UserService;
+use Psr\Container\ContainerInterface;
 
-    public const TEST_USER_ID = 2;
+class UserServiceFactory {
+
+    public function __invoke(ContainerInterface $container): UserService {
+        return new UserService(
+            $container->get(Legacy::class)
+            , $container->get(IUserRepositoryService::class)
+            , $container->get(IUserService::class)
+        );
+    }
 
 }

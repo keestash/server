@@ -53,7 +53,7 @@ class Share implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = $request->getParsedBody();
         $nodeId     = $parameters['node_id'] ?? null;
         $userId     = $parameters['user_id_to_share'] ?? null;
         /** @var IToken $token */

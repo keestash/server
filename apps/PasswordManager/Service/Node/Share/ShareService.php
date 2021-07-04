@@ -15,6 +15,7 @@ namespace KSA\PasswordManager\Service\Node\Share;
 use DateTime;
 use DateTimeInterface;
 use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Share\PublicShare;
 
 class ShareService {
 
@@ -30,6 +31,14 @@ class ShareService {
         $dateTime = new DateTime();
         $dateTime->modify("+3 day");
         return $dateTime;
+    }
+
+    public function createPublicShare(Node $node): PublicShare {
+        $publicShare = new PublicShare();
+        $publicShare->setHash($this->generateSharingHash($node));
+        $publicShare->setExpireTs($this->getDefaultExpireDate());
+        $publicShare->setNodeId($node->getId());
+        return $publicShare;
     }
 
 }

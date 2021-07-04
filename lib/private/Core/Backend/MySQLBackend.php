@@ -37,7 +37,11 @@ class MySQLBackend implements ISQLBackend {
     ) {
         $this->connection    = $connection;
         $this->configService = $configService;
-        $this->connect();
+        try {
+            $this->connect();
+        } catch (\Exception $exception) {
+
+        }
     }
 
     public function connect(): bool {
