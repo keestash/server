@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Factory\Command;
 
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
+use KSP\Core\ILogger\ILogger;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -31,6 +32,7 @@ class CompilerFactory {
         return new Compiler(
             $container->get(\Keestash\Core\Service\Stylesheet\Compiler::class)
             , $container->get(Config::class)
+            , $container->get(ILogger::class)
         );
     }
 

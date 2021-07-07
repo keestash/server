@@ -31,7 +31,7 @@ interface IUserKeyRepository extends IRepository {
 
     public function updateKey(IKey $key): bool;
 
-    public function getKey(IUser $user): ?IKey;
+    public function getKey(IUser $user): IKey;
 
     public function remove(IUser $user): bool;
 

@@ -53,7 +53,7 @@ class Share implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getParsedBody();
+        $parameters = (array) $request->getParsedBody();
         $nodeId     = $parameters['node_id'] ?? null;
         $userId     = $parameters['user_id_to_share'] ?? null;
         /** @var IToken $token */
@@ -111,10 +111,14 @@ class Share implements RequestHandlerInterface {
             );
         }
 
-        $node  = $this->nodeRepository->getNode((int) $nodeId);
-        $share = $node->getShareByUser(
-            $this->userRepository->getUserById((string) $userId)
-        );
+        $node = $this->nodeRepository->getNode((int) $nodeId);
+        $user = $this->userRepository->getUserById((string) $userId);
+
+        if (null === $user) {
+            throw new PasswordManagerException();
+        }
+
+        $share = $node->getShareByUser($user);
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK

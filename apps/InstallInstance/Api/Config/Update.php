@@ -25,6 +25,7 @@ use Exception;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Instance\InstallerService;
+use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Api\IResponse;
 use Laminas\Config\Config;
 use PDO;
@@ -153,6 +154,10 @@ class Update implements RequestHandlerInterface {
         $content    .= var_export($config, true);
         $content    .= ';';
         $configFile = realpath($this->config->get(ConfigProvider::CONFIG_PATH) . "/config.php");
+
+        if (false === $configFile) {
+            throw new InstallInstanceException();
+        }
 
         $put = file_put_contents(
             $configFile

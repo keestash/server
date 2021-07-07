@@ -77,9 +77,13 @@ class DemoMode extends KeestashCommand {
         $disabled = @unlink($path);
 
         if (true === $disabled) {
-            $this->userRepositoryService->removeUser(
-                $this->userRepository->getUser(IUser::DEMO_USER_NAME)
-            );
+            $demoUser = $this->userRepository->getUser(IUser::DEMO_USER_NAME);
+
+            if (null === $demoUser) {
+                throw new InstallInstanceException();
+            }
+
+            $this->userRepositoryService->removeUser($demoUser);
             $this->instanceDb->removeOption("demo");
         }
         return $disabled;

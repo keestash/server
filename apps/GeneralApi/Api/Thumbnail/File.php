@@ -60,7 +60,7 @@ class File implements RequestHandlerInterface {
         }
 
         return new TextResponse(
-            file_get_contents($file->getFullPath())
+            (string) file_get_contents($file->getFullPath())
             , 200
             , [
                 IResponse::HEADER_CONTENT_TYPE => $file->getMimeType()

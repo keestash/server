@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Controller\Common;
 
+use KSA\GeneralApi\Exception\GeneralApiException;
 use KSP\App\ILoader;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Diactoros\Response\RedirectResponse;
@@ -46,9 +47,15 @@ class DefaultRouteController implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        $defaultApp = $this->loader->getDefaultApp();
+
+        if (null === $defaultApp) {
+            throw new GeneralApiException();
+        }
+
         return new RedirectResponse(
             $this->router->generateUri(
-                $this->routerService->getRouteByPath($this->loader->getDefaultApp()->getBaseRoute())['name']
+                $this->routerService->getRouteByPath($defaultApp->getBaseRoute())['name']
             )
         );
     }

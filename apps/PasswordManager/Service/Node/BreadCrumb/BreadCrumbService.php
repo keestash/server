@@ -82,7 +82,7 @@ class BreadCrumbService {
 
         $values = json_encode($values);
         $this->cacheService->set($cacheKey, $values);
-        return $values;
+        return (string) $values;
     }
 
     private function getRootForUser(IUser $user): string {
@@ -99,7 +99,7 @@ class BreadCrumbService {
             ]
         );
         $this->cacheService->set($cacheKey, $encoded);
-        return $encoded;
+        return (string) $encoded;
     }
 
 }

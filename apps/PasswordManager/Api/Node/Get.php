@@ -130,14 +130,14 @@ class Get implements RequestHandlerInterface {
 
                 usort(
                     $edges
-                    , static function (Edge $current, Edge $next): bool {
+                    , static function (Edge $current, Edge $next): int {
                     $currentTs = null !== $current->getCreateTs()
                         ? $current->getCreateTs()
                         : new DateTime();
                     $nextTs    = null !== $next->getCreateTs()
                         ? $next->getCreateTs()
                         : new DateTime();
-                    return $currentTs < $nextTs;
+                    return $currentTs->getTimestamp() - $nextTs->getTimestamp();
                 });
 
                 $edgez = new ArrayList();

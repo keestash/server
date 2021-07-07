@@ -121,9 +121,9 @@ class OrganizationRepository implements IOrganizationRepository {
             )
             ->execute();
 
-        $lastInsertId = $this->getLastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (null === $lastInsertId) {
+        if (false === is_numeric($lastInsertId)) {
             throw new GeneralApiException();
         }
         $organization->setId((int) $lastInsertId);

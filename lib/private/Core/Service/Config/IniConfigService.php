@@ -28,7 +28,7 @@ class IniConfigService implements IConfigService {
 
     public function getValue(string $key, $default = null) {
         $ini = ini_get($key);
-        if ("" === $ini || null === $ini) return $default;
+        if ("" === $ini || false === $ini) return $default;
         return $ini;
     }
 

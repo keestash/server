@@ -46,7 +46,7 @@ class MigrateApps extends KeestashCommand {
         $this->migrator = $migrator;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setDescription("Runs all database migrations related to apps")
             ->setHelp("This command runs all migrations once you created a new phinx migration")
             ->addArgument(

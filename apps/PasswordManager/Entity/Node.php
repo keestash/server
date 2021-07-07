@@ -90,7 +90,7 @@ abstract class Node implements JsonSerializable {
 
     public abstract function getType(): string;
 
-    public function setType($type): void {
+    public function setType(string $type): void {
         $this->type = $type;
     }
 

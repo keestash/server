@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\ResponseManager;
+namespace Keestash\Exception;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Api\IResponse;
-use KSP\Core\Manager\IManager;
-
-interface IResponseManager extends IManager {
-
-    public function add(IResponse $response): void;
-
-    public function getResponses(): ArrayList;
-
-    public function unsetResponses(): bool;
+class EncryptionFailedException extends KeestashException {
 
 }

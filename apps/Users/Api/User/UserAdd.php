@@ -50,7 +50,7 @@ class UserAdd implements RequestHandlerInterface {
         $this->userRepositoryService = $userRepositoryService;
     }
 
-    private function toUser($params): IUser {
+    private function toUser(array $params): IUser {
         $userName  = $params[0];
         $firstName = $params[1];
         $lastName  = $params[2];
@@ -83,7 +83,6 @@ class UserAdd implements RequestHandlerInterface {
             IResponse::RESPONSE_CODE_NOT_OK
             , []
         );
-        if (null === $user) return $response;
         if (true === $this->userRepositoryService->userExistsByName($user->getName())) return $response;
         if (false === (new StringClass($user->getPassword()))->equals($passwordRepeat)) return $response;
         if (false === $this->userService->passwordHasMinimumRequirements($user->getPassword())) return $response;

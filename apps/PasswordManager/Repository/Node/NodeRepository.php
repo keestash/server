@@ -35,6 +35,7 @@ use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Entity\Password\Password;
 use KSA\PasswordManager\Entity\Share\Share;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
+use KSA\PasswordManager\Exception\Node\NodeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
@@ -79,7 +80,7 @@ class NodeRepository {
         $this->backend                = $backend;
     }
 
-    public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Root {
+    public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): Root {
 
         $type         = Node::ROOT;
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
@@ -97,14 +98,17 @@ class NodeRepository {
 
         if (!$statement instanceof ResultStatement) {
             $this->logger->error('error while retrieving data ' . $queryBuilder->getSQL());
-            return null;
+            throw new PasswordManagerException();
         }
         $rows = $statement->fetchAllNumeric();
         $id   = ($rows[0] ?? [])[0] ?? null;
-        if (null === $id) return null;
+        if (null === $id) {
+            throw new PasswordManagerException();
+        }
 
         /** @var Root $root */
         $root = $this->getNode((int) $rows[0][0], $depth, $maxDepth);
+
         $root->setId((int) $rows[0][0]);
         $root->setType($type);
         return $root;
@@ -189,6 +193,11 @@ class NodeRepository {
         }
 
         $user = $this->userRepository->getUserById($userId);
+
+        if (null === $user) {
+            throw new PasswordManagerException();
+        }
+
         $node->setId((int) $id);
         $node->setName(
             (string) $name
@@ -233,7 +242,7 @@ class NodeRepository {
         return $node;
     }
 
-    private function addCredentialInfo(Credential $credential): ?Credential {
+    private function addCredentialInfo(Credential $credential): Credential {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
@@ -334,6 +343,10 @@ class NodeRepository {
 
             $node = $this->getNode((int) $nodeId, $depth, $maxDepth);
 
+            if (null === $node) {
+                throw new PasswordManagerException();
+            }
+
             $edge = new Edge();
             $edge->setId((int) $id);
             $edge->setNode($node);
@@ -375,7 +388,6 @@ class NodeRepository {
             $createTs = $this->dateTimeService->fromString($createTs);
 
             if (null === $user) continue;
-            if (null === $createTs) continue;
 
             $user->setJWT(
                 $this->jwtService->getJWT(
@@ -418,7 +430,7 @@ class NodeRepository {
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (null === $lastInsertId) return null;
+        if (false === is_numeric($lastInsertId)) return null;
         $node->setId((int) $lastInsertId);
         return (int) $lastInsertId;
     }
@@ -427,9 +439,11 @@ class NodeRepository {
         return $this->add($folder);
     }
 
-    public function addCredential(Credential $credential): ?Credential {
+    public function addCredential(Credential $credential): Credential {
         $nodeId = $this->add($credential);
-        if (null === $nodeId) return null;
+        if (null === $nodeId) {
+            throw new PasswordManagerException();
+        }
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('pwm_credential')
@@ -451,7 +465,9 @@ class NodeRepository {
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (null === $lastInsertId) return null;
+        if (false === is_numeric($lastInsertId)) {
+            throw new NodeException();
+        }
 
         $credential->setId((int) $nodeId);
         $credential->setCredentialId((int) $lastInsertId);
@@ -637,13 +653,13 @@ ORDER BY d.`level`;
             ->setParameter(2,
                 $this->encryptionService->encrypt(
                     $key
-                    , $credential->getUrl()
+                    , (string) $credential->getUrl()
                 )
             )
             ->setParameter(3,
                 $this->encryptionService->encrypt(
                     $key
-                    , $credential->getNotes()
+                    , (string) $credential->getNotes()
                 )
             )
             ->setParameter(4, $credential->getCredentialId());
@@ -716,7 +732,7 @@ ORDER BY d.`level`;
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (null === $lastInsertId || "0" === $lastInsertId) {
+        if (false === is_numeric($lastInsertId) || "0" === $lastInsertId) {
             throw new PasswordManagerException();
         }
         $edge->setId((int) $lastInsertId);

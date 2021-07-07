@@ -27,6 +27,7 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
+use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
@@ -128,12 +129,18 @@ class EndUpdate implements RequestHandlerInterface {
             $this->fileService->getDefaultImage()
         );
 
+        $defaultApp = $this->loader->getDefaultApp();
+
+        if (null === $defaultApp) {
+            throw new InstallInstanceException();
+        }
+
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
                 "message"    => "Ok"
                 , "route_to" => $this->httpService->buildWebRoute(
-                    $this->loader->getDefaultApp()->getBaseRoute()
+                    $defaultApp->getBaseRoute()
                 )
             ]
         );

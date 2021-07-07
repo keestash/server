@@ -28,7 +28,7 @@ class PHPStanFactory {
 
     public function __invoke(ContainerInterface $container): PHPStan {
         return new PHPStan(
-            realpath(__DIR__ . '/../../../../')
+            (string) realpath(__DIR__ . '/../../../../')
         );
     }
 

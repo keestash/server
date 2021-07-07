@@ -88,11 +88,8 @@ class CreateStarterPassword {
         );
         $credential->setId(CreateStarterPassword::FIRST_CREDENTIAL_ID);
 
-        $inserted = $this->credentialService->insertCredential($credential, $root);
+        $this->credentialService->insertCredential($credential, $root);
 
-        if (null === $inserted) {
-            throw new DefaultPropertiesNotSetException("could not create edge");
-        }
     }
 
 }

@@ -24,6 +24,7 @@ namespace KSA\GeneralApi\Event\Listener;
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
+use Keestash\Exception\KeestashException;
 use KSA\GeneralApi\Event\Organization\UserChangedEvent;
 use KSA\GeneralApi\Repository\IOrganizationUserRepository;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
@@ -64,21 +65,27 @@ class UserChangedListener implements IListener {
 
         $organization = $this->organizationUserRepository->getByOrganization($event->getOrganization());
 
-        $secret = null;
+        $secret = '';
 
         /** @var IUser $user */
         foreach ($organization->getUsers() as $user) {
             $secret = $secret . $user->getPassword();
         }
 
-        $key        = $this->organizationKeyRepository->getKey($organization);
-        $credential = $this->credentialService->getCredential($organization);
-        $secret     = $this->encryptionService->encrypt($credential, $secret);
+        //  TODO what if $secret === '' ?
 
-        if (null === $key) {
+        try {
+            $key = $this->organizationKeyRepository->getKey($organization);
+        } catch (KeestashException $exception) {
             $this->insertKey($organization, $secret);
             return;
         }
+
+        $credential = $this->credentialService->getCredential($organization);
+        $secret     = $this->encryptionService->encrypt(
+            $credential
+            , $secret
+        );
 
         $this->updateKey($key, $secret);
 

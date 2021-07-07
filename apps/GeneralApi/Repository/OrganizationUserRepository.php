@@ -95,7 +95,7 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
 
             $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-            if (null === $lastInsertId) {
+            if (false === is_numeric($lastInsertId)) {
                 throw new GeneralApiException();
             }
         }

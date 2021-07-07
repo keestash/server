@@ -68,7 +68,7 @@ class SessionRepository implements ISessionRepository {
 
             if (0 === $sessionDataCount) {
                 $this->logger->debug("no session data found!!");
-                $this->logger->debug(json_encode($sessionData));
+                $this->logger->debug((string) json_encode($sessionData));
                 return "";
             }
 
@@ -79,7 +79,7 @@ class SessionRepository implements ISessionRepository {
             return (string) $sessionData[0][0] ?? '';
         } catch (Throwable $exception) {
             $this->logger->error(
-                json_encode(
+                (string) json_encode(
                     [
                         "id"                => $exception->getCode()
                         , "message"         => $exception->getMessage()
@@ -118,7 +118,7 @@ class SessionRepository implements ISessionRepository {
         } catch (Throwable $exception) {
             $this->logger->error('error while replacing session. This can be a normal behaviour (for instance during installation). Please look into the messages in level debug for more information');
             $this->logger->debug(
-                json_encode(
+                (string) json_encode(
                     [
                         "id"                => $exception->getCode()
                         , "message"         => $exception->getMessage()

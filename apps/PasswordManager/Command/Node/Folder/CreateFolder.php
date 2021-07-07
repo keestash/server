@@ -47,7 +47,7 @@ class CreateFolder extends KeestashCommand {
         $this->userRepository = $userRepository;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName("password-manager:create-folder")
             ->setDescription("Creates a folder for a given user")
             ->addArgument("user_id", InputArgument::REQUIRED, "The user for whom the folder should be created")
@@ -80,7 +80,7 @@ class CreateFolder extends KeestashCommand {
         }
 
         $folder = new Folder();
-        $folder->setName($name);
+        $folder->setName((string) $name);
         $folder->setType(Node::FOLDER);
         $folder->setCreateTs(new DateTime());
         $folder->setUser($user);

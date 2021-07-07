@@ -28,8 +28,8 @@ use KSP\Core\View\ActionBar\IBag;
 
 class ActionBarManager implements IActionBarManager {
 
-    private $actionBarBag = null;
-    private $visible      = true;
+    private HashTable $actionBarBag;
+    private bool      $visible = true;
 
     public function __construct() {
         $this->actionBarBag = new HashTable();

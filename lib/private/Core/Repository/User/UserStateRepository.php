@@ -24,6 +24,7 @@ use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
@@ -97,11 +98,15 @@ class UserStateRepository implements IUserStateRepository {
             $createTs      = $row["create_ts"];
             $userStateHash = $row["state_hash"];
 
+            $user = $this->userRepository->getUserById((string) $userId);
+
+            if (null === $user) {
+                throw new KeestashException();
+            }
+
             $userState = new UserState();
             $userState->setId((int) $id);
-            $userState->setUser(
-                $this->userRepository->getUserById((string) $userId)
-            );
+            $userState->setUser($user);
             $userState->setValidFrom(
                 $this->dateTimeService->fromString($validFrom)
             );
@@ -163,7 +168,7 @@ class UserStateRepository implements IUserStateRepository {
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (null === $lastInsertId) return false;
+        if (false === is_numeric($lastInsertId)) return false;
         return true;
 
     }

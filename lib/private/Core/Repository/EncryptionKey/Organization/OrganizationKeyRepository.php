@@ -21,9 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\EncryptionKey\Organization;
 
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
+use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -34,6 +36,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
 
     private IDateTimeService $dateTimeService;
     private ILogger          $logger;
+    private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
@@ -43,12 +46,13 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         parent::__construct($backend, $dateTimeService, $logger);
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
+        $this->backend         = $backend;
     }
 
     public function storeKey(IOrganization $organization, IKey $key): bool {
         $key = $this->_storeKey($key);
 
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder
             ->insert('organization_key')
             ->values(
@@ -64,15 +68,22 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
 
         $queryBuilder->execute();
 
-        return null !== $this->getLastInsertId();
+        return true === is_numeric($this->backend->getConnection()->lastInsertId());
     }
 
     public function updateKey(IKey $key): bool {
         return $this->_update($key);
     }
 
-    public function getKey(IOrganization $organization): ?IKey {
-        $queryBuilder = $this->getQueryBuilder();
+    /**
+     * @param IOrganization $organization
+     * @return IKey
+     * @throws KeestashException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
+     */
+    public function getKey(IOrganization $organization): IKey {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
                 'k.id'
@@ -97,12 +108,16 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             $key->setKeyHolder($organization);
         }
 
+        if (null === $key) {
+            throw new KeestashException();
+        }
+
         return $key;
     }
 
     public function remove(IOrganization $organization): bool {
         $key          = $this->getKey($organization);
-        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->delete('organization_key')
             ->where('key_id = ?')
             ->setParameter(0, $key->getId())

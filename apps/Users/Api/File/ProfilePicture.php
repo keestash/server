@@ -90,7 +90,7 @@ class ProfilePicture implements RequestHandlerInterface {
         $path = "{$file->getDirectory()}/{$file->getName()}.{$file->getExtension()}";
         return new ImageResponse(
             $path
-            , mime_content_type($path)
+            , (string) mime_content_type($path)
         );
     }
 

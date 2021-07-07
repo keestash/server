@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Encryption;
 
+use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Encryption\IEncryptionService;
@@ -54,22 +55,22 @@ abstract class AESService implements IEncryptionService {
         $cipherText = openssl_encrypt(
             $raw
             , AESService::METHOD
-            , $key
+            , (string) $key
             , OPENSSL_RAW_DATA
-            , $iv
+            , (string) $iv
         );
 
         $hash = hash_hmac(
             AESService::HASH_ALGORITHM
-            , $cipherText
-            , $key
+            , (string) $cipherText
+            , (string) $key
             , true
         );
 
         return $iv . $hash . $cipherText;
     }
 
-    public function decrypt(ICredential $credential, string $encrypted): ?string {
+    public function decrypt(ICredential $credential, string $encrypted): string {
         $iv = substr(
             $encrypted
             , 0
@@ -99,16 +100,22 @@ abstract class AESService implements IEncryptionService {
 
         if ($newHash !== $hash) {
             $this->logger->error("hashes do not match. There was an error. Aborting encryption");
-            return null;
+            throw new EncryptionFailedException();
         }
 
-        return openssl_decrypt(
+        $decrypted = openssl_decrypt(
             $cipherText
             , AESService::METHOD
             , $key
             , OPENSSL_RAW_DATA
             , $iv
         );
+
+        if (false === $decrypted) {
+            throw new EncryptionFailedException();
+        }
+
+        return $decrypted;
 
     }
 

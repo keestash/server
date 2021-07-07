@@ -27,6 +27,6 @@ interface IEncryptionService {
 
     public function encrypt(ICredential $credential, string $raw): string;
 
-    public function decrypt(ICredential $credential, string $encrypted): ?string;
+    public function decrypt(ICredential $credential, string $encrypted): string;
 
 }

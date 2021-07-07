@@ -92,7 +92,7 @@ class FileRepository {
             ->execute();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
-        if (null === $lastInsertId) return false;
+        if (false === is_numeric($lastInsertId)) return false;
         return true;
     }
 

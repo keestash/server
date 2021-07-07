@@ -24,6 +24,7 @@ namespace Keestash\Core\Repository\EncryptionKey\User;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
+use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
@@ -76,7 +77,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         return $this->_update($key);
     }
 
-    public function getKey(IUser $user): ?IKey {
+    public function getKey(IUser $user): IKey {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
@@ -100,6 +101,10 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
             $key->setSecret($row[1]);
             $key->setCreateTs($this->dateTimeService->fromFormat($row[2]));
             $key->setKeyHolder($user);
+        }
+
+        if (null === $key) {
+            throw new KeestashException();
         }
 
         return $key;

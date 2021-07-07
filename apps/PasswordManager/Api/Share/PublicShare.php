@@ -53,7 +53,7 @@ class PublicShare implements RequestHandlerInterface {
 
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getParsedBody();
+        $parameters = (array) $request->getParsedBody();
         $nodeId     = $parameters["node_id"] ?? null;
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
@@ -88,10 +88,6 @@ class PublicShare implements RequestHandlerInterface {
         }
 
         $node = $this->shareRepository->shareNode($node);
-
-        if (null === $node) {
-            // TODO handle
-        }
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK

@@ -22,12 +22,18 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\File\Asset;
 
 use Keestash\Core\DTO\File\File;
+use Keestash\Core\DTO\URI\URL\URL;
 use KSP\Core\DTO\File\Asset\IAsset;
 use KSP\Core\DTO\URI\URL\IUniformResourceLocator;
 
 class Asset extends File implements IAsset {
 
-    private ?IUniformResourceLocator $url = null;
+    private IUniformResourceLocator $url;
+
+    public function __construct() {
+        $this->url = new URL();
+        $this->url->setIdentifier('');
+    }
 
     public function setURL(IUniformResourceLocator $url): void {
         $this->url = $url;

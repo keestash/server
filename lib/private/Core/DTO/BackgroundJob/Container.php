@@ -39,8 +39,6 @@ class Container extends \doganoo\Backgrounder\Util\Container {
     /**
      * @param string $name
      * @return mixed
-     * @throws \DI\DependencyException
-     * @throws \DI\NotFoundException
      */
     public function query(string $name) {
         return $this->container->get($name);

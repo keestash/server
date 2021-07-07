@@ -25,6 +25,7 @@ use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
@@ -138,7 +139,12 @@ class Create implements RequestHandlerInterface {
             return $this->nodeRepository->getRootForUser($token->getUser());
         }
 
-        return $this->nodeRepository->getNode((int) $parent);
+        $node = $this->nodeRepository->getNode((int) $parent);
+
+        if (null === $node || $node instanceof Folder) {
+            return $node;
+        }
+        throw new PasswordManagerException();
     }
 
 }

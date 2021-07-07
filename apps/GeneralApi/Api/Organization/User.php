@@ -58,7 +58,7 @@ class User implements RequestHandlerInterface {
 
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters     = json_decode((string)$request->getBody(), true);
+        $parameters     = json_decode((string) $request->getBody(), true);
         $mode           = $parameters["mode"] ?? null;
         $organizationId = $parameters["organization_id"] ?? null;
         $userId         = $parameters["user_id"] ?? null;
@@ -71,7 +71,7 @@ class User implements RequestHandlerInterface {
         }
 
         $organization = $this->organizationRepository->get((int) $organizationId);
-        $user         = $this->userRepository->getUserById($userId);
+        $user         = $this->userRepository->getUserById((string) $userId);
 
         if (null === $organization) {
             throw new GeneralApiException('no organization found');

@@ -55,7 +55,7 @@ class AfterRegistration implements IListener {
     }
 
     /**
-     * @param Event|UserCreatedEvent $event
+     * @param UserCreatedEvent $event
      * @throws DefaultPropertiesNotSetException
      * @throws KeyNotCreatedException
      * @throws KeyNotStoredException

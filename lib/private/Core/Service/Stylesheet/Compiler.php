@@ -68,7 +68,7 @@ class Compiler {
 
         if (false === $created || false === $isFile) {
             throw new StylesheetsNotCompiledException(
-                'created: ' . (true === $created ? 'true' : 'false')
+                'created: false'
                 . ' is file: ' . (true === $isFile ? 'true' : 'false')
                 . ' at destination: ' . $destination
             );

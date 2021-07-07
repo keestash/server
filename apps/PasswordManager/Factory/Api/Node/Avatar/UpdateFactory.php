@@ -28,6 +28,7 @@ use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
+use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class UpdateFactory {
@@ -40,6 +41,7 @@ class UpdateFactory {
             , $container->get(NodeRepository::class)
             , $container->get(RawFileService::class)
             , $container->get(FileService::class)
+            , $container->get(Config::class)
         );
     }
 

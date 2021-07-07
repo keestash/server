@@ -101,7 +101,7 @@ class DataManager implements IDataManager {
         }
 
         $copied = copy(
-            $file->getTemporaryPath()
+            (string) $file->getTemporaryPath()
             , $file->getFullPath()
         );
 
@@ -142,7 +142,7 @@ class DataManager implements IDataManager {
         $file   = new File();
         $isFile = is_file($file->getFullPath());
         if (false === $isFile) return $file;
-        $file->setContent(file_get_contents($file->getFullPath()));
+        $file->setContent((string) file_get_contents($file->getFullPath()));
         return $file;
     }
 

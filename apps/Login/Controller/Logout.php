@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Login\Controller;
 
 use Keestash\Core\Manager\SessionManager\SessionManager;
+use Keestash\Exception\KeestashException;
 use KSP\App\ILoader;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
@@ -59,9 +60,15 @@ class Logout implements RequestHandlerInterface {
         $this->tokenRepository->removeForUser($user);
         $this->sessionManager->killAll();
 
+        $defaultApp = $this->loader->getDefaultApp();
+
+        if (null === $defaultApp) {
+            throw new KeestashException();
+        }
+
         return new RedirectResponse(
             $this->router->generateUri(
-                $this->routerService->getRouteByPath($this->loader->getDefaultApp()->getBaseRoute())['name']
+                $this->routerService->getRouteByPath($defaultApp->getBaseRoute())['name']
             )
         );
 

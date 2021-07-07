@@ -21,25 +21,18 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\User;
 
-use DateTime;
 use DateTimeInterface;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 
 class UserState implements IUserState {
 
-    /** @var int */
-    private $id;
-    /** @var IUser */
-    private $user;
-    /** @var string */
-    private $state;
-    /** @var DateTime */
-    private $validFrom;
-    /** @var DateTime */
-    private $createTs;
-    /** @var string|null */
-    private $stateHash;
+    private int               $id;
+    private IUser             $user;
+    private string            $state;
+    private DateTimeInterface $validFrom;
+    private DateTimeInterface $createTs;
+    private ?string           $stateHash;
 
     public static function isValidState(string $state): bool {
         return in_array($state, [

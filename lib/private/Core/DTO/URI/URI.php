@@ -25,7 +25,7 @@ use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 
 class URI implements IUniformResourceIdentifier {
 
-    private $identifier = null;
+    private string $identifier;
 
     public function setIdentifier(string $identifier): void {
         $this->identifier = $identifier;

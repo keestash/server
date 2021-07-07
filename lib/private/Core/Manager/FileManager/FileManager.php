@@ -75,7 +75,12 @@ class FileManager implements IFileManager {
         if (false === $path) return false;
         $uri = new URI(); // TODO make better
         $uri->setIdentifier($path);;
-        $file     = $this->fileRepository->getByUri($uri);
+        $file = $this->fileRepository->getByUri($uri);
+
+        if (null === $file) {
+            return true;
+        }
+
         $unlinked = unlink($path);
         $removed  = $this->fileRepository->remove($file);
 
