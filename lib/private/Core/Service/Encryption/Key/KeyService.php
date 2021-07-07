@@ -99,10 +99,10 @@ class KeyService implements IKeyService {
      * retrieves a given key
      *
      * @param IKeyHolder $keyHolder
-     * @return IKey|null
+     * @return IKey
      * @throws PasswordManagerException
      */
-    public function getKey(IKeyHolder $keyHolder): ?IKey {
+    public function getKey(IKeyHolder $keyHolder): IKey {
         if ($keyHolder instanceof IUser) {
             return $this->userKeyRepository->getKey($keyHolder);
         } else if ($keyHolder instanceof IOrganization) {

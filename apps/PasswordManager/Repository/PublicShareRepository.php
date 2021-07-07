@@ -15,6 +15,7 @@ namespace KSA\PasswordManager\Repository;
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Share\PublicShare;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
@@ -35,8 +36,12 @@ class PublicShareRepository {
         $this->backend         = $backend;
     }
 
-    public function shareNode(Node $node): ?Node {
+    public function shareNode(Node $node): Node {
         $share = $node->getPublicShare();
+
+        if (null === $share) {
+            throw new PasswordManagerException();
+        }
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`pwm_public_share`")
@@ -54,7 +59,10 @@ class PublicShareRepository {
 
         $shareId = (int) $this->backend->getConnection()->lastInsertId();
 
-        if (0 === $shareId) return null;
+        if (0 === $shareId) {
+            throw new PasswordManagerException();
+        }
+
         $share->setId($shareId);
         $node->setPublicShare($share);
         return $node;

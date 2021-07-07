@@ -38,7 +38,7 @@ class PHPStan extends KeestashCommand {
         $this->instanceRoot = $instanceRoot;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setDescription("Runs PHPStan Quality Tool")
             ->setHelp("measures quality of all PHP source code files");
     }
@@ -49,7 +49,7 @@ class PHPStan extends KeestashCommand {
         $this->writeInfo($command, $output);
         $result = shell_exec($command);
 
-        $this->writeComment($result, $output);
+        $this->writeComment((string) $result, $output);
         return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
 
     }

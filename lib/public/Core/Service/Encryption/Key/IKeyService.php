@@ -50,8 +50,8 @@ interface IKeyService {
      * retrieves a given key
      *
      * @param IKeyHolder $keyHolder
-     * @return IKey|null
+     * @return IKey
      */
-    public function getKey(IKeyHolder $keyHolder): ?IKey;
+    public function getKey(IKeyHolder $keyHolder): IKey;
 
 }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,31 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\ResponseManager;
+namespace KSA\PasswordManager\Test\Exception;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Api\IResponse;
-use KSP\Core\Manager\ResponseManager\IResponseManager;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 
-class JSONResponseManager implements IResponseManager {
-
-    public $responses = null;
-
-    public function __construct() {
-        $this->responses = new ArrayList();
-    }
-
-    public function add(IResponse $response): void {
-        $this->responses->add($response);
-    }
-
-    public function getResponses(): ArrayList {
-        return $this->responses;
-    }
-
-    public function unsetResponses(): bool {
-        $this->responses = new ArrayList();
-        return true;
-    }
+class PasswordManagerTestException extends PasswordManagerException {
 
 }

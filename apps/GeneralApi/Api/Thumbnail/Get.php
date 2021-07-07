@@ -61,7 +61,7 @@ class Get implements RequestHandlerInterface {
         $this->logger->debug($path);
         return new ImageResponse(
             $path
-            , mime_content_type($path)
+            , (string) mime_content_type($path)
         );
     }
 

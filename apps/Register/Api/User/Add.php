@@ -34,7 +34,6 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -164,7 +163,7 @@ class Add implements RequestHandlerInterface {
 
             try {
                 $user = $this->userRepositoryService->createUser(
-                    $this->userService->toNewUser($request->getParsedBody())
+                    $this->userService->toNewUser((array) $request->getParsedBody())
                 );
 
                 if (true === $locked) {
@@ -194,7 +193,7 @@ class Add implements RequestHandlerInterface {
 
     }
 
-    private function getParameter(string $name, RequestInterface $request) {
+    private function getParameter(string $name, ServerRequestInterface $request) {
         return $request->getParsedBody()[$name] ?? null;
     }
 

@@ -24,6 +24,7 @@ namespace KSA\GeneralApi\Command\Stylesheet;
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
+use KSP\Core\ILogger\ILogger;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,18 +39,21 @@ class Compiler extends KeestashCommand {
 
     private StylesheetCompiler $stylesheetCompiler;
     private Config             $config;
+    private ILogger            $logger;
 
     public function __construct(
         StylesheetCompiler $compiler
         , Config $config
+        , ILogger $logger
     ) {
         parent::__construct("general-api:compile-scss");
 
         $this->stylesheetCompiler = $compiler;
         $this->config             = $config;
+        $this->logger             = $logger;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setDescription("Compiles all SCSS belonging to the instance and all apps")
             ->setHelp("Make sure your scss are located in the correct path");
     }
@@ -69,6 +73,11 @@ class Compiler extends KeestashCommand {
         $files = glob(
             $this->config->get(ConfigProvider::INSTANCE_PATH) . '/apps/*/scss/*.scss'
         );
+
+        if (false === $files) {
+            $this->logger->debug('nothing to log, files array is empty');
+            return;
+        }
 
         foreach ($files as $file) {
 

@@ -79,15 +79,15 @@ class FileService implements IFileService {
         $file = new File();
         $file->setId(FileService::DEFAULT_IMAGE_FILE_ID);
         $file->setContent(
-            file_get_contents($path)
+            (string) file_get_contents($path)
         );
         $file->setCreateTs(new DateTime());
         $file->setDirectory($dir);
         $file->setExtension(IExtension::PNG);
-        $file->setHash(md5_file($path));
-        $file->setMimeType($this->rawFileService->getMimeType($path));
+        $file->setHash((string) md5_file($path));
+        $file->setMimeType((string) $this->rawFileService->getMimeType($path));
         $file->setName($name);
-        $file->setSize(filesize($path));
+        $file->setSize((int) filesize($path));
         $file->setOwner(
             $this->userService->getSystemUser()
         );
@@ -118,15 +118,15 @@ class FileService implements IFileService {
         $file = new File();
         $file->setId(FileService::DEFAULT_AVATAR_FILE_ID);
         $file->setContent(
-            file_get_contents($path)
+            (string) file_get_contents($path)
         );
         $file->setCreateTs(new DateTime());
         $file->setDirectory($dir);
         $file->setExtension($extension);
-        $file->setHash(md5_file($path));
-        $file->setMimeType($this->rawFileService->getMimeType($path));
+        $file->setHash((string) md5_file($path));
+        $file->setMimeType((string) $this->rawFileService->getMimeType($path));
         $file->setName($name);
-        $file->setSize(filesize($path));
+        $file->setSize((int) filesize($path));
         $file->setOwner(
             $this->userService->getSystemUser()
         );

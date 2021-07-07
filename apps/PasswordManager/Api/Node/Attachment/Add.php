@@ -92,8 +92,9 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $nodeId   = $request->getParsedBody()["node_id"];
-        $fileList = $request->getUploadedFiles();
+        $parameters = (array) $request->getParsedBody();
+        $nodeId     = $parameters["node_id"];
+        $fileList   = $request->getUploadedFiles();
 
         $fileCount      = count($fileList);
         $processedFiles = [];

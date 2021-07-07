@@ -85,7 +85,7 @@ class CredentialService implements ICredentialService {
         }
         $credential->setSecret($secret);
         $credential->setCreateTs(new DateTime());
-        $credential->setId($user->getId());
+        $credential->setId($credential->getId());
         return $credential;
     }
 

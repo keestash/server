@@ -37,7 +37,7 @@ class Logger implements ILoggerService {
     }
 
     public function log(string $key, string $message, int $level): void {
-        $this->log($key, json_encode([$key, $message, $level]), $level);
+        $this->log($key, (string) json_encode([$key, $message, $level]), $level);
     }
 
 }

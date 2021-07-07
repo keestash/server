@@ -28,16 +28,15 @@ use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\KeestashException;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\L10N\IL10N;
-use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -88,8 +87,12 @@ class Login implements RequestHandlerInterface {
 
         $user = $this->userRepository->getUser($userName);
 
+        if (null === $user) {
+            throw new KeestashException();
+        }
+        
         $this->logger->debug("test");
-        $this->logger->debug(json_encode($request));
+        $this->logger->debug((string) json_encode($request));
 
         if (true === $this->userService->isDisabled($user)) {
             return LegacyResponse::fromData(

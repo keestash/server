@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\EncryptionKey\Organization;
 
+use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IOrganizationKeyRepository extends IRepository {
@@ -32,7 +32,12 @@ interface IOrganizationKeyRepository extends IRepository {
 
     public function updateKey(IKey $key): bool;
 
-    public function getKey(IOrganization $organization): ?IKey;
+    /**
+     * @param IOrganization $organization
+     * @return IKey
+     * @throws KeestashException
+     */
+    public function getKey(IOrganization $organization): IKey;
 
     public function remove(IOrganization $organization): bool;
 

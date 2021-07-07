@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential\Password;
 
 use Keestash\Api\Response\LegacyResponse;
+use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
@@ -63,6 +65,10 @@ class Get implements RequestHandlerInterface {
                 , []
                 , 404
             );
+        }
+
+        if (!($node instanceof Credential)) {
+            throw new PasswordManagerException();
         }
 
         return LegacyResponse::fromData(

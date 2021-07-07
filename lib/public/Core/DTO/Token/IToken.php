@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\Token;
 
 use DateTime;
+use DateTimeInterface;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\User\IUser;
 
@@ -41,6 +42,6 @@ interface IToken extends IJsonObject {
 
     public function getUser(): IUser;
 
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
 }

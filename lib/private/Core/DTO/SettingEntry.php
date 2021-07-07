@@ -21,19 +21,21 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO;
 
+use DateTime;
+use DateTimeInterface;
 use KSP\Core\View\Navigation\IEntry;
 
 class SettingEntry implements IEntry {
 
-    private $id;
-    private $name;
-    private $order;
-    private $faClass;
-    private $startDate;
-    private $endDate;
+    private string            $id;
+    private string            $name;
+    private int               $order;
+    private string            $faClass;
+    private DateTimeInterface $startDate;
+    private DateTimeInterface $endDate;
 
     /**
-     * @param mixed $object
+     * @param object $object
      * @return int
      */
     public function compareTo($object): int {
@@ -79,16 +81,16 @@ class SettingEntry implements IEntry {
         $this->order = $order;
     }
 
-    public function getStartDate(): \DateTime {
+    public function getStartDate(): DateTimeInterface {
         return $this->startDate;
     }
 
     /**
-     * @param int|\DateTime $startDate
+     * @param int|DateTimeInterface $startDate
      */
     public function setStartDate($startDate): void {
         if (is_int($startDate)) {
-            $s = new \DateTime();
+            $s = new DateTime();
             $s->setTimestamp($startDate);
             $this->startDate = $s;
             return;
@@ -96,16 +98,16 @@ class SettingEntry implements IEntry {
         $this->startDate = $startDate;
     }
 
-    public function getEndDate(): \DateTime {
+    public function getEndDate(): DateTimeInterface {
         return $this->endDate;
     }
 
     /**
-     * @param int|\DateTime $endDate
+     * @param int|DateTimeInterface $endDate
      */
     public function setEndDate($endDate): void {
         if (is_int($endDate)) {
-            $s = new \DateTime();
+            $s = new DateTime();
             $s->setTimestamp($endDate);
             $this->endDate = $s;
             return;

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Unit\Service\Node;
 
 use DateTime;
+use DateTimeInterface;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
@@ -76,6 +77,7 @@ class NodeServiceTest extends TestCase {
         $expectedExpireDate->modify('+10 days');
 
         $this->assertTrue($edge instanceof Edge);
+        $this->assertTrue($edge->getExpireTs() instanceof DateTimeInterface);
         $this->assertTrue($edge->getExpireTs()->format("Y.m.d") === $expectedExpireDate->format("Y.m.d"));
         $this->assertTrue($edge->getType() === Edge::TYPE_SHARE);
         $this->assertTrue($edge->getCreateTs() < new DateTime());

@@ -80,13 +80,17 @@ class TokenRepository implements ITokenRepository {
         $userId   = $row[3];
         $createTs = $row[4];
 
+        $user = $this->userRepository->getUserById((string) $userId);
+
+        if (null == $user) {
+            throw new KeestashException();
+        }
+
         $token = new Token();
         $token->setId((int) $id);
         $token->setName($name);
         $token->setValue($value);
-        $token->setUser(
-            $this->userRepository->getUserById($userId)
-        );
+        $token->setUser($user);
         $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
 
         return $token;
@@ -116,13 +120,17 @@ class TokenRepository implements ITokenRepository {
             $userId   = $row[3];
             $createTs = $row[4];
 
+            $user = $this->userRepository->getUserById((string) $userId);
+
+            if (null == $user) {
+                throw new KeestashException();
+            }
+
             $token = new Token();
             $token->setId((int) $id);
             $token->setName($name);
             $token->setValue($value);
-            $token->setUser(
-                $this->userRepository->getUserById((string) $userId)
-            );
+            $token->setUser($user);
             $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
         }
 

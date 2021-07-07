@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Token;
 
-use DateTime;
 use DateTimeInterface;
 use doganoo\PHPUtil\Datatype\StringClass;
 use KSP\Core\DTO\Token\IToken;
@@ -29,11 +28,11 @@ use KSP\Core\DTO\User\IUser;
 
 class Token implements IToken {
 
-    private $id        = null;
-    private $value     = null;
-    private $timestamp = null;
-    private $name      = null;
-    private $user      = null;
+    private int               $id;
+    private string            $value;
+    private DateTimeInterface $timestamp;
+    private string            $name;
+    private IUser             $user;
 
     public function getId(): int {
         return $this->id;
@@ -85,18 +84,18 @@ class Token implements IToken {
         return false;
     }
 
-    public function getCreateTs(): DateTime {
+    public function getCreateTs(): DateTimeInterface {
         return $this->timestamp;
     }
 
     /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()
             , "value"     => $this->getValue()

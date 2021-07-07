@@ -63,7 +63,7 @@ class InstanceRepository {
         return true;
     }
 
-    public function execute(string $query) {
+    public function execute(string $query): bool {
         return $this->backend->getConnection()->prepare($query)->execute();
     }
 

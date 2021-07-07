@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node;
 use Exception;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Repository\IOrganizationRepository;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\Organization as OrganizationNodeRepository;
 use KSP\Api\IResponse;
@@ -75,6 +76,10 @@ class Organization implements RequestHandlerInterface {
             );
         }
 
+        if (null === $organization) {
+            throw new PasswordManagerException();
+        }
+
         $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
         try {
             $this->organization->addNodeToOrganization(
@@ -88,5 +93,5 @@ class Organization implements RequestHandlerInterface {
 
         return LegacyResponse::fromData($responseCode, []);
     }
-    
+
 }

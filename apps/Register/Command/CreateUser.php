@@ -62,7 +62,7 @@ class CreateUser extends KeestashCommand {
         $this->userRepositoryService = $userRepositoryService;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName("register:create-user")
             ->setDescription("creates a new user")
             ->addOption('locked', 'l', InputOption::VALUE_NONE, "whether the user is locked")

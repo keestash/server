@@ -48,13 +48,13 @@ class FileService implements IFileService {
             $uri
         );
         $file->setType(
-            mime_content_type($uri)
+            (string) mime_content_type($uri)
         );
         return $file;
     }
 
     public function validateUploadedFile(IFile $file): bool {
-        /** @var UploadedFile $file */
+        /** @var UploadedFile|IFile $file */
         $error          = $file->getError();
         $tmpName        = $file->getTmpName();
         $type           = $file->getType();
@@ -77,11 +77,11 @@ class FileService implements IFileService {
 
         $coreFile = new File();
         $coreFile->setExtension($extensions[0]);
-        $coreFile->setHash(md5_file($file->getTmpName()));
+        $coreFile->setHash((string) md5_file($file->getTmpName()));
         $coreFile->setTemporaryPath($file->getTmpName());
         $coreFile->setMimeType($file->getType());
-        $coreFile->setName($file->getClientFilename());
-        $coreFile->setSize($file->getSize());
+        $coreFile->setName((string) $file->getClientFilename());
+        $coreFile->setSize((int) $file->getSize());
         $coreFile->setCreateTs(new DateTime());
         return $coreFile;
     }

@@ -92,7 +92,7 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getUrl()
+                , (string) $credential->getUrl()
             ) === $url);
         $this->assertTrue(
             $this->encryptionService->decrypt(
@@ -104,7 +104,7 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getNotes()
+                , (string) $credential->getNotes()
             ) === $note);
         $this->assertTrue($credential->getType() === Node::CREDENTIAL);
     }

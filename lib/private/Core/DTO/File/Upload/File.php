@@ -60,8 +60,8 @@ class File extends UploadedFile implements IFile {
 
     public static function fromUploadedFile(UploadedFileInterface $file): IFile {
         return new File(
-            $file->getStream()
-            , $file->getSize()
+            (string) $file->getStream()
+            , (int) $file->getSize()
             , $file->getError()
             , $file->getClientFilename()
             , $file->getClientMediaType()

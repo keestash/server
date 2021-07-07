@@ -66,7 +66,7 @@ class Update implements RequestHandlerInterface {
 
         $hasChanges = false;
 
-        /** @var Credential $node */
+        /** @var Credential|null $node */
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
         if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {

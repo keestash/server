@@ -37,7 +37,7 @@ class PasswordService {
     private const SPECIAL_CHARACTERS_KEY = "characters.special";
     private const SPECIAL_CHARACTERS     = "!@#$%^&*()_-=+;:,.?";
 
-    private $characterTable = null;
+    private HashTable $characterTable;
 
     public function __construct() {
         $this->characterTable = new HashTable();
@@ -150,7 +150,7 @@ class PasswordService {
         return 1;
     }
 
-    private function getPasswordEntropy(Password $password) {
+    private function getPasswordEntropy(Password $password): float {
         $characterSet      = $password->getCharacterSet();
         $alphabet          = implode("", $characterSet);
         $length            = $password->getLength();

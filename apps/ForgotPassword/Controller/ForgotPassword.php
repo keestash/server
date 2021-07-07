@@ -75,11 +75,11 @@ class ForgotPassword extends StaticAppController {
                 // values
                 , "backgroundPath"                => $this->httpService->getBaseURL(false) . "/asset/img/forgot-password-background.jpg"
                 , "logoPath"                      => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
-                , "backToLoginLink"               => $this->httpService->getBaseURL(true) . "/" . Application::LOGIN
+                , "backToLoginLink"               => $this->httpService->getBaseURL(true) . "/login"
                 , "newAccountLink"                => $this->httpService->getBaseURL(true) . "/register"
                 , "forgotPasswordLink"            => $this->httpService->getBaseURL(true) . "/forgot_password"
-                , "registeringEnabled"            => $this->loader->hasApp(Application::APP_NAME_REGISTER)
-                , "forgotPasswordEnabled"         => $this->loader->hasApp(Application::APP_NAME_FORGOT_PASSWORD)
+                , "registeringEnabled"            => $this->loader->hasApp('register')
+                , "forgotPasswordEnabled"         => $this->loader->hasApp('forgot_password')
                 , "newTab"                        => false === $this->configService->getValue('debug', false)
             ]);
 

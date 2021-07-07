@@ -102,10 +102,6 @@ class Add implements RequestHandlerInterface {
         );
         $comment = $this->commentRepository->addComment($comment);
 
-        if (null === $comment) {
-            throw new CommentException();
-        }
-
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [

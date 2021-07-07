@@ -36,7 +36,7 @@ class NavigationManager implements INavigationManager {
 
     public const NAVIGATION_TYPE_SETTINGS_PART_INDEX = 0;
 
-    private $navigationMap = null;
+    private HashTable $navigationMap;
 
 
     public function __construct() {
@@ -57,7 +57,7 @@ class NavigationManager implements INavigationManager {
             // TODO find a better way
             $navigation->addPart(new class implements IPart {
 
-                private $entries = null;
+                private ArrayList $entries;
 
                 public function __construct() {
                     $this->entries = new ArrayList();

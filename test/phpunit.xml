@@ -1,6 +1,6 @@
 <phpunit
         bootstrap="bootstrap.php"
-        cacheResultFile="result/result.php"
+        cacheResultFile="result/result.json"
         verbose="true"
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"

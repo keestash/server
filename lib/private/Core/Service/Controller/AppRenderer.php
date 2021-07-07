@@ -27,10 +27,10 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
+use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\App\ILoader;
-use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Service\Controller\IAppRenderer;
@@ -140,6 +140,12 @@ class AppRenderer implements IAppRenderer {
         }
         );
 
+        $defaultApp = $this->loader->getDefaultApp();
+
+        if (null === $defaultApp) {
+            throw new KeestashException();
+        }
+
         return $this->templateRenderer
             ->render(
                 'root::navbar'
@@ -155,7 +161,7 @@ class AppRenderer implements IAppRenderer {
                     , "baseURL"     => $this->httpService->getBaseURL()
                     , "mainHref"    => $this->router->generateUri(
                         $this->routerService->getRouteByPath(
-                            $this->loader->getDefaultApp()->getBaseRoute()
+                            $defaultApp->getBaseRoute()
                         )['name']
                     )
                 ]
@@ -188,7 +194,7 @@ class AppRenderer implements IAppRenderer {
         if (false === is_file($path)) {
             $path = "{$file->getDirectory()}/{$file->getName()}";
         }
-        return $this->rawFileService->stringToBase64($path);
+        return (string) $this->rawFileService->stringToBase64($path);
     }
 
     public function renderBody(
@@ -321,7 +327,8 @@ class AppRenderer implements IAppRenderer {
                         , $navigationList
                         , $actionBar
                     )
-                    , "noContext" => static::class === StaticAppController::class
+                    //                    , "noContext" => static::class === StaticAppController::class
+                    , "noContext" => true === $contextLess
                     , "language"  => $this->localeService->getLocale()
                 ]
             );

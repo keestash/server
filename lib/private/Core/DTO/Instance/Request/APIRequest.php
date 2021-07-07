@@ -30,10 +30,10 @@ use KSP\Core\DTO\Token\IToken;
  */
 class APIRequest implements IAPIRequest {
 
-    private $token = null;
-    private $start = null;
-    private $end   = null;
-    private $route = null;
+    private IToken $token;
+    private float  $start;
+    private float  $end;
+    private string $route;
 
     public function getToken(): IToken {
         return $this->token;
@@ -74,11 +74,11 @@ class APIRequest implements IAPIRequest {
     /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "token"      => $this->getToken()
             , "route"    => $this->getRoute()

@@ -22,7 +22,11 @@ class App implements IApp {
     private bool              $enabled;
     private int               $version;
     private DateTimeInterface $createTs;
-    private ?JobList          $jobs = null;
+    private JobList           $jobs;
+
+    public function __construct() {
+        $this->jobs = new JobList();
+    }
 
     public function getId(): string {
         return $this->id;

@@ -26,6 +26,7 @@ use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
@@ -59,6 +60,10 @@ class NodeService {
         $node = $this->nodeRepository->getNode($nodeId, 0, 1);
         $user = $this->userRepository->getUserById($userId);
 
+        if (null === $user) {
+            throw new PasswordManagerException();
+        }
+
         return
             $node !== null
             && false === $this->userService->isDisabled($user)
@@ -85,7 +90,12 @@ class NodeService {
      * @return Edge
      */
     private function prepareEdge(int $nodeId, string $userId): Edge {
-        $user       = $this->userRepository->getUserById($userId);
+        $user = $this->userRepository->getUserById($userId);
+
+        if (null === $user) {
+            throw new PasswordManagerException();
+        }
+
         $node       = $this->nodeRepository->getNode($nodeId);
         $parentNode = $this->nodeRepository->getRootForUser($user);
 

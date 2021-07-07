@@ -46,7 +46,7 @@ class PostStateChange implements IListener {
     }
 
     /**
-     * @param Event|UserStateDeleteEvent $event
+     * @param UserStateDeleteEvent $event
      */
     public function execute(Event $event): void {
 

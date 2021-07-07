@@ -110,6 +110,7 @@ class FileRepository implements IFileRepository {
 
     public function remove(IFile $file): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        // @phpstan-ignore-next-line
         return $queryBuilder->delete('file')
                 ->where('id = ?')
                 ->setParameter(0, $file->getId())
@@ -171,6 +172,12 @@ class FileRepository implements IFileRepository {
         $createTs  = $row["create_ts"];
         $userId    = $row["user_id"];
 
+        $user = $this->userRepository->getUserById((string) $userId);
+
+        if (null == $user) {
+            throw new KeestashException();
+        }
+
         $file = new File();
         $file->setId((int) $id);
         $file->setName($name);
@@ -179,9 +186,7 @@ class FileRepository implements IFileRepository {
         $file->setHash($hash);
         $file->setExtension($extension);
         $file->setSize((int) $size);
-        $file->setOwner(
-            $this->userRepository->getUserById((string) $userId)
-        );
+        $file->setOwner($user);
         $file->setCreateTs(
             $this->dateTimeService->fromFormat($createTs)
         );
@@ -226,6 +231,12 @@ class FileRepository implements IFileRepository {
             $createTs  = $row[8];
             $directory = $row[9];
 
+            $user = $this->userRepository->getUserById((string) $userId);
+
+            if (null == $user) {
+                throw new KeestashException();
+            }
+
             $file = new File();
             $file->setId((int) $id);
             $file->setName($name);
@@ -234,9 +245,7 @@ class FileRepository implements IFileRepository {
             $file->setHash($hash);
             $file->setExtension($extension);
             $file->setSize((int) $size);
-            $file->setOwner(
-                $this->userRepository->getUserById((string) $userId)
-            );
+            $file->setOwner($user);
             $file->setCreateTs(
                 $this->dateTimeService->fromFormat($createTs)
             );
@@ -248,10 +257,11 @@ class FileRepository implements IFileRepository {
 
     public function removeForUser(IUser $user): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        // @phpstan-ignore-next-line
         return $queryBuilder->delete('file')
-            ->where('user_id = ?')
-            ->setParameter(0, $user->getId())
-            ->execute() > 0;
+                ->where('user_id = ?')
+                ->setParameter(0, $user->getId())
+                ->execute() > 0;
     }
 
     /**

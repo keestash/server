@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\RawFile;
 
 use Keestash\Core\DTO\URI\URI;
+use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use xobotyi\MimeType;
 
@@ -32,7 +33,17 @@ class RawFileService {
         if (false === $path) return null;
 
         $f = finfo_open();
-        return finfo_buffer($f, file_get_contents($path), FILEINFO_MIME_TYPE);
+
+        if (false === is_resource($f)) {
+            throw new KeestashException();
+        }
+
+        $buffer = finfo_buffer($f, (string) file_get_contents($path), FILEINFO_MIME_TYPE);
+
+        if (false === $buffer) {
+            return null;
+        }
+        return $buffer;
     }
 
     public function getFileExtensions(string $path): ?array {
@@ -58,14 +69,19 @@ class RawFileService {
         $content = @file_get_contents($path);
 
         if (false === $content) return null;
-        $tempNae = tempnam(sys_get_temp_dir(), "pp_");
-        $put     = file_put_contents($tempNae, $content);
+        $tempName = (string) tempnam(sys_get_temp_dir(), "pp_");
+
+        if (false === is_dir($tempName)) {
+            throw new KeestashException();
+        }
+
+        $put = file_put_contents($tempName, $content);
         if (false === $put) return null;
 
         $base64 = $imgData = base64_encode($content);
 
         if (false === $rawBase64) {
-            $base64 = 'data: ' . mime_content_type($tempNae) . ';base64, ' . $imgData;
+            $base64 = 'data: ' . mime_content_type($tempName) . ';base64, ' . $imgData;
         }
 
         return $base64;

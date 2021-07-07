@@ -43,7 +43,7 @@ class Remove implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getParsedBody();
+        $parameters = (array) $request->getParsedBody();
         $shareId    = $parameters["shareId"] ?? null;
 
         if (null === $shareId) {

@@ -79,7 +79,7 @@ class EncryptionService extends AESService {
         return $tempKey;
     }
 
-    public function decrypt(ICredential $credential, string $encrypted): ?string {
+    public function decrypt(ICredential $credential, string $encrypted): string {
         return parent::decrypt(
             $this->prepareKey($credential)
             , $encrypted

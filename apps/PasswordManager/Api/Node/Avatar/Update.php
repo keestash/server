@@ -26,6 +26,7 @@ use Keestash\Core\Manager\DataManager\DataManager;
 use Keestash\Core\Service\File\FileService as CoreFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\Application\Application;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Exception\Node\Credential\FileNotMovedException;
@@ -39,6 +40,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
+use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -62,6 +64,7 @@ class Update implements RequestHandlerInterface {
         , NodeRepository $nodeRepository
         , RawFileService $rawFileService
         , CoreFileService $coreFileService
+        , Config $config
     ) {
         $this->uploadFileService  = $uploadFileService;
         $this->fileRepository     = $fileRepository;
@@ -70,7 +73,8 @@ class Update implements RequestHandlerInterface {
         $this->rawFileService     = $rawFileService;
         $this->coreFileService    = $coreFileService;
         $this->dataManager        = new DataManager(
-            Application::APP_ID
+            ConfigProvider::APP_ID
+            , $config
             , Update::CONTEXT
         );
     }
@@ -160,7 +164,7 @@ class Update implements RequestHandlerInterface {
                 $avatarFile->getFile()->getId()
             );
             $avatarFile->setFile($file);
-            $this->fileRepository->update($nodeFile->getFile());
+            $this->fileRepository->update($avatarFile->getFile());
         }
 
         return LegacyResponse::fromData(

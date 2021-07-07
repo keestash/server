@@ -23,6 +23,8 @@ namespace KSA\PasswordManager\Command\Node\Credential;
 
 use Exception;
 use Keestash\Command\KeestashCommand;
+use KSA\PasswordManager\Entity\Folder\Folder;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Core\Repository\User\IUserRepository;
@@ -54,7 +56,7 @@ class CreateCredential extends KeestashCommand {
         $this->nodeRepository    = $nodeRepository;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName("password-manager:create-credential")
             ->setDescription("creates a new credential");
     }
@@ -77,8 +79,17 @@ class CreateCredential extends KeestashCommand {
         $userId   = $style->ask("User ID") ?? "";
         $parentId = $style->ask("Parent ID") ?? "";
 
-        $user       = $this->userRepository->getUserById($userId);
-        $parent     = $this->nodeRepository->getNode((int) $parentId, 0, 1);
+        $user   = $this->userRepository->getUserById($userId);
+        $parent = $this->nodeRepository->getNode((int) $parentId, 0, 1);
+
+        if (null === $user) {
+            throw new PasswordManagerException();
+        }
+        
+        if (null === $parent || !($parent instanceof Folder)) {
+            throw new PasswordManagerException();
+        }
+
         $credential = $this->credentialService->createCredential(
             $password
             , $url

@@ -80,7 +80,7 @@ class Get implements RequestHandlerInterface {
             : $avatarFile->getFile();
 
         return new TextResponse(
-            file_get_contents($file->getFullPath())
+            (string) file_get_contents($file->getFullPath())
             , 200
             , ['Content-Disposition' => 'inline; filename="' . rawurldecode($file->getName()) . '"']
         );

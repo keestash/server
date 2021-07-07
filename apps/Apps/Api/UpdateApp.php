@@ -38,12 +38,12 @@ class UpdateApp implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getParsedBody();
+        $parameters = (array) $request->getParsedBody();
         $appId      = $parameters["app_id"] ?? null;
         $activate   = $parameters["activate"] ?? null;
 
 
-        if (null === is_string($activate)) {
+        if (null === $activate) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -52,7 +52,7 @@ class UpdateApp implements RequestHandlerInterface {
             );
         }
 
-        if (false === is_string($appId)) {
+        if (false === $appId) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [

@@ -35,7 +35,7 @@ class ImageResponse extends TextResponse {
             $statusCode = 200;
         }
         parent::__construct(
-            base64_encode($content)
+            base64_encode((string) $content)
             , $statusCode
             , [
                 IResponse::HEADER_CONTENT_TYPE => $mimeType

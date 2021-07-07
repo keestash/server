@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\User;
 
+use Doctrine\DBAL\ForwardCompatibility\DriverStatement;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
@@ -214,7 +215,7 @@ class UserRepository implements IUserRepository {
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (null === $lastInsertId) return null;
+        if (false === is_numeric($lastInsertId)) return null;
         return (int) $lastInsertId;
 
     }
@@ -324,7 +325,7 @@ class UserRepository implements IUserRepository {
     /**
      * Returns an instance of IUser or null, if not found
      *
-     * @param string $id
+     * @param string $hash
      *
      * @return IUser|null
      * @throws KeestashException

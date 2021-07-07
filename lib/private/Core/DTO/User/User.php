@@ -74,6 +74,10 @@ class User implements IUser {
         $this->password = $password;
     }
 
+    /**
+     * @param object $object
+     * @return bool
+     */
     public function equals($object): bool {
         if ($object instanceof IUser) {
             return $this->getId() === $object->getId();

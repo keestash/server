@@ -60,10 +60,6 @@ class IconService implements IIconService {
                 break;
         }
 
-        if (null === $icon) {
-            throw new UnknownIconException();
-        }
-
         return $icon;
 
     }
