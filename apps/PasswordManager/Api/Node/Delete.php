@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
-use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -54,49 +54,48 @@ class Delete implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
-        $id         = $parameters["id"] ?? "0";
-        $type       = $parameters["type"] ?? "";
+        $parameters = $request->getParsedBody();
+        $id         = $parameters["id"] ?? null;
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
 
-        $deletable = $this->nodeService->isDeletable($type);
-        $node      = $this->nodeRepository->getNode((int) $id);
+        $node = $this->nodeRepository->getNode((int) $id);
 
-        if (false === $deletable) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("type $type is not deletable")
-                ]
-            );
+        if (null === $node) {
+            return new JsonResponse([$this->translator->translate("no node found")], IResponse::NOT_FOUND);
         }
 
-        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no node found")
+        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
+            return new JsonResponse([$this->translator->translate("you are not allowed to do this action")], IResponse::UNAUTHORIZED);
+        }
+
+        $deletable = $this->nodeService->isDeletable($node->getType());
+
+        if (false === $deletable) {
+            return new JsonResponse(
+                [
+                    "message" => $this->translator->translate("type {$node->getType()} is not deletable")
                 ]
+                , IResponse::INTERNAL_SERVER_ERROR
             );
         }
 
         $deleted = $this->nodeRepository->remove($node);
 
         if (false === $deleted) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("error while deleting")
                 ]
+                , IResponse::INTERNAL_SERVER_ERROR
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "message" => $this->translator->translate("deleted")
             ]
+            , IResponse::OK
         );
     }
 
