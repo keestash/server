@@ -71,7 +71,7 @@ class RawFileService {
         if (false === $content) return null;
         $tempName = (string) tempnam(sys_get_temp_dir(), "pp_");
 
-        if (false === is_dir($tempName)) {
+        if (false === is_file($tempName)) {
             throw new KeestashException();
         }
 
