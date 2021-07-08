@@ -62,7 +62,7 @@ class UpdateApp implements RequestHandlerInterface {
         }
 
         /** @var IApp|null $app */
-        $app = $this->appRepository->getApp($appId);
+        $app = $this->appRepository->getApp((string) $appId);
 
         if (null === $app) {
             return LegacyResponse::fromData(

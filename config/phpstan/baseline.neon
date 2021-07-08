@@ -1,0 +1,547 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method KSP\\\\App\\\\Config\\\\IApp\\:\\:setEnabled\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Apps/Api/UpdateApp.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Api/ResetPassword.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setActiveTs\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Api/Organization/Activate.php
+
+		-
+			message: "#^Cannot call method getUsers\\(\\) on KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\|null\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Api/Organization/Get.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Api/Organization/User.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setUsers\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Api/Organization/User.php
+
+		-
+			message: "#^Cannot call method getFullPath\\(\\) on KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|null\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Api/UserList.php
+
+		-
+			message: "#^Binary operation \"\\.\" between 'given mode is ' and array\\<string\\>\\|string\\|null results in an error\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Command/Migration/MigrateApps.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Command/Stylesheet/Compiler.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Event/Listener/UserChangedListener.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\EventDispatcher\\\\Event\\:\\:getOrganization\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Event/Listener/UserChangedListener.php
+
+		-
+			message: "#^Argument of an invalid type Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: ../../apps/GeneralApi/Repository/OrganizationRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Repository/OrganizationRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$dateTime of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:toYMDHIS\\(\\) expects DateTimeInterface, DateTimeInterface\\|null given\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Repository/OrganizationRepository.php
+
+		-
+			message: "#^Argument of an invalid type Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Repository/OrganizationUserRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/GeneralApi/Repository/OrganizationUserRepository.php
+
+		-
+			message: "#^Method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:isValid\\(\\) has parameter \\$val with no typehint specified\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Api/Config/Update.php
+
+		-
+			message: "#^Method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:validLogRequestOption\\(\\) has parameter \\$val with no typehint specified\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Api/Config/Update.php
+
+		-
+			message: "#^Parameter \\#1 \\$files of method KSA\\\\InstallInstance\\\\Command\\\\Uninstall\\:\\:removeFiles\\(\\) expects array, array\\<int, string\\>\\|false given\\.$#"
+			count: 2
+			path: ../../apps/InstallInstance/Command/Uninstall.php
+
+		-
+			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\<int, string\\>\\|false given\\.$#"
+			count: 2
+			path: ../../apps/InstallInstance/Command/Uninstall.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\FileRepository\\:\\:getFilesPerNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
+
+		-
+			message: "#^Parameter \\#2 \\$node of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Attachment\\\\Get\\:\\:hasAccess\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Credential\\\\Create\\:\\:getParentNode\\(\\) has parameter \\$parent with no typehint specified\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Credential\\\\Create\\:\\:isValid\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\Edge\\\\Edge\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:getParentNode\\(\\) has parameter \\$parent with no typehint specified\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:isValid\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\:\\:prepareNode\\(\\) should return KSA\\\\PasswordManager\\\\Entity\\\\Node but returns KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Get.php
+
+		-
+			message: "#^Cannot call method getOrganization\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Organization.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\Organization\\:\\:addNodeToOrganization\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Organization.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
+
+		-
+			message: "#^Cannot call method getShareByUser\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Share/Share.php
+
+		-
+			message: "#^Cannot call method getUser\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Share/Share.php
+
+		-
+			message: "#^Cannot cast array\\<string\\>\\|string\\|null to string\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Command/Node/Folder/CreateFolder.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Event/Listener/AfterPasswordChanged.php
+
+		-
+			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/CommentRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\Comment\\\\Comment\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/CommentRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$file of method KSA\\\\PasswordManager\\\\Entity\\\\File\\\\NodeFile\\:\\:setFile\\(\\) expects KSP\\\\Core\\\\DTO\\\\File\\\\IFile, KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\File\\\\NodeFile\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 3
+			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 3
+			path: ../../apps/PasswordManager/Repository/PublicShareRepository.php
+
+		-
+			message: "#^Cannot call method getOrganization\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Service/Node/NodeService.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\Edge\\\\Edge\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Service/Node/NodeService.php
+
+		-
+			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/GetTest.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Share\\\\PublicShare\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Share/RemoveTest.php
+
+		-
+			message: "#^Call to an undefined method Mockery\\\\ExpectationInterface\\|Mockery\\\\HigherOrderMessage\\:\\:andReturn\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Service/Factory/Repository/Node/NodeRepositoryFactory.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\Factory\\\\Repository\\\\Node\\\\NodeRepositoryFactory\\:\\:__invoke\\(\\) should return KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository but returns Mockery\\\\LegacyMockInterface\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Service/Factory/Repository/Node/NodeRepositoryFactory.php
+
+		-
+			message: "#^Cannot call method format\\(\\) on DateTimeInterface\\|null\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
+
+		-
+			message: "#^Cannot access offset string on array\\|object\\|null\\.$#"
+			count: 1
+			path: ../../apps/Register/Api/User/Add.php
+
+		-
+			message: "#^Method KSA\\\\Register\\\\Api\\\\User\\\\Add\\:\\:getParameter\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: ../../apps/Register/Api/User/Add.php
+
+		-
+			message: "#^Comparison operation \"\\>\" between 0 and 0 is always false\\.$#"
+			count: 1
+			path: ../../apps/Register/Command/CreateUser.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/Register/Event/EmailAfterRegistration.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserAdd.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setDeleted\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setEmail\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setFirstName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLastName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPhone\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Users/Api/User/UserEdit.php
+
+		-
+			message: "#^Method Keestash\\\\Api\\\\Response\\\\ImageResponse\\:\\:__construct\\(\\) has parameter \\$path with no typehint specified\\.$#"
+			count: 1
+			path: ../../lib/private/Api/Response/ImageResponse.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Cache/NullService.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Cache\\\\RedisService\\:\\:set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Cache/RedisService.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no typehint specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/DTO/File/FileList.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:addToIndex\\(\\) has parameter \\$item with no typehint specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/DTO/File/FileList.php
+
+		-
+			message: "#^Parameter \\#2 \\$listener of method Symfony\\\\Component\\\\EventDispatcher\\\\EventDispatcher\\:\\:addListener\\(\\) expects callable\\(\\)\\: mixed, string given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Manager/EventManager/EventManager.php
+
+		-
+			message: "#^Parameter \\#2 \\$default of method doganoo\\\\PHPUtil\\\\HTTP\\\\Session\\:\\:get\\(\\) expects null, string\\|null given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Manager/SessionManager/SessionManager.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 2
+			path: ../../lib/private/Core/Repository/AppRepository/AppRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/EncryptionKey/KeyRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
+
+		-
+			message: "#^Offset 0 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
+
+		-
+			message: "#^Offset 1 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
+
+		-
+			message: "#^Offset 2 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/EncryptionKey/User/UserKeyRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/File/FileRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/File/FileRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/File/FileRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 0 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 1 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 2 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 3 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 4 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 5 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Offset 6 does not exist on array\\<string, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$createTs of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setCreateTs\\(\\) expects DateTime, DateTimeInterface given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$lastRun of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setLastRun\\(\\) expects DateTime\\|null, DateTimeInterface given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 2
+			path: ../../lib/private/Core/Repository/Session/SessionRepository.php
+
+		-
+			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 4
+			path: ../../lib/private/Core/Repository/User/UserRepository.php
+
+		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/User/UserRepository.php
+
+		-
+			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getTmpName\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/File/Upload/FileService.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getType\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/File/Upload/FileService.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
+
