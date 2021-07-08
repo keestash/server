@@ -27,6 +27,7 @@ use KSA\PasswordManager\Api\Generate\Generate;
 use KSA\PasswordManager\Api\Import\Import;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Update;
+use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization;
@@ -50,6 +51,7 @@ use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\CreateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdatePasswordFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
+use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
 use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\OrganizationFactory;
@@ -111,6 +113,7 @@ return [
         Move::class                                                       => MoveFactory::class,
         Organization::class                                               => OrganizationFactory::class,
         ShareableUsers::class                                             => ShareableUsersFactory::class,
+        Delete::class                                                     => DeleteFactory::class,
 
         // ---- Node
         // ---- ---- Attachment
