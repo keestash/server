@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
@@ -54,14 +55,15 @@ class Delete implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = $request->getParsedBody();
+        $parameters = (array) $request->getParsedBody();
         $id         = $parameters["id"] ?? null;
+
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
 
-        $node = $this->nodeRepository->getNode((int) $id);
-
-        if (null === $node) {
+        try {
+            $node = $this->nodeRepository->getNode((int) $id);
+        } catch (PasswordManagerException $exception) {
             return new JsonResponse([$this->translator->translate("no node found")], IResponse::NOT_FOUND);
         }
 

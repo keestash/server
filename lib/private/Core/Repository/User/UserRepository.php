@@ -419,8 +419,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
-                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
-                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+                , 'CASE us.state WHEN \'delete.state.user\' THEN true ELSE false END AS deleted'
+                , 'CASE us.state WHEN \'lock.state.user\' THEN true ELSE false END AS locked'
             ]
         )
             ->from('user', 'u')

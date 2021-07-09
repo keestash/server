@@ -17,6 +17,7 @@ namespace KSA\PasswordManager\Api\Comment;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
@@ -47,9 +48,9 @@ class Get implements RequestHandlerInterface {
             throw new CommentException();
         }
 
-        $node = $this->nodeRepository->getNode((int) $nodeId);
-
-        if (null === $node) {
+        try {
+            $node = $this->nodeRepository->getNode((int) $nodeId);
+        } catch (PasswordManagerException $exception) {
             throw new CommentException();
         }
 

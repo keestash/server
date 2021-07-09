@@ -76,9 +76,18 @@ class Create implements RequestHandlerInterface {
 
         }
 
-        $parentNode = $this->getParentNode($parent, $token);
+        try {
+            $parentNode = $this->getParentNode($parent, $token);
+        } catch (PasswordManagerException $exception) {
+            return LegacyResponse::fromData(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "message" => $this->translator->translate("no parent found")
+                ]
+            );
+        }
 
-        if (null === $parentNode || $parentNode->getUser()->getId() !== $token->getUser()->getId()) {
+        if ($parentNode->getUser()->getId() !== $token->getUser()->getId()) {
 
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -133,7 +142,7 @@ class Create implements RequestHandlerInterface {
         return true;
     }
 
-    private function getParentNode($parent, IToken $token): ?Folder {
+    private function getParentNode($parent, IToken $token): Folder {
 
         if (Node::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser());
@@ -141,9 +150,10 @@ class Create implements RequestHandlerInterface {
 
         $node = $this->nodeRepository->getNode((int) $parent);
 
-        if (null === $node || $node instanceof Folder) {
+        if ($node instanceof Folder) {
             return $node;
         }
+
         throw new PasswordManagerException();
     }
 

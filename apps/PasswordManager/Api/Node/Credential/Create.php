@@ -20,6 +20,8 @@ use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Node as NodeObject;
+use KSA\PasswordManager\Exception\InvalidNodeTypeException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
@@ -81,13 +83,20 @@ class Create implements RequestHandlerInterface {
 
         }
 
-        $parent = $this->getParentNode($folder, $token);
+        try {
+            $parent = $this->getParentNode($folder, $token);
+        } catch (PasswordManagerException $exception) {
+            return LegacyResponse::fromData(
+                IResponse::RESPONSE_CODE_NOT_OK
+                , [
+                    "message" => $this->translator->translate("no parent found")
+                ]
+            );
+        }
 
         if (
-            // no parent found
-            null === $parent
             // parent is not an folder
-            || !$parent instanceof Folder
+            !$parent instanceof Folder
             // parent does not belong to me
             || $parent->getUser()->getId() !== $token->getUser()->getId()
         ) {
@@ -143,7 +152,14 @@ class Create implements RequestHandlerInterface {
         return true;
     }
 
-    private function getParentNode($parent, IToken $token): ?NodeObject {
+    /**
+     * @param        $parent
+     * @param IToken $token
+     * @return NodeObject
+     * @throws PasswordManagerException
+     * @throws InvalidNodeTypeException
+     */
+    private function getParentNode($parent, IToken $token): NodeObject {
 
         if (NodeObject::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser());

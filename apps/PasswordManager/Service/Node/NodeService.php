@@ -57,7 +57,12 @@ class NodeService {
      * TODO add more properties
      */
     public function isShareable(int $nodeId, string $userId): bool {
-        $node = $this->nodeRepository->getNode($nodeId, 0, 1);
+        try {
+            $node = $this->nodeRepository->getNode($nodeId, 0, 1);
+        } catch (PasswordManagerException $exception) {
+            return false;
+        }
+
         $user = $this->userRepository->getUserById($userId);
 
         if (null === $user) {

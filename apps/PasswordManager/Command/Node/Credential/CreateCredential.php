@@ -11,7 +11,7 @@ declare(strict_types=1);
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * but WITHOUT8 ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
@@ -86,7 +86,7 @@ class CreateCredential extends KeestashCommand {
             throw new PasswordManagerException();
         }
         
-        if (null === $parent || !($parent instanceof Folder)) {
+        if (!($parent instanceof Folder)) {
             throw new PasswordManagerException();
         }
 

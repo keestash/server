@@ -58,8 +58,8 @@ class DeleteTest extends TestCase {
                 , ['id' => $node->getId()]
             );
 
-
         $response = $delete->handle($request);
+//        dump($this->getResponseService()->getFailedResponseData($response));
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }
 

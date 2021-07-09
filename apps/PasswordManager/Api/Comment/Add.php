@@ -20,6 +20,8 @@ use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
+use KSA\PasswordManager\Exception\Node\Comment\CommentRepositoryException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
@@ -53,6 +55,12 @@ class Add implements RequestHandlerInterface {
         $this->jwtService        = $jwtService;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws CommentException
+     * @throws CommentRepositoryException
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters    = (array) $request->getParsedBody();
         $commentString = $parameters['comment'] ?? null;
@@ -67,8 +75,13 @@ class Add implements RequestHandlerInterface {
         }
 
         /** @var IToken $token */
-        $token         = $request->getAttribute(IToken::class);
-        $node          = $this->nodeRepository->getNode((int) $nodeId);
+        $token = $request->getAttribute(IToken::class);
+        try {
+            $node = $this->nodeRepository->getNode((int) $nodeId);
+        } catch (PasswordManagerException $exception) {
+            $this->logger->error($exception->getMessage());
+            throw new CommentException();
+        }
         $commentString = trim($commentString);
 
         if (true === $this->userService->isDisabled($token->getUser())) {
@@ -76,10 +89,6 @@ class Add implements RequestHandlerInterface {
         }
 
         if ("" === $commentString) {
-            throw new CommentException();
-        }
-
-        if (null === $node) {
             throw new CommentException();
         }
 
