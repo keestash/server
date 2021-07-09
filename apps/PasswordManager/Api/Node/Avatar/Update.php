@@ -102,10 +102,6 @@ class Update implements RequestHandlerInterface {
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if (null === $node) {
-            throw new NodeNotFoundException("no node found for $nodeId");
-        }
-
         if ($token->getUser()->getId() !== $node->getUser()->getId()) {
             throw new NodeNotFoundException("node does not belong to user");
         }

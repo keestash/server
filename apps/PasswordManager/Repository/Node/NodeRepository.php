@@ -144,7 +144,7 @@ class NodeRepository {
         return $list;
     }
 
-    public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): ?Node {
+    public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): Node {
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
@@ -161,14 +161,16 @@ class NodeRepository {
             ->setParameter(0, $id);
         $statement    = $queryBuilder->execute();
 
-        if (!$statement instanceof ResultStatement) {
-            $this->logger->error('error while retrieving data ' . $queryBuilder->getSQL());
-            return null;
+        if (true === is_int($statement)) {
+            $log = 'error while retrieving data ' . $queryBuilder->getSQL();
+            $this->logger->error($log);
+            throw new PasswordManagerException($log);
         }
 
         $rows = $statement->fetchAllNumeric();
+
         if (0 === count($rows)) {
-            return null;
+            throw new PasswordManagerException('no data found, count is 0, id is: ' . $id);
         }
         $row = $rows[0];
 
@@ -199,9 +201,7 @@ class NodeRepository {
         }
 
         $node->setId((int) $id);
-        $node->setName(
-            (string) $name
-        );
+        $node->setName((string) $name);
         $node->setUser($user);
         $node->setCreateTs($createTs);
         $node->setType((string) $type);
@@ -342,10 +342,6 @@ class NodeRepository {
                 ) : null;
 
             $node = $this->getNode((int) $nodeId, $depth, $maxDepth);
-
-            if (null === $node) {
-                throw new PasswordManagerException();
-            }
 
             $edge = new Edge();
             $edge->setId((int) $id);
@@ -548,7 +544,11 @@ ORDER BY d.`level`;
             return null;
         }
 
-        return $this->getNode((int) $rows[0][0], $depth, $maxDepth);
+        try {
+            return $this->getNode((int) $rows[0][0], $depth, $maxDepth);
+        } catch (PasswordManagerException $exception) {
+            return null;
+        }
     }
 
     public function remove(Node $node): bool {
@@ -698,9 +698,8 @@ ORDER BY d.`level`;
                 ->andWhere('type = ?')
                 ->setParameter(0, $node->getId())
                 ->setParameter(1, $parent->getId())
-                ->setParameter(1, $targetEdge->getType())
-                ->execute() !== 0;
-
+                ->setParameter(2, $targetEdge->getType())
+                ->execute() > 0;
 
         if (false === $executed) return false;
 

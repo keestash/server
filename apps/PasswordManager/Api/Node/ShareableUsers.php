@@ -19,6 +19,7 @@ use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Exception\InvalidParameterException;
 use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -27,7 +28,7 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\User\IUserService;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -68,9 +69,13 @@ class ShareableUsers implements RequestHandlerInterface {
             throw new InvalidParameterException();
         }
 
-        $node = $this->nodeRepository->getNode((int) $nodeId);
+        try {
+            $node = $this->nodeRepository->getNode((int) $nodeId);
+        } catch (PasswordManagerException $exception) {
+            return new JsonResponse([], IResponse::NOT_FOUND);
+        }
 
-        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
+        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
             throw new InvalidParameterException();
         }
 

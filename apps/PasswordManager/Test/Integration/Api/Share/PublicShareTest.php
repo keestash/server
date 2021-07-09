@@ -68,7 +68,6 @@ class PublicShareTest extends TestCase {
         );
 
         $response = $publicShare->handle($request);
-//        dump($response);
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
 
         if (false === $isValid) return;

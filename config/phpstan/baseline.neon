@@ -116,16 +116,6 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\FileRepository\\:\\:getFilesPerNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
-
-		-
-			message: "#^Parameter \\#2 \\$node of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Attachment\\\\Get\\:\\:hasAccess\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
@@ -156,7 +146,7 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
 
 		-
-			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\Edge\\\\Edge\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
+			message: "#^PHPDoc tag @param has invalid value \\(\\$parent\\)\\: Unexpected token \"\\$parent\", expected type at offset 25$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
 
@@ -171,34 +161,9 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
 
 		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\:\\:prepareNode\\(\\) should return KSA\\\\PasswordManager\\\\Entity\\\\Node but returns KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Get.php
-
-		-
-			message: "#^Cannot call method getOrganization\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\Organization\\:\\:addNodeToOrganization\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
-
-		-
-			message: "#^Cannot call method getShareByUser\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Share/Share.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Share/Share.php
 
 		-
 			message: "#^Cannot cast array\\<string\\>\\|string\\|null to string\\.$#"
@@ -216,22 +181,12 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/CommentRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\Comment\\\\Comment\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Repository/CommentRepository.php
-
-		-
 			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
 
 		-
 			message: "#^Parameter \\#1 \\$file of method KSA\\\\PasswordManager\\\\Entity\\\\File\\\\NodeFile\\:\\:setFile\\(\\) expects KSP\\\\Core\\\\DTO\\\\File\\\\IFile, KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\File\\\\NodeFile\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
 
@@ -256,16 +211,6 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/PublicShareRepository.php
 
 		-
-			message: "#^Cannot call method getOrganization\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Service/Node/NodeService.php
-
-		-
-			message: "#^Parameter \\#1 \\$node of method KSA\\\\PasswordManager\\\\Entity\\\\Edge\\\\Edge\\:\\:setNode\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node, KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Service/Node/NodeService.php
-
-		-
 			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
@@ -274,6 +219,21 @@ parameters:
 			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/GetTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\RequestService\\:\\:getRequestWithToken\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/DeleteTest.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Token\\\\IToken\\:\\:setUser\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
+
+		-
+			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/MoveTest.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Share\\\\PublicShare\\|null\\.$#"

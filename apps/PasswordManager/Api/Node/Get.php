@@ -28,12 +28,15 @@ use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Node as NodeEntity;
+use KSA\PasswordManager\Exception\InvalidNodeTypeException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -78,7 +81,12 @@ class Get implements RequestHandlerInterface {
             );
         }
 
-        $root = $this->prepareNode($request, $token);
+        try {
+            $root = $this->prepareNode($request, $token);
+        } catch (PasswordManagerException | InvalidNodeTypeException $exception) {
+            $this->logger->error($exception->getMessage());
+            return new JsonResponse(['no data found'], IResponse::NOT_FOUND);
+        }
 
         if ($root->getUser()->getId() !== $token->getUser()->getId()) {
             return LegacyResponse::fromData(
@@ -102,6 +110,13 @@ class Get implements RequestHandlerInterface {
 
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param IToken                 $token
+     * @return NodeEntity
+     * @throws PasswordManagerException
+     * @throws InvalidNodeTypeException
+     */
     private function prepareNode(ServerRequestInterface $request, IToken $token): NodeEntity {
         $id = $request->getAttribute("id");
 

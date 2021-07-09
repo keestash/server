@@ -25,12 +25,14 @@ use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -103,8 +105,12 @@ class PublicShareSingle implements RequestHandlerInterface {
             );
         }
 
-        /** @var Credential $node */
-        $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
+        try {
+            /** @var Credential $node */
+            $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
+        } catch (PasswordManagerException $exception) {
+            return new JsonResponse(['no data found'], IResponse::NOT_FOUND);
+        }
 
         $this->eventManager->execute(
             new PasswordViewed(

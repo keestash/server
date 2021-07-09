@@ -29,6 +29,7 @@ use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Exception\Node\Credential\NoFileException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
@@ -109,9 +110,10 @@ class Add implements RequestHandlerInterface {
             throw new CredentialException();
         }
 
-        $node = $this->nodeRepository->getNode((int) $nodeId);
-
-        if (null === $node) {
+        try {
+            $node = $this->nodeRepository->getNode((int) $nodeId);
+        } catch (PasswordManagerException $exception) {
+            // legacy reasons
             throw new CredentialException();
         }
 

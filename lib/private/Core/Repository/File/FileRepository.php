@@ -110,7 +110,6 @@ class FileRepository implements IFileRepository {
 
     public function remove(IFile $file): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        // @phpstan-ignore-next-line
         return $queryBuilder->delete('file')
                 ->where('id = ?')
                 ->setParameter(0, $file->getId())
@@ -257,7 +256,6 @@ class FileRepository implements IFileRepository {
 
     public function removeForUser(IUser $user): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        // @phpstan-ignore-next-line
         return $queryBuilder->delete('file')
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())

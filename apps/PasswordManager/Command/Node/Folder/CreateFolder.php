@@ -26,6 +26,7 @@ use Keestash\Command\KeestashCommand;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputArgument;
@@ -67,9 +68,9 @@ class CreateFolder extends KeestashCommand {
             exit(1);
         }
 
-        $parentNode = $this->nodeRepository->getNode($parent);
-
-        if (null === $parentNode) {
+        try {
+            $parentNode = $this->nodeRepository->getNode($parent);
+        } catch (PasswordManagerException $exception) {
             $this->writeError("No parent id found for $parent. Aborting!", $output);
             exit(1);
         }
