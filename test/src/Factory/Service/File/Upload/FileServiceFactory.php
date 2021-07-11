@@ -19,20 +19,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\File\Upload;
+namespace KST\Service\Factory\Service\File\Upload;
 
-use KSP\Core\DTO\File\IFile as ICoreFile;
-use KSP\Core\DTO\File\Upload\IFile;
-use Psr\Http\Message\UploadedFileInterface;
+use Keestash\Core\Service\Config\IniConfigService;
+use Keestash\Core\Service\File\Upload\FileService;
+use KSP\Core\Service\File\Upload\IFileService;
+use Mockery;
+use Psr\Container\ContainerInterface;
 
-interface IFileService {
+class FileServiceFactory {
 
-    public function validateUploadedFile(IFile $file): bool;
+    public function __invoke(ContainerInterface $container): IFileService {
+        $fileService = new FileService(
+            $container->get(IniConfigService::class)
+        );
 
-    public function toFile(UploadedFileInterface $file): IFile;
+        $fileService = Mockery::mock($fileService);
 
-    public function toCoreFile(IFile $file): ICoreFile;
+        $fileService->shouldReceive('moveUploadedFile')
+            ->andReturn(true);
+        $fileService->shouldReceive('validateUploadedFile')
+            ->andReturn(true);
 
-    public function moveUploadedFile(ICoreFile $file): bool;
+        return $fileService;
+    }
 
 }
