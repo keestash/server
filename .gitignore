@@ -278,3 +278,4 @@ public/js/*.js
 lib/scss/dist/*.css
 test/config/*.sqlite
 test/result/
+/.phpunit.result.cache

@@ -94,7 +94,7 @@ class Add implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
-        $nodeId     = $parameters["node_id"];
+        $nodeId     = $parameters["node_id"] ?? null;
         $fileList   = $request->getUploadedFiles();
 
         $fileCount      = count($fileList);
@@ -127,7 +127,7 @@ class Add implements RequestHandlerInterface {
             // TODO allowed extensions
 
             $file    = $this->uploadFileService->toFile($file);
-            $isValid = $this->uploadFileService->validateUploadedFile($file);
+            $isValid = $this->uploadFileService->validateUploadedFile ($file);
 
             if (false === $isValid) {
                 $this->logger->error('invalid file with name ' . $file->getClientFilename());
