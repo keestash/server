@@ -68,8 +68,9 @@ class Get implements RequestHandlerInterface {
             );
         }
 
-        $nodeExists = $this->nodeRepository->exists((int) $nodeId);
-        if (false === $nodeExists) {
+        try {
+            $node = $this->nodeRepository->getNode((int) $nodeId);
+        } catch (PasswordManagerException $exception) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -77,8 +78,6 @@ class Get implements RequestHandlerInterface {
                 ]
             );
         }
-
-        $node = $this->nodeRepository->getNode((int) $nodeId);
 
         if (false === $this->hasAccess($token->getUser(), $node)) {
             throw new PasswordManagerException();
@@ -119,6 +118,5 @@ class Get implements RequestHandlerInterface {
         if (true === $node->isSharedTo($user)) return true;
         return false;
     }
-
 
 }

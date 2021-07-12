@@ -149,12 +149,6 @@ return [
             , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
         ],
         [
-            'path'         => '/password_manager/node/get/avatar/:nodeId[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Avatar\Get::class
-            , 'method'     => IVerb::GET
-            , 'name'       => \KSA\PasswordManager\Api\Node\Avatar\Get::class
-        ],
-        [
             'path'         => '/password_manager/node/update/avatar[/]'
             , 'middleware' => Update::class
             , 'method'     => IVerb::POST

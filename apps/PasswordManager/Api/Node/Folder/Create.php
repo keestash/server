@@ -61,7 +61,7 @@ class Create implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = (array) $request->getParsedBody();
         $name       = $parameters["name"] ?? null;
         $parent     = $parameters["parent"] ?? null;
 
@@ -138,7 +138,7 @@ class Create implements RequestHandlerInterface {
 
     private function isValid($value): bool {
         if (null === $value) return false;
-        if ("" === trim($value)) return false;
+        if ("" === trim((string) $value)) return false;
         return true;
     }
 

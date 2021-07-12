@@ -123,7 +123,6 @@ return [
 
         // ---- Node
         // ---- ---- Avatar
-        \KSA\PasswordManager\Api\Node\Avatar\Get::class                   => \KSA\PasswordManager\Factory\Api\Node\Avatar\GetFactory::class,
         \KSA\PasswordManager\Api\Node\Avatar\Update::class                => \KSA\PasswordManager\Factory\Api\Node\Avatar\UpdateFactory::class,
 
         // ---- Node

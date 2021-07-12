@@ -60,7 +60,7 @@ class Remove implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = (array) $request->getParsedBody();
         $fileId     = $parameters["fileId"] ?? null;
 
         if (null === $fileId) {

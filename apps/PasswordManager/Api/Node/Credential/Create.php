@@ -95,7 +95,7 @@ class Create implements RequestHandlerInterface {
         }
 
         if (
-            // parent is not an folder
+            // parent is not a folder
             !$parent instanceof Folder
             // parent does not belong to me
             || $parent->getUser()->getId() !== $token->getUser()->getId()
