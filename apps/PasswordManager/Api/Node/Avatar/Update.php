@@ -25,7 +25,6 @@ use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
 use Keestash\Core\Service\File\FileService as CoreFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;

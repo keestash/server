@@ -19,22 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node\Avatar;
+namespace KSA\PasswordManager\Test\Integration\Api\Node\Avatar;
 
-use Keestash\Core\Service\File\FileService;
-use KSA\PasswordManager\Api\Node\Avatar\Get;
-use KSA\PasswordManager\Repository\Node\FileRepository;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use Psr\Container\ContainerInterface;
+use KST\TestCase;
 
-class GetFactory {
+class UpdateTest extends TestCase {
 
-    public function __invoke(ContainerInterface $container): Get {
-        return new Get(
-            $container->get(FileRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(FileService::class)
-        );
+    public function testUpdate(): void {
+        $this->markTestSkipped('implement me :(');
     }
 
 }

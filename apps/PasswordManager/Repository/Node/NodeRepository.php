@@ -472,7 +472,12 @@ class NodeRepository {
     }
 
     public function exists(int $id): bool {
-        return null !== $this->getNode($id, 0, 1);
+        try {
+            $this->getNode($id, 0, 1);
+        } catch (PasswordManagerException $exception) {
+            return false;
+        }
+        return true;
     }
 
     public function getPathToRoot(Node $node): array {

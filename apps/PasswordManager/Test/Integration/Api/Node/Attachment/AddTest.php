@@ -52,10 +52,10 @@ class AddTest extends TestCase {
         $edge = $credentialService->insertCredential($node, $userRoot);
 
         $file = tempnam(sys_get_temp_dir(), '');
-        file_put_contents($file, "integrationtest");
+        file_put_contents((string) $file, "integrationtest");
 
         $uploadedFile = new UploadedFile(
-            $file
+            (string) $file
             , 0
             , 0
         );
@@ -68,7 +68,7 @@ class AddTest extends TestCase {
         $request  = $request->withUploadedFiles([$uploadedFile]);
         $response = $add->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
-        unlink($file);
+        unlink((string) $file);
     }
 
     public function testWithNoFiles(): void {
@@ -119,7 +119,7 @@ class AddTest extends TestCase {
         $add = $this->getServiceManager()->get(Add::class);
 
         $this->expectException(CredentialException::class);
-        $file = tempnam(sys_get_temp_dir(), '');
+        $file = (string) tempnam(sys_get_temp_dir(), '');
         file_put_contents($file, "integrationtest.testAddFileFilesOnly");
 
         $uploadedFile = new UploadedFile(
@@ -139,7 +139,7 @@ class AddTest extends TestCase {
         /** @var Add $add */
         $add = $this->getServiceManager()->get(Add::class);
 
-        $file = tempnam(sys_get_temp_dir(), '');
+        $file = (string) tempnam(sys_get_temp_dir(), '');
         file_put_contents($file, "integrationtest.testAddFileInvalidNode");
 
         $this->expectException(CredentialException::class);
