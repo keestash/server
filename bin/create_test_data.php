@@ -69,7 +69,7 @@ use Psr\Container\ContainerInterface;
         $user = new \Keestash\Core\DTO\User\User();
         $user->setCreateTs(new DateTime());
         $user->setWebsite("https://dogan-ucar.de");
-        $user->setPhone("+15755704076");
+        $user->setPhone("+15712345678");
         $user->setPassword(
                 $userService->hashPassword("Dogancan1@")
         );

@@ -19,22 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login\Service;
+namespace KSA\Login\Test;
 
-use DateTime;
-use Keestash\Core\DTO\Token\Token;
-use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUser;
-
-class TokenService {
-
-    public function generate(string $name, IUser $user): IToken {
-        $token = new Token();
-        $token->setCreateTs(new DateTime());
-        $token->setUser($user);
-        $token->setValue(bin2hex(random_bytes(16)));
-        $token->setName($name);
-        return $token;
-    }
+class TestCase extends \KST\TestCase {
 
 }
