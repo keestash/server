@@ -20,10 +20,18 @@ class Password implements IJsonObject {
     private ?string $plain;
     private int     $length = -1;
 
+    /**
+     * @return string|null
+     * @deprecated
+     */
     public function getPlain(): ?string {
         return $this->plain;
     }
 
+    /**
+     * @param string|null $plain
+     * @deprecated
+     */
     public function setPlain(?string $plain): void {
         $this->plain = $plain;
     }
