@@ -24,6 +24,7 @@ namespace Keestash\Factory\Core\Manager\CookieManager;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Service\HTTP\HTTPService;
 use KSP\Core\Manager\CookieManager\ICookieManager;
+use KSP\Core\Service\Config\IConfigService;
 use Psr\Container\ContainerInterface;
 
 class CookieManagerFactory {
@@ -31,6 +32,7 @@ class CookieManagerFactory {
     public function __invoke(ContainerInterface $container): ICookieManager {
         return new CookieManager(
             $container->get(HTTPService::class)
+            , $container->get(IConfigService::class)
         );
     }
 

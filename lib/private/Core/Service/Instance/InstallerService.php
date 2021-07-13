@@ -104,7 +104,7 @@ class InstallerService {
 
     public function writeIdAndHash(): bool {
         $addedId   = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
-        $addedHash = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, md5(uniqid()));
+        $addedHash = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, bin2hex(random_bytes(16)));
         return true === $addedId && true === $addedHash;
     }
 

@@ -120,7 +120,7 @@ class PasswordService {
         $result = "";
         $i      = 0;
         while ($i < $length) {
-            $char   = substr($possibleCharacters, mt_rand(0, strlen($possibleCharacters) - 1), 1);
+            $char   = substr($possibleCharacters, random_int(0, strlen($possibleCharacters) - 1), 1);
             $result .= $char;
             $i++;
         }

@@ -29,7 +29,9 @@ use KSP\Core\Manager\IManager;
  */
 interface ICookieManager extends IManager {
 
-    public const PATH_ENTIRE_DOMAIN = "/";
+    public const COOKIE_PATH_ENTIRE_PATH = "/";
+    public const COOKIE_SECURE           = false;
+    public const COOKIE_HTTP_ONLY        = true;
 
     /**
      * @param string $key

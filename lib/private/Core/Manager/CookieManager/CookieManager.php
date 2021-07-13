@@ -25,13 +25,27 @@ use DateTime;
 use Keestash;
 use Keestash\Core\Service\HTTP\HTTPService;
 use KSP\Core\Manager\CookieManager\ICookieManager;
+use KSP\Core\Service\Config\IConfigService;
 
 class CookieManager implements ICookieManager {
 
-    private HTTPService $httpService;
+    private HTTPService    $httpService;
+    private IConfigService $configService;
 
-    public function __construct(HTTPService $httpService) {
-        $this->httpService = $httpService;
+    public function __construct(
+        HTTPService $httpService
+        , IConfigService $configService
+    ) {
+        $this->httpService   = $httpService;
+        $this->configService = $configService;
+
+        session_set_cookie_params(
+            $this->configService->getValue('user_lifetime', 30 * 60)
+            , ICookieManager::COOKIE_PATH_ENTIRE_PATH
+            , $this->httpService->getBaseURL(false, false)
+            , ICookieManager::COOKIE_SECURE
+            , ICookieManager::COOKIE_HTTP_ONLY
+        );
     }
 
     public function set(string $key, string $value, int $expireTs = 0): bool {
@@ -39,8 +53,10 @@ class CookieManager implements ICookieManager {
             $key
             , $value
             , $expireTs
-            , ICookieManager::PATH_ENTIRE_DOMAIN
+            , ICookieManager::COOKIE_PATH_ENTIRE_PATH
             , $this->httpService->getBaseURL(false, false)
+            , ICookieManager::COOKIE_SECURE
+            , ICookieManager::COOKIE_HTTP_ONLY
         );
     }
 

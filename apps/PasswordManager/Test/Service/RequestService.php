@@ -49,7 +49,7 @@ class RequestService {
         $token->setUser($user);
         $token->setCreateTs(new \DateTime());
         $token->setName("Test.Keestash.PasswordManager");
-        $token->setValue(md5((string) time()));
+        $token->setValue(bin2hex(random_bytes(16)));
         $token->setId(1);
         return $request->withAttribute(IToken::class, $token);
     }
