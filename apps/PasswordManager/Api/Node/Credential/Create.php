@@ -16,7 +16,6 @@ namespace KSA\PasswordManager\Api\Node\Credential;
 
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
-use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Node as NodeObject;
@@ -64,7 +63,7 @@ class Create implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = (array) $request->getParsedBody();
         $name       = $parameters["name"] ?? '';
         $userName   = $parameters["username"] ?? '';
         $password   = $parameters["password"] ?? '';

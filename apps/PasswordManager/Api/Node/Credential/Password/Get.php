@@ -61,17 +61,17 @@ class Get implements RequestHandlerInterface {
             $node = $this->nodeRepository->getNode($nodeId, 1);
         } catch (PasswordManagerException $exception) {
             return LegacyResponse::fromData(
-                404
+                IResponse::NOT_FOUND
                 , []
-                , 404
+                , IResponse::NOT_FOUND
             );
         }
 
         if ($node->getUser()->getId() !== $token->getUser()->getId()) {
             return LegacyResponse::fromData(
-                404
+                IResponse::NOT_FOUND
                 , []
-                , 404
+                , IResponse::NOT_FOUND
             );
         }
 

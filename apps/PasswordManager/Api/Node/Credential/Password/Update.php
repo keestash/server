@@ -49,7 +49,7 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters    = json_decode((string) $request->getBody(), true);
+        $parameters    = (array)$request->getParsedBody();
         $passwordPlain = $parameters['passwordPlain'] ?? null;
         $nodeId        = $parameters['nodeId'] ?? null;
 

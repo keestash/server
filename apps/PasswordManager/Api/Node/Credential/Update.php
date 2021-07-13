@@ -32,6 +32,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ * TODO
+ *      handle non existent parameters
+ *      handle more fields
  */
 class Update implements RequestHandlerInterface {
 
@@ -58,11 +61,11 @@ class Update implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
-        $parameters = json_decode((string) $request->getBody(), true);
-        $name       = $parameters["name"];
-        $username   = $parameters["username"];
-        $url        = $parameters["url"];
-        $nodeId     = $parameters["nodeId"];
+        $parameters = (array) $request->getParsedBody();
+        $name       = $parameters["name"] ?? null;
+        $username   = $parameters["username"] ?? null;
+        $url        = $parameters["url"] ?? null;
+        $nodeId     = $parameters["nodeId"] ?? null;
 
         $hasChanges = false;
 
@@ -106,10 +109,6 @@ class Update implements RequestHandlerInterface {
             ]
         );
 
-
-    }
-
-    public function afterCreate(): void {
 
     }
 
