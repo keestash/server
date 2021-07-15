@@ -76,7 +76,6 @@ export class Submit {
                     , data
                 )
                     .then((response) => {
-
                         if (RESPONSE_CODE_NOT_OK in response.data) {
                             return []
                         }
@@ -90,14 +89,7 @@ export class Submit {
                         };
                     })
                     .then((data) => {
-
                         if (0 === data.length) {
-                            // _this.miniModal.show(
-                            //     'Error'
-                            //     , 'Ok'
-                            //     , 'Not Ok'
-                            //     , 'Error'
-                            // );
                             alert("no data!");
                             _this.appStorage.clearAPICredentials();
                             _this.buttonService.disable(
@@ -124,7 +116,6 @@ export class Submit {
 
                     })
                     .catch((data) => {
-                        console.log(data);
                         _this.miniModal.show(
                             'Error'
                             , 'Ok'

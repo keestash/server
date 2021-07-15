@@ -82,4 +82,8 @@ class HTTPService implements IHTTPService {
         return $this->buildWebRoute("login");
     }
 
+    public function getParsedBaseUrl(bool $withScript = true, bool $forceIndex = false): array {
+        return parse_url($this->getBaseURL($withScript, $forceIndex));
+    }
+
 }
