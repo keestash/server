@@ -84,7 +84,8 @@ jobs:
           cd ../
           pwd
           ls -ltra
-          sudo zip -r nightly${{ github.sha }}.zip server
+          ls -ltra server
+          sudo 7z a nightly${{ github.sha }}.zip server
           sudo chmod 777 nightly${{ github.sha }}.zip
           ls -ltra
           echo ${{ steps.create_release.outputs.upload_url }}
