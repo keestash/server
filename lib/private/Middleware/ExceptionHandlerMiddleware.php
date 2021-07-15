@@ -56,7 +56,10 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
             $this->setHandler();
         }
 
-        if (true === $this->environmentService->isWeb()) {
+        if (
+            true === $this->configService->getValue('debug', false)
+            && true === $this->environmentService->isWeb()
+        ) {
             $whoops = new Run();
             $whoops->pushHandler(new PrettyPageHandler());
             $whoops->register();
