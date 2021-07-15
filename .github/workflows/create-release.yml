@@ -54,6 +54,7 @@ jobs:
           cd ../
           zip -r /tmp/nightly${{ github.sha }}.zip server
           chmod 777 /tmp/nightly${{ github.sha }}.zip
+          ls -ltra /tmp
 
       - name: Create Release
         id: create_release
