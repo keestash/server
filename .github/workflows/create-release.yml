@@ -51,7 +51,7 @@ jobs:
           rm -rf test/ apps/*/Test/
           rm -rf apps/*/js/
           rm -rf apps/*/scss/
-          pwd
+          cd ../
           zip -r nightly-${{ github.sha }}.zip server
 
       - name: Create Release
