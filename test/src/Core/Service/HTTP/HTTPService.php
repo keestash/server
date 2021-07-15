@@ -46,4 +46,10 @@ class HTTPService implements IHTTPService {
         return "keestash.test";
     }
 
+    public function getParsedBaseUrl(bool $withScript = true, bool $forceIndex = false): array {
+        return [
+            'host' => 'keestash.test'
+        ];
+    }
+
 }

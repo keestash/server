@@ -19,6 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+if (__PHPUNIT_MODE__) return;
+
 $loadedExtensions = get_loaded_extensions();
 
 $requiredExtensions = [
