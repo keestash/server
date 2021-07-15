@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -20,18 +21,16 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use Keestash\Core\DTO\User\User;
-use Keestash\Legacy\Legacy;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventDispatcher;
 use KSP\Core\Service\Phinx\IMigrator;
-use KSP\Core\Service\User\IUserService;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Service\Service\UserService;
 use KST\Service\ThirdParty\Phinx\Adapter\SQLiteAdapter;
 use Laminas\Config\Config;
 use Phinx\Db\Adapter\AdapterFactory;
 use Psr\Container\ContainerInterface;
+
+const __PHPUNIT_MODE__ = true;
 
 /** @var ContainerInterface $container */
 $container = require __DIR__ . '/config/service_manager.php';
@@ -62,29 +61,3 @@ $migrator->runApps();
 /** @var UserService $userService */
 $userService = $container->get(UserService::class);
 $userService->createTestUsers();
-
-///** @var IUserRepositoryService $userRepositoryService */
-//$userRepositoryService = $container->get(IUserRepositoryService::class);
-///** @var IUserService $userService */
-//$userService = $container->get(IUserService::class);
-
-//$userRepositoryService->createSystemUser(
-//    $userService->getSystemUser()
-//);
-///** @var Legacy $legacy */
-//$legacy = $container->get(Legacy::class);
-
-//$user = new User();
-//$user->setName("TestUser");
-//$user->setId(\KST\Config::TEST_USER_ID);
-//$user->setHash(md5((string) \KST\Config::TEST_USER_ID));
-//$user->setCreateTs(new DateTime());
-//$user->setEmail((string) $legacy->getApplication()->get("email"));
-//$user->setFirstName((string) $legacy->getApplication()->get("name"));
-//$user->setLastName((string) $legacy->getApplication()->get("name"));
-//$user->setPhone((string) $legacy->getApplication()->get("phone"));
-//$user->setWebsite((string) $legacy->getApplication()->get("web"));
-//$user->setPassword("");
-//$user->setLocked(false);
-//
-//$userRepositoryService->createUser($user);

@@ -1,9 +1,6 @@
 <?php
 declare(strict_types=1);
 
-use KSP\Core\Service\HTTP\IHTTPService;
-use KST\Service\Core\Service\HTTP\HTTPService;
-
 /**
  * Keestash
  *
