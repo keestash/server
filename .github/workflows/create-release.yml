@@ -70,26 +70,16 @@ jobs:
 
       - name: Clean Up
         run: |
-          pwd
           sudo rm -rf node_modules
           sudo rm -rf .github .git config/phpstan config/vagrant
           sudo rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js output.log
           sudo rm -rf test/ apps/*/Test/
           sudo rm -rf apps/*/js/
           sudo rm -rf apps/*/scss/
-          pwd
 
       - name: Create Package
         run: |
-          cd ../
-          pwd
-          ls -ltra
-          ls -ltra server
-          sudo 7z a nightly${{ github.sha }}.zip server
-          sudo chmod 777 nightly${{ github.sha }}.zip
-          ls -ltra
-          echo ${{ steps.create_release.outputs.upload_url }}
-          cd ../
+          sudo 7z a nightly${{ github.sha }}.zip ../server
 
       - name: Create Release
         id: create_release
