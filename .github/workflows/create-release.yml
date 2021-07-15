@@ -55,13 +55,21 @@ jobs:
         with:
           node-version: '12.18.2'
 
-#      - run: npm install
-#      - run: npm run build:prod
+      - run: npm install
+      #      - run: npm run build:prod
+
+      - name: create configs
+        run: |
+          cp config/config.sample.php config/config.php
+
+      - name: create stylesheets
+        run: |
+          cd bin/
+          php console.php general-api:compile-scss
+          cd ../
 
       - name: Clean Up
         run: |
-          cp config/config.sample.php config/config.php
-          cd bin/ && php console.php general-api:compile-scss && cd ../
           pwd
           sudo rm -rf node_modules
           sudo rm -rf .github .git config/phpstan config/vagrant
@@ -70,6 +78,9 @@ jobs:
           sudo rm -rf apps/*/js/
           sudo rm -rf apps/*/scss/
           pwd
+
+      - name: Create Package
+        run: |
           cd ../
           pwd
           ls -ltra
