@@ -90,16 +90,18 @@ jobs:
           ls -ltra
           echo ${{ steps.create_release.outputs.upload_url }}
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: nightly${{ github.sha }}
-          release_name: nightly${{ github.sha }}
-          draft: false
-          prerelease: false
+#      - name: Create Release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+#        with:
+#          tag_name: nightly${{ github.sha }}
+#          release_name: nightly${{ github.sha }}
+#          draft: false
+#          prerelease: false
+
+      - run: ls -ltra
 
       - name: Upload Release Asset
         id: upload-release-asset
