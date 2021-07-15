@@ -39,9 +39,8 @@ jobs:
       # end tests
       - name: end tests
         run: |
-          chmod -R 777 vendor
           rm config/config.php    # remove test config
-          rm -r vendor/
+          sudo rm -r vendor/
 
       - name: Composer Install
         uses: php-actions/composer@v5
