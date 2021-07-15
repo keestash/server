@@ -33,4 +33,6 @@ interface IHTTPService {
 
     public function getLoginRoute(): string;
 
+    public function getParsedBaseUrl(bool $withScript = true, bool $forceIndex = false): array;
+
 }

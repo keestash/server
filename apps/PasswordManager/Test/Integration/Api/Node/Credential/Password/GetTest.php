@@ -73,6 +73,7 @@ class GetTest extends TestCase {
         $request = $request->withAttribute('id', $node->getId());
         /** @var IToken|Token $token */
         $token = $request->getAttribute(IToken::class);
+        /** @phpstan-ignore-next-line */
         $token->setUser($userRepository->getUserById((string) UserService::TEST_USER_ID_3));
         $request  = $request->withAttribute(IToken::class, $token);
         $response = $get->handle($request);

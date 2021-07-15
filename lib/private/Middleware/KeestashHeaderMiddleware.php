@@ -23,10 +23,12 @@ namespace Keestash\Middleware;
 
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Router\Verification;
+use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -91,7 +93,7 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
         );
 
         if (null === $token) {
-//            return new JsonResponse(['session expired'], 401);
+            return new JsonResponse(['session expired'], IResponse::UNAUTHORIZED);
         }
 
         return $handler->handle($request->withAttribute(IToken::class, $token));
