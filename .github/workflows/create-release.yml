@@ -39,6 +39,7 @@ jobs:
       # end tests
       - name: end tests
         run: |
+          cat test/result/result.json # show test results
           rm config/config.php    # remove test config
           sudo rm -r vendor/
 
@@ -59,20 +60,20 @@ jobs:
 
       - name: Clean Up
         run: |
-          cp config/config.sample.php config/config.php
-          cd bin/ && php console.php general-api:compile-scss && cd ../
-          rm -rf node_modules
-          rm -rf .github .git config/phpstan config/vagrant
-          rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js output.log
-          rm -rf test/ apps/*/Test/
-          rm -rf apps/*/js/
-          rm -rf apps/*/scss/
+          sudo cp config/config.sample.php config/config.php
+          sudo cd bin/ && php console.php general-api:compile-scss && cd ../
+          sudo rm -rf node_modules
+          sudo rm -rf .github .git config/phpstan config/vagrant
+          sudo rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js output.log
+          sudo rm -rf test/ apps/*/Test/
+          sudo rm -rf apps/*/js/
+          sudo rm -rf apps/*/scss/
           cd ../
-          pwd
-          ls -ltra
-          zip -r /tmp/nightly${{ github.sha }}.zip server
-          chmod 777 /tmp/nightly${{ github.sha }}.zip
-          ls -ltra /tmp
+          sudo pwd
+          sudo ls -ltra
+          sudo zip -r /tmp/nightly${{ github.sha }}.zip server
+          sudo chmod 777 /tmp/nightly${{ github.sha }}.zip
+          sudo ls -ltra /tmp
           echo ${{ steps.create_release.outputs.upload_url }}
 
       - name: Create Release
