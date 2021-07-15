@@ -29,11 +29,9 @@ jobs:
         with:
           node-version: '12.18.2'
 
-      - run: npm -v
-      - run: node -v
-      - run: lsb_release -a
       - run: npm install
       - run: npm run build:prod
+      - run: cp config/config.sample.php config/config.php
 
       - name: PHPUnit Tests
         uses: php-actions/phpunit@v3
@@ -43,7 +41,6 @@ jobs:
 
       - name: Clean Up
         run: |
-          cp config/config.sample.php config/config.php
           cd bin/ && php scss.php && cd ../
           rm -rf node_modules
           rm -rf .github .git config/phpstan config/vagrant
@@ -52,6 +49,8 @@ jobs:
           rm -rf apps/*/js/
           rm -rf apps/*/scss/
           cd ../
+          pwd
+          ls -ltra
           zip -r /tmp/nightly${{ github.sha }}.zip server
           chmod 777 /tmp/nightly${{ github.sha }}.zip
           ls -ltra /tmp
@@ -62,8 +61,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: nightly-${{ github.sha }}
-          release_name: nightly-${{ github.sha }}
+          tag_name: nightly${{ github.sha }}
+          release_name: nightly${{ github.sha }}
           draft: false
           prerelease: false
 
@@ -74,6 +73,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: /tmp/nightly${{ github.sha }}.zip
+          asset_path: ./tmp/nightly${{ github.sha }}.zip
           asset_name: nightly${{ github.sha }}.zip
           asset_content_type: application/zip
