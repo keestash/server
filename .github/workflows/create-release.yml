@@ -60,20 +60,22 @@ jobs:
 
       - name: Clean Up
         run: |
-          sudo cp config/config.sample.php config/config.php
-          sudo cd bin/ && php console.php general-api:compile-scss && cd ../
+          cp config/config.sample.php config/config.php
+          cd bin/ && php console.php general-api:compile-scss && cd ../
+          pwd
           sudo rm -rf node_modules
           sudo rm -rf .github .git config/phpstan config/vagrant
           sudo rm -f .babelrc .editorconfig .eslintrc.js .gitignore Vagrantfile composer.json composer.lock package-lock.json package.json webpack.config.js output.log
           sudo rm -rf test/ apps/*/Test/
           sudo rm -rf apps/*/js/
           sudo rm -rf apps/*/scss/
+          pwd
           cd ../
-          sudo pwd
-          sudo ls -ltra
-          sudo zip -r /tmp/nightly${{ github.sha }}.zip server
-          sudo chmod 777 /tmp/nightly${{ github.sha }}.zip
-          sudo ls -ltra /tmp
+          pwd
+          ls -ltra
+          sudo zip -r nightly${{ github.sha }}.zip server
+          sudo chmod 777 nightly${{ github.sha }}.zip
+          ls -ltra
           echo ${{ steps.create_release.outputs.upload_url }}
 
       - name: Create Release
@@ -94,6 +96,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./tmp/nightly${{ github.sha }}.zip
+          asset_path: ./nightly${{ github.sha }}.zip
           asset_name: nightly${{ github.sha }}.zip
           asset_content_type: application/zip
