@@ -59,12 +59,8 @@ class Compiler extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-
-        while (true) {
-            $this->compileApps();
-            $this->writeInfo("compiled all", $output);
-            sleep(5);
-        }
+        $this->compileApps();
+        $this->writeInfo("compiled all", $output);
         return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
