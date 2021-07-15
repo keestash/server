@@ -17,6 +17,11 @@ jobs:
           path: /tmp/composer-cache
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
+      # start tests
+      - name: start tests
+        run: |
+          cp config/config.sample.php config/config.php
+
       # tests
       - name: Composer Install
         uses: php-actions/composer@v5
