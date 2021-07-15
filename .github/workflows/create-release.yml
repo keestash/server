@@ -55,8 +55,8 @@ jobs:
         with:
           node-version: '12.18.2'
 
-      - run: npm install
-      - run: npm run build:prod
+#      - run: npm install
+#      - run: npm run build:prod
 
       - name: Clean Up
         run: |
