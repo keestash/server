@@ -31,4 +31,6 @@ interface IRouterService {
 
     public function getUri(string $name): string;
 
+    public function isPublicRoute(ServerRequestInterface $request): bool;
+
 }

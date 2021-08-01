@@ -20,21 +20,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Factory\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\AppsInstalledMiddleware;
+use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Middleware\KeestashHeaderMiddleware;
 use Keestash\Middleware\LoggedInMiddleware;
 use Keestash\Middleware\SessionHandlerMiddleware;
 use Mezzio\Application;
+use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Helper\ServerUrlMiddleware;
 use Mezzio\Helper\UrlHelperMiddleware;
-use Mezzio\Router\Middleware\DispatchMiddleware;
 use Mezzio\Router\Middleware\MethodNotAllowedMiddleware;
 use Mezzio\Router\Middleware\RouteMiddleware;
-use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 
 return function (Application $app) {
+    $app->pipe(ApplicationStartedMiddleware::class);
     $app->pipe(SessionHandlerMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);

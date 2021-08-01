@@ -69,6 +69,7 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\ReflectionService;
+use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\Stylesheet\Compiler;
@@ -115,6 +116,7 @@ use Keestash\Factory\Core\Service\HTTP\PersistenceServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
+use Keestash\Factory\Core\Service\Router\ApiRequestServiceFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
 use Keestash\Factory\Core\Service\Stylesheet\CompilerFactory;
@@ -122,7 +124,9 @@ use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
+use Keestash\Factory\Middleware\ApplicationStartedMiddleware;
 use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
+use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
 use Keestash\Factory\Middleware\ExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\KeestashHeaderMiddlewareFactory;
@@ -133,6 +137,7 @@ use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
 use Keestash\L10N\GetText;
 use Keestash\Legacy\Legacy;
 use Keestash\Middleware\AppsInstalledMiddleware;
+use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Middleware\KeestashHeaderMiddleware;
@@ -215,4 +220,7 @@ return [
     JWTService::class                                              => JWTServiceFactory::class,
     SanitizerService::class                                        => SanitizerServiceFactory::class,
     HTMLPurifier::class                                            => InvokableFactory::class,
+    DispatchMiddleware::class                                      => DispatchMiddlewareFactory::class,
+    ApiRequestService::class                                       => ApiRequestServiceFactory::class,
+    ApplicationStartedMiddleware::class                            => InvokableFactory::class,
 ];

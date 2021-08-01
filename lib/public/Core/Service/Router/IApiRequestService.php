@@ -19,21 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Core\Event;
+namespace KSP\Core\Service\Router;
 
-use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+use Psr\Http\Message\ServerRequestInterface;
 
-class ApplicationStartedEvent extends Event {
+interface IApiRequestService {
 
-    private DateTimeInterface $dateTime;
-
-    public function __construct(DateTimeInterface $dateTime) {
-        $this->dateTime = $dateTime;
-    }
-
-    public function getDateTime(): DateTimeInterface {
-        return $this->dateTime;
-    }
+    public function log(ServerRequestInterface $request, float $end): void;
 
 }

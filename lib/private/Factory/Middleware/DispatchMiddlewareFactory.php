@@ -19,21 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Core\Event;
+namespace Keestash\Factory\Middleware;
 
-use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+use Keestash\Middleware\DispatchMiddleware;
+use KSP\Core\Service\Router\IApiRequestService;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
-class ApplicationStartedEvent extends Event {
+class DispatchMiddlewareFactory {
 
-    private DateTimeInterface $dateTime;
-
-    public function __construct(DateTimeInterface $dateTime) {
-        $this->dateTime = $dateTime;
-    }
-
-    public function getDateTime(): DateTimeInterface {
-        return $this->dateTime;
+    public function __invoke(ContainerInterface $container): MiddlewareInterface {
+        return new DispatchMiddleware(
+            $container->get(IApiRequestService::class)
+        );
     }
 
 }
