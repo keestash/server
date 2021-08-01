@@ -19,21 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Core\Event;
+namespace KSP\Api;
 
-use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+interface IRequest {
 
-class ApplicationStartedEvent extends Event {
-
-    private DateTimeInterface $dateTime;
-
-    public function __construct(DateTimeInterface $dateTime) {
-        $this->dateTime = $dateTime;
-    }
-
-    public function getDateTime(): DateTimeInterface {
-        return $this->dateTime;
-    }
+    public const ATTRIBUTE_NAME_APPLICATION_START = 'start.application.name.attribute';
 
 }

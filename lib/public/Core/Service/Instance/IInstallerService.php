@@ -19,21 +19,30 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Core\Event;
+namespace KSP\Core\Service\Instance;
 
-use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+interface IInstallerService {
 
-class ApplicationStartedEvent extends Event {
+    public function removeInstaller(): bool;
 
-    private DateTimeInterface $dateTime;
+    public function getAll(): ?array;
 
-    public function __construct(DateTimeInterface $dateTime) {
-        $this->dateTime = $dateTime;
-    }
+    public function updateInstaller(string $key, string $value): bool;
 
-    public function getDateTime(): DateTimeInterface {
-        return $this->dateTime;
-    }
+    public function removeOption(string $key): bool;
+
+    public function writeInstaller(array $messages): bool;
+
+    public function hasIdAndHash(): bool;
+
+    public function writeIdAndHash(): bool;
+
+    public function writeProductionMode(): bool;
+
+    public function verifyConfigurationFile(bool $force = false): array;
+
+    public function isInstalled(): bool;
+
+    public function runCoreMigrations(): bool;
 
 }

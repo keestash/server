@@ -19,21 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Core\Event;
+namespace Keestash\Factory\Middleware;
 
-use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+use KSP\Api\IRequest;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class ApplicationStartedEvent extends Event {
+class ApplicationStartedMiddleware implements MiddlewareInterface {
 
-    private DateTimeInterface $dateTime;
-
-    public function __construct(DateTimeInterface $dateTime) {
-        $this->dateTime = $dateTime;
-    }
-
-    public function getDateTime(): DateTimeInterface {
-        return $this->dateTime;
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+        return $handler->handle($request->withAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START, microtime(true)));
     }
 
 }

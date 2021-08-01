@@ -33,10 +33,11 @@ use Keestash\Core\System\Installation\Verification\DatabaseReachable;
 use Keestash\Core\System\Installation\Verification\HasMigrations;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 
-class InstallerService {
+class InstallerService implements IInstallerService {
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 

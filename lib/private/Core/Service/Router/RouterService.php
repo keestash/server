@@ -67,4 +67,20 @@ class RouterService implements IRouterService {
         return $this->router->generateUri($name);
     }
 
+    public function isPublicRoute(ServerRequestInterface $request): bool {
+        $path         = $this->getMatchedPath($request);
+        $publicRoutes = $this->config
+            ->get(ConfigProvider::WEB_ROUTER)
+            ->get(ConfigProvider::PUBLIC_ROUTES)
+            ->toArray();
+
+        foreach ($publicRoutes as $publicRoute) {
+            if ($path === $publicRoute) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

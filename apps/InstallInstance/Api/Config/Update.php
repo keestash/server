@@ -185,8 +185,8 @@ class Update implements RequestHandlerInterface {
     private function validLogRequestOption($val): bool {
         if (false === $this->isValid($val)) return false;
 
-        if ($val === \Keestash\ConfigProvider::LOG_REQUESTS_ENABLED) return true;
-        if ($val === \Keestash\ConfigProvider::LOG_REQUESTS_DISABLED) return true;
+        if ($val === ConfigProvider::LOG_REQUESTS_ENABLED) return true;
+        if ($val === ConfigProvider::LOG_REQUESTS_DISABLED) return true;
 
         return false;
     }
