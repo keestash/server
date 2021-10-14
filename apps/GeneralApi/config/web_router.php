@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as ConfigProviderAlias;
+use KSA\GeneralApi\Api\ExternalUriController;
 use KSA\GeneralApi\ConfigProvider;
 use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\Organization\Detail;

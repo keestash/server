@@ -42,9 +42,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class Login implements RequestHandlerInterface {
-
-    private const DEFAULT_USER_LIFETIME = 60 * 60;
-
+    
     private IUserRepository    $userRepository;
     private IL10N              $translator;
     private UserService        $userService;

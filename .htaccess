@@ -1,6 +1,8 @@
 Order Deny,Allow
 Deny from all
 DirectoryIndex index.php
+Options -Indexes
+IndexIgnore *
 
 <Files index.php>
     Order Allow,Deny

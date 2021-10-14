@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Router;
 
 use Keestash\ConfigProvider;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\Route;
@@ -32,13 +33,16 @@ class RouterService implements IRouterService {
 
     private RouterInterface $router;
     private Config          $config;
+    private ILogger         $logger;
 
     public function __construct(
         RouterInterface $router
-        , Config $config
+        , Config        $config
+        , ILogger       $logger
     ) {
         $this->router = $router;
         $this->config = $config;
+        $this->logger = $logger;
     }
 
     public function getMatchedPath(ServerRequestInterface $request): string {
@@ -68,13 +72,20 @@ class RouterService implements IRouterService {
     }
 
     public function isPublicRoute(ServerRequestInterface $request): bool {
-        $path         = $this->getMatchedPath($request);
-        $publicRoutes = $this->config
+        $path            = $this->getMatchedPath($request);
+        $publicWebRoutes = $this->config
             ->get(ConfigProvider::WEB_ROUTER)
             ->get(ConfigProvider::PUBLIC_ROUTES)
             ->toArray();
+        $publicApiRoutes = $this->config
+            ->get(ConfigProvider::API_ROUTER)
+            ->get(ConfigProvider::PUBLIC_ROUTES)
+            ->toArray();
 
-        foreach ($publicRoutes as $publicRoute) {
+        foreach (array_merge($publicWebRoutes, $publicApiRoutes) as $publicRoute) {
+            $this->logger->debug($path);
+            $this->logger->debug($publicRoute);
+            $this->logger->debug($path === $publicRoute);
             if ($path === $publicRoute) {
                 return true;
             }
