@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use Firebase\JWT\JWT;
+use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\File\FileService;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -29,67 +30,59 @@ use KSP\Core\Service\File\Icon\IIconService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
-require_once 'vendor/autoload.php';
-/** @var ContainerInterface $container */
-$container = require_once __DIR__ . '/lib/start.php';
-/** @var InstanceDB $instanceDB */
-$instanceDB = $container->get(InstanceDB::class);
-/** @var Config $config */
-$config = $container->get(Config::class);
-/** @var IIconService $iconService */
-$iconService = $container->get(IIconService::class);
-/** @var IConfigService $configService */
-$configService = $container->get(IConfigService::class);
-$lifeTime      = $configService->getValue(
-    'user_lifetime'
-    , \Keestash\ConfigProvider::DEFAULT_USER_LIFETIME
-);
+(function () {
 
-$token = $_GET['token'] ?? null;
+    require_once 'vendor/autoload.php';
+    /** @var ContainerInterface $container */
+    $container = require_once __DIR__ . '/lib/start.php';
+    /** @var InstanceDB $instanceDB */
+    $instanceDB = $container->get(InstanceDB::class);
+    /** @var Config $config */
+    $config = $container->get(Config::class);
+    /** @var IIconService $iconService */
+    $iconService = $container->get(IIconService::class);
+    /** @var IConfigService $configService */
+    $configService = $container->get(IConfigService::class);
+    $lifeTime      = $configService->getValue(
+        'user_lifetime'
+        , ConfigProvider::DEFAULT_USER_LIFETIME
+    );
 
-if (null === $token) {
-    header("HTTP/1.0 404 Not Found");
-    die();
-}
+    $token = $_GET['token'] ?? null;
 
-$decoded = JWT::decode(
-    $token
-    , $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-    , ['HS256']
-);
-
-$then = new DateTime();
-$then->setTimestamp((int) $decoded->iat + (int) $lifeTime);
-if ((new DateTime()) > $then) {
-    header("HTTP/1.0 404 Not Found");
-    die();
-}
-
-$audience = $decoded->aud;
-
-$file = null;
-if ($audience->type === IAudience::TYPE_USER) {
-    $file = loadTypeUser($config, (int) $audience->value);
-} else if ($audience->type === IAudience::TYPE_ASSET) {
-    $file = loadTypeAsset($config, $iconService, $audience->value);
-}
-//dump($file);
-//dump(is_file($file));
-//exit();
-header('Content-Type:' . mime_content_type($file));
-header('Content-Length: ' . filesize($file));
-readfile($file);
-
-
-function loadTypeUser(Config $config, int $userId): string {
-    $file = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/profile_image_" . $userId;
-    if (!is_file($file)) {
-        $file = $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/' . FileService::DEFAULT_PROFILE_PICTURE . ".png";
+    if (null === $token) {
+        header("HTTP/1.0 404 Not Found");
+        die();
     }
-    return $file;
-}
 
-function loadTypeAsset(Config $config, IIconService $iconService, string $name): string {
-    $fileName = $iconService->getIconForExtension($name);
-    return $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/svg/' . $fileName;
-}
+    $decoded = JWT::decode(
+        $token
+        , $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+        , ['HS256']
+    );
+
+    $then = new DateTime();
+    $then->setTimestamp((int) $decoded->iat + (int) $lifeTime);
+    if ((new DateTime()) > $then) {
+        header("HTTP/1.0 404 Not Found");
+        die();
+    }
+
+    $audience = $decoded->aud;
+
+    $file = null;
+    if ($audience->type === IAudience::TYPE_USER) {
+        $file = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/profile_image_" . (int) $audience->value;
+        if (!is_file($file)) {
+            $file = $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/' . FileService::DEFAULT_PROFILE_PICTURE . ".png";
+        }
+    } else if ($audience->type === IAudience::TYPE_ASSET) {
+        $fileName = $iconService->getIconForExtension($audience->value);
+        $file     = $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/svg/' . $fileName;
+    }
+
+    header('Content-Type:' . mime_content_type($file));
+    header('Content-Length: ' . filesize($file));
+    readfile($file);
+
+})();

@@ -1,6 +1,7 @@
 import {APP_STORAGE, StartUp} from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ShareService} from "../Service/ShareService";
+import {SystemService} from "../Service/SystemService";
 
 /**
  * Keestash
@@ -27,6 +28,7 @@ const startUp = new StartUp(
 startUp.setUp();
 
 export const SHARE_SERVICE = 'service.share';
+export const SYSTEM_SERVICE = 'service.system';
 
 class PWMContainer {
     constructor(container) {
@@ -40,6 +42,13 @@ class PWMContainer {
                 return new ShareService(
                     container.query(APP_STORAGE)
                 );
+            }
+        )
+
+        this.container.register(
+            SYSTEM_SERVICE
+            , (container) => {
+                return new SystemService();
             }
         )
     }

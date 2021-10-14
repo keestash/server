@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\Router;
 
 use Keestash\Core\Service\Router\RouterService;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
@@ -33,6 +34,7 @@ class RouterServiceFactory {
         return new RouterService(
             $container->get(RouterInterface::class)
             , $container->get(Config::class)
+            , $container->get(ILogger::class)
         );
     }
 
