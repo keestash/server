@@ -22,16 +22,20 @@ declare(strict_types=1);
 namespace KSA\Apps;
 
 use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\Apps\Api\GetApps;
 use KSA\Apps\Api\UpdateApp;
 use KSA\Apps\Controller\Controller;
+use KSA\Apps\Factory\Api\GetAppsFactory;
 use KSA\Apps\Factory\Api\UpdateAppFactory;
 use KSA\Apps\Factory\Controller\ControllerFactory;
 use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
-    public const ROUTE_NAME_APPS = '/apps[/]';
-    public const APP_ID          = 'apps';
+    public const ROUTE_NAME_APPS         = '/apps[/]';
+    public const ROUTE_NAME_APPS_UPDATE  = '/apps/update[/]';
+    public const ROUTE_NAME_APPS_GET_ALL = '/apps/get/all[/]';
+    public const APP_ID                  = 'apps';
 
     public function __invoke(): array {
         return [
@@ -47,6 +51,7 @@ final class ConfigProvider {
                 'factories' => [
                     // api
                     UpdateApp::class  => UpdateAppFactory::class,
+                    GetApps::class => GetAppsFactory::class,
 
                     // controller
                     Controller::class => ControllerFactory::class,
@@ -58,7 +63,7 @@ final class ConfigProvider {
                         'path'         => ConfigProvider::ROUTE_NAME_APPS
                         , 'middleware' => Controller::class
                         , 'name'       => Controller::class
-                    ]
+                    ],
                 ],
                 CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
                     ConfigProvider::ROUTE_NAME_APPS => 'apps'
@@ -77,11 +82,18 @@ final class ConfigProvider {
             CoreConfigProvider::API_ROUTER => [
                 CoreConfigProvider::ROUTES => [
                     [
-                        'path'         => '/apps/update[/]'
+                        'path'         => ConfigProvider::ROUTE_NAME_APPS_UPDATE
                         , 'middleware' => UpdateApp::class
                         , 'method'     => IVerb::POST
                         , 'name'       => UpdateApp::class
+                    ],
+                    [
+                        'path'         => ConfigProvider::ROUTE_NAME_APPS_GET_ALL
+                        , 'middleware' => GetApps::class
+                        , 'method'     => IVerb::GET
+                        , 'name'       => GetApps::class
                     ]
+
                 ]
             ],
             'templates'                    => [

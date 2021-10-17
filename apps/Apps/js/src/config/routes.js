@@ -1,7 +1,7 @@
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,10 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-const glob = require("glob");
+import {Host} from "../../../../../lib/js/src/Backend/Host";
 
-module.exports = {
-    entry: {
-        about: glob.sync(__dirname + "/src/*.js")
+const ROUTE_NAME_APPS_GET_ALL = '/apps/get/all/';
+const ROUTE_NAME_APPS_UPDATE  = '/apps/update/';
+
+const host = new Host();
+
+export const ROUTES = {
+    getAppsAll: () => {
+        return host.getApiHost() + ROUTE_NAME_APPS_GET_ALL;
+    },
+
+    getUpdateApps(){
+        return host.getApiHost() + ROUTE_NAME_APPS_UPDATE;
     }
-};
+
+}

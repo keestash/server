@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,25 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\App\Config;
+namespace KSA\Apps\Api;
 
-use DateTimeInterface;
-use doganoo\Backgrounder\BackgroundJob\JobList;
-use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\Repository\AppRepository\IAppRepository;
+use Laminas\Diactoros\Response\JsonResponse;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-interface IApp extends IJsonObject {
+class GetApps implements RequestHandlerInterface {
 
-    public const ENABLED_TRUE  = "true";
-    public const ENABLED_FALSE = "false";
+    private IAppRepository $appRepository;
 
-    public function getId(): string;
+    public function __construct(IAppRepository $appRepository) {
+        $this->appRepository = $appRepository;
+    }
 
-    public function isEnabled(): bool;
-
-    public function getVersion(): int;
-
-    public function getCreateTs(): DateTimeInterface;
-
-    public function getBackgroundJobs(): JobList;
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        $apps = $this->appRepository->getAllApps();
+        return new JsonResponse($apps->toArray());
+    }
 
 }
