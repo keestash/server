@@ -50,7 +50,7 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $id = $request->getQueryParams()['id'] ?? null;
+        $id = $request->getAttribute('id');
 
         if (null === $id || "" === $id || false === is_numeric($id)) {
             throw new GeneralApiException('no id found');
