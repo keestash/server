@@ -25,14 +25,13 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-between align-items-start flex-grow-1 b-b coll flex-column">
-                            <div class="container-fluid">
+                            <div class="container-fluid p-0">
                                 <template v-if="state !== 1">
                                     <Edge
                                             v-for="edge in edges"
                                             :key="edge.id"
                                             :edge="edge"
                                             @wasClicked="selectRow(edge)"
-                                            class="pl-0 pr-0"
                                     ></Edge>
                                 </template>
                                 <Skeleton :count=15 height="25px" v-else/>
