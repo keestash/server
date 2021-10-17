@@ -68,6 +68,13 @@ return [
             , 'name'       => MinimumCredential::class
         ],
         [
+            'path'         => '/organizations/:id[/]'
+            , 'middleware' => Get::class
+            , 'method'     => IVerb::GET
+            , 'name'       => Get::class
+        ],
+        [
+
             'path'         => '/organizations/all[/]'
             , 'middleware' => ListAll::class
             , 'method'     => IVerb::GET
@@ -108,12 +115,6 @@ return [
             , 'middleware' => File::class
             , 'method'     => IVerb::GET
             , 'name'       => File::class
-        ],
-        [
-            'path'         => '/organizations/:id[/]'
-            , 'middleware' => Get::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Get::class
         ],
     ],
     ConfigProvider::PUBLIC_ROUTES => [
