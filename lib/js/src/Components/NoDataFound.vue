@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center ndf-wrapper"
+  <div class="d-flex flex-column flex-grow-1 justify-content-center align-items-center ndf-wrapper share-no-data-found"
        v-if="this.visible"
   >
     <i :class="this.faClass"></i>
@@ -21,6 +21,9 @@ export default {
     faClass: function () {
       if (this.type === 'user') {
         return 'fas fa-user fa-5x';
+      }
+      if (this.type === 'attachment') {
+        return 'fas fa-file fa-5x';
       }
       return 'fas fa-info fa-5x';
     }

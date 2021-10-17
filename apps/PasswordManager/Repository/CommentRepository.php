@@ -37,11 +37,11 @@ class CommentRepository {
     private IBackend        $backend;
 
     public function __construct(
-        IBackend $backend
-        , NodeRepository $nodeRepository
-        , UserRepository $userRepository
+        IBackend          $backend
+        , NodeRepository  $nodeRepository
+        , UserRepository  $userRepository
         , DateTimeService $dateTimeService
-        , IJWTService $jwtService
+        , IJWTService     $jwtService
     ) {
         $this->nodeRepository  = $nodeRepository;
         $this->userRepository  = $userRepository;
@@ -130,8 +130,8 @@ class CommentRepository {
             $comment->setJWT(
                 $this->jwtService->getJWT(
                     new Audience(
-                        IAudience::TYPE_ASSET
-                        , 'default'
+                        IAudience::TYPE_USER
+                        , (string) $user->getId()
                     )
                 )
             );

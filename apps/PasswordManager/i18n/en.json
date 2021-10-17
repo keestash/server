@@ -15,8 +15,17 @@
     "dialogTitle": "New Password",
     "submitText": "Save",
     "negativeText": "Close",
-    "urlLabel": "URL",
-    "urlPlaceholder": "URL",
+    "url": {
+      "label": "URL",
+      "placeholder": "URL",
+      "external": {
+        "title": "External Link",
+        "text": "You are about to visit an external link and we would like to pause for a moment out of an abundance of caution.",
+        "text_info": "You are being redirected to",
+        "copy": "Copy",
+        "proceed": "Proceed"
+      }
+    },
     "noTitleAlertText": "Please insert at least a title",
     "noPasswordsAvailable": "No Passwords Available",
     "noPasswordsAvailableDescription": "Create A new Password",
@@ -62,6 +71,9 @@
           "negativeButton": "Cancel",
           "positiveButton": "Yes"
         }
+      },
+      "comment": {
+        "commentedByLabel": "Commented by "
       }
     },
     "sharePublicly": {

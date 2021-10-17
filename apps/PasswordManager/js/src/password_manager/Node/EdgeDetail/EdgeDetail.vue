@@ -4,9 +4,15 @@
             <div class="col">
                 <div class="row mt-4 mb-4">
                     <div class="col-md-1 align-self-center">
-                        <p class="h1">
-                            <b-icon-code-square class="node-logo-color"></b-icon-code-square>
-                        </p>
+
+                        <b-img
+                                :src="this.imageUrlPassword"
+                                fluid
+                                :alt="this.edge.node.name"
+                                v-if="edge.node.type === 'credential'"
+                                class="flex-grow-1 flex-shrink-0 node-logo-color"
+                        ></b-img>
+
                     </div>
                     <div class="col-md-4 d-flex align-items-center">
                         <div class="row">
@@ -51,12 +57,12 @@
                     </div>
 
                     <div class="form-group">
-                        <small class="form-text text-muted">{{ $t('credential.detail.websiteLabel') }}</small>
+                        <small class="form-text text-muted">{{ $t('credential.url.label') }}</small>
                         <div class="input-group">
                             <input
                                     type="url"
                                     class="form-control"
-                                    :placeholder="this.edge.node.url"
+                                    :placeholder="$t('credential.url.placeholder')"
                                     :value="this.edge.node.url"
                                     @blur="onUrlChange"
                             >
@@ -75,19 +81,24 @@
 
             </div>
         </div>
-        <b-modal id="external-link-modal" hide-header hide-footer>
-            <h3 id="modal-title">External link warning</h3>
+        <b-modal ref="external-link-modal-ref" id="external-link-modal" hide-header hide-footer>
+            <h3 id="modal-title">{{ $t('credential.url.external.title') }}</h3>
             <div id="modal-body">
-                <p>You are about to visit an external link and we would like to pause for a moment out
-                    of an abundance of caution.</p>
-                <p>You are being redirected to </p>
+                <p>{{ $t('credential.url.external.text') }}</p>
+                <p>{{ $t('credential.url.external.text_info') }} </p>
                 <b-alert show variant="light">
                     {{ this.edge.node.url }}
                 </b-alert>
 
                 <div class="pull-left">
-                    <button class="btn btn-secondary" @click="copyToClipBoard">Copy</button>
-                    <button class="btn btn-primary" @click="openUrl">Proceed</button>
+                    <button class="btn btn-secondary" @click="copyToClipBoard">{{
+                        $t('credential.url.external.copy')
+                        }}
+                    </button>
+                    <button class="btn btn-primary" @click="openUrl">{{
+                        $t('credential.url.external.proceed')
+                        }}
+                    </button>
                 </div>
             </div>
         </b-modal>
@@ -97,7 +108,7 @@
 
 <script>
 import {RESPONSE_CODE_OK} from "../../../../../../../lib/js/src/Backend/Request";
-import {AXIOS, StartUp, URL_SERVICE} from "../../../../../../../lib/js/src/StartUp";
+import {AXIOS, StartUp, SYSTEM_SERVICE_GLOBAL, URL_SERVICE} from "../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../../config/routes";
 import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/Axios";
@@ -117,7 +128,8 @@ export default {
             saving: false,
             passwordField: {
                 visible: false
-            }
+            },
+            imageUrlPassword: ''
         }
     },
     computed: {
@@ -141,6 +153,11 @@ export default {
 
         this.container = startUp.getContainer();
         this.axios = this.container.query(AXIOS);
+        this.systemService = this.container.query(SYSTEM_SERVICE_GLOBAL);
+
+        const url = this.systemService.getHost().replace('index.php', '');
+        this.imageUrlPassword = url + 'asset/svg/password.svg';
+
 
     },
 
@@ -148,6 +165,7 @@ export default {
         copyToClipBoard() {
             const systemService = new SystemService();
             systemService.copyToClipboard(this.edge.node.url);
+            this.$refs['external-link-modal-ref'].hide()
         },
         passwordUsed(p) {
             this.updatePasswordRemote(p);
@@ -253,12 +271,14 @@ export default {
             startUp.setUp();
             const container = startUp.getContainer();
             const urlService = container.query(URL_SERVICE);
+            console.log(encodeURI(this.edge.node.url))
             if (!urlService.isValidURL(this.edge.node.url)) return;
 
             window.open(
                 encodeURI(this.edge.node.url)
                 , '_blank'
             ).focus();
+            this.$refs['external-link-modal-ref'].hide();
         },
         loadPassword() {
             this.saving = true;
