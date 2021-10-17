@@ -17,40 +17,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AXIOS} from "../../../../lib/js/src/StartUp";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import Vuex from "vuex";
+import App from "./App";
+import i18n from "./i18n/index";
+import store from "./config/store";
 
-(function () {
-    if (!Keestash.AppsApp) {
-        Keestash.AppsApp = {};
-    }
+window.addEventListener(
+    'DOMContentLoaded'
+    , async () => {
+        const vueConfig = {
+            store,
+            i18n,
+            render: h => h(App)
+        };
 
-    Keestash.AppsApp = {
-
-        listen: function () {
-            const diContainer = Keestash.Main.getContainer();
-
-            $(".apps__app__checkbox").on("click", function () {
-                const checked = $(this).prop("checked");
-                const appId = $(this).attr("data-app-id");
-                const axios = diContainer.query(AXIOS);
-
-                axios.post(
-                    routes.getAppsUpdate(appId)
-                    , {
-                        "activate": true === checked
-                        , "app_id": appId
-                    },
-                ).then((r) => console.log(r));
-
-            });
-        }
+        Vue.use(BootstrapVue);
+        Vue.use(IconsPlugin);
+        Vue.use(Vuex);
+        new Vue(
+            vueConfig
+        )
+            .$mount("#apps");
 
     }
-
-})
-();
-
-$(document).ready(function () {
-    Keestash.AppsApp.listen();
-});
-
+);

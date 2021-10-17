@@ -1,7 +1,7 @@
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,10 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-const glob = require("glob");
+import Vue from "vue";
+import Vuex from "vuex";
 
-module.exports = {
-    entry: {
-        about: glob.sync(__dirname + "/src/*.js")
-    }
-};
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+    strict: true,
+    state: {
+        edges: [],
+        selectedEdge: null,
+        comments: []
+    },
+    mutations: {},
+    actions: {},
+    getters: {}
+});

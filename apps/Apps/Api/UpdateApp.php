@@ -73,7 +73,7 @@ class UpdateApp implements RequestHandlerInterface {
             );
         }
 
-        $app->setEnabled($activate === IApp::ENABLED_TRUE);
+        $app->setEnabled((bool) $activate);
 
         $replaced = $this->appRepository->replace($app);
 

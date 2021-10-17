@@ -68,4 +68,14 @@ class App implements IApp {
         $this->jobs = $jobs;
     }
 
+    public function jsonSerialize(): array {
+        return [
+            'id'          => $this->getId()
+            , 'enabled'   => $this->isEnabled()
+            , 'version'   => $this->getVersion()
+            , 'create_ts' => $this->getCreateTs()
+            , 'jobs'      => $this->getBackgroundJobs()
+        ];
+    }
+
 }
