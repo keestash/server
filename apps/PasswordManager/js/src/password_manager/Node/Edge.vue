@@ -43,10 +43,18 @@
             <!--      <div class="col-6 col-md-1 contextmenu">-->
             <!--        <i class="fas fa-ellipsis-h fa"></i>-->
             <!--      </div>-->
-            <div id="contextMenu" class="col justify-content-end align-items-center">
+            <div id="contextMenu" class="col justify-content-end align-items-center"
+                 v-on:click.stop="$refs.ctxMenu.open"
+            >
                 <i class="fas fa-ellipsis-h"></i>
             </div>
         </div>
+
+        <context-menu id="context-menu" ref="ctxMenu" class="list-group">
+            <li class="list-group-item" @click="console.log(this)">option 1</li>
+            <li class="list-group-item">option 2</li>
+            <li class="list-group-item">option 3</li>
+        </context-menu>
     </div>
 
 </template>
@@ -60,9 +68,11 @@ import {
     SYSTEM_SERVICE_GLOBAL
 } from "../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
+import contextMenu from 'vue-context-menu'
 
 export default {
     name: "Edge",
+    components: {contextMenu},
     props: {
         edge: null
     },
@@ -114,6 +124,9 @@ export default {
     methods: {
         formatDate: function (date) {
             return this.container.services.dateTimeService.format(date);
+        },
+        doThat() {
+            console.log('test')
         }
     }
 }
