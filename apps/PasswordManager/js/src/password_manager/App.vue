@@ -276,6 +276,9 @@ export default {
                 return [];
             })
                 .then(function (data) {
+
+                    if (data.length === 0) return;
+
                     _this.parseBreadCrumb(data.breadCrumb)
                     _this.parseEdges(data.node);
                 })

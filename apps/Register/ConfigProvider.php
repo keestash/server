@@ -35,11 +35,13 @@ use KSA\Register\Factory\Api\MailExistsFactory;
 use KSA\Register\Factory\Command\CreateUserFactory;
 use KSA\Register\Factory\Controller\ControllerFactory;
 use KSA\Register\Factory\Event\Listener\EmailAfterRegistrationListenerFactory;
+use KSP\Core\DTO\Http\IVerb;
 
 final class ConfigProvider {
 
-    public const REGISTER = '/register[/]';
-    public const APP_ID   = 'register';
+    public const REGISTER     = '/register[/]';
+    public const REGISTER_ADD = '/register/add[/]';
+    public const APP_ID       = 'register';
 
     public function __invoke(): array {
         return [
@@ -83,25 +85,25 @@ final class ConfigProvider {
             ],
             CoreConfigProvider::API_ROUTER => [
                 CoreConfigProvider::PUBLIC_ROUTES => [
-                    '/register/add[/]',
+                    ConfigProvider::REGISTER_ADD,
                 ],
                 CoreConfigProvider::ROUTES        => [
                     [
-                        'path'       => '/register/add[/]',
+                        'path'       => ConfigProvider::REGISTER_ADD,
                         'middleware' => Add::class,
-                        'method'     => 'post',
+                        'method'     => IVerb::POST,
                         'name'       => Add::class
                     ],
                     [
                         'path'       => '/user/mail/exists/:address[/]',
                         'middleware' => MailExists::class,
-                        'method'     => 'get',
+                        'method'     => IVerb::GET,
                         'name'       => MailExists::class
                     ],
                     [
                         'path'       => '/user/exists/:userName[/]',
                         'middleware' => Exists::class,
-                        'method'     => 'get',
+                        'method'     => IVerb::GET,
                         'name'       => Exists::class
                     ],
                 ]

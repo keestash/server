@@ -40,21 +40,43 @@
                     </div>
                 </div>
             </div>
-            <!--      <div class="col-6 col-md-1 contextmenu">-->
-            <!--        <i class="fas fa-ellipsis-h fa"></i>-->
-            <!--      </div>-->
-            <div id="contextMenu" class="col justify-content-end align-items-center"
-                 v-on:click.stop="$refs.ctxMenu.open"
-            >
-                <i class="fas fa-ellipsis-h"></i>
+            <div id="contextMenu" class="col justify-content-end align-items-center">
+                <i class="fas fa-ellipsis-h"
+                   v-on:click.stop="$refs.ctxMenu.open"
+                ></i>
             </div>
         </div>
 
-        <context-menu id="context-menu" ref="ctxMenu" class="list-group">
-            <li class="list-group-item" @click="console.log(this)">option 1</li>
-            <li class="list-group-item">option 2</li>
-            <li class="list-group-item">option 3</li>
+        <context-menu id="context-menu" ref="ctxMenu" class="row">
+            <div class="col context-menu-col" v-b-modal.modal-prevent-closing>Add To Organization</div>
         </context-menu>
+
+        <b-modal
+                id="modal-prevent-closing"
+                ref="modal"
+                title="Add To Organization"
+                @show="openModal"
+                @hidden="resetModal"
+                @ok="submitOrganization"
+        >
+            <form ref="form" @submit.stop.prevent="submitOrganization">
+                <b-form-select v-model="selectedOrganization" :options="organizations"
+                               :select-size="4"></b-form-select>
+                <!--                <b-form-group-->
+                <!--                        label="Name"-->
+                <!--                        label-for="name-input"-->
+                <!--                        invalid-feedback="Name is required"-->
+                <!--                        :state="nameState"-->
+                <!--                >-->
+                <!--                    <b-form-input-->
+                <!--                            id="name-input"-->
+                <!--                            v-model="name"-->
+                <!--                            :state="nameState"-->
+                <!--                            required-->
+                <!--                    ></b-form-input>-->
+                <!--                </b-form-group>-->
+            </form>
+        </b-modal>
     </div>
 
 </template>
@@ -69,6 +91,8 @@ import {
 } from "../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 import contextMenu from 'vue-context-menu'
+import {ROUTES} from "../../config/routes";
+import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
 
 export default {
     name: "Edge",
@@ -90,6 +114,8 @@ export default {
                 imageUrlShared: '',
                 imageUrlPassword: '',
             },
+            organizations: [],
+            selectedOrganization: null
         }
     },
     computed: {
@@ -125,8 +151,56 @@ export default {
         formatDate: function (date) {
             return this.container.services.dateTimeService.format(date);
         },
-        doThat() {
-            console.log('test')
+        openModal() {
+            this.container.services.axios.get(
+                ROUTES.getAllOrganizations()
+            )
+                .then((r) => {
+                    if (RESPONSE_CODE_OK in r.data) {
+                        return r.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+                    }
+                    return [];
+                })
+                .then((data) => {
+
+                    const organizations = [];
+
+                    for (let index in data.organizations) {
+                        const organization = data.organizations[index];
+
+                        organizations.push(
+                            {
+                                value: organization.id
+                                , text: organization.name
+                            }
+                        )
+                    }
+
+                    this.organizations = organizations;
+                });
+        },
+        resetModal() {
+            this.selectedOrganization = null;
+        },
+        submitOrganization() {
+
+            this.container.services.axios.httpPut(
+                ROUTES.getOrganizationsAddNode(),
+                {
+                    node_id: this.edge.node.id
+                    , organization_id: this.selectedOrganization
+                }
+            ).then(
+                (r) => {
+                    this.$store.dispatch(
+                        'updateSelectedNode'
+                        , {
+                            organization: r.data.organization
+                        }
+                    )
+                }
+            )
+            ;
         }
     }
 }

@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Service\Factory\Repository\Node;
 
 use doganoo\DI\DateTime\IDateTimeService;
-use KSA\GeneralApi\Repository\IOrganizationRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
+use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;

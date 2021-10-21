@@ -25,7 +25,7 @@ use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Service\User\UserService;
 use KSA\GeneralApi\Exception\GeneralApiException;
-use KSA\GeneralApi\Repository\DemoUsersRepository;
+use KSA\Settings\Repository\DemoUsersRepository;
 use KSP\Api\IResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

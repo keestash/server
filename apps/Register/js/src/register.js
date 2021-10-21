@@ -19,7 +19,7 @@
 import $ from 'jquery';
 import {Register} from "./RegisterForm/Register";
 import {Routes} from "./RegisterForm/Public/Routes";
-import {LONG_MODAL, REQUEST} from "../../../../lib/js/src/StartUp";
+import {AXIOS, LONG_MODAL} from "../../../../lib/js/src/StartUp";
 
 (function () {
     if (!Keestash.Register) {
@@ -33,7 +33,7 @@ import {LONG_MODAL, REQUEST} from "../../../../lib/js/src/StartUp";
             const diContainer = Keestash.Main.getContainer();
 
             const register = new Register(
-                diContainer.query(REQUEST)
+                diContainer.query(AXIOS)
                 , new Routes()
                 , diContainer.query(LONG_MODAL)
             );

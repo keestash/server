@@ -20,7 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider;
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
@@ -36,10 +36,11 @@ use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Share\Share;
+use KSA\PasswordManager\ConfigProvider;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
-    ConfigProvider::ROUTES        => [
+    CoreConfigProvider::ROUTES        => [
         [
             'path'         => '/password_manager/comment/add[/]'
             , 'middleware' => Add::class
@@ -77,7 +78,7 @@ return [
             , 'name'       => PublicShare::class
         ],
         [
-            'path'         => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
+            'path'         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
             , 'middleware' => PublicShareSingle::class
             , 'method'     => IVerb::GET
             , 'name'       => PublicShareSingle::class
@@ -119,9 +120,9 @@ return [
             , 'name'       => Move::class
         ],
         [
-            'path'         => '/password_manager/organization/node/add[/]'
+            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
             , 'middleware' => Organization::class
-            , 'method'     => IVerb::POST
+            , 'method'     => IVerb::PUT
             , 'name'       => Organization::class
         ],
         [
@@ -179,14 +180,14 @@ return [
             , 'name'       => \KSA\PasswordManager\Api\Node\Folder\Create::class
         ],
         [
-            'path'         => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
+            'path'         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
             , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
         ],
     ],
-    ConfigProvider::PUBLIC_ROUTES => [
+    CoreConfigProvider::PUBLIC_ROUTES => [
         '/password_manager/node/get/avatar/:nodeId[/]'
-        , \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
+        , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
     ]
 ];

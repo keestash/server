@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Factory\Repository;
 
 use doganoo\DI\DateTime\IDateTimeService;
-use KSA\GeneralApi\Repository\DemoUsersRepository;
+use KSA\Settings\Repository\DemoUsersRepository;
 use KSP\Core\Backend\IBackend;
 use Psr\Container\ContainerInterface;
 

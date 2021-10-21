@@ -20,7 +20,7 @@ import {Host} from "../../../../../lib/js/src/Backend/Host";
 
 const host = new Host();
 
-const ORGANIZATION_LIST = "/organizations/all/";
+const ORGANIZATION_LIST = "/organizations/all/{includeInactive}/";
 const ORGANIZATION_ADD = "/organizations/add/";
 const ORGANIZATION_ACTIVATE = "/organizations/activate/";
 const ORGANIZATION_DETAILS = "/organizations/{id}/";
@@ -34,9 +34,17 @@ const USERS_EDIT = "/users/edit/";
 const EMAIL_GET = "/user/mail/exists/{address}/";
 const REGISTER_ADD = "/register/add/";
 
+const ORGANIZATION_GET = "/organizations/{id}/";
+const ORGANIZATION_UPDATE = "/organizations/update/";
+const ORGANIZATION_USER_CHANGE = "/organizations/user/change/";
+
+export const MODE_ADD = 'add.mode';
+export const MODE_REMOVE = 'remove.mode';
+
 export const ROUTES = {
-    GET_ORGANIZATION_LIST: () => {
-        return host.getApiHost() + ORGANIZATION_LIST;
+    GET_ORGANIZATION_LIST: (includeInactive = false) => {
+        const route = ORGANIZATION_LIST.replace("{includeInactive}", "" + includeInactive);
+        return host.getApiHost() + route;
     },
     GET_ORGANIZATION_ADD: () => {
         return host.getApiHost() + ORGANIZATION_ADD;
@@ -69,5 +77,14 @@ export const ROUTES = {
     },
     USERS_EDIT: () => {
         return host.getApiHost() + USERS_EDIT;
+    },
+    GET_ORGANIZATION_GET: (id) => {
+        return host.getApiHost() + ORGANIZATION_GET.replace('{id}', id);
+    },
+    GET_ORGANIZATION_UPDATE: () => {
+        return host.getApiHost() + ORGANIZATION_UPDATE;
+    },
+    GET_ORGANIZATION_USER_CHANGE: () => {
+        return host.getApiHost() + ORGANIZATION_USER_CHANGE;
     },
 }

@@ -20,34 +20,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
 use Keestash\ConfigProvider;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\Api\MinimumCredential;
-use KSA\GeneralApi\Api\Organization\Activate;
-use KSA\GeneralApi\Api\Organization\Add;
-use KSA\GeneralApi\Api\Organization\Get;
-use KSA\GeneralApi\Api\Organization\ListAll;
-use KSA\GeneralApi\Api\Organization\Update;
-use KSA\GeneralApi\Api\Organization\User;
 use KSA\GeneralApi\Api\Strings\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\File;
+use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\Api\UserList;
 use KSP\Core\DTO\Http\IVerb;
 
 return [
     ConfigProvider::ROUTES        => [
         [
-            'path'         => '/organizations/user/change[/]'
-            , 'middleware' => User::class
-            , 'method'     => IVerb::POST
-            , 'name'       => User::class
-        ],
-        [
             'path'         => \KSA\GeneralApi\ConfigProvider::THUMBNAIL_BY_EXTENSION
-            , 'middleware' => \KSA\GeneralApi\Api\Thumbnail\Get::class
+            , 'middleware' => Get::class
             , 'method'     => IVerb::GET
-            , 'name'       => \KSA\GeneralApi\Api\Thumbnail\Get::class
+            , 'name'       => Get::class
         ],
         [
             'path'         => '/demousers/user/add[/]'
@@ -55,42 +43,12 @@ return [
             , 'method'     => IVerb::POST
             , 'name'       => AddEmailAddress::class
         ],
-        [
-            'path'         => '/organizations/update[/]'
-            , 'middleware' => Update::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Update::class
-        ],
+
         [
             'path'         => '/password_requirements[/]'
             , 'middleware' => MinimumCredential::class
             , 'method'     => IVerb::GET
             , 'name'       => MinimumCredential::class
-        ],
-        [
-            'path'         => '/organizations/:id[/]'
-            , 'middleware' => Get::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Get::class
-        ],
-        [
-
-            'path'         => '/organizations/all[/]'
-            , 'middleware' => ListAll::class
-            , 'method'     => IVerb::GET
-            , 'name'       => ListAll::class
-        ],
-        [
-            'path'         => '/organizations/add[/]'
-            , 'middleware' => Add::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Add::class
-        ],
-        [
-            'path'         => '/organizations/activate[/]'
-            , 'middleware' => Activate::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Activate::class
         ],
         [
             'path'         => '/users/all/:type[/]'

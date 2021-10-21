@@ -25,8 +25,6 @@ use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Command\Stylesheet\Compiler;
-use KSA\GeneralApi\Event\Listener\UserChangedListener;
-use KSA\GeneralApi\Event\Organization\UserChangedEvent;
 
 return [
     'dependencies'             => require __DIR__ . '/dependencies.php',
@@ -38,17 +36,13 @@ return [
         , ClearBundleJS::class
         , Compiler::class
     ],
-    ConfigProvider::EVENTS     => [
-        UserChangedEvent::class => [
-            UserChangedListener::class
-        ]
-    ],
-    'templates'                => [
+
+    'templates'              => [
         'paths' => [
             'generalApi' => [__DIR__ . '/../template/']
         ]
     ],
-    ConfigProvider::APP_LIST   => [
+    ConfigProvider::APP_LIST => [
         \KSA\GeneralApi\ConfigProvider::APP_ID => [
             ConfigProvider::APP_ORDER      => 3,
             ConfigProvider::APP_NAME       => 'General Api',

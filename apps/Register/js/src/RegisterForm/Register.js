@@ -22,11 +22,11 @@ import {RESPONSE_CODE_NOT_OK, RESPONSE_CODE_OK} from "../../../../../lib/js/src/
 export class Register {
 
     constructor(
-        request
+        axios
         , routes
         , longModal
     ) {
-        this.request = request;
+        this.axios = axios;
         this.routes = routes;
         this.longModal = longModal;
         this.registerButtonClicked = false;
@@ -66,27 +66,30 @@ export class Register {
                     , 'terms_and_conditions': termsAndConditions
                 };
 
-                _this.request.post(
+                console.log(values);
+
+                _this.axios.post(
                     _this.routes.getRegisterAdd()
                     , values
-                    , (response) => {
-                        let object = (response);
-                        let data = null;
-
-                        if (RESPONSE_CODE_OK in object) {
-                            data = object[RESPONSE_CODE_OK];
-                        } else if (RESPONSE_CODE_NOT_OK in object) {
-                            data = object[RESPONSE_CODE_NOT_OK];
+                )
+                    .then((r) => {
+                        if (RESPONSE_CODE_OK in r.data) {
+                            return r.data[RESPONSE_CODE_OK];
+                        } else if (RESPONSE_CODE_NOT_OK in r.data) {
+                            return r.data[RESPONSE_CODE_NOT_OK];
                         }
+                        return [];
+                    })
+                    .then((data) => {
 
                         _this.longModal.show("Register", "OK", "OK", data['message']);
                         _this.enableForm();
-                    }
-                    , () => {
+
+                    })
+                    .catch(() => {
                         _this.longModal.show("Register", "OK", "OK", "There was an error during the registration. Please try it again or reach us out!");
                         _this.enableForm();
-                    }
-                )
+                    })
 
             });
     }

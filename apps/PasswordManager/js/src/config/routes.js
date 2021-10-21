@@ -35,10 +35,10 @@ const PASSWORD_MANAGER_NODE_GET_AVATAR = "/password_manager/node/get/avatar/{nod
 const PASSWORD_MANAGER_ATTACHMENTS_VIEW = "/password_manager/attachments/view/{fileId}/";
 const PASSWORD_MANAGER_SHARE = "/password_manager/share/";
 const PASSWORD_MANAGER_NODE_CREATE = "/password_manager/node/create/";
-const ORGANIZATIONS_ALL = "/organizations/all/";
 const PASSWORD_MANAGER_ORGANIZATION_ADD_NODE = "/password_manager/organization/node/add/";
 const PASSWORD_MANAGER_THUMBNAIL_EXTENSION = "/thumbnail/{extension}/";
 const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
+const ORGANIZATION_LIST = "/organizations/all/";
 
 const host = new Host();
 
@@ -46,6 +46,11 @@ export const ROUTES = {
 
     getNode: (id) => {
         return host.getApiHost() + "/password_manager/node/get/" + id + "/";
+    },
+
+    getAllOrganizations: (includeInactive = false) => {
+        const route = ORGANIZATION_LIST.replace("{includeInactive}", "" + includeInactive);
+        return host.getApiHost() + route;
     },
 
     getPasswordManagerCredentialPasswordUpdate() {
@@ -177,9 +182,10 @@ export const ROUTES = {
     //     return host.getApiHost() + ORGANIZATIONS_ALL;
     // }
     //
-    // getOrganizationsAddNode() {
-    //     return host.getApiHost() + PASSWORD_MANAGER_ORGANIZATION_ADD_NODE;
-    // }
+    getOrganizationsAddNode() {
+        return host.getApiHost() + PASSWORD_MANAGER_ORGANIZATION_ADD_NODE;
+    },
+
     getThumbNailByExtension(extension) {
         let route = PASSWORD_MANAGER_THUMBNAIL_EXTENSION;
         route = route.replace("{extension}", extension);

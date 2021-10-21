@@ -22,55 +22,36 @@ declare(strict_types=1);
 namespace KSA\Settings;
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\Settings\Controller\SettingsController;
-use KSA\Settings\Factory\Controller\SettingsControllerFactory;
-use KSA\Settings\Service\SettingService;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+use KSA\Settings\Event\Listener\UserChangedListener;
+use KSA\Settings\Event\Organization\UserChangedEvent;
 
 final class ConfigProvider {
 
-    public const SETTINGS = "/settings[/]";
-    public const APP_ID   = 'settings';
+    public const SETTINGS              = "/settings[/]";
+    public const APP_ID                = 'settings';
+    public const ORGANIZATION_LIST_ALL = '/organizations/all/[:includeInactive/]';
+
+    public const ORGANIZATION_SINGLE = "/organizations/:id[/]";
 
     public function __invoke(): array {
         return [
-            CoreConfigProvider::APP_LIST   => [
+            CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/config/dependencies.php'
+            , CoreConfigProvider::API_ROUTER => require __DIR__ . '/config/api_router.php'
+            , CoreConfigProvider::WEB_ROUTER => require __DIR__ . '/config/web_router.php'
+            , CoreConfigProvider::APP_LIST   => [
                 ConfigProvider::APP_ID => [
                     CoreConfigProvider::APP_ORDER      => 10,
                     CoreConfigProvider::APP_NAME       => 'Settings',
                     CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::SETTINGS,
                     CoreConfigProvider::APP_VERSION    => 1,
                 ],
-            ],
-            'dependencies'                 => [
-                'factories' => [
-                    SettingService::class     => InvokableFactory::class,
-                    SettingsController::class => SettingsControllerFactory::class
+            ]
+            , CoreConfigProvider::EVENTS     => [
+                UserChangedEvent::class => [
+                    UserChangedListener::class
                 ]
             ],
-            CoreConfigProvider::WEB_ROUTER => [
-                CoreConfigProvider::ROUTES                 => [
-                    [
-                        'path'         => ConfigProvider::SETTINGS
-                        , 'middleware' => SettingsController::class
-                        , 'name'       => SettingsController::class
-                    ],
-                ],
-                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
-                    ConfigProvider::SETTINGS => 'settings'
-                ],
-                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
-                    ConfigProvider::SETTINGS => 'settings'
-                ],
-                CoreConfigProvider::SETTINGS               => [
-                    ConfigProvider::SETTINGS => [
-                        'name'      => 'Settings'
-                        , 'faClass' => "fas fa-sliders-h"
-                        , 'order'   => 1
-                    ]
-                ]
-            ],
-            'templates'                    => [
+            'templates'                      => [
                 'paths' => [
                     'settings' => [__DIR__ . '/template/']
                 ]

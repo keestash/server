@@ -22,14 +22,12 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node;
 
 use Exception;
-use Keestash\Api\Response\LegacyResponse;
-use KSA\GeneralApi\Repository\IOrganizationRepository;
-use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Repository\Node\Organization as OrganizationNodeRepository;
+use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
+use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,16 +38,13 @@ class Organization implements RequestHandlerInterface {
     private IOrganizationRepository    $organizationRepository;
     private NodeRepository             $nodeRepository;
     private ILogger                    $logger;
-    private IL10N                      $translator;
 
     public function __construct(
-        IL10N $l10n
-        , OrganizationNodeRepository $organization
-        , IOrganizationRepository $organizationRepository
-        , NodeRepository $nodeRepository
-        , ILogger $logger
+        OrganizationNodeRepository $organization
+        , IOrganizationRepository  $organizationRepository
+        , NodeRepository           $nodeRepository
+        , ILogger                  $logger
     ) {
-        $this->translator             = $l10n;
         $this->organization           = $organization;
         $this->organizationRepository = $organizationRepository;
         $this->nodeRepository         = $nodeRepository;
@@ -59,39 +54,52 @@ class Organization implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = json_decode((string) $request->getBody(), true);
 
-        $nodeId         = $parameters['node_id'] ?? null;
+        $nodeId         = (int) ($parameters['node_id'] ?? 0);
         $organizationId = (int) ($parameters['organization_id'] ?? 0);
 
-        $organization = $this->organizationRepository->get($organizationId);
-        $node         = $this->nodeRepository->getNode((int) $nodeId, 0, 0);
-
-        $orga = $node->getOrganization();
-
-        if (null !== $orga) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    'message' => $this->translator->translate('The node belongs already to a organization')
-                ]
+        if ($nodeId === 0 || $organizationId === 0) {
+            return new JsonResponse(
+                'node id or organization id not given'
+                , IResponse::NOT_ACCEPTABLE
             );
         }
 
-        if (null === $organization) {
-            throw new PasswordManagerException();
+        $node = $this->nodeRepository->getNode($nodeId, 0, 0);
+
+        if (null !== $node->getOrganization()) {
+            return new JsonResponse(
+                'node still belongs to an organization'
+                , IResponse::FORBIDDEN
+            );
         }
 
-        $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
+        $organization = $this->organizationRepository->get($organizationId);
+
+        if (null === $organization) {
+            return new JsonResponse(
+                'no organization found'
+                , IResponse::NOT_FOUND
+            );
+        }
+
+        if ($organization->getActiveTs())
+
         try {
             $this->organization->addNodeToOrganization(
                 $node
                 , $organization
             );
-            $responseCode = IResponse::RESPONSE_CODE_OK;
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage() . ': ' . $exception->getTraceAsString());
+            return new JsonResponse(
+                'could not add node to organization'
+                , IResponse::INTERNAL_SERVER_ERROR
+            );
         }
 
-        return LegacyResponse::fromData($responseCode, []);
+        return new JsonResponse(
+            ['organization' => $organization]
+        );
     }
 
 }

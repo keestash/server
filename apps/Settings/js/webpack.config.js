@@ -20,6 +20,7 @@ const glob = require("glob");
 
 module.exports = {
     entry: {
-        settings: glob.sync(__dirname + "/src/*.js")
+        settings: glob.sync(__dirname + "/src/*.js"),
+        organization_detail: __dirname + "/src/Organization/Detail/init.js"
     }
 };

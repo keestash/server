@@ -2,7 +2,7 @@
     <div class="row" id="pwm__detail__part">
         <div class="col d-flex flex-column">
             <div class="col">
-                <div class="row mt-4 mb-4">
+                <div class="row mt-4">
                     <div class="col-md-1 align-self-center">
 
                         <b-img
@@ -28,6 +28,12 @@
                     </div>
                     <div class="col text-center" v-if="saving">
                         <b-skeleton class="float-md-right" type="avatar"></b-skeleton>
+                    </div>
+                </div>
+                <div class="row mb-4" :title="$t('credential.detail.organization.description')"
+                     v-if="edge.node.organization !== null">
+                    <div class="col">
+                        <small>{{ edge.node.organization.name }}</small>
                     </div>
                 </div>
                 <form id="tab__detail__wrapper">

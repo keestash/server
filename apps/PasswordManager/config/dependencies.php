@@ -71,6 +71,7 @@ use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
+use KSA\PasswordManager\Factory\Repository\Node\OrganizationRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\PublicShareRepositoryFactory;
 use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
@@ -79,6 +80,7 @@ use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
@@ -167,7 +169,7 @@ return [
         // repository
         FileRepository::class                                             => FileRepositoryFactory::class,
         NodeRepository::class                                             => NodeRepositoryFactory::class,
-        \KSA\PasswordManager\Repository\Node\Organization::class          => OrganizationFactory::class,
+        OrganizationRepository::class                                     => OrganizationRepositoryFactory::class,
         CommentRepository::class                                          => CommentRepositoryFactory::class,
         PublicShareRepository::class                                      => PublicShareRepositoryFactory::class,
     ]

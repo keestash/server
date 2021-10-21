@@ -23,7 +23,7 @@ namespace KSA\GeneralApi\Factory\Api\Demo;
 
 use Keestash\Core\Service\User\UserService;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
-use KSA\GeneralApi\Repository\DemoUsersRepository;
+use KSA\Settings\Repository\DemoUsersRepository;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use Psr\Container\ContainerInterface;
 
