@@ -31,6 +31,9 @@
     "noPasswordsAvailableDescription": "Create A new Password",
     "shared_with_you_by": "Shared with you by",
     "detail": {
+      "organization": {
+        "description": "This password or folder belongs to an organization"
+      },
       "userNameLabel": "Username",
       "passwordLabel": "Password",
       "websiteLabel": "Website",

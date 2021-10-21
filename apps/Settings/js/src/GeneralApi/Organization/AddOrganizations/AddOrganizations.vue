@@ -164,7 +164,7 @@ export default {
         const axios = this.container.query(AXIOS);
 
         axios.request(
-            ROUTES.GET_ORGANIZATION_LIST()
+            ROUTES.GET_ORGANIZATION_LIST(true)
         )
             .then(
                 (r) => {

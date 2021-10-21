@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use Keestash\Factory\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\AppsInstalledMiddleware;
+use Keestash\Middleware\BooleanizeMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
@@ -37,6 +38,7 @@ use Mezzio\Router\Middleware\RouteMiddleware;
 
 return function (Application $app) {
     $app->pipe(ApplicationStartedMiddleware::class);
+    $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(SessionHandlerMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);

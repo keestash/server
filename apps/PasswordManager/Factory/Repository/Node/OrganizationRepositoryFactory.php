@@ -21,15 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Repository\Node;
 
-use KSA\PasswordManager\Repository\Node\Organization;
+use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\ILogger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class OrganizationRepositoryFactory {
 
-    public function __invoke(ContainerInterface $container): Organization {
-        return new Organization(
+    public function __invoke(ContainerInterface $container): OrganizationRepository {
+        return new OrganizationRepository(
             $container->get(IBackend::class)
+            ,$container->get(ILogger::class)
         );
     }
 

@@ -69,4 +69,3 @@ import Users from "./Users/Users";
 $(document).ready(() => {
     Keestash.Apps.Settings.init();
 });
-
