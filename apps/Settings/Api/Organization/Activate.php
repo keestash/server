@@ -49,7 +49,6 @@ class Activate implements RequestHandlerInterface {
         $parameters = json_decode((string)$request->getBody(), true);
         $id         = $parameters['id'] ?? null;
         $activate   = $parameters['activate'] ?? null;
-        $activate   = $activate === 'true';
 
         if (null === $id || "" === $id || false === is_numeric($id)) {
             throw new GeneralApiException('no id provided');

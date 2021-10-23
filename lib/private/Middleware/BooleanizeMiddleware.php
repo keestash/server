@@ -42,6 +42,18 @@ class BooleanizeMiddleware implements MiddlewareInterface {
             );
         }
 
+        foreach ($request->getParsedBody() as $name => $value) {
+            if ($value === 'true') {
+                $value = true;
+            }
+            if ($value === 'false') {
+                $value = false;
+            }
+            $request = $request->withAttribute(
+                $name, $value
+            );
+        }
+
         return $handler->handle($request);
     }
 

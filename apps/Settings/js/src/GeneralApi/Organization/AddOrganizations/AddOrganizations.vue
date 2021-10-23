@@ -69,6 +69,7 @@ export default {
             return moment(date.date).format('DD.MM.YYYY hh:mm:ss');
         },
         handleActivation(activate, organizationId) {
+            console.log(activate)
             const axios = this.container.query(AXIOS);
             axios.post(
                 ROUTES.GET_ORGANIZATION_ACTIVATE()
@@ -82,6 +83,7 @@ export default {
                 })
                 .then((data) => {
 
+                    console.log(data);
                     if (RESPONSE_CODE_OK in data) {
                         const organization = data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES]['organization'];
 
@@ -178,10 +180,9 @@ export default {
             )
             .then(
                 (organizations) => {
-                    organizations = organizations.content;
+                    console.log(organizations.length);
                     this.organization.list = organizations;
-                    this.state.value = organizations.length === 0 ? STATE_LOADED_NO_ORGANIZATIONS : STATE_LOADED_ORGANIZATIONS_EXIST;
-                    this.organization.list = organizations;
+                    this.state.value = this.organization.list.length === 0 ? STATE_LOADED_NO_ORGANIZATIONS : STATE_LOADED_ORGANIZATIONS_EXIST;
                 }
             )
 
