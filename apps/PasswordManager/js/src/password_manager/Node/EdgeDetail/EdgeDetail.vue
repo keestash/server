@@ -391,6 +391,7 @@ export default {
         },
         resetOrganizationModal() {
             this.organization.selected = null;
+            this.organization.list = [];
         },
         updateOrganization() {
             this.organization.loading = true;

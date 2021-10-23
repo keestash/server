@@ -40,6 +40,7 @@ class ListAll implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $includeActive = $request->getAttribute('includeInactive', false);
         $organizations = $this->organizationRepository->getAll();
+        $result        = [];
 
         if (false === $includeActive) {
 
@@ -48,16 +49,21 @@ class ListAll implements RequestHandlerInterface {
              */
             foreach ($organizations as $key => $organization) {
                 if ($organization->getActiveTs() !== null) {
-                    continue;
+                    $result[] = $organization;
                 }
-                $organizations->remove($key);
             }
         }
+
+        usort($result
+            , static function (IOrganization $organization1, IOrganization $organization2): int {
+                return strcasecmp($organization1->getName(), $organization2->getName());
+            }
+        );
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK
             , [
-                "organizations" => $organizations->toArray()
+                "organizations" => $result
             ]
         );
     }
