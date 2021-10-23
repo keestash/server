@@ -20,7 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\PasswordManager\Api\Comment\Add;
+use KSA\PasswordManager\Api\Comment\Add as AddComment;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Api\Generate\Generate;
@@ -45,6 +45,7 @@ use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
+use KSA\PasswordManager\Factory\Api\Comment\AddFactory as AddCommentFactory;
 use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
 use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
@@ -94,7 +95,7 @@ return [
     'factories' => [
         // api
         // ---- comment
-        Add::class                                                        => AddFactory::class,
+        AddComment::class                                                 => AddCommentFactory::class,
         Get::class                                                        => GetFactory::class,
         Remove::class                                                     => RemoveFactory::class,
 
