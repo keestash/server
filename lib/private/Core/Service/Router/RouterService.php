@@ -83,9 +83,6 @@ class RouterService implements IRouterService {
             ->toArray();
 
         foreach (array_merge($publicWebRoutes, $publicApiRoutes) as $publicRoute) {
-            $this->logger->debug($path);
-            $this->logger->debug($publicRoute);
-            $this->logger->debug((string) ($path === $publicRoute));
             if ($path === $publicRoute) {
                 return true;
             }

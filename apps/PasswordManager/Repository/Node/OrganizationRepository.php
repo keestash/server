@@ -53,11 +53,23 @@ class OrganizationRepository {
             ->setParameter(0, $organization->getId())
             ->setParameter(1, $node->getId());
 
-        $affectedRows = $queryBuilder->execute($this->logger);
-        $lastInsertId = $this->backend->getConnection()->lastInsertId();
+        $queryBuilder->execute();
 
-        $this->logger->error('affected rows: ' . $affectedRows);
-        $this->logger->error('lastInsertId: ' . $lastInsertId);
+    }
+
+    public function updateNodeRepository(Node $node, IOrganization $organization): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+
+        $queryBuilder = $queryBuilder
+            ->update('`organization_node`')
+            ->set('organization_id', '?')
+            ->where('node_id = ?')
+            ->setParameter(0, $organization->getId())
+            ->setParameter(1, $node->getId());
+
+        $this->logger->debug($queryBuilder->getSQL());
+        $queryBuilder->execute();
+
     }
 
 }

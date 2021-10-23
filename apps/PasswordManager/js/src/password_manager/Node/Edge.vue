@@ -62,19 +62,6 @@
             <form ref="form" @submit.stop.prevent="submitOrganization">
                 <b-form-select v-model="selectedOrganization" :options="organizations"
                                :select-size="4"></b-form-select>
-                <!--                <b-form-group-->
-                <!--                        label="Name"-->
-                <!--                        label-for="name-input"-->
-                <!--                        invalid-feedback="Name is required"-->
-                <!--                        :state="nameState"-->
-                <!--                >-->
-                <!--                    <b-form-input-->
-                <!--                            id="name-input"-->
-                <!--                            v-model="name"-->
-                <!--                            :state="nameState"-->
-                <!--                            required-->
-                <!--                    ></b-form-input>-->
-                <!--                </b-form-group>-->
             </form>
         </b-modal>
     </div>
@@ -185,7 +172,7 @@ export default {
         submitOrganization() {
 
             this.container.services.axios.httpPut(
-                ROUTES.getOrganizationsAddNode(),
+                ROUTES.getOrganizationsUpdateNode(),
                 {
                     node_id: this.edge.node.id
                     , organization_id: this.selectedOrganization

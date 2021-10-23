@@ -5,7 +5,7 @@ parameters:
 	    - %rootDir%/../../
 	    - %rootDir%/../../../lib/private/Core/Repository/Migration/*
 	    - %rootDir%/../../../apps/*/Repository/Migration/*
-	    - %rootDir%/../../../apps/*/info/*
 	checkMissingIterableValueType: false
 	treatPhpDocTypesAsCertain: false
 	reportUnmatchedIgnoredErrors: true
+
