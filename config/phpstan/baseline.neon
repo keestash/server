@@ -11,74 +11,9 @@ parameters:
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setActiveTs\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Organization/Activate.php
-
-		-
-			message: "#^Cannot call method getUsers\\(\\) on KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\|null\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Organization/Get.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Organization/User.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setUsers\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Organization/User.php
-
-		-
 			message: "#^Cannot call method getFullPath\\(\\) on KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|null\\.$#"
 			count: 1
 			path: ../../apps/GeneralApi/Api/UserList.php
-
-		-
-			message: "#^Binary operation \"\\.\" between 'given mode is ' and array\\<string\\>\\|string\\|null results in an error\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Command/Migration/MigrateApps.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Command/Stylesheet/Compiler.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Event/Listener/UserChangedListener.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\EventDispatcher\\\\Event\\:\\:getOrganization\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Event/Listener/UserChangedListener.php
-
-		-
-			message: "#^Argument of an invalid type Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int supplied for foreach, only iterables are supported\\.$#"
-			count: 2
-			path: ../../apps/GeneralApi/Repository/OrganizationRepository.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setId\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Repository/OrganizationRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$dateTime of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:toYMDHIS\\(\\) expects DateTimeInterface, DateTimeInterface\\|null given\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Repository/OrganizationRepository.php
-
-		-
-			message: "#^Argument of an invalid type Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Repository/OrganizationUserRepository.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Repository/OrganizationUserRepository.php
 
 		-
 			message: "#^Method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:isValid\\(\\) has parameter \\$val with no typehint specified\\.$#"
@@ -164,11 +99,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
-
-		-
-			message: "#^Cannot cast array\\<string\\>\\|string\\|null to string\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Command/Node/Folder/CreateFolder.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
@@ -276,6 +206,41 @@ parameters:
 			path: ../../apps/Register/Event/EmailAfterRegistration.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setActiveTs\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/Organization/Activate.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/Organization/User.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setUsers\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/Organization/User.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Event/Listener/UserChangedListener.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\EventDispatcher\\\\Event\\:\\:getOrganization\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Event/Listener/UserChangedListener.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Repository/OrganizationRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Users/Api/User/UserAdd.php
@@ -339,11 +304,6 @@ parameters:
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:addToIndex\\(\\) has parameter \\$item with no typehint specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/File/FileList.php
-
-		-
-			message: "#^Parameter \\#2 \\$listener of method Symfony\\\\Component\\\\EventDispatcher\\\\EventDispatcher\\:\\:addListener\\(\\) expects callable\\(\\)\\: mixed, string given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/EventManager/EventManager.php
 
 		-
 			message: "#^Parameter \\#2 \\$default of method doganoo\\\\PHPUtil\\\\HTTP\\\\Session\\:\\:get\\(\\) expects null, string\\|null given\\.$#"

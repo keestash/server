@@ -30,7 +30,8 @@ use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
-use KSA\PasswordManager\Api\Node\Organization;
+use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
+use KSA\PasswordManager\Api\Node\Organization\Update as UpdateNodeOrganization;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
@@ -44,7 +45,6 @@ use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
-use KSA\PasswordManager\Factory\Api\Comment\AddFactory;
 use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
 use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
@@ -54,7 +54,8 @@ use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
 use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
-use KSA\PasswordManager\Factory\Api\Node\OrganizationFactory;
+use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
+use KSA\PasswordManager\Factory\Api\Node\Organization\UpdateFactory as UpdateNodeOrganizationFactory;
 use KSA\PasswordManager\Factory\Api\Node\ShareableUsersFactory;
 use KSA\PasswordManager\Factory\Api\Share\PublicShareFactory;
 use KSA\PasswordManager\Factory\Api\Share\PublicShareSingleFactory;
@@ -113,9 +114,12 @@ return [
         \KSA\PasswordManager\Api\Node\Get::class                          => \KSA\PasswordManager\Factory\Api\Node\GetFactory::class,
         GetByName::class                                                  => GetByNameFactory::class,
         Move::class                                                       => MoveFactory::class,
-        Organization::class                                               => OrganizationFactory::class,
         ShareableUsers::class                                             => ShareableUsersFactory::class,
         Delete::class                                                     => DeleteFactory::class,
+
+        // ---- Organization
+        AddNodeOrganization::class                                        => AddFactory::class,
+        UpdateNodeOrganization::class                                     => UpdateNodeOrganizationFactory::class,
 
         // ---- Node
         // ---- ---- Attachment

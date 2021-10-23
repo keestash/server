@@ -19,19 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\PasswordManager\Factory\Api\Node\Organization;
 
-use KSA\PasswordManager\Api\Node\Organization;
+use KSA\PasswordManager\Api\Node\Organization\Add;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\ILogger\ILogger;
 use Psr\Container\ContainerInterface;
 
-class OrganizationFactory {
+class AddFactory {
 
-    public function __invoke(ContainerInterface $container): Organization {
-        return new Organization(
+    public function __invoke(ContainerInterface $container): Add {
+        return new Add(
             $container->get(OrganizationRepository::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(NodeRepository::class)

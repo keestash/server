@@ -68,7 +68,6 @@ class SessionRepository implements ISessionRepository {
 
             if (0 === $sessionDataCount) {
                 $this->logger->debug("no session data found!!");
-                $this->logger->debug((string) json_encode($sessionData));
                 return "";
             }
 

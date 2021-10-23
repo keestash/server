@@ -29,6 +29,7 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -41,8 +42,8 @@ class Get implements RequestHandlerInterface {
 
     public function __construct(
         IOrganizationRepository $organizationRepository
-        , ILogger $logger
-        , IUserRepository $userRepository
+        , ILogger               $logger
+        , IUserRepository       $userRepository
     ) {
         $this->organizationRepository = $organizationRepository;
         $this->logger                 = $logger;
@@ -57,6 +58,13 @@ class Get implements RequestHandlerInterface {
         }
 
         $organization = $this->organizationRepository->get((int) $id);
+
+        if (null === $organization) {
+            return new JsonResponse(
+                ''
+                , IResponse::NOT_FOUND
+            );
+        }
 
         $users      = $this->userRepository->getAll();
         $candidates = new ArrayList();

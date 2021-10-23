@@ -19,8 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node;
+namespace KSA\PasswordManager\Api\Node\Organization;
 
+use DateTime;
 use Exception;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
@@ -32,23 +33,23 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Organization implements RequestHandlerInterface {
+class Add implements RequestHandlerInterface {
 
-    private OrganizationNodeRepository $organization;
+    private OrganizationNodeRepository $organizationNodeRepository;
     private IOrganizationRepository    $organizationRepository;
     private NodeRepository             $nodeRepository;
     private ILogger                    $logger;
 
     public function __construct(
-        OrganizationNodeRepository $organization
+        OrganizationNodeRepository $organizationNodeRepository
         , IOrganizationRepository  $organizationRepository
         , NodeRepository           $nodeRepository
         , ILogger                  $logger
     ) {
-        $this->organization           = $organization;
-        $this->organizationRepository = $organizationRepository;
-        $this->nodeRepository         = $nodeRepository;
-        $this->logger                 = $logger;
+        $this->organizationNodeRepository = $organizationNodeRepository;
+        $this->organizationRepository     = $organizationRepository;
+        $this->nodeRepository             = $nodeRepository;
+        $this->logger                     = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -82,10 +83,15 @@ class Organization implements RequestHandlerInterface {
             );
         }
 
-        if ($organization->getActiveTs())
+        if (null === $organization->getActiveTs() || $organization->getActiveTs() < (new DateTime())) {
+            return new JsonResponse(
+                'node is not active'
+                , IResponse::FORBIDDEN
+            );
+        }
 
         try {
-            $this->organization->addNodeToOrganization(
+            $this->organizationNodeRepository->addNodeToOrganization(
                 $node
                 , $organization
             );

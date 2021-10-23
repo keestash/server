@@ -48,7 +48,7 @@ class CookieManager implements ICookieManager {
         session_set_cookie_params(
             $this->configService->getValue('user_lifetime', 30 * 60)
             , ICookieManager::COOKIE_PATH_ENTIRE_PATH
-            , $parsed['host'] ?? null
+            , ((string) $parsed['host']) ?? null
             , ICookieManager::COOKIE_SECURE
             , ICookieManager::COOKIE_HTTP_ONLY
         );

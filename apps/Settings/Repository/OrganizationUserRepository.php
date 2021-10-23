@@ -24,6 +24,7 @@ namespace KSA\Settings\Repository;
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\GeneralApi\Exception\GeneralApiException;
+use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
@@ -38,9 +39,9 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IUserRepository $userRepository
-        , IBackend $backend
-        , ILogger $logger
+        IUserRepository    $userRepository
+        , IBackend         $backend
+        , ILogger          $logger
         , IDateTimeService $dateTimeService
     ) {
         $this->userRepository  = $userRepository;
@@ -64,6 +65,10 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
             ->setParameter(0, $organization->getId());
 
         $rows = $queryBuilder->execute();
+
+        if (false === is_iterable($rows)) {
+            throw new SettingsException();
+        }
 
         foreach ($rows as $row) {
             $user = $this->userRepository->getUserById($row['user_id']);

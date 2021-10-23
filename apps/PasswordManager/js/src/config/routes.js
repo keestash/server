@@ -36,6 +36,7 @@ const PASSWORD_MANAGER_ATTACHMENTS_VIEW = "/password_manager/attachments/view/{f
 const PASSWORD_MANAGER_SHARE = "/password_manager/share/";
 const PASSWORD_MANAGER_NODE_CREATE = "/password_manager/node/create/";
 const PASSWORD_MANAGER_ORGANIZATION_ADD_NODE = "/password_manager/organization/node/add/";
+const PASSWORD_MANAGER_ORGANIZATION_UPDATE_NODE = "/password_manager/organization/node/update/";
 const PASSWORD_MANAGER_THUMBNAIL_EXTENSION = "/thumbnail/{extension}/";
 const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
 const ORGANIZATION_LIST = "/organizations/all/";
@@ -184,6 +185,10 @@ export const ROUTES = {
     //
     getOrganizationsAddNode() {
         return host.getApiHost() + PASSWORD_MANAGER_ORGANIZATION_ADD_NODE;
+    },
+
+    getOrganizationsUpdateNode() {
+        return host.getApiHost() + PASSWORD_MANAGER_ORGANIZATION_UPDATE_NODE;
     },
 
     getThumbNailByExtension(extension) {

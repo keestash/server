@@ -26,6 +26,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
+use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 
@@ -62,6 +63,10 @@ class OrganizationRepository implements IOrganizationRepository {
         )
             ->from('`organization`', 'o');
         $rows         = $queryBuilder->execute();
+
+        if (false === is_iterable($rows)) {
+            throw new SettingsException();
+        }
 
         foreach ($rows as $row) {
             $organization = new Organization();
@@ -120,7 +125,9 @@ class OrganizationRepository implements IOrganizationRepository {
                 )
             )
             ->setParameter(2,
-                $this->dateTimeService->toYMDHIS(
+                null === $organization->getActiveTs()
+                    ? null
+                    : $this->dateTimeService->toYMDHIS(
                     $organization->getActiveTs()
                 )
             )
@@ -151,6 +158,10 @@ class OrganizationRepository implements IOrganizationRepository {
             ->where('id = ?')
             ->setParameter(0, $id);
         $rows         = $queryBuilder->execute();
+
+        if (false === is_iterable($rows)) {
+            throw new SettingsException();
+        }
 
         foreach ($rows as $row) {
             $organization = new Organization();

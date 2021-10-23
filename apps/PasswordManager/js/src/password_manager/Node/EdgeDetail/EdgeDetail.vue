@@ -30,12 +30,25 @@
                         <b-skeleton class="float-md-right" type="avatar"></b-skeleton>
                     </div>
                 </div>
-                <div class="row mb-4" :title="$t('credential.detail.organization.description')"
-                     v-if="edge.node.organization !== null">
-                    <div class="col">
-                        <small>{{ edge.node.organization.name }}</small>
+
+                <div
+                        class="row mb-4"
+                        :title="$t('credential.detail.organization.description')"
+                        v-if="edge.node.organization !== null"
+                        v-b-modal.modal-update-organization
+                >
+                    <div class="col" v-if="!this.organization.loading">
+                        <span class="badge badge-info">
+                            {{ edge.node.organization.name }}
+                        </span>
                     </div>
+                    <div class="col" v-else>
+                        <b-skeleton width="5%"></b-skeleton>
+                    </div>
+
                 </div>
+
+
                 <form id="tab__detail__wrapper">
                     <div class="form-group">
                         <small class="form-text text-muted">{{ $t('credential.detail.userNameLabel') }}</small>
@@ -108,6 +121,20 @@
                 </div>
             </div>
         </b-modal>
+
+        <b-modal
+                id="modal-update-organization"
+                ref="modal"
+                title="Add To Organization"
+                @show="openOrganizationModal"
+                @hidden="resetOrganizationModal"
+                @ok="updateOrganization"
+        >
+            <form ref="form" @submit.stop.prevent="updateOrganization">
+                <b-form-select v-model="organization.selected" :options="organization.list"
+                               :select-size="4"></b-form-select>
+            </form>
+        </b-modal>
     </div>
 
 </template>
@@ -131,6 +158,11 @@ export default {
     data() {
         return {
             createdFormatted: null,
+            organization: {
+                list: [],
+                selected: null,
+                loading: false
+            },
             saving: false,
             passwordField: {
                 visible: false
@@ -328,6 +360,61 @@ export default {
             this.password = password;
             this.passwordField.visible = visible;
         },
+
+        openOrganizationModal() {
+            this.axios.get(
+                ROUTES.getAllOrganizations()
+            )
+                .then((r) => {
+                    if (RESPONSE_CODE_OK in r.data) {
+                        return r.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+                    }
+                    return [];
+                })
+                .then((data) => {
+
+                    const organizations = [];
+
+                    for (let index in data.organizations) {
+                        const organization = data.organizations[index];
+
+                        organizations.push(
+                            {
+                                value: organization.id
+                                , text: organization.name
+                            }
+                        )
+                    }
+
+                    this.organization.list = organizations;
+                });
+        },
+        resetOrganizationModal() {
+            this.organization.selected = null;
+        },
+        updateOrganization() {
+            this.organization.loading = true;
+            this.saving = true;
+            this.axios.post(
+                ROUTES.getOrganizationsUpdateNode(),
+                {
+                    node_id: this.edge.node.id
+                    , organization_id: this.organization.selected
+                }
+            ).then(
+                (r) => {
+                    this.$store.dispatch(
+                        'updateSelectedNode'
+                        , {
+                            organization: r.data.organization
+                        }
+                    )
+                    this.organization.loading = false;
+                    this.saving = false;
+                }
+            )
+            ;
+        }
     }
 }
 </script>

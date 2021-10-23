@@ -31,7 +31,6 @@ use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
-use KSA\PasswordManager\Api\Node\Organization;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
@@ -121,9 +120,15 @@ return [
         ],
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
-            , 'middleware' => Organization::class
+            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Add::class
             , 'method'     => IVerb::PUT
-            , 'name'       => Organization::class
+            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Add::class
+        ],
+        [
+            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE
+            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Update::class
+            , 'method'     => IVerb::POST
+            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Update::class
         ],
         [
             'path'         => '/password_manager/users/shareable/:nodeId/:query/'
@@ -187,7 +192,6 @@ return [
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [
-        '/password_manager/node/get/avatar/:nodeId[/]'
-        , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
+        ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
     ]
 ];
