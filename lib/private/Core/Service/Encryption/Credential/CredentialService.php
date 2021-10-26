@@ -21,13 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Credential;
 
-use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
-use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
-use KSP\Core\DTO\Organization\IOrganization;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 
 /**
@@ -38,54 +34,12 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
  */
 class CredentialService implements ICredentialService {
 
-    /**
-     * Returns an instance of credential for the given user
-     *
-     * @param IUser $user
-     *
-     * @return ICredential
-     */
-    private function getCredentialForUser(IUser $user): ICredential {
+    public function createCredential(IKeyHolder $keyHolder): ICredential {
         $credential = new Credential();
-        $credential->setKeyHolder($user);
-        $credential->setSecret($user->getPassword());
-        $credential->setCreateTs(new DateTime());
-        $credential->setId($user->getId());
-        return $credential;
-    }
-
-    public function getCredential(IKeyHolder $keyHolder): ICredential {
-        if ($keyHolder instanceof IUser) {
-            return $this->getCredentialForUser($keyHolder);
-        } else if ($keyHolder instanceof IOrganization) {
-            return $this->getCredentialForOrganization($keyHolder);
-        }
-        throw new KeestashException();
-    }
-
-    /**
-     * Returns an instance of credential for the given organization
-     *
-     * @param IOrganization $organization
-     *
-     * @return ICredential
-     * @throws KeestashException
-     */
-    private function getCredentialForOrganization(IOrganization $organization): ICredential {
-
-        if (0 === $organization->getUsers()->length()) {
-            throw new KeestashException();
-        }
-
-        $credential = new Credential();
-        $secret     = "";
-        /** @var IUser $user */
-        foreach ($organization->getUsers() as $user) {
-            $secret = $secret . $user->getPassword();
-        }
-        $credential->setSecret($secret);
-        $credential->setCreateTs(new DateTime());
-        $credential->setId($credential->getId());
+        $credential->setKeyHolder($keyHolder);
+        $credential->setSecret($keyHolder->getPassword());
+        $credential->setCreateTs($keyHolder->getCreateTs());
+        $credential->setId($keyHolder->getId());
         return $credential;
     }
 

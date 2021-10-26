@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository\Node;
 
 use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\ILogger\ILogger;
@@ -39,6 +40,11 @@ class OrganizationRepository {
         $this->logger  = $logger;
     }
 
+    /**
+     * @param Node          $node
+     * @param IOrganization $organization
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function addNodeToOrganization(Node $node, IOrganization $organization): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
@@ -67,9 +73,24 @@ class OrganizationRepository {
             ->setParameter(0, $organization->getId())
             ->setParameter(1, $node->getId());
 
-        $this->logger->debug($queryBuilder->getSQL());
         $queryBuilder->execute();
+    }
 
+    public function removeNodeRepository(Node $node): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+
+        if (null === $node->getOrganization()) {
+            throw new PasswordManagerException('missing organization');
+        }
+
+        $queryBuilder = $queryBuilder
+            ->delete('`organization_node`')
+            ->where('node_id = ?')
+            ->andWhere('organization_id = ?')
+            ->setParameter(0, $node->getId())
+            ->setParameter(1, $node->getOrganization()->getId());
+
+        $queryBuilder->execute();
     }
 
 }

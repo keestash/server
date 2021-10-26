@@ -24,13 +24,13 @@ namespace Keestash\Core\DTO\Organization;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Organization\IOrganization;
-use KSP\Core\DTO\Organization\IOrganizationUser;
 use KSP\Core\DTO\User\IUser;
 
 class Organization implements IOrganization {
 
     private int                $id;
     private string             $name;
+    private string             $password;
     private DateTimeInterface  $createTs;
     private ?DateTimeInterface $activeTs = null;
     private ArrayList          $users;
@@ -105,6 +105,20 @@ class Organization implements IOrganization {
 
     public function setUsers(ArrayList $users): void {
         $this->users = $users;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void {
+        $this->password = $password;
     }
 
     public function jsonSerialize(): array {

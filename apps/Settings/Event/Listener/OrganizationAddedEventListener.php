@@ -19,24 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\Encryption\Key;
+namespace KSA\Settings\Event\Listener;
 
-use Keestash\Core\Service\Encryption\Key\KeyService;
-use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
-use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KSP\Core\Service\Encryption\IEncryptionService;
+use KSA\Settings\Event\Organization\UserChangedEvent;
+use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use Psr\Container\ContainerInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class KeyServiceFactory {
+class OrganizationAddedEventListener implements IListener {
 
-    public function __invoke(ContainerInterface $container): IKeyService {
-        return new KeyService(
-            $container->get(IUserKeyRepository::class)
-            , $container->get(IEncryptionService::class)
-            , $container->get(IOrganizationKeyRepository::class)
-            , $container->get(ICredentialService::class)
+    private IKeyService $keyService;
+
+    public function __construct(IKeyService $keyService) {
+        $this->keyService = $keyService;
+    }
+
+    /**
+     * @param UserChangedEvent|Event $event
+     */
+    public function execute(Event $event): void {
+        $this->keyService->createAndStoreKey(
+            $event->getOrganization()
         );
     }
 

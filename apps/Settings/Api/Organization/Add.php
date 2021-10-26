@@ -22,11 +22,17 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use DateTime;
+use doganoo\DI\Encryption\User\IUserService;
+use Exception;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
+use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
+use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,9 +40,20 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Add implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
+    private IEventManager           $eventManager;
+    private ILogger                 $logger;
+    private IUserService            $userService;
 
-    public function __construct(IOrganizationRepository $organizationRepository) {
+    public function __construct(
+        IOrganizationRepository $organizationRepository
+        , IEventManager         $eventManager
+        , ILogger               $logger
+        , IUserService          $userService
+    ) {
         $this->organizationRepository = $organizationRepository;
+        $this->eventManager           = $eventManager;
+        $this->logger                 = $logger;
+        $this->userService            = $userService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -49,9 +66,26 @@ class Add implements RequestHandlerInterface {
         }
         $organization = new Organization();
         $organization->setName($name);
+        $organization->setPassword(
+            $this->userService->hashPassword(
+                bin2hex(random_bytes(16))
+            )
+        );
         $organization->setCreateTs(new DateTime());
         $organization->setActiveTs(new DateTime());
-        $organization = $this->organizationRepository->insert($organization);
+
+        try {
+            $organization = $this->organizationRepository->insert($organization);
+            $this->eventManager->execute(
+                new OrganizationAddedEvent($organization)
+            );
+        } catch (Exception $exception) {
+            $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
+            return new JsonResponse(
+                'error while adding organization'
+                , IResponse::INTERNAL_SERVER_ERROR
+            );
+        }
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK

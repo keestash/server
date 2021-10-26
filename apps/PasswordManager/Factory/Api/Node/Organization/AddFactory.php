@@ -26,6 +26,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
 use Psr\Container\ContainerInterface;
 
 class AddFactory {
@@ -36,6 +37,7 @@ class AddFactory {
             , $container->get(IOrganizationRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(ILogger::class)
+            , $container->get(IEventManager::class)
         );
     }
 

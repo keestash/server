@@ -34,6 +34,7 @@ use KSA\Register\Factory\Api\ExistsFactory;
 use KSA\Register\Factory\Api\MailExistsFactory;
 use KSA\Register\Factory\Command\CreateUserFactory;
 use KSA\Register\Factory\Controller\ControllerFactory;
+use KSA\Register\Factory\Event\Listener\CreateKeyFactory;
 use KSA\Register\Factory\Event\Listener\EmailAfterRegistrationListenerFactory;
 use KSP\Core\DTO\Http\IVerb;
 

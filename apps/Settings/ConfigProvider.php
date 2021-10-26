@@ -22,7 +22,8 @@ declare(strict_types=1);
 namespace KSA\Settings;
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\Settings\Event\Listener\UserChangedListener;
+use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
+use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Event\Organization\UserChangedEvent;
 
 final class ConfigProvider {
@@ -47,8 +48,8 @@ final class ConfigProvider {
                 ],
             ]
             , CoreConfigProvider::EVENTS     => [
-                UserChangedEvent::class => [
-                    UserChangedListener::class
+                OrganizationAddedEvent::class => [
+                    OrganizationAddedEventListener::class
                 ]
             ],
             'templates'                      => [

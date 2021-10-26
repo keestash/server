@@ -25,13 +25,13 @@ use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Exception\KeestashException;
-use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Exception\DefaultPropertiesNotSetException;
 use KSA\PasswordManager\Exception\KeyNotCreatedException;
 use KSA\PasswordManager\Exception\KeyNotStoredException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -43,14 +43,14 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 class AfterRegistration implements IListener {
 
-    private CreateKey             $createKey;
+    private IKeyService           $keyService;
     private CreateStarterPassword $createStarterPassword;
 
     public function __construct(
-        CreateKey $createKey
+        IKeyService             $keyService
         , CreateStarterPassword $createStarterPassword
     ) {
-        $this->createKey             = $createKey;
+        $this->keyService            = $keyService;
         $this->createStarterPassword = $createStarterPassword;
     }
 
@@ -70,7 +70,7 @@ class AfterRegistration implements IListener {
             return;
         }
 
-        $this->createKey->run($event->getUser());
+        $this->keyService->createAndStoreKey($event->getUser());
         $this->createStarterPassword->run($event->getUser());
 
     }

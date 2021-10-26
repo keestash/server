@@ -58,7 +58,7 @@ class MinimalApp extends AbstractMigration {
                 , "string"
                 , [
                     "length"    => "500"
-                    , "comment" => "The user's name"
+                    , "comment" => "The user's password"
                     , "null"    => false
                     , "after"   => "id"
                 ]

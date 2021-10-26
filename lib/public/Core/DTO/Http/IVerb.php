@@ -23,8 +23,9 @@ namespace KSP\Core\DTO\Http;
 
 interface IVerb {
 
-    public const GET  = 'get';
-    public const POST = 'post';
-    public const PUT  = 'put';
+    public const GET    = 'get';
+    public const POST   = 'post';
+    public const PUT    = 'put';
+    public const DELETE = 'delete';
 
 }

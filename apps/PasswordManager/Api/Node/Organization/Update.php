@@ -23,11 +23,13 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 
 use DateTime;
 use Exception;
+use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,17 +41,20 @@ class Update implements RequestHandlerInterface {
     private IOrganizationRepository    $organizationRepository;
     private ILogger                    $logger;
     private OrganizationNodeRepository $organizationNodeRepository;
+    private IEventManager              $eventManager;
 
     public function __construct(
         NodeRepository               $nodeRepository
         , IOrganizationRepository    $organizationRepository
         , ILogger                    $logger
         , OrganizationNodeRepository $organizationNodeRepository
+        , IEventManager              $eventManager
     ) {
         $this->nodeRepository             = $nodeRepository;
         $this->organizationRepository     = $organizationRepository;
         $this->logger                     = $logger;
         $this->organizationNodeRepository = $organizationNodeRepository;
+        $this->eventManager               = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -103,6 +108,10 @@ class Update implements RequestHandlerInterface {
             );
         }
 
+        $node->setOrganization($organization);
+        $this->eventManager->execute(
+            new NodeRemovedFromOrganizationEvent($node)
+        );
         return new JsonResponse(['organization' => $organization]);
     }
 

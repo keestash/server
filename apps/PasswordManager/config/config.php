@@ -28,7 +28,11 @@ use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
+use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
+use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
+use KSA\PasswordManager\Event\NodeOrganizationUpdated;
+use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 
 return [
     ConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
@@ -43,14 +47,23 @@ return [
         ],
     ],
     ConfigProvider::EVENTS       => [
-        UserCreatedEvent::class          => [
+        UserCreatedEvent::class                   => [
             AfterRegistration::class
         ]
-        , UserUpdatedEvent::class        => [
+        , UserUpdatedEvent::class                 => [
             AfterPasswordChanged::class
         ]
-        , ApplicationStartedEvent::class => [
+        , ApplicationStartedEvent::class          => [
             RemoveExpired::class
+        ]
+        , NodeAddedToOrganizationEvent::class     => [
+            OrganizationAddListener::class
+        ]
+        , NodeRemovedFromOrganizationEvent::class => [
+            OrganizationAddListener::class
+        ]
+        , NodeOrganizationUpdated::class          => [
+            OrganizationAddListener::class
         ]
     ],
     ConfigProvider::COMMANDS     => [
