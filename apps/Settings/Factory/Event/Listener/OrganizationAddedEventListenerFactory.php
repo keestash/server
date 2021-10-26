@@ -21,23 +21,20 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Event\Listener;
 
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use KSA\Settings\Event\Listener\UserChangedListener;
-use KSA\Settings\Repository\IOrganizationUserRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
-use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Container\ContainerInterface;
+use Interop\Container\ContainerInterface;
+use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
+use KSP\Core\Service\Encryption\Key\IKeyService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class UserChangedListenerFactory {
+class OrganizationAddedEventListenerFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): UserChangedListener {
-        return new UserChangedListener(
-            $container->get(IOrganizationUserRepository::class)
-            , $container->get(IOrganizationKeyRepository::class)
-            , $container->get(IEncryptionService::class)
-            , $container->get(CredentialService::class)
-            , $container->get(ILogger::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): OrganizationAddedEventListener {
+        return new OrganizationAddedEventListener(
+            $container->get(IKeyService::class)
         );
     }
 

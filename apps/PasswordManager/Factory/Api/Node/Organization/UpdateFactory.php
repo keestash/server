@@ -9,6 +9,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class UpdateFactory implements FactoryInterface {
@@ -23,6 +24,7 @@ class UpdateFactory implements FactoryInterface {
             , $container->get(IOrganizationRepository::class)
             , $container->get(ILogger::class)
             , $container->get(OrganizationRepository::class)
+            , $container->get(IEventManager::class)
         );
     }
 

@@ -54,4 +54,13 @@ interface IKeyService {
      */
     public function getKey(IKeyHolder $keyHolder): IKey;
 
+    /**
+     * runs the createKey() and storeKey() methods of this class
+     *
+     * @param IKeyHolder $keyHolder
+     * @see IKeyService::storeKey()
+     * @see IKeyService::createKey()
+     */
+    public function createAndStoreKey(IKeyHolder $keyHolder): void;
+
 }

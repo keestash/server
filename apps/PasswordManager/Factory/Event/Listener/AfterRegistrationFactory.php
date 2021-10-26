@@ -22,13 +22,14 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use Psr\Container\ContainerInterface;
 
 class AfterRegistrationFactory {
 
     public function __invoke(ContainerInterface $container): AfterRegistration {
         return new AfterRegistration(
-            $container->get(AfterRegistration\CreateKey::class)
+            $container->get(IKeyService::class)
             , $container->get(AfterRegistration\CreateStarterPassword::class)
         );
     }

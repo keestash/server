@@ -24,10 +24,23 @@ namespace KSA\Settings\Repository;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Organization\IOrganization;
 
+/**
+ * Interface IOrganizationRepository
+ * @package KSA\Settings\Repository
+ * @author  Dogan Ucar <dogan.ucar@check24.de>
+ */
 interface IOrganizationRepository {
 
+    /**
+     * @param IOrganization $organization
+     * @return IOrganization
+     */
     public function insert(IOrganization $organization): IOrganization;
 
+    /**
+     * @param IOrganization $organization
+     * @return IOrganization
+     */
     public function update(IOrganization $organization): IOrganization;
 
     /**
@@ -35,6 +48,10 @@ interface IOrganizationRepository {
      */
     public function getAll(): ArrayList;
 
+    /**
+     * @param int $id
+     * @return IOrganization|null
+     */
     public function get(int $id): ?IOrganization;
 
 }

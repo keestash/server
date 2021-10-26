@@ -19,23 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Api\Organization;
+namespace KSA\PasswordManager\Factory\Api\Node\Organization;
 
-use doganoo\DI\Encryption\User\IUserService;
-use KSA\Settings\Api\Organization\Add;
-use KSA\Settings\Repository\IOrganizationRepository;
-use KSP\Core\ILogger\ILogger;
+use Interop\Container\ContainerInterface;
+use KSA\PasswordManager\Api\Node\Organization\Remove;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSP\Core\Manager\EventManager\IEventManager;
-use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class AddFactory {
+class RemoveFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Add {
-        return new Add(
-            $container->get(IOrganizationRepository::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Remove {
+        return new Remove(
+            $container->get(NodeRepository::class)
+            , $container->get(OrganizationRepository::class)
             , $container->get(IEventManager::class)
-            , $container->get(ILogger::class)
-            , $container->get(IUserService::class)
         );
     }
 

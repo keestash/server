@@ -21,39 +21,29 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Organization;
 
-use DateTime;
-use Doctrine\DBAL\Exception;
-use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
+use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
-use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Add implements RequestHandlerInterface {
+class Remove implements RequestHandlerInterface {
 
-    private OrganizationNodeRepository $organizationNodeRepository;
-    private IOrganizationRepository    $organizationRepository;
     private NodeRepository             $nodeRepository;
-    private ILogger                    $logger;
+    private OrganizationNodeRepository $organizationNodeRepository;
     private IEventManager              $eventManager;
 
     public function __construct(
-        OrganizationNodeRepository $organizationNodeRepository
-        , IOrganizationRepository  $organizationRepository
-        , NodeRepository           $nodeRepository
-        , ILogger                  $logger
-        , IEventManager            $eventManager
+        NodeRepository               $nodeRepository
+        , OrganizationNodeRepository $organizationNodeRepository
+        , IEventManager              $eventManager
     ) {
-        $this->organizationNodeRepository = $organizationNodeRepository;
-        $this->organizationRepository     = $organizationRepository;
         $this->nodeRepository             = $nodeRepository;
-        $this->logger                     = $logger;
+        $this->organizationNodeRepository = $organizationNodeRepository;
         $this->eventManager               = $eventManager;
     }
 
@@ -72,52 +62,27 @@ class Add implements RequestHandlerInterface {
 
         $node = $this->nodeRepository->getNode($nodeId, 0, 0);
 
-        if (null !== $node->getOrganization()) {
+        if (null === $node->getOrganization()) {
             return new JsonResponse(
-                'node still belongs to an organization'
-                , IResponse::FORBIDDEN
-            );
-        }
-
-        $organization = $this->organizationRepository->get($organizationId);
-
-        if (null === $organization) {
-            return new JsonResponse(
-                'no organization found'
+                'no organization set'
                 , IResponse::NOT_FOUND
             );
         }
 
-        if (null === $organization->getActiveTs() || $organization->getActiveTs() > (new DateTime())) {
+        if ($node->getOrganization()->getId() !== $organizationId) {
             return new JsonResponse(
-                'organization is not active'
-                , IResponse::FORBIDDEN
+                'organization does not match'
+                , IResponse::NOT_ALLOWED
             );
         }
 
-        try {
-            $this->organizationNodeRepository->addNodeToOrganization(
-                $node
-                , $organization
-            );
-
-            $node->setOrganization($organization);
-
-        } catch (Exception $exception) {
-            $this->logger->error($exception->getMessage() . ': ' . $exception->getTraceAsString());
-            return new JsonResponse(
-                'could not add node to organization'
-                , IResponse::INTERNAL_SERVER_ERROR
-            );
-        }
+        $this->organizationNodeRepository->removeNodeRepository($node);
+        $node->setOrganization(null);
 
         $this->eventManager->execute(
-            new NodeAddedToOrganizationEvent($node)
+            new NodeRemovedFromOrganizationEvent($node)
         );
-
-        return new JsonResponse(
-            ['organization' => $organization]
-        );
+        return new JsonResponse('');
     }
 
 }

@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Encryption\KeyHolder;
 
+use DateTimeInterface;
 use KSP\Core\DTO\Entity\IObject;
 
 /**
@@ -32,4 +33,7 @@ interface IKeyHolder extends IObject {
 
     public function getId(): int;
 
+    public function getPassword(): string;
+
+    public function getCreateTs(): DateTimeInterface;
 }

@@ -59,15 +59,15 @@ class NodeRepository {
     private IBackend                $backend;
 
     public function __construct(
-        IBackend $backend
-        , IUserRepository $userRepository
-        , PublicShareRepository $shareRepository
-        , DateTimeService $dateTimeService
-        , ILogger $logger
-        , EncryptionService $encryptionService
-        , KeyService $keyService
+        IBackend                  $backend
+        , IUserRepository         $userRepository
+        , PublicShareRepository   $shareRepository
+        , DateTimeService         $dateTimeService
+        , ILogger                 $logger
+        , EncryptionService       $encryptionService
+        , KeyService              $keyService
         , IOrganizationRepository $organizationRepository
-        , IJWTService $jwtService
+        , IJWTService             $jwtService
     ) {
         $this->userRepository         = $userRepository;
         $this->publicShareRepository  = $shareRepository;
@@ -206,11 +206,11 @@ class NodeRepository {
         $node->setCreateTs($createTs);
         $node->setType((string) $type);
 
+        $node = $this->addOrganizationInfo($node);
+
         if ($node instanceof Credential) {
             $node = $this->addCredentialInfo($node);
         }
-
-        $node = $this->addOrganizationInfo($node);
 
         if ($node instanceof Folder) {
 
@@ -267,7 +267,7 @@ class NodeRepository {
         //  of encryption, we will solve this here. Normally, this
         //  has to be at CredentialService or NodeService
         $organization = null;
-        $parent       = $this->getParentNode($credential->getId(), 0, 0);
+        $parent       = $credential;
         while (null !== $parent) {
             if (null !== $parent->getOrganization()) {
                 $organization = $parent->getOrganization();
@@ -628,13 +628,14 @@ ORDER BY d.`level`;
         //  of encryption, we will solve this here. Normally, this
         //  has to be at CredentialService or NodeService
         $organization = null;
-        $parent       = $this->getParentNode($credential->getId(), 0, 0);
-        while (null !== $parent) {
-            if (null !== $parent->getOrganization()) {
-                $organization = $parent->getOrganization();
+        $current      = $credential;
+
+        while (null !== $current) {
+            if (null !== $current->getOrganization()) {
+                $organization = $current->getOrganization();
                 break;
             }
-            $parent = $this->getParentNode($parent->getId(), 0, 0);
+            $current = $this->getParentNode($current->getId(), 0, 0);
         }
 
         $keyHolder = null !== $organization ? $organization : $credential->getUser();

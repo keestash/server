@@ -19,20 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Event\Listener;
+namespace KSA\PasswordManager\Event;
 
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use Keestash\Core\Service\Encryption\Key\KeyService;
-use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
-use Psr\Container\ContainerInterface;
+use KSA\PasswordManager\Entity\Node;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class CreateKeyFactory {
+class NodeRemovedFromOrganizationEvent extends Event {
 
-    public function __invoke(ContainerInterface $container): CreateKey {
-        return new CreateKey(
-            $container->get(KeyService::class)
-            , $container->get(CredentialService::class)
-        );
+    private Node $node;
+
+    public function __construct(Node $node) {
+        $this->node = $node;
+    }
+
+    /**
+     * @return Node
+     */
+    public function getNode(): Node {
+        return $this->node;
     }
 
 }
