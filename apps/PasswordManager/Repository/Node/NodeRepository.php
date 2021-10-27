@@ -52,29 +52,23 @@ class NodeRepository {
     private PublicShareRepository   $publicShareRepository;
     private DateTimeService         $dateTimeService;
     private ILogger                 $logger;
-    private EncryptionService       $encryptionService;
-    private KeyService              $keyService;
     private IOrganizationRepository $organizationRepository;
     private IJWTService             $jwtService;
     private IBackend                $backend;
 
     public function __construct(
-        IBackend $backend
-        , IUserRepository $userRepository
-        , PublicShareRepository $shareRepository
-        , DateTimeService $dateTimeService
-        , ILogger $logger
-        , EncryptionService $encryptionService
-        , KeyService $keyService
+        IBackend                  $backend
+        , IUserRepository         $userRepository
+        , PublicShareRepository   $shareRepository
+        , DateTimeService         $dateTimeService
+        , ILogger                 $logger
         , IOrganizationRepository $organizationRepository
-        , IJWTService $jwtService
+        , IJWTService             $jwtService
     ) {
         $this->userRepository         = $userRepository;
         $this->publicShareRepository  = $shareRepository;
         $this->dateTimeService        = $dateTimeService;
         $this->logger                 = $logger;
-        $this->encryptionService      = $encryptionService;
-        $this->keyService             = $keyService;
         $this->organizationRepository = $organizationRepository;
         $this->jwtService             = $jwtService;
         $this->backend                = $backend;
@@ -206,11 +200,11 @@ class NodeRepository {
         $node->setCreateTs($createTs);
         $node->setType((string) $type);
 
+        $node = $this->addOrganizationInfo($node);
+
         if ($node instanceof Credential) {
             $node = $this->addCredentialInfo($node);
         }
-
-        $node = $this->addOrganizationInfo($node);
 
         if ($node instanceof Folder) {
 
@@ -262,41 +256,10 @@ class NodeRepository {
         $rows      = $statement->fetchAllNumeric();
         $row       = $rows[0];
 
-        // TODO dirty hack! as we are retrieving in a loop here
-        //  and do not want to loop again later simply because
-        //  of encryption, we will solve this here. Normally, this
-        //  has to be at CredentialService or NodeService
-        $organization = null;
-        $parent       = $this->getParentNode($credential->getId(), 0, 0);
-        while (null !== $parent) {
-            if (null !== $parent->getOrganization()) {
-                $organization = $parent->getOrganization();
-                break;
-            }
-            $parent = $this->getParentNode($parent->getId(), 0, 0);
-        }
-        $keyHolder = null !== $organization ? $organization : $credential->getUser();
-        $key       = $this->keyService->getKey($keyHolder);
-
         $credential->setCredentialId((int) $row[0]);
-        $credential->setUsername(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $row[2]
-            )
-        );
-        $credential->setUrl(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $row[4]
-            )
-        );
-        $credential->setNotes(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $row[6]
-            )
-        );
+        $credential->setUsername((string) $row[2]);
+        $credential->setUrl((string) $row[4]);
+        $credential->setNotes((string) $row[6]);
 
         $password = new Password();
         $password->setEncrypted($row[3]);
@@ -623,23 +586,6 @@ ORDER BY d.`level`;
         $this->updateNode($credential);
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
-        // TODO dirty hack! as we are retrieving in a loop here
-        //  and do not want to loop again later simply because
-        //  of encryption, we will solve this here. Normally, this
-        //  has to be at CredentialService or NodeService
-        $organization = null;
-        $parent       = $this->getParentNode($credential->getId(), 0, 0);
-        while (null !== $parent) {
-            if (null !== $parent->getOrganization()) {
-                $organization = $parent->getOrganization();
-                break;
-            }
-            $parent = $this->getParentNode($parent->getId(), 0, 0);
-        }
-
-        $keyHolder = null !== $organization ? $organization : $credential->getUser();
-        $key       = $this->keyService->getKey($keyHolder);
-
         $queryBuilder = $queryBuilder->update('pwm_credential')
             ->set('username', '?')
             ->set('password', '?')
@@ -647,27 +593,20 @@ ORDER BY d.`level`;
             ->set('note', '?')
             ->where('id = ?')
             ->setParameter(0,
-                $this->encryptionService->encrypt(
-                    $key
-                    , $credential->getUsername()
-                )
+                $credential->getUsername()
             )
             ->setParameter(1,
                 $credential->getPassword()->getEncrypted()
             )
             ->setParameter(2,
-                $this->encryptionService->encrypt(
-                    $key
-                    , (string) $credential->getUrl()
-                )
+                (string) $credential->getUrl()
             )
             ->setParameter(3,
-                $this->encryptionService->encrypt(
-                    $key
-                    , (string) $credential->getNotes()
-                )
+                (string) $credential->getNotes()
             )
-            ->setParameter(4, $credential->getCredentialId());
+            ->setParameter(4,
+                $credential->getCredentialId()
+            );
         $queryBuilder->execute();
 
         return $credential;

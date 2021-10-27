@@ -49,7 +49,6 @@ class MoveTest extends TestCase {
             , "move.test"
             , "MoveTst"
             , $user
-            , $userRoot
         );
         $currentEdge = $credentialService->insertCredential($node, $userRoot);
 

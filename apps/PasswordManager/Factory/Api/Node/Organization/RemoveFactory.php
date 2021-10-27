@@ -19,25 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\PasswordManager\Factory\Api\Node\Organization;
 
-use KSA\PasswordManager\Api\Node\Get;
+use Interop\Container\ContainerInterface;
+use KSA\PasswordManager\Api\Node\Organization\Remove;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
-use Psr\Container\ContainerInterface;
+use KSA\PasswordManager\Repository\Node\OrganizationRepository;
+use KSP\Core\Manager\EventManager\IEventManager;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class GetFactory {
+class RemoveFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Get {
-        return new Get(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(BreadCrumbService::class)
-            , $container->get(ILogger::class)
-            , $container->get(NodeEncryptionService::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Remove {
+        return new Remove(
+            $container->get(NodeRepository::class)
+            , $container->get(OrganizationRepository::class)
+            , $container->get(IEventManager::class)
         );
     }
 

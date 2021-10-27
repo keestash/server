@@ -25,6 +25,7 @@ use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Api\Generate\Generate;
 use KSA\PasswordManager\Api\Import\Import;
+use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Api\Node\Delete;
@@ -42,8 +43,8 @@ use KSA\PasswordManager\Controller\Attachment\View;
 use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
-use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateKey;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
+use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 use KSA\PasswordManager\Factory\Api\Comment\AddFactory as AddCommentFactory;
 use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
@@ -67,8 +68,8 @@ use KSA\PasswordManager\Factory\Controller\Attachment\ViewFactory;
 use KSA\PasswordManager\Factory\Controller\PasswordManager\ControllerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
-use KSA\PasswordManager\Factory\Event\Listener\CreateKeyFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CreateStarterPasswordFactory;
+use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
@@ -79,6 +80,7 @@ use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
+use KSA\PasswordManager\Factory\Service\NodeEncryptionServiceFactory;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -89,6 +91,7 @@ use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -121,10 +124,11 @@ return [
         // ---- Organization
         AddNodeOrganization::class                                        => AddFactory::class,
         UpdateNodeOrganization::class                                     => UpdateNodeOrganizationFactory::class,
+        \KSA\PasswordManager\Api\Node\Organization\Remove::class          => \KSA\PasswordManager\Factory\Api\Node\Organization\RemoveFactory::class,
 
         // ---- Node
         // ---- ---- Attachment
-        \KSA\PasswordManager\Api\Node\Attachment\Add::class               => \KSA\PasswordManager\Factory\Api\Node\Attachment\AddFactory::class,
+        Add::class                                                        => \KSA\PasswordManager\Factory\Api\Node\Attachment\AddFactory::class,
         \KSA\PasswordManager\Api\Node\Attachment\Get::class               => \KSA\PasswordManager\Factory\Api\Node\Attachment\GetFactory::class,
         \KSA\PasswordManager\Api\Node\Attachment\Remove::class            => \KSA\PasswordManager\Factory\Api\Node\Attachment\RemoveFactory::class,
 
@@ -148,6 +152,7 @@ return [
         \KSA\PasswordManager\Api\Node\Folder\Create::class                => \KSA\PasswordManager\Factory\Api\Node\Folder\CreateFactory::class,
 
         // service
+        NodeEncryptionService::class                                      => NodeEncryptionServiceFactory::class,
         EncryptionService::class                                          => EncryptionServiceFactory::class,
         NodeService::class                                                => NodeServiceFactory::class,
         BreadCrumbService::class                                          => BreadCrumbServiceFactory::class,
@@ -156,11 +161,11 @@ return [
 
         // event
         // ---- listener
-        CreateKey::class                                                  => CreateKeyFactory::class,
         CreateStarterPassword::class                                      => CreateStarterPasswordFactory::class,
         AfterRegistration::class                                          => AfterRegistrationFactory::class,
         AfterPasswordChanged::class                                       => AfterPasswordChangedListenerFactory::class,
         RemoveExpired::class                                              => RemoveExpiredFactory::class,
+        OrganizationAddListener::class                                    => OrganizationAddListenerFactory::class,
 
         // command
         CreateFolder::class                                               => CreateFolderFactory::class,

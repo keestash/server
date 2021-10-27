@@ -96,7 +96,6 @@ class CreateCredential extends KeestashCommand {
             , $username
             , $name
             , $user
-            , $parent
             , $note
         );
 

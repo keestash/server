@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Middleware;
 
 use Keestash\ConfigProvider;
+use Keestash\Core\DTO\Token\Token;
+use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\Router\Verification;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;

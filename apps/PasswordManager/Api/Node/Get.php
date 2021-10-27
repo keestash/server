@@ -32,6 +32,7 @@ use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
@@ -49,21 +50,24 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Get implements RequestHandlerInterface {
 
-    private IL10N             $translator;
-    private NodeRepository    $nodeRepository;
-    private BreadCrumbService $breadCrumbService;
-    private ILogger           $logger;
+    private IL10N                 $translator;
+    private NodeRepository        $nodeRepository;
+    private BreadCrumbService     $breadCrumbService;
+    private ILogger               $logger;
+    private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
-        , BreadCrumbService $breadCrumbService
-        , ILogger $logger
+        IL10N                   $l10n
+        , NodeRepository        $nodeRepository
+        , BreadCrumbService     $breadCrumbService
+        , ILogger               $logger
+        , NodeEncryptionService $nodeEncryptionService
     ) {
-        $this->translator        = $l10n;
-        $this->nodeRepository    = $nodeRepository;
-        $this->breadCrumbService = $breadCrumbService;
-        $this->logger            = $logger;
+        $this->translator            = $l10n;
+        $this->nodeRepository        = $nodeRepository;
+        $this->breadCrumbService     = $breadCrumbService;
+        $this->logger                = $logger;
+        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -123,7 +127,9 @@ class Get implements RequestHandlerInterface {
         // base case 1: we are requesting a regular node.
         //      select and return
         if (true === is_numeric($id)) {
-            return $this->nodeRepository->getNode((int) $id, 0, 1);
+            $node = $this->nodeRepository->getNode((int) $id, 0, 1);
+            $this->nodeEncryptionService->decryptNode($node);
+            return $node;
         }
 
         $root = $this->nodeRepository->getRootForUser(
@@ -134,6 +140,7 @@ class Get implements RequestHandlerInterface {
 
         // base case 2: we are requesting the root. No need to do the following stuff
         if (Node::ROOT === $id) {
+            $this->nodeEncryptionService->decryptNode($root);
             return $root;
         }
 

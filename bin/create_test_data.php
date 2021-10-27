@@ -134,7 +134,7 @@ function addNodesToParent(
 ) {
     if ($level > $maxLevel) return;
 
-    $credentials = createCredential($credentialService, $user, $parent);
+    $credentials = createCredential($credentialService, $user);
 //    echo 'added ' . count($credentials) . ' to ' . $parent->getName() . "\n";
     /** @var Credential $credential */
     foreach ($credentials as $credential) {
@@ -171,7 +171,6 @@ function addNodesToParent(
 function createCredential(
         CredentialService $credentialService
         , IUser $user
-        , Folder $parent
 ): array {
 //    $credentialSize = rand(1, 5 );
     $credentialSize = 3;
@@ -183,7 +182,6 @@ function createCredential(
                 , md5((string) ($i . time()))
                 , md5((string) ($i . time()))
                 , $user
-                , $parent
                 , md5((string) ($i . time()))
         );
         $credentials[] = $credential;

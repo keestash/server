@@ -19,25 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\Settings\Event\Listener;
 
-use KSA\PasswordManager\Api\Node\Get;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
-use Psr\Container\ContainerInterface;
+use KSA\Settings\Event\Organization\UserChangedEvent;
+use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Service\Encryption\Key\IKeyService;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class GetFactory {
+class OrganizationAddedEventListener implements IListener {
 
-    public function __invoke(ContainerInterface $container): Get {
-        return new Get(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(BreadCrumbService::class)
-            , $container->get(ILogger::class)
-            , $container->get(NodeEncryptionService::class)
+    private IKeyService $keyService;
+
+    public function __construct(IKeyService $keyService) {
+        $this->keyService = $keyService;
+    }
+
+    /**
+     * @param UserChangedEvent|Event $event
+     */
+    public function execute(Event $event): void {
+        $this->keyService->createAndStoreKey(
+            $event->getOrganization()
         );
     }
 

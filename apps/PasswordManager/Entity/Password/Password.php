@@ -17,7 +17,7 @@ use KSP\Core\DTO\Entity\IJsonObject;
 class Password implements IJsonObject {
 
     private string  $encrypted;
-    private ?string $plain;
+    private ?string $plain  = null;
     private int     $length = -1;
 
     /**

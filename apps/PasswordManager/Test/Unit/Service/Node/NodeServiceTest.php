@@ -65,7 +65,6 @@ class NodeServiceTest extends TestCase {
             , "keestash.com"
             , "keestash"
             , $this->getUser()
-            , new Folder()
         );
     }
 

@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -95,6 +94,12 @@ return [
             , 'name'       => Share::class
         ],
         [
+            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
+            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Add::class
+            , 'method'     => IVerb::PUT
+            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Add::class
+        ],
+        [
             'path'         => '/password_manager/node/delete[/]'
             , 'middleware' => Delete::class
             , 'method'     => IVerb::POST
@@ -119,16 +124,16 @@ return [
             , 'name'       => Move::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Add::class
-            , 'method'     => IVerb::PUT
-            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Add::class
-        ],
-        [
             'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE
             , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Update::class
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Update::class
+        ],
+        [
+            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE
+            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Remove::class
+            , 'method'     => IVerb::DELETE
+            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Remove::class
         ],
         [
             'path'         => '/password_manager/users/shareable/:nodeId/:query/'

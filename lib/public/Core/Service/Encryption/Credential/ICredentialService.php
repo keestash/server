@@ -27,6 +27,6 @@ use KSP\Core\Service\IService;
 
 interface ICredentialService extends IService {
 
-    public function getCredential(IKeyHolder $keyHolder): ICredential;
+    public function createCredential(IKeyHolder $keyHolder): ICredential;
 
 }

@@ -33,13 +33,25 @@
 
                 <div
                         class="row mb-4"
-                        :title="$t('credential.detail.organization.description')"
                         v-if="edge.node.organization !== null"
-                        v-b-modal.modal-update-organization
                 >
-                    <div class="col" v-if="!this.organization.loading">
-                        <span class="badge badge-info">
+                    <div
+                            class="col"
+                            v-if="!this.organization.loading"
+                    >
+                        <span
+                                class="badge badge-info"
+                                :title="$t('credential.detail.organization.description')"
+                                v-b-modal.modal-update-organization
+                        >
                             {{ edge.node.organization.name }}
+                        </span>
+                        <span
+                                class="badge badge-secondary"
+                                :title="$t('credential.detail.organization.description')"
+                                v-b-modal.modal-remove-organization
+                        >
+                            x
                         </span>
                     </div>
                     <div class="col" v-else>
@@ -133,6 +145,17 @@
             <form ref="form" @submit.stop.prevent="updateOrganization">
                 <b-form-select v-model="organization.selected" :options="organization.list"
                                :select-size="4"></b-form-select>
+            </form>
+        </b-modal>
+
+        <b-modal
+                id="modal-remove-organization"
+                ref="modal"
+                title="Remove Organization"
+                @ok="removeOrganization"
+        >
+            <form ref="form" @submit.stop.prevent="removeOrganization">
+                <div class="h6">Do you really want to remove the node from the organization?</div>
             </form>
         </b-modal>
     </div>
@@ -392,6 +415,27 @@ export default {
         resetOrganizationModal() {
             this.organization.selected = null;
             this.organization.list = [];
+        },
+        removeOrganization() {
+            this.saving = true;
+            this.axios.delete(
+                ROUTES.getOrganizationsRemoveNode(),
+                {
+                    node_id: this.edge.node.id
+                    , organization_id: this.edge.node.organization.id
+                }
+            ).then(
+                (r) => {
+                    this.$store.dispatch(
+                        'updateSelectedNode'
+                        , {
+                            organization: null
+                        }
+                    )
+                    this.saving = false;
+                }
+            )
+            ;
         },
         updateOrganization() {
             this.organization.loading = true;
