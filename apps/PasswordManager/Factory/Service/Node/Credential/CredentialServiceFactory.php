@@ -27,6 +27,7 @@ use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use Psr\Container\ContainerInterface;
 
 class CredentialServiceFactory {
@@ -38,6 +39,7 @@ class CredentialServiceFactory {
             , $container->get(EdgeService::class)
             , $container->get(NodeRepository::class)
             , $container->get(NodeService::class)
+            , $container->get(NodeEncryptionService::class)
         );
     }
 

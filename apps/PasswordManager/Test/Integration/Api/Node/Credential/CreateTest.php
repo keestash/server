@@ -120,7 +120,6 @@ class CreateTest extends TestCase {
             , "deletetest.test"
             , "Deletetest"
             , $user
-            , $root
         );
         $edge           = $credentialService->insertCredential($node, $root);
         $node           = $edge->getNode();

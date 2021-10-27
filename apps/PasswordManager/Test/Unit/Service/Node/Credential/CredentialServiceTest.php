@@ -51,7 +51,6 @@ class CredentialServiceTest extends TestCase {
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
-        $parent   = new Folder();
         $note     = "this is a test note";
 
         return $this->credentialService->createCredential(
@@ -60,7 +59,6 @@ class CredentialServiceTest extends TestCase {
             , $userName
             , $title
             , $this->getUser()
-            , $parent
             , $note
         );
     }

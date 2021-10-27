@@ -29,15 +29,21 @@ use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\Manager\EventManager\IListener;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class OrganizationAddListener implements IListener {
 
-    private NodeRepository $nodeRepository;
+    private NodeRepository        $nodeRepository;
+    private NodeEncryptionService $nodeEncryptionService;
 
-    public function __construct(NodeRepository $nodeRepository) {
-        $this->nodeRepository = $nodeRepository;
+    public function __construct(
+        NodeRepository          $nodeRepository
+        , NodeEncryptionService $nodeEncryptionService
+    ) {
+        $this->nodeRepository        = $nodeRepository;
+        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     /**
@@ -72,6 +78,7 @@ class OrganizationAddListener implements IListener {
     private function recrypt(Credential $credential, IntegerVector &$vector): void {
         if (true === $vector->get($credential->getId())) return;
         $vector->set($credential->getId());
+        $this->nodeEncryptionService->encryptNode($credential);
         $this->nodeRepository->updateCredential($credential);
     }
 

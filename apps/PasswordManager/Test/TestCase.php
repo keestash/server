@@ -37,7 +37,7 @@ class TestCase extends \KST\TestCase {
     }
 
     protected function createCredential(
-        string $password
+        string   $password
         , string $url
         , string $userName
         , string $title
@@ -52,7 +52,6 @@ class TestCase extends \KST\TestCase {
             , $userName
             , $title
             , $user
-            , $root
         );
         return $credentialService->insertCredential($node, $root);
     }

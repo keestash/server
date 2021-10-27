@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Event\Listener;
 use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class OrganizationAddListenerFactory implements FactoryInterface {
@@ -35,6 +36,7 @@ class OrganizationAddListenerFactory implements FactoryInterface {
     ): OrganizationAddListener {
         return new OrganizationAddListener(
             $container->get(NodeRepository::class)
+            , $container->get(NodeEncryptionService::class)
         );
     }
 
