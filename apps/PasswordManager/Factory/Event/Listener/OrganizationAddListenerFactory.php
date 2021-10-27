@@ -19,24 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\PasswordManager\Factory\Event\Listener;
 
-use KSA\PasswordManager\Api\Node\Get;
+use Interop\Container\ContainerInterface;
+use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
-use Psr\Container\ContainerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
-class GetFactory {
+class OrganizationAddListenerFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Get {
-        return new Get(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(BreadCrumbService::class)
-            , $container->get(ILogger::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): OrganizationAddListener {
+        return new OrganizationAddListener(
+            $container->get(NodeRepository::class)
             , $container->get(NodeEncryptionService::class)
         );
     }

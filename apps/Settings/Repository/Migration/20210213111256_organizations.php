@@ -40,6 +40,16 @@ class Organizations extends KeestashMigration {
                 ]
             )
             ->addColumn(
+                "password"
+                , "string"
+                , [
+                    "length"    => "500"
+                    , "comment" => "The organizations's password"
+                    , "null"    => false
+                    , "after"   => "name"
+                ]
+            )
+            ->addColumn(
                 "active_ts"
                 , "datetime"
                 , [

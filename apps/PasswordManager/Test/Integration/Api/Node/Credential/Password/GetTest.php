@@ -64,7 +64,6 @@ class GetTest extends TestCase {
             , "getpassword.test"
             , "GetPasswordTest"
             , $user
-            , $root
         );
         $edge           = $credentialService->insertCredential($node, $root);
         $node           = $edge->getNode();
@@ -110,7 +109,6 @@ class GetTest extends TestCase {
             , "getpassword.test"
             , "GetPasswordTest"
             , $user
-            , $root
         );
         $edge           = $credentialService->insertCredential($node, $root);
         $node           = $edge->getNode();

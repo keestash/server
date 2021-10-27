@@ -24,12 +24,10 @@ namespace KSA\PasswordManager\Test\Service\Factory\Repository\Node;
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\HTTP\IJWTService;
 use Mockery;
 use Psr\Container\ContainerInterface;
@@ -43,8 +41,6 @@ class NodeRepositoryFactory {
             , $container->get(PublicShareRepository::class)
             , $container->get(IDateTimeService::class)
             , $container->get(ILogger::class)
-            , $container->get(EncryptionService::class)
-            , $container->get(IKeyService::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(IJWTService::class)
         );

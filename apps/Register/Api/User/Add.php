@@ -166,11 +166,6 @@ class Add implements RequestHandlerInterface {
                     $this->userService->toNewUser((array) $request->getParsedBody())
                 );
 
-                if (true === $locked) {
-                    $this->userStateRepository->lock(
-                        $user
-                    );
-                }
             } catch (Exception $exception) {
                 $this->logger->error($exception->getTraceAsString());
                 $user = null;

@@ -23,6 +23,7 @@ namespace Keestash\Core\Service\Encryption\Key;
 
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
+use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
@@ -31,6 +32,7 @@ use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Ramsey\Uuid\Uuid;
@@ -40,15 +42,18 @@ class KeyService implements IKeyService {
     private IUserKeyRepository         $userKeyRepository;
     private IOrganizationKeyRepository $organizationKeyRepository;
     private IEncryptionService         $encryptionService;
+    private ICredentialService         $credentialService;
 
     public function __construct(
-        IUserKeyRepository $userKeyRepository
-        , IEncryptionService $encryptionService
+        IUserKeyRepository           $userKeyRepository
+        , IEncryptionService         $encryptionService
         , IOrganizationKeyRepository $organizationKeyRepository
+        , ICredentialService         $credentialService
     ) {
         $this->userKeyRepository         = $userKeyRepository;
         $this->encryptionService         = $encryptionService;
         $this->organizationKeyRepository = $organizationKeyRepository;
+        $this->credentialService         = $credentialService;
     }
 
     /**
@@ -100,7 +105,7 @@ class KeyService implements IKeyService {
      *
      * @param IKeyHolder $keyHolder
      * @return IKey
-     * @throws PasswordManagerException
+     * @throws KeestashException
      */
     public function getKey(IKeyHolder $keyHolder): IKey {
         if ($keyHolder instanceof IUser) {
@@ -108,7 +113,25 @@ class KeyService implements IKeyService {
         } else if ($keyHolder instanceof IOrganization) {
             return $this->organizationKeyRepository->getKey($keyHolder);
         }
-        throw new PasswordManagerException('unsupported keyholder');
+        throw new KeestashException('unsupported keyholder');
+    }
+
+    public function createAndStoreKey(IKeyHolder $keyHolder): void {
+        // 1. create a key for the user
+        $key = $this->createKey(
+            $this->credentialService->createCredential($keyHolder)
+            , $keyHolder
+        );
+
+        if (null === $key) {
+            throw new KeestashException();
+        }
+
+        $stored = $this->storeKey($keyHolder, $key);
+
+        if (false === $stored) {
+            throw new KeestashException();
+        }
     }
 
 }

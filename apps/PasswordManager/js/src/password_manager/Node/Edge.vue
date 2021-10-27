@@ -42,18 +42,20 @@
             </div>
             <div id="contextMenu" class="col justify-content-end align-items-center">
                 <i class="fas fa-ellipsis-h"
-                   v-on:click.stop="$refs.ctxMenu.open"
+                   v-on:click.stop="clickModal"
                 ></i>
             </div>
         </div>
 
-        <context-menu id="context-menu" ref="ctxMenu" class="row">
-            <div class="col context-menu-col" v-b-modal.modal-prevent-closing>Add To Organization</div>
+        <context-menu id="context-menu" class="row"
+                      :ref="'ctxMenu' + this.edge.node.id"
+        >
+            <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">Add To Organization</div>
         </context-menu>
 
         <b-modal
-                id="modal-prevent-closing"
-                ref="modal"
+                class="modal-prevent-closing"
+                :ref="'modal' + this.edge.node.id"
                 title="Add To Organization"
                 @show="openModal"
                 @hidden="resetModal"
@@ -97,12 +99,12 @@ export default {
                     dateTimeService: null,
                     systemService: null,
                 },
-                imageUrl: '',
-                imageUrlShared: '',
-                imageUrlPassword: '',
             },
             organizations: [],
-            selectedOrganization: null
+            selectedOrganization: null,
+            imageUrl: '',
+            imageUrlShared: '',
+            imageUrlPassword: '',
         }
     },
     computed: {
@@ -117,7 +119,7 @@ export default {
             return true;
         },
     },
-    created: function () {
+    mounted: function () {
         const startUp = new StartUp(
             new Container()
         );
@@ -138,7 +140,7 @@ export default {
         formatDate: function (date) {
             return this.container.services.dateTimeService.format(date);
         },
-        openModal() {
+        openModal: function () {
             this.container.services.axios.get(
                 ROUTES.getAllOrganizations()
             )
@@ -166,13 +168,22 @@ export default {
                     this.organizations = organizations;
                 });
         },
-        resetModal() {
+        resetModal: function () {
             this.selectedOrganization = null;
         },
-        submitOrganization() {
+        refName: function () {
+            return 'ctxMenu' + this.edge.node.id;
+        },
+        clickModal: function () {
+            this.$refs[this.refName()].open();
+        },
+        openModalClick: function () {
+            this.$refs['modal' + this.edge.node.id].show();
+        },
+        submitOrganization: function () {
 
             this.container.services.axios.httpPut(
-                ROUTES.getOrganizationsUpdateNode(),
+                ROUTES.getOrganizationsAddNode(),
                 {
                     node_id: this.edge.node.id
                     , organization_id: this.selectedOrganization

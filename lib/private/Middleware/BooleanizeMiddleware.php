@@ -29,7 +29,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 class BooleanizeMiddleware implements MiddlewareInterface {
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-
         foreach ($request->getAttributes() as $name => $value) {
             if ($value === 'true') {
                 $value = true;
@@ -42,17 +41,18 @@ class BooleanizeMiddleware implements MiddlewareInterface {
             );
         }
 
-        foreach ($request->getParsedBody() as $name => $value) {
-            if ($value === 'true') {
-                $value = true;
-            }
-            if ($value === 'false') {
-                $value = false;
-            }
-            $request = $request->withAttribute(
-                $name, $value
-            );
-        }
+//        $parsedBody = true === is_iterable($request->getParsedBody()) ? $request->getParsedBody() : [];
+//        foreach ($parsedBody as $name => $value) {
+//            if ($value === 'true') {
+//                $value = true;
+//            }
+//            if ($value === 'false') {
+//                $value = false;
+//            }
+//            $request = $request->withAttribute(
+//                $name, $value
+//            );
+//        }
 
         return $handler->handle($request);
     }

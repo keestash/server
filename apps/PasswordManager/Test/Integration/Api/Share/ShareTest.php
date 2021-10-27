@@ -45,7 +45,6 @@ class ShareTest extends TestCase {
             , "keestash.test"
             , "Keestash"
             , $this->getUser()
-            , $parent
         );
         $edge     = $credentialService->insertCredential($node, $parent);
         $node     = $edge->getNode();
@@ -89,7 +88,6 @@ class ShareTest extends TestCase {
             , "keestash.test"
             , "Keestash"
             , $this->getUser()
-            , $parent
         );
         $edge     = $credentialService->insertCredential($node, $parent);
         $node     = $edge->getNode();
@@ -117,7 +115,6 @@ class ShareTest extends TestCase {
             , "keestash.test"
             , "Keestash"
             , $this->getUser()
-            , $parent
         );
         $edge     = $credentialService->insertCredential($node, $parent);
         $node     = $edge->getNode();
@@ -175,7 +172,6 @@ class ShareTest extends TestCase {
             , "keestash.test"
             , "Keestash"
             , $this->getUser()
-            , $parent
         );
         $edge     = $credentialService->insertCredential($node, $parent);
         $node     = $edge->getNode();

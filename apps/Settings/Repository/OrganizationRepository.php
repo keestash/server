@@ -57,6 +57,7 @@ class OrganizationRepository implements IOrganizationRepository {
             [
                 'o.id'
                 , 'o.name'
+                , 'o.password'
                 , 'o.create_ts'
                 , 'o.active_ts'
             ]
@@ -72,6 +73,7 @@ class OrganizationRepository implements IOrganizationRepository {
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);
+            $organization->setPassword((string) $row['password']);
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null
@@ -114,17 +116,19 @@ class OrganizationRepository implements IOrganizationRepository {
             ->values(
                 [
                     'name'        => '?'
+                    , 'password'  => '?'
                     , 'create_ts' => '?'
                     , 'active_ts' => '?'
                 ]
             )
             ->setParameter(0, $organization->getName())
-            ->setParameter(1,
+            ->setParameter(1, $organization->getPassword())
+            ->setParameter(2,
                 $this->dateTimeService->toYMDHIS(
                     $organization->getCreateTs()
                 )
             )
-            ->setParameter(2,
+            ->setParameter(3,
                 null === $organization->getActiveTs()
                     ? null
                     : $this->dateTimeService->toYMDHIS(
@@ -136,7 +140,7 @@ class OrganizationRepository implements IOrganizationRepository {
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
         if (false === is_numeric($lastInsertId)) {
-            throw new GeneralApiException();
+            throw new SettingsException();
         }
         $organization->setId((int) $lastInsertId);
         $organization = $this->organizationUserRepository->insert($organization);
@@ -150,6 +154,7 @@ class OrganizationRepository implements IOrganizationRepository {
             [
                 'id'
                 , 'name'
+                , 'password'
                 , 'create_ts'
                 , 'active_ts'
             ]
@@ -167,6 +172,7 @@ class OrganizationRepository implements IOrganizationRepository {
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);
+            $organization->setPassword((string) $row['password']);
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null

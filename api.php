@@ -88,6 +88,13 @@ use Psr\Container\ContainerInterface;
                     , $name
                 );
                 break;
+            case IVerb::DELETE:
+                $app->delete(
+                    $path
+                    , $middleware
+                    , $name
+                );
+                break;
             default:
                 throw new Exception('unknown method ' . $method);
         }

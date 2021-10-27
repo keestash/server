@@ -45,10 +45,10 @@ class User implements RequestHandlerInterface {
     private IEventManager               $eventManager;
 
     public function __construct(
-        IOrganizationRepository $organizationRepository
+        IOrganizationRepository       $organizationRepository
         , IOrganizationUserRepository $organizationUserRepository
-        , IUserRepository $userRepository
-        , IEventManager $eventManager
+        , IUserRepository             $userRepository
+        , IEventManager               $eventManager
     ) {
         $this->organizationUserRepository = $organizationUserRepository;
         $this->organizationRepository     = $organizationRepository;
@@ -63,10 +63,10 @@ class User implements RequestHandlerInterface {
         $organizationId = $parameters["organization_id"] ?? null;
         $userId         = $parameters["user_id"] ?? null;
 
-        if (null === $organizationId || "" === $organizationId || false === is_numeric($organizationId)) {
+        if ("" === $organizationId || false === is_numeric($organizationId)) {
             throw new GeneralApiException('no organization');
         }
-        if (null === $userId || "" === $userId || false === is_numeric($userId)) {
+        if ("" === $userId || false === is_numeric($userId)) {
             throw new GeneralApiException('no user');
         }
 

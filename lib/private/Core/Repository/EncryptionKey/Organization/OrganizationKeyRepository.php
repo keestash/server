@@ -39,9 +39,9 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger $logger
+        , ILogger          $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
         $this->dateTimeService = $dateTimeService;
@@ -91,7 +91,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
                 , 'k.create_ts'
             ]
         )
-            ->from('key', 'k')
+            ->from('`key`', 'k')
             ->join('k', 'organization_key', 'ok', 'k.id = ok.key_id')
             ->where('ok.`organization_id` = ?')
             ->setParameter(0, $organization->getId());
@@ -102,9 +102,9 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         $key = null;
         foreach ($users as $row) {
             $key = new Key();
-            $key->setId((int) $row[0]);
-            $key->setSecret($row[1]);
-            $key->setCreateTs($this->dateTimeService->fromFormat($row[2]));
+            $key->setId((int) $row['id']);
+            $key->setSecret((string) $row['value']);
+            $key->setCreateTs($this->dateTimeService->fromFormat((string) $row['create_ts']));
             $key->setKeyHolder($organization);
         }
 

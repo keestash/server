@@ -55,7 +55,6 @@ class ShareServiceTest extends TestCase {
             , "keestash.com"
             , "keestash"
             , $this->getUser()
-            , new Folder()
         );
         $hash       = $this->shareService->generateSharingHash($credential);
         $this->assertTrue(true === is_string($hash));

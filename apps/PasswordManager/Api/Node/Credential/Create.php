@@ -115,7 +115,6 @@ class Create implements RequestHandlerInterface {
             , $userName
             , $name
             , $token->getUser()
-            , $parent
             , $this->sanitizerService->sanitize($notes)
         );
 

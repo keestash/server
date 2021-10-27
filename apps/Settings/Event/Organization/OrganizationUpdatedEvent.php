@@ -19,26 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\Settings\Event\Organization;
 
-use KSA\PasswordManager\Api\Node\Get;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
-use Psr\Container\ContainerInterface;
+use KSP\Core\DTO\Organization\IOrganization;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class GetFactory {
+class OrganizationUpdatedEvent extends Event {
 
-    public function __invoke(ContainerInterface $container): Get {
-        return new Get(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(BreadCrumbService::class)
-            , $container->get(ILogger::class)
-            , $container->get(NodeEncryptionService::class)
-        );
+    private IOrganization $organization;
+
+    public function __construct(IOrganization $organization) {
+        $this->organization = $organization;
     }
+
+    /**
+     * @return IOrganization
+     */
+    public function getOrganization(): IOrganization {
+        return $this->organization;
+    }
+
 
 }

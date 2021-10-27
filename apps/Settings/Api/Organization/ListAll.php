@@ -39,19 +39,19 @@ class ListAll implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $includeActive = $request->getAttribute('includeInactive', false);
+        $includeActive = true === $includeActive || 'true' === $includeActive;
+
         $organizations = $this->organizationRepository->getAll();
         $result        = [];
 
-        if (false === $includeActive) {
-
-            /**
-             * @var IOrganization $organization
-             */
-            foreach ($organizations as $key => $organization) {
-                if ($organization->getActiveTs() !== null) {
-                    $result[] = $organization;
-                }
+        /**
+         * @var IOrganization $organization
+         */
+        foreach ($organizations as $organization) {
+            if (false === $includeActive && $organization->getActiveTs() === null) {
+                continue;
             }
+            $result[] = $organization;
         }
 
         usort($result

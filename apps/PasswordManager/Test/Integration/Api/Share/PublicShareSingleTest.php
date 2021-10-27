@@ -48,7 +48,6 @@ class PublicShareSingleTest extends TestCase {
             , "keestash.test"
             , "Keestash"
             , $user
-            , $parent
         );
         $edge   = $credentialService->insertCredential($node, $parent);
         $node   = $edge->getNode();
@@ -94,7 +93,6 @@ class PublicShareSingleTest extends TestCase {
             , "keestash.test"
             , "Keestash"
             , $user
-            , $parent
         );
         $edge   = $credentialService->insertCredential($node, $parent);
         $node   = $edge->getNode();

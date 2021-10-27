@@ -68,11 +68,11 @@ class EncryptionService extends AESService {
             $credential->getCreateTs()
         );
 
-        $userCredential = $this->credentialService->getCredential($credential->getKeyHolder());
+        $keyHolderCredential = $this->credentialService->createCredential($credential->getKeyHolder());
 
         $tempKey->setSecret(
             $this->encryptionService->decrypt(
-                $userCredential
+                $keyHolderCredential
                 , $credential->getSecret()
             )
         );
