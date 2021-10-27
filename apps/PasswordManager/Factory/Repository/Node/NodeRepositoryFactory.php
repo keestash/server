@@ -42,8 +42,6 @@ class NodeRepositoryFactory {
             , $container->get(PublicShareRepository::class)
             , $container->get(IDateTimeService::class)
             , $container->get(ILogger::class)
-            , $container->get(EncryptionService::class)
-            , $container->get(IKeyService::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(IJWTService::class)
         );

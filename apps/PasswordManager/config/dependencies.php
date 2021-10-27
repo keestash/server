@@ -80,6 +80,7 @@ use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
+use KSA\PasswordManager\Factory\Service\NodeEncryptionServiceFactory;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -90,6 +91,7 @@ use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -150,6 +152,7 @@ return [
         \KSA\PasswordManager\Api\Node\Folder\Create::class                => \KSA\PasswordManager\Factory\Api\Node\Folder\CreateFactory::class,
 
         // service
+        NodeEncryptionService::class                                      => NodeEncryptionServiceFactory::class,
         EncryptionService::class                                          => EncryptionServiceFactory::class,
         NodeService::class                                                => NodeServiceFactory::class,
         BreadCrumbService::class                                          => BreadCrumbServiceFactory::class,

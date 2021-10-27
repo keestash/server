@@ -45,7 +45,6 @@ class DeleteTest extends TestCase {
             , "deletetest.test"
             , "Deletetest"
             , $user
-            , $parent
         );
         $edge   = $credentialService->insertCredential($node, $parent);
         $node   = $edge->getNode();
@@ -116,7 +115,6 @@ class DeleteTest extends TestCase {
             , "deletetest.test"
             , "Deletetest"
             , $user
-            , $parent
         );
         $edge   = $credentialService->insertCredential($node, $parent);
         $node   = $edge->getNode();

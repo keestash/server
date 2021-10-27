@@ -105,7 +105,6 @@ class RemoveTest extends TestCase {
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
-        $parent   = new Folder();
         $note     = "this is a test note";
 
         /** @var CredentialService $credentialService */
@@ -117,7 +116,6 @@ class RemoveTest extends TestCase {
             , $userName
             , $title
             , $this->getUser()
-            , $parent
             , $note
         );
     }

@@ -89,7 +89,6 @@ class AddTest extends TestCase {
             , "add.attachment.no.files.test"
             , "AddAttachmentTest"
             , $user
-            , $userRoot
         );
         $edge = $credentialService->insertCredential($node, $userRoot);
 

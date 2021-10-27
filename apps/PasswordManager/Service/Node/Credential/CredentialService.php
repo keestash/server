@@ -32,50 +32,45 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\User\IUser;
 
 class CredentialService {
 
-    private EncryptionService $encryptionService;
-    private KeyService        $keyService;
-    private EdgeService       $edgeService;
-    private NodeRepository    $nodeRepository;
-    private NodeService       $nodeService;
+    private EncryptionService     $encryptionService;
+    private KeyService            $keyService;
+    private EdgeService           $edgeService;
+    private NodeRepository        $nodeRepository;
+    private NodeService           $nodeService;
+    private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
-        EncryptionService $encryptionService
-        , KeyService $keyService
-        , EdgeService $edgeService
-        , NodeRepository $nodeRepository
-        , NodeService $nodeService
+        EncryptionService       $encryptionService
+        , KeyService            $keyService
+        , EdgeService           $edgeService
+        , NodeRepository        $nodeRepository
+        , NodeService           $nodeService
+        , NodeEncryptionService $nodeEncryptionService
     ) {
-        $this->encryptionService = $encryptionService;
-        $this->keyService        = $keyService;
-        $this->edgeService       = $edgeService;
-        $this->nodeRepository    = $nodeRepository;
-        $this->nodeService       = $nodeService;
+        $this->encryptionService     = $encryptionService;
+        $this->keyService            = $keyService;
+        $this->edgeService           = $edgeService;
+        $this->nodeRepository        = $nodeRepository;
+        $this->nodeService           = $nodeService;
+        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     public function createCredential(
-        string $password
+        string   $password
         , string $url
         , string $userName
         , string $title
-        , IUser $user
-        , Folder $parent
+        , IUser  $user
         , string $notes = ""
     ): Credential {
-        $organization = $this->nodeService->getOrganization($parent);
-        $keyHolder    = null !== $organization ? $organization : $user;
 
         $p = new Password();
         $p->setPlain($password);
-        $p->setEncrypted(
-            $this->encryptionService->encrypt(
-                $this->keyService->getKey($keyHolder)
-                , $password
-            )
-        );
         $p->setLength(strlen($password));
         $p->setPlaceholder(
             $this->generatePasswordPlaceholder()
@@ -84,24 +79,9 @@ class CredentialService {
         $credential = new Credential();
         $credential->setCreateTs(new DateTime());
         $credential->setType(NodeObject::CREDENTIAL);
-        $credential->setUrl(
-            $this->encryptionService->encrypt(
-                $this->keyService->getKey($keyHolder)
-                , $url
-            )
-        );
-        $credential->setUsername(
-            $this->encryptionService->encrypt(
-                $this->keyService->getKey($keyHolder)
-                , $userName
-            )
-        );
-        $credential->setNotes(
-            $this->encryptionService->encrypt(
-                $this->keyService->getKey($keyHolder)
-                , $notes
-            )
-        );
+        $credential->setUrl($url);
+        $credential->setUsername($userName);
+        $credential->setNotes($notes);
         $credential->setPassword($p);
         $credential->setName($title);
         $credential->setUser($user);
@@ -119,6 +99,7 @@ class CredentialService {
     }
 
     public function insertCredential(Credential $credential, Folder $parent): Edge {
+        $this->nodeEncryptionService->encryptNode($credential);
         $credential = $this->nodeRepository->addCredential($credential);
         return $this->nodeRepository->addEdge(
             $this->edgeService->prepareRegularEdge($credential, $parent)
@@ -127,38 +108,27 @@ class CredentialService {
 
     public function updateCredential(
         Credential $credential
-        , string $userName
-        , string $url
-        , string $name
+        , string   $userName
+        , string   $url
+        , string   $name
     ): Credential {
-        $credential->setUsername(
-            $userName
-        );
-        $credential->setUrl(
-            $url
-        );
-
+        $this->nodeEncryptionService->decryptNode($credential);
+        $credential->setUsername($userName);
+        $credential->setUrl($url);
         $credential->setName($name);
+        $this->nodeEncryptionService->encryptNode($credential);
+//        return $credential;
         return $this->nodeRepository->updateCredential($credential);
     }
 
     public function updatePassword(
         Credential $credential
-        , string $password
+        , string   $password
     ): Credential {
-        $organization = $this->nodeService->getOrganization($credential);
-        $keyHolder    = null !== $organization ? $organization : $credential->getUser();
-        $key          = $this->keyService->getKey($keyHolder);
-
         $passwordObject = $credential->getPassword();
-        $passwordObject->setEncrypted(
-            $this->encryptionService->encrypt(
-                $key
-                , $password
-            )
-        );
         $passwordObject->setPlain($password);
         $credential->setPassword($passwordObject);
+        $this->nodeEncryptionService->encryptNode($credential);
         return $this->nodeRepository->updateCredential($credential);
     }
 
