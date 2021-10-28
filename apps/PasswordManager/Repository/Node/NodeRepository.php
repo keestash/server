@@ -428,7 +428,7 @@ class NodeRepository {
             throw new NodeException();
         }
 
-        $credential->setId((int) $nodeId);
+        $credential->setId($nodeId);
         $credential->setCredentialId((int) $lastInsertId);
 
         return $credential;
