@@ -117,7 +117,6 @@ class CredentialService {
         $credential->setUrl($url);
         $credential->setName($name);
         $this->nodeEncryptionService->encryptNode($credential);
-//        return $credential;
         return $this->nodeRepository->updateCredential($credential);
     }
 
