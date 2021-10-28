@@ -23,6 +23,7 @@ use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
@@ -40,24 +41,27 @@ use Throwable;
  */
 class Create implements RequestHandlerInterface {
 
-    private IL10N             $translator;
-    private NodeRepository    $nodeRepository;
-    private CredentialService $credentialService;
-    private SanitizerService  $sanitizerService;
-    private ILogger           $logger;
+    private IL10N                 $translator;
+    private NodeRepository        $nodeRepository;
+    private CredentialService     $credentialService;
+    private SanitizerService      $sanitizerService;
+    private ILogger               $logger;
+    private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
-        , CredentialService $credentialService
-        , SanitizerService $sanitizerService
-        , ILogger $logger
+        IL10N                   $l10n
+        , NodeRepository        $nodeRepository
+        , CredentialService     $credentialService
+        , SanitizerService      $sanitizerService
+        , ILogger               $logger
+        , NodeEncryptionService $nodeEncryptionService
     ) {
-        $this->translator        = $l10n;
-        $this->nodeRepository    = $nodeRepository;
-        $this->credentialService = $credentialService;
-        $this->sanitizerService  = $sanitizerService;
-        $this->logger            = $logger;
+        $this->translator            = $l10n;
+        $this->nodeRepository        = $nodeRepository;
+        $this->credentialService     = $credentialService;
+        $this->sanitizerService      = $sanitizerService;
+        $this->logger                = $logger;
+        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -120,12 +124,8 @@ class Create implements RequestHandlerInterface {
 
         try {
             $edge = $this->credentialService->insertCredential($credential, $parent);
-            // tradeoff: we need to re-query as we want to get the decrypted data
-            // normally, this should take place in a service or somewhere else.
-            // should be refactored ASAP
-            $edge->setNode(
-                $this->nodeRepository->getNode($credential->getId())
-            );
+            $this->nodeEncryptionService->decryptNode($credential);
+            $edge->setNode($credential);
         } catch (Throwable $exception) {
             $this->logger->error($exception->getMessage());
             return LegacyResponse::fromData(
