@@ -51,12 +51,8 @@ class OrganizationAddListener implements IListener {
      */
     public function execute(Event $event): void {
 
-        $node   = $this->nodeRepository->getNode(
-            $event->getNode()->getId()
-        );
         $vector = new IntegerVector();
-
-        $this->work($node, $vector);
+        $this->work($event->getNode(), $vector);
 
     }
 
@@ -78,6 +74,7 @@ class OrganizationAddListener implements IListener {
     private function recrypt(Credential $credential, IntegerVector &$vector): void {
         if (true === $vector->get($credential->getId())) return;
         $vector->set($credential->getId());
+
         $this->nodeEncryptionService->encryptNode($credential);
         $this->nodeRepository->updateCredential($credential);
     }
