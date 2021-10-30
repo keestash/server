@@ -71,7 +71,7 @@ class PublicShareController extends ContextLessAppController {
                 'hash'   => $hash
                 , 'node' => [
                     'name'       => $node->getName()
-                    , 'username' => $node->getUsername()
+                    , 'username' => $node->getUsername()->getPlain()
                     , 'owner'    => $node->getUser()
                 ]
             ]

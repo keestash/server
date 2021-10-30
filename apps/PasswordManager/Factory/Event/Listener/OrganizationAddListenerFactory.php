@@ -22,9 +22,10 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
 use Interop\Container\ContainerInterface;
-use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
+use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\NodeEncryptionService;
+use KSP\Core\ILogger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class OrganizationAddListenerFactory implements FactoryInterface {
@@ -33,10 +34,11 @@ class OrganizationAddListenerFactory implements FactoryInterface {
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): OrganizationAddListener {
-        return new OrganizationAddListener(
+    ): OrganizationChangeListener {
+        return new OrganizationChangeListener(
             $container->get(NodeRepository::class)
             , $container->get(NodeEncryptionService::class)
+            , $container->get(ILogger::class)
         );
     }
 

@@ -113,7 +113,7 @@ class Controller extends StaticAppController {
                 , "passwordPlaceholder"       => $this->translator->translate("Password")
                 , "passwordRepeatPlaceholder" => $this->translator->translate("Repat Password")
                 , "createNewAccount"          => $this->translator->translate("Create New Account")
-                , "createNewAccountDesc"      => $this->translator->translate("Sign Up for Keestash, the Open Source Password Safe")
+                , "createNewAccountDesc"      => $this->translator->translate("Sign Up for Keestash, the Open Source Password Manager")
                 , "backToLogin"               => $this->translator->translate("Log In")
                 , "backToLoginQuestion"       => $this->translator->translate("Have an account?")
 

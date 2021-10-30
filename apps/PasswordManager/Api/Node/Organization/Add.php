@@ -26,7 +26,6 @@ use Doctrine\DBAL\Exception;
 use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
@@ -43,7 +42,6 @@ class Add implements RequestHandlerInterface {
     private NodeRepository             $nodeRepository;
     private ILogger                    $logger;
     private IEventManager              $eventManager;
-    private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
         OrganizationNodeRepository $organizationNodeRepository
@@ -51,14 +49,12 @@ class Add implements RequestHandlerInterface {
         , NodeRepository           $nodeRepository
         , ILogger                  $logger
         , IEventManager            $eventManager
-        , NodeEncryptionService $nodeEncryptionService
     ) {
         $this->organizationNodeRepository = $organizationNodeRepository;
         $this->organizationRepository     = $organizationRepository;
         $this->nodeRepository             = $nodeRepository;
         $this->logger                     = $logger;
         $this->eventManager               = $eventManager;
-        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -75,7 +71,6 @@ class Add implements RequestHandlerInterface {
         }
 
         $node = $this->nodeRepository->getNode($nodeId, 0, 0);
-        $this->nodeEncryptionService->decryptNode($node);
 
         if (null !== $node->getOrganization()) {
             return new JsonResponse(
@@ -106,8 +101,6 @@ class Add implements RequestHandlerInterface {
                 , $organization
             );
 
-            $node->setOrganization($organization);
-
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage() . ': ' . $exception->getTraceAsString());
             return new JsonResponse(
@@ -117,7 +110,7 @@ class Add implements RequestHandlerInterface {
         }
 
         $this->eventManager->execute(
-            new NodeAddedToOrganizationEvent($node)
+            new NodeAddedToOrganizationEvent($node, $organization)
         );
 
         return new JsonResponse(

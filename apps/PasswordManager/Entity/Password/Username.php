@@ -19,24 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Event;
+namespace KSA\PasswordManager\Entity\Password;
 
-use KSA\PasswordManager\Entity\Node;
-use Symfony\Contracts\EventDispatcher\Event;
+class Username extends Encryptable {
 
-class NodeOrganizationUpdated extends Event {
-
-    private Node $node;
-
-    public function __construct(Node $node) {
-        $this->node = $node;
-    }
-
-    /**
-     * @return Node
-     */
-    public function getNode(): Node {
-        return $this->node;
+    public function jsonSerialize(): array {
+        return parent::jsonSerialize() + [
+                'plain' => $this->getPlain()
+            ];
     }
 
 }

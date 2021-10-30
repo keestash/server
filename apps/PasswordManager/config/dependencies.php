@@ -44,7 +44,7 @@ use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
-use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
+use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 use KSA\PasswordManager\Factory\Api\Comment\AddFactory as AddCommentFactory;
 use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
@@ -165,7 +165,7 @@ return [
         AfterRegistration::class                                          => AfterRegistrationFactory::class,
         AfterPasswordChanged::class                                       => AfterPasswordChangedListenerFactory::class,
         RemoveExpired::class                                              => RemoveExpiredFactory::class,
-        OrganizationAddListener::class                                    => OrganizationAddListenerFactory::class,
+        OrganizationChangeListener::class                                 => OrganizationAddListenerFactory::class,
 
         // command
         CreateFolder::class                                               => CreateFolderFactory::class,

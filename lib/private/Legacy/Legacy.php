@@ -39,7 +39,7 @@ class Legacy {
         $table = new HashTable();
         $table->put("name", "Keestash");
         $table->put("name_internal", "keestash");
-        $table->put("slogan", "Open Source Password Safe");
+        $table->put("slogan", "Open Source Password Manager");
         $dateTime = new DateTime();
         $dateTime->setDate(2018, 11, 01);
         $table->put("start_date", $dateTime);

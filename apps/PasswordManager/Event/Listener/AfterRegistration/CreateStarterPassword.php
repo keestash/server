@@ -83,7 +83,6 @@ class CreateStarterPassword {
             , $user->getName()
             , (string) $this->legacy->getApplication()->get("name")
             , $user
-            , $this->translator->translate('This is your first Keestash password')
         );
         $credential->setId(CreateStarterPassword::FIRST_CREDENTIAL_ID);
 
