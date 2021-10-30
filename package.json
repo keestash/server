@@ -1,7 +1,7 @@
 {
   "name": "keestash",
   "version": "0.0.1",
-  "description": "Open Source Password Safe",
+  "description": "Open Source Password Manager",
   "main": "lib/js/base.js",
   "directories": {
     "lib": "lib"

@@ -1,7 +1,7 @@
 {
   "name": "keestash/server",
   "type": "project",
-  "description": "Open Source Password Safe",
+  "description": "Open Source Password Manager",
   "homepage": "https://keestash.com",
   "readme": "README.md",
   "license": "AGPL-3.0-or-later",

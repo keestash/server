@@ -23,10 +23,9 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 
 use DateTime;
 use Exception;
-use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
+use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
@@ -43,7 +42,6 @@ class Update implements RequestHandlerInterface {
     private ILogger                    $logger;
     private OrganizationNodeRepository $organizationNodeRepository;
     private IEventManager              $eventManager;
-    private NodeEncryptionService      $nodeEncryptionService;
 
     public function __construct(
         NodeRepository               $nodeRepository
@@ -51,14 +49,12 @@ class Update implements RequestHandlerInterface {
         , ILogger                    $logger
         , OrganizationNodeRepository $organizationNodeRepository
         , IEventManager              $eventManager
-        , NodeEncryptionService      $nodeEncryptionService
     ) {
         $this->nodeRepository             = $nodeRepository;
         $this->organizationRepository     = $organizationRepository;
         $this->logger                     = $logger;
         $this->organizationNodeRepository = $organizationNodeRepository;
         $this->eventManager               = $eventManager;
-        $this->nodeEncryptionService      = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -75,7 +71,6 @@ class Update implements RequestHandlerInterface {
         }
 
         $node = $this->nodeRepository->getNode($nodeId, 0, 0);
-        $this->nodeEncryptionService->decryptNode($node);
 
         if (null === $node->getOrganization()) {
             return new JsonResponse(
@@ -113,9 +108,8 @@ class Update implements RequestHandlerInterface {
             );
         }
 
-        $node->setOrganization($organization);
         $this->eventManager->execute(
-            new NodeRemovedFromOrganizationEvent($node)
+            new NodeOrganizationUpdatedEvent($node, $organization)
         );
         return new JsonResponse(['organization' => $organization]);
     }

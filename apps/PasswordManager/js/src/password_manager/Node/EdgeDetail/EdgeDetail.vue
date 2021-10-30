@@ -4,7 +4,6 @@
             <div class="col">
                 <div class="row mt-4">
                     <div class="col-md-1 align-self-center">
-
                         <b-img
                                 :src="this.imageUrlPassword"
                                 fluid
@@ -60,13 +59,12 @@
 
                 </div>
 
-
                 <form id="tab__detail__wrapper">
                     <div class="form-group">
                         <small class="form-text text-muted">{{ $t('credential.detail.userNameLabel') }}</small>
                         <input type="text"
                                class="form-control"
-                               :value="this.edge.node.username"
+                               :value="this.edge.node.username.plain"
                                @blur="onUsernameChange"
                         >
                     </div>
@@ -94,7 +92,7 @@
                                     type="url"
                                     class="form-control"
                                     :placeholder="$t('credential.url.placeholder')"
-                                    :value="this.edge.node.url"
+                                    :value="this.edge.node.url.plain"
                                     @blur="onUrlChange"
                             >
                             <div class="input-group-append" id="pwm__url__button" v-b-modal.external-link-modal>
@@ -118,7 +116,7 @@
                 <p>{{ $t('credential.url.external.text') }}</p>
                 <p>{{ $t('credential.url.external.text_info') }} </p>
                 <b-alert show variant="light">
-                    {{ this.edge.node.url }}
+                    {{ this.edge.node.url.plain }}
                 </b-alert>
 
                 <div class="pull-left">
@@ -197,7 +195,7 @@ export default {
         ...mapState({
             edge: function (state) {
                 let edge = state.selectedEdge;
-                edge.node.url = encodeURI(edge.node.url);
+                edge.node.url.plain = encodeURI(edge.node.url.plain);
                 edge.node.createdFormatted = moment(edge.node.create_ts.date).format();
 
                 return edge;
@@ -225,7 +223,7 @@ export default {
     methods: {
         copyToClipBoard() {
             const systemService = new SystemService();
-            systemService.copyToClipboard(this.edge.node.url);
+            systemService.copyToClipboard(this.edge.node.url.plain);
             this.$refs['external-link-modal-ref'].hide()
         },
         passwordUsed(p) {
@@ -266,8 +264,8 @@ export default {
 
             this.updateCredential({
                 name: newName
-                , username: this.edge.node.username
-                , url: this.edge.node.url
+                , username: this.edge.node.username.plain
+                , url: this.edge.node.url.plain
                 , nodeId: this.edge.node.id
             });
         },
@@ -307,20 +305,20 @@ export default {
         },
         onUsernameChange(event) {
             const newUserName = event.target.value;
-            if (newUserName === this.edge.node.username || newUserName === "") return;
+            if (newUserName === this.edge.node.username.plain || newUserName === "") return;
             this.updateCredential({
                 name: this.edge.node.name
                 , username: newUserName
-                , url: this.edge.node.url
+                , url: this.edge.node.url.plain
                 , nodeId: this.edge.node.id
             });
         },
         onUrlChange(event) {
             const newUrl = event.target.value;
-            if (newUrl === this.edge.node.url || newUrl === "") return;
+            if (newUrl === this.edge.node.url.plain || newUrl === "") return;
             this.updateCredential({
                 name: this.edge.node.name
-                , username: this.edge.node.username
+                , username: this.edge.node.username.plain
                 , url: newUrl
                 , nodeId: this.edge.node.id
             });
@@ -332,11 +330,11 @@ export default {
             startUp.setUp();
             const container = startUp.getContainer();
             const urlService = container.query(URL_SERVICE);
-            console.log(encodeURI(this.edge.node.url))
-            if (!urlService.isValidURL(this.edge.node.url)) return;
+
+            if (!urlService.isValidURL(this.edge.node.url.plain)) return;
 
             window.open(
-                encodeURI(this.edge.node.url)
+                encodeURI(this.edge.node.url.plain)
                 , '_blank'
             ).focus();
             this.$refs['external-link-modal-ref'].hide();

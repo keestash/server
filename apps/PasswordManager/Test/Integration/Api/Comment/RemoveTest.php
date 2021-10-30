@@ -105,7 +105,6 @@ class RemoveTest extends TestCase {
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
-        $note     = "this is a test note";
 
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
@@ -116,7 +115,6 @@ class RemoveTest extends TestCase {
             , $userName
             , $title
             , $this->getUser()
-            , $note
         );
     }
 

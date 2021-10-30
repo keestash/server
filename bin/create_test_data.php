@@ -73,7 +73,7 @@ use Psr\Container\ContainerInterface;
                 $userService->hashPassword("Dogancan1@")
         );
         $user->setLocked(false);
-        $user->setHash(md5((string) time()));
+        $user->setHash(md5((string) microtime()));
         $user->setLastName("Ucar");
         $user->setFirstName("Dogan");
         $user->setEmail("dogan@dogan-ucar.de");
@@ -176,12 +176,12 @@ function createCredential(
     $credentials    = [];
     for ($i = 0; $i < $credentialSize; $i++) {
         $credential    = $credentialService->createCredential(
-                md5((string) ($i . time()))
+                md5((string) ($i . microtime()))
                 , "https://dogan-ucar.de"
-                , md5((string) ($i . time()))
-                , md5((string) ($i . time()))
+                , md5((string) ($i . microtime()))
+                , md5((string) ($i . microtime()))
                 , $user
-                , md5((string) ($i . time()))
+                , md5((string) ($i . microtime()))
         );
         $credentials[] = $credential;
     }
@@ -194,7 +194,7 @@ function createFolder(IUser $user): array {
     $folders    = [];
     for ($i = 0; $i < $folderSize; $i++) {
         $nextFolder = new Folder();
-        $nextFolder->setName(md5((string) ($i . time())));
+        $nextFolder->setName(md5((string) ($i . microtime())));
         $nextFolder->setType(Node::FOLDER);
         $nextFolder->setUser($user);
         $nextFolder->setCreateTs(new DateTime());

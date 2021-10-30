@@ -27,33 +27,30 @@ use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 
 class NodeEncryptionService {
 
     private EncryptionService $encryptionService;
     private IKeyService       $keyService;
+    private ILogger           $logger;
 
     public function __construct(
         EncryptionService $encryptionService
         , IKeyService     $keyService
+        , ILogger         $logger
     ) {
         $this->encryptionService = $encryptionService;
         $this->keyService        = $keyService;
+        $this->logger            = $logger;
     }
 
-    public function decryptNode(Node &$node): void {
-        $this->decryptNodeHelper($node);
-    }
 
-    public function encryptNode(Node &$node): void {
-        $this->encryptNodeHelper($node);
-    }
-
-    private function decryptNodeHelper(Node &$node, ?IKeyHolder $keyHolder = null): void {
+    public function decryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
 
         if ($node instanceof Credential) {
-            $this->decryptCredential($node);
+            $this->decryptCredential($node, $parentKeyHolder);
             return;
         }
 
@@ -62,59 +59,41 @@ class NodeEncryptionService {
 
             $childNode = $edge->getNode();
             if ($childNode instanceof Folder) {
-                $this->decryptNodeHelper($childNode);
+                $this->decryptNode($childNode, $childNode->getOrganization());
+                continue;
             }
-            $this->decryptCredential($childNode);
+            $this->decryptCredential($childNode, $parentKeyHolder);
         }
 
     }
 
-    private function encryptNodeHelper(Node &$node): void {
+    private function decryptCredential(Credential &$credential, ?IKeyHolder $parentKeyHolder = null): void {
 
-        if ($node instanceof Credential) {
-            $this->encryptCredential($node);
-            return;
+        $keyHolder = $credential->getUser();
+        // 1. if credential has organization, set:
+        if (null !== $credential->getOrganization()) {
+            $keyHolder = $credential->getOrganization();
+        } else if (null !== $parentKeyHolder) {
+            $keyHolder = $parentKeyHolder;
         }
 
-        /** @var Edge $edge */
-        foreach ($node->getEdges() as $edge) {
+        $key = $this->keyService->getKey($keyHolder);
 
-            $childNode = $edge->getNode();
-            if ($childNode instanceof Folder) {
-                $this->encryptNodeHelper($childNode);
-            }
-            $this->encryptCredential($childNode);
-        }
+        $credential->getUsername()
+            ->setPlain(
+                $this->encryptionService->decrypt(
+                    $key
+                    , $credential->getUsername()->getEncrypted()
+                )
+            );
 
-    }
-
-    private function decryptCredential(Credential &$credential): void {
-
-        $keyHolder = null !== $credential->getOrganization()
-            ? $credential->getOrganization()
-            : $credential->getUser();
-        $key       = $this->keyService->getKey($keyHolder);
-
-        $credential->setUsername(
-            $this->encryptionService->decrypt(
-                $key
-                , $credential->getUsername()
-            )
-        );
-
-        $credential->setUrl(
-            $this->encryptionService->decrypt(
-                $key
-                , $credential->getUrl()
-            )
-        );
-
-        $credential->setNotes(
-            $this->encryptionService->decrypt(
-                $key
-                , $credential->getNotes()
-            )
-        );
+        $credential->getUrl()
+            ->setPlain(
+                $this->encryptionService->decrypt(
+                    $key
+                    , $credential->getUrl()->getEncrypted()
+                )
+            );
 
         $credential->getPassword()
             ->setPlain(
@@ -126,34 +105,54 @@ class NodeEncryptionService {
 
     }
 
-    private function encryptCredential(Credential &$credential): void {
+    public function encryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
+        if ($node instanceof Credential) {
+            $this->encryptCredential($node, $parentKeyHolder);
+            return;
+        }
 
-        $keyHolder = null !== $credential->getOrganization()
-            ? $credential->getOrganization()
-            : $credential->getUser();
+        /** @var Edge $edge */
+        foreach ($node->getEdges() as $edge) {
 
-        $key       = $this->keyService->getKey($keyHolder);
+            $childNode = $edge->getNode();
+            if ($childNode instanceof Folder) {
+                $this->encryptNode($childNode, $childNode->getOrganization());
+                continue;
+            }
+            $this->encryptCredential($childNode, $parentKeyHolder);
+        }
 
-        $credential->setUsername(
-            $this->encryptionService->encrypt(
-                $key
-                , $credential->getUsername()
-            )
-        );
+    }
 
-        $credential->setUrl(
-            $this->encryptionService->encrypt(
-                $key
-                , $credential->getUrl()
-            )
-        );
+    private function encryptCredential(Credential &$credential, ?IKeyHolder $parentKeyHolder = null): void {
 
-        $credential->setNotes(
-            $this->encryptionService->encrypt(
-                $key
-                , $credential->getNotes()
-            )
-        );
+        $keyHolder = $credential->getUser();
+        // 1. if credential has organization, set:
+        if (null !== $credential->getOrganization()) {
+            $keyHolder = $credential->getOrganization();
+        } else if (null !== $parentKeyHolder) {
+            $keyHolder = $parentKeyHolder;
+        }
+
+        $key = $this->keyService->getKey($keyHolder);
+
+        $this->logger->debug('recrypting ' . $credential->getId() . ' with key ' . $key->getId() . ' and keyholder ' . $key->getKeyHolder()->getId() . ' (' . get_class($key->getKeyHolder()) . ')');
+
+        $credential->getUsername()
+            ->setEncrypted(
+                $this->encryptionService->encrypt(
+                    $key
+                    , $credential->getUsername()->getPlain()
+                )
+            );
+
+        $credential->getUrl()
+            ->setEncrypted(
+                $this->encryptionService->encrypt(
+                    $key
+                    , $credential->getUrl()->getPlain()
+                )
+            );
 
         if (null === $credential->getPassword()->getPlain()) {
             return;
@@ -167,22 +166,6 @@ class NodeEncryptionService {
             )
         );
         $credential->setPassword($passwordObject);
-    }
-
-    private function getKeyHolder(Node $node, ?IKeyHolder $keyHolder): IKeyHolder {
-
-        // 1. key is null
-        // 2. keyholder is organization
-
-//        if ($keyHolder === null || null !== $node->getOrganization()) {
-
-        return null !== $node->getOrganization()
-            ? $node->getOrganization()
-            : $node->getUser();
-
-//        }
-
-//        return $keyHolder;
     }
 
 }

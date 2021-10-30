@@ -40,7 +40,6 @@ class RemoveFactory implements FactoryInterface {
             $container->get(NodeRepository::class)
             , $container->get(OrganizationRepository::class)
             , $container->get(IEventManager::class)
-            , $container->get(NodeEncryptionService::class)
         );
     }
 
