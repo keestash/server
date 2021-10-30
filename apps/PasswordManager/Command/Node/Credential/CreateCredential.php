@@ -75,7 +75,6 @@ class CreateCredential extends KeestashCommand {
         $username = $style->ask("Username") ?? "";
         $password = $style->ask("Password") ?? "";
         $url      = $style->ask("URL") ?? "";
-        $note     = $style->ask("Note") ?? "";
         $userId   = $style->ask("User ID") ?? "";
         $parentId = $style->ask("Parent ID") ?? "";
 
@@ -96,7 +95,6 @@ class CreateCredential extends KeestashCommand {
             , $username
             , $name
             , $user
-            , $note
         );
 
         if ($parent->getUser()->getId() !== $user->getId()) {

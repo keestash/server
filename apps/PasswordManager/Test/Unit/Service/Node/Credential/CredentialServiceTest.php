@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Test\Unit\Service\Node\Credential;
 
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Entity\Edge\Edge;
-use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -90,20 +89,15 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , (string) $credential->getUrl()
+                , $credential->getUrl()->getEncrypted()
             ) === $url);
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getUsername()
+                , $credential->getUsername()->getEncrypted()
             ) === $userName);
         $this->assertTrue($credential->getName() === $title);
         $this->assertTrue($credential->getUser()->getId() === $this->getUser()->getId());
-        $this->assertTrue(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $credential->getNotes()
-            ) === $note);
         $this->assertTrue($credential->getType() === Node::CREDENTIAL);
     }
 

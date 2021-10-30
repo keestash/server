@@ -25,19 +25,19 @@ use Doctrine\DBAL\Driver\ResultStatement;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Entity\Password\Password;
+use KSA\PasswordManager\Entity\Password\URL;
+use KSA\PasswordManager\Entity\Password\Username;
 use KSA\PasswordManager\Entity\Share\Share;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\Node\NodeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -140,6 +140,9 @@ class NodeRepository {
 
     public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): Node {
 
+        if ($id === 5838) {
+            $x = $id;
+        }
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
                 [
@@ -218,6 +221,7 @@ class NodeRepository {
     }
 
     private function addOrganizationInfo(Node $node): Node {
+
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
@@ -229,9 +233,32 @@ class NodeRepository {
             ->setParameter(0, $node->getId());
         $result       = $queryBuilder->execute();
 
+        $nodeOrganization = null;
+        $parentOrganization = null;
         foreach ($result->fetchAllNumeric() as $row) {
-            $node->setOrganization($this->organizationRepository->get((int) $row[0]));
+            $nodeOrganization = (int)$row[0];
         }
+
+        $pathToRoot = $this->getPathToRoot($node);
+
+        foreach ($pathToRoot as $path) {
+
+            $organizationId = $path['organization'];
+
+            if (null !== $organizationId) {
+                $parentOrganization = $organizationId;
+                break;
+            }
+        }
+
+        if (null === $nodeOrganization && null === $parentOrganization)  {
+            return $node;
+        }
+        $organization = $nodeOrganization === null
+            ? $parentOrganization
+            : $nodeOrganization;
+
+        $node->setOrganization($this->organizationRepository->get((int) $organization));
 
         return $node;
     }
@@ -257,9 +284,14 @@ class NodeRepository {
         $row       = $rows[0];
 
         $credential->setCredentialId((int) $row[0]);
-        $credential->setUsername((string) $row[2]);
-        $credential->setUrl((string) $row[4]);
-        $credential->setNotes((string) $row[6]);
+
+        $userName = new Username();
+        $userName->setEncrypted((string) $row[2]);
+        $credential->setUsername($userName);
+
+        $url = new URL();
+        $url->setEncrypted((string) $row[4]);
+        $credential->setUrl($url);
 
         $password = new Password();
         $password->setEncrypted($row[3]);
@@ -412,14 +444,12 @@ class NodeRepository {
                     , 'username' => '?'
                     , 'password' => '?'
                     , 'url'      => '?'
-                    , 'note'     => '?'
                 ]
             )
             ->setParameter(0, $nodeId)
-            ->setParameter(1, $credential->getUsername())
+            ->setParameter(1, $credential->getUsername()->getEncrypted())
             ->setParameter(2, $credential->getPassword()->getEncrypted())
-            ->setParameter(3, $credential->getUrl())
-            ->setParameter(4, $credential->getNotes())
+            ->setParameter(3, $credential->getUrl()->getEncrypted())
             ->execute();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
@@ -453,8 +483,10 @@ class NodeRepository {
                             , 1                                  as level
                             , n.`type`                           as type
                             , IF(n.`type` = 'root', true, false) as is_root
+                            , onn.`organization_id`              as organization
                        FROM `pwm_node` n
                                 left join `pwm_edge` e on e.`node_id` = n.`id`
+                                left join `organization_node` onn on n.`id` = onn.`node_id`
                        WHERE n.`id` = '" . $node->getId() . "'
                        UNION
                        DISTINCT
@@ -464,14 +496,17 @@ class NodeRepository {
                             , d.level + 1
                             , n2.`type`
                             , IF(n2.`type` = 'root', true, false) as is_root
+                            , onn2.`organization_id`              as organization
                        FROM `descendants` d
                                 left join `pwm_edge` e2 on d.`parent_id` = e2.`node_id`
                                 left join `pwm_node` n2 on e2.`node_id` = n2.id
+                                left join `organization_node` onn2 on n2.`id` = onn2.`node_id`
                        where n2.`id` is not null
                    )
 SELECT 
        `name`
      , `node_id`
+     , `organization`
 FROM `descendants` d
 where d.`type` = 'folder'
 ORDER BY d.`level`;
@@ -482,8 +517,9 @@ ORDER BY d.`level`;
         $result = $this->backend->getConnection()->executeQuery($sql);
         foreach ($result->fetchAllNumeric() as $row) {
             $nodes[] = [
-                'name' => $row[0]
-                , 'id' => (int) $row[1]
+                'name'           => $row[0]
+                , 'id'           => (int) $row[1]
+                , 'organization' => $row[2]
             ];
         }
         return $nodes;
@@ -590,21 +626,17 @@ ORDER BY d.`level`;
             ->set('username', '?')
             ->set('password', '?')
             ->set('url', '?')
-            ->set('note', '?')
             ->where('id = ?')
             ->setParameter(0,
-                $credential->getUsername()
+                $credential->getUsername()->getEncrypted()
             )
             ->setParameter(1,
                 $credential->getPassword()->getEncrypted()
             )
             ->setParameter(2,
-                (string) $credential->getUrl()
+                $credential->getUrl()->getEncrypted()
             )
             ->setParameter(3,
-                (string) $credential->getNotes()
-            )
-            ->setParameter(4,
                 $credential->getCredentialId()
             );
         $queryBuilder->execute();

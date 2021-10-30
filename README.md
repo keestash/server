@@ -1,5 +1,5 @@
 # Keestash
-Open Source Password Safe
+Open Source Password Manager
 
 ![](https://keestash.com/wp-content/uploads/2019/10/keestash_logo_inverted.png)
 

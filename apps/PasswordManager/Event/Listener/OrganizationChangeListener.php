@@ -30,20 +30,31 @@ use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\NodeEncryptionService;
+use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IListener;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class OrganizationAddListener implements IListener {
+/**
+ * Class OrganizationChangeListener
+ * @package KSA\PasswordManager\Event\Listener
+ * @author  Dogan Ucar <dogan.ucar@check24.de>
+ *          TODO this can be a kind of worker
+ */
+class OrganizationChangeListener implements IListener {
 
     private NodeRepository        $nodeRepository;
     private NodeEncryptionService $nodeEncryptionService;
+    private ILogger               $logger;
 
     public function __construct(
         NodeRepository          $nodeRepository
         , NodeEncryptionService $nodeEncryptionService
+        , ILogger               $logger
     ) {
         $this->nodeRepository        = $nodeRepository;
         $this->nodeEncryptionService = $nodeEncryptionService;
+        $this->logger                = $logger;
     }
 
     /**
@@ -52,30 +63,47 @@ class OrganizationAddListener implements IListener {
     public function execute(Event $event): void {
 
         $vector = new IntegerVector();
-        $this->work($event->getNode(), $vector);
+        $parent = $this->nodeRepository->getNode(
+            $event->getNode()->getId()
+        );
+        $this->work($parent, $vector, $event->getOrganization());
 
     }
 
-    private function work(Node $node, IntegerVector &$vector): void {
+    private function work(Node $node, IntegerVector &$vector, ?IOrganization $organization = null): void {
 
         if ($node instanceof Credential) {
-            $this->recrypt($node, $vector);
+            $this->recrypt($node, $vector, $organization);
         } else if ($node instanceof Folder) {
             /** @var Edge $edge */
             foreach ($node->getEdges() as $edge) {
-                if (true === $vector->get($node->getId())) continue;
-                $vector->set($node->getId());
-                $this->work($edge->getNode(), $vector);
+                $this->work($edge->getNode(), $vector, $organization);
             }
         }
 
     }
 
-    private function recrypt(Credential $credential, IntegerVector &$vector): void {
+    private function recrypt(Credential $credential, IntegerVector &$vector, ?IOrganization $organization = null): void {
         if (true === $vector->get($credential->getId())) return;
         $vector->set($credential->getId());
 
-        $this->nodeEncryptionService->encryptNode($credential);
+        // 1. we need first to decrypt the data. Decryption is done by
+        // the previous key. So we either need the previous organization
+        // or the user to whom the credential belongs to
+        $keyHolder = null !== $credential->getOrganization()
+            ? $credential->getOrganization()
+            : $credential->getUser();
+        $this->nodeEncryptionService->decryptNode($credential, $keyHolder);
+
+        // 2. as we want to encrypt with the new owner, we
+        // need to check whether an organization is given.
+        // The organization can be null if the organization
+        // has been removed from the node.
+        // If this is the case, encrpyt with the user again.
+        $keyHolder = null !== $organization
+            ? $organization
+            : $credential->getUser();
+        $this->nodeEncryptionService->encryptNode($credential, $keyHolder);
         $this->nodeRepository->updateCredential($credential);
     }
 

@@ -50,7 +50,10 @@
         <context-menu id="context-menu" class="row"
                       :ref="'ctxMenu' + this.edge.node.id"
         >
-            <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">Add To Organization</div>
+            <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">Add To
+                Organization
+            </div>
+            <div class="col context-menu-col" @click="removeNode">Remove</div>
         </context-menu>
 
         <b-modal
@@ -119,7 +122,7 @@ export default {
             return true;
         },
     },
-    mounted: function () {
+    created: function () {
         const startUp = new StartUp(
             new Container()
         );
@@ -176,6 +179,19 @@ export default {
         },
         clickModal: function () {
             this.$refs[this.refName()].open();
+        },
+        removeNode: function () {
+            this.container.services.axios.delete(
+                ROUTES.getNodeDelete(),
+                {
+                    id: this.edge.node.id
+                }
+            ).then(
+                (r) => {
+               // TODO
+                }
+            )
+            ;
         },
         openModalClick: function () {
             this.$refs['modal' + this.edge.node.id].show();
