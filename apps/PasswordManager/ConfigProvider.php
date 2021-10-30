@@ -31,6 +31,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE   = "/password_manager/organization/node/remove/";
     public const PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE        = "/s/:hash[/]";
     public const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT       = "/password_manager/public_share/decrypt/:hash[/]";
+    public const PASSWORD_MANAGER_NODE_DELETE                = '/password_manager/node/delete[/]';
     public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
     public const APP_ID                                      = 'passwordManager';
 

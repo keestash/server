@@ -39,7 +39,6 @@ class AddFactory {
             , $container->get(NodeRepository::class)
             , $container->get(ILogger::class)
             , $container->get(IEventManager::class)
-            , $container->get(NodeEncryptionService::class)
         );
     }
 

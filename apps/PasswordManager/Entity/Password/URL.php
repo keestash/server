@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2021> Dogan Ucar <dogan@dogan-ucar.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -21,6 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Entity\Password;
 
-class Password extends Encryptable {
+class URL extends Encryptable {
+
+    public function jsonSerialize(): array {
+        return parent::jsonSerialize() + [
+                'plain' => $this->getPlain()
+            ];
+    }
 
 }

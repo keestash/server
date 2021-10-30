@@ -28,6 +28,8 @@ use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node as NodeObject;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Entity\Password\Password;
+use KSA\PasswordManager\Entity\Password\URL;
+use KSA\PasswordManager\Entity\Password\Username;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
@@ -66,36 +68,28 @@ class CredentialService {
         , string $userName
         , string $title
         , IUser  $user
-        , string $notes = ""
     ): Credential {
 
-        $p = new Password();
-        $p->setPlain($password);
-        $p->setLength(strlen($password));
-        $p->setPlaceholder(
-            $this->generatePasswordPlaceholder()
-        );
 
         $credential = new Credential();
         $credential->setCreateTs(new DateTime());
         $credential->setType(NodeObject::CREDENTIAL);
-        $credential->setUrl($url);
-        $credential->setUsername($userName);
-        $credential->setNotes($notes);
+
+        $urlObject = new URL();
+        $urlObject->setPlain($url);
+        $credential->setUrl($urlObject);
+
+        $usernameObject = new Username();
+        $usernameObject->setPlain($userName);
+        $credential->setUsername($usernameObject);
+
+        $p = new Password();
+        $p->setPlain($password);
         $credential->setPassword($p);
         $credential->setName($title);
         $credential->setUser($user);
 
         return $credential;
-    }
-
-    public function generatePasswordPlaceholder(?string $password = null): string {
-
-        $length = 12;
-        if (null !== $password) {
-            $length = strlen($password);
-        }
-        return str_pad('', $length, "*");
     }
 
     public function insertCredential(Credential $credential, Folder $parent): Edge {
@@ -113,8 +107,15 @@ class CredentialService {
         , string   $name
     ): Credential {
         $this->nodeEncryptionService->decryptNode($credential);
-        $credential->setUsername($userName);
-        $credential->setUrl($url);
+
+        $usernameObject = new Username();
+        $usernameObject->setPlain($userName);
+        $credential->setUsername($usernameObject);
+
+        $urlObject = new URL();
+        $urlObject->setPlain($url);
+        $credential->setUrl($urlObject);
+
         $credential->setName($name);
         $this->nodeEncryptionService->encryptNode($credential);
         return $this->nodeRepository->updateCredential($credential);

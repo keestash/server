@@ -37,18 +37,15 @@ class Remove implements RequestHandlerInterface {
     private NodeRepository             $nodeRepository;
     private OrganizationNodeRepository $organizationNodeRepository;
     private IEventManager              $eventManager;
-    private NodeEncryptionService      $nodeEncryptionService;
 
     public function __construct(
         NodeRepository               $nodeRepository
         , OrganizationNodeRepository $organizationNodeRepository
         , IEventManager              $eventManager
-        , NodeEncryptionService      $nodeEncryptionService
     ) {
         $this->nodeRepository             = $nodeRepository;
         $this->organizationNodeRepository = $organizationNodeRepository;
         $this->eventManager               = $eventManager;
-        $this->nodeEncryptionService      = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -65,7 +62,6 @@ class Remove implements RequestHandlerInterface {
         }
 
         $node = $this->nodeRepository->getNode($nodeId, 0, 0);
-        $this->nodeEncryptionService->decryptNode($node);
 
         if (null === $node->getOrganization()) {
             return new JsonResponse(
@@ -82,10 +78,9 @@ class Remove implements RequestHandlerInterface {
         }
 
         $this->organizationNodeRepository->removeNodeRepository($node);
-        $node->setOrganization(null);
 
         $this->eventManager->execute(
-            new NodeRemovedFromOrganizationEvent($node)
+            new NodeRemovedFromOrganizationEvent($node, null)
         );
         return new JsonResponse('');
     }

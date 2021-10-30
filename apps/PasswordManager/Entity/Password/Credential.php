@@ -33,11 +33,10 @@ use KSA\PasswordManager\Entity\Node;
  */
 class Credential extends Node implements JsonSerializable {
 
-    private string     $username     = "";
+    private Username   $username;
     private Password   $password;
+    private URL        $url;
     private ?ArrayList $attachments  = null;
-    private ?string    $notes        = null;
-    private ?string    $url          = null;
     private int        $credentialId = 0;
 
     public function getType(): string {
@@ -49,16 +48,16 @@ class Credential extends Node implements JsonSerializable {
     }
 
     /**
-     * @return string
+     * @return Username
      */
-    public function getUsername(): string {
+    public function getUsername(): Username {
         return $this->username;
     }
 
     /**
-     * @param string $username
+     * @param Username $username
      */
-    public function setUsername(string $username): void {
+    public function setUsername(Username $username): void {
         $this->username = $username;
     }
 
@@ -91,30 +90,16 @@ class Credential extends Node implements JsonSerializable {
     }
 
     /**
-     * @return null|string
+     * @return URL
      */
-    public function getNotes(): ?string {
-        return $this->notes;
-    }
-
-    /**
-     * @param null|string $notes
-     */
-    public function setNotes(?string $notes): void {
-        $this->notes = $notes;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getUrl(): ?string {
+    public function getUrl(): URL {
         return $this->url;
     }
 
     /**
-     * @param null|string $url
+     * @param URL $url
      */
-    public function setUrl(?string $url): void {
+    public function setUrl(URL $url): void {
         $this->url = $url;
     }
 
@@ -124,6 +109,20 @@ class Credential extends Node implements JsonSerializable {
 
     public function setCredentialId(int $credentialId): void {
         $this->credentialId = $credentialId;
+    }
+
+    public function isEncrypted(): bool {
+        return
+            true === $this->getUsername()->isEncrypted()
+            && true === $this->getPassword()->isEncrypted()
+            && true === $this->getUrl()->isEncrypted();
+    }
+
+    public function isDecrypted(): bool {
+        return
+            true === $this->getUsername()->isDecrypted()
+            && true === $this->getPassword()->isDecrypted()
+            && true === $this->getUrl()->isDecrypted();
     }
 
     /**
@@ -139,7 +138,6 @@ class Credential extends Node implements JsonSerializable {
                 "username"        => $this->getUsername()
                 , "password"      => $this->getPassword()
                 , "attachments"   => $this->getAttachments()
-                , "notes"         => $this->getNotes()
                 , "url"           => $this->getUrl()
                 , "credential_id" => $this->getCredentialId()
             ];

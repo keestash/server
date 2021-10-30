@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -100,9 +101,9 @@ return [
             , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Add::class
         ],
         [
-            'path'         => '/password_manager/node/delete[/]'
+            'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_DELETE
             , 'middleware' => Delete::class
-            , 'method'     => IVerb::POST
+            , 'method'     => IVerb::DELETE
             , 'name'       => Delete::class
         ],
         [

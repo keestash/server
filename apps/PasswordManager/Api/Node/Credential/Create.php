@@ -71,7 +71,6 @@ class Create implements RequestHandlerInterface {
         $name       = $parameters["name"] ?? '';
         $userName   = $parameters["username"] ?? '';
         $password   = $parameters["password"] ?? '';
-        $notes      = $parameters["note"] ?? '';
         $folder     = $parameters["parent"] ?? '';
         $url        = $parameters["url"] ?? '';
 
@@ -119,7 +118,6 @@ class Create implements RequestHandlerInterface {
             , $userName
             , $name
             , $token->getUser()
-            , $this->sanitizerService->sanitize($notes)
         );
 
         try {

@@ -22,14 +22,17 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event;
 
 use KSA\PasswordManager\Entity\Node;
+use KSP\Core\DTO\Organization\IOrganization;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class NodeAddedToOrganizationEvent extends Event {
 
-    private Node $node;
+    private Node           $node;
+    private ?IOrganization $organization;
 
-    public function __construct(Node $node) {
-        $this->node = $node;
+    public function __construct(Node $node, ?IOrganization $organization = null) {
+        $this->node         = $node;
+        $this->organization = $organization;
     }
 
     /**
@@ -40,10 +43,10 @@ class NodeAddedToOrganizationEvent extends Event {
     }
 
     /**
-     * @param Node $node
+     * @return IOrganization|null
      */
-    public function setNode(Node $node): void {
-        $this->node = $node;
+    public function getOrganization(): ?IOrganization {
+        return $this->organization;
     }
 
 }

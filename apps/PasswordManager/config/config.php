@@ -28,10 +28,10 @@ use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
-use KSA\PasswordManager\Event\Listener\OrganizationAddListener;
+use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
-use KSA\PasswordManager\Event\NodeOrganizationUpdated;
+use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
 use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 
 return [
@@ -57,13 +57,13 @@ return [
             RemoveExpired::class
         ]
         , NodeAddedToOrganizationEvent::class     => [
-            OrganizationAddListener::class
+            OrganizationChangeListener::class
         ]
         , NodeRemovedFromOrganizationEvent::class => [
-            OrganizationAddListener::class
+            OrganizationChangeListener::class
         ]
-        , NodeOrganizationUpdated::class          => [
-            OrganizationAddListener::class
+        , NodeOrganizationUpdatedEvent::class     => [
+            OrganizationChangeListener::class
         ]
     ],
     ConfigProvider::COMMANDS     => [

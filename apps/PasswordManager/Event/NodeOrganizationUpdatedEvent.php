@@ -25,7 +25,7 @@ use KSA\PasswordManager\Entity\Node;
 use KSP\Core\DTO\Organization\IOrganization;
 use Symfony\Contracts\EventDispatcher\Event;
 
-class NodeRemovedFromOrganizationEvent extends Event {
+class NodeOrganizationUpdatedEvent extends Event {
 
     private Node           $node;
     private ?IOrganization $organization;
@@ -48,5 +48,5 @@ class NodeRemovedFromOrganizationEvent extends Event {
     public function getOrganization(): ?IOrganization {
         return $this->organization;
     }
-    
+
 }

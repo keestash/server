@@ -140,10 +140,10 @@ export const ROUTES = {
     //     return host.getApiHost() + "/password_manager/node/move/";
     // }
     //
-    // getNodeDelete() {
-    //     return host.getApiHost() + PASSWORD_MANAGER_NODE_DELETE;
-    // }
-    //
+    getNodeDelete() {
+        return host.getApiHost() + PASSWORD_MANAGER_NODE_DELETE;
+    },
+
     getPasswordManagerShareeRemove() {
         return host.getApiHost() + PASSWORD_MANAGER_SHARE_REMOVE;
     },
