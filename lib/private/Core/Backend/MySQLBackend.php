@@ -32,7 +32,7 @@ class MySQLBackend implements ISQLBackend {
     private IConfigService $configService;
 
     public function __construct(
-        Connection $connection
+        Connection       $connection
         , IConfigService $configService
     ) {
         $this->connection    = $connection;
@@ -73,6 +73,20 @@ class MySQLBackend implements ISQLBackend {
 
     public function getTables(): array {
         return $this->connection->getSchemaManager()->listTableNames();
+    }
+
+    public function startTransaction(): bool {
+        if (true === $this->connection->isTransactionActive()) {
+            return true;
+        }
+        return $this->connection->beginTransaction();
+    }
+
+    public function endTransaction(): bool {
+        if (false === $this->connection->isTransactionActive()) {
+            return true;
+        }
+        return $this->connection->commit();
     }
 
 }

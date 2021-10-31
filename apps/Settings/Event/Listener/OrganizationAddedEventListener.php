@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Event\Listener;
 
 use KSA\Settings\Event\Organization\UserChangedEvent;
+use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -35,9 +36,15 @@ class OrganizationAddedEventListener implements IListener {
     }
 
     /**
-     * @param UserChangedEvent|Event $event
+     * @param Event $event
+     * @throws SettingsException
      */
     public function execute(Event $event): void {
+
+        if (false === $event instanceof UserChangedEvent) {
+            throw new SettingsException();
+        }
+
         $this->keyService->createAndStoreKey(
             $event->getOrganization()
         );

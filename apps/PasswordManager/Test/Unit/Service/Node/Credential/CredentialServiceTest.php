@@ -50,7 +50,6 @@ class CredentialServiceTest extends TestCase {
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
-        $note     = "this is a test note";
 
         return $this->credentialService->createCredential(
             $password
@@ -58,7 +57,6 @@ class CredentialServiceTest extends TestCase {
             , $userName
             , $title
             , $this->getUser()
-            , $note
         );
     }
 
@@ -79,7 +77,7 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getPassword()->getEncrypted()
+                , (string) $credential->getPassword()->getEncrypted()
             ) === $password
         );
         /**
@@ -89,22 +87,16 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getUrl()->getEncrypted()
+                , (string) $credential->getUrl()->getEncrypted()
             ) === $url);
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getUsername()->getEncrypted()
+                , (string) $credential->getUsername()->getEncrypted()
             ) === $userName);
         $this->assertTrue($credential->getName() === $title);
         $this->assertTrue($credential->getUser()->getId() === $this->getUser()->getId());
         $this->assertTrue($credential->getType() === Node::CREDENTIAL);
-    }
-
-    public function testPasswordPlaceholder(): void {
-        $placeHolder = $this->credentialService->generatePasswordPlaceholder();
-        $this->assertTrue(strlen($placeHolder) === 12);
-        $this->assertTrue($placeHolder === "************");
     }
 
     public function testInsertCredential(): void {

@@ -2,7 +2,6 @@
     <div class="pwm__row container-fluid pt-1 pb-1" @click="$emit('wasClicked')">
         <div class="row align-items-center">
             <div class="col-6 col-md-2 h2 m-0 d-flex">
-
                 <b-img
                         :src="this.imageUrlPassword"
                         fluid
@@ -26,21 +25,16 @@
                         v-else-if="edge.node.type === 'folder' && !isOwner"
                         class="flex-grow-1 flex-shrink-0 node-logo-color"
                 ></b-img>
-
+                <p class="h6" v-if="edge.type === 'share' || edge.type === 'organization'">
+                    <b-icon-share-fill :title="this.showOwnerName()"
+                                       v-if="edge.type === 'organization'"></b-icon-share-fill>
+                    <b-icon-share :title="this.showOwnerName()" v-if="edge.type === 'share'"></b-icon-share>
+                </p>
             </div>
-            <div class="col-6 col-md-6 m-0">
-                <div class="col cropped node-title" :title="edge.node.name">
-                    <div class="row">
-                        <div class="col">
-                            <span class="text-color-grey-dark">{{ edge.node.name }}</span>
-                            <!--              <br>-->
-                            <!--              <div v-if="edge.node.type==='credential'">{{ edge.node.username }}</div>-->
-                            <!--              <div v-else>{{ formatDate(edge.node.create_ts.date) }}</div>-->
-                        </div>
-                    </div>
-                </div>
+            <div class="col flex-grow-1 cropped" :title="edge.node.name">
+                {{ edge.node.name }}
             </div>
-            <div id="contextMenu" class="col justify-content-end align-items-center">
+            <div id="contextMenu" class="col-md-1 justify-content-end">
                 <i class="fas fa-ellipsis-h"
                    v-on:click.stop="clickModal"
                 ></i>
@@ -188,13 +182,21 @@ export default {
                 }
             ).then(
                 (r) => {
-               // TODO
+                    // TODO
                 }
             )
             ;
         },
         openModalClick: function () {
             this.$refs['modal' + this.edge.node.id].show();
+        },
+        showOwnerName: function () {
+            if (this.edge.type === 'organization') {
+                return 'Shared by ' + this.edge.node.user.name + ' with ' + this.edge.node.organization.name;
+            }
+            if (this.edge.type === 'share') {
+                return 'Shared by ' + this.edge.node.user.name + ' with you';
+            }
         },
         submitOrganization: function () {
 

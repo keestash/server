@@ -70,13 +70,13 @@ use Psr\Container\ContainerInterface;
         $user->setWebsite("https://dogan-ucar.de");
         $user->setPhone("+15712345678");
         $user->setPassword(
-                $userService->hashPassword("Dogancan1@")
+                $userService->hashPassword("doganooooooooooooo")
         );
         $user->setLocked(false);
         $user->setHash(md5((string) microtime()));
         $user->setLastName("Ucar");
         $user->setFirstName("Dogan");
-        $user->setEmail("dogan@dogan-ucar.de");
+        $user->setEmail("info@example.com");
         $user->setDeleted(false);
         $user->setName("dogano");
 

@@ -28,14 +28,22 @@ use KSA\PasswordManager\Entity\Node;
 class EdgeService {
 
     public function prepareRegularEdge(Node $node, Node $parent): Edge {
+        return $this->prepareEdge($node, $parent, Edge::TYPE_REGULAR);
+    }
+
+    private function prepareEdge(Node $node, Node $parent, string $type): Edge {
         $edge = new Edge();
         $edge->setNode($node);
         $edge->setParent($parent);
-        $edge->setType(Edge::TYPE_REGULAR);
+        $edge->setType($type);
         $edge->setExpireTs(null);
         $edge->setOwner($node->getUser());
         $edge->setCreateTs(new DateTime());
         return $edge;
+    }
+
+    public function prepareEdgeForOrganization(Node $node, Node $parent): Edge {
+        return $this->prepareEdge($node, $parent, Edge::TYPE_ORGANIZATION);
     }
 
 }

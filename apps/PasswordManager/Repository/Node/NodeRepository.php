@@ -41,6 +41,7 @@ use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
@@ -140,9 +141,6 @@ class NodeRepository {
 
     public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): Node {
 
-        if ($id === 5838) {
-            $x = $id;
-        }
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
                 [
@@ -233,10 +231,10 @@ class NodeRepository {
             ->setParameter(0, $node->getId());
         $result       = $queryBuilder->execute();
 
-        $nodeOrganization = null;
+        $nodeOrganization   = null;
         $parentOrganization = null;
         foreach ($result->fetchAllNumeric() as $row) {
-            $nodeOrganization = (int)$row[0];
+            $nodeOrganization = (int) $row[0];
         }
 
         $pathToRoot = $this->getPathToRoot($node);
@@ -251,7 +249,7 @@ class NodeRepository {
             }
         }
 
-        if (null === $nodeOrganization && null === $parentOrganization)  {
+        if (null === $nodeOrganization && null === $parentOrganization) {
             return $node;
         }
         $organization = $nodeOrganization === null
@@ -320,10 +318,13 @@ class NodeRepository {
                 and e.`type` = ?)
             or (e.`expire_ts` is not null
             and e.`type` = ?
-            and e.`expire_ts` > CURRENT_TIMESTAMP)')
+            and e.`expire_ts` > CURRENT_TIMESTAMP)
+            or (e.`type` = ?)
+            ')
             ->setParameter(0, $folder->getId())
             ->setParameter(1, Edge::TYPE_REGULAR)
-            ->setParameter(2, Edge::TYPE_SHARE);
+            ->setParameter(2, Edge::TYPE_SHARE)
+            ->setParameter(3, Edge::TYPE_ORGANIZATION);
 
         $result = $queryBuilder->execute();
 
@@ -605,7 +606,17 @@ ORDER BY d.`level`;
                 ->execute() !== 0;
     }
 
-    public function updateNode(Node $node): Node {
+    public function removeEdgeByNodeId(int $id): bool {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        return $queryBuilder->delete(
+                'pwm_edge'
+            )
+                ->where('node_id = ?')
+                ->setParameter(0, $id)
+                ->execute() !== 0;
+    }
+
+    private function updateNode(Node $node): Node {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder->update('pwm_node')
@@ -614,11 +625,11 @@ ORDER BY d.`level`;
             ->setParameter(0, $node->getName())
             ->setParameter(1, $node->getId());
         $queryBuilder->execute();
-
         return $node;
     }
 
     public function updateCredential(Credential $credential): Credential {
+        $this->backend->startTransaction();
         $this->updateNode($credential);
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
@@ -640,7 +651,7 @@ ORDER BY d.`level`;
                 $credential->getCredentialId()
             );
         $queryBuilder->execute();
-
+        $this->backend->endTransaction();
         return $credential;
     }
 

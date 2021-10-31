@@ -38,6 +38,7 @@
                             class="col"
                             v-if="!this.organization.loading"
                     >
+
                         <span
                                 class="badge badge-info"
                                 :title="$t('credential.detail.organization.description')"
@@ -109,6 +110,7 @@
                 </form>
 
             </div>
+
         </div>
         <b-modal ref="external-link-modal-ref" id="external-link-modal" hide-header hide-footer>
             <h3 id="modal-title">{{ $t('credential.url.external.title') }}</h3>

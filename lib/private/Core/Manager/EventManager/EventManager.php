@@ -49,7 +49,7 @@ class EventManager implements IEventManager {
                 $listenerObject->execute($event);
             }
         }
-//        $this->eventDispatcher->dispatch($event, get_class($event));
+
     }
 
     public function registerListener(string $eventName, string $event): void {

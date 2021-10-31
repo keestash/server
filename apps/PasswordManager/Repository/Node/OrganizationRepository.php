@@ -46,6 +46,7 @@ class OrganizationRepository {
      * @throws \Doctrine\DBAL\Exception
      */
     public function addNodeToOrganization(Node $node, IOrganization $organization): void {
+        $this->backend->startTransaction();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder
@@ -60,10 +61,50 @@ class OrganizationRepository {
             ->setParameter(1, $node->getId());
 
         $queryBuilder->execute();
-
+        $this->backend->endTransaction();
     }
 
-    public function updateNodeRepository(Node $node, IOrganization $organization): void {
+    public function replaceNodeOrganization(Node $node, IOrganization $organization): void {
+        if ($this->nodeOrganizationExists($node, $organization)) {
+            $this->updateNodeOrganization($node, $organization);
+            return;
+        }
+        $this->addNodeToOrganization($node, $organization);
+    }
+
+    private function nodeOrganizationExists(Node $node, IOrganization $organization): bool {
+        $this->backend->startTransaction();
+        $queryBuilder = $this->backend
+            ->getConnection()
+            ->createQueryBuilder();
+
+        $queryBuilder = $queryBuilder->select(
+            [
+                'id'
+                , 'organization_id'
+                , 'node_id'
+                , 'create_ts'
+            ]
+        )
+            ->from('`organization_node`')
+            ->where('node_id = ?')
+            ->andWhere('organization_id = ?')
+            ->setParameter(0, $node->getId())
+            ->setParameter(1, $organization->getId());
+
+        $statement = $queryBuilder->execute();
+
+        if (true === is_int($statement)) {
+            $log = 'error while retrieving data ' . $queryBuilder->getSQL();
+            $this->logger->error($log);
+            throw new PasswordManagerException($log);
+        }
+
+        $rows = $statement->fetchAllNumeric();
+        return count($rows) > 0;
+    }
+
+    public function updateNodeOrganization(Node $node, IOrganization $organization): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder
@@ -76,7 +117,7 @@ class OrganizationRepository {
         $queryBuilder->execute();
     }
 
-    public function removeNodeRepository(Node $node): void {
+    public function removeNodeOrganization(Node $node): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         if (null === $node->getOrganization()) {
