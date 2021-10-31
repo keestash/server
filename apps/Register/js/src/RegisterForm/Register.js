@@ -82,13 +82,15 @@ export class Register {
                     })
                     .then((data) => {
 
-                        _this.longModal.show("Register", "OK", "OK", data['message']);
+                        // _this.longModal.show("Register", "OK", "OK", data['message']);
+                        _this.enableForm();
+                        console.log(data);
+                    })
+                    .catch((data) => {
+                        // _this.longModal.show("Register", "OK", "OK", "There was an error during the registration. Please try it again or reach us out!");
                         _this.enableForm();
 
-                    })
-                    .catch(() => {
-                        _this.longModal.show("Register", "OK", "OK", "There was an error during the registration. Please try it again or reach us out!");
-                        _this.enableForm();
+                        console.log(data);
                     })
 
             });

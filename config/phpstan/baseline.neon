@@ -141,6 +141,26 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/PublicShareRepository.php
 
 		-
+			message: "#^Parameter \\#2 \\$encrypted of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:decrypt\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Service/Node/Credential/CredentialService.php
+
+		-
+			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\:\\:getEdges\\(\\)\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
+
+		-
+			message: "#^Parameter \\#2 \\$encrypted of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:decrypt\\(\\) expects string, string\\|null given\\.$#"
+			count: 3
+			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
+
+		-
+			message: "#^Parameter \\#2 \\$raw of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#"
+			count: 3
+			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
+
+		-
 			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
@@ -312,21 +332,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
-
-		-
-			message: "#^Offset 0 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
-
-		-
-			message: "#^Offset 1 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
-
-		-
-			message: "#^Offset 2 does not exist on array\\<string, mixed\\>\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
 

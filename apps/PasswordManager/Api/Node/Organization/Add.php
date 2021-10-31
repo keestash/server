@@ -70,7 +70,7 @@ class Add implements RequestHandlerInterface {
             );
         }
 
-        $node = $this->nodeRepository->getNode($nodeId, 0, 0);
+        $node = $this->nodeRepository->getNode($nodeId);
 
         if (null !== $node->getOrganization()) {
             return new JsonResponse(

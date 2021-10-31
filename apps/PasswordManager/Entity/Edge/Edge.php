@@ -26,6 +26,7 @@ class Edge implements IJsonObject, IComparable {
 
     public const TYPE_REGULAR = "regular";
     public const TYPE_SHARE   = "share";
+    public const TYPE_ORGANIZATION   = "organization";
 
     private int                $id;
     private Node               $node;

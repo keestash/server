@@ -121,7 +121,7 @@ class ShareTest extends TestCase {
         $response = $share->handle(
             $this->getDefaultRequest(
                 [
-                    'node_id' => $node->getId()
+                    'node_id'            => $node->getId()
                     , 'user_id_to_share' => $this->getUser()->getId()
                 ]
             )
@@ -136,21 +136,21 @@ class ShareTest extends TestCase {
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
 
-        $parent   = new Folder();
-        $node     = $credentialService->createCredential(
+        $parent = new Folder();
+        $node   = $credentialService->createCredential(
             "publicShareSingleTestCredential"
             , "keestash.test"
             , "keestash.test"
             , "Keestash"
             , $this->getUser()
-            , $parent
         );
+
         $edge     = $credentialService->insertCredential($node, $parent);
         $node     = $edge->getNode();
         $response = $share->handle(
             $this->getDefaultRequest(
                 [
-                    'node_id' => $node->getId()
+                    'node_id'            => $node->getId()
                     , 'user_id_to_share' => UserService::TEST_LOCKED_USER_ID_4
                 ]
             )

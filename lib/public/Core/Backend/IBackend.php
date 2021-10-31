@@ -37,4 +37,8 @@ interface IBackend {
 
     public function getTables(): array;
 
+    public function startTransaction(): bool;
+
+    public function endTransaction(): bool;
+
 }

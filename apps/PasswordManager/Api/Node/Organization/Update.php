@@ -70,7 +70,7 @@ class Update implements RequestHandlerInterface {
             );
         }
 
-        $node = $this->nodeRepository->getNode($nodeId, 0, 0);
+        $node = $this->nodeRepository->getNode($nodeId);
 
         if (null === $node->getOrganization()) {
             return new JsonResponse(
@@ -96,7 +96,7 @@ class Update implements RequestHandlerInterface {
         }
 
         try {
-            $this->organizationNodeRepository->updateNodeRepository(
+            $this->organizationNodeRepository->replaceNodeOrganization(
                 $node
                 , $organization
             );

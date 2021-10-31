@@ -106,6 +106,7 @@ class NodeEncryptionService {
     }
 
     public function encryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
+
         if ($node instanceof Credential) {
             $this->encryptCredential($node, $parentKeyHolder);
             return;
@@ -153,10 +154,6 @@ class NodeEncryptionService {
                     , $credential->getUrl()->getPlain()
                 )
             );
-
-        if (null === $credential->getPassword()->getPlain()) {
-            return;
-        }
 
         $passwordObject = $credential->getPassword();
         $passwordObject->setEncrypted(

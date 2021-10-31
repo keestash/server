@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Event\Listener;
 use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\ILogger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -39,6 +40,7 @@ class OrganizationAddListenerFactory implements FactoryInterface {
             $container->get(NodeRepository::class)
             , $container->get(NodeEncryptionService::class)
             , $container->get(ILogger::class)
+            , $container->get(EdgeService::class)
         );
     }
 
