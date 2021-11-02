@@ -40,7 +40,7 @@ const PASSWORD_MANAGER_ORGANIZATION_UPDATE_NODE = "/password_manager/organizatio
 const PASSWORD_MANAGER_ORGANIZATION_REMOVE_NODE = "/password_manager/organization/node/remove/";
 const PASSWORD_MANAGER_THUMBNAIL_EXTENSION = "/thumbnail/{extension}/";
 const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
-const ORGANIZATION_LIST = "/organizations/all/";
+const ORGANIZATION_LIST = "/organizations/all/{includeInactive}/{userHash}/";
 
 const host = new Host();
 
@@ -50,8 +50,12 @@ export const ROUTES = {
         return host.getApiHost() + "/password_manager/node/get/" + id + "/";
     },
 
-    getAllOrganizations: (includeInactive = false) => {
-        const route = ORGANIZATION_LIST.replace("{includeInactive}", "" + includeInactive);
+    getAllOrganizations: (
+        userHash
+        , includeInactive = false
+    ) => {
+        let route = ORGANIZATION_LIST.replace("{includeInactive}", "" + includeInactive);
+        route = route.replace('{userHash}', userHash);
         return host.getApiHost() + route;
     },
 

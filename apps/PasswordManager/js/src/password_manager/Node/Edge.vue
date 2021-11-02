@@ -58,7 +58,11 @@
                 @hidden="resetModal"
                 @ok="submitOrganization"
         >
-            <form ref="form" @submit.stop.prevent="submitOrganization">
+            <div class="text-center" v-if="organizationsLoading">
+                <b-spinner variant="primary" type="grow" label="Spinning"></b-spinner>
+            </div>
+
+            <form ref="form" @submit.stop.prevent="submitOrganization" v-else>
                 <b-form-select v-model="selectedOrganization" :options="organizations"
                                :select-size="4"></b-form-select>
             </form>
@@ -102,6 +106,7 @@ export default {
             imageUrl: '',
             imageUrlShared: '',
             imageUrlPassword: '',
+            organizationsLoading: true
         }
     },
     computed: {
@@ -138,8 +143,12 @@ export default {
             return this.container.services.dateTimeService.format(date);
         },
         openModal: function () {
+            this.organizationsLoading = true;
             this.container.services.axios.get(
-                ROUTES.getAllOrganizations()
+                ROUTES.getAllOrganizations(
+                    this.container.services.appStorage.getUserHash(),
+                    false
+                )
             )
                 .then((r) => {
                     if (RESPONSE_CODE_OK in r.data) {
@@ -161,7 +170,7 @@ export default {
                             }
                         )
                     }
-
+                    this.organizationsLoading = false;
                     this.organizations = organizations;
                 });
         },

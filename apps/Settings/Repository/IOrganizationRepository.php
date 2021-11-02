@@ -23,6 +23,7 @@ namespace KSA\Settings\Repository;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\DTO\User\IUser;
 
 /**
  * Interface IOrganizationRepository
@@ -47,6 +48,11 @@ interface IOrganizationRepository {
      * @return ArrayList<IOrganization>
      */
     public function getAll(): ArrayList;
+
+    /**
+     * @return ArrayList<IOrganization>
+     */
+    public function getAllForUser(IUser $user): ArrayList;
 
     /**
      * @param int $id

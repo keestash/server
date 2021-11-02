@@ -164,7 +164,7 @@
 
 <script>
 import {RESPONSE_CODE_OK} from "../../../../../../../lib/js/src/Backend/Request";
-import {AXIOS, StartUp, SYSTEM_SERVICE_GLOBAL, URL_SERVICE} from "../../../../../../../lib/js/src/StartUp";
+import {APP_STORAGE, AXIOS, StartUp, SYSTEM_SERVICE_GLOBAL, URL_SERVICE} from "../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../../config/routes";
 import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/Axios";
@@ -180,6 +180,7 @@ export default {
     components: {Tab, BSkeleton},
     data() {
         return {
+            container: [],
             createdFormatted: null,
             organization: {
                 list: [],
@@ -190,7 +191,10 @@ export default {
             passwordField: {
                 visible: false
             },
-            imageUrlPassword: ''
+            imageUrlPassword: '',
+            axios: null,
+            systemService: null,
+            appStorage: null
         }
     },
     computed: {
@@ -215,6 +219,7 @@ export default {
         this.container = startUp.getContainer();
         this.axios = this.container.query(AXIOS);
         this.systemService = this.container.query(SYSTEM_SERVICE_GLOBAL);
+        this.appStorage = this.container.query(APP_STORAGE);
 
         const url = this.systemService.getHost().replace('index.php', '');
         this.imageUrlPassword = url + 'asset/svg/password.svg';
@@ -386,7 +391,10 @@ export default {
 
         openOrganizationModal() {
             this.axios.get(
-                ROUTES.getAllOrganizations()
+                ROUTES.getAllOrganizations(
+                    this.appStorage.getUserHash()
+                    , false
+                )
             )
                 .then((r) => {
                     if (RESPONSE_CODE_OK in r.data) {

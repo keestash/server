@@ -23,6 +23,7 @@ namespace KSA\Settings\Factory\Api\Organization;
 
 use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Repository\IOrganizationRepository;
+use KSP\Core\Repository\User\IUserRepository;
 use Psr\Container\ContainerInterface;
 
 class ListAllFactory {
@@ -30,6 +31,7 @@ class ListAllFactory {
     public function __invoke(ContainerInterface $container): ListAll {
         return new ListAll(
             $container->get(IOrganizationRepository::class)
+            , $container->get(IUserRepository::class)
         );
     }
 

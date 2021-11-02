@@ -21,10 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\Organization;
 
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\Repository\User\IUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -32,17 +34,30 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ListAll implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
+    private IUserRepository         $userRepository;
 
-    public function __construct(IOrganizationRepository $organizationRepository) {
+    public function __construct(
+        IOrganizationRepository $organizationRepository
+        , IUserRepository       $userRepository
+    ) {
         $this->organizationRepository = $organizationRepository;
+        $this->userRepository         = $userRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $includeActive = $request->getAttribute('includeInactive', false);
         $includeActive = true === $includeActive || 'true' === $includeActive;
+        $userHash      = $request->getAttribute('userHash');
 
-        $organizations = $this->organizationRepository->getAll();
-        $result        = [];
+        $organizations = new ArrayList();
+        if (false === is_string($userHash)) {
+            $organizations = $this->organizationRepository->getAll();
+        } else {
+            $organizations = $this->organizationRepository->getAllForUser(
+                $this->userRepository->getUserByHash($userHash)
+            );
+        }
+        $result = [];
 
         /**
          * @var IOrganization $organization
