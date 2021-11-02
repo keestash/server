@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\User;
 
-use Doctrine\DBAL\ForwardCompatibility\DriverStatement;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Exception;
@@ -46,9 +45,9 @@ class UserRepository implements IUserRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger $logger
+        , ILogger          $logger
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
@@ -277,9 +276,7 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
-//                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
                 , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
-//                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
                 , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
             ]
         )

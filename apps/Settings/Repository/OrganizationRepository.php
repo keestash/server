@@ -29,6 +29,7 @@ use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\DTO\User\IUser;
 
 class OrganizationRepository implements IOrganizationRepository {
 
@@ -64,6 +65,52 @@ class OrganizationRepository implements IOrganizationRepository {
         )
             ->from('`organization`', 'o');
         $rows         = $queryBuilder->execute();
+
+        if (false === is_iterable($rows)) {
+            throw new SettingsException();
+        }
+
+        foreach ($rows as $row) {
+            $organization = new Organization();
+            $organization->setId((int) $row['id']);
+            $organization->setName((string) $row['name']);
+            $organization->setPassword((string) $row['password']);
+            $organization->setActiveTs(
+                null === $row['active_ts']
+                    ? null
+                    : $this->dateTimeService->fromFormat($row['active_ts'])
+            );
+            $organization->setCreateTs(
+                $this->dateTimeService->fromFormat($row['create_ts'])
+            );
+            $organization = $this->organizationUserRepository->getByOrganization($organization);
+            $list->add($organization);
+        }
+        return $list;
+    }
+
+    /**
+     * @return ArrayList<IOrganization>
+     * @throws Exception
+     */
+    public function getAllForUser(IUser $user): ArrayList {
+        $list         = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder = $queryBuilder->select(
+            [
+                'o.`id`'
+                , 'o.`name`'
+                , 'o.`password`'
+                , 'o.`create_ts`'
+                , 'o.`active_ts`'
+            ]
+        )
+            ->from('`organization`', 'o')
+            ->innerJoin('o', '`user_organization`', 'uo', 'o.id = uo.`organization_id`')
+            ->where('uo.`user_id` = ?')
+            ->setParameter(0, $user->getId());
+
+        $rows = $queryBuilder->execute();
 
         if (false === is_iterable($rows)) {
             throw new SettingsException();

@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |v|
           v.memory = 8192
           v.cpus = 1
+          v.gui = true
       end
   config.vm.synced_folder "./", "/var/www/html", owner: "www-data", group: "www-data"
   config.ssh.insert_key = false

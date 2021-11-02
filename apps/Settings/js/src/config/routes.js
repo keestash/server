@@ -42,7 +42,7 @@ export const MODE_ADD = 'add.mode';
 export const MODE_REMOVE = 'remove.mode';
 
 export const ROUTES = {
-    GET_ORGANIZATION_LIST: (includeInactive = false) => {
+    GET_ORGANIZATION_LIST: ( includeInactive = false) => {
         const route = ORGANIZATION_LIST.replace("{includeInactive}", "" + includeInactive);
         return host.getApiHost() + route;
     },

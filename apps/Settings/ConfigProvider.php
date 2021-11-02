@@ -30,7 +30,7 @@ final class ConfigProvider {
 
     public const SETTINGS              = "/settings[/]";
     public const APP_ID                = 'settings';
-    public const ORGANIZATION_LIST_ALL = '/organizations/all/[:includeInactive/]';
+    public const ORGANIZATION_LIST_ALL = '/organizations/all/[:includeInactive/][:userHash/]';
 
     public const ORGANIZATION_SINGLE = "/organizations/:id[/]";
 
