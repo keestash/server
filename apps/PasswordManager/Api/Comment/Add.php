@@ -43,10 +43,10 @@ class Add implements RequestHandlerInterface {
 
     public function __construct(
         CommentRepository $commentRepository
-        , NodeRepository $nodeRepository
-        , UserService $userService
-        , ILogger $logger
-        , IJWTService $jwtService
+        , NodeRepository  $nodeRepository
+        , UserService     $userService
+        , ILogger         $logger
+        , IJWTService     $jwtService
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;

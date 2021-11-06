@@ -3,6 +3,19 @@
   "nothingClickedDescription": "Please select a password or create a new one",
   "noEdgesInNodeDescription": "No Passwords here...",
   "searchPasswords": "Search Passwords",
+  "edge": {
+    "contextMenu": {
+      "addToOrganization": {
+        "title": "Add Node To Organization",
+        "noOrganizationsAvailable": "No Organizations Available",
+        "description": "You can select one of the following organizations`"
+      }
+    },
+    "selection": {
+      "addToOrganization": "Add To Organization",
+      "remove": "Remove"
+    }
+  },
   "credential": {
     "titleLabel": "Title",
     "titlePlaceholder": "Title",
@@ -32,7 +45,12 @@
     "shared_with_you_by": "Shared with you by",
     "detail": {
       "organization": {
-        "description": "This password or folder belongs to an organization"
+        "description": "This password or folder belongs to an organization",
+        "addToOrganization": {
+          "title": "Add Node To Organization",
+          "noOrganizationsAvailable": "No Organizations Available",
+          "description": "You can select one of the following organizations`"
+        }
       },
       "userNameLabel": "Username",
       "passwordLabel": "Password",
@@ -106,11 +124,5 @@
     "number_of_passwords_in_folder_single": "1 password in this folder",
     "number_of_passwords_in_folder_multiple": "{{number}} passwords in this folder"
   },
-  "remove": "remove",
-  "contextMenu": {
-    "modalHeader": "Remove {{nodeType}}",
-    "buttonText": "Remove",
-    "description": "Do you want to remove this {{nodeType}}",
-    "nodeType": "Folder"
-  }
+  "remove": "remove"
 }

@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Organization;
 
+use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\Manager\EventManager\IEventManager;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -82,7 +82,11 @@ class Remove implements RequestHandlerInterface {
         $this->eventManager->execute(
             new NodeRemovedFromOrganizationEvent($node, null)
         );
-        return new JsonResponse('');
+        return new JsonResponse(
+            [
+                'type' => Edge::TYPE_REGULAR
+            ]
+        );
     }
 
 }

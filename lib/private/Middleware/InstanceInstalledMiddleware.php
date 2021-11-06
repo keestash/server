@@ -44,11 +44,11 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
     private IRouterService $routerService;
 
     public function __construct(
-        HTTPService $httpService
-        , InstanceDB $instanceDB
-        , LockHandler $lockHandler
-        , ILogger $logger
-        , Config $config
+        HTTPService      $httpService
+        , InstanceDB     $instanceDB
+        , LockHandler    $lockHandler
+        , ILogger        $logger
+        , Config         $config
         , IRouterService $routerService
     ) {
         $this->httpService   = $httpService;

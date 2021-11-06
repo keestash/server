@@ -41,7 +41,6 @@ use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Http\JWT\IAudience;
-use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
@@ -606,13 +605,15 @@ ORDER BY d.`level`;
                 ->execute() !== 0;
     }
 
-    public function removeEdgeByNodeId(int $id): bool {
+    public function removeEdgeByNodeIdAndParentId(Node $node, Node $parent): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete(
                 'pwm_edge'
             )
                 ->where('node_id = ?')
-                ->setParameter(0, $id)
+                ->andWhere('parent_id = ?')
+                ->setParameter(0, $node->getId())
+                ->setParameter(1, $parent->getId())
                 ->execute() !== 0;
     }
 
@@ -693,6 +694,17 @@ ORDER BY d.`level`;
         $targetEdge->setParent($newParent);
         $edge = $this->addEdge($targetEdge);
         return 0 !== $edge->getId();
+    }
+
+    public function updateEdgeTypeByNodeId(Node $node, string $type): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+
+        $queryBuilder = $queryBuilder->update('pwm_edge')
+            ->set('type', '?')
+            ->where('node_id = ?')
+            ->setParameter(0, $type)
+            ->setParameter(1, $node->getId());
+        $queryBuilder->execute();
     }
 
     public function addEdge(Edge $edge): Edge {

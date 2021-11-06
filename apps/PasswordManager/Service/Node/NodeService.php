@@ -150,6 +150,11 @@ class NodeService {
     }
 
     public function getOrganization(Node $node): ?IOrganization {
+
+        if (null !== $node->getOrganization()) {
+            return $node->getOrganization();
+        }
+
         $parents = $this->nodeRepository->getPathToRoot($node);
         foreach ($parents as $parent) {
             $nodeObject = $this->nodeRepository->getNode((int) $parent['id'], 0, 0);

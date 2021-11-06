@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 
 use DateTime;
 use Exception;
+use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
@@ -111,7 +112,10 @@ class Update implements RequestHandlerInterface {
         $this->eventManager->execute(
             new NodeOrganizationUpdatedEvent($node, $organization)
         );
-        return new JsonResponse(['organization' => $organization]);
+        return new JsonResponse([
+            'organization' => $organization
+            , 'type'       => Edge::TYPE_ORGANIZATION
+        ]);
     }
 
 }
