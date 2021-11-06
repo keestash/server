@@ -1,5 +1,5 @@
 <template>
-    <div class="row" id="pwm__detail__part">
+    <div id="pwm__detail__part">
         <div class="col d-flex flex-column">
             <div class="col">
                 <div class="row mt-4">
@@ -40,9 +40,9 @@
                     >
 
                         <span
-                                class="badge badge-info"
+                                class="badge badge-info clickable"
                                 :title="$t('credential.detail.organization.description')"
-                                v-b-modal.modal-update-organization
+                                @click="openModalClick"
                         >
                             {{ edge.node.organization.name }}
                         </span>
@@ -134,19 +134,15 @@
             </div>
         </b-modal>
 
-        <b-modal
-                id="modal-update-organization"
-                ref="modal"
-                title="Add To Organization"
-                @show="openOrganizationModal"
-                @hidden="resetOrganizationModal"
-                @ok="updateOrganization"
-        >
-            <form ref="form" @submit.stop.prevent="updateOrganization">
-                <b-form-select v-model="organization.selected" :options="organization.list"
-                               :select-size="4"></b-form-select>
-            </form>
-        </b-modal>
+        <SelectableListModal
+                ref-id="modal-update-organization"
+                @onSubmit="updateOrganization"
+                :options="organization.list"
+                :loading="organization.loading"
+                :no-data-text="$t('credential.detail.organization.addToOrganization.noOrganizationsAvailable')"
+                :modal-title="$t('credential.detail.organization.addToOrganization.title')"
+                :description="$t('credential.detail.organization.addToOrganization.description')"
+        ></SelectableListModal>
 
         <b-modal
                 id="modal-remove-organization"
@@ -174,10 +170,11 @@ import moment from "moment";
 import _ from "lodash";
 import {BSkeleton} from 'bootstrap-vue';
 import {SystemService} from "../../../Service/SystemService";
+import SelectableListModal from "../../Component/Modal/SelectableListModal";
 
 export default {
     name: "EdgeDetail",
-    components: {Tab, BSkeleton},
+    components: {SelectableListModal, Tab, BSkeleton},
     data() {
         return {
             container: [],
@@ -275,6 +272,44 @@ export default {
                 , url: this.edge.node.url.plain
                 , nodeId: this.edge.node.id
             });
+        },
+        openModalClick: function () {
+            this.organizationsLoading = true;
+            this.axios.get(
+                ROUTES.getAllOrganizations(
+                    this.appStorage.getUserHash(),
+                    false
+                )
+            )
+                .then((r) => {
+                    if (RESPONSE_CODE_OK in r.data) {
+                        return r.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
+                    }
+                    return [];
+                })
+                .then((data) => {
+
+                    const organizations = [];
+
+                    for (let index in data.organizations) {
+                        const organization = data.organizations[index];
+
+                        if (null !== this.edge.node.organization && this.edge.node.organization.id === organization.id) {
+                            continue;
+                        }
+
+                        organizations.push(
+                            {
+                                value: organization.id
+                                , text: organization.name
+                            }
+                        )
+                    }
+                    this.organization.loading = false;
+                    this.organization.list = organizations;
+                    this.$emit('onOpenModalClick', 'modal-update-organization');
+                });
+
         },
         updatePasswordRemote(newPassword) {
 
@@ -388,38 +423,6 @@ export default {
             this.password = password;
             this.passwordField.visible = visible;
         },
-
-        openOrganizationModal() {
-            this.axios.get(
-                ROUTES.getAllOrganizations(
-                    this.appStorage.getUserHash()
-                    , false
-                )
-            )
-                .then((r) => {
-                    if (RESPONSE_CODE_OK in r.data) {
-                        return r.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-                    }
-                    return [];
-                })
-                .then((data) => {
-
-                    const organizations = [];
-
-                    for (let index in data.organizations) {
-                        const organization = data.organizations[index];
-
-                        organizations.push(
-                            {
-                                value: organization.id
-                                , text: organization.name
-                            }
-                        )
-                    }
-
-                    this.organization.list = organizations;
-                });
-        },
         resetOrganizationModal() {
             this.organization.selected = null;
             this.organization.list = [];
@@ -439,20 +442,25 @@ export default {
                         , {
                             organization: null
                         }
+                    );
+
+                    this.$store.dispatch(
+                        'updateSelectedEdge'
+                        , {
+                            type: r.data.type
+                        }
                     )
                     this.saving = false;
                 }
             )
             ;
         },
-        updateOrganization() {
-            this.organization.loading = true;
-            this.saving = true;
+        updateOrganization(organizationId) {
             this.axios.post(
                 ROUTES.getOrganizationsUpdateNode(),
                 {
                     node_id: this.edge.node.id
-                    , organization_id: this.organization.selected
+                    , organization_id: organizationId
                 }
             ).then(
                 (r) => {
@@ -462,8 +470,12 @@ export default {
                             organization: r.data.organization
                         }
                     )
-                    this.organization.loading = false;
-                    this.saving = false;
+                    this.$store.dispatch(
+                        'updateSelectedEdge'
+                        , {
+                            type: r.data.type
+                        }
+                    )
                 }
             )
             ;

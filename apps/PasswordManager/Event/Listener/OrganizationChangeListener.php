@@ -22,9 +22,6 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener;
 
 use doganoo\PHPAlgorithms\Datastructure\Vector\BitVector\IntegerVector;
-use KSA\PasswordManager\Api\Node\Organization\Add;
-use KSA\PasswordManager\Api\Node\Organization\Remove;
-use KSA\PasswordManager\Api\Node\Organization\Update;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
@@ -151,6 +148,11 @@ class OrganizationChangeListener implements IListener {
         $this->nodeEncryptionService->encryptNode($credential, $keyHolder);
         $this->nodeRepository->updateCredential($credential);
 
+        $type =
+            $keyHolder instanceof IUser
+                ? Edge::TYPE_REGULAR
+                : Edge::TYPE_ORGANIZATION;
+        $this->nodeRepository->updateEdgeTypeByNodeId($credential, $type);
     }
 
     private function handleEdges(string $type, IKeyHolder $keyHolder, Node $node): void {
@@ -162,18 +164,25 @@ class OrganizationChangeListener implements IListener {
         if ($type === NodeAddedToOrganizationEvent::class) {
             $this->addEdges($keyHolder, $node);
         } else if ($type === NodeRemovedFromOrganizationEvent::class) {
-            $this->removeEdges($node);
-        } else if ($type === NodeOrganizationUpdatedEvent::class) {
-            $this->removeEdges($node);
-            $this->addEdges($keyHolder, $node);
+            $this->removeEdges($keyHolder, $node);
         }
 
     }
 
-    private function removeEdges(Node $node): void {
-        $this->nodeRepository->removeEdgeByNodeId(
-            $node->getId()
-        );
+    private function removeEdges(IKeyHolder $keyHolder, Node $node): void {
+        /** @var IUser $user */
+        foreach ($keyHolder->getUsers() as $user) {
+
+            if ($user->getId() === $node->getUser()->getId()) {
+                continue;
+            }
+
+            $this->nodeRepository->removeEdgeByNodeIdAndParentId(
+                $node
+                , $this->nodeRepository->getRootForUser($user)
+            );
+        }
+
     }
 
     private function addEdges(IKeyHolder $keyHolder, Node $node): void {

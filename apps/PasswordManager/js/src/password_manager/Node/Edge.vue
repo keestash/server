@@ -44,29 +44,25 @@
         <context-menu id="context-menu" class="row"
                       :ref="'ctxMenu' + this.edge.node.id"
         >
-            <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">Add To
-                Organization
+            <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">
+                {{ $t('edge.selection.addToOrganization') }}
             </div>
-            <div class="col context-menu-col" @click="removeNode">Remove</div>
+            <div class="col context-menu-col" @click="removeNode">
+                {{ $t('edge.selection.remove') }}
+            </div>
         </context-menu>
 
-        <b-modal
-                class="modal-prevent-closing"
-                :ref="'modal' + this.edge.node.id"
-                title="Add To Organization"
-                @show="openModal"
-                @hidden="resetModal"
-                @ok="submitOrganization"
-        >
-            <div class="text-center" v-if="organizationsLoading">
-                <b-spinner variant="primary" type="grow" label="Spinning"></b-spinner>
-            </div>
+        <SelectableListModal
+                :ref-id="'modal' + this.edge.node.id"
+                @onSubmit="submitOrganization"
+                @onOpen="openModal"
+                :options="organizations"
+                :loading="organizationsLoading"
+                :no-data-text="$t('edge.contextMenu.addToOrganization.noOrganizationsAvailable')"
+                :modal-title="$t('edge.contextMenu.addToOrganization.title')"
+                :description="$t('edge.contextMenu.addToOrganization.description')"
+        ></SelectableListModal>
 
-            <form ref="form" @submit.stop.prevent="submitOrganization" v-else>
-                <b-form-select v-model="selectedOrganization" :options="organizations"
-                               :select-size="4"></b-form-select>
-            </form>
-        </b-modal>
     </div>
 
 </template>
@@ -83,10 +79,11 @@ import {Container} from "../../../../../../lib/js/src/DI/Container";
 import contextMenu from 'vue-context-menu'
 import {ROUTES} from "../../config/routes";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
+import SelectableListModal from "../Component/Modal/SelectableListModal";
 
 export default {
     name: "Edge",
-    components: {contextMenu},
+    components: {SelectableListModal, contextMenu},
     props: {
         edge: null
     },
@@ -197,7 +194,7 @@ export default {
             ;
         },
         openModalClick: function () {
-            this.$refs['modal' + this.edge.node.id].show();
+            this.$emit('onOpenModalClick', 'modal' + this.edge.node.id);
         },
         showOwnerName: function () {
             if (this.edge.type === 'organization') {
@@ -207,13 +204,12 @@ export default {
                 return 'Shared by ' + this.edge.node.user.name + ' with you';
             }
         },
-        submitOrganization: function () {
-
+        submitOrganization: function (selected) {
             this.container.services.axios.httpPut(
                 ROUTES.getOrganizationsAddNode(),
                 {
                     node_id: this.edge.node.id
-                    , organization_id: this.selectedOrganization
+                    , organization_id: selected
                 }
             ).then(
                 (r) => {
@@ -221,6 +217,13 @@ export default {
                         'updateSelectedNode'
                         , {
                             organization: r.data.organization
+                        }
+                    );
+
+                    this.$store.dispatch(
+                        'updateSelectedEdge'
+                        , {
+                            type: r.data.type
                         }
                     )
                 }

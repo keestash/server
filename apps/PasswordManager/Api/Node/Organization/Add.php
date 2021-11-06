@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 
 use DateTime;
 use Doctrine\DBAL\Exception;
+use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
@@ -114,7 +115,10 @@ class Add implements RequestHandlerInterface {
         );
 
         return new JsonResponse(
-            ['organization' => $organization]
+            [
+                'organization' => $organization
+                , 'type' => Edge::TYPE_ORGANIZATION
+            ]
         );
     }
 

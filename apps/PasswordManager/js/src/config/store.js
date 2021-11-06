@@ -25,6 +25,10 @@ export default new Vuex.Store({
             const currentNode = state.selectedEdge.node;
             state.selectedEdge.node = _.merge(currentNode, newNode);
         },
+        UPDATE_SELECTED_EDGE(state, newEdge) {
+            const currentEdge = state.selectedEdge;
+            state.selectedEdge = _.merge(currentEdge, newEdge);
+        },
         SET_SELECTED_NODE(state, newNode) {
             state.selectedEdge.node = newNode;
         }
@@ -38,6 +42,9 @@ export default new Vuex.Store({
         },
         updateSelectedNode(context, node) {
             context.commit("UPDATE_SELECTED_NODE", node);
+        },
+        updateSelectedEdge(context, newEdge) {
+            context.commit('UPDATE_SELECTED_EDGE', newEdge);
         },
         setSelectedNode(context, node) {
             context.commit("SET_SELECTED_NODE", node);

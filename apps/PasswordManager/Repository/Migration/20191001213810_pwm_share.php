@@ -41,6 +41,7 @@ class PwmShare extends KeestashMigration {
                     , "values"  => [
                         Edge::TYPE_SHARE
                         , Edge::TYPE_REGULAR
+                        , Edge::TYPE_ORGANIZATION
                     ]
                     , "comment" => "Whether the edge is a share or not"
                 ]

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Event\Listener;
 
-use KSA\Settings\Event\Organization\UserChangedEvent;
+use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
@@ -41,8 +41,10 @@ class OrganizationAddedEventListener implements IListener {
      */
     public function execute(Event $event): void {
 
-        if (false === $event instanceof UserChangedEvent) {
-            throw new SettingsException();
+        if (false === $event instanceof OrganizationAddedEvent) {
+            throw new SettingsException(
+                'was expecting ' . OrganizationAddedEvent::class . ', got ' . get_class($event)
+            );
         }
 
         $this->keyService->createAndStoreKey(
