@@ -76,12 +76,8 @@ export class Submit {
                     , data
                 )
                     .then((response) => {
-                        if (RESPONSE_CODE_NOT_OK in response.data) {
-                            return []
-                        }
-
                         return {
-                            data: response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES]
+                            data: response.data
                             , headers: {
                                 [HEADER_NAME_TOKEN]: response.headers[HEADER_NAME_TOKEN]
                                 , [HEADER_NAME_USER]: response.headers[HEADER_NAME_USER]
@@ -127,6 +123,7 @@ export class Submit {
                             signIn
                             , false
                         );
+
                     })
             });
 

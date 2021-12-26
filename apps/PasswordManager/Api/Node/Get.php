@@ -23,13 +23,13 @@ namespace KSA\PasswordManager\Api\Node;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Node as NodeEntity;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
+use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
@@ -55,6 +55,7 @@ class Get implements RequestHandlerInterface {
     private BreadCrumbService     $breadCrumbService;
     private ILogger               $logger;
     private NodeEncryptionService $nodeEncryptionService;
+    private CommentRepository     $commentRepository;
 
     public function __construct(
         IL10N                   $l10n
@@ -62,26 +63,28 @@ class Get implements RequestHandlerInterface {
         , BreadCrumbService     $breadCrumbService
         , ILogger               $logger
         , NodeEncryptionService $nodeEncryptionService
+        , CommentRepository     $commentRepository
     ) {
         $this->translator            = $l10n;
         $this->nodeRepository        = $nodeRepository;
         $this->breadCrumbService     = $breadCrumbService;
         $this->logger                = $logger;
         $this->nodeEncryptionService = $nodeEncryptionService;
+        $this->commentRepository     = $commentRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
 
         /** @var IToken $token */
         $token  = $request->getAttribute(IToken::class);
-        $rootId = $request->getAttribute("id");
+        $rootId = $request->getAttribute("node_id");
 
         if (null === $rootId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no root id given. Could not retrieve data")
+            return new JsonResponse(
+                [
+                    "message" => $this->translator->translate("no node id given. Could not retrieve data")
                 ]
+                , IResponse::NOT_FOUND
             );
         }
 
@@ -89,27 +92,27 @@ class Get implements RequestHandlerInterface {
             $root = $this->prepareNode($request, $token);
         } catch (PasswordManagerException | InvalidNodeTypeException $exception) {
             $this->logger->error($exception->getMessage());
-            return new JsonResponse(['no data found'], IResponse::NOT_FOUND);
-        }
-
-        if ($root->getUser()->getId() !== $token->getUser()->getId()) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    'message' => $this->translator->translate('unauthorized')
-                    , 'root'  => $root->getUser()->getId()
-                    , 'token' => $token->getUser()->getId()
-                ]
+            return new JsonResponse(
+                ['no data found']
+                , IResponse::NOT_FOUND
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "breadCrumb" => $this->breadCrumbService->getBreadCrumbs($root, $token->getUser())
-                , "message"  => $this->translator->translate("Ok")
                 , "node"     => $root
+                // comments should be a part of node, since attachments are also
+                // a part of node. The other way around (and probably the better)
+                // is to extract comments, shares, attachments etc. from node
+                // and provide them as a standalone service/endpoint.
+                //
+                // However, the comments in the response here are actually needed
+                // for the app. Therefore, we will have this here until we find a
+                // proper solution (to the text above).
+                , "comments" => $this->commentRepository->getCommentsByNode($root)
             ]
+            , IResponse::OK
         );
 
     }
@@ -122,7 +125,7 @@ class Get implements RequestHandlerInterface {
      * @throws InvalidNodeTypeException
      */
     private function prepareNode(ServerRequestInterface $request, IToken $token): NodeEntity {
-        $id = $request->getAttribute("id");
+        $id = $request->getAttribute("node_id");
 
         // base case 1: we are requesting a regular node.
         //      select and return

@@ -84,7 +84,7 @@ class UserRepository implements IUserRepository {
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
             ->where('u.name = ?')
             ->setParameter(0, $name);
-        $result       = $queryBuilder->execute();
+        $result       = $queryBuilder->executeQuery();
         $users        = $result->fetchAllNumeric();
         $userCount    = count($users);
 
@@ -152,7 +152,7 @@ class UserRepository implements IUserRepository {
             ->from('user', 'u')
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id');
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $users  = $result->fetchAllAssociative();
 
         foreach ($users as $row) {
@@ -284,7 +284,7 @@ class UserRepository implements IUserRepository {
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
             ->where('u.id = ?')
             ->setParameter(0, $id);
-        $users     = $queryBuilder->execute()->fetchAllAssociative();
+        $users     = $queryBuilder->executeQuery()->fetchAllAssociative();
         $userCount = count($users);
 
         if (0 === $userCount) {
@@ -349,7 +349,7 @@ class UserRepository implements IUserRepository {
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
             ->where('u.hash = ?')
             ->setParameter(0, $hash);
-        $users     = $queryBuilder->execute()->fetchAllAssociative();
+        $users     = $queryBuilder->executeQuery()->fetchAllAssociative();
         $userCount = count($users);
 
         if (0 === $userCount) {
@@ -425,7 +425,7 @@ class UserRepository implements IUserRepository {
             ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
             ->setParameter(0, '%' . $name . '%');
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $users  = $result->fetchAllAssociative();
 
         foreach ($users as $row) {

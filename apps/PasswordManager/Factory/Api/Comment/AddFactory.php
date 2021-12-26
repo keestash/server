@@ -26,7 +26,6 @@ use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
 
 class AddFactory {
@@ -35,7 +34,6 @@ class AddFactory {
         return new Add(
             $container->get(CommentRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(IUserService::class)
             , $container->get(ILogger::class)
             , $container->get(IJWTService::class)
         );

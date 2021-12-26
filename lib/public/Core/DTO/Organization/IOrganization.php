@@ -25,6 +25,7 @@ use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Entity\IJsonObject;
+use KSP\Core\DTO\User\IUser;
 
 interface IOrganization extends IJsonObject, IKeyHolder {
 
@@ -37,5 +38,7 @@ interface IOrganization extends IJsonObject, IKeyHolder {
     public function getActiveTs(): ?DateTimeInterface;
 
     public function getUsers(): ArrayList;
+
+    public function hasUser(IUser $user): bool;
 
 }

@@ -67,6 +67,7 @@ final class ConfigProvider {
 
     public const DEFAULT_USER_LIFETIME = 60 * 60;
 
+
     public function __invoke(): array {
         return require __DIR__ . '/../config/config.php';
     }

@@ -106,16 +106,6 @@ parameters:
 			path: ../../apps/PasswordManager/Event/Listener/AfterPasswordChanged.php
 
 		-
-			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Repository/CommentRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
-
-		-
 			message: "#^Parameter \\#1 \\$file of method KSA\\\\PasswordManager\\\\Entity\\\\File\\\\NodeFile\\:\\:setFile\\(\\) expects KSP\\\\Core\\\\DTO\\\\File\\\\IFile, KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|null given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
@@ -124,21 +114,10 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 3
-			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
-
 		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 3
-			path: ../../apps/PasswordManager/Repository/PublicShareRepository.php
 
 		-
 			message: "#^Parameter \\#2 \\$encrypted of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:decrypt\\(\\) expects string, string\\|null given\\.$#"
@@ -236,11 +215,6 @@ parameters:
 			path: ../../apps/Settings/Api/Organization/User.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setUsers\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/User.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Repository/OrganizationRepository.php
@@ -321,44 +295,14 @@ parameters:
 			path: ../../lib/private/Core/Manager/SessionManager/SessionManager.php
 
 		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/AppRepository/AppRepository.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/EncryptionKey/KeyRepository.php
 
 		-
-			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/Organization/OrganizationKeyRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/User/UserKeyRepository.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
 			message: "#^Offset 0 does not exist on array\\<string, mixed\\>\\.$#"
@@ -404,36 +348,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$lastRun of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setLastRun\\(\\) expects DateTime\\|null, DateTimeInterface given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/Session/SessionRepository.php
-
-		-
-			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllAssociative\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 4
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Cannot call method fetchAll\\(\\) on Doctrine\\\\DBAL\\\\ForwardCompatibility\\\\DriverStatement\\|int\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getTmpName\\(\\)\\.$#"

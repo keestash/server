@@ -31,6 +31,7 @@ use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\App\ILoader;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Service\Controller\IAppRenderer;
@@ -58,18 +59,18 @@ class AppRenderer implements IAppRenderer {
     private RouterInterface           $router;
 
     public function __construct(
-        IRouterService $routerService
-        , Config $config
+        IRouterService              $routerService
+        , Config                    $config
         , TemplateRendererInterface $templateRenderer
-        , Legacy $legacy
-        , HTTPService $httpService
-        , LockHandler $lockHandler
-        , FileService $fileService
-        , RawFileService $rawFileService
-        , IFileManager $fileManager
-        , ILocaleService $localeService
-        , ILoader $loader
-        , RouterInterface $router
+        , Legacy                    $legacy
+        , HTTPService               $httpService
+        , LockHandler               $lockHandler
+        , FileService               $fileService
+        , RawFileService            $rawFileService
+        , IFileManager              $fileManager
+        , ILocaleService            $localeService
+        , ILoader                   $loader
+        , RouterInterface           $router
     ) {
         $this->lockHandler      = $lockHandler;
         $this->fileService      = $fileService;
@@ -112,13 +113,18 @@ class AppRenderer implements IAppRenderer {
 
     public function renderNavBar(
         ServerRequestInterface $request
-        , bool $static
-        , bool $contextLess
+        , bool                 $static
+        , bool                 $contextLess
     ): string {
         if (true === $static) return '';
 
+        /** @var IToken|null $token */
+        $token = $request->getAttribute(IToken::class);
+
         $profileImage = $this->getProfileImage(
-            $request->getAttribute(IUser::class)
+            null === $token
+                ? null
+                : $token->getUser()
             , $static
             , $contextLess
         );
@@ -199,12 +205,12 @@ class AppRenderer implements IAppRenderer {
 
     public function renderBody(
         ServerRequestInterface $request
-        , bool $static
-        , bool $contextLess
-        , bool $hasAppNavigation
-        , string $appContent
-        , NavigationList $navigationList
-        , IActionBar $actionBar
+        , bool                 $static
+        , bool                 $contextLess
+        , bool                 $hasAppNavigation
+        , string               $appContent
+        , NavigationList       $navigationList
+        , IActionBar           $actionBar
     ): string {
 
         return $this->templateRenderer
@@ -244,12 +250,12 @@ class AppRenderer implements IAppRenderer {
     }
 
     private function renderContent(
-        bool $hasAppNavigation
-        , string $appContent
+        bool             $hasAppNavigation
+        , string         $appContent
         , NavigationList $navigationList
-        , bool $static
-        , bool $contextLess
-        , IActionBar $actionBar
+        , bool           $static
+        , bool           $contextLess
+        , IActionBar     $actionBar
     ): string {
         return $this->templateRenderer
             ->render(
@@ -271,11 +277,11 @@ class AppRenderer implements IAppRenderer {
     }
 
     private function renderAppNavigation(
-        bool $hasAppNavigation
+        bool             $hasAppNavigation
         , NavigationList $navigationList
-        , bool $static
-        , bool $contextLess
-        , IActionBar $actionBar
+        , bool           $static
+        , bool           $contextLess
+        , IActionBar     $actionBar
     ): string {
 
         return $this->templateRenderer
@@ -302,12 +308,12 @@ class AppRenderer implements IAppRenderer {
 
     public function render(
         ServerRequestInterface $request
-        , bool $hasAppNavigation
-        , string $appContent
-        , bool $static
-        , bool $contextLess
-        , NavigationList $navigationList
-        , IActionBar $actionBar
+        , bool                 $hasAppNavigation
+        , string               $appContent
+        , bool                 $static
+        , bool                 $contextLess
+        , NavigationList       $navigationList
+        , IActionBar           $actionBar
     ): string {
 
         return $this->templateRenderer

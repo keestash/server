@@ -22,13 +22,11 @@ declare(strict_types=1);
 namespace KSA\Login\Api;
 
 use DateTime;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Exception\KeestashException;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
@@ -37,12 +35,13 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class Login implements RequestHandlerInterface {
-    
+
     private IUserRepository    $userRepository;
     private IL10N              $translator;
     private UserService        $userService;
@@ -55,16 +54,16 @@ class Login implements RequestHandlerInterface {
     private ILogger            $logger;
 
     public function __construct(
-        IUserRepository $userRepository
-        , IL10N $translator
-        , UserService $userService
-        , ITokenRepository $tokenManager
-        , TokenService $tokenService
+        IUserRepository      $userRepository
+        , IL10N              $translator
+        , UserService        $userService
+        , ITokenRepository   $tokenManager
+        , TokenService       $tokenService
         , PersistenceService $persistenceService
-        , ConfigService $configService
-        , ILocaleService $localeService
-        , ILanguageService $languageService
-        , ILogger $logger
+        , ConfigService      $configService
+        , ILocaleService     $localeService
+        , ILanguageService   $languageService
+        , ILogger            $logger
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
@@ -86,48 +85,30 @@ class Login implements RequestHandlerInterface {
         $user = $this->userRepository->getUser($userName);
 
         if (null === $user) {
-            throw new KeestashException();
+            return new JsonResponse(
+                'no user found'
+                , IResponse::NOT_FOUND
+            );
         }
-        
-        $this->logger->debug("test");
-        $this->logger->debug((string) json_encode($request));
 
         if (true === $this->userService->isDisabled($user)) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK,
+            return new JsonResponse(
                 [
                     "message" => $this->translator->translate("No User Found")
                 ]
+                , IResponse::NOT_FOUND
             );
         }
 
         if (false === $this->userService->validatePassword($password, $user->getPassword())) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK,
+            return new JsonResponse(
                 [
                     "message" => $this->translator->translate("Invalid Credentials")
                 ]
+                , IResponse::UNAUTHORIZED
             );
         }
         $token = $this->tokenService->generate("login", $user);
-
-        $response = LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-            "message"    => $this->translator->translate("Ok")
-            , "routeTo"  => '/password_manager/'
-            , "settings" => [
-                "locale"     => $this->localeService->getLocaleForUser($user)
-                , "language" => $this->languageService->getLanguageForUser($user)
-            ]
-        ],
-            200,
-            [
-                Verification::FIELD_NAME_TOKEN       => $token->getValue()
-                , Verification::FIELD_NAME_USER_HASH => $user->getHash()
-
-            ]
-        );
 
         $this->tokenManager->add($token);
 
@@ -142,7 +123,23 @@ class Login implements RequestHandlerInterface {
             , (int) $expireTs
         );
 
-        return $response;
+        $headers = [
+            Verification::FIELD_NAME_TOKEN       => $token->getValue()
+            , Verification::FIELD_NAME_USER_HASH => $user->getHash()
+        ];
+
+        return new JsonResponse(
+            [
+                "message"    => $this->translator->translate("Ok")
+                , "routeTo"  => '/password_manager/'
+                , "settings" => [
+                "locale"     => $this->localeService->getLocaleForUser($user)
+                , "language" => $this->languageService->getLanguageForUser($user)
+            ]
+            ],
+            IResponse::OK
+            , $headers
+        );
 
     }
 

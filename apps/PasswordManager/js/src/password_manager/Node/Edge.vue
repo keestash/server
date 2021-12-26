@@ -25,7 +25,7 @@
                         v-else-if="edge.node.type === 'folder' && !isOwner"
                         class="flex-grow-1 flex-shrink-0 node-logo-color"
                 ></b-img>
-                <p class="h6" v-if="edge.type === 'share' || edge.type === 'organization'">
+                <p class="h6 align-self-center" v-if="edge.type === 'share' || edge.type === 'organization'">
                     <b-icon-share-fill :title="this.showOwnerName()"
                                        v-if="edge.type === 'organization'"></b-icon-share-fill>
                     <b-icon-share :title="this.showOwnerName()" v-if="edge.type === 'share'"></b-icon-share>
@@ -184,7 +184,7 @@ export default {
             this.container.services.axios.delete(
                 ROUTES.getNodeDelete(),
                 {
-                    id: this.edge.node.id
+                    node_id: this.edge.node.id
                 }
             ).then(
                 (r) => {

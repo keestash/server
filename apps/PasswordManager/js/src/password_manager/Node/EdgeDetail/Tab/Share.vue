@@ -61,7 +61,7 @@
                     <Skeleton height="25px" v-else/>
                 </div>
 
-                <div class="results mt-3 rounded border tab_result_box">
+                <div class="results mt-3 rounded border tab_result_box d-flex flex-column mb-2">
 
                     <NoDataFound
                             :visible="this.edge.node.shared_to.content.length === 0"

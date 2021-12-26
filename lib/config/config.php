@@ -22,23 +22,25 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use Laminas\ConfigAggregator\ConfigAggregator;
+use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 return [
-    ConfigAggregator::CACHE_FILEMODE         => 777
-    , ConfigAggregator::ENABLE_CACHE         => false
-    , ConfigProvider::INSTANCE_DB_PATH       => __DIR__ . '/../../config/.instance.sqlite'
-    , ConfigProvider::CONFIG_PATH            => realpath(__DIR__ . '/../../config/')
-    , ConfigProvider::ASSET_PATH             => realpath(__DIR__ . '/../../asset/')
-    , ConfigProvider::IMAGE_PATH             => realpath(__DIR__ . '/../../data/image/')
-    , ConfigProvider::PHINX_PATH             => realpath(__DIR__ . '/../../config/phinx/')
-    , ConfigProvider::TEST_PATH              => realpath(__DIR__ . '/../../test/')
-    , ConfigProvider::DATA_PATH              => realpath(__DIR__ . '/../../data/')
-    , ConfigProvider::INSTANCE_PATH          => realpath(__DIR__ . '/../../')
-    , ConfigProvider::APP_PATH               => realpath(__DIR__ . '/../../apps/')
-    , ConfigProvider::INSTALL_INSTANCE_ROUTE => 'install_instance'
-    , 'dependencies'                         => require __DIR__ . '/dependencies.php'
-    , ConfigProvider::API_ROUTER             => require __DIR__ . '/router.php'
-    , 'templates'                            => [
+    ConfigAggregator::CACHE_FILEMODE                   => 777
+    , ConfigurationInterface::CONFIGURATION_IDENTIFIER => require __DIR__ . '/cors.php'
+    , ConfigAggregator::ENABLE_CACHE                   => false
+    , ConfigProvider::INSTANCE_DB_PATH                 => __DIR__ . '/../../config/.instance.sqlite'
+    , ConfigProvider::CONFIG_PATH                      => realpath(__DIR__ . '/../../config/')
+    , ConfigProvider::ASSET_PATH                       => realpath(__DIR__ . '/../../asset/')
+    , ConfigProvider::IMAGE_PATH                       => realpath(__DIR__ . '/../../data/image/')
+    , ConfigProvider::PHINX_PATH                       => realpath(__DIR__ . '/../../config/phinx/')
+    , ConfigProvider::TEST_PATH                        => realpath(__DIR__ . '/../../test/')
+    , ConfigProvider::DATA_PATH                        => realpath(__DIR__ . '/../../data/')
+    , ConfigProvider::INSTANCE_PATH                    => realpath(__DIR__ . '/../../')
+    , ConfigProvider::APP_PATH                         => realpath(__DIR__ . '/../../apps/')
+    , ConfigProvider::INSTALL_INSTANCE_ROUTE           => 'install_instance'
+    , ConfigProvider::DEPENDENCIES                     => require __DIR__ . '/dependencies.php'
+    , ConfigProvider::API_ROUTER                       => require __DIR__ . '/router.php'
+    , ConfigProvider::TEMPLATES                        => [
         'extension' => 'twig'
         , 'paths'   => [
             'root'    => [realpath(__DIR__ . '/../../template/app/')]

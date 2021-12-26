@@ -148,7 +148,7 @@ class FileRepository implements IFileRepository {
             ->from('file')
             ->where('id = ?')
             ->setParameter(0, $id);
-        $files     = $queryBuilder->execute()->fetchAllAssociative();
+        $files     = $queryBuilder->executeQuery()->fetchAllAssociative();
         $fileCount = count($files);
 
         if (0 === $fileCount) {
@@ -215,7 +215,7 @@ class FileRepository implements IFileRepository {
             ->orWhere('path like ?')
             ->setParameter(0, $uri->getIdentifier())
             ->setParameter(1, "{$uri->getIdentifier()}%");
-        $files        = $queryBuilder->execute()->fetchAllNumeric();
+        $files        = $queryBuilder->executeQuery()->fetchAllNumeric();
 
         $file = null;
         foreach ($files as $row) {

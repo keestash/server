@@ -24,12 +24,15 @@ namespace KSA\PasswordManager\Entity;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonSerializable;
+use Keestash\Core\DTO\Access\IAccessable;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Entity\Share\Share;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
-abstract class Node implements JsonSerializable {
+abstract class Node implements
+    JsonSerializable
+    , IAccessable {
 
     public const ROOT       = "root";
     public const FOLDER     = "folder";
@@ -49,7 +52,11 @@ abstract class Node implements JsonSerializable {
     private ?PublicShare      $publicShare  = null;
 
     public function __construct() {
-        $this->sharedTo = new ArrayList();
+        $this->setSharedTo(new ArrayList());
+    }
+
+    public function setSharedTo(ArrayList $sharedTo): void {
+        $this->sharedTo = $sharedTo;
     }
 
     public function shareTo(Share $share): void {
@@ -142,18 +149,17 @@ abstract class Node implements JsonSerializable {
 
     public function jsonSerialize(): array {
         return [
-            "id"                => $this->getId()
-            , "name"            => $this->getName()
-            , "user_id"         => $this->getUser()->getId()
-            , "user"            => $this->getUser()
-            , "create_ts"       => $this->getCreateTs()
-            , "type"            => $this->getType()
-            , "icon"            => $this->getIcon()
-            , "value"           => $this->getValue()
-            , "shared_to"       => $this->getSharedTo()
-            , "is_shared_to_me" => false // TODO implement
-            , "public_share"    => $this->getPublicShare()
-            , "organization"    => $this->getOrganization()
+            "id"             => $this->getId()
+            , "name"         => $this->getName()
+            , "user_id"      => $this->getUser()->getId()
+            , "user"         => $this->getUser()
+            , "create_ts"    => $this->getCreateTs()
+            , "type"         => $this->getType()
+            , "icon"         => $this->getIcon()
+            , "value"        => $this->getValue()
+            , "shared_to"    => $this->getSharedTo()
+            , "public_share" => $this->getPublicShare()
+            , "organization" => $this->getOrganization()
         ];
     }
 

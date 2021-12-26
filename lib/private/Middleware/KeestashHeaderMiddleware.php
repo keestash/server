@@ -22,9 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Middleware;
 
 use Keestash\ConfigProvider;
-use Keestash\Core\DTO\Token\Token;
-use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\Router\Verification;
+use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
@@ -44,10 +43,10 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
     private IRouterService      $routerService;
 
     public function __construct(
-        Config $config
-        , Verification $verification
+        Config                $config
+        , Verification        $verification
         , IEnvironmentService $environmentService
-        , IRouterService $routerService
+        , IRouterService      $routerService
     ) {
         $this->config             = $config;
         $this->verification       = $verification;
@@ -83,7 +82,7 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
 
         foreach ($publicRoutes as $publicRoute) {
             if ($currentPath === $publicRoute) {
-                return $handler->handle($request);
+                return $handler->handle($request->withAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC, true));
             }
         }
 
@@ -98,7 +97,10 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
             return new JsonResponse(['session expired'], IResponse::UNAUTHORIZED);
         }
 
-        return $handler->handle($request->withAttribute(IToken::class, $token));
+        return $handler->handle(
+            $request->withAttribute(IToken::class, $token)
+            ->withAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC, false)
+        );
     }
 
 }

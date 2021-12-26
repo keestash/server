@@ -24,5 +24,6 @@ namespace KSP\Api;
 interface IRequest {
 
     public const ATTRIBUTE_NAME_APPLICATION_START = 'start.application.name.attribute';
+    public const ATTRIBUTE_NAME_IS_PUBLIC         = 'public.is.name.attribute';
 
 }

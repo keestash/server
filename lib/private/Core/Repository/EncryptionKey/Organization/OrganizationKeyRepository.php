@@ -96,7 +96,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             ->where('ok.`organization_id` = ?')
             ->setParameter(0, $organization->getId());
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $users  = $result->fetchAllAssociative();
 
         $key = null;

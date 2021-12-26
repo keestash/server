@@ -34,7 +34,7 @@ use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\DemoModeFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
 use KSA\InstallInstance\Factory\Controller\ControllerFactory;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 final class ConfigProvider {
 

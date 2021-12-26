@@ -169,7 +169,7 @@ class OrganizationChangeListener implements IListener {
 
     }
 
-    private function removeEdges(IKeyHolder $keyHolder, Node $node): void {
+    private function removeEdges(IOrganization $keyHolder, Node $node): void {
         /** @var IUser $user */
         foreach ($keyHolder->getUsers() as $user) {
 
@@ -185,8 +185,9 @@ class OrganizationChangeListener implements IListener {
 
     }
 
-    private function addEdges(IKeyHolder $keyHolder, Node $node): void {
+    private function addEdges(IOrganization $keyHolder, Node $node): void {
 
+        $this->nodeRepository->removeAllShares($node);
         /** @var IUser $user */
         foreach ($keyHolder->getUsers() as $user) {
 

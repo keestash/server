@@ -91,7 +91,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
             ->where('uk.`user_id` = ?')
             ->setParameter(0, $user->getId());
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $users  = $result->fetchAllNumeric();
 
         $key = null;

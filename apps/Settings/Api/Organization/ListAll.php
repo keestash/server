@@ -23,6 +23,7 @@ namespace KSA\Settings\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\LegacyResponse;
+use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -53,9 +54,12 @@ class ListAll implements RequestHandlerInterface {
         if (false === is_string($userHash)) {
             $organizations = $this->organizationRepository->getAll();
         } else {
-            $organizations = $this->organizationRepository->getAllForUser(
-                $this->userRepository->getUserByHash($userHash)
-            );
+            $user = $this->userRepository->getUserByHash($userHash);
+
+            if (null === $user) {
+                throw new SettingsException();
+            }
+            $organizations = $this->organizationRepository->getAllForUser($user);
         }
         $result = [];
 

@@ -26,7 +26,7 @@ namespace Keestash\Middleware;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\Instance\InstallerService;
-use KSP\Core\DTO\User\IUser;
+use KSP\Api\IRequest;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
@@ -34,7 +34,6 @@ use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -46,36 +45,24 @@ class LoggedInMiddleware implements MiddlewareInterface {
     private IPersistenceService $persistenceService;
     private InstallerService    $installerService;
     private ILogger             $logger;
-    private Config              $config;
     private HTTPService         $httpService;
     private IUserRepository     $userRepository;
-    private IEnvironmentService $environmentService;
-    private IRouterService      $routerService;
 
     public function __construct(
-        IPersistenceService $persistenceService
-        , InstallerService $installerService
-        , ILogger $logger
-        , Config $config
-        , HTTPService $httpService
-        , IUserRepository $userRepository
-        , IEnvironmentService $environmentService
-        , IRouterService $routerService
+        IPersistenceService   $persistenceService
+        , InstallerService    $installerService
+        , ILogger             $logger
+        , HTTPService         $httpService
+        , IUserRepository     $userRepository
     ) {
         $this->persistenceService = $persistenceService;
         $this->installerService   = $installerService;
         $this->logger             = $logger;
-        $this->config             = $config;
         $this->httpService        = $httpService;
         $this->userRepository     = $userRepository;
-        $this->environmentService = $environmentService;
-        $this->routerService      = $routerService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        if (false === $this->environmentService->isWeb()) {
-            return $handler->handle($request);
-        }
 
         if (false === $this->installerService->hasIdAndHash()) {
             // we can not check for this, the instance is
@@ -83,19 +70,11 @@ class LoggedInMiddleware implements MiddlewareInterface {
             return $handler->handle($request);
         }
 
-        $publicRoutes = $this->config
-            ->get(ConfigProvider::WEB_ROUTER)
-            ->get(ConfigProvider::PUBLIC_ROUTES)
-            ->toArray();
+        $userId    = null;
+        $persisted = false;
 
-        $currentPath = $this->routerService->getMatchedPath($request);
-        $userId      = null;
-        $persisted   = false;
-
-        foreach ($publicRoutes as $publicRoute) {
-            if ($currentPath === $publicRoute) {
-                return $handler->handle($request);
-            }
+        if (true === $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC)) {
+            return $handler->handle($request);
         }
 
         try {
@@ -110,7 +89,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
         if (true === $persisted
             && null !== $user
         ) {
-            return $handler->handle($request->withAttribute(IUser::class, $user));
+            return $handler->handle($request);
         }
 
         // TODO just to be sure: to avoid a "to many redirects", we can check whether

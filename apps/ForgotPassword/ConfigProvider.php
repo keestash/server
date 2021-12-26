@@ -26,7 +26,7 @@ use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Api\ResetPassword;
 use KSA\ForgotPassword\Factory\Api\ForgotPasswordFactory;
 use KSA\ForgotPassword\Factory\Api\ResetPasswordFactory;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 final class ConfigProvider {
 

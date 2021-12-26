@@ -104,8 +104,8 @@ class CommentRepository {
             ->from('pwm_comment')
             ->where('node_id = ?')
             ->setParameter(0, $node->getId())
-            ->execute()
-            ->fetchAll();
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         foreach ($comments as $row) {
 
@@ -143,6 +143,26 @@ class CommentRepository {
         }
 
         return $list;
+    }
+
+    public function getNodeByCommentId(int $commentId): Node {
+
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $comments     = $queryBuilder
+            ->select(
+                [
+                    'node_id'
+                ]
+            )
+            ->from('pwm_comment')
+            ->where('id = ?')
+            ->setParameter(0, $commentId)
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $nodeId = $comments[0]['node_id'];
+
+        return $this->nodeRepository->getNode($nodeId, 0, 1);
     }
 
     public function remove(int $id): bool {

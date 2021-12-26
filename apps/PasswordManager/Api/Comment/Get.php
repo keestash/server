@@ -15,14 +15,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Comment;
 
 use Keestash\Api\Response\LegacyResponse;
-use KSA\PasswordManager\Entity\Node;
-use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUser;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,7 +33,7 @@ class Get implements RequestHandlerInterface {
 
     public function __construct(
         CommentRepository $commentRepository
-        , NodeRepository $nodeRepository
+        , NodeRepository  $nodeRepository
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
@@ -42,20 +41,17 @@ class Get implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $nodeId = $request->getAttribute("nodeId");
-        $token  = $request->getAttribute(IToken::class);
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
-            throw new CommentException();
+            return new JsonResponse('no node found', IResponse::BAD_REQUEST);
         }
 
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId);
         } catch (PasswordManagerException $exception) {
-            throw new CommentException();
-        }
-
-        if (false === $this->hasAccess($token->getUser(), $node)) {
-            throw new CommentException();
+            return new JsonResponse('no node found', IResponse::NOT_FOUND);
         }
 
         $comments = $this->commentRepository->getCommentsByNode($node);
@@ -66,12 +62,6 @@ class Get implements RequestHandlerInterface {
                 "comments" => $comments
             ]
         );
-    }
-
-    private function hasAccess(IUser $user, Node $node): bool {
-        if ($node->getUser()->getId() === $user->getId()) return true;
-        if (true === $node->isSharedTo($user)) return true;
-        return false;
     }
 
 }

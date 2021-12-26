@@ -30,7 +30,7 @@ class InstanceRepository {
     private IBackend $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend  $backend
         , ILogger $logger
     ) {
         $this->logger  = $logger;
@@ -63,8 +63,8 @@ class InstanceRepository {
         return true;
     }
 
-    public function execute(string $query): bool {
-        return $this->backend->getConnection()->prepare($query)->execute();
+    public function execute(string $query): void {
+        $this->backend->getConnection()->prepare($query)->execute();
     }
 
 }

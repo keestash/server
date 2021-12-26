@@ -26,7 +26,7 @@ use KSA\Install\Api\InstallApps;
 use KSA\Install\Controller\Controller;
 use KSA\Install\Factory\Api\InstallAppsFactory;
 use KSA\Install\Factory\Controller\ControllerFactory;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 final class ConfigProvider {
 

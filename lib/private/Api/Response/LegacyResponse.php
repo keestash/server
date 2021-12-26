@@ -23,12 +23,18 @@ namespace Keestash\Api\Response;
 
 use Laminas\Diactoros\Response\JsonResponse;
 
+/**
+ * Class LegacyResponse
+ * @package    Keestash\Api\Response
+ * @author     Dogan Ucar <dogan@dogan-ucar.de>
+ * @deprecated use regular responses instead
+ */
 class LegacyResponse extends JsonResponse {
 
     public static function fromData(
-        int $code
+        int     $code
         , array $messages
-        , int $statusCode = 200
+        , int   $statusCode = 200
         , array $headers = []
     ): LegacyResponse {
         return new LegacyResponse(

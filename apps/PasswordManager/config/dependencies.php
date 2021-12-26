@@ -71,21 +71,25 @@ use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CreateStarterPasswordFactory;
 use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
+use KSA\PasswordManager\Factory\Middleware\NodeAccessMiddlewareFactory;
 use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\OrganizationRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\PublicShareRepositoryFactory;
+use KSA\PasswordManager\Factory\Service\AccessServiceFactory;
 use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
 use KSA\PasswordManager\Factory\Service\NodeEncryptionServiceFactory;
+use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
@@ -104,9 +108,6 @@ return [
 
         // ---- generate
         Generate::class                                                   => GenerateFactory::class,
-
-        // ---- import
-        Import::class                                                     => InvokableFactory::class,
 
         // ---- PublicShare
         PublicShare::class                                                => PublicShareFactory::class,
@@ -158,6 +159,7 @@ return [
         BreadCrumbService::class                                          => BreadCrumbServiceFactory::class,
         CredentialService::class                                          => CredentialServiceFactory::class,
         ShareService::class                                               => InvokableFactory::class,
+        AccessService::class                                              => AccessServiceFactory::class,
 
         // event
         // ---- listener
@@ -166,6 +168,9 @@ return [
         AfterPasswordChanged::class                                       => AfterPasswordChangedListenerFactory::class,
         RemoveExpired::class                                              => RemoveExpiredFactory::class,
         OrganizationChangeListener::class                                 => OrganizationAddListenerFactory::class,
+
+        // dependency
+        NodeAccessMiddleware::class                                       => NodeAccessMiddlewareFactory::class,
 
         // command
         CreateFolder::class                                               => CreateFolderFactory::class,

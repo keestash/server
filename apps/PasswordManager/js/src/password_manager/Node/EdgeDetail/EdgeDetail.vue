@@ -93,7 +93,7 @@
                                     type="url"
                                     class="form-control"
                                     :placeholder="$t('credential.url.placeholder')"
-                                    :value="this.edge.node.url.plain"
+                                    :value="encodeUri(this.edge.node.url.plain)"
                                     @blur="onUrlChange"
                             >
                             <div class="input-group-append" id="pwm__url__button" v-b-modal.external-link-modal>
@@ -178,7 +178,6 @@ export default {
     data() {
         return {
             container: [],
-            createdFormatted: null,
             organization: {
                 list: [],
                 selected: null,
@@ -197,11 +196,7 @@ export default {
     computed: {
         ...mapState({
             edge: function (state) {
-                let edge = state.selectedEdge;
-                edge.node.url.plain = encodeURI(edge.node.url.plain);
-                edge.node.createdFormatted = moment(edge.node.create_ts.date).format();
-
-                return edge;
+                return state.selectedEdge;
             }
         })
     },
@@ -225,6 +220,12 @@ export default {
     },
 
     methods: {
+        encodeUri(uri) {
+            return encodeURI(uri);
+        },
+        formatDate(date) {
+            return moment(date).format();
+        },
         copyToClipBoard() {
             const systemService = new SystemService();
             systemService.copyToClipboard(this.edge.node.url.plain);
@@ -404,13 +405,6 @@ export default {
                     this.edge.node.id
                 )
             )
-                .then((response) => {
-                    this.saving = false;
-                    if (RESPONSE_CODE_OK in response.data) {
-                        return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-                    }
-                    return [];
-                })
                 .then((data) => {
                     this.updatePassword(
                         data.decrypted

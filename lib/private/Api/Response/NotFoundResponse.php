@@ -19,13 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Http;
+namespace Keestash\Api\Response;
 
-interface IVerb {
+use KSP\Api\IResponse;
 
-    public const GET    = 'get';
-    public const POST   = 'post';
-    public const PUT    = 'put';
-    public const DELETE = 'delete';
+class NotFoundResponse extends JsonResponse {
+
+    public function __construct(array $data = []) {
+        parent::__construct(
+            $data
+            , IResponse::NOT_FOUND
+        );
+    }
 
 }

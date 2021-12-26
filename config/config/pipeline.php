@@ -27,17 +27,22 @@ use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Middleware\KeestashHeaderMiddleware;
-use Keestash\Middleware\LoggedInMiddleware;
 use Keestash\Middleware\SessionHandlerMiddleware;
+use Keestash\Middleware\UserActiveMiddleware;
 use Mezzio\Application;
+use Mezzio\Cors\Middleware\CorsMiddleware;
 use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
 use Mezzio\Helper\ServerUrlMiddleware;
 use Mezzio\Helper\UrlHelperMiddleware;
+use Mezzio\Router\Middleware\ImplicitHeadMiddleware;
+use Mezzio\Router\Middleware\ImplicitOptionsMiddleware;
 use Mezzio\Router\Middleware\MethodNotAllowedMiddleware;
 use Mezzio\Router\Middleware\RouteMiddleware;
 
 return function (Application $app) {
     $app->pipe(ApplicationStartedMiddleware::class);
+    $app->pipe(new \Keestash\Middleware\RemoveBasePathMiddleware("/api.php/"));
+    $app->pipe(CorsMiddleware::class);
     $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(SessionHandlerMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
@@ -45,9 +50,12 @@ return function (Application $app) {
     $app->pipe(AppsInstalledMiddleware::class);
     $app->pipe(ExceptionHandlerMiddleware::class);
     $app->pipe(KeestashHeaderMiddleware::class);
-    $app->pipe(LoggedInMiddleware::class);
+//    $app->pipe(LoggedInMiddleware::class);
+    $app->pipe(UserActiveMiddleware::class);
     $app->pipe(ServerUrlMiddleware::class);
     $app->pipe(RouteMiddleware::class);
+    $app->pipe(ImplicitHeadMiddleware::class);
+    $app->pipe(ImplicitOptionsMiddleware::class);
     $app->pipe(MethodNotAllowedMiddleware::class);
     $app->pipe(UrlHelperMiddleware::class);
     $app->pipe(DispatchMiddleware::class);

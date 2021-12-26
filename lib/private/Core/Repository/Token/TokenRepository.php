@@ -61,7 +61,7 @@ class TokenRepository implements ITokenRepository {
             ->from('token')
             ->where('id = ?')
             ->setParameter(0, $id);
-        $tokenData      = $queryBuilder->execute()->fetchAll();
+        $tokenData      = $queryBuilder->executeQuery()->fetchAllNumeric();
         $tokenDataCount = count($tokenData);
 
         if (0 === $tokenDataCount) {
@@ -111,7 +111,7 @@ class TokenRepository implements ITokenRepository {
             ->from('token')
             ->where('value = ?')
             ->setParameter(0, $hash)
-            ->execute();
+            ->executeQuery();
 
         foreach ($result->fetchAllNumeric() as $row) {
             $id       = $row[0];

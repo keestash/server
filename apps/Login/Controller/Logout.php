@@ -24,6 +24,7 @@ namespace KSA\Login\Controller;
 use Keestash\Core\Manager\SessionManager\SessionManager;
 use Keestash\Exception\KeestashException;
 use KSP\App\ILoader;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Router\IRouterService;
@@ -56,7 +57,7 @@ class Logout implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $user = $request->getAttribute(IUser::class);
+        $user = $request->getAttribute(IToken::class)->getUser();
         $this->tokenRepository->removeForUser($user);
         $this->sessionManager->killAll();
 
