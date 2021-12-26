@@ -1,0 +1,28 @@
+version: '3.3'
+services:
+  web:
+    container_name: php7.4
+    build:
+      context: ./config/docker/web
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/var/www/html/
+      - ./config/docker/web/xdebug/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+    ports:
+      - '8000:80'
+  db:
+    container_name: mysql8
+    build:
+      context: ./config/docker/db
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    command:
+      - --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: keestash
+      MYSQL_DATABASE: keestash
+      MYSQL_USER: keestash
+      MYSQL_PASSWORD: keestash
+    ports:
+      - "6033:3306"
