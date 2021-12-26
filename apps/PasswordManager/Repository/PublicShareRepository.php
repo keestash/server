@@ -82,7 +82,7 @@ class PublicShareRepository {
             ->where('s.`hash` = ?')
             ->setParameter(0, $hash);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $rows   = $result->fetchAllNumeric();
 
         if (0 === count($rows)) {
@@ -118,7 +118,7 @@ class PublicShareRepository {
             ->where('s.`node_id` = ?')
             ->setParameter(0, $node->getId());
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $rows   = $result->fetchAllNumeric();
 
         if (0 === count($rows)) {
@@ -154,7 +154,7 @@ class PublicShareRepository {
             ->where('s.`node_id` = ?')
             ->setParameter(0, $node->getId());
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $rows   = $result->fetchAllNumeric();
 
         if (0 === count($rows)) {

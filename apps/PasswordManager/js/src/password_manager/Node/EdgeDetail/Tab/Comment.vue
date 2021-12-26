@@ -197,7 +197,7 @@ export default {
                 })
                 .then((data) => {
                         this.edge.node.comments = data.comments.content;
-                        this.$store.dispatch("updateEdge", this.edge);
+                        this.$store.dispatch("updateSelectedEdge", this.edge);
                         this.loading = false;
                     }
                 )
@@ -223,7 +223,7 @@ export default {
                 .then((data) => {
 
                     this.edge.node.comments.push(data.comment);
-                    this.$store.dispatch("updateEdge", this.edge);
+                    this.$store.dispatch("updateSelectedEdge", this.edge);
                     this.newComment = "";
 
                 })

@@ -47,6 +47,7 @@ use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\App\AppService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
+use Keestash\Core\Service\Core\Access\IAccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
@@ -91,6 +92,7 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Controller\IAppRenderer;
+use KSP\Core\Service\Core\Access\AccessService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
@@ -162,4 +164,5 @@ return [
     IHTTPService::class                               => HTTPService::class,
     IInstallerService::class                          => InstallerService::class,
     IApiRequestService::class                         => ApiRequestService::class,
+    IAccessService::class                             => AccessService::class
 ];

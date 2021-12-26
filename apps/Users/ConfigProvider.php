@@ -41,7 +41,7 @@ use KSA\Users\Factory\Api\User\UserRemoveFactory;
 use KSA\Users\Factory\BackgroundJob\UserDeleteTaskFactory;
 use KSA\Users\Factory\Controller\UsersControllerFactory;
 use KSA\Users\Factory\Event\Listener\PostStateChangeFactory;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 final class ConfigProvider {
 

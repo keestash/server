@@ -64,13 +64,9 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
             ->where('organization_id = ?')
             ->setParameter(0, $organization->getId());
 
-        $rows = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
-        if (false === is_iterable($rows)) {
-            throw new SettingsException();
-        }
-
-        foreach ($rows as $row) {
+        foreach ($result->fetchAllAssociative() as $row) {
             $user = $this->userRepository->getUserById($row['user_id']);
             $organization->addUser($user);
         }

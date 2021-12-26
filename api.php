@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventDispatcher;
@@ -31,7 +31,6 @@ use Mezzio\Application;
 use Psr\Container\ContainerInterface;
 
 (function () {
-
     chdir(dirname(__DIR__));
 
     set_time_limit(0);
@@ -65,6 +64,10 @@ use Psr\Container\ContainerInterface;
         $middleware = $route->get('middleware');
         $name       = $route->get('name');
         $path       = $route->get('path');
+
+        if ($middleware instanceof Config) {
+            $middleware = $middleware->toArray();
+        }
 
         switch ($method) {
             case IVerb::GET:

@@ -56,7 +56,7 @@ class Delete implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
-        $id         = $parameters["id"] ?? null;
+        $id         = $parameters["node_id"] ?? null;
 
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);

@@ -80,8 +80,6 @@ class User implements RequestHandlerInterface {
             throw new GeneralApiException('no user found');
         }
 
-        $organization->setUsers(new ArrayList());
-
         switch ($mode) {
             case User::MODE_ADD:
                 $organization->addUser($user);

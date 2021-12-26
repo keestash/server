@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository\Node;
 
 use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\Result;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
@@ -88,9 +89,9 @@ class NodeRepository {
             ->andWhere('type = ?')
             ->setParameter(0, $user->getId())
             ->setParameter(1, $type);
-        $statement    = $queryBuilder->execute();
+        $statement    = $queryBuilder->executeQuery();
 
-        if (!$statement instanceof ResultStatement) {
+        if (!$statement instanceof Result) {
             $this->logger->error('error while retrieving data ' . $queryBuilder->getSQL());
             throw new PasswordManagerException();
         }
@@ -120,12 +121,7 @@ class NodeRepository {
             ->where('name = ?')
             ->setParameter(0, $name);
 
-        $statement = $queryBuilder->execute();
-
-        if (!$statement instanceof ResultStatement) {
-            $this->logger->error('error while retrieving data ' . $queryBuilder->getSQL());
-            return $list;
-        }
+        $statement = $queryBuilder->executeQuery();
 
         $ids = $statement->fetchAllNumeric();
 
@@ -228,7 +224,7 @@ class NodeRepository {
             ->from('`organization_node`', 'on1')
             ->where('on1.`node_id` = ?')
             ->setParameter(0, $node->getId());
-        $result       = $queryBuilder->execute();
+        $result       = $queryBuilder->executeQuery();
 
         $nodeOrganization   = null;
         $parentOrganization = null;
@@ -276,7 +272,7 @@ class NodeRepository {
             ->where('`node_id` = ?')
             ->setParameter(0, $credential->getId());
 
-        $statement = $queryBuilder->execute();
+        $statement = $queryBuilder->executeQuery();
         $rows      = $statement->fetchAllNumeric();
         $row       = $rows[0];
 
@@ -325,7 +321,7 @@ class NodeRepository {
             ->setParameter(2, Edge::TYPE_SHARE)
             ->setParameter(3, Edge::TYPE_ORGANIZATION);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
         foreach ($result->fetchAllNumeric() as $row) {
             $id       = $row[0];
@@ -399,12 +395,30 @@ class NodeRepository {
         return $this->publicShareRepository->addShareInfo($node);
     }
 
+    public function removeAllShares(Node $node): Node {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $removed      = $queryBuilder->delete(
+                'pwm_edge'
+            )
+                ->where('node_id = ?')
+                ->andWhere('type = ?')
+                ->setParameter(0, $node->getId())
+                ->setParameter(1, Edge::TYPE_SHARE)
+                ->executeStatement() !== 0;
+
+        if (true === $removed) {
+            $node->setSharedTo(new ArrayList());
+            return $node;
+        }
+
+        throw new PasswordManagerException();
+    }
+
     public function addRoot(Root $root): ?int {
         return $this->add($root);
     }
 
     public function add(Node $node): ?int {
-
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('pwm_node')
             ->values(
@@ -536,13 +550,8 @@ ORDER BY d.`level`;
             ->where('node_id = ?')
             ->setParameter(0, $id);
 
-        $statement = $queryBuilder->execute();
-
-        if (!$statement instanceof ResultStatement) {
-            $this->logger->error('error while retrieving data ' . $queryBuilder->getSQL());
-            return null;
-        }
-        $rows = $statement->fetchAllNumeric();
+        $statement = $queryBuilder->executeQuery();
+        $rows      = $statement->fetchAllNumeric();
 
         if (0 === count($rows)) {
             return null;
@@ -570,7 +579,7 @@ ORDER BY d.`level`;
             )
                 ->where('id = ?')
                 ->setParameter(0, $node->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     private function removeEdges(Node $node): bool {
@@ -582,7 +591,7 @@ ORDER BY d.`level`;
                 ->orWhere('parent_id = ?')
                 ->setParameter(0, $node->getId())
                 ->setParameter(1, $node->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     private function removeCredential(Credential $credential): bool {

@@ -8,7 +8,7 @@ use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Api\Organization\User;
 use KSA\Settings\ConfigProvider;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 return [
     \Keestash\ConfigProvider::ROUTES => [

@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Factory\Api\Comment;
 
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Repository\CommentRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -32,6 +33,7 @@ class RemoveFactory {
         return new Remove(
             $container->get(IL10N::class)
             , $container->get(CommentRepository::class)
+            , $container->get(AccessService::class)
         );
     }
 

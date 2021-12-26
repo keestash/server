@@ -80,15 +80,6 @@ class PublicShare implements RequestHandlerInterface {
             );
         }
 
-        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "no node found 3"
-                ]
-            );
-        }
-
         $publicShare = $this->shareService->createPublicShare($node);
         $node->setPublicShare($publicShare);
 

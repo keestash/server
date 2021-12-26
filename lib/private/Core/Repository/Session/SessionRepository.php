@@ -37,9 +37,9 @@ class SessionRepository implements ISessionRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend          $backend
         , DateTimeService $dateTimeService
-        , ILogger $logger
+        , ILogger         $logger
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
@@ -62,7 +62,7 @@ class SessionRepository implements ISessionRepository {
                 ->where('id = ?')
                 ->setParameter(0, $id);
 
-            $result           = $queryBuilder->execute();
+            $result           = $queryBuilder->executeQuery();
             $sessionData      = $result->fetchAllNumeric();
             $sessionDataCount = count($sessionData);
 
@@ -103,7 +103,7 @@ class SessionRepository implements ISessionRepository {
             ]
         )
             ->from('session');
-        return $queryBuilder->execute()->fetchAllNumeric();
+        return $queryBuilder->executeQuery()->fetchAllNumeric();
     }
 
     public function replace(string $id, string $data): bool {
@@ -113,7 +113,7 @@ class SessionRepository implements ISessionRepository {
             // MySQL only thing: https://stackoverflow.com/a/4561615/1966490
             $updateTs = $this->dateTimeService->toYMDHIS(new DateTime());
             $sql      = "REPLACE INTO `session`(`id`, `data`,`update_ts`) VALUES ('" . $id . "', '" . $data . "', '" . $updateTs . "')";
-            return $this->backend->getConnection()->prepare($sql)->execute();
+            return $this->backend->getConnection()->prepare($sql)->executeStatement() > 0;
         } catch (Throwable $exception) {
             $this->logger->error('error while replacing session. This can be a normal behaviour (for instance during installation). Please look into the messages in level debug for more information');
             $this->logger->debug(

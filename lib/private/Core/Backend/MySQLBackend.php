@@ -72,7 +72,7 @@ class MySQLBackend implements ISQLBackend {
     }
 
     public function getTables(): array {
-        return $this->connection->getSchemaManager()->listTableNames();
+        return $this->connection->createSchemaManager()->listTableNames();
     }
 
     public function startTransaction(): bool {

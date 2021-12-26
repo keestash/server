@@ -42,10 +42,12 @@ use Mezzio\Helper\ConfigProvider as HelperConfigProvider;
 use Mezzio\Router\ConfigProvider as RouterConfigProvider;
 use Mezzio\Router\LaminasRouter\ConfigProvider as MezzioRouterConfigProvider;
 use Mezzio\Twig\ConfigProvider as TwigConfigProvider;
+use Mezzio\Cors\ConfigProvider as CorsConfigProvider;
 
 return [
     // framework
     TwigConfigProvider::class,
+    CorsConfigProvider::class,
     HttpHandlerRunnerConfigProvider::class,
     LaminasRouterConfigProvider::class,
     MezzioRouterConfigProvider::class,

@@ -27,6 +27,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use Psr\Container\ContainerInterface;
 
 class GetFactory {
+
     public function __invoke(ContainerInterface $container): Get {
         return new Get(
             $container->get(CommentRepository::class)

@@ -25,7 +25,6 @@ use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Api\Generate\Generate;
-use KSA\PasswordManager\Api\Import\Import;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Delete;
@@ -36,19 +35,20 @@ use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Share\Share;
 use KSA\PasswordManager\ConfigProvider;
-use KSP\Core\DTO\Http\IVerb;
+use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
+use KSP\Api\IVerb;
 
 return [
     CoreConfigProvider::ROUTES        => [
         [
             'path'         => '/password_manager/comment/add[/]'
-            , 'middleware' => Add::class
+            , 'middleware' => [NodeAccessMiddleware::class, Add::class]
             , 'method'     => IVerb::POST
             , 'name'       => Add::class
         ],
         [
             'path'         => '/password_manager/comment/get/:nodeId[/]'
-            , 'middleware' => Get::class
+            , 'middleware' => [NodeAccessMiddleware::class, Get::class]
             , 'method'     => IVerb::GET
             , 'name'       => Get::class
         ],
@@ -65,14 +65,8 @@ return [
             , 'name'       => Generate::class
         ],
         [
-            'path'         => '/password_manager/import[/]'
-            , 'middleware' => Import::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Import::class
-        ],
-        [
             'path'         => '/password_manager/share/public[/]'
-            , 'middleware' => PublicShare::class
+            , 'middleware' => [NodeAccessMiddleware::class, PublicShare::class]
             , 'method'     => IVerb::POST
             , 'name'       => PublicShare::class
         ],
@@ -90,25 +84,25 @@ return [
         ],
         [
             'path'         => '/password_manager/share[/]'
-            , 'middleware' => Share::class
+            , 'middleware' => [NodeAccessMiddleware::class, Share::class]
             , 'method'     => IVerb::POST
             , 'name'       => Share::class
         ],
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Add::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Add::class]
             , 'method'     => IVerb::PUT
             , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Add::class
         ],
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_DELETE
-            , 'middleware' => Delete::class
+            , 'middleware' => [NodeAccessMiddleware::class, Delete::class]
             , 'method'     => IVerb::DELETE
             , 'name'       => Delete::class
         ],
         [
-            'path'         => '/password_manager/node/get/:id[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Get::class
+            'path'         => '/password_manager/node/get/:node_id[/]'
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Get::class]
             , 'method'     => IVerb::GET
             , 'name'       => \KSA\PasswordManager\Api\Node\Get::class
         ],
@@ -126,31 +120,31 @@ return [
         ],
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Update::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Update::class]
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Update::class
         ],
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Organization\Remove::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Remove::class]
             , 'method'     => IVerb::DELETE
             , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Remove::class
         ],
         [
             'path'         => '/password_manager/users/shareable/:nodeId/:query/'
-            , 'middleware' => ShareableUsers::class
+            , 'middleware' => [NodeAccessMiddleware::class, ShareableUsers::class]
             , 'method'     => IVerb::GET
             , 'name'       => ShareableUsers::class
         ],
         [
             'path'         => '/password_manager/attachments/add[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Attachment\Add::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Add::class]
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Add::class
         ],
         [
             'path'         => '/password_manager/attachments/get/:nodeId[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Attachment\Get::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Get::class]
             , 'method'     => IVerb::GET
             , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Get::class
         ],
@@ -162,7 +156,7 @@ return [
         ],
         [
             'path'         => '/password_manager/node/update/avatar[/]'
-            , 'middleware' => Update::class
+            , 'middleware' => [NodeAccessMiddleware::class, Update::class]
             , 'method'     => IVerb::POST
             , 'name'       => Update::class
         ],
@@ -173,14 +167,14 @@ return [
             , 'name'       => Create::class
         ],
         [
-            'path'         => '/password_manager/credential/get/:id[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
+            'path'         => '/password_manager/credential/get/:node_id[/]'
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Get::class]
             , 'method'     => IVerb::GET
             , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
         ],
         [
             'path'         => '/password_manager/users/update[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Update::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Update::class]
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Update::class
         ],
@@ -192,7 +186,7 @@ return [
         ],
         [
             'path'         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Update::class]
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
         ],

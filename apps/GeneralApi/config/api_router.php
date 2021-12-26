@@ -27,7 +27,7 @@ use KSA\GeneralApi\Api\Strings\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\Api\UserList;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 return [
     ConfigProvider::ROUTES        => [

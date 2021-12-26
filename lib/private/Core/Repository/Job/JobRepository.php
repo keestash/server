@@ -130,7 +130,7 @@ class JobRepository implements IJobRepository {
             ]
         )
             ->from('background_job', 'b');
-        $result         = $queryBuilder->execute();
+        $result         = $queryBuilder->executeQuery();
         $backgroundJobs = $result->fetchAllAssociative();
 
         foreach ($backgroundJobs as $row) {

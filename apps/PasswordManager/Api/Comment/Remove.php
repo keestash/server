@@ -23,8 +23,11 @@ namespace KSA\PasswordManager\Api\Comment;
 
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\CommentRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -33,18 +36,23 @@ class Remove implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private IL10N             $translator;
+    private AccessService     $accessService;
 
     public function __construct(
-        IL10N $l10n
+        IL10N               $l10n
         , CommentRepository $commentRepository
+        , AccessService     $accessService
     ) {
         $this->commentRepository = $commentRepository;
         $this->translator        = $l10n;
+        $this->accessService     = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $commentId  = $parameters["commentId"] ?? null;
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $commentId) {
 
@@ -55,6 +63,14 @@ class Remove implements RequestHandlerInterface {
                 ]
             );
 
+        }
+
+        $node = $this->commentRepository->getNodeByCommentId((int) $commentId);
+        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
+            return new JsonResponse(
+                ''
+                , IResponse::UNAUTHORIZED
+            );
         }
 
         $removed = $this->commentRepository->remove((int) $commentId);

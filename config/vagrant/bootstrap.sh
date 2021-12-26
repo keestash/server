@@ -35,3 +35,5 @@ xdebug.client_host=192.168.68.1
 sudo phpenmod pdo_mysql
 sudo service apache2 restart
 sudo service mysql restart
+
+

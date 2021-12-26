@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Get;
+use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
@@ -38,6 +39,7 @@ class GetFactory {
             , $container->get(BreadCrumbService::class)
             , $container->get(ILogger::class)
             , $container->get(NodeEncryptionService::class)
+            , $container->get(CommentRepository::class)
         );
     }
 

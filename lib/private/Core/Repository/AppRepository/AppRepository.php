@@ -54,7 +54,7 @@ class AppRepository implements IAppRepository {
             ]
         )
             ->from('app_config');
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $users  = $result->fetchAllNumeric();
 
         foreach ($users as $row) {
@@ -90,7 +90,7 @@ class AppRepository implements IAppRepository {
             ->from('app_config')
             ->where('app_id = ?')
             ->setParameter(0, $id);
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $users  = $result->fetchAllNumeric();
 
         foreach ($users as $row) {

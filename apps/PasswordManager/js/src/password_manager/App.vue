@@ -254,14 +254,9 @@ export default {
 
             this.axios.request(
                 ROUTES.getNode(rootId)
-            ).then(function (response) {
-                if (RESPONSE_CODE_OK in response.data) {
-                    return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-                }
-                return [];
-            })
-                .then(function (data) {
-
+            )
+                .then(function (response) {
+                    const data = response.data;
                     if (data.length === 0) return;
 
                     _this.parseBreadCrumb(data.breadCrumb)

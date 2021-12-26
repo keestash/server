@@ -122,7 +122,7 @@ class FileRepository {
             $queryBuilder = $queryBuilder->setParameter(1, $type);
         }
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $rows   = $result->fetchAllNumeric();
 
         foreach ($rows as $row) {
@@ -159,7 +159,7 @@ class FileRepository {
             ->where('file_id = ?')
             ->setParameter(0, $file->getId());
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         $row    = $result->fetchAllNumeric()[0];
         $nodeId = (int) $row[0];
 

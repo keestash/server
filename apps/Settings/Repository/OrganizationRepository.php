@@ -64,13 +64,9 @@ class OrganizationRepository implements IOrganizationRepository {
             ]
         )
             ->from('`organization`', 'o');
-        $rows         = $queryBuilder->execute();
+        $result       = $queryBuilder->executeQuery();
 
-        if (false === is_iterable($rows)) {
-            throw new SettingsException();
-        }
-
-        foreach ($rows as $row) {
+        foreach ($result->fetchAllAssociative() as $row) {
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);
@@ -110,13 +106,9 @@ class OrganizationRepository implements IOrganizationRepository {
             ->where('uo.`user_id` = ?')
             ->setParameter(0, $user->getId());
 
-        $rows = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
-        if (false === is_iterable($rows)) {
-            throw new SettingsException();
-        }
-
-        foreach ($rows as $row) {
+        foreach ($result->fetchAllAssociative() as $row) {
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);
@@ -209,13 +201,10 @@ class OrganizationRepository implements IOrganizationRepository {
             ->from('organization')
             ->where('id = ?')
             ->setParameter(0, $id);
-        $rows         = $queryBuilder->execute();
+        $result       = $queryBuilder->executeQuery();
 
-        if (false === is_iterable($rows)) {
-            throw new SettingsException();
-        }
 
-        foreach ($rows as $row) {
+        foreach ($result->fetchAllAssociative() as $row) {
             $organization = new Organization();
             $organization->setId((int) $row['id']);
             $organization->setName((string) $row['name']);

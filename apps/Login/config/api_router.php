@@ -23,7 +23,7 @@ declare(strict_types=1);
 use Keestash\ConfigProvider;
 use KSA\Login\Api\Login;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
-use KSP\Core\DTO\Http\IVerb;
+use KSP\Api\IVerb;
 
 return [
     ConfigProvider::ROUTES        => [

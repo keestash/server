@@ -23,7 +23,7 @@ namespace Keestash\Core\DTO\Organization;
 
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
@@ -35,9 +35,11 @@ class Organization implements IOrganization {
     private DateTimeInterface  $createTs;
     private ?DateTimeInterface $activeTs = null;
     private ArrayList          $users;
+    private HashTable          $hashTable;
 
     public function __construct() {
-        $this->users = new ArrayList();
+        $this->users     = new ArrayList();
+        $this->hashTable = new HashTable();
     }
 
     /**
@@ -98,14 +100,11 @@ class Organization implements IOrganization {
 
     public function addUser(IUser $user): void {
         $this->users->add($user);
+        $this->hashTable->put($user->getId(), true);
     }
 
     public function getUsers(): ArrayList {
         return $this->users;
-    }
-
-    public function setUsers(ArrayList $users): void {
-        $this->users = $users;
     }
 
     /**
@@ -120,6 +119,10 @@ class Organization implements IOrganization {
      */
     public function setPassword(string $password): void {
         $this->password = $password;
+    }
+
+    public function hasUser(IUser $user): bool {
+        return $this->hashTable->containsKey($user->getId());
     }
 
     public function jsonSerialize(): array {

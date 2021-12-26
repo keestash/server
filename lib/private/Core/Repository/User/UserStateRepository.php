@@ -88,7 +88,7 @@ class UserStateRepository implements IUserStateRepository {
                 ->setParameter(0, $state);
         }
 
-        $usersStates = $queryBuilder->execute()->fetchAll();
+        $usersStates = $queryBuilder->executeQuery()->fetchAllAssociative();
 
         foreach ($usersStates as $row) {
             $id            = $row["id"];
