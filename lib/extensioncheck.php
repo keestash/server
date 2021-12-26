@@ -44,4 +44,6 @@ $diffed = array_diff(
 if (count($diffed) !== 0) {
     echo 'There are some extensions missing on your system. Please make sure that all of the following extensions are installed:' . PHP_EOL;
     echo var_export($requiredExtensions) . PHP_EOL;
+    echo 'The following are missing:' . PHP_EOL;
+    echo var_export($diffed) . PHP_EOL;
 }
