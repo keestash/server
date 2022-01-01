@@ -20,6 +20,7 @@ import App from "./InstallInstance/App";
 import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 import Vue from 'vue';
 import store from "../../../../lib/js/src/Store/store";
+import i18n from "./i18n/index";
 
 window.addEventListener(
     'DOMContentLoaded'
@@ -28,8 +29,9 @@ window.addEventListener(
 
 function bootstrap() {
     const vueConfig = {
-        store,
-        render: h => h(App)
+        store
+        , i18n
+        , render: h => h(App)
     };
 
     Vue.use(BootstrapVue);

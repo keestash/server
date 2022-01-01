@@ -25,6 +25,8 @@ use KSP\Core\Service\IService;
 
 interface IEnvironmentService extends IService {
 
+    public function getEnv(bool $force = false);
+
     public function isApi(): bool;
 
     public function isWeb(): bool;

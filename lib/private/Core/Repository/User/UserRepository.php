@@ -210,7 +210,7 @@ class UserRepository implements IUserRepository {
             ->setParameter(5, $user->getPassword())
             ->setParameter(6, $user->getWebsite())
             ->setParameter(7, $user->getHash())
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 

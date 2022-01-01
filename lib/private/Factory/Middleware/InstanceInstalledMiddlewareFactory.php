@@ -39,7 +39,6 @@ class InstanceInstalledMiddlewareFactory {
             , $container->get(LockHandler::class)
             , $container->get(ILogger::class)
             , $container->get(Config::class)
-            , $container->get(IRouterService::class)
         );
     }
 

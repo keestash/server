@@ -24,6 +24,7 @@ use Doctrine\DBAL\Connection;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
 use Keestash\App\Config\Diff;
+use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
@@ -77,6 +78,7 @@ use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Factory\App\Config\DiffFactory;
+use Keestash\Factory\App\Cors\ProjectConfigurationFactory;
 use Keestash\Factory\App\Loader\LoaderFactory;
 use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Legacy\LegacyFactory;
@@ -124,36 +126,41 @@ use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
-use Keestash\Factory\Middleware\ApplicationStartedMiddleware;
+use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
+use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
+use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
+use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
+use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
-use Keestash\Factory\Middleware\ExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
-use Keestash\Factory\Middleware\KeestashHeaderMiddlewareFactory;
-use Keestash\Factory\Middleware\LoggedInMiddlewareFactory;
-use Keestash\Factory\Middleware\SessionHandlerMiddlewareFactory;
-use Keestash\Factory\Middleware\UserActiveMiddlewareFactory;
+use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
+use Keestash\Factory\Middleware\Web\LoggedInMiddlewareFactory;
+use Keestash\Factory\Middleware\Web\SessionHandlerMiddlewareFactory;
+use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
 use Keestash\L10N\GetText;
 use Keestash\Legacy\Legacy;
 use Keestash\Middleware\AppsInstalledMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
-use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
-use Keestash\Middleware\KeestashHeaderMiddleware;
-use Keestash\Middleware\LoggedInMiddleware;
-use Keestash\Middleware\SessionHandlerMiddleware;
-use Keestash\Middleware\UserActiveMiddleware;
+use Keestash\Middleware\Api\KeestashHeaderMiddleware;
+use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMiddleware;
+use Keestash\Middleware\Web\LoggedInMiddleware;
+use Keestash\Middleware\Web\SessionHandlerMiddleware;
+use Keestash\Middleware\Api\UserActiveMiddleware;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Access\AccessService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
+    // App
+    ProjectConfiguration::class => ProjectConfigurationFactory::class,
+
     ApiLogRepository::class                                        => ApiLogRepositoryFactory::class,
     MySQLBackend::class                                            => MySQLBackendFactory::class,
-    Connection::class                                              => ConnectionFactory::class,
     FileRepository::class                                          => FileRepositoryFactory::class,
     UserRepository::class                                          => UserRepositoryFactory::class,
     LoggerManager::class                                           => LoggerManagerFactory::class,
@@ -186,19 +193,27 @@ return [
     JWTService::class                                              => JWTServiceFactory::class,
 
     // middleware
-    KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
-    ExceptionHandlerMiddleware::class                              => ExceptionHandlerMiddlewareFactory::class,
-    SessionHandlerMiddleware::class                                => SessionHandlerMiddlewareFactory::class,
     InstanceInstalledMiddleware::class                             => InstanceInstalledMiddlewareFactory::class,
     AppsInstalledMiddleware::class                                 => AppsInstalledMiddlewareFactory::class,
     DispatchMiddleware::class                                      => DispatchMiddlewareFactory::class,
-    ApplicationStartedMiddleware::class                            => InvokableFactory::class,
+    ApplicationStartedMiddleware::class                            => ApplicationStartedMiddlewareFactory::class,
+    // api
+    KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
+    ApiExceptionHandlerMiddlerware::class                          => ApiExceptionHandlerMiddlewareFactory::class,
+
+    // web
+    SessionHandlerMiddleware::class                                => SessionHandlerMiddlewareFactory::class,
     UserActiveMiddleware::class                                    => UserActiveMiddlewareFactory::class,
+    WebExceptionHandlerMiddleware::class                           => WebExceptionHandlerMiddlewareFactory::class,
+
+    // ThirdParty
+    DateTimeService::class                                         => DateTimeServiceFactory::class,
+    Connection::class                                              => ConnectionFactory::class,
+    \doganoo\DIP\HTTP\HTTPService::class                           => InvokableFactory::class,
 
     // service
     UserService::class                                             => UserServiceFactory::class,
     ConfigService::class                                           => ConfigServiceFactory::class,
-    DateTimeService::class                                         => DateTimeServiceFactory::class,
     KeyService::class                                              => KeyServiceFactory::class,
     KeestashEncryptionService::class                               => KeestashEncryptionServiceFactory::class,
     FileService::class                                             => FileServiceFactory::class,

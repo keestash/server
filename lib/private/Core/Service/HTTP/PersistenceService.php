@@ -33,9 +33,9 @@ class PersistenceService implements IPersistenceService {
     private ILogger         $logger;
 
     public function __construct(
-        ISessionManager $sessionManager
+        ISessionManager  $sessionManager
         , ICookieManager $cookieManager
-        , ILogger $logger
+        , ILogger        $logger
     ) {
         $this->sessionManager = $sessionManager;
         $this->cookieManager  = $cookieManager;
@@ -92,7 +92,9 @@ class PersistenceService implements IPersistenceService {
     public function setPersistenceValue(string $key, string $value, int $expireTs = 0): bool {
         $this->logger->debug("setPersistenceValue: key $key, value $value, expireTs $expireTs");
         $sessionPersisted = $this->setSessionValue($key, $value);
-        $cookiePersisted  = $this->setCookieValue($key, $value, $expireTs);
+        $this->logger->debug("sessionPersisted: " . ($sessionPersisted ? 'true' : 'false'));
+        $cookiePersisted = $this->setCookieValue($key, $value, $expireTs);
+        $this->logger->debug("cookiePersisted: " . ($cookiePersisted ? 'true' : 'false'));
         return true === $sessionPersisted && true === $cookiePersisted;
     }
 

@@ -8,8 +8,12 @@ services:
     volumes:
       - ./:/var/www/html/
       - ./config/docker/web/xdebug/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./config/docker/web/apache/keestash.conf:/etc/apache2/sites-available/000-default.conf
+      - ~/config/mkcert/certificates/cert.pem:/etc/apache2/ssl/cert.pem
+      - ~/config/mkcert/certificates/cert-key.pem:/etc/apache2/ssl/cert-key.pem
     ports:
       - '8000:80'
+      - '8080:443'
   db:
     container_name: mysql8
     build:

@@ -26,20 +26,29 @@ use KSP\Core\Service\Core\Environment\IEnvironmentService;
 
 class EnvironmentService implements IEnvironmentService {
 
+    private ?string $env = null;
+
+    public function getEnv(bool $force = false): string {
+        if (null === $this->env || true === $force) {
+            $this->env = (string) getenv(ConfigProvider::ENVIRONMENT_KEY);
+        }
+        return $this->env;
+    }
+
     public function isApi(): bool {
-        return getenv(ConfigProvider::ENVIRONMENT_KEY) === ConfigProvider::ENVIRONMENT_API;
+        return $this->getEnv() === ConfigProvider::ENVIRONMENT_API;
     }
 
     public function isWeb(): bool {
-        return getenv(ConfigProvider::ENVIRONMENT_KEY) === ConfigProvider::ENVIRONMENT_WEB;
+        return $this->getEnv() === ConfigProvider::ENVIRONMENT_WEB;
     }
 
     public function isConsole(): bool {
-        return getenv(ConfigProvider::ENVIRONMENT_KEY) === ConfigProvider::ENVIRONMENT_CONSOLE;
+        return $this->getEnv() === ConfigProvider::ENVIRONMENT_CONSOLE;
     }
 
     public function isUnitTest(): bool {
-        return getenv(ConfigProvider::ENVIRONMENT_KEY) === ConfigProvider::ENVIRONMENT_UNIT_TEST;
+        return $this->getEnv() === ConfigProvider::ENVIRONMENT_UNIT_TEST;
     }
 
     public function setEnv(string $env): bool {

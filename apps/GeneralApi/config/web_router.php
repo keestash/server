@@ -26,7 +26,7 @@ use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\Route\RouteList;
 
 return [
-    ConfigProviderAlias::ROUTES                 => [
+    ConfigProviderAlias::ROUTES                   => [
         [
             'path'         => ConfigProvider::ROUTE_LIST_ALL
             , 'middleware' => RouteList::class
@@ -42,8 +42,8 @@ return [
             , 'middleware' => DefaultRouteController::class
             , 'name'       => ConfigProvider::DEFAULT_SLASH
         ],
-    ],
-    ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
+    ]
+    , ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::ROUTE_LIST_ALL => 'route_list'
     ],
 ];

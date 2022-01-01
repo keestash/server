@@ -50,16 +50,16 @@ class LoginController extends StaticAppController {
     private HTTPService               $httpService;
 
     public function __construct(
-        IL10N $translator
-        , ILoader $loader
-        , PersistenceService $persistenceService
-        , Legacy $legacy
-        , ConfigService $configService
-        , InstanceDB $instanceDB
-        , IAppRenderer $appRenderer
-        , IUserRepository $userRepository
+        IL10N                       $translator
+        , ILoader                   $loader
+        , PersistenceService        $persistenceService
+        , Legacy                    $legacy
+        , ConfigService             $configService
+        , InstanceDB                $instanceDB
+        , IAppRenderer              $appRenderer
+        , IUserRepository           $userRepository
         , TemplateRendererInterface $templateRenderer
-        , HTTPService $httpService
+        , HTTPService               $httpService
     ) {
         $this->loader             = $loader;
         $this->persistenceService = $persistenceService;
@@ -97,37 +97,7 @@ class LoginController extends StaticAppController {
             : null;
 
         return $this->templateRenderer
-            ->render(
-                'login::login'
-                , [
-                    // strings
-                    "signIn"                       => $this->translator->translate("Sign In")
-                    , "passwordPlaceholder"        => $this->translator->translate("Password")
-                    , "userNamePlaceholder"        => $this->translator->translate("Username")
-                    , "createNewAccountText"       => $this->translator->translate("Create New Account")
-                    , "createNewAccountActionText" => $this->translator->translate("Sign Up")
-                    , "forgotPasswordText"         => $this->translator->translate("Forgot your password?")
-                    , "forgotPasswordActionText"   => $this->translator->translate("Request")
-                    , "loginToApp"                 => $this->translator->translate("Login to {$this->legacy->getApplication()->get('name')}")
-                    , "newAccountLink"             => $this->httpService->getBaseURL(true) . "/register"
-                    , "forgotPasswordLink"         => $this->httpService->getBaseURL(true) . "/forgot_password"
-                    , "registeringEnabled"         => $this->loader->hasApp(ConfigProvider::APP_ID)
-
-                    // values
-                    , "backgroundPath"             => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
-                    , "logoPath"                   => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
-                    , "newTab"                     => false === $this->configService->getValue('debug', false)
-                    , "demo"                       => $demo
-                    , "tncLink"                    => $this->httpService->getBaseURL(true) . "/tnc/"
-                    , "demoMode"                   => [
-                        "isDemoMode"      => $isDemoMode
-                        , "sensitiveData" => $this->translator->translate("Please do not input sensitive data as this the instance you are logging in is only for demonstration purposes!")
-                        , "deleteInfo"    => $this->translator->translate("The data submitted here will be deleted after 60 minutes.")
-                        , "adminUser"     => $this->translator->translate("Username: " . IUser::DEMO_USER_NAME)
-                        , "adminPassword" => $this->translator->translate("Password: " . IUser::DEMO_PASSWORD)
-                    ]
-                ]
-            );
+            ->render('login::login');
 
     }
 

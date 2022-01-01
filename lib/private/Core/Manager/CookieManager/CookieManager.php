@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\CookieManager;
 
 use DateTime;
+use doganoo\DI\HTTP\IHTTPService;
 use Keestash;
 use Keestash\Core\Service\HTTP\HTTPService;
 use KSP\Core\ILogger\ILogger;
@@ -33,15 +34,18 @@ class CookieManager implements ICookieManager {
     private HTTPService    $httpService;
     private IConfigService $configService;
     private ILogger        $logger;
+    private IHTTPService   $libHttpService;
 
     public function __construct(
-        HTTPService $httpService
+        HTTPService      $httpService
         , IConfigService $configService
-        , ILogger $logger
+        , ILogger        $logger
+        , IHTTPService   $libHttpService
     ) {
-        $this->httpService   = $httpService;
-        $this->configService = $configService;
-        $this->logger        = $logger;
+        $this->httpService    = $httpService;
+        $this->configService  = $configService;
+        $this->logger         = $logger;
+        $this->libHttpService = $libHttpService;
 
         $parsed = $this->httpService->getParsedBaseUrl(false, false);
 
@@ -55,15 +59,20 @@ class CookieManager implements ICookieManager {
     }
 
     public function set(string $key, string $value, int $expireTs = 0): bool {
-
+        $urlParts = parse_url(
+            $this->httpService->getBaseURL(false, false)
+        );
         return setcookie(
             $key
             , $value
-            , $expireTs
-            , ICookieManager::COOKIE_PATH_ENTIRE_PATH
-            , $this->httpService->getBaseURL(false, false)
-            , ICookieManager::COOKIE_SECURE
-            , ICookieManager::COOKIE_HTTP_ONLY
+            , [
+                'expires'    => $expireTs
+                , 'path'     => ICookieManager::COOKIE_PATH_ENTIRE_PATH
+                , 'domain'   => $urlParts['host']
+                , 'secure'   => ICookieManager::COOKIE_SECURE
+                , 'httponly' => ICookieManager::COOKIE_HTTP_ONLY
+                , 'samesite' => 'None'
+            ]
         );
     }
 

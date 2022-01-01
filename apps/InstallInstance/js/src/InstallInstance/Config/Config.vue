@@ -1,6 +1,5 @@
 <template>
   <div class="col">
-    <h4>{{ this.head.value }}</h4>
     <div class="text-center" v-if="loading.show">
       <b-spinner type="grow" variant="primary" label="Spinning" v-if="loading.show"></b-spinner>
     </div>
@@ -164,7 +163,7 @@
 </template>
 
 <script>
-import {ASSET_READER, AXIOS, StartUp} from "../../../../../../lib/js/src/StartUp";
+import {AXIOS, StartUp} from "../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes";
 import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
@@ -173,9 +172,7 @@ export default {
   name: "Config",
   data() {
     return {
-      head: {
-        value: ''
-      },
+      strings: [],
       success: {
         show: false
       },
@@ -257,7 +254,7 @@ export default {
   },
   computed: {
     isVisible() {
-      return this.strings.length > 0;
+      return (this.strings || []).length > 0;
     }
   },
   async created() {
@@ -292,25 +289,19 @@ export default {
       this.loading.show = false;
       this.success.show = false;
 
-      const assetReader = this.container.query(ASSET_READER);
-      const assets = await assetReader.read(true);
-      const strings = (assets[1].install_instance).strings;
-
-      this.head.value = strings.config.header;
-
       this.form.content.db = Object.assign(
           this.form.content.db,
-          strings.config.db,
+          this.$t('config.db')
       );
 
       this.form.content.email = Object.assign(
           this.form.content.email,
-          strings.config.email,
+          this.$t('config.email')
       );
 
       this.form.content.logRequests = Object.assign(
           this.form.content.logRequests,
-          strings.config.logRequests,
+          this.$t('config.logRequests')
       );
     },
     makeSuccess() {

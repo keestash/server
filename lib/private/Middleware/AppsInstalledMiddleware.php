@@ -22,14 +22,11 @@ declare(strict_types=1);
 namespace Keestash\Middleware;
 
 use Keestash\App\Config\Diff;
-use Keestash\ConfigProvider;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
-use Keestash\Core\System\Installation\Instance\LockHandler as InstanceLockHandler;
+use KSP\Api\IRequest;
 use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,69 +35,42 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AppsInstalledMiddleware implements MiddlewareInterface {
 
-    private HTTPService         $httpService;
-    private InstanceLockHandler $instanceLockHandler;
-    private AppLockHandler      $appLockHandler;
-    private Config              $config;
-    private ILoader             $loader;
-    private IAppRepository      $appRepository;
-    private Diff                $diff;
-    private IRouterService      $routerService;
+    private HTTPService    $httpService;
+    private AppLockHandler $appLockHandler;
+    private ILoader        $loader;
+    private IAppRepository $appRepository;
+    private Diff           $diff;
 
     public function __construct(
-        HTTPService $httpService
-        , InstanceLockHandler $instanceLockHandler
-        , Config $config
-        , ILoader $loader
+        HTTPService      $httpService
+        , ILoader        $loader
         , IAppRepository $appRepository
-        , Diff $diff
+        , Diff           $diff
         , AppLockHandler $appLockHandler
-        , IRouterService $routerService
     ) {
-        $this->httpService         = $httpService;
-        $this->instanceLockHandler = $instanceLockHandler;
-        $this->config              = $config;
-        $this->loader              = $loader;
-        $this->appRepository       = $appRepository;
-        $this->diff                = $diff;
-        $this->appLockHandler      = $appLockHandler;
-        $this->routerService       = $routerService;
-    }
-
-    private function routesToInstallation(ServerRequestInterface $request): bool {
-        $currentRoute       = $this->routerService->getMatchedPath($request);
-        $installationRoutes = array_merge(
-            $this->config
-                ->get(ConfigProvider::INSTALL_APPS_ROUTES)
-                ->toArray()
-            , $this->config
-            ->get(ConfigProvider::INSTALL_INSTANCE_ROUTES)
-            ->toArray()
-        );
-
-        foreach ($installationRoutes as $publicRoute) {
-            if ($currentRoute === $publicRoute) {
-                return true;
-            }
-        }
-
-        return false;
+        $this->httpService    = $httpService;
+        $this->loader         = $loader;
+        $this->appRepository  = $appRepository;
+        $this->diff           = $diff;
+        $this->appLockHandler = $appLockHandler;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $instanceLocked       = $this->instanceLockHandler->isLocked();
         $appsLocked           = $this->appLockHandler->isLocked();
-        $routesToInstallation = $this->routesToInstallation($request);
+        $routesToInstallation = $request->getAttribute(IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTALL, false);
+
+        /**
+         * !!!! ORDER MATTERS HERE !!!!
+         *
+         * This middleware has to run after InstanceInstalledMiddleware::class since
+         * we can only install apps when the instance is installed.
+         */
 
         // if we are actually installing the instance,
         // we need to make sure that Keestash does not want
         // to Install the apps
-        if (true === $instanceLocked || true === $appsLocked) {
-
-            if (true === $routesToInstallation) {
-                return $handler->handle($request);
-            }
-
+        if (true === $appsLocked || true === $routesToInstallation) {
+            return $handler->handle($request);
         }
 
         // We only check loadedApps if the system is

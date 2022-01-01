@@ -17,7 +17,7 @@ export default {
     Head,
     EndUpdate,
     Config
-  },
+  }
 }
 </script>
 

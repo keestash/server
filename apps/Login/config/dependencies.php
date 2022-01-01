@@ -20,9 +20,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login;
 use KSA\Login\Controller\LoginController;
 use KSA\Login\Controller\Logout;
+use KSA\Login\Factory\Api\ConfigurationFactory;
 use KSA\Login\Factory\Api\LoginFactory;
 use KSA\Login\Factory\Controller\LogoutFactory;
 use KSA\Login\Service\TokenService;
@@ -31,13 +33,14 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'factories' => [
         // api
-        Login::class           => LoginFactory::class,
+        Login::class             => LoginFactory::class
+        , Configuration::class   => ConfigurationFactory::class
 
         // controller
-        Logout::class          => LogoutFactory::class,
-        LoginController::class => \KSA\Login\Factory\Controller\LoginFactory::class,
+        , Logout::class          => LogoutFactory::class
+        , LoginController::class => \KSA\Login\Factory\Controller\LoginFactory::class
 
         // service
-        TokenService::class    => InvokableFactory::class
+        , TokenService::class    => InvokableFactory::class
     ]
 ];

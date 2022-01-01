@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Manager\CookieManager;
 
+use doganoo\DI\HTTP\IHTTPService;
 use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Service\HTTP\HTTPService;
 use KSP\Core\ILogger\ILogger;
@@ -35,6 +36,7 @@ class CookieManagerFactory {
             $container->get(HTTPService::class)
             , $container->get(IConfigService::class)
             , $container->get(ILogger::class)
+            , $container->get(IHTTPService::class)
         );
     }
 

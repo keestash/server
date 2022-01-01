@@ -46,7 +46,7 @@ use Psr\Container\ContainerInterface;
     $environmentService = $container->get(IEnvironmentService::class);
     $environmentService->setEnv(ConfigProvider::ENVIRONMENT_API);
 
-    (require_once __DIR__ . '/config/config/pipeline.php')($app);
+    (require_once __DIR__ . '/lib/config/pipeline/api/pipeline.php')($app);
 
     $router = $config->get(ConfigProvider::API_ROUTER);
 

@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
+use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSP\Api\IVerb;
@@ -33,8 +34,15 @@ return [
             , 'method'     => IVerb::POST
             , 'name'       => Login::class
         ],
+        [
+            'path'         => LoginConfigProvider::APP_CONFIGURATION
+            , 'middleware' => Configuration::class
+            , 'method'     => IVerb::GET
+            , 'name'       => Configuration::class
+        ],
     ],
     ConfigProvider::PUBLIC_ROUTES => [
         LoginConfigProvider::LOGIN_SUBMIT
+        , LoginConfigProvider::APP_CONFIGURATION
     ]
 ];
