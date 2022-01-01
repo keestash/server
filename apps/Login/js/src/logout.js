@@ -19,27 +19,24 @@
 
 import {Logout} from "./Logout/Logout";
 import {APP_STORAGE, ROUTER, TEMPORARY_STORAGE} from "../../../../lib/js/src/StartUp";
+import store from "../../../../lib/js/src/Store/store";
+import i18n from "./i18n";
+import App from "./Login/App";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 
-(function () {
-    if (!Keestash.Logout) {
-        Keestash.Logout = {};
-    }
+window.addEventListener(
+    'DOMContentLoaded'
+    , bootstrap
+);
 
-    Keestash.Logout = {
+function bootstrap() {
+    const diContainer = Keestash.Main.getContainer();
 
-        init: async () => {
-            const diContainer = Keestash.Main.getContainer();
-
-            const logout = new Logout(
-                diContainer.query(APP_STORAGE)
-                , diContainer.query(ROUTER)
-                , diContainer.query(TEMPORARY_STORAGE)
-            );
-            logout.init();
-        }
-
-    }
-})();
-$(document).ready(async () => {
-    await Keestash.Logout.init();
-});
+    const logout = new Logout(
+        diContainer.query(APP_STORAGE)
+        , diContainer.query(ROUTER)
+        , diContainer.query(TEMPORARY_STORAGE)
+    );
+    logout.init();
+}

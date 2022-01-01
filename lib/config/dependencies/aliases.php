@@ -25,6 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
+use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
@@ -114,6 +115,7 @@ use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
+use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 return [
     IL10N::class                                      => GetText::class,
@@ -164,5 +166,7 @@ return [
     IHTTPService::class                               => HTTPService::class,
     IInstallerService::class                          => InstallerService::class,
     IApiRequestService::class                         => ApiRequestService::class,
-    IAccessService::class                             => AccessService::class
+    IAccessService::class                             => AccessService::class,
+    ConfigurationInterface::class                     => ProjectConfiguration::class,
+    \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class,
 ];

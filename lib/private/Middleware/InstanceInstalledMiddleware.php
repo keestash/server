@@ -25,6 +25,7 @@ use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
+use KSP\Api\IRequest;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
@@ -41,7 +42,6 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
     private LockHandler    $lockHandler;
     private ILogger        $logger;
     private Config         $config;
-    private IRouterService $routerService;
 
     public function __construct(
         HTTPService      $httpService
@@ -49,34 +49,17 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
         , LockHandler    $lockHandler
         , ILogger        $logger
         , Config         $config
-        , IRouterService $routerService
     ) {
         $this->httpService   = $httpService;
         $this->instanceDB    = $instanceDB;
         $this->lockHandler   = $lockHandler;
         $this->logger        = $logger;
         $this->config        = $config;
-        $this->routerService = $routerService;
-    }
-
-    private function routesToInstallation(ServerRequestInterface $request): bool {
-        $currentRoute       = $this->routerService->getMatchedPath($request);
-        $installationRoutes = $this->config
-            ->get(ConfigProvider::INSTALL_INSTANCE_ROUTES)
-            ->toArray();
-
-        foreach ($installationRoutes as $publicRoute) {
-            if ($currentRoute === $publicRoute) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $isLocked             = $this->lockHandler->isLocked();
-        $routesToInstallation = $this->routesToInstallation($request);
+        $routesToInstallation = $request->getAttribute(IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL, false);
         $instanceHash         = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
         $instanceId           = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
 

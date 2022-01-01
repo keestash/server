@@ -1,4 +1,5 @@
 FROM php:7.4-apache
+RUN a2enmod ssl && a2enmod rewrite
 RUN apt-get update && apt-get upgrade -y  --allow-unauthenticated
 RUN apt-get install software-properties-common -y
 RUN apt-get update
@@ -9,3 +10,4 @@ RUN docker-php-ext-enable xdebug
 RUN apt-get update
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 EXPOSE 80
+EXPOSE 443

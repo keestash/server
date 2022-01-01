@@ -30,12 +30,12 @@ use KSP\Core\Service\Event\IEventDispatcher;
 use Laminas\Config\Config;
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
-
 (function () {
     chdir(dirname(__DIR__));
 
     /** @var ContainerInterface $container */
     $container = require_once __DIR__ . '/lib/start.php';
+
     /** @var Config $config */
     $config = $container->get(Config::class);
     /** @var Application $app */
@@ -44,7 +44,7 @@ use Psr\Container\ContainerInterface;
     $environmentService = $container->get(IEnvironmentService::class);
     $environmentService->setEnv(ConfigProvider::ENVIRONMENT_WEB);
 
-    (require_once __DIR__ . '/config/config/pipeline.php')($app);
+    (require_once __DIR__ . '/lib/config/pipeline/web/pipeline.php')($app);
 
     /** @var Config $router */
     $router = $config->get(ConfigProvider::WEB_ROUTER);

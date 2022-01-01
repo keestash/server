@@ -22,7 +22,9 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Router;
 
 use Keestash\ConfigProvider;
+use Keestash\Exception\KeestashException;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\Route;
@@ -31,18 +33,21 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class RouterService implements IRouterService {
 
-    private RouterInterface $router;
-    private Config          $config;
-    private ILogger         $logger;
+    private RouterInterface     $router;
+    private Config              $config;
+    private ILogger             $logger;
+    private IEnvironmentService $environmentService;
 
     public function __construct(
-        RouterInterface $router
-        , Config        $config
-        , ILogger       $logger
+        RouterInterface       $router
+        , Config              $config
+        , ILogger             $logger
+        , IEnvironmentService $environmentService
     ) {
-        $this->router = $router;
-        $this->config = $config;
-        $this->logger = $logger;
+        $this->router             = $router;
+        $this->config             = $config;
+        $this->logger             = $logger;
+        $this->environmentService = $environmentService;
     }
 
     public function getMatchedPath(ServerRequestInterface $request): string {
@@ -71,24 +76,62 @@ class RouterService implements IRouterService {
         return $this->router->generateUri($name);
     }
 
-    public function isPublicRoute(ServerRequestInterface $request): bool {
-        $path            = $this->getMatchedPath($request);
-        $publicWebRoutes = $this->config
-            ->get(ConfigProvider::WEB_ROUTER)
-            ->get(ConfigProvider::PUBLIC_ROUTES)
-            ->toArray();
-        $publicApiRoutes = $this->config
-            ->get(ConfigProvider::API_ROUTER)
-            ->get(ConfigProvider::PUBLIC_ROUTES)
-            ->toArray();
+    public function routesToInstallation(
+        ServerRequestInterface $request
+        , bool                 $withInstance = true
+        , bool                 $withApps = true
+    ): bool {
+        $currentRoute       = $this->getMatchedPath($request);
+        $installationRoutes = [];
 
-        foreach (array_merge($publicWebRoutes, $publicApiRoutes) as $publicRoute) {
-            if ($path === $publicRoute) {
+        if (true === $withInstance) {
+            $installationRoutes = array_merge(
+                $installationRoutes
+                , $this->config
+                ->get(ConfigProvider::INSTALL_APPS_ROUTES)
+                ->toArray()
+            );
+        }
+
+        if (true === $withApps) {
+            $installationRoutes = array_merge(
+                $installationRoutes
+                , $this->config
+                ->get(ConfigProvider::INSTALL_INSTANCE_ROUTES)
+                ->toArray()
+            );
+        }
+
+        foreach ($installationRoutes as $publicRoute) {
+            if ($currentRoute === $publicRoute) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function isPublicRoute(ServerRequestInterface $request): bool {
+        $path   = $this->getMatchedPath($request);
+
+        switch ($this->environmentService->getEnv()) {
+            case ConfigProvider::ENVIRONMENT_WEB:
+                $routes = $this->config
+                    ->get(ConfigProvider::WEB_ROUTER)
+                    ->get(ConfigProvider::PUBLIC_ROUTES)
+                    ->toArray();
+                break;
+            case ConfigProvider::ENVIRONMENT_API:
+                $routes = $this->config
+                    ->get(ConfigProvider::API_ROUTER)
+                    ->get(ConfigProvider::PUBLIC_ROUTES)
+                    ->toArray();
+                break;
+            default:
+                throw new KeestashException('unknown environment ' . $this->environmentService->getEnv());
+        }
+
+        return in_array($path, $routes, true);
     }
 
 }

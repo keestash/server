@@ -16,60 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Routes} from "./Routes/Routes";
-import {Submit} from "./Login/Submit/Submit";
-import {
-    APP_STORAGE,
-    AXIOS,
-    BUTTON_SERVICE,
-    EMAIL_VALIDATOR,
-    GLOBAL_ROUTES,
-    INPUT_SERVICE,
-    MINI_MODAL,
-    REQUEST,
-    ROUTER,
-    TEMPLATE_LOADER, TEMPORARY_STORAGE
-} from "../../../../lib/js/src/StartUp";
-import {Login} from "./Login/Login";
 
-(async () => {
-    if (!Keestash.Login) {
-        Keestash.Login = {};
-    }
+import store from "../../../../lib/js/src/Store/store";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import i18n from "./i18n";
+import App from "./Login/App";
 
-    Keestash.Login = {
+window.addEventListener(
+    'DOMContentLoaded'
+    , bootstrap
+);
 
-        init: () => {
-            const routes = new Routes();
-            const diContainer = Keestash.Main.getContainer();
-            const temporaryStorage = diContainer.query(TEMPORARY_STORAGE);
+function bootstrap() {
+    const vueConfig = {
+        store
+        , i18n
+        , render: h => h(App)
+    };
 
-            temporaryStorage.clear();
-
-            const submit = new Submit(
-                diContainer.query(ROUTER)
-                , diContainer.query(AXIOS)
-                , diContainer.query(APP_STORAGE)
-                , routes
-                , diContainer.query(GLOBAL_ROUTES)
-                , diContainer.query(TEMPLATE_LOADER)
-                , diContainer.query(INPUT_SERVICE)
-                , diContainer.query(BUTTON_SERVICE)
-                , diContainer.query(MINI_MODAL)
-            );
-            submit.handle();
-            const login = new Login(
-                diContainer.query(AXIOS)
-                , routes
-                , diContainer.query(EMAIL_VALIDATOR)
-                , diContainer.query(TEMPORARY_STORAGE)
-            );
-            login.init();
-        }
-    }
-})();
-
-$(document).ready(async () => {
-    await Keestash.Login.init();
-});
-
+    Vue.use(BootstrapVue);
+    Vue.use(IconsPlugin);
+    new Vue(vueConfig)
+        .$mount("#login");
+}

@@ -1,0 +1,26 @@
+{
+  "login": {
+    "signIn": "Sign In",
+    "passwordPlaceholder": "Password",
+    "userNamePlaceholder": "Username",
+    "createNewAccountText": "Create New Account",
+    "createNewAccountActionText": "Sign Up",
+    "forgotPasswordText": "Forgot your password?",
+    "forgotPasswordActionText": "Request",
+    "loginToApp": "Login to %s",
+    "sensitiveData": "Please do not input sensitive data as this the instance you are logging in is only for demonstration purposes!",
+    "deleteInfo": "The data submitted here will be deleted after 60 minutes.",
+    "adminUser": "Username: %s",
+    "adminPassword": "Password: %s",
+    "demo": {
+      "modal": {
+        "title": "Welcome to the the demonstration instance of %s!",
+        "alert": "Please provide a valid email address",
+        "text": "We would like to keep you up to date with news about Keestash. Please input your email address in order to use the demo version.",
+        "info": "With submitting your email address, you are agreeing with our <a href=\"{{ tncLink }}\" target=\"_blank\">Terms and Conditions</a>",
+        "sendButton": "Send",
+        "loadingInfo": "Loading ..."
+      }
+    }
+  }
+}

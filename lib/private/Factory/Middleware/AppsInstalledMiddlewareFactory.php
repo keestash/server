@@ -39,13 +39,10 @@ class AppsInstalledMiddlewareFactory {
     public function __invoke(ContainerInterface $container): AppsInstalledMiddleware {
         return new AppsInstalledMiddleware(
             $container->get(HTTPService::class)
-            , $container->get(InstanceLockHandler::class)
-            , $container->get(Config::class)
             , $container->get(ILoader::class)
             , $container->get(IAppRepository::class)
             , $container->get(Diff::class)
             , $container->get(AppLockHandler::class)
-            , $container->get(IRouterService::class)
         );
     }
 
