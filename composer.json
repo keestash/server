@@ -52,6 +52,7 @@
     "symfony/console": "^5.2",
     "symfony/event-dispatcher": "^5.2",
     "symfony/mime": "^4.4",
+    "symfony/string": "^5.4",
     "twitter/bootstrap": "^4.5",
     "xobotyi/php-mime-type": "^1.2"
   },
@@ -77,6 +78,7 @@
     }
   },
   "minimum-stability": "stable",
+  "prefer-stable": true,
   "scripts": {
     "add-php-compatibility": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
     "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",

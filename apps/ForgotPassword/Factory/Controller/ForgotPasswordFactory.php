@@ -34,11 +34,7 @@ class ForgotPasswordFactory {
 
     public function __invoke(ContainerInterface $container): ForgotPassword {
         return new ForgotPassword(
-            $container->get(IL10N::class)
-            , $container->get(ILoader::class)
-            , $container->get(IConfigService::class)
-            , $container->get(IAppRenderer::class)
-            , $container->get(HTTPService::class)
+            $container->get(IAppRenderer::class)
             , $container->get(TemplateRendererInterface::class)
         );
     }

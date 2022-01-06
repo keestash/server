@@ -16,65 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import $ from 'jquery';
-import {ForgotPassword} from "./ForgotPassword/ForgotPassword";
-import {ButtonService} from "../../../../lib/js/src/UI/Button/ButtonService";
-import {InputService} from "../../../../lib/js/src/UI/Input/InputService";
-import {Request} from "../../../../lib/js/src/Backend/Request";
-import {AppStorage} from "../../../../lib/js/src/Storage/AppStorage";
-import {Router} from "../../../../lib/js/src/Route/Router";
-import {Host} from "../../../../lib/js/src/Backend/Host";
-import {Routes} from "./Routes/Routes";
-import {Mini} from "../../../../lib/js/src/UI/Modal/Mini";
-import {TemplateLoader} from "../../../../lib/js/src/Storage/TemplateStorage/TemplateLoader";
-import {Routes as GlobalRoutes} from "../../../../lib/js/src/Route/Routes";
-import {Parser} from "../../../../lib/js/src/UI/Template/Parser/Parser";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import Vuex from "vuex";
+import App from "./ForgotPassword/App";
+import i18n from "./i18n";
+import store from "../../../../lib/js/src/Store/store";
 
-(function () {
+window.addEventListener(
+    'DOMContentLoaded'
+    , async () => {
+        const vueConfig = {
+            store,
+            i18n,
+            render: h => h(App)
+        };
 
-    if (!Keestash.ForgotPassword) {
-        Keestash.ForgotPassword = {};
+        Vue.use(BootstrapVue);
+        Vue.use(IconsPlugin);
+        Vue.use(Vuex);
+        new Vue(
+            vueConfig
+        )
+            .$mount("#forgot_password");
+
     }
-    Keestash.ForgotPassword = {
-
-        init: async () => {
-            const buttonService = new ButtonService();
-            const inputService = new InputService();
-            const host = new Host();
-            const globalRoutes = new GlobalRoutes(
-                host
-            );
-            const request = new Request(
-                new AppStorage()
-                , new Router(
-                    host
-                )
-            );
-            const routes = new Routes();
-            const templateLoader = new TemplateLoader(
-                request
-                , globalRoutes
-            );
-            const parser = new Parser();
-
-            const miniModal = new Mini(
-                templateLoader
-                , parser
-            );
-
-            const forgotPassword = new ForgotPassword(
-                buttonService
-                , inputService
-                , request
-                , routes
-                , miniModal
-            )
-
-            await forgotPassword.run();
-
-        }
-    }
-})();
-$(document).ready(async () => {
-    await Keestash.ForgotPassword.init();
-});
+);

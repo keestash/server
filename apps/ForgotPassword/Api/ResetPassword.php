@@ -24,6 +24,7 @@ namespace KSA\ForgotPassword\Api;
 use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
+use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -42,9 +43,9 @@ class ResetPassword implements RequestHandlerInterface {
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
-        IL10N $l10n
-        , IUserStateRepository $userStateRepository
-        , UserService $userService
+        IL10N                    $l10n
+        , IUserStateRepository   $userStateRepository
+        , UserService            $userService
         , IUserRepositoryService $userRepositoryService
     ) {
         $this->userStateRepository   = $userStateRepository;
@@ -55,34 +56,31 @@ class ResetPassword implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters  = json_decode((string) $request->getBody(), true);
-        $hash        = $parameters["hash"] ?? null;
-        $newPassword = $parameters["input"] ?? null;
+        $hash        = $parameters["hash"] ?? '';
+        $newPassword = $parameters["input"] ?? '';
+        $debug       = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
 
-        $userState     = $this->findCandidate($hash);
-        $validPassword = $this->userService->passwordHasMinimumRequirements($newPassword);
+        $userState = $this->findCandidate($hash, $debug);
 
         if (null === $userState) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $this->translator->translate("User not updated")
                     , "message" => $this->translator->translate("No user found or session is expired. Please request a new link")
                 ]
+                , IResponse::NOT_FOUND
             );
-
         }
 
+        $validPassword = $this->userService->passwordHasMinimumRequirements($newPassword);
         if (false === $validPassword) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $this->translator->translate("User not updated")
                     , "message" => $this->translator->translate("Password minimum requirements not met")
                 ]
+                , IResponse::NOT_ACCEPTABLE
             );
-
         }
 
         $newUser = $userState->getUser();
@@ -97,24 +95,22 @@ class ResetPassword implements RequestHandlerInterface {
         if (true === $updated) {
 
             $this->userStateRepository->revertPasswordChangeRequest($oldUser);
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $this->translator->translate("User updated")
                     , "message" => $this->translator->translate("We sent an email to reset your password")
                 ]
+                , IResponse::OK
             );
-
         }
 
         return new JsonResponse(
             [],
-            500
+            IResponse::INTERNAL_SERVER_ERROR
         );
     }
 
-    private function findCandidate(string $hash): ?IUserState {
+    private function findCandidate(string $hash, bool $debug = false): ?IUserState {
         $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
 
         foreach ($userStates->keySet() as $userStateId) {
@@ -122,8 +118,9 @@ class ResetPassword implements RequestHandlerInterface {
             $userState = $userStates->get($userStateId);
 
             if (
-                $userState->getStateHash() === $hash
-                && $userState->getCreateTs()->diff(new DateTime())->i < 2
+                true === $debug
+                || ($userState->getStateHash() === $hash
+                    && $userState->getCreateTs()->diff(new DateTime())->i < 2)
             ) {
                 return $userState;
             }

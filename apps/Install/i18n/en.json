@@ -1,0 +1,13 @@
+{
+  "installationHeader": "Installing Apps",
+  "installationDescription": "Your {$this->legacy->getApplication()->get('name')} instance is not fully installed yet. Follow the instructions below to complete the installation.",
+  "installInstructionInstallApps": "The following apps are going to be installed. Please click on \"Install\" to finish the process.",
+  "installInstructionNothingToUpdate": "Your {$this->legacy->getApplication()->get('name')} instance is installed. Please click on \"End\" to start using {$this->legacy->getApplication()->get('name')}.",
+  "installInstructionUpdateApps": "The following apps are going to be updated. Please click on \"Install\" to finish the process.",
+  "installInstructionInstallUpdateApps": "The following apps are going to be installed and updated. Please click on \"Install\" to finish the process.",
+  "installationDescriptionError": "It seems to be that the installer has an error and could not install or update your apps. Please consult your server admin or try installing {$this->legacy->getApplication()->get('name')} again.",
+  "updateInstruction": "The following apps are going to be updated. Please click on \"Install\" to finish the process.",
+  "endUpdate": "End",
+  "installApps": "Install",
+  "updateApps": "Update"
+}

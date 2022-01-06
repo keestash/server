@@ -34,12 +34,8 @@ class ControllerFactory {
 
     public function __invoke(ContainerInterface $container): Controller {
         return new Controller(
-            $container->get(IL10N::class)
-            , $container->get(ILoader::class)
-            , $container->get(IConfigService::class)
-            , $container->get(IAppRenderer::class)
+            $container->get(IAppRenderer::class)
             , $container->get(TemplateRendererInterface::class)
-            , $container->get(HTTPService::class)
         );
     }
 

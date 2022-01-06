@@ -21,51 +21,39 @@ import store from "../../../../lib/js/src/Store/store";
 import Vue from "vue";
 import Organization from "./GeneralApi/Organization/Organization";
 import BootstrapVue from "bootstrap-vue";
-import $ from "jquery";
 import Users from "./Users/Users";
 
-(() => {
-    if (!Keestash.Apps.Settings) {
-        Keestash.Apps.Settings = {};
+window.addEventListener(
+    'DOMContentLoaded'
+    , () => {
+        bootstrap("organizations");
     }
+);
 
-    Keestash.Apps.Settings = {
+function bootstrap(id) {
+    const appContentInner = document.getElementById("app-content-inner");
+    appContentInner.html("");
+    appContentInner.html("<div id='settings-app'></div>");
 
-        init: () => {
-
-            Keestash.Main.setAppNavigationListener(
-                (id) => {
-                    bootstrap(id)
-                }
-            );
-            bootstrap("organizations");
-        }
-
+    let app = null;
+    if (id === "organizations") {
+        app = Organization;
+    } else if (id === "users") {
+        app = Users;
     }
+    const vueConfig = {
+        store,
+        render: h => h(app)
+    };
 
-    function bootstrap(id) {
-        const appContentInner = $("#app-content-inner");
-        appContentInner.html("");
-        appContentInner.html("<div id='settings-app'></div>");
+    Vue.use(BootstrapVue);
+    new Vue(vueConfig)
+        .$mount("#settings-app");
+}
 
-        let app = null;
-        if (id === "organizations") {
-            app = Organization;
-        } else if (id === "users") {
-            app = Users;
-        }
-        const vueConfig = {
-            store,
-            render: h => h(app)
-        };
-
-        Vue.use(BootstrapVue);
-        new Vue(vueConfig)
-            .$mount("#settings-app");
-    }
-
-})();
-
-$(document).ready(() => {
-    Keestash.Apps.Settings.init();
-});
+// TODO
+// Keestash.Main.setAppNavigationListener(
+//     (id) => {
+//         bootstrap(id)
+//     }
+// );

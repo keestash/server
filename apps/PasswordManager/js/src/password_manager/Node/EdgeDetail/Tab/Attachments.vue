@@ -78,11 +78,10 @@
 </template>
 
 <script>
-import {RESPONSE_CODE_OK} from "../../../../../../../../lib/js/src/Backend/Request";
 import {APP_STORAGE, AXIOS, StartUp} from "../../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../../../config/routes";
-import {RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
+import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
 import {mapState} from "vuex";
 import FileUpload from "../../../../../../../../lib/js/src/Components/FileUpload";
 import {Skeleton} from 'vue-loading-skeleton';

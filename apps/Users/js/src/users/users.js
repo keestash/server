@@ -17,17 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-(function () {
-    if (!Keestash.Apps.AllUsers) {
-        Keestash.Apps.AllUsers = {};
-    }
-
-    Keestash.Apps.AllUsers = {
-        init: function () {
+(() => {
+    window.addEventListener(
+        'DOMContentLoaded'
+        , async () => {
             console.log('implement me :(');
-        },
-    }
+        }
+    );
 })();
-$(document).ready(() => {
-    Keestash.Apps.AllUsers.init();
-});

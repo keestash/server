@@ -34,88 +34,26 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ResetPassword extends StaticAppController {
 
-    private IUserStateRepository      $userStateRepository;
     private TemplateRendererInterface $templateRenderer;
-    private IL10N                     $translator;
-    private HTTPService               $httpService;
 
     public function __construct(
-        IL10N $il10n
-        , IUserStateRepository $userStateRepository
-        , IAppRenderer $appRenderer
+         IAppRenderer              $appRenderer
         , TemplateRendererInterface $templateRenderer
-        , HTTPService $httpService
     ) {
         parent::__construct($appRenderer);
-        $this->userStateRepository = $userStateRepository;
         $this->templateRenderer    = $templateRenderer;
-        $this->translator          = $il10n;
-        $this->httpService         = $httpService;
     }
 
     public function run(ServerRequestInterface $request): string {
-        $parameters = $request->getQueryParams();
-        $rendered   = null;
-        $token      = $parameters["token"] ?? null;
-        $user       = null;
-
-        if (null === $token) {
-            return '';
-        }
-
-        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
-
-        foreach ($userStates->keySet() as $userStateId) {
-            /** @var IUserState $usersState */
-            $usersState = $userStates->get($userStateId);
-            if ($token === $usersState->getStateHash()) {
-                $user = $usersState->getUser();
-                break;
-            }
-        }
-
-        if (null === $user) {
-            return '';
-        }
+        $token = $request->getAttribute("token");
 
         return $this->templateRenderer->render(
             'forgotPassword::reset_password'
             , [
-                // strings
-                "title"            => $this->translator->translate("Reset password for {$user->getName()}")
-                , "passwordLabel"  => $this->translator->translate("New Password")
-                , "resetPassword"  => $this->translator->translate("Reset Password")
-                , "noHashFound"    => $this->translator->translate("Link seems to be expired. Please request a new one")
-
-                // values
-                , "backgroundPath" => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
-                , "logoPath"       => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
-                , "token"          => $token
-                , "hasHash"        => $this->hasHash($token)
-
+                'token' => $token
             ]
         );
 
-    }
-
-    private function hasHash(?string $hash): bool {
-        if (null === $hash) return false;
-        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
-
-        foreach ($userStates->keySet() as $userStateId) {
-            /** @var IUserState $userState */
-            $userState = $userStates->get($userStateId);
-
-            if (
-                $userState->getStateHash() === $hash
-                && $userState->getCreateTs()->diff(new DateTime())->i < 2
-            ) {
-                return true;
-            }
-
-        }
-
-        return false;
     }
 
 }

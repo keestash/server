@@ -62,26 +62,26 @@ abstract class KeyRepository {
             )
             ->setParameter(0, $key->getSecret())
             ->setParameter(1, $this->dateTimeService->toYMDHIS($key->getCreateTs()))
-            ->execute();
+            ->executeStatement();
 
         $id = (int) $this->backend->getConnection()->lastInsertId();
 
         if (0 === $id) {
             throw new KeestashException('id is not given!! ' . $id);
         }
-        $key->setId((int) $id);
+        $key->setId($id);
         return $key;
     }
 
     protected function _update(IKey $key): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
-        $queryBuilder = $queryBuilder->update('key')
-            ->set('value', '?')
-            ->where('id = ?')
+        $queryBuilder = $queryBuilder->update('`key`')
+            ->set('`value`', '?')
+            ->where('`id` = ?')
             ->setParameter(0, $key->getSecret())
             ->setParameter(1, $key->getId());
-        $rowCount     = $queryBuilder->execute();
+        $rowCount     = $queryBuilder->executeStatement();
 
         if (0 === $rowCount) {
             return false;
