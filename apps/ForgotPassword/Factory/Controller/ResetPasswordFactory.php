@@ -33,11 +33,8 @@ class ResetPasswordFactory {
 
     public function __invoke(ContainerInterface $container): ResetPassword {
         return new ResetPassword(
-            $container->get(IL10N::class)
-            , $container->get(IUserStateRepository::class)
-            , $container->get(IAppRenderer::class)
+            $container->get(IAppRenderer::class)
             , $container->get(TemplateRendererInterface::class)
-            , $container->get(HTTPService::class)
         );
     }
 

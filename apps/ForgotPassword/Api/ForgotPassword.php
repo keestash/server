@@ -25,11 +25,13 @@ namespace KSA\ForgotPassword\Api;
 use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
 use doganoo\PHPUtil\Util\StringUtil;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
+use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
@@ -53,14 +55,14 @@ class ForgotPassword implements RequestHandlerInterface {
     private HTTPService               $httpService;
 
     public function __construct(
-        EmailService $emailService
-        , Legacy $legacy
-        , UserService $userService
-        , IUserStateRepository $userStateRepository
-        , IL10N $translator
-        , IUserRepository $userRepository
+        EmailService                $emailService
+        , Legacy                    $legacy
+        , UserService               $userService
+        , IUserStateRepository      $userStateRepository
+        , IL10N                     $translator
+        , IUserRepository           $userRepository
         , TemplateRendererInterface $templateRenderer
-        , HTTPService $httpService
+        , HTTPService               $httpService
     ) {
         $this->emailService        = $emailService;
         $this->legacy              = $legacy;
@@ -77,14 +79,15 @@ class ForgotPassword implements RequestHandlerInterface {
         $parameters     = json_decode((string) $request->getBody(), true);
         $input          = $parameters["input"] ?? null;
         $responseHeader = $this->translator->translate("Password reset");
+        $debug          = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
 
         if (null === $input || "" === $input) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $responseHeader
                     , "message" => $this->translator->translate("No parameter given")
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
@@ -106,23 +109,22 @@ class ForgotPassword implements RequestHandlerInterface {
         }
 
         if (null === $user) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $responseHeader
                     , "message" => $this->translator->translate("No user found")
                 ]
+                , IResponse::NOT_FOUND
             );
         }
 
         if (true === $this->userService->isDisabled($user)) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $responseHeader
                     , "message" => $this->translator->translate("Can not reset the user. Please contact your admin")
                 ]
+                , IResponse::FORBIDDEN
             );
 
         }
@@ -141,12 +143,12 @@ class ForgotPassword implements RequestHandlerInterface {
 
         if (true === $alreadyRequested) {
 
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "header"    => $responseHeader
                     , "message" => $this->translator->translate("You have already requested an password reset. Please check your mails or try later again")
                 ]
+                , IResponse::NOT_ACCEPTABLE
             );
 
         }
@@ -196,17 +198,23 @@ class ForgotPassword implements RequestHandlerInterface {
         );
         $sent = $this->emailService->send();
 
-        if (true === $sent) {
+        if (true === $sent || true === $debug) {
             $this->userStateRepository->revertPasswordChangeRequest($user);
             $this->userStateRepository->requestPasswordReset($user, $uuid);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "header"    => $responseHeader
-                , "message" => $this->translator->translate("We sent an email to reset your password")
-            ]
+        $response = [
+            "header"    => $responseHeader
+            , "message" => $this->translator->translate("We sent an email to reset your password")
+        ];
+
+        if (true === $debug) {
+            $response['uuid'] = $ctaLink;
+        }
+
+        return new JsonResponse(
+            $response
+            , IResponse::OK
         );
     }
 

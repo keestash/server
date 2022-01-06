@@ -7,10 +7,10 @@
 </template>
 
 <script>
-import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Request";
 import {AXIOS, ROUTER, StartUp} from "../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes";
+import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
 
 export default {
   name: "EndUpdate",
@@ -34,7 +34,7 @@ export default {
                 (response) => {
                   console.log("done");
                   const object = response.data;
-console.log(response);
+                  console.log(response);
                   console.log(object)
                   if (RESPONSE_CODE_OK in object) {
                     console.log("success. Routing ....");

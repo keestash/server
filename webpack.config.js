@@ -64,11 +64,7 @@ const baseModule = {
         fs: 'empty'
     },
     plugins: [
-        new VueLoaderPlugin(),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery"
-        })
+        new VueLoaderPlugin()
     ]
 };
 

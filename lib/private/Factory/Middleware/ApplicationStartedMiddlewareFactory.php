@@ -23,6 +23,7 @@ namespace Keestash\Factory\Middleware;
 use Interop\Container\ContainerInterface;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Middleware\ApplicationStartedMiddleware;
+use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -39,6 +40,7 @@ class ApplicationStartedMiddlewareFactory implements FactoryInterface {
             $container->get(IRouterService::class)
             , $container->get(IEnvironmentService::class)
             , $container->get(InstallerService::class)
+            , $container->get(IConfigService::class)
         );
     }
 

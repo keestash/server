@@ -198,7 +198,6 @@ import {
   AXIOS,
   EMAIL_VALIDATOR,
   PHONE_VALIDATOR,
-  STRING_LOADER,
   URL_VALIDATOR
 } from "../../../../../../lib/js/src/StartUp";
 import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
@@ -207,8 +206,8 @@ export default {
 
   name: "AddUser",
   components: {},
-  props:[
-      "show"
+  props: [
+    "show"
   ],
   methods: {
     hideModal() {
@@ -393,56 +392,54 @@ export default {
   },
 
   created() {
-    const diContainer = Keestash.Main.getContainer();
-    const stringLoader = diContainer.query(STRING_LOADER);
 
-    stringLoader.load(true)
-        .then(() => {
-          stringLoader.read()
-              .then((strings) => {
-                return ((strings["users"])["strings"])
-              })
-              .then((strings) => {
-
-                this.form.buttonText = strings['newUser']["positiveButton"];
-                this.form.negativeButtonText = strings["newUser"]['negativeButton'];
-                this.form.title = strings["newUser"]['title'];
-                this.form.description = strings["newUser"]['description'];
-
-                this.form.username.label = strings["newUser"]["form"]["userName"]["label"];
-                this.form.username.placeholder = strings["newUser"]["form"]["userName"]["placeholder"];
-                this.form.username.invalidFeedback = strings["newUser"]["form"]["userName"]["invalidFeedback"];
-
-                this.form.firstname.label = strings["newUser"]["form"]["firstName"]["label"];
-                this.form.firstname.placeholder = strings["newUser"]["form"]["firstName"]["placeholder"];
-                this.form.firstname.invalidFeedback = strings["newUser"]["form"]["firstName"]["invalidFeedback"];
-
-                this.form.lastname.label = strings["newUser"]["form"]["lastName"]["label"];
-                this.form.lastname.placeholder = strings["newUser"]["form"]["lastName"]["placeholder"];
-                this.form.lastname.invalidFeedback = strings["newUser"]["form"]["lastName"]["invalidFeedback"];
-
-                this.form.email.label = strings["newUser"]["form"]["email"]["label"];
-                this.form.email.placeholder = strings["newUser"]["form"]["email"]["placeholder"];
-                this.form.email.invalidFeedback = strings["newUser"]["form"]["email"]["invalidFeedback"];
-
-                this.form.phone.label = strings["newUser"]["form"]["phone"]["label"];
-                this.form.phone.placeholder = strings["newUser"]["form"]["phone"]["placeholder"];
-                this.form.phone.invalidFeedback = strings["newUser"]["form"]["phone"]["invalidFeedback"];
-
-                this.form.website.label = strings["newUser"]["form"]["website"]["label"];
-                this.form.website.placeholder = strings["newUser"]["form"]["website"]["placeholder"];
-                this.form.website.invalidFeedback = strings["newUser"]["form"]["website"]["invalidFeedback"];
-
-                this.form.password.label = strings["newUser"]["form"]["password"]["label"];
-                this.form.password.placeholder = strings["newUser"]["form"]["password"]["placeholder"];
-                this.form.password.invalidFeedback = strings["newUser"]["form"]["password"]["invalidFeedback"];
-
-                this.form.locked.label = strings["newUser"]["form"]["locked"]["label"];
-                this.form.successText = strings["newUser"]["successText"];
-                this.form.errorText = strings["newUser"]["errorText"];
-              })
-          ;
-        });
+    // stringLoader.load(true)
+    //     .then(() => {
+    //       stringLoader.read()
+    //           .then((strings) => {
+    //             return ((strings["users"])["strings"])
+    //           })
+    //           .then((strings) => {
+    //
+    //             this.form.buttonText = strings['newUser']["positiveButton"];
+    //             this.form.negativeButtonText = strings["newUser"]['negativeButton'];
+    //             this.form.title = strings["newUser"]['title'];
+    //             this.form.description = strings["newUser"]['description'];
+    //
+    //             this.form.username.label = strings["newUser"]["form"]["userName"]["label"];
+    //             this.form.username.placeholder = strings["newUser"]["form"]["userName"]["placeholder"];
+    //             this.form.username.invalidFeedback = strings["newUser"]["form"]["userName"]["invalidFeedback"];
+    //
+    //             this.form.firstname.label = strings["newUser"]["form"]["firstName"]["label"];
+    //             this.form.firstname.placeholder = strings["newUser"]["form"]["firstName"]["placeholder"];
+    //             this.form.firstname.invalidFeedback = strings["newUser"]["form"]["firstName"]["invalidFeedback"];
+    //
+    //             this.form.lastname.label = strings["newUser"]["form"]["lastName"]["label"];
+    //             this.form.lastname.placeholder = strings["newUser"]["form"]["lastName"]["placeholder"];
+    //             this.form.lastname.invalidFeedback = strings["newUser"]["form"]["lastName"]["invalidFeedback"];
+    //
+    //             this.form.email.label = strings["newUser"]["form"]["email"]["label"];
+    //             this.form.email.placeholder = strings["newUser"]["form"]["email"]["placeholder"];
+    //             this.form.email.invalidFeedback = strings["newUser"]["form"]["email"]["invalidFeedback"];
+    //
+    //             this.form.phone.label = strings["newUser"]["form"]["phone"]["label"];
+    //             this.form.phone.placeholder = strings["newUser"]["form"]["phone"]["placeholder"];
+    //             this.form.phone.invalidFeedback = strings["newUser"]["form"]["phone"]["invalidFeedback"];
+    //
+    //             this.form.website.label = strings["newUser"]["form"]["website"]["label"];
+    //             this.form.website.placeholder = strings["newUser"]["form"]["website"]["placeholder"];
+    //             this.form.website.invalidFeedback = strings["newUser"]["form"]["website"]["invalidFeedback"];
+    //
+    //             this.form.password.label = strings["newUser"]["form"]["password"]["label"];
+    //             this.form.password.placeholder = strings["newUser"]["form"]["password"]["placeholder"];
+    //             this.form.password.invalidFeedback = strings["newUser"]["form"]["password"]["invalidFeedback"];
+    //
+    //             this.form.locked.label = strings["newUser"]["form"]["locked"]["label"];
+    //             this.form.successText = strings["newUser"]["successText"];
+    //             this.form.errorText = strings["newUser"]["errorText"];
+    //           })
+    //       ;
+    //     });
 
   },
   data() {

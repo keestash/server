@@ -26,6 +26,7 @@ use Keestash\ConfigProvider;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
@@ -79,15 +80,12 @@ class LoggedInMiddleware implements MiddlewareInterface {
 
         $user = $this->userRepository->getUserById((string) $userId);
 
-        if (true === $persisted
+        if (
+            true === $persisted
             && null !== $user
         ) {
-            return $handler->handle($request);
+            return $handler->handle($request->withAttribute(IUser::class, $user));
         }
-//        dump($user);
-//        dump($persisted);
-//        dump($_COOKIE);
-//        exit();
 
         // TODO just to be sure: to avoid a "to many redirects", we can check whether
         //  current path equals to login

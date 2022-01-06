@@ -22,17 +22,23 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword;
 
 use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\ForgotPassword\Api\AccountDetails;
+use KSA\ForgotPassword\Api\Configuration;
 use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Api\ResetPassword;
+use KSA\ForgotPassword\Factory\Api\AccountDetailsFactory;
+use KSA\ForgotPassword\Factory\Api\ConfigurationFactory;
 use KSA\ForgotPassword\Factory\Api\ForgotPasswordFactory;
 use KSA\ForgotPassword\Factory\Api\ResetPasswordFactory;
 use KSP\Api\IVerb;
 
 final class ConfigProvider {
 
-    public const FORGOT_PASSWORD = "/forgot_password[/]";
-    public const RESET_PASSWORD  = "/reset_password/:token[/]";
-    public const APP_ID          = 'forgotPassword';
+    public const FORGOT_PASSWORD                = "/forgot_password[/]";
+    public const RESET_PASSWORD                 = "/reset_password/:token[/]";
+    public const APP_ID                         = 'forgotPassword';
+    public const FORGOT_PASSWORD_CONFIGURATION  = '/forgot_password/configuration[/]';
+    public const RESET_PASSWORD_ACCOUNT_DETAILS = '/reset_password/account_details/:resetPasswordToken/';
 
     public function __invoke(): array {
         return [
@@ -49,6 +55,8 @@ final class ConfigProvider {
                     // api
                     ForgotPassword::class              => ForgotPasswordFactory::class
                     , ResetPassword::class             => ResetPasswordFactory::class
+                    , Configuration::class             => ConfigurationFactory::class
+                    , AccountDetails::class            => AccountDetailsFactory::class
 
                     // controller
                     , Controller\ForgotPassword::class => Factory\Controller\ForgotPasswordFactory::class
@@ -94,11 +102,25 @@ final class ConfigProvider {
                         , 'middleware' => ResetPassword::class
                         , 'method'     => IVerb::POST
                         , 'name'       => ResetPassword::class
-                    ]
+                    ],
+                    [
+                        'path'         => ConfigProvider::FORGOT_PASSWORD_CONFIGURATION
+                        , 'middleware' => Configuration::class
+                        , 'method'     => IVerb::GET
+                        , 'name'       => Configuration::class
+                    ],
+                    [
+                        'path'         => ConfigProvider::RESET_PASSWORD_ACCOUNT_DETAILS
+                        , 'middleware' => AccountDetails::class
+                        , 'method'     => IVerb::GET
+                        , 'name'       => AccountDetails::class
+                    ],
                 ],
                 CoreConfigProvider::PUBLIC_ROUTES => [
-                    '/forgot_password/submit[/]',
-                    '/reset_password/update[/]'
+                    '/forgot_password/submit[/]'
+                    , '/reset_password/update[/]'
+                    , ConfigProvider::FORGOT_PASSWORD_CONFIGURATION
+                    , ConfigProvider::RESET_PASSWORD_ACCOUNT_DETAILS
                 ]
             ],
             'templates'                    => [
