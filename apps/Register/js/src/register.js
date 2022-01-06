@@ -16,33 +16,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import $ from 'jquery';
-import {Register} from "./RegisterForm/Register";
-import {Routes} from "./RegisterForm/Public/Routes";
-import {AXIOS, LONG_MODAL} from "../../../../lib/js/src/StartUp";
+import store from "../../../../lib/js/src/Store/store";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import App from "./App";
+import i18n from "./i18n";
 
-(function () {
-    if (!Keestash.Register) {
-        Keestash.Register = {};
-    }
+window.addEventListener(
+    'DOMContentLoaded'
+    , bootstrap
+);
 
-    Keestash.Register = {
+function bootstrap() {
+    const vueConfig = {
+        store
+        , i18n
+        , render: h => h(App)
+    };
 
-        init: async () => {
-
-            const diContainer = Keestash.Main.getContainer();
-
-            const register = new Register(
-                diContainer.query(AXIOS)
-                , new Routes()
-                , diContainer.query(LONG_MODAL)
-            );
-            register.setUpClickListener();
-
-        }
-
-    }
-})();
-$(document).ready(async () => {
-    await Keestash.Register.init();
-});
+    Vue.use(BootstrapVue);
+    Vue.use(IconsPlugin);
+    new Vue(vueConfig)
+        .$mount("#register");
+}

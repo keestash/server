@@ -23,16 +23,19 @@ namespace KSA\Install;
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Install\Api\InstallApps;
+use KSA\Install\Api\InstallConfiguration;
 use KSA\Install\Controller\Controller;
 use KSA\Install\Factory\Api\InstallAppsFactory;
+use KSA\Install\Factory\Api\InstallConfigurationFactory;
 use KSA\Install\Factory\Controller\ControllerFactory;
 use KSP\Api\IVerb;
 
 final class ConfigProvider {
 
-    public const INSTALL     = '/install[/]';
-    public const INSTALL_ALL = '/install/apps/all[/]';
-    public const APP_ID      = 'install';
+    public const INSTALL                    = '/install[/]';
+    public const INSTALL_ALL                = '/install/apps/all[/]';
+    public const INSTALL_APPS_CONFIGURATION = '/install/apps/configuration[/]';
+    public const APP_ID                     = 'install';
 
     public function __invoke(): array {
         return [
@@ -47,10 +50,11 @@ final class ConfigProvider {
             'dependencies'                          => [
                 'factories' => [
                     // api
-                    InstallApps::class => InstallAppsFactory::class,
+                    InstallApps::class            => InstallAppsFactory::class
+                    , InstallConfiguration::class => InstallConfigurationFactory::class
 
                     // controller
-                    Controller::class  => ControllerFactory::class,
+                    , Controller::class           => ControllerFactory::class
                 ]
             ],
             CoreConfigProvider::WEB_ROUTER          => [
@@ -79,10 +83,17 @@ final class ConfigProvider {
                         , 'method'     => IVerb::POST
                         , 'name'       => InstallApps::class
                     ],
+                    [
+                        'path'         => ConfigProvider::INSTALL_APPS_CONFIGURATION
+                        , 'middleware' => InstallConfiguration::class
+                        , 'method'     => IVerb::GET
+                        , 'name'       => InstallConfiguration::class
+                    ],
                 ],
                 CoreConfigProvider::PUBLIC_ROUTES => [
                     ConfigProvider::INSTALL_ALL
                     , ConfigProvider::INSTALL
+                    , ConfigProvider::INSTALL_APPS_CONFIGURATION
                 ],
             ],
             CoreConfigProvider::INSTALL_APPS_ROUTES => [

@@ -122,9 +122,7 @@ class AppRenderer implements IAppRenderer {
         $token = $request->getAttribute(IToken::class);
 
         $profileImage = $this->getProfileImage(
-            null === $token
-                ? null
-                : $token->getUser()
+            $request->getAttribute(IUser::class)
             , $static
             , $contextLess
         );

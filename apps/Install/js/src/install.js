@@ -17,40 +17,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Page} from "./Install/Page";
-import {Router} from "../../../../lib/js/src/Route/Router";
-import {Host} from "../../../../lib/js/src/Backend/Host";
-import {Routes} from "./Public/Routes";
-import {AXIOS} from "../../../../lib/js/src/StartUp";
+import store from "../../../../lib/js/src/Store/store";
+import Vue from "vue";
+import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import App from "./Install/App";
+import i18n from "./i18n";
 
-(function () {
-    if (!Keestash.Apps.Install) {
-        Keestash.Apps.Install = {};
-    }
+window.addEventListener(
+    'DOMContentLoaded'
+    , bootstrap
+);
 
-    Keestash.Apps.Install = {
+function bootstrap() {
+    const vueConfig = {
+        store
+        , i18n
+        , render: h => h(App)
+    };
 
-        init: function () {
+    Vue.use(BootstrapVue);
+    Vue.use(IconsPlugin);
+    new Vue(vueConfig)
+        .$mount("#install");
+}
 
-            const container = Keestash.Main.getContainer();
-            const router = new Router(
-                new Host()
-            );
-
-            const page = new Page(
-                container.query(AXIOS)
-                , new Routes()
-                , router
-            );
-            page.run();
-        }
-
-
-    }
-
-})();
-
-$(document).ready(function () {
-    Keestash.Apps.Install.init();
-});
 

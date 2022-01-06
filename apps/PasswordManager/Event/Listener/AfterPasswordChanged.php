@@ -70,12 +70,8 @@ class AfterPasswordChanged implements IListener {
         $currentCredential = $this->credentialService->createCredential($event->getUpdatedUser());
         $oldCredential     = $this->credentialService->createCredential($event->getOldUser());
 
-        /** @var IKey|Key|null $key */
+        /** @var IKey|Key $key */
         $key = $this->encryptionRepository->getKey($event->getUpdatedUser());
-
-        if (null === $key) {
-            throw new KeyNotFoundException("no key found :(");
-        }
 
         $oldSecretPlain = $this->encryptionService->decrypt($oldCredential, $key->getSecret());
         $newSecret      = $this->encryptionService->encrypt($currentCredential, $oldSecretPlain);

@@ -51,7 +51,7 @@ use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
 use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\CreateFactory;
-use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdatePasswordFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdateFactory as UpdatePasswordFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
 use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;

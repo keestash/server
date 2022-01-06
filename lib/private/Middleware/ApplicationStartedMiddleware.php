@@ -23,6 +23,7 @@ namespace Keestash\Middleware;
 
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
+use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ResponseInterface;
@@ -35,15 +36,18 @@ class ApplicationStartedMiddleware implements MiddlewareInterface {
     private IRouterService      $routerService;
     private IEnvironmentService $environmentService;
     private InstallerService    $installerService;
+    private IConfigService      $configService;
 
     public function __construct(
         IRouterService        $routerService
         , IEnvironmentService $environmentService
         , InstallerService    $installerService
+        , IConfigService      $configService
     ) {
         $this->routerService      = $routerService;
         $this->environmentService = $environmentService;
         $this->installerService   = $installerService;
+        $this->configService      = $configService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -71,7 +75,10 @@ class ApplicationStartedMiddleware implements MiddlewareInterface {
             IRequest::ATTRIBUTE_NAME_INSTANCE_ID_AND_HASH_GIVEN
             , $this->installerService->hasIdAndHash()
         );
-
+        $request = $request->withAttribute(
+            IRequest::ATTRIBUTE_NAME_DEBUG
+            , $this->configService->getValue('debug', false)
+        );
         return $handler->handle($request);
     }
 

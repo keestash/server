@@ -30,6 +30,7 @@ use KSA\Users\Api\User\UserEdit;
 use KSA\Users\Api\User\UserLock;
 use KSA\Users\Api\User\UserRemove;
 use KSA\Users\BackgroundJob\UserDeleteTask;
+use KSA\Users\Command\UpdatePassword;
 use KSA\Users\Controller\UsersController;
 use KSA\Users\Event\Listener\PostStateChange;
 use KSA\Users\Factory\Api\File\ProfilePictureFactory;
@@ -39,6 +40,7 @@ use KSA\Users\Factory\Api\User\UserEditFactory;
 use KSA\Users\Factory\Api\User\UserLockFactory;
 use KSA\Users\Factory\Api\User\UserRemoveFactory;
 use KSA\Users\Factory\BackgroundJob\UserDeleteTaskFactory;
+use KSA\Users\Factory\Command\UpdatePasswordFactory;
 use KSA\Users\Factory\Controller\UsersControllerFactory;
 use KSA\Users\Factory\Event\Listener\PostStateChangeFactory;
 use KSP\Api\IVerb;
@@ -83,7 +85,10 @@ final class ConfigProvider {
                     PostStateChange::class => PostStateChangeFactory::class,
 
                     // controller
-                    UsersController::class => UsersControllerFactory::class
+                    UsersController::class => UsersControllerFactory::class,
+
+                    // command
+                    UpdatePassword::class  => UpdatePasswordFactory::class,
                 ]
             ],
             CoreConfigProvider::API_ROUTER => [
@@ -157,6 +162,9 @@ final class ConfigProvider {
                 'paths' => [
                     'users' => [__DIR__ . '/template']
                 ]
+            ]
+            , CoreConfigProvider::COMMANDS => [
+                UpdatePassword::class
             ]
         ];
     }

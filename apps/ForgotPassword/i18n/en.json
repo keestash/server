@@ -1,0 +1,16 @@
+{
+  "forgotPassword": {
+    "resetPassword": "Reset",
+    "usernameOrPasswordPlaceholder": "Username or Email Address",
+    "createNewAccountText": "Not registered Yet?",
+    "createNewAccountActionText": "Sign Up",
+    "loginToApp": "Reset password",
+    "backToLogin": "Back To Login"
+  },
+  "resetPassword": {
+    "title": "Reset password for %s",
+    "passwordLabel": "New Password",
+    "resetPassword": "Reset Password",
+    "noHashFound": "Link seems to be expired. Please request a new one"
+  }
+}
