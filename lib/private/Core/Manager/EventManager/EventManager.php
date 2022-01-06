@@ -33,7 +33,7 @@ class EventManager implements IEventManager {
     private ContainerInterface $container;
 
     public function __construct(
-        EventDispatcher $eventDispatcher
+        EventDispatcher      $eventDispatcher
         , ContainerInterface $container
     ) {
         $this->eventDispatcher = $eventDispatcher;
@@ -44,6 +44,11 @@ class EventManager implements IEventManager {
         $listeners = $this->eventDispatcher->getListeners(get_class($event));
 
         foreach ($listeners as $listener) {
+
+            if (false === is_string($listener)) {
+                continue;
+            }
+
             $listenerObject = $this->container->get($listener);
             if ($listenerObject instanceof IListener) {
                 $listenerObject->execute($event);
