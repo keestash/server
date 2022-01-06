@@ -60,24 +60,17 @@ class Logout implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token      = $request->getAttribute(IToken::class);
+        /** @var IUser|null $user */
+        $user       = $request->getAttribute(IUser::class);
         $defaultApp = $this->loader->getDefaultApp();
         $this->persistenceService->killAll();
 
-        if (null === $token) {
-            return new RedirectResponse(
-                $this->router->generateUri(
-                    $this->routerService->getRouteByPath($defaultApp->getBaseRoute())['name']
-                )
-            );
-        }
-
-        $user = $token->getUser();
-        $this->tokenRepository->removeForUser($user);
-
         if (null === $defaultApp) {
             throw new KeestashException();
+        }
+
+        if (null !== $user) {
+            $this->tokenRepository->removeForUser($user);
         }
 
         return new RedirectResponse(

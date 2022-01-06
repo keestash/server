@@ -25,6 +25,7 @@ use DateTime;
 use doganoo\DI\HTTP\IHTTPService;
 use Keestash;
 use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Exception\KeestashException;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Service\Config\IConfigService;
@@ -59,9 +60,13 @@ class CookieManager implements ICookieManager {
     }
 
     public function set(string $key, string $value, int $expireTs = 0): bool {
-        $urlParts = parse_url(
-            $this->httpService->getBaseURL(false, false)
-        );
+        $url      = $this->httpService->getBaseURL(false, false);
+        $urlParts = parse_url($url);
+
+        if (false === is_array($urlParts)) {
+            throw new KeestashException('invalid url: ' . $url);
+        }
+
         return setcookie(
             $key
             , $value
