@@ -284,7 +284,6 @@ export default {
       }
     },
     parseEdges: function (node) {
-      if (node === undefined || node === null) return;
 
       this.temporaryStorage.set(
           STORAGE_ID_ROOT
