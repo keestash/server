@@ -30,3 +30,7 @@ services:
       MYSQL_PASSWORD: keestash
     ports:
       - "6033:3306"
+    volumes:
+        - keestash_db:/var/lib/mysql
+volumes:
+    keestash_db:

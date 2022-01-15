@@ -77,12 +77,13 @@ class UpdateTest extends TestCase {
     public function testUpdateCredential(): void {
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        $credential        = $this->createCredential(
+        $credential     = $this->createCredential(
             "updateTestPassword"
             , "keestash.test"
             , "updateTest"
             , "UpdateTestPassword"
         );
+
         /** @var Update $update */
         $update      = $this->getServiceManager()->get(Update::class);
         $newPassword = uniqid();

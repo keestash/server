@@ -31,8 +31,8 @@ class GetTest extends TestCase {
 
     public function getData(): array {
         return [
-            [2, true, null]
-            , [99999, false, CommentException::class]
+            [2, true]
+            , [99999, false]
         ];
     }
 
@@ -43,17 +43,13 @@ class GetTest extends TestCase {
      * TODO add a test where the user does not own the node/
      *  does not belong to the organization
      */
-    public function testGet(int $nodeId, bool $isValid, ?string $exception): void {
+    public function testGet(int $nodeId, bool $isValid): void {
         /** @var Get $get */
         $get = $this->getServiceManager()->get(Get::class);
         /** @var RequestService $requestService */
         $requestService = $this->getServiceManager()->get(RequestService::class);
         /** @var ResponseService $responseService */
         $responseService = $this->getServiceManager()->get(ResponseService::class);
-
-        if (null !== $exception) {
-            $this->expectException($exception);
-        }
 
         $request  = $requestService->getRequestWithToken(
             $this->getUser()

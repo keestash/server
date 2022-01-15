@@ -43,7 +43,7 @@ class GetTest extends TestCase {
         $this->assertTrue($node instanceof Root);
 
         $request  = $this->getDefaultRequest();
-        $response = $get->handle($request->withAttribute('id', $node->getId()));
+        $response = $get->handle($request->withAttribute('node_id', $node->getId()));
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }
 
