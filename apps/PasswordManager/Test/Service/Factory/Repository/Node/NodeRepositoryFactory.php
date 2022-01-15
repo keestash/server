@@ -28,6 +28,7 @@ use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
 use Mockery;
 use Psr\Container\ContainerInterface;
@@ -43,6 +44,7 @@ class NodeRepositoryFactory {
             , $container->get(ILogger::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(IJWTService::class)
+            , $container->get(IEnvironmentService::class)
         );
 
         $instance = Mockery::mock($instance);

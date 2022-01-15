@@ -133,14 +133,8 @@ class CredentialService {
     }
 
     public function getDecryptedPassword(Credential $credential): string {
-        $organization = $this->nodeService->getOrganization($credential);
-        $keyHolder    = null !== $organization ? $organization : $credential->getUser();
-        $key          = $this->keyService->getKey($keyHolder);
-
-        return $this->encryptionService->decrypt(
-            $key
-            , $credential->getPassword()->getEncrypted()
-        );
+        $this->nodeEncryptionService->decryptNode($credential);
+        return $credential->getPassword()->getPlain();
     }
 
 }

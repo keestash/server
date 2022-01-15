@@ -65,6 +65,7 @@ class Migrator implements IMigrator {
     public function runApps(): bool {
         $file   = $this->getFilePath() . "/apps.php";
         $exists = $this->checkFile($file);
+
         if (false === $exists) {
             return false;
         }

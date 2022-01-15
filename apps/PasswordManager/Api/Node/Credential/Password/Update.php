@@ -25,6 +25,7 @@ use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,28 +38,31 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Update implements RequestHandlerInterface {
 
-    private NodeRepository    $nodeRepository;
-    private CredentialService $credentialService;
+    private NodeRepository        $nodeRepository;
+    private CredentialService     $credentialService;
+    private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
-        NodeRepository $nodeRepository
-        , CredentialService $credentialService
+        NodeRepository          $nodeRepository
+        , CredentialService     $credentialService
+        , NodeEncryptionService $nodeEncryptionService
     ) {
-        $this->nodeRepository    = $nodeRepository;
-        $this->credentialService = $credentialService;
+        $this->nodeRepository        = $nodeRepository;
+        $this->credentialService     = $credentialService;
+        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters    = (array)$request->getParsedBody();
+        $parameters    = (array) $request->getParsedBody();
         $passwordPlain = $parameters['passwordPlain'] ?? null;
         $nodeId        = $parameters['nodeId'] ?? null;
-
 
         if (null === $nodeId || null === $passwordPlain) {
             throw new PasswordManagerException('passwordPlain or nodeId is empty');
         }
 
         $credential = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
+        $this->nodeEncryptionService->decryptNode($credential);
 
         if (!($credential instanceof Credential)) {
             throw new PasswordManagerException('node is not a credential');

@@ -56,6 +56,7 @@ class GetTest extends TestCase {
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
         /** @var NodeRepository $nodeRepository */
         $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
+
         $user           = $this->getUser();
         $root           = $nodeRepository->getRootForUser($user);
         $node           = $credentialService->createCredential(
@@ -80,7 +81,6 @@ class GetTest extends TestCase {
     }
 
     public function testGetNonPassword(): void {
-        $this->expectException(PasswordManagerException::class);
         /** @var Get $get */
         $get = $this->getServiceManager()->get(Get::class);
         /** @var NodeRepository $nodeRepository */
@@ -114,7 +114,7 @@ class GetTest extends TestCase {
         $node           = $edge->getNode();
 
         $request  = $this->getDefaultRequest();
-        $request  = $request->withAttribute('id', $node->getId());
+        $request  = $request->withAttribute('node_id', $node->getId());
         $response = $get->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }

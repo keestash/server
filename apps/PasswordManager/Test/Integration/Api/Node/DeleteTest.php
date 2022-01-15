@@ -54,11 +54,11 @@ class DeleteTest extends TestCase {
                 $user
                 , []
                 , []
-                , ['id' => $node->getId()]
+                , ['node_id' => $node->getId()]
             );
 
         $response = $delete->handle($request);
-//        dump($this->getResponseService()->getFailedResponseData($response));
+
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }
 

@@ -26,6 +26,7 @@ use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use KST\TestCase;
+use Monolog\Handler\IFTTTHandler;
 
 /**
  * Class AddTest
@@ -40,7 +41,7 @@ class AddTest extends TestCase {
             , [["comment" => null, 'node_id' => 2], CommentException::class, true]
             , [['node_id' => 2], CommentException::class, true]
             , [["comment" => "test", 'node_id' => null], CommentException::class, true]
-            , [["comment" => "test", 'node_id' => 9], CommentException::class, true]
+            , [["comment" => "test", 'node_id' => 9], null, false]
             , [["comment" => "test"], CommentException::class, true]
             , [[], CommentException::class, true]
         ];
@@ -71,7 +72,6 @@ class AddTest extends TestCase {
         if (null !== $exception) {
             $this->expectException($exception);
         }
-
         $serverRequest = $requestService->getRequestWithToken(
             $this->getUser()
             , []
@@ -82,6 +82,7 @@ class AddTest extends TestCase {
         );
 
         $response = $add->handle($serverRequest);
+
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
     }
 

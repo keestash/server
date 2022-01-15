@@ -25,9 +25,9 @@ use DateTime;
 use DateTimeInterface;
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Entity\Comment\Comment;
-use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
@@ -82,6 +82,7 @@ class RemoveTest extends TestCase {
     }
 
     public function testNonExistingComment():void {
+        $this->expectException(PasswordManagerException::class);
         /** @var Remove $remove */
         $remove = $this->getServiceManager()->get(Remove::class);
         /** @var RequestService $requestService */
