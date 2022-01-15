@@ -35,7 +35,10 @@ $dirname   = realpath($config->get(ConfigProvider::INSTANCE_PATH));
 
 /** @var \Doctrine\DBAL\Connection $connection */
 $connection = $container->get(\Doctrine\DBAL\Connection::class);
-$pdo        = $connection->getWrappedConnection()->getWrappedConnection();
+$pdo        = $connection
+    ->getWrappedConnection()
+    ->getWrappedConnection()
+;
 
 return [
     'environments'           => [

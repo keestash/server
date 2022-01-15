@@ -160,7 +160,7 @@ class CommentRepository {
             ->executeQuery()
             ->fetchAllAssociative();
 
-        $nodeId = $comments[0]['node_id'];
+        $nodeId = (int)$comments[0]['node_id'];
 
         return $this->nodeRepository->getNode($nodeId, 0, 1);
     }

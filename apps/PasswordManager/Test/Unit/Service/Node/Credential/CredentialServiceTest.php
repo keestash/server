@@ -28,36 +28,43 @@ use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use KST\TestCase;
 
 class CredentialServiceTest extends TestCase {
 
-    private CredentialService $credentialService;
-    private EncryptionService $encryptionService;
-    private KeyService        $keyService;
-    private NodeRepository    $nodeRepository;
+    private CredentialService     $credentialService;
+    private EncryptionService     $encryptionService;
+    private KeyService            $keyService;
+    private NodeEncryptionService $nodeEncryptionService;
 
     protected function setUp(): void {
         parent::setUp();
-        $this->credentialService = $this->getServiceManager()->get(CredentialService::class);
-        $this->encryptionService = $this->getServiceManager()->get(EncryptionService::class);
-        $this->keyService        = $this->getServiceManager()->get(KeyService::class);
-        $this->nodeRepository    = $this->getServiceManager()->get(NodeRepository::class);
+        $this->credentialService     = $this->getServiceManager()->get(CredentialService::class);
+        $this->encryptionService     = $this->getServiceManager()->get(EncryptionService::class);
+        $this->keyService            = $this->getServiceManager()->get(KeyService::class);
+        $this->nodeRepository        = $this->getServiceManager()->get(NodeRepository::class);
+        $this->nodeEncryptionService = $this->getServiceManager()->get(NodeEncryptionService::class);
     }
 
-    private function getCredential(): Credential {
+    private function getCredential(bool $encrypt = false): Credential {
         $password = "mySuperSecurePassword";
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
 
-        return $this->credentialService->createCredential(
+        $credential = $this->credentialService->createCredential(
             $password
             , $url
             , $userName
             , $title
             , $this->getUser()
         );
+
+        if (true === $encrypt) {
+            $this->nodeEncryptionService->encryptNode($credential);
+        }
+        return $credential;
     }
 
     public function testCreateCredential(): void {
@@ -65,9 +72,8 @@ class CredentialServiceTest extends TestCase {
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
-        $note     = "this is a test note";
 
-        $credential = $this->getCredential();
+        $credential = $this->getCredential(true);
         $key        = $this->keyService->getKey($this->getUser());
 
         $this->assertTrue($credential instanceof Credential);
@@ -77,7 +83,7 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , (string) $credential->getPassword()->getEncrypted()
+                , $credential->getPassword()->getEncrypted()
             ) === $password
         );
         /**
@@ -105,12 +111,6 @@ class CredentialServiceTest extends TestCase {
         $edge       = $this->credentialService->insertCredential($credential, $root);
         $this->assertTrue($edge instanceof Edge);
         $this->assertIsInt($edge->getNode()->getId()); // indicates that the DB AI PK is set
-    }
-
-    public function testGetDecryptedPassword(): void {
-        $credential = $this->getCredential();
-        $decrypted  = $this->credentialService->getDecryptedPassword($credential);
-        $this->assertTrue($decrypted === $credential->getPassword()->getPlain());
     }
 
     public function testUpdatePassword(): void {

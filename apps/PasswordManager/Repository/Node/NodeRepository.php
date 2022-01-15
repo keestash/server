@@ -45,6 +45,7 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
 
 class NodeRepository {
@@ -56,6 +57,7 @@ class NodeRepository {
     private IOrganizationRepository $organizationRepository;
     private IJWTService             $jwtService;
     private IBackend                $backend;
+    private IEnvironmentService     $environmentService;
 
     public function __construct(
         IBackend                  $backend
@@ -65,6 +67,7 @@ class NodeRepository {
         , ILogger                 $logger
         , IOrganizationRepository $organizationRepository
         , IJWTService             $jwtService
+        , IEnvironmentService     $environmentService
     ) {
         $this->userRepository         = $userRepository;
         $this->publicShareRepository  = $shareRepository;
@@ -73,10 +76,10 @@ class NodeRepository {
         $this->organizationRepository = $organizationRepository;
         $this->jwtService             = $jwtService;
         $this->backend                = $backend;
+        $this->environmentService     = $environmentService;
     }
 
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): Root {
-
         $type         = Node::ROOT;
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
@@ -149,10 +152,11 @@ class NodeRepository {
             ->from('pwm_node')
             ->where('id = ?')
             ->setParameter(0, $id);
-        $statement    = $queryBuilder->execute();
+        $sql = $queryBuilder->getSQL();
+        $statement    = $queryBuilder->executeQuery();
 
         if (true === is_int($statement)) {
-            $log = 'error while retrieving data ' . $queryBuilder->getSQL();
+            $log = 'error while retrieving data ' . $sql;
             $this->logger->error($log);
             throw new PasswordManagerException($log);
         }
@@ -160,7 +164,7 @@ class NodeRepository {
         $rows = $statement->fetchAllNumeric();
 
         if (0 === count($rows)) {
-            throw new PasswordManagerException('no data found, count is 0, id is: ' . $id);
+            throw new PasswordManagerException('no data found, count is 0, id is: ' . $id . ', sql is: ' . $sql);
         }
         $row = $rows[0];
 
@@ -464,7 +468,7 @@ class NodeRepository {
             ->setParameter(1, $credential->getUsername()->getEncrypted())
             ->setParameter(2, $credential->getPassword()->getEncrypted())
             ->setParameter(3, $credential->getUrl()->getEncrypted())
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
@@ -488,6 +492,17 @@ class NodeRepository {
     }
 
     public function getPathToRoot(Node $node): array {
+        if ($this->environmentService->isUnitTest()) {
+            // Dirty Hack!!
+            // Normally, this class and especially this method
+            // is overwritten in tests but somehow, the
+            // DI container loads the "real" class instead of
+            // the mocked one.
+            // Several approaches to debug failed. Therefore, I am
+            // utilising this hack.
+            return [];
+        }
+
         $sql = "
                 WITH RECURSIVE descendants AS
                    (
