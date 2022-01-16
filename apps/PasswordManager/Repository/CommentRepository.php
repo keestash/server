@@ -160,7 +160,7 @@ class CommentRepository {
             ->executeQuery()
             ->fetchAllAssociative();
 
-        $nodeId = (int)$comments[0]['node_id'];
+        $nodeId = (int) ($comments[0]['node_id'] ?? 0);
 
         return $this->nodeRepository->getNode($nodeId, 0, 1);
     }
@@ -170,7 +170,7 @@ class CommentRepository {
         return $queryBuilder->delete('pwm_comment')
                 ->where('id = ?')
                 ->setParameter(0, $id)
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     public function removeForUser(IUser $user): bool {
@@ -178,7 +178,7 @@ class CommentRepository {
         return $queryBuilder->delete('pwm_comment')
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
 }
