@@ -503,6 +503,11 @@ class NodeRepository {
             return [];
         }
 
+        /**
+         * @see https://www.percona.com/blog/2020/02/13/introduction-to-mysql-8-0-recursive-common-table-expression-part-2/
+         * @see https://dev.mysql.com/blog-archive/a-new-simple-way-to-figure-out-why-your-recursive-cte-is-running-away/
+         * @see https://dev.mysql.com/blog-archive/mysql-8-0-1-recursive-common-table-expressions-in-mysql-ctes-part-four-depth-first-or-breadth-first-traversal-transitive-closure-cycle-avoidance/
+         */
         $sql = "
                 WITH RECURSIVE descendants AS
                    (

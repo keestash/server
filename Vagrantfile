@@ -1,6 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# see https://github.com/hashicorp/vagrant/issues/12557
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/groovy64"
 
