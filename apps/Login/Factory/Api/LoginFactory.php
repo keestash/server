@@ -24,7 +24,6 @@ namespace KSA\Login\Factory\Api;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Api\Login;
 use KSA\Login\Service\TokenService;
-use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -33,7 +32,6 @@ use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\L10N\IL10N;
-use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 
 class LoginFactory {

@@ -18,12 +18,8 @@
  */
 
 import {Logout} from "./Logout/Logout";
-import {APP_STORAGE, ROUTER, TEMPORARY_STORAGE} from "../../../../lib/js/src/StartUp";
-import store from "../../../../lib/js/src/Store/store";
-import i18n from "./i18n";
-import App from "./Login/App";
-import Vue from "vue";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
+import {APP_STORAGE, ROUTER, StartUp, TEMPORARY_STORAGE} from "../../../../lib/js/src/StartUp";
+import {Container} from "../../../../lib/js/src/DI/Container";
 
 window.addEventListener(
     'DOMContentLoaded'
@@ -31,7 +27,11 @@ window.addEventListener(
 );
 
 function bootstrap() {
-    const diContainer = Keestash.Main.getContainer();
+    const startUp = new StartUp(
+        new Container()
+    );
+    startUp.setUp();
+    const diContainer = startUp.getContainer();
 
     const logout = new Logout(
         diContainer.query(APP_STORAGE)

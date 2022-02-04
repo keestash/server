@@ -23,6 +23,7 @@ namespace Keestash\Middleware;
 
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
@@ -37,23 +38,30 @@ class ApplicationStartedMiddleware implements MiddlewareInterface {
     private IEnvironmentService $environmentService;
     private InstallerService    $installerService;
     private IConfigService      $configService;
+    private ILogger             $logger;
 
     public function __construct(
         IRouterService        $routerService
         , IEnvironmentService $environmentService
         , InstallerService    $installerService
         , IConfigService      $configService
+        , ILogger             $logger
     ) {
         $this->routerService      = $routerService;
         $this->environmentService = $environmentService;
         $this->installerService   = $installerService;
         $this->configService      = $configService;
+        $this->logger             = $logger;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $request = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_APPLICATION_START
             , microtime(true)
+        );
+        $request = $request->withAttribute(
+            IRequest::ATTRIBUTE_NAME_MATCHED_PATH
+            , $this->routerService->getMatchedPath($request)
         );
         $request = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTALL

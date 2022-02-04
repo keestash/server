@@ -21,6 +21,16 @@ export default new Vuex.Store({
         SELECT_EDGE(state, edge) {
             state.selectedEdge = edge;
         },
+        REMOVE_EDGE(state, edge) {
+            state.selectedEdge = null;
+
+            let _edges = _.cloneDeep(state.edges);
+            _edges = _edges.filter(function (item) {
+                return item.id !== edge.id
+            });
+
+            state.edges = _edges;
+        },
         UPDATE_SELECTED_NODE(state, newNode) {
             const currentNode = state.selectedEdge.node;
             state.selectedEdge.node = _.merge(currentNode, newNode);
@@ -39,6 +49,9 @@ export default new Vuex.Store({
         },
         selectEdge(context, edge) {
             context.commit("SELECT_EDGE", edge);
+        },
+        removeEdge(context, edge) {
+            context.commit("REMOVE_EDGE", edge);
         },
         updateSelectedNode(context, node) {
             context.commit("UPDATE_SELECTED_NODE", node);

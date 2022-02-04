@@ -201,6 +201,20 @@ export default {
       }
     })
   },
+  watch: {
+    edge(newEdge, oldEdge) {
+      if (newEdge.id !== oldEdge.id) {
+        if (false === this.passwordField.visible) {
+          return;
+        }
+        this.updatePassword(
+            this.edge.node.password.placeholder
+            , false
+        );
+        this.saving = false;
+      }
+    }
+  },
   created() {
     this.updatePassword(
         this.edge.node.password.placeholder

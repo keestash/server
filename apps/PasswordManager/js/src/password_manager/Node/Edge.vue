@@ -1,5 +1,5 @@
 <template>
-  <div class="pwm__row container-fluid pt-1 pb-1" @click="$emit('wasClicked')">
+  <div class="pwm__row container-fluid pt-1 pb-1" @click="$emit('wasClicked')" @keyup.ctrl.76="copyPassword">
     <div class="row align-items-center">
       <div class="col-6 col-md-2 h2 m-0 d-flex">
         <b-img
@@ -47,7 +47,7 @@
       <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">
         {{ $t('edge.selection.addToOrganization') }}
       </div>
-      <div class="col context-menu-col" @click="removeNode">
+      <div class="col context-menu-col" @click="$emit('wasDeleted')">
         {{ $t('edge.selection.remove') }}
       </div>
     </context-menu>
@@ -68,12 +68,7 @@
 </template>
 
 <script>
-import {
-  APP_STORAGE,
-  AXIOS,
-  DATE_TIME_SERVICE,
-  StartUp,
-} from "../../../../../../lib/js/src/StartUp";
+import {APP_STORAGE, AXIOS, DATE_TIME_SERVICE, StartUp,} from "../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 import contextMenu from 'vue-context-menu'
 import {ROUTES} from "../../config/routes";
@@ -102,9 +97,11 @@ export default {
       imageUrl: '',
       imageUrlShared: '',
       imageUrlPassword: '',
-      organizationsLoading: true
+      organizationsLoading: true,
+
     }
   },
+
   computed: {
     isOwner: function () {
       const userHash = this.container.services.appStorage.getUserHash();
@@ -135,6 +132,9 @@ export default {
     this.imageUrlPassword = url + 'asset/svg/password.svg';
   },
   methods: {
+    copyPassword: function () {
+      console.log("copy");
+    },
     formatDate: function (date) {
       return this.container.services.dateTimeService.format(date);
     },
@@ -187,7 +187,7 @@ export default {
           }
       ).then(
           (r) => {
-            // TODO
+            // TODO remove node
           }
       )
       ;

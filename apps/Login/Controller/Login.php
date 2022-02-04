@@ -23,53 +23,32 @@ namespace KSA\Login\Controller;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
-use Keestash\Legacy\Legacy;
-use KSA\Register\ConfigProvider;
-use KSP\App\ILoader;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class LoginController extends StaticAppController {
+class Login extends StaticAppController {
 
-    private ILoader                   $loader;
     private PersistenceService        $persistenceService;
-    private Legacy                    $legacy;
-    private ConfigService             $configService;
     private InstanceDB                $instanceDb;
     private IUserRepository           $userRepository;
     private TemplateRendererInterface $templateRenderer;
-    private IL10N                     $translator;
-    private HTTPService               $httpService;
 
     public function __construct(
-        IL10N                       $translator
-        , ILoader                   $loader
-        , PersistenceService        $persistenceService
-        , Legacy                    $legacy
-        , ConfigService             $configService
+        PersistenceService          $persistenceService
         , InstanceDB                $instanceDB
         , IAppRenderer              $appRenderer
         , IUserRepository           $userRepository
         , TemplateRendererInterface $templateRenderer
-        , HTTPService               $httpService
     ) {
-        $this->loader             = $loader;
         $this->persistenceService = $persistenceService;
-        $this->legacy             = $legacy;
-        $this->configService      = $configService;
         $this->instanceDb         = $instanceDB;
         $this->userRepository     = $userRepository;
         $this->templateRenderer   = $templateRenderer;
-        $this->translator         = $translator;
-        $this->httpService        = $httpService;
 
         parent::__construct($appRenderer);
     }

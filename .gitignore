@@ -280,3 +280,4 @@ test/config/*.sqlite
 test/result/
 /.phpunit.result.cache
 /.scannerwork/
+smtp.php

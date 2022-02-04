@@ -43,9 +43,10 @@ return function (Application $app) {
     $app->pipe(ApplicationStartedMiddleware::class);
     $app->pipe(ExceptionHandlerMiddleware::class);
 //    $app->pipe(new RemoveBasePathMiddleware("/api.php"));
+  //  $app->pipe(\Keestash\Middleware\Web\SessionHandlerMiddleware::class);
     $app->pipe(CorsMiddleware::class);
-    $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
+    $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);
     $app->pipe(AppsInstalledMiddleware::class);
     $app->pipe(KeestashHeaderMiddleware::class);

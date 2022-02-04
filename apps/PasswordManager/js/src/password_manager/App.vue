@@ -32,6 +32,7 @@
                       :key="edge.id"
                       :edge="edge"
                       @wasClicked="selectRow(edge)"
+                      @wasDeleted="deleteRow(edge)"
                   ></Edge>
                 </template>
                 <Skeleton :count=15 height="25px" v-else/>
@@ -50,28 +51,29 @@
     </div>
 
     <div>
-      <b-modal ref="new-edge-modal" hide-footer hide-backdrop no-fade @hide="hideModal">
+      <b-modal ref="new-edge-modal" hide-footer hide-backdrop no-fade @hide="hideModal" @shown="onModalShown">
         <b-form @submit="onEdgeAdd">
           <b-form-group
               id="input-group-edge-name"
               label="Name:"
               label-for="edge-name"
-              description="The node name"
           >
             <b-form-input
                 id="edge-name"
                 v-model="addEdge.form.name"
                 type="text"
                 placeholder="Enter name"
+                autocomplete="off"
+                ref="ref-node-name"
                 required
             ></b-form-input>
+            <label><small></small></label>
           </b-form-group>
 
           <b-form-group
               id="input-group-edge-username"
               label="Username:"
               label-for="edge-username"
-              description="The username"
               v-if="addEdge.type === 'pwm__new__password'"
           >
             <b-form-input
@@ -79,29 +81,36 @@
                 v-model="addEdge.form.username"
                 type="text"
                 placeholder="Enter Username"
+                autocomplete="off"
             ></b-form-input>
+            <label><small></small></label>
           </b-form-group>
 
           <b-form-group
               id="input-group-edge-password"
               label="Password:"
               label-for="edge-password"
-              description="The password"
               v-if="addEdge.type === 'pwm__new__password'"
           >
             <b-form-input
                 id="edge-password"
-                v-model="addEdge.form.password"
-                type="text"
+                v-model="addEdge.form.password.value"
+                type="password"
                 placeholder="Enter Password"
+                autocomplete="off"
+                @input="checkEntropy"
             ></b-form-input>
+            <label :class="addEdge.form.password.passwordClass">
+              <small>
+                {{ addEdge.form.password.hint }}
+              </small>
+            </label>
           </b-form-group>
 
           <b-form-group
               id="input-group-edge-url"
               label="URL:"
               label-for="edge-url"
-              description="The URL"
               v-if="addEdge.type === 'pwm__new__password'"
           >
             <b-form-input
@@ -109,7 +118,9 @@
                 v-model="addEdge.form.url"
                 type="text"
                 placeholder="Enter URL"
+                autocomplete="off"
             ></b-form-input>
+            <label><small></small></label>
           </b-form-group>
 
           <b-button type="submit" variant="primary">Submit</b-button>
@@ -131,6 +142,7 @@ import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
 import {Skeleton} from "vue-loading-skeleton";
 import {EVENT_NAME_ACTION_BAR_ITEM_CLICKED, EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../../lib/js/src/base";
 import NoEdges from "./Node/NoEdges";
+import axios from "axios/index";
 
 export const NODE_ID_ROOT = "root";
 export const STORAGE_ID_ROOT = "root.id.storage";
@@ -147,12 +159,18 @@ export default {
       temporaryStorage: null,
       noData: true,
       state: 1,
+      timer: () => {
+      },
       addEdge: {
         type: 1,
         form: {
           name: '',
           username: '',
-          password: '',
+          password: {
+            value: '',
+            passwordClass: 'new-pw-neutral',
+            hint: ''
+          },
           url: '',
           note: ''
         }
@@ -203,6 +221,9 @@ export default {
     }
   },
   methods: {
+    onModalShown() {
+      this.$refs['ref-node-name'].focus();
+    },
     onEdgeAdd(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -240,9 +261,12 @@ export default {
     hideModal() {
       this.addEdge.form.name = '';
       this.addEdge.form.username = '';
-      this.addEdge.form.password = '';
+      this.addEdge.form.password.value = '';
       this.addEdge.form.url = '';
       this.addEdge.form.note = '';
+      this.addEdge.form.password.value = '';
+      this.addEdge.form.password.passwordClass = 'new-pw-neutral';
+      this.addEdge.form.password.hint = '';
     },
     onBreadCrumbClick: function (rootId) {
       this.selected = null;
@@ -257,7 +281,6 @@ export default {
       )
           .then(function (response) {
             const data = response.data;
-            console.log(data)
             if (data.length === 0) return;
 
             _this.parseBreadCrumb(data.breadCrumb)
@@ -275,6 +298,9 @@ export default {
       this.selected = edge;
       this.$store.dispatch("selectEdge", edge);
     },
+    deleteRow: function (edge) {
+      this.$store.dispatch('removeEdge', edge);
+    },
     parseBreadCrumb: function (breadCrumbs) {
       this.breadCrumbs = [];
       for (let index in breadCrumbs) {
@@ -282,6 +308,59 @@ export default {
           this.breadCrumbs.push(breadCrumbs[index])
         }
       }
+    },
+    checkEntropy() {
+      const _this = this;
+      const _form = this.addEdge.form;
+      const func = function () {
+
+        if (_form.password.value.length === 0) {
+          _form.password.passwordClass = 'new-pw-neutral';
+          _form.password.hint = _this.$t('credential.newPassword.quality.neutral');
+          return;
+        }
+
+        if (_form.password.value.length < 5) {
+          _form.password.passwordClass = 'new-pw-bad';
+          _form.password.hint = _this.$t('credential.newPassword.quality.bad');
+          return;
+        }
+
+        axios.get(
+            ROUTES.getGenerateQuality(
+                _form.password.value
+            )
+        )
+            .then((r) => {
+              return r.data;
+            })
+            .then((data) => {
+              console.log(data);
+              switch (data.quality || 0) {
+                case 1:
+                  _form.password.passwordClass = 'new-pw-good';
+                  _form.password.hint = _this.$t('credential.newPassword.quality.good');
+                  break;
+                case 0:
+                  _form.password.passwordClass = 'new-pw-weak';
+                  _form.password.hint = _this.$t('credential.newPassword.quality.weak');
+                  break;
+                case -1:
+                  _form.password.passwordClass = 'new-pw-bad';
+                  _form.password.hint = _this.$t('credential.newPassword.quality.bad');
+                  break;
+                default:
+                  _form.password.passwordClass = 'new-pw-neutral';
+                  _form.password.hint = _this.$t('credential.newPassword.quality.neutral');
+              }
+            });
+      }
+
+      clearTimeout(this.timer);
+      this.timer = setTimeout(function () {
+        func()
+      }, 300);
+
     },
     parseEdges: function (node) {
 

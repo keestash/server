@@ -26,7 +26,6 @@ use Keestash\Legacy\Legacy;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,24 +33,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private Legacy         $legacy;
-    private IHTTPService   $httpService;
-    private ILoader        $loader;
-    private IConfigService $configService;
-    private InstanceDB     $instanceDB;
+    private Legacy       $legacy;
+    private IHTTPService $httpService;
+    private ILoader      $loader;
+    private InstanceDB   $instanceDB;
 
     public function __construct(
-        Legacy           $legacy
-        , IHTTPService   $httpService
-        , ILoader        $loader
-        , IConfigService $configService
-        , InstanceDB     $instanceDB
+        Legacy         $legacy
+        , IHTTPService $httpService
+        , ILoader      $loader
+        , InstanceDB   $instanceDB
     ) {
-        $this->legacy        = $legacy;
-        $this->httpService   = $httpService;
-        $this->loader        = $loader;
-        $this->configService = $configService;
-        $this->instanceDB    = $instanceDB;
+        $this->legacy      = $legacy;
+        $this->httpService = $httpService;
+        $this->loader      = $loader;
+        $this->instanceDB  = $instanceDB;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -72,7 +68,7 @@ class Configuration implements RequestHandlerInterface {
                 , "logoPath"           => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
                 , "demo"               => $demo
                 , "tncLink"            => $this->httpService->getBaseURL(true) . "/tnc/"
-                , "demoMode"         => $isDemoMode
+                , "demoMode"           => $isDemoMode
             ]
             , IResponse::OK
         );

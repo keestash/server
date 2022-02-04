@@ -24,16 +24,22 @@ namespace KSA\PasswordManager;
 
 final class ConfigProvider {
 
-    public const PASSWORD_MANAGER_ATTACHMENTS_VIEW           = "/password_manager/attachments/view/:fileId[/]";
-    public const PASSWORD_MANAGER                            = "/password_manager[/]";
-    public const PASSWORD_MANAGER_ORGANIZATION_NODE_ADD      = "/password_manager/organization/node/add[/]";
-    public const PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE   = "/password_manager/organization/node/update[/]";
-    public const PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE   = "/password_manager/organization/node/remove/";
-    public const PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE        = "/s/:hash[/]";
-    public const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT       = "/password_manager/public_share/decrypt/:hash[/]";
+    public const PASSWORD_MANAGER                          = "/password_manager[/]";
+    public const PASSWORD_MANAGER_ORGANIZATION_NODE_ADD    = "/password_manager/organization/node/add[/]";
+    public const PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE = "/password_manager/organization/node/update[/]";
+    public const PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE = "/password_manager/organization/node/remove/";
+
+    public const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT = "/password_manager/public_share/decrypt/:hash[/]";
+    public const PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE  = "/s/:hash[/]";
+
     public const PASSWORD_MANAGER_NODE_DELETE                = '/password_manager/node/delete[/]';
     public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
-    public const APP_ID                                      = 'passwordManager';
+
+    public const PASSWORD_MANAGER_ATTACHMENTS_VIEW = "/password_manager/attachments/view/:fileId[/]";
+
+    public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value[/]";
+
+    public const APP_ID = 'passwordManager';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

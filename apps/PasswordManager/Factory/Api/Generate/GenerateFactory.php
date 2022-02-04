@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Generate;
 
-use Keestash\Core\Service\Encryption\Password\PasswordService;
 use KSA\PasswordManager\Api\Generate\Generate;
+use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -31,7 +31,7 @@ class GenerateFactory {
     public function __invoke(ContainerInterface $container): Generate {
         return new Generate(
             $container->get(IL10N::class)
-            , $container->get(PasswordService::class)
+            , $container->get(IPasswordService::class)
         );
     }
 
