@@ -10,7 +10,7 @@
                  background-size: cover;
                  ">
         <div class="auth-box">
-          <div id="loginform-wrapper" class="ks-form" :data-demo=" this.values.demo">
+          <div id="loginform-wrapper" class="ks-form">
             <div class="logo">
               <span class="db"><img id="logo-image" height="30px" src="/asset/img/logo_inverted_no_background.png"
                                     alt="logo"/></span>

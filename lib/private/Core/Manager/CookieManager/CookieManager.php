@@ -50,33 +50,38 @@ class CookieManager implements ICookieManager {
 
         $parsed = $this->httpService->getParsedBaseUrl(false, false);
 
+        if (0 === count($parsed)) {
+            throw new KeestashException('invalid url: ');
+        }
+
         session_set_cookie_params(
             $this->configService->getValue('user_lifetime', 30 * 60)
             , ICookieManager::COOKIE_PATH_ENTIRE_PATH
-            , ((string) $parsed['host']) ?? null
+            , (string) ($parsed['host'] ?? '')
             , ICookieManager::COOKIE_SECURE
             , ICookieManager::COOKIE_HTTP_ONLY
         );
     }
 
     public function set(string $key, string $value, int $expireTs = 0): bool {
-        $url      = $this->httpService->getBaseURL(false, false);
-        $urlParts = parse_url($url);
+        $urlParts = $this->httpService->getParsedBaseUrl(false, false);
 
-        if (false === is_array($urlParts)) {
-            throw new KeestashException('invalid url: ' . $url);
+        if (0 === count($urlParts)) {
+            throw new KeestashException('invalid url');
         }
 
+        // TODO check for https and set secure to false if http
+        //   make user clear that this is insecure
         return setcookie(
             $key
             , $value
             , [
                 'expires'    => $expireTs
                 , 'path'     => ICookieManager::COOKIE_PATH_ENTIRE_PATH
-                , 'domain'   => $urlParts['host']
+                , 'domain'   => (string) $urlParts['host']
                 , 'secure'   => ICookieManager::COOKIE_SECURE
                 , 'httponly' => ICookieManager::COOKIE_HTTP_ONLY
-                , 'samesite' => 'None'
+                , 'samesite' => ICookieManager::COOKIE_SAMESITE_STRICT
             ]
         );
     }

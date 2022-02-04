@@ -37,7 +37,8 @@ return [
     ],
     ConfigProvider::TEMPLATES    => [
         ConfigProvider::PATHS => [
-            'login' => [__DIR__ . '/../template']
+            'login'    => [__DIR__ . '/../template/login']
+            , 'logout' => [__DIR__ . '/../template/logout']
         ]
     ]
 ];

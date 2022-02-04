@@ -21,45 +21,39 @@ declare(strict_types=1);
 
 namespace KSA\Login\Controller;
 
-use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\Manager\SessionManager\SessionManager;
 use Keestash\Exception\KeestashException;
-use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\HTTP\IPersistenceService;
-use KSP\Core\Service\Router\IRouterService;
-use Laminas\Diactoros\Response\RedirectResponse;
-use Mezzio\Router\RouterInterface;
-use Psr\Http\Message\ResponseInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
-class Logout implements RequestHandlerInterface {
+class Logout extends StaticAppController {
 
-    private ITokenRepository    $tokenRepository;
-    private IRouterService      $routerService;
-    private ILoader             $loader;
-    private RouterInterface     $router;
-    private IPersistenceService $persistenceService;
+    private ITokenRepository          $tokenRepository;
+    private ILoader                   $loader;
+    private IPersistenceService       $persistenceService;
+    private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
-        ITokenRepository      $tokenRepository
-        , IRouterService      $routerService
-        , ILoader             $loader
-        , RouterInterface     $router
-        , IPersistenceService $persistenceService
+        ITokenRepository            $tokenRepository
+        , ILoader                   $loader
+        , IPersistenceService       $persistenceService
+        , TemplateRendererInterface $templateRenderer
+        , IAppRenderer              $appRenderer
     ) {
         $this->tokenRepository    = $tokenRepository;
-        $this->routerService      = $routerService;
         $this->loader             = $loader;
-        $this->router             = $router;
         $this->persistenceService = $persistenceService;
+        $this->templateRenderer   = $templateRenderer;
+
+        parent::__construct($appRenderer);
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface {
+    public function run(ServerRequestInterface $request): string {
         /** @var IUser|null $user */
         $user       = $request->getAttribute(IUser::class);
         $defaultApp = $this->loader->getDefaultApp();
@@ -73,12 +67,8 @@ class Logout implements RequestHandlerInterface {
             $this->tokenRepository->removeForUser($user);
         }
 
-        return new RedirectResponse(
-            $this->router->generateUri(
-                $this->routerService->getRouteByPath($defaultApp->getBaseRoute())['name']
-            )
-        );
-
+        return $this->templateRenderer
+            ->render('login::login');
     }
 
 }

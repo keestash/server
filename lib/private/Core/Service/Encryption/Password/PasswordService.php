@@ -21,21 +21,12 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Password;
 
-
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\Encryption\Password\Password;
 use Keestash\Exception\KeestashException;
+use KSP\Core\Service\Encryption\Password\IPasswordService;
 
-class PasswordService {
-
-    private const UPPER_CASE_KEY         = "case.upper";
-    private const UPPER_CASE_CHARACTERS  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private const LOWER_CASE_KEY         = "case.lower";
-    private const LOWER_CASE_CHARACTERS  = "abcdefghijklmnopqrstuvwxyz";
-    private const DIGIT_KEY              = "digit";
-    private const DIGITS                 = "0123456789";
-    private const SPECIAL_CHARACTERS_KEY = "characters.special";
-    private const SPECIAL_CHARACTERS     = "!@#$%^&*()_-=+;:,.?";
+class PasswordService implements IPasswordService {
 
     private HashTable $characterTable;
 
@@ -46,20 +37,20 @@ class PasswordService {
 
     private function initCharTable(): void {
         $this->characterTable->put(
-            PasswordService::UPPER_CASE_KEY
-            , PasswordService::UPPER_CASE_CHARACTERS
+            IPasswordService::KEY_UPPER_CASE
+            , IPasswordService::UPPER_CASE_CHARACTERS
         );
         $this->characterTable->put(
-            PasswordService::LOWER_CASE_KEY
-            , PasswordService::LOWER_CASE_CHARACTERS
+            IPasswordService::KEY_LOWER_CASE
+            , IPasswordService::LOWER_CASE_CHARACTERS
         );
         $this->characterTable->put(
-            PasswordService::DIGIT_KEY
-            , PasswordService::DIGITS
+            IPasswordService::KEY_DIGIT
+            , IPasswordService::DIGITS
         );
         $this->characterTable->put(
-            PasswordService::SPECIAL_CHARACTERS_KEY
-            , PasswordService::SPECIAL_CHARACTERS
+            IPasswordService::KEY_SPECIAL_CHARACTERS
+            , IPasswordService::SPECIAL_CHARACTERS
         );
 
     }
@@ -87,7 +78,7 @@ class PasswordService {
         $possibleCharacters = "";
 
         if (true === $hasUpperCase) {
-            $set                = $this->getCharacterSet(PasswordService::UPPER_CASE_KEY);
+            $set                = $this->getCharacterSet(IPasswordService::KEY_UPPER_CASE);
             $possibleCharacters = $possibleCharacters . $set;
             $password->addCharacterSet($set);
         }
@@ -100,19 +91,19 @@ class PasswordService {
                 false === $hasDigits &&
                 false === $hasSpecialChars
             )) {
-            $set                = $this->getCharacterSet(PasswordService::LOWER_CASE_KEY);
+            $set                = $this->getCharacterSet(IPasswordService::KEY_LOWER_CASE);
             $possibleCharacters = $possibleCharacters . $set;
             $password->addCharacterSet($set);
         }
 
         if (true === $hasDigits) {
-            $set                = $this->getCharacterSet(PasswordService::DIGIT_KEY);
+            $set                = $this->getCharacterSet(IPasswordService::KEY_DIGIT);
             $possibleCharacters = $possibleCharacters . $set;
             $password->addCharacterSet($set);
         }
 
         if (true === $hasSpecialChars) {
-            $set                = $this->getCharacterSet(PasswordService::SPECIAL_CHARACTERS_KEY);
+            $set                = $this->getCharacterSet(IPasswordService::KEY_SPECIAL_CHARACTERS);
             $possibleCharacters = $possibleCharacters . $set;
             $password->addCharacterSet($set);
         }
@@ -138,7 +129,6 @@ class PasswordService {
 
     private function getQuality(float $entropy): int {
         $entropy = floor($entropy);
-
         if ($entropy < 100) {
             return -1;
         }
@@ -158,6 +148,15 @@ class PasswordService {
         $possiblePasswords = pow($alphabetLength, $length);
 
         return log($possiblePasswords) / log(2);
+    }
+
+    public function measureQuality(Password $password): Password {
+        $entropy = $this->getPasswordEntropy($password);
+        $password->setEntropy($entropy);
+        $password->setQuality(
+            $this->getQuality($entropy)
+        );
+        return $password;
     }
 
 }

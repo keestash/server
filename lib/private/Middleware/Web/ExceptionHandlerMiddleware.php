@@ -20,6 +20,7 @@
 
 namespace Keestash\Middleware\Web;
 
+use Composer\InstalledVersions;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use Psr\Http\Message\ResponseInterface;
@@ -46,7 +47,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $showErrors = $this->configService->getValue("show_errors", false);
 
-        if (true === $showErrors) {
+        if (true === $showErrors && in_array('filp/whoops', InstalledVersions::getInstalledPackages(), true)) {
             $whoops = new Run();
             $whoops->pushHandler(new PrettyPageHandler());
             $whoops->register();

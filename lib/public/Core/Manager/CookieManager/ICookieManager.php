@@ -31,7 +31,9 @@ interface ICookieManager extends IManager {
 
     public const COOKIE_PATH_ENTIRE_PATH = "/";
     public const COOKIE_SECURE           = true;
+    public const COOKIE_INSECURE         = false;
     public const COOKIE_HTTP_ONLY        = true;
+    public const COOKIE_SAMESITE_STRICT  = 'Strict';
 
     /**
      * @param string $key

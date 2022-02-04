@@ -68,6 +68,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
         if (false === $hasIdAndHash || true === $isPublicRoute) {
             // we can not check for this, the instance is
             // not installed and there is no DB
+            // or the route is publicly reachable
             return $handler->handle($request);
         }
 

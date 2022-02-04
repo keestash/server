@@ -2,7 +2,7 @@
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -18,31 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+namespace KSA\PasswordManager\Factory\Api\Generate;
 
 use Interop\Container\ContainerInterface;
-use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Middleware\ApplicationStartedMiddleware;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Router\IRouterService;
+use KSA\PasswordManager\Api\Generate\Quality;
+use KSP\Core\Service\Encryption\Password\IPasswordService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Http\Server\MiddlewareInterface;
 
-class ApplicationStartedMiddlewareFactory implements FactoryInterface {
+class QualityFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
-        , ?array           $options = null
-    ): MiddlewareInterface {
-        return new ApplicationStartedMiddleware(
-            $container->get(IRouterService::class)
-            , $container->get(IEnvironmentService::class)
-            , $container->get(InstallerService::class)
-            , $container->get(IConfigService::class)
-            , $container->get(ILogger::class)
+        , ?array           $options = null): Quality {
+        return new Quality(
+            $container->get(IPasswordService::class)
         );
     }
 

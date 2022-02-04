@@ -155,12 +155,6 @@ class NodeRepository {
         $sql = $queryBuilder->getSQL();
         $statement    = $queryBuilder->executeQuery();
 
-        if (true === is_int($statement)) {
-            $log = 'error while retrieving data ' . $sql;
-            $this->logger->error($log);
-            throw new PasswordManagerException($log);
-        }
-
         $rows = $statement->fetchAllNumeric();
 
         if (0 === count($rows)) {

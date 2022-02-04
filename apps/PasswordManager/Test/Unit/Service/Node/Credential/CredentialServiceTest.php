@@ -37,6 +37,7 @@ class CredentialServiceTest extends TestCase {
     private EncryptionService     $encryptionService;
     private KeyService            $keyService;
     private NodeEncryptionService $nodeEncryptionService;
+    private NodeRepository        $nodeRepository;
 
     protected function setUp(): void {
         parent::setUp();
@@ -83,7 +84,7 @@ class CredentialServiceTest extends TestCase {
         $this->assertTrue(
             $this->encryptionService->decrypt(
                 $key
-                , $credential->getPassword()->getEncrypted()
+                , (string) $credential->getPassword()->getEncrypted()
             ) === $password
         );
         /**
