@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as ConfigProviderAlias;
 use KSA\Login\ConfigProvider;
-use KSA\Login\Controller\LoginController;
+use KSA\Login\Controller\Login;
 use KSA\Login\Controller\Logout;
 
 return [
@@ -34,8 +34,8 @@ return [
         ],
         [
             'path'         => ConfigProvider::LOGIN
-            , 'middleware' => LoginController::class
-            , 'name'       => LoginController::class
+            , 'middleware' => Login::class
+            , 'name'       => Login::class
         ],
     ],
     ConfigProviderAlias::PUBLIC_ROUTES          => [

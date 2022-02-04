@@ -58,6 +58,7 @@ class PersistenceService implements IPersistenceService {
         $sessionValue = $this->sessionManager->get($key, $default);
         $cookieValue  = $this->cookieManager->get($key, $default);
 
+        $this->logger->debug("sessionValue $sessionValue, cookieValue $cookieValue");
         if (null === $cookieValue && null === $sessionValue) return $default;
 
         return null === $cookieValue

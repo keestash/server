@@ -38,8 +38,8 @@ class TokenRepository implements ITokenRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
-        , IUserRepository $userRepository
+        IBackend           $backend
+        , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
     ) {
         $this->userRepository  = $userRepository;
@@ -152,7 +152,7 @@ class TokenRepository implements ITokenRepository {
             ->setParameter(1, $token->getValue())
             ->setParameter(2, $token->getUser()->getId())
             ->setParameter(3, $this->dateTimeService->toYMDHIS($token->getCreateTs()))
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
 

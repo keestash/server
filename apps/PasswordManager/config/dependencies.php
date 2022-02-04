@@ -24,7 +24,7 @@ use KSA\PasswordManager\Api\Comment\Add as AddComment;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Api\Generate\Generate;
-use KSA\PasswordManager\Api\Import\Import;
+use KSA\PasswordManager\Api\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Update;
@@ -50,6 +50,7 @@ use KSA\PasswordManager\Factory\Api\Comment\AddFactory as AddCommentFactory;
 use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
 use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
+use KSA\PasswordManager\Factory\Api\Generate\QualityFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\CreateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdateFactory as UpdatePasswordFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
@@ -108,6 +109,7 @@ return [
 
         // ---- generate
         Generate::class                                                   => GenerateFactory::class,
+        Quality::class                                                    => QualityFactory::class,
 
         // ---- PublicShare
         PublicShare::class                                                => PublicShareFactory::class,

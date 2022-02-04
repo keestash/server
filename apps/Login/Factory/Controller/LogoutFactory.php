@@ -21,14 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\Login\Factory\Controller;
 
-use Keestash\Core\Manager\SessionManager\SessionManager;
 use KSA\Login\Controller\Logout;
 use KSP\App\ILoader;
 use KSP\Core\Repository\Token\ITokenRepository;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\HTTP\IPersistenceService;
-use KSP\Core\Service\Router\IRouterService;
-use Mezzio\Router\RouterInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
 class LogoutFactory {
@@ -36,10 +34,10 @@ class LogoutFactory {
     public function __invoke(ContainerInterface $container): Logout {
         return new Logout(
             $container->get(ITokenRepository::class)
-            , $container->get(IRouterService::class)
             , $container->get(ILoader::class)
-            , $container->get(RouterInterface::class)
             , $container->get(IPersistenceService::class)
+            , $container->get(TemplateRendererInterface::class)
+            , $container->get(IAppRenderer::class)
         );
     }
 

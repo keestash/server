@@ -20,6 +20,7 @@ import {Host} from "../../../../../lib/js/src/Backend/Host";
 
 const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT = "/password_manager/public_share/decrypt/{hash}/";
 const PASSWORD_MANAGER_GENERATE_PASSWORD = "/password_manager/generate_password/{length}/{upperCase}/{lowerCase}/{digit}/{specialChars}/";
+const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/{value}/";
 const PASSWORD_MANAGER_ADD_COMMENT = "/password_manager/comment/add/";
 const PASSWORD_MANAGER_GET_COMMENT = "/password_manager/comment/get/{nodeId}/";
 const USER_PROFILE_PICTURE = "/users/profile_pictures/{userId}/";
@@ -85,6 +86,18 @@ export const ROUTES = {
 
     getAddComment() {
         return host.getApiHost() + PASSWORD_MANAGER_ADD_COMMENT;
+    },
+
+    /**
+     *
+     * @param {string} value
+     * @returns {string}
+     */
+    getGenerateQuality(value) {
+        let route = PASSWORD_MANAGER_GENERATE_QUALITY;
+        route = route.replace("{value}", value);
+
+        return host.getApiHost() + route;
     },
 
     getComments(nodeId) {

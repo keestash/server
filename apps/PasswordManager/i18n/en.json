@@ -26,6 +26,14 @@
     "notesLabel": "Notes",
     "notesPlaceholder": "Notes",
     "dialogTitle": "New Password",
+    "newPassword": {
+      "quality": {
+        "bad": "bad",
+        "weak": "weak",
+        "neutral": "",
+        "good": "good"
+      }
+    },
     "submitText": "Save",
     "negativeText": "Close",
     "url": {

@@ -15,8 +15,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Generate;
 
 use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Service\Encryption\Password\PasswordService;
 use KSP\Api\IResponse;
+use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -24,12 +24,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Generate implements RequestHandlerInterface {
 
-    private PasswordService $passwordService;
-    private IL10N           $translator;
+    private IPasswordService $passwordService;
+    private IL10N            $translator;
 
     public function __construct(
-        IL10N $l10n
-        , PasswordService $passwordService
+        IL10N              $l10n
+        , IPasswordService $passwordService
     ) {
         $this->passwordService = $passwordService;
         $this->translator      = $l10n;
@@ -85,7 +85,7 @@ class Generate implements RequestHandlerInterface {
     }
 
     private function validParameters(
-        ?string $length
+        ?string   $length
         , ?string $upperCase
         , ?string $lowerCase
         , ?string $digit

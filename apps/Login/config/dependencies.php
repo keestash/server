@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login;
-use KSA\Login\Controller\LoginController;
+use KSA\Login\Controller\Login as LoginController;
 use KSA\Login\Controller\Logout;
 use KSA\Login\Factory\Api\ConfigurationFactory;
 use KSA\Login\Factory\Api\LoginFactory;

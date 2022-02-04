@@ -25,6 +25,7 @@ use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
 use KSA\PasswordManager\Api\Generate\Generate;
+use KSA\PasswordManager\Api\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Delete;
@@ -63,6 +64,12 @@ return [
             , 'middleware' => Generate::class
             , 'method'     => IVerb::GET
             , 'name'       => Generate::class
+        ],
+        [
+            'path'         => ConfigProvider::PASSWORD_MANAGER_GENERATE_QUALITY
+            , 'middleware' => Quality::class
+            , 'method'     => IVerb::GET
+            , 'name'       => Quality::class
         ],
         [
             'path'         => '/password_manager/share/public[/]'
@@ -193,5 +200,6 @@ return [
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [
         ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
+        , ConfigProvider::PASSWORD_MANAGER_GENERATE_QUALITY
     ]
 ];

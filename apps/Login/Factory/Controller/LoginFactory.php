@@ -22,32 +22,22 @@ declare(strict_types=1);
 namespace KSA\Login\Factory\Controller;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\HTTPService;
-use Keestash\Legacy\Legacy;
-use KSA\Login\Controller\LoginController;
-use KSP\App\ILoader;
+use KSA\Login\Controller\Login;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\HTTP\IPersistenceService;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
 class LoginFactory {
 
-    public function __invoke(ContainerInterface $container): LoginController {
-        return new LoginController(
-            $container->get(IL10N::class)
-            , $container->get(ILoader::class)
-            , $container->get(IPersistenceService::class)
-            , $container->get(Legacy::class)
-            , $container->get(IConfigService::class)
+    public function __invoke(ContainerInterface $container): Login {
+        return new Login(
+            $container->get(IPersistenceService::class)
             , $container->get(InstanceDB::class)
             , $container->get(IAppRenderer::class)
             , $container->get(IUserRepository::class)
             , $container->get(TemplateRendererInterface::class)
-            , $container->get(HTTPService::class)
         );
     }
 

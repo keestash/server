@@ -45,7 +45,7 @@ class Login implements RequestHandlerInterface {
     private IUserRepository    $userRepository;
     private IL10N              $translator;
     private UserService        $userService;
-    private ITokenRepository   $tokenManager;
+    private ITokenRepository   $tokenRepository;
     private TokenService       $tokenService;
     private PersistenceService $persistenceService;
     private ConfigService      $configService;
@@ -68,7 +68,7 @@ class Login implements RequestHandlerInterface {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
         $this->userService        = $userService;
-        $this->tokenManager       = $tokenManager;
+        $this->tokenRepository    = $tokenManager;
         $this->tokenService       = $tokenService;
         $this->persistenceService = $persistenceService;
         $this->configService      = $configService;
@@ -110,7 +110,7 @@ class Login implements RequestHandlerInterface {
         }
         $token = $this->tokenService->generate("login", $user);
 
-        $this->tokenManager->add($token);
+        $this->tokenRepository->add($token);
 
         $expireTs = (new DateTime())->getTimestamp() +
             $this->configService->getValue(
@@ -123,11 +123,6 @@ class Login implements RequestHandlerInterface {
             , (int) $expireTs
         );
 
-        $headers = [
-            Verification::FIELD_NAME_TOKEN       => $token->getValue()
-            , Verification::FIELD_NAME_USER_HASH => $user->getHash()
-        ];
-
         return new JsonResponse(
             [
                 "message"    => $this->translator->translate("Ok")
@@ -138,7 +133,10 @@ class Login implements RequestHandlerInterface {
             ]
             ],
             IResponse::OK
-            , $headers
+            , [
+                Verification::FIELD_NAME_TOKEN       => $token->getValue()
+                , Verification::FIELD_NAME_USER_HASH => $user->getHash()
+            ]
         );
 
     }
