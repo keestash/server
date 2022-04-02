@@ -181,14 +181,13 @@ import Tab from "./Tab";
 import {mapState} from "vuex";
 import moment from "moment";
 import _ from "lodash";
-import {BSkeleton} from 'bootstrap-vue';
 import {SystemService} from "../../../Service/SystemService";
 import SelectableListModal from "../../Component/Modal/SelectableListModal";
 import {Host} from "../../../../../../../lib/js/src/Backend/Host";
 
 export default {
   name: "EdgeDetail",
-  components: {SelectableListModal, Tab, BSkeleton},
+  components: {SelectableListModal, Tab},
   data() {
     return {
       container: [],

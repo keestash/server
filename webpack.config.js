@@ -34,23 +34,25 @@ const baseModule = {
         filename: '[name].bundle.js',
         chunkFilename: '[name].chunk.js',
     },
-    optimization: {
-        splitChunks: {
-            chunks: 'async'
-        },
-        usedExports: true,
-    },
     module: {
         rules: [
             {
                 test: /\.vue$/,
                 exclude: path.resolve(__dirname, "node_modules"),
-                loader: ['vue-loader']
+                use: [
+                    {
+                        loader: 'vue-loader'
+                    }
+                ]
             },
             {
                 test: /\.js$/,
                 exclude: path.resolve(__dirname, "node_modules"),
-                loader: ['babel-loader']
+                use: [
+                    {
+                        loader: 'babel-loader'
+                    }
+                ]
             },
         ]
     },
@@ -59,9 +61,9 @@ const baseModule = {
             'vue$': 'vue/dist/vue.esm.js'
         },
         extensions: ['.js', '.vue'],
-    },
-    node: {
-        fs: 'empty'
+        fallback: {
+            fs: false
+        }
     },
     plugins: [
         new VueLoaderPlugin()
@@ -88,7 +90,6 @@ function toConfig(modules, baseModule) {
         config.resolve = baseModule.resolve;
         config.output = baseModule.output;
         config.plugins = baseModule.plugins;
-        config.optimization = baseModule.optimization;
         conf.push(config);
     }
     return conf;
