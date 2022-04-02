@@ -26,15 +26,11 @@ import Users from "./Users/Users";
 window.addEventListener(
     'DOMContentLoaded'
     , () => {
-        bootstrap("organizations");
+        bootstrap("users");
     }
 );
 
 function bootstrap(id) {
-    const appContentInner = document.getElementById("app-content-inner");
-    appContentInner.html("");
-    appContentInner.html("<div id='settings-app'></div>");
-
     let app = null;
     if (id === "organizations") {
         app = Organization;

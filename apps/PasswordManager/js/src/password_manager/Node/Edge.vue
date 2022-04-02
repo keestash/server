@@ -1,34 +1,30 @@
 <template>
-  <div class="pwm__row container-fluid pt-1 pb-1" @click="$emit('wasClicked')" @keyup.ctrl.76="copyPassword">
+  <div class="pwm__row container-fluid pt-1 pb-1" @click="$emit('wasClicked')">
     <div class="row align-items-center">
       <div class="col-6 col-md-2 h2 m-0 d-flex">
-        <b-img
+        <img
             :src="this.imageUrlPassword"
-            fluid
+            class="img-fluid flex-grow-1 flex-shrink-0 node-logo-color"
             :alt="edge.node.name"
             v-if="edge.node.type === 'credential'"
-            class="flex-grow-1 flex-shrink-0 node-logo-color"
-        ></b-img>
+        >
 
-        <b-img
+        <img
             :src="this.imageUrl"
-            fluid
             :alt="edge.node.name"
             v-else-if="edge.node.type === 'folder' && isOwner"
-            class="flex-grow-1 flex-shrink-0 node-logo-color"
-        ></b-img>
+            class="img-fluid flex-grow-1 flex-shrink-0 node-logo-color"
+        >
 
-        <b-img
+        <img
             :src="this.imageUrlShared"
-            fluid
             :alt="edge.node.name"
             v-else-if="edge.node.type === 'folder' && !isOwner"
-            class="flex-grow-1 flex-shrink-0 node-logo-color"
-        ></b-img>
+            class="img-fluid flex-grow-1 flex-shrink-0 node-logo-color"
+        >
         <p class="h6 align-self-center" v-if="edge.type === 'share' || edge.type === 'organization'">
-          <b-icon-share-fill :title="this.showOwnerName()"
-                             v-if="edge.type === 'organization'"></b-icon-share-fill>
-          <b-icon-share :title="this.showOwnerName()" v-if="edge.type === 'share'"></b-icon-share>
+          <i class="bi bi-share-fill" :title="this.showOwnerName()" v-if="edge.type === 'organization'"></i>
+          <i class="bi bi-share" :title="this.showOwnerName()" v-if="edge.type === 'share'"></i>
         </p>
       </div>
       <div class="col flex-grow-1 cropped" :title="edge.node.name">
@@ -54,6 +50,7 @@
 
     <SelectableListModal
         :ref-id="'modal' + this.edge.node.id"
+        :idName="'modal1' + this.edge.node.id"
         @onSubmit="submitOrganization"
         @onOpen="openModal"
         :options="organizations"
@@ -75,10 +72,11 @@ import {ROUTES} from "../../config/routes";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
 import SelectableListModal from "../Component/Modal/SelectableListModal";
 import {Host} from "../../../../../../lib/js/src/Backend/Host";
+import Modal from "../../../../../../lib/js/src/Components/Modal";
 
 export default {
   name: "Edge",
-  components: {SelectableListModal, contextMenu},
+  components: {Modal, SelectableListModal, contextMenu},
   props: {
     edge: null
   },
@@ -140,7 +138,8 @@ export default {
     },
     openModal: function () {
       this.organizationsLoading = true;
-      this.container.services.axios.get(
+
+        this.container.services.axios.get(
           ROUTES.getAllOrganizations(
               this.container.services.appStorage.getUserHash(),
               false
@@ -193,7 +192,7 @@ export default {
       ;
     },
     openModalClick: function () {
-      this.$emit('onOpenModalClick', 'modal' + this.edge.node.id);
+      this.$emit('onOpenModalClick', 'modal1' + this.edge.node.id);
     },
     showOwnerName: function () {
       if (this.edge.type === 'organization') {

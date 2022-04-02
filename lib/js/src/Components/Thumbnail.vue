@@ -46,8 +46,6 @@ export default {
     }
   },
   created() {
-    this.state.value = this.state.states.STATE_LOADED;
-    return;
     const startUp = new StartUp(
         new Container()
     );

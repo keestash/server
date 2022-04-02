@@ -1,191 +1,155 @@
 <template>
   <div v-if="show" @usersLoaded="handleUsersLoaded">
     <div>
-      <b-button
-          v-b-modal.modal-1
-      >{{ form.buttonText }}
-      </b-button>
+      <button href="#reject" role="button" @click="toggle('add-user-modal')" type="button" class="btn btn-primary">
+        {{ form.buttonText }}
+      </button>
 
-      <b-modal
-          id="modal-1"
-          ref="add-user-modal"
-          centered scrollable hide-footer
-          size="lg"
-          :title=form.title
-          @ok="onSubmit"
-      >
-        <b-form
-            ref="form"
-        >
-          <span>{{ form.description }}</span>
-          <div>
-            <b-alert show v-if="form.success === 1" variant="danger">{{ this.form.errorText }}</b-alert>
-            <b-alert show v-if="form.success === 2" variant="success">{{ this.form.successText }}</b-alert>
+      <div :class="modalClasses" class="fade" id="reject" role="dialog" ref="add-user-modal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">{{ form.title }}</h4>
+              <button type="button" class="close" @click="toggle()">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form
+                  ref="form"
+              >
+                <span>{{ form.description }}</span>
+                <div>
+                  <div class="alert alert-danger" role="alert" v-if="form.success === 1">
+                    {{ this.form.errorText }}
+                  </div>
+                  <div class="alert alert-success" role="alert" v-if="form.success === 2">
+                    {{ this.form.successText }}
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="user-name">{{ form.username.label }}</label>
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="user-name"
+                      :placeholder=form.username.placeholder
+                      v-model="form.username.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validateUserName"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="first-name">{{ form.firstname.label }}</label>
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="first-name"
+                      :placeholder=form.firstname.placeholder
+                      v-model="form.firstname.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validateFirstName"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="last-name">{{ form.lastname.label }}</label>
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="last-name"
+                      :placeholder=form.lastname.placeholder
+                      v-model="form.lastname.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validateLastName"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="email">{{ form.email.label }}</label>
+                  <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      :placeholder=form.email.placeholder
+                      v-model="form.email.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validateEmail"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">{{ form.phone.label }}</label>
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="phone"
+                      :placeholder=form.phone.placeholder
+                      v-model="form.phone.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validatePhone"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="website">{{ form.website.label }}</label>
+                  <input
+                      type="text"
+                      class="form-control"
+                      id="website"
+                      :placeholder=form.website.placeholder
+                      v-model="form.website.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validateWebsite"
+                  >
+                </div>
+
+                <div class="form-group">
+                  <label for="password">{{ form.password.label }}</label>
+                  <input
+                      type="password"
+                      class="form-control"
+                      id="password"
+                      :placeholder=form.password.placeholder
+                      v-model="form.password.value"
+                      required
+                      aria-describedby="input-live-help input-live-feedback"
+                      v-on:input="validatePassword"
+                  >
+                </div>
+
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="checkbox-1" v-model="form.locked.value"
+                         name="checkbox-1" value="true">
+                  <label class="form-check-label" for="checkbox-1">{{ form.locked.label }}</label>
+                </div>
+
+              </form>
+              <button type="button" class="btn mt-3 btn-outline-primary" @click="onSubmit" data-type="add">
+                <div class="spinner-border small" role="status" v-if="form.submitted">
+                  <span class="sr-only"></span>
+                </div>
+                {{ this.form.buttonText }}
+              </button>
+
+              <button type="button" class="mt-2 btn btn-outline-secondary btn-block" @click="hideModal"
+                      data-type="cancel">
+                {{ this.form.negativeButtonText }}
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" @click="toggle()">Close</button>
+            </div>
           </div>
+        </div>
+      </div>
 
-          <b-form-group
-              id="user-name"
-              :label=form.username.label
-              label-for="user-name"
-              :invalid-feedback="form.username.invalidFeedback"
-              :state="form.username.state"
-          >
-            <b-form-input
-                id="user-name"
-                v-model="form.username.value"
-                type="text"
-                required
-                :placeholder=form.username.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validateUserName"
-                :state="form.username.state"
-                trim
-            ></b-form-input>
-
-          </b-form-group>
-          <b-form-group
-              id="first-name"
-              :label=form.firstname.label
-              label-for="first-name"
-              :invalid-feedback="form.firstname.invalidFeedback"
-              :state="form.firstname.state"
-
-          >
-            <b-form-input
-                id="first-name"
-                v-model="form.firstname.value"
-                required
-                :placeholder=form.firstname.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validateFirstName"
-                :state="form.firstname.state"
-                trim
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group
-              id="last-name"
-              :label=form.lastname.label
-              label-for="last-name"
-              :invalid-feedback="form.lastname.invalidFeedback"
-              :state="form.lastname.state"
-          >
-            <b-form-input
-                id="last-name"
-                v-model="form.lastname.value"
-                required
-                :placeholder=form.lastname.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validateLastName"
-                :state="form.lastname.state"
-                trim
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group
-              id="email"
-              :label=form.email.label
-              label-for="email"
-              :invalid-feedback="form.email.invalidFeedback"
-              :state="form.email.state"
-          >
-            <b-form-input
-                id="email"
-                v-model="form.email.value"
-                type="email"
-                required
-                :placeholder=form.email.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validateEmail"
-                :state="form.email.state"
-                trim
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group
-              id="phone"
-              :label=form.phone.label
-              label-for="phone"
-              :invalid-feedback="form.phone.invalidFeedback"
-              :state="form.phone.state"
-
-          >
-            <b-form-input
-                id="phone"
-                v-model="form.phone.value"
-                type="text"
-                :placeholder=form.phone.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validatePhone"
-                :state="form.phone.state"
-                trim
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group
-              id="website"
-              :label=form.website.label
-              label-for="website"
-              :invalid-feedback="form.website.invalidFeedback"
-              :state="form.website.state"
-
-          >
-            <b-form-input
-                id="website"
-                v-model="form.website.value"
-                type="text"
-                :placeholder=form.website.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validateWebsite"
-                :state="form.website.state"
-                trim
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group
-              id="password"
-              :label=form.password.label
-              label-for="password"
-              :invalid-feedback="form.password.invalidFeedback"
-              :state="form.password.state"
-
-          >
-            <b-form-input
-                id="password"
-                v-model="form.password.value"
-                type="text"
-                :placeholder=form.password.placeholder
-                aria-describedby="input-live-help input-live-feedback"
-                v-on:input="validatePassword"
-                :state="form.password.state"
-                trim
-            ></b-form-input>
-          </b-form-group>
-
-          <b-form-group>
-            <b-form-checkbox
-                id="checkbox-1"
-                v-model="form.locked.value"
-                name="checkbox-1"
-                value="true"
-                unchecked-value="false"
-            >
-              {{ form.locked.label }}
-            </b-form-checkbox>
-          </b-form-group>
-
-
-        </b-form>
-
-        <b-button class="mt-3" variant="outline-primary" block @click="onSubmit" data-type="add">
-          <b-spinner small v-if="form.submitted"></b-spinner>
-          {{ this.form.buttonText }}
-        </b-button>
-        <b-button class="mt-2" variant="outline-secondary" block @click="hideModal" data-type="cancel">
-          {{ this.form.negativeButtonText }}
-        </b-button>
-
-      </b-modal>
     </div>
   </div>
 </template>
@@ -194,13 +158,9 @@
 
 
 import {ROUTES} from "../../config/routes";
-import {
-  AXIOS,
-  EMAIL_VALIDATOR,
-  PHONE_VALIDATOR,
-  URL_VALIDATOR
-} from "../../../../../../lib/js/src/StartUp";
+import {AXIOS, EMAIL_VALIDATOR, PHONE_VALIDATOR, StartUp, URL_VALIDATOR} from "../../../../../../lib/js/src/StartUp";
 import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
+import {Container} from "../../../../../../lib/js/src/DI/Container";
 
 export default {
 
@@ -210,6 +170,27 @@ export default {
     "show"
   ],
   methods: {
+    toggle(ref) {
+      document.body.className += ' modal-open'
+      let modalClasses = this.modalClasses
+
+      if (modalClasses.indexOf('d-block') > -1) {
+        modalClasses.pop()
+        modalClasses.pop()
+
+        //hide backdrop
+        let backdrop = document.querySelector('.modal-backdrop')
+        document.body.removeChild(backdrop)
+      } else {
+        modalClasses.push('d-block')
+        modalClasses.push('show')
+
+        //show backdrop
+        let backdrop = document.createElement('div')
+        backdrop.classList = "modal-backdrop fade show";
+        document.body.appendChild(backdrop)
+      }
+    },
     hideModal() {
       this.$refs['add-user-modal'].hide()
     },
@@ -224,7 +205,12 @@ export default {
       this.validateWebsite();
 
       let valid = true;
-      const diContainer = Keestash.Main.getContainer();
+      const startUp = new StartUp(
+          new Container()
+      );
+      startUp.setUp();
+      const diContainer = startUp.getContainer();
+
       const axios = diContainer.query(AXIOS);
 
       for (let key in this.form) {
@@ -287,7 +273,12 @@ export default {
           );
     },
     validateUserName() {
-      const diContainer = Keestash.Main.getContainer();
+      const startUp = new StartUp(
+          new Container()
+      );
+      startUp.setUp();
+      const diContainer = startUp.getContainer();
+
       const axios = diContainer.query(AXIOS);
 
       if (this.form.username.value === "") {
@@ -322,7 +313,12 @@ export default {
       this.form.lastname.state = this.form.lastname.value.length > 0;
     },
     validateEmail() {
-      const diContainer = Keestash.Main.getContainer();
+      const startUp = new StartUp(
+          new Container()
+      );
+      startUp.setUp();
+      const diContainer = startUp.getContainer();
+
       const emailValidator = diContainer.query(EMAIL_VALIDATOR);
       const axios = diContainer.query(AXIOS);
       const validEmail = this.form.email.value !== "" && emailValidator.isValidAddress(this.form.email.value);
@@ -352,12 +348,20 @@ export default {
 
     },
     validatePhone() {
-      const diContainer = Keestash.Main.getContainer();
+      const startUp = new StartUp(
+          new Container()
+      );
+      startUp.setUp();
+      const diContainer = startUp.getContainer();
       const emailValidator = diContainer.query(PHONE_VALIDATOR);
       this.form.phone.state = this.form.phone.value.length === 0 || emailValidator.isValidNumber(this.form.phone.value);
     },
     validatePassword() {
-      const diContainer = Keestash.Main.getContainer();
+      const startUp = new StartUp(
+          new Container()
+      );
+      startUp.setUp();
+      const diContainer = startUp.getContainer();
       const axios = diContainer.query(AXIOS);
       const password = this.form.password.value;
 
@@ -385,7 +389,11 @@ export default {
           });
     },
     validateWebsite() {
-      const diContainer = Keestash.Main.getContainer();
+      const startUp = new StartUp(
+          new Container()
+      );
+      startUp.setUp();
+      const diContainer = startUp.getContainer();
       const urlValidator = diContainer.query(URL_VALIDATOR);
       this.form.website.state = this.form.website.value === "" || urlValidator.isValidURL(this.form.website.value);
     }
@@ -444,6 +452,7 @@ export default {
   },
   data() {
     return {
+      modalClasses: ['modal', 'fade'],
       form: {
         username: {
           label: '',

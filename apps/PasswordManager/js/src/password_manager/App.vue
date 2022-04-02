@@ -51,81 +51,78 @@
     </div>
 
     <div>
-      <b-modal ref="new-edge-modal" hide-footer hide-backdrop no-fade @hide="hideModal" @shown="onModalShown">
-        <b-form @submit="onEdgeAdd">
-          <b-form-group
-              id="input-group-edge-name"
-              label="Name:"
-              label-for="edge-name"
-          >
-            <b-form-input
-                id="edge-name"
-                v-model="addEdge.form.name"
-                type="text"
-                placeholder="Enter name"
-                autocomplete="off"
-                ref="ref-node-name"
-                required
-            ></b-form-input>
-            <label><small></small></label>
-          </b-form-group>
+        <div class="modal" tabindex="-1" role="dialog" id="new-edge-modal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit="onEdgeAdd">
+                            <div class="form-group">
+                                <label for="edge-name">Name</label>
+                                <input
+                                        id="edge-name"
+                                        v-model="addEdge.form.name"
+                                        type="text"
+                                        placeholder="Enter name"
+                                        autocomplete="off"
+                                        ref="ref-node-name"
+                                        required
+                                >
+                                <label><small></small></label>
+                            </div>
 
-          <b-form-group
-              id="input-group-edge-username"
-              label="Username:"
-              label-for="edge-username"
-              v-if="addEdge.type === 'pwm__new__password'"
-          >
-            <b-form-input
-                id="edge-username"
-                v-model="addEdge.form.username"
-                type="text"
-                placeholder="Enter Username"
-                autocomplete="off"
-            ></b-form-input>
-            <label><small></small></label>
-          </b-form-group>
+                            <div class="form-group" v-if="addEdge.type === 'pwm__new__password'">
+                                <label for="edge-username">Username</label>
+                                <input
+                                        id="edge-username"
+                                        v-model="addEdge.form.username"
+                                        type="text"
+                                        placeholder="Enter Username"
+                                        autocomplete="off">
+                                <label><small></small></label>
+                            </div>
 
-          <b-form-group
-              id="input-group-edge-password"
-              label="Password:"
-              label-for="edge-password"
-              v-if="addEdge.type === 'pwm__new__password'"
-          >
-            <b-form-input
-                id="edge-password"
-                v-model="addEdge.form.password.value"
-                type="password"
-                placeholder="Enter Password"
-                autocomplete="off"
-                @input="checkEntropy"
-            ></b-form-input>
-            <label :class="addEdge.form.password.passwordClass">
-              <small>
-                {{ addEdge.form.password.hint }}
-              </small>
-            </label>
-          </b-form-group>
+                            <div class="form-group" v-if="addEdge.type === 'pwm__new__password'">
+                                <label for="edge-password">Password</label>
+                                <input
+                                        id="edge-password"
+                                        v-model="addEdge.form.password.value"
+                                        type="password"
+                                        placeholder="Enter Password"
+                                        autocomplete="off"
+                                        @input="checkEntropy"
+                                >
+                                <label :class="addEdge.form.password.passwordClass">
+                                    <small>
+                                        {{ addEdge.form.password.hint }}
+                                    </small>
+                                </label>
+                            </div>
 
-          <b-form-group
-              id="input-group-edge-url"
-              label="URL:"
-              label-for="edge-url"
-              v-if="addEdge.type === 'pwm__new__password'"
-          >
-            <b-form-input
-                id="edge-url"
-                v-model="addEdge.form.url"
-                type="text"
-                placeholder="Enter URL"
-                autocomplete="off"
-            ></b-form-input>
-            <label><small></small></label>
-          </b-form-group>
+                            <div class="form-group" v-if="addEdge.type === 'pwm__new__password'">
+                                <label for="edge-url">URL</label>
+                                <input
+                                        id="edge-url"
+                                        v-model="addEdge.form.url"
+                                        type="text"
+                                        placeholder="Enter URL"
+                                        autocomplete="off"
+                                >
+                                <label><small></small></label>
+                            </div>
 
-          <b-button type="submit" variant="primary">Submit</b-button>
-        </b-form>
-      </b-modal>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
   </div>
@@ -207,7 +204,7 @@ export default {
         EVENT_NAME_ACTION_BAR_ITEM_CLICKED
         , (e) => {
           e.stopImmediatePropagation();
-          this.$refs['new-edge-modal'].show();
+            $('#new-edge-modal').modal([])
           this.addEdge.type = e.detail.target.id;
         }
     )
@@ -221,9 +218,6 @@ export default {
     }
   },
   methods: {
-    onModalShown() {
-      this.$refs['ref-node-name'].focus();
-    },
     onEdgeAdd(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -255,7 +249,7 @@ export default {
                 "addEdge"
                 , data.edge
             );
-            this.$refs['new-edge-modal'].hide();
+            // TODO hide new-edge-modal
           });
     },
     hideModal() {

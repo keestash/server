@@ -1,7 +1,8 @@
 <template>
   <div class="container d-flex flex-grow-1 justify-content-center flex-column" v-if="this.loading === true">
-    <b-spinner class="align-self-center" variant="primary" type="grow" label="Spinning"
-    ></b-spinner>
+    <div class="spinner-grow align-self-center text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
   </div>
 </template>
 
