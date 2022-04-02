@@ -58,9 +58,10 @@ const baseModule = {
     },
     resolve: {
         alias: {
-            'vue$': 'vue/dist/vue.esm.js'
+            'vue': '@vue/runtime-dom',
+            // 'Vue': 'vue/dist/vue.esm-bundler.js'
         },
-        extensions: ['.js', '.vue'],
+        extensions: ['.tsx', '.ts', '.js', '.vue'],
         fallback: {
             fs: false
         }

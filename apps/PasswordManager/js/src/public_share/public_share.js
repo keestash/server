@@ -18,23 +18,17 @@
  */
 import store from "../config/store";
 import i18n from "../i18n";
-import Vue from "vue";
-import Vuex from "vuex";
 import App from "./App";
+import {createApp} from "vue";
 
 window.addEventListener(
     'DOMContentLoaded'
     , async () => {
-        const vueConfig = {
-            store,
-            i18n,
-            render: h => h(App)
-        };
 
-        Vue.use(Vuex);
-        new Vue(
-            vueConfig
-        )
-            .$mount("#public_share");
+        createApp(App)
+            .use(store)
+            .use(i18n)
+            .mount("#public_share");
+
     }
 );

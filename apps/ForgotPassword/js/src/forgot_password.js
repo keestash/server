@@ -16,26 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Vue from "vue";
-import Vuex from "vuex";
 import App from "./ForgotPassword/App";
 import i18n from "./i18n";
 import store from "../../../../lib/js/src/Store/store";
+import {createApp} from "vue";
 
 window.addEventListener(
     'DOMContentLoaded'
     , async () => {
-        const vueConfig = {
-            store,
-            i18n,
-            render: h => h(App)
-        };
 
-        Vue.use(Vuex);
-        new Vue(
-            vueConfig
-        )
-            .$mount("#forgot_password");
+        createApp(App)
+            .use(store)
+            .use(i18n)
+            .mount("#forgot_password");
 
     }
 );

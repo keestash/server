@@ -38,7 +38,7 @@
             <Skeleton height="25px" v-else/>
           </div>
           <template v-if="state.value === state.states.STATE_LOADED">
-            <div class="justify-content-between ml-2" v-if="isOwner">
+            <div class="justify-content-between ms-2" v-if="isOwner">
               <button
                   class="btn btn-primary btn-circle btn-sm btn-public-share"
                   @click="sharePublicly"
@@ -101,8 +101,8 @@
                   </div>
 
                   <div class="col-sm-4 align-self-center" v-if="isOwner">
-                    <div class="row justify-content-end pr-1">
-                      <div class="col-1 mr-2" @click="removeShare(share)" data-toggle="modal"
+                    <div class="row justify-content-end pe-1">
+                      <div class="col-1 me-2" @click="removeShare(share)" data-bs-toggle="modal"
                            data-target="#remove-share-modal">
                         <i class="fas fa-times remove"></i>
                       </div>

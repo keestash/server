@@ -18,9 +18,9 @@
  */
 
 import store from "../../../../lib/js/src/Store/store";
-import Vue from "vue";
 import App from "./Install/App";
 import i18n from "./i18n";
+import {createApp} from "vue";
 
 window.addEventListener(
     'DOMContentLoaded'
@@ -28,14 +28,10 @@ window.addEventListener(
 );
 
 function bootstrap() {
-    const vueConfig = {
-        store
-        , i18n
-        , render: h => h(App)
-    };
-
-    new Vue(vueConfig)
-        .$mount("#install");
+    createApp(App)
+        .use(store)
+        .use(i18n)
+        .mount("#install");
 }
 
 

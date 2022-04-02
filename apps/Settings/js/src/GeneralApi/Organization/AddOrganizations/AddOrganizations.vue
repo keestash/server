@@ -19,12 +19,12 @@
               organization.name
             }}</a>
           <div>
-            <span v-if="organization.active_ts !== null" class="activation-badge badge badge-danger"
+            <span v-if="organization.active_ts !== null" class="activation-badge badge bg-danger"
                   @click="handleActivation(false, organization.id)" :title="formatDate(organization.active_ts)">deactivate</span>
-            <span class="activation-badge badge badge-success" @click="handleActivation(true, organization.id)"
+            <span class="activation-badge badge bg-success" @click="handleActivation(true, organization.id)"
                   v-if="organization.active_ts === null">activate</span>
 
-            <span class="badge badge-pill badge-primary">{{ organization.users.length }}</span>
+            <span class="badge bg-pill bg-primary">{{ organization.users.length }}</span>
           </div>
         </li>
       </ul>

@@ -17,9 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import App from "./InstallInstance/App";
-import Vue from 'vue';
 import store from "../../../../lib/js/src/Store/store";
 import i18n from "./i18n/index";
+import {createApp} from "vue";
 
 window.addEventListener(
     'DOMContentLoaded'
@@ -27,12 +27,8 @@ window.addEventListener(
 );
 
 function bootstrap() {
-    const vueConfig = {
-        store
-        , i18n
-        , render: h => h(App)
-    };
-
-    new Vue(vueConfig)
-        .$mount("#install_instance_app");
+    createApp(App)
+        .use(store)
+        .use(i18n)
+        .mount("#install_instance_app");
 }

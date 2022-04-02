@@ -137,7 +137,7 @@
       <div class="form-group">
         <label for="input-log-requests">{{ form.content.logRequests.label }}</label>
         <select class="form-control" id="input-log-requests">
-          <option v-for="option in form.content.logRequests.options" v-model="form.content.logRequests.value">
+          <option v-for="option in form.content.logRequests.options">
             {{ option }}
           </option>
         </select>

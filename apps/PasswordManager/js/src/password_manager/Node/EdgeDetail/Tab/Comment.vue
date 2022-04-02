@@ -42,8 +42,8 @@
                 </div>
 
                 <div class="col-sm-4 align-self-center">
-                  <div class="row justify-content-end pr-1">
-                    <div class="col-1 mr-2" @click="removeComment(comment)" data-toggle="modal"
+                  <div class="row justify-content-end pe-1">
+                    <div class="col-1 me-2" @click="removeComment(comment)" data-bs-toggle="modal"
                          data-target="#remove-comment-modal">
                       <i class="fas fa-times remove"></i>
                     </div>
