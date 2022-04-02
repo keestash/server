@@ -20,7 +20,6 @@
 import store from "../../../../lib/js/src/Store/store";
 import Vue from "vue";
 import Organization from "./GeneralApi/Organization/Organization";
-import BootstrapVue from "bootstrap-vue";
 import Users from "./Users/Users";
 
 window.addEventListener(
@@ -42,7 +41,6 @@ function bootstrap(id) {
         render: h => h(app)
     };
 
-    Vue.use(BootstrapVue);
     new Vue(vueConfig)
         .$mount("#settings-app");
 }
