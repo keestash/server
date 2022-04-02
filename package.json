@@ -39,7 +39,7 @@
     "html-webpack-plugin": "^4.5.2",
     "json-schema": ">=0.4.0",
     "kind-of": ">=6.0.3",
-    "minimist": "^1.2.5",
+    "minimist": "^1.2.6",
     "node-sass": "^4.14.1",
     "npm-watch": "^0.7.0",
     "sass-loader": "^10.2.0",
