@@ -23,7 +23,9 @@ declare(strict_types=1);
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\Api\MinimumCredential;
 use KSA\GeneralApi\Api\Template\GetAll;
+use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\Api\UserList;
+use KSA\GeneralApi\Command\Info\Routes;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
@@ -35,9 +37,11 @@ use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
 use KSA\GeneralApi\Factory\Api\MinimumCredentialFactory;
 use KSA\GeneralApi\Factory\Api\Template\GetAllFactory;
 use KSA\GeneralApi\Factory\Api\Thumbnail\FileFactory;
+use KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory;
 use KSA\GeneralApi\Factory\Api\UserListFactory;
 use KSA\GeneralApi\Factory\Command\ClearBundleJSFactory;
 use KSA\GeneralApi\Factory\Command\CompilerFactory;
+use KSA\GeneralApi\Factory\Command\Info\RoutesFactory;
 use KSA\GeneralApi\Factory\Command\MigrateAppsFactory;
 use KSA\GeneralApi\Factory\Command\PHPStanFactory;
 use KSA\GeneralApi\Factory\Controller\Common\DefaultRouteControllerFactory;
@@ -51,6 +55,7 @@ return [
         Compiler::class          => CompilerFactory::class,
         MigrateApps::class       => MigrateAppsFactory::class,
         PHPStan::class           => PHPStanFactory::class,
+        Routes::class            => RoutesFactory::class,
 
         // api
         UserList::class          => UserListFactory::class,
@@ -60,7 +65,7 @@ return [
         \KSA\GeneralApi\Api\Strings\GetAll::class => \KSA\GeneralApi\Factory\Api\Strings\GetAllFactory::class,
         GetAll::class                             => GetAllFactory::class,
         \KSA\GeneralApi\Api\Thumbnail\File::class => FileFactory::class,
-        \KSA\GeneralApi\Api\Thumbnail\Get::class  => \KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory::class,
+        Get::class                                => GetFactory::class,
 
         // controller
         View::class                               => ViewFactory::class,

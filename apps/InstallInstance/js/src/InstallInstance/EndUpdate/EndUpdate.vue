@@ -1,9 +1,5 @@
 <template>
-  <b-button
-      variant="primary"
-      @click="buttonClick"
-  >End Update
-  </b-button>
+  <button type="button" class="btn btn-primary" @click="buttonClick">End Update</button>
 </template>
 
 <script>

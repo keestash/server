@@ -18,51 +18,51 @@
       <div class="mb-4 pl-5 pr-5">
         <hr class="solid">
       </div>
-      <b-container class="d-flex mt-2">
-        <b-row class="my-1 flex-grow-1 d-flex justify-content-between">
-          <b-col sm="3">
+      <div class="container d-flex mt-2">
+        <div class=" row my-1 flex-grow-1 d-flex justify-content-between">
+          <div class="col-sm-3">
             <label>ID</label>
 
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
-              <b-form-input v-model="organization.id" readonly></b-form-input>
+              <input type="text" class="form-control" v-model="organization.id" readonly>
             </template>
             <Skeleton :height="this.state.height" v-else/>
 
-          </b-col>
-          <b-col sm="3">
+          </div>
+          <div class="col-sm-3">
             <label>Name</label>
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
-              <b-form-input id="range-2" v-model="organization.name" debounce="500"
-                            @change="onInputChange"></b-form-input>
+              <input type="text" class="form-control" id="range-2" v-model="organization.name" @change="onInputChange"
+                     readonly>
             </template>
             <Skeleton :height="this.state.height" v-else/>
 
-          </b-col>
-        </b-row>
-      </b-container>
-      <b-container class="d-flex">
-        <b-row class="my-1 flex-grow-1 d-flex justify-content-between">
-          <b-col sm="3">
+          </div>
+        </div>
+      </div>
+      <div class="container d-flex">
+        <div class="row my-1 flex-grow-1 d-flex justify-content-between">
+          <div class="col-sm-3">
             <label>Active</label>
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
-              <b-form-input
-
-                  v-model="organization.active_ts === null ? '' : organization.active_ts.date"
-                  readonly></b-form-input>
+              <input type="text"
+                     class="form-control"
+                     v-model="organization.active_ts === null ? '' : organization.active_ts.date"
+                     readonly>
             </template>
             <Skeleton :height="this.state.height" v-else/>
 
-          </b-col>
-          <b-col sm="3">
+          </div>
+          <div class="col-sm-3">
             <label>Created</label>
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
-              <b-form-input v-model="organization.create_ts.date" readonly></b-form-input>
+              <input type="text" v-model="organization.create_ts.date" readonly class="form-control">
             </template>
             <Skeleton :height="this.state.height" v-else/>
 
-          </b-col>
-        </b-row>
-      </b-container>
+          </div>
+        </div>
+      </div>
       <div class="mb-4 pl-5 pr-5">
         <hr class="solid">
       </div>
@@ -77,30 +77,26 @@
       </div>
       <div class="container mt-2">
         <template v-if="this.state.value === this.state.states.STATE_LOADED">
-          <b-select v-model="candidates.selected" @change="optionSelected">
-            <b-select-option disabled value="">Please select one</b-select-option>
+          <select class="form-control" v-model="candidates.selected" @change="optionSelected">
+            <option disabled value="">Please select one</option>
             <option :value="size.id" v-for="size in candidates.values" v-bind:key="candidates.id">
               {{ size.name }}
             </option>
-          </b-select>
+          </select>
         </template>
         <Skeleton :height="this.state.height" v-else/>
 
       </div>
       <div class="container mt-2">
         <template v-if="this.state.value === this.state.states.STATE_LOADED">
-          <b-list-group v-for="user in this.organization.users.content"
-                        v-if="organization.users.content.length > 0"
-                        v-bind:key="user.id"
-          >
-            <b-list-group-item class="d-flex justify-content-between">
-              {{ user.name }}
-              <b-badge variant="danger" @click="handleRemove(user.id)" title="remove"
-                       class="remove-badge align-self-center">
-                x
-              </b-badge>
-            </b-list-group-item>
-          </b-list-group>
+          <ul class="list-group" v-for="user in this.organization.users.content"
+              v-if="organization.users.content.length > 0"
+              v-bind:key="user.id">
+            <li class="list-group-item d-flex justify-content-between">{{ user.name }}
+              <span class="badge badge-danger remove-badge align-self-center"
+                    @click="handleRemove(user.id)" title="remove">x</span>
+            </li>
+          </ul>
         </template>
         <Skeleton :height="this.state.height" v-else/>
 
@@ -164,7 +160,8 @@ export default {
 
       this.$forceUpdate();
     },
-    optionSelected(userId) {
+    optionSelected(event) {
+      const userId = event.target.value;
       const startUp = new StartUp(
           new Container()
       );

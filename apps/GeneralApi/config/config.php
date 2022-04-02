@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
+use KSA\GeneralApi\Command\Info\Routes;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
@@ -35,6 +36,7 @@ return [
         , PHPStan::class
         , ClearBundleJS::class
         , Compiler::class
+        , Routes::class
     ],
 
     'templates'              => [
