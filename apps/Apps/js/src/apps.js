@@ -17,26 +17,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Vue from "vue";
-import Vuex from "vuex";
 import App from "./App";
 import i18n from "./i18n/index";
 import store from "./config/store";
+import {createApp} from "vue";
+
 
 window.addEventListener(
     'DOMContentLoaded'
     , async () => {
-        const vueConfig = {
-            store,
-            i18n,
-            render: h => h(App)
-        };
 
-        Vue.use(Vuex);
-        new Vue(
-            vueConfig
-        )
-            .$mount("#apps");
+        createApp(App)
+            .use(store)
+            .use(i18n)
+            .mount("#apps");
 
     }
 );

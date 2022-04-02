@@ -82,7 +82,7 @@
 
                   <div class="form-group mb-0 mt-2" v-if="this.values.forgotPasswordEnabled">
                     <div class="col-sm-12 text-center">
-                      {{ $t('login.forgotPasswordText') }} <a :href=$t('login.forgotPasswordLink')
+                      {{ $t('login.forgotPasswordText') }} <a :href=getLink()
                                                               class="ml-1"><b>{{
                         $t('login.forgotPasswordActionText')
                       }}</b></a>
@@ -231,14 +231,16 @@ export default {
           if (false === this.values.demoMode) {
             return;
           }
-
-          $(this.$refs.emailAddressModal).modal('show');
-
+          const modal = new bootstrap.Modal(this.$refs.emailAddressModal);
+          modal.show();
         }
     )
 
   },
   methods: {
+    getLink() {
+      return $t('login.forgotPasswordLink');
+    },
     onEmailSubmitted() {
       this.demoModal.alertVisible = false;
       const email = this.demoModal.value;
@@ -257,7 +259,8 @@ export default {
       ).then(
           () => {
             this.container.temporaryStorage.set("demo-submitted", "true");
-            $(this.$refs.emailAddressModal).modal('hide');
+            const modal = new bootstrap.Modal(this.$refs.emailAddressModal);
+            modal.hide();
           }
       );
 

@@ -20,23 +20,16 @@
 import store from "../../../../lib/js/src/Store/store";
 import i18n from "./i18n";
 import App from "./ResetPassword/App";
-import Vue from "vue";
-import Vuex from "vuex";
+import {createApp} from "vue";
 
 window.addEventListener(
     'DOMContentLoaded'
     , async () => {
-        const vueConfig = {
-            store,
-            i18n,
-            render: h => h(App)
-        };
 
-        Vue.use(Vuex);
-        new Vue(
-            vueConfig
-        )
-            .$mount("#reset_password");
+        createApp(App)
+            .use(store)
+            .use(i18n)
+            .mount("#reset_password");
 
     }
 );

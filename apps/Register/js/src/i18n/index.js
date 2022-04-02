@@ -16,10 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import VueI18n from "vue-i18n";
-import Vue from "vue";
-
-Vue.use(VueI18n);
+import { createI18n } from 'vue-i18n'
 
 function loadLocaleMessages() {
     const locales = require.context(
@@ -38,7 +35,7 @@ function loadLocaleMessages() {
     return messages;
 }
 
-export default new VueI18n({
+export default createI18n({
     locale: 'en',
     fallbackLocale: 'en',
     messages: loadLocaleMessages()

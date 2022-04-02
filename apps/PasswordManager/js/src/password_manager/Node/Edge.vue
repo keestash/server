@@ -67,7 +67,6 @@
 <script>
 import {APP_STORAGE, AXIOS, DATE_TIME_SERVICE, StartUp,} from "../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
-import contextMenu from 'vue-context-menu'
 import {ROUTES} from "../../config/routes";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../lib/js/src/Backend/Axios";
 import SelectableListModal from "../Component/Modal/SelectableListModal";
@@ -76,7 +75,7 @@ import Modal from "../../../../../../lib/js/src/Components/Modal";
 
 export default {
   name: "Edge",
-  components: {Modal, SelectableListModal, contextMenu},
+  components: {Modal, SelectableListModal},
   props: {
     edge: null
   },

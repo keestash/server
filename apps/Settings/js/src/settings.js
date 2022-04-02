@@ -18,9 +18,10 @@
  */
 
 import store from "../../../../lib/js/src/Store/store";
-import Vue from "vue";
 import Organization from "./GeneralApi/Organization/Organization";
 import Users from "./Users/Users";
+import {createApp} from "vue";
+import i18n from "../../../ForgotPassword/js/src/i18n";
 
 window.addEventListener(
     'DOMContentLoaded'
@@ -36,13 +37,12 @@ function bootstrap(id) {
     } else if (id === "users") {
         app = Users;
     }
-    const vueConfig = {
-        store,
-        render: h => h(app)
-    };
 
-    new Vue(vueConfig)
-        .$mount("#settings-app");
+    createApp(app)
+        .use(store)
+        .use(i18n)
+        .mount("#settings-app");
+
 }
 
 // TODO

@@ -15,7 +15,7 @@
         <Skeleton :height="this.state.height" v-else/>
       </div>
 
-      <div class="mb-4 pl-5 pr-5">
+      <div class="mb-4 ps-5 pe-5">
         <hr class="solid">
       </div>
       <div class="container d-flex mt-2">
@@ -47,7 +47,7 @@
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
               <input type="text"
                      class="form-control"
-                     v-model="organization.active_ts === null ? '' : organization.active_ts.date"
+                     v-model="organization.active_ts.date"
                      readonly>
             </template>
             <Skeleton :height="this.state.height" v-else/>
@@ -63,7 +63,7 @@
           </div>
         </div>
       </div>
-      <div class="mb-4 pl-5 pr-5">
+      <div class="mb-4 ps-5 pe-5">
         <hr class="solid">
       </div>
       <div class="container mt-2">
@@ -93,7 +93,7 @@
               v-if="organization.users.content.length > 0"
               v-bind:key="user.id">
             <li class="list-group-item d-flex justify-content-between">{{ user.name }}
-              <span class="badge badge-danger remove-badge align-self-center"
+              <span class="badge bg-danger remove-badge align-self-center"
                     @click="handleRemove(user.id)" title="remove">x</span>
             </li>
           </ul>
