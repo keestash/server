@@ -18,7 +18,6 @@
  */
 import store from "../../../../lib/js/src/Store/store";
 import Vue from "vue";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 import App from "./App";
 import i18n from "./i18n";
 
@@ -34,8 +33,6 @@ function bootstrap() {
         , render: h => h(App)
     };
 
-    Vue.use(BootstrapVue);
-    Vue.use(IconsPlugin);
     new Vue(vueConfig)
         .$mount("#register");
 }

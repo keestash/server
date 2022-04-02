@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import Vue from "vue";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 import Vuex from "vuex";
 import App from "./ForgotPassword/App";
 import i18n from "./i18n";
@@ -32,8 +31,6 @@ window.addEventListener(
             render: h => h(App)
         };
 
-        Vue.use(BootstrapVue);
-        Vue.use(IconsPlugin);
         Vue.use(Vuex);
         new Vue(
             vueConfig

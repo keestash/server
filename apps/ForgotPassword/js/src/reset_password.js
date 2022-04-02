@@ -21,7 +21,6 @@ import store from "../../../../lib/js/src/Store/store";
 import i18n from "./i18n";
 import App from "./ResetPassword/App";
 import Vue from "vue";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 import Vuex from "vuex";
 
 window.addEventListener(
@@ -33,8 +32,6 @@ window.addEventListener(
             render: h => h(App)
         };
 
-        Vue.use(BootstrapVue);
-        Vue.use(IconsPlugin);
         Vue.use(Vuex);
         new Vue(
             vueConfig

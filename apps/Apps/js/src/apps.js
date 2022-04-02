@@ -18,7 +18,6 @@
  */
 
 import Vue from "vue";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 import Vuex from "vuex";
 import App from "./App";
 import i18n from "./i18n/index";
@@ -33,8 +32,6 @@ window.addEventListener(
             render: h => h(App)
         };
 
-        Vue.use(BootstrapVue);
-        Vue.use(IconsPlugin);
         Vue.use(Vuex);
         new Vue(
             vueConfig

@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import App from "./InstallInstance/App";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
 import Vue from 'vue';
 import store from "../../../../lib/js/src/Store/store";
 import i18n from "./i18n/index";
@@ -34,8 +33,6 @@ function bootstrap() {
         , render: h => h(App)
     };
 
-    Vue.use(BootstrapVue);
-    Vue.use(IconsPlugin);
     new Vue(vueConfig)
         .$mount("#install_instance_app");
 }
