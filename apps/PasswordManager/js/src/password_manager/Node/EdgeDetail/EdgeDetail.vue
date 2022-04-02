@@ -4,15 +4,11 @@
       <div class="col">
         <div class="row mt-4">
           <div class="col-md-1 align-self-center">
-            <b-img
-                :src="this.imageUrlPassword"
-                fluid
-                :alt="this.edge.node.name"
-                v-if="edge.node.type === 'credential'"
-                class="flex-grow-1 flex-shrink-0 node-logo-color"
-            ></b-img>
-
+            <img :src="this.imageUrlPassword" class="img-fluid flex-grow-1 flex-shrink-0 node-logo-color"
+                 :alt="this.edge.node.name"
+                 v-if="edge.node.type === 'credential'">
           </div>
+
           <div class="col-md-4 d-flex align-items-center">
             <div class="row">
               <div class="col">
@@ -25,8 +21,8 @@
               </div>
             </div>
           </div>
-          <div class="col text-center" v-if="saving">
-            <b-skeleton class="float-md-right" type="avatar"></b-skeleton>
+          <div class="col text-right" v-if="saving">
+            <PuSkeleton :circle="true" width="30px" height="30px"/>
           </div>
         </div>
 
@@ -49,13 +45,13 @@
             <span
                 class="badge badge-secondary"
                 :title="$t('credential.detail.organization.description')"
-                v-b-modal.modal-remove-organization
+                data-toggle="modal" data-target="#remove-organization-modal"
             >
                             x
                         </span>
           </div>
           <div class="col" v-else>
-            <b-skeleton width="5%"></b-skeleton>
+            <PuSkeleton width="5%"></PuSkeleton>
           </div>
 
         </div>
@@ -96,7 +92,8 @@
                   :value="encodeUri(this.edge.node.url.plain)"
                   @blur="onUrlChange"
               >
-              <div class="input-group-append" id="pwm__url__button" v-b-modal.external-link-modal>
+              <div class="input-group-append" id="pwm__url__button" data-toggle="modal"
+                   data-target="#url-redirect-modal">
                 <div class="input-group-text">
                   <i class="fas fa-external-link-alt"></i>
                 </div>
@@ -112,27 +109,36 @@
       </div>
 
     </div>
-    <b-modal ref="external-link-modal-ref" id="external-link-modal" hide-header hide-footer>
-      <h3 id="modal-title">{{ $t('credential.url.external.title') }}</h3>
-      <div id="modal-body">
-        <p>{{ $t('credential.url.external.text') }}</p>
-        <p>{{ $t('credential.url.external.text_info') }} </p>
-        <b-alert show variant="light">
-          {{ this.edge.node.url.plain }}
-        </b-alert>
 
-        <div class="pull-left">
-          <button class="btn btn-secondary" @click="copyToClipBoard">{{
-              $t('credential.url.external.copy')
-            }}
-          </button>
-          <button class="btn btn-primary" @click="openUrl">{{
-              $t('credential.url.external.proceed')
-            }}
-          </button>
+    <div class="modal fade" id="url-redirect-modal" tabindex="-1" role="dialog" aria-labelledby="urlRedirectModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <h3>{{ $t('credential.url.external.title') }}</h3>
+            <div>
+              <p>{{ $t('credential.url.external.text') }}</p>
+              <p>{{ $t('credential.url.external.text_info') }} </p>
+
+              <div class="alert alert-light" role="alert">
+                {{ this.edge.node.url.plain }}
+              </div>
+
+              <div class="pull-left">
+                <button class="btn btn-secondary" @click="copyToClipBoard">{{
+                    $t('credential.url.external.copy')
+                  }}
+                </button>
+                <button class="btn btn-primary" @click="openUrl">{{
+                    $t('credential.url.external.proceed')
+                  }}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </b-modal>
+    </div>
 
     <SelectableListModal
         ref-id="modal-update-organization"
@@ -144,16 +150,24 @@
         :description="$t('credential.detail.organization.addToOrganization.description')"
     ></SelectableListModal>
 
-    <b-modal
-        id="modal-remove-organization"
-        ref="modal"
-        title="Remove Organization"
-        @ok="removeOrganization"
-    >
-      <form ref="form" @submit.stop.prevent="removeOrganization">
-        <div class="h6">Do you really want to remove the node from the organization?</div>
-      </form>
-    </b-modal>
+    <div class="modal" tabindex="-1" role="dialog" id="remove-organization-modal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Remove Organization</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form ref="form" @submit.stop.prevent="removeOrganization">
+              <div class="h6">Do you really want to remove the node from the organization?</div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </template>
@@ -245,7 +259,6 @@ export default {
     copyToClipBoard() {
       const systemService = new SystemService();
       systemService.copyToClipboard(this.edge.node.url.plain);
-      this.$refs['external-link-modal-ref'].hide()
     },
     passwordUsed(p) {
       this.updatePasswordRemote(p);
@@ -396,7 +409,6 @@ export default {
           encodeURI(this.edge.node.url.plain)
           , '_blank'
       ).focus();
-      this.$refs['external-link-modal-ref'].hide();
     },
     loadPassword() {
       this.saving = true;

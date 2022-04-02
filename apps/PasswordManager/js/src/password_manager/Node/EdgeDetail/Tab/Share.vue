@@ -102,7 +102,8 @@
 
                   <div class="col-sm-4 align-self-center" v-if="isOwner">
                     <div class="row justify-content-end pr-1">
-                      <div class="col-1 mr-2" @click="removeShare(share)">
+                      <div class="col-1 mr-2" @click="removeShare(share)" data-toggle="modal"
+                           data-target="#remove-share-modal">
                         <i class="fas fa-times remove"></i>
                       </div>
                     </div>
@@ -118,17 +119,26 @@
       </div>
     </div>
     <div>
-      <b-modal ref="unshare-modal" hide-footer hide-backdrop no-fade>
-        <template>
-          {{ $t('credential.detail.share.modal.title') }}
-        </template>
-        <div class="d-block text-center">
-          <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
+      <!-- Modal -->
+      <div class="modal fade" id="remove-share-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+           aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <template>
+                {{ $t('credential.detail.share.modal.title') }}
+              </template>
+              <div class="d-block text-center">
+                <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
+              </div>
+              <button type="button" class="btn-block btn-primary mt-3" @click="doRemoveShare">
+                {{ $t('credential.detail.share.modal.positiveButton') }}
+              </button>
+            </div>
+          </div>
         </div>
-        <b-button class="mt-3 btn-primary" block @click="doRemoveShare">
-          {{ $t('credential.detail.share.modal.positiveButton') }}
-        </b-button>
-      </b-modal>
+      </div>
+
     </div>
 
   </div>
@@ -215,7 +225,6 @@ export default {
     },
     removeShare(share) {
       this.shareToDelete = share;
-      this.$refs['unshare-modal'].show();
     },
     doRemoveShare() {
       this.container.services.axios.post(
@@ -245,14 +254,11 @@ export default {
             }
 
             this.$store.dispatch("setSelectedNode", newNode);
-            this.hideModal();
+            // TODO hide modal
           })
           .catch((error) => {
             console.log(error);
           })
-    },
-    hideModal() {
-      this.$refs['unshare-modal'].hide();
     },
     removeAtWithSlice(array, index) {
       return array.slice(index).concat(array.slice(index + 1));

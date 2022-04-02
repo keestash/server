@@ -1,7 +1,8 @@
+<?php
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -16,31 +17,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Vue from "vue";
-import BootstrapVue, {IconsPlugin} from "bootstrap-vue";
-import Vuex from "vuex";
-import App from "./App";
-import i18n from "./../i18n/index";
-import store from "../config/store";
-import Skeleton from 'vue-loading-skeleton';
 
-window.addEventListener(
-    'DOMContentLoaded'
-    , async () => {
-        const vueConfig = {
-            store,
-            i18n,
-            render: h => h(App)
-        };
+namespace KSA\GeneralApi\Factory\Command\Info;
 
-        Vue.use(BootstrapVue);
-        Vue.use(IconsPlugin);
-        Vue.use(Vuex);
-        Vue.use(Skeleton);
-        new Vue(
-            vueConfig
-        )
-            .$mount("#pwm");
+use Interop\Container\ContainerInterface;
+use KSA\GeneralApi\Command\Info\Routes;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 
+class RoutesFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Routes {
+        return new Routes(
+            $container->get(Config::class)
+        );
     }
-);
+
+}

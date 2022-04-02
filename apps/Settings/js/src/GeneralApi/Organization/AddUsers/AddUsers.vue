@@ -1,18 +1,17 @@
 <template>
   <div>
     <div class="container d-flex flex-grow-1">
-
-      <b-spinner variant="primary" type="grow" class="align-self-center"
-                 v-if="user.list.length === 0"></b-spinner>
+      <div class="spinner-grow text-primary align-self-center" role="status" v-if="user.list.length === 0">
+        <span class="sr-only"></span>
+      </div>
 
       <div class="row d-flex flex-grow-1 justify-content-start" v-if="user.list.length > 0">
-        <b-list-group class="flex-grow-1 flex-basis-0">
-          <b-list-group-item class="d-flex" @click="openUser(user)"
-                             v-for="user in user.list"
-                             v-bind:key="user.id"
-          >{{ user.name }}
-          </b-list-group-item>
-        </b-list-group>
+        <ul class="list-group flex-grow-1 flex-basis-0">
+          <li class="list-group-item d-flex" @click="openUser(user)"
+              v-for="user in user.list"
+              v-bind:key="user.id">{{ user.name }}
+          </li>
+        </ul>
         <div class="flex-grow-1 flex-basis-0">
           <div class="container" v-if="this.content.header !== ''">
             <h4>{{ this.content.header }}</h4>

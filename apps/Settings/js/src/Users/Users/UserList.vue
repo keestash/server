@@ -1,69 +1,75 @@
 <template>
   <div class="d-flex">
-    <b-table
-        borderless
-        small
-        hover
-        :items="items"
-        :fields="fields"
+    <table
+        class="table table-borderless table-hover small"
         v-if="this.loading === false"
     >
-      <template v-slot:cell(name)="row">
-        <b-form-input
-            v-model="row.item.name"
-            debounce="500"
-            @change="onInputChange(row.item)"
-            class="user-input"
-        />
-      </template>
-
-      <template v-slot:cell(first_name)="row">
-        <b-form-input
-            v-model="row.item.first_name"
-            debounce="500"
-            @change="onInputChange(row.item)"
-            class="user-input"
-        />
-      </template>
-
-      <template v-slot:cell(last_name)="row">
-        <b-form-input
-            v-model="row.item.last_name"
-            debounce="500"
-            @change="onInputChange(row.item)"
-            class="user-input"
-        />
-      </template>
-
-      <template v-slot:cell(email)="row">
-        <b-form-input
-            v-model="row.item.email"
-            debounce="500"
-            @change="onInputChange(row.item)"
-            class="user-input"
-        />
-      </template>
-    </b-table>
+      <thead>
+      <tr>
+        <th scope="col" v-for="name in this.fields">{{ name }}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="(item) in this.items">
+        <th scope="row">
+          <div class="form-group">
+            <input
+                type="text"
+                class="form-control"
+                v-model="item.name"
+                @change="onInputChange(item)"
+            >
+          </div>
+        </th>
+        <th scope="row">
+          <div class="form-group">
+            <input
+                type="text"
+                class="form-control"
+                v-model="item.first_name"
+                @change="onInputChange(item)"
+            >
+          </div>
+        </th>
+        <th scope="row">
+          <div class="form-group">
+            <input
+                type="text"
+                class="form-control"
+                v-model="item.last_name"
+                @change="onInputChange(item)"
+            >
+          </div>
+        </th>
+        <th scope="row">
+          <div class="form-group">
+            <input
+                type="text"
+                class="form-control"
+                v-model="item.email"
+                @change="onInputChange(item)"
+            >
+          </div>
+        </th>
+      </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
 import {ROUTES} from "../../config/routes";
-import {AXIOS} from "../../../../../../lib/js/src/StartUp";
+import {AXIOS, StartUp} from "../../../../../../lib/js/src/StartUp";
 import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
 import Loading from "../../../../../../lib/js/src/Components/Loading";
+import {Container} from "../../../../../../lib/js/src/DI/Container";
 
-const diContainer = Keestash.Main.getContainer();
 export default {
-  name: "UserList"
-  ,
+  name: "UserList",
   components: {Loading},
   methods: {
     onInputChange(item) {
-
-      const axios = diContainer.query(AXIOS);
-
-      axios.post(
+      this.axios.post(
           ROUTES.USERS_EDIT()
           , {
             user: JSON.stringify(item)
@@ -91,9 +97,16 @@ export default {
     }
   },
   created() {
-    const axios = diContainer.query(AXIOS);
 
-    axios.request(
+    const startUp = new StartUp(
+        new Container()
+    );
+    startUp.setUp();
+
+    this.container = startUp.getContainer();
+    this.axios = this.container.query(AXIOS);
+
+    this.axios.request(
         ROUTES.USERS_ALL()
     )
         .then(
@@ -102,6 +115,7 @@ export default {
               if (RESPONSE_CODE_OK in response.data) {
                 content = response.data[RESPONSE_CODE_OK].messages.users.content;
               }
+              console.log(content)
               this.items = content;
               this.loading = false;
               this.$emit('usersLoaded', true);
@@ -117,6 +131,8 @@ export default {
     return {
       loading: true,
       updated: null,
+      container: null,
+      axios: null,
       fields: [
         'name'
         , 'first_name'
