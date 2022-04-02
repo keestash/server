@@ -17,18 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import store from "../../../../../../lib/js/src/Store/store";
-import Vue from "vue";
 import App from "./App/App";
+import {createApp} from "vue";
+import i18n from "../../../../../ForgotPassword/js/src/i18n";
 
 window.addEventListener(
     'DOMContentLoaded'
     , async () => {
-        const vueConfig = {
-            store,
-            render: h => h(App)
-        };
 
-        new Vue(vueConfig)
-            .$mount("#organization-detail");
+        createApp(App)
+            .use(store)
+            .use(i18n)
+            .mount("#organization-detail");
+
     }
 );

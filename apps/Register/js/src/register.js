@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import store from "../../../../lib/js/src/Store/store";
-import Vue from "vue";
+import {createApp} from "vue";
 import App from "./App";
 import i18n from "./i18n";
 
@@ -27,12 +27,8 @@ window.addEventListener(
 );
 
 function bootstrap() {
-    const vueConfig = {
-        store
-        , i18n
-        , render: h => h(App)
-    };
-
-    new Vue(vueConfig)
-        .$mount("#register");
+    createApp(App)
+        .use(store)
+        .use(i18n)
+        .mount("#register");
 }

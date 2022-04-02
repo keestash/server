@@ -10,7 +10,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <p class="text-justify">
+            <p class="text-center">
               {{ this.description }}
             </p>
             <div class="text-center" v-if="loading">
@@ -21,8 +21,8 @@
 
             <form ref="form" @submit.stop.prevent="onSubmit" v-else-if="!loading && options.length > 0">
               <div class="form-group">
-                <select class="form-control">
-                  <option v-model="selected" v-for="option in options" size="4">{{ option }}</option>
+                <select class="form-control" v-model="selected">
+                  <option v-for="option in options" size="4">{{ option }}</option>
                 </select>
               </div>
 
@@ -65,7 +65,8 @@ export default {
   },
   created() {
     this.$parent.$on('onOpenModalClick', (refId) => {
-      $("#" + refId).modal();
+      const modal = new bootstrap.Modal('#' + refId);
+      modal.show();
     })
   },
   methods: {

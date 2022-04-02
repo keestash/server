@@ -16,28 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Vue from "vue";
-import Vuex from "vuex";
 import App from "./App";
 import i18n from "./../i18n/index";
 import store from "../config/store";
 import Skeleton from 'vue-loading-skeleton';
+import {createApp} from "vue";
 
 window.addEventListener(
     'DOMContentLoaded'
     , async () => {
-        const vueConfig = {
-            store,
-            i18n,
-            render: h => h(App)
-        };
 
-        Vue.use(Vuex);
-        Vue.use(Skeleton);
-        new Vue(
-            vueConfig
-        )
-            .$mount("#pwm");
+        createApp(App)
+            .use(store)
+            .use(Skeleton)
+            .use(i18n)
+            .mount("#pwm");
+
 
     }
 );

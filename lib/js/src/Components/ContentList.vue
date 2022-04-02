@@ -10,7 +10,7 @@
       <ul class="list-group list-group-flush">
 
         <li v-for="data in content" :key="data.id"
-            class="list-group-item m-0 pl-0 pr-0 pt-1 pb-1">
+            class="list-group-item m-0 ps-0 pe-0 pt-1 pb-1">
           <div class="container">
             <div class="row justify-content-between">
               <div class="col-sm-4">
@@ -37,8 +37,8 @@
               </div>
 
               <div class="col-sm-4 align-self-center">
-                <div class="row justify-content-end pr-1">
-                  <div class="col-1 mr-2" @click="remove(data)">
+                <div class="row justify-content-end pe-1">
+                  <div class="col-1 me-2" @click="remove(data)">
                     <i class="fas fa-times remove"></i>
                   </div>
                 </div>

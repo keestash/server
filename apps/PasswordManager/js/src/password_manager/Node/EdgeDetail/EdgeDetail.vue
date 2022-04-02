@@ -21,7 +21,7 @@
               </div>
             </div>
           </div>
-          <div class="col text-right" v-if="saving">
+          <div class="col text-end" v-if="saving">
             <PuSkeleton :circle="true" width="30px" height="30px"/>
           </div>
         </div>
@@ -36,16 +36,16 @@
           >
 
                         <span
-                            class="badge badge-info clickable"
+                            class="badge bg-info clickable"
                             :title="$t('credential.detail.organization.description')"
                             @click="openModalClick"
                         >
                             {{ edge.node.organization.name }}
                         </span>
             <span
-                class="badge badge-secondary"
+                class="badge bg-secondary"
                 :title="$t('credential.detail.organization.description')"
-                data-toggle="modal" data-target="#remove-organization-modal"
+                data-bs-toggle="modal" data-target="#remove-organization-modal"
             >
                             x
                         </span>
@@ -92,7 +92,7 @@
                   :value="encodeUri(this.edge.node.url.plain)"
                   @blur="onUrlChange"
               >
-              <div class="input-group-append" id="pwm__url__button" data-toggle="modal"
+              <div class="input-group-append" id="pwm__url__button" data-bs-toggle="modal"
                    data-target="#url-redirect-modal">
                 <div class="input-group-text">
                   <i class="fas fa-external-link-alt"></i>
