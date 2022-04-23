@@ -9,7 +9,7 @@
   "scripts": {
     "build:dev": "webpack --mode development --hot",
     "watch:dev": "webpack --mode development --watch --hot",
-    "build:prod": "NODE_ENV=development webpack -p",
+    "build:prod": "NODE_ENV=development webpack --mode production",
     "watch:prod": "webpack --mode production --watch"
   },
   "repository": {
