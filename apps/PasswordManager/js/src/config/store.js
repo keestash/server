@@ -3,7 +3,6 @@ import _ from "lodash";
 
 
 export default createStore({
-    strict: true,
     state: {
         edges: [],
         selectedEdge: null,

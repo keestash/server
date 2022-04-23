@@ -15,7 +15,7 @@
 export default {
   name: "NoNodeSelected",
   props: {
-    visible: true
+    visible: Boolean
   }
 }
 </script>

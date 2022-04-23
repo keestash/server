@@ -65,7 +65,6 @@ export default {
     axios.request(
         this.source
     ).then((response) => {
-      console.log(response)
       // this.data = 'data:' + response.headers['content-type'] + ';base64,' + response.data;
       this.data = response.data;
       if (false === this.skipCache) {

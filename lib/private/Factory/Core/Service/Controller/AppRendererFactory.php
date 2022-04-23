@@ -54,6 +54,7 @@ class AppRendererFactory {
             , $container->get(ILocaleService::class)
             , $container->get(ILoader::class)
             , $container->get(RouterInterface::class)
+            , $container->get(IL10N::class)
         );
     }
 

@@ -120,7 +120,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <button type="button" class="btn-block btn-primary"
+            <button type="button" class="btn btn-block btn-primary"
                     @click="onButtonClick"
             >{{
                 $t('credential.detail.usePassword')

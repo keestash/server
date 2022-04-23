@@ -1,17 +1,17 @@
 <template>
   <div>
-    <div class="modal" tabindex="-1" role="dialog" :id="this.idName">
+    <div class="modal" tabindex="-1" role="dialog" id="dasistdashausvonnikolaus">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">{{ this.modalTitle }}</h5>
+            <h5 class="modal-title">{{ modalTitle }}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <p class="text-center">
-              {{ this.description }}
+              {{ description }}
             </p>
             <div class="text-center" v-if="loading">
               <div class="spinner-grow text-primary" role="status">
@@ -43,17 +43,21 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
+import {Modal} from "bootstrap";
+
 export default {
   name: "SelectableListModal",
   props: {
     idName: '',
-    options: [],
-    loading: true,
+    options: Array,
+    loading: {
+      type: Boolean,
+      default: true
+    },
     noDataText: '',
     modalTitle: '',
     description: ''
@@ -63,13 +67,12 @@ export default {
       selected: null,
     }
   },
-  created() {
-    this.$parent.$on('onOpenModalClick', (refId) => {
-      const modal = new bootstrap.Modal('#' + refId);
-      modal.show();
-    })
-  },
   methods: {
+    showModal() {
+      const modal = new Modal("#dasistdashausvonnikolaus");
+      modal.show();
+      this.onOpen();
+    },
     resetModal() {
       this.selected = null;
     },
