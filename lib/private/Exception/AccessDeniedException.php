@@ -1,7 +1,9 @@
+<?php
+declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -17,27 +19,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {createI18n} from "vue-i18n";
+namespace Keestash\Exception;
 
-function loadLocaleMessages() {
-    const locales = require.context(
-        "./../../../i18n/",
-        true,
-        /[A-Za-z0-9-_,\s]+\.json$/i
-    );
-    const messages = {};
-    locales.keys().forEach(key => {
-        const matched = key.match(/([A-Za-z0-9-_]+)\./i);
-        if (matched && matched.length > 1) {
-            const locale = matched[1];
-            messages[locale] = locales(key);
-        }
-    });
-    return messages;
+class AccessDeniedException extends KeestashException {
+
 }
-
-export default createI18n({
-    locale: 'en',
-    fallbackLocale: 'en',
-    messages: loadLocaleMessages()
-})

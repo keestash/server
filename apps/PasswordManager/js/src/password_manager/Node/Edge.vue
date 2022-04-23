@@ -1,5 +1,5 @@
 <template>
-  <div class="pwm__row container-fluid pt-1 pb-1" @click="$emit('wasClicked')">
+  <div class="pwm__row container-fluid pt-1 pb-1" :class="isFirst ? '' : 'pwm__row__border'" @click="$emit('wasClicked')">
     <div class="row align-items-center">
       <div class="col-6 col-md-2 h2 m-0 d-flex">
         <img
@@ -30,34 +30,22 @@
       <div class="col flex-grow-1 cropped" :title="edge.node.name">
         {{ edge.node.name }}
       </div>
-      <div id="contextMenu" class="col-md-1 justify-content-end">
-        <i class="fas fa-ellipsis-h"
-           v-on:click.stop="clickModal"
-        ></i>
+      <div id="contextMenu" class="col-md-1 justify-content-end" @click="onContextMenu($event)">
+        <i class="fas fa-ellipsis-h box"></i>
       </div>
+
     </div>
 
-    <context-menu id="context-menu" class="row"
-                  :ref="'ctxMenu' + this.edge.node.id"
-    >
-      <div class="col context-menu-col" @click="openModalClick" v-if="this.edge.node.organization === null">
-        {{ $t('edge.selection.addToOrganization') }}
-      </div>
-      <div class="col context-menu-col" @click="$emit('wasDeleted')">
-        {{ $t('edge.selection.remove') }}
-      </div>
-    </context-menu>
-
     <SelectableListModal
-        :ref-id="'modal' + this.edge.node.id"
-        :idName="'modal1' + this.edge.node.id"
-        @onSubmit="submitOrganization"
-        @onOpen="openModal"
+        :ref="'modal1' + this.edge.node.id"
+        :id="'modal1' + this.edge.node.id"
         :options="organizations"
         :loading="organizationsLoading"
         :no-data-text="$t('edge.contextMenu.addToOrganization.noOrganizationsAvailable')"
         :modal-title="$t('edge.contextMenu.addToOrganization.title')"
         :description="$t('edge.contextMenu.addToOrganization.description')"
+        @onSubmit="submitOrganization"
+        @onOpen="openModal"
     ></SelectableListModal>
 
   </div>
@@ -77,9 +65,13 @@ export default {
   name: "Edge",
   components: {Modal, SelectableListModal},
   props: {
-    edge: null
+    edge: {},
+    isFirst: {
+      type: Boolean,
+      default: true
+    }
   },
-  data() {
+  data: function () {
     return {
       container: {
         container: null,
@@ -95,7 +87,6 @@ export default {
       imageUrlShared: '',
       imageUrlPassword: '',
       organizationsLoading: true,
-
     }
   },
 
@@ -116,7 +107,6 @@ export default {
         new Container()
     );
     startUp.setUp();
-
     this.container.container = startUp.getContainer();
     this.container.services.axios = this.container.container.query(AXIOS);
     this.container.services.dateTimeService = this.container.container.query(DATE_TIME_SERVICE);
@@ -129,6 +119,38 @@ export default {
     this.imageUrlPassword = url + 'asset/svg/password.svg';
   },
   methods: {
+    onContextMenu(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      const items = [];
+
+      if (this.edge.node.organization === null) {
+        items.push(
+            {
+              label: this.$t('edge.selection.addToOrganization'),
+              onClick: () => {
+                this.$refs['modal1' + this.edge.node.id].showModal();
+              },
+            }
+        )
+      }
+
+      items.push(
+          {
+            label: this.$t('edge.selection.remove'),
+            onClick: () => {
+              this.$emit('wasDeleted');
+            },
+          }
+      )
+      //shou our menu
+      this.$contextmenu({
+        x: e.x,
+        y: e.y,
+        items: items,
+      });
+    },
     copyPassword: function () {
       console.log("copy");
     },
@@ -138,7 +160,7 @@ export default {
     openModal: function () {
       this.organizationsLoading = true;
 
-        this.container.services.axios.get(
+      this.container.services.axios.get(
           ROUTES.getAllOrganizations(
               this.container.services.appStorage.getUserHash(),
               false
@@ -171,12 +193,6 @@ export default {
     resetModal: function () {
       this.selectedOrganization = null;
     },
-    refName: function () {
-      return 'ctxMenu' + this.edge.node.id;
-    },
-    clickModal: function () {
-      this.$refs[this.refName()].open();
-    },
     removeNode: function () {
       this.container.services.axios.delete(
           ROUTES.getNodeDelete(),
@@ -189,9 +205,6 @@ export default {
           }
       )
       ;
-    },
-    openModalClick: function () {
-      this.$emit('onOpenModalClick', 'modal1' + this.edge.node.id);
     },
     showOwnerName: function () {
       if (this.edge.type === 'organization') {

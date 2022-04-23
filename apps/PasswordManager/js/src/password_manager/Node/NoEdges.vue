@@ -6,7 +6,6 @@
       <i class="fas fa-circle-notch fa-3x"></i>
       <p class="uploadmessage">{{ $t('noEdgesInNodeDescription') }}</p>
     </div>
-
   </div>
 </template>
 
@@ -14,7 +13,7 @@
 export default {
   name: "NoEdges",
   props: {
-    visible: true
+    visible: Boolean
   }
 }
 </script>

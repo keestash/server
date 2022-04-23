@@ -21,8 +21,8 @@
               </div>
             </div>
           </div>
-          <div class="col text-end" v-if="saving">
-            <PuSkeleton :circle="true" width="30px" height="30px"/>
+          <div class="d-flex col text-end justify-content-end" v-if="saving">
+            <Skeleton class="align-middle" :circle="true" width="40px" height="40px"/>
           </div>
         </div>
 
@@ -51,7 +51,7 @@
                         </span>
           </div>
           <div class="col" v-else>
-            <PuSkeleton width="5%"></PuSkeleton>
+            <Skeleton width="5px"></Skeleton>
           </div>
 
         </div>
@@ -92,8 +92,10 @@
                   :value="encodeUri(this.edge.node.url.plain)"
                   @blur="onUrlChange"
               >
-              <div class="input-group-append" id="pwm__url__button" data-bs-toggle="modal"
-                   data-target="#url-redirect-modal">
+              <div class="input-group-append"
+                   id="pwm__url__button"
+                   @click="openRedirectModal"
+              >
                 <div class="input-group-text">
                   <i class="fas fa-external-link-alt"></i>
                 </div>
@@ -125,9 +127,16 @@
               </div>
 
               <div class="pull-left">
-                <button class="btn btn-secondary" @click="copyToClipBoard">{{
-                    $t('credential.url.external.copy')
-                  }}
+                <button class="btn btn-secondary" @click="copyToClipBoard">
+                  <div v-if="!urlField.copyClicked">{{
+                      $t('credential.url.external.copy')
+                    }}
+                  </div>
+                  <div v-else>
+                    {{
+                      $t('credential.url.external.copied')
+                    }}
+                  </div>
                 </button>
                 <button class="btn btn-primary" @click="openUrl">{{
                     $t('credential.url.external.proceed')
@@ -184,10 +193,12 @@ import _ from "lodash";
 import {SystemService} from "../../../Service/SystemService";
 import SelectableListModal from "../../Component/Modal/SelectableListModal";
 import {Host} from "../../../../../../../lib/js/src/Backend/Host";
+import {Skeleton} from "vue-loading-skeleton";
+import {Modal} from 'bootstrap';
 
 export default {
   name: "EdgeDetail",
-  components: {SelectableListModal, Tab},
+  components: {Skeleton, SelectableListModal, Tab},
   data() {
     return {
       container: [],
@@ -200,6 +211,9 @@ export default {
       passwordField: {
         visible: false,
         value: ''
+      },
+      urlField: {
+        copyClicked: false
       },
       imageUrlPassword: '',
       axios: null,
@@ -249,6 +263,10 @@ export default {
   },
 
   methods: {
+    openRedirectModal() {
+      const modal = new Modal('#url-redirect-modal');
+      modal.show();
+    },
     encodeUri(uri) {
       return encodeURI(uri);
     },
@@ -256,8 +274,16 @@ export default {
       return moment(date).format();
     },
     copyToClipBoard() {
+      this.urlField.copyClicked = true;
       const systemService = new SystemService();
       systemService.copyToClipboard(this.edge.node.url.plain);
+
+      setTimeout(
+          () => {
+            this.urlField.copyClicked = false;
+          },
+          3000
+      );
     },
     passwordUsed(p) {
       this.updatePasswordRemote(p);
@@ -438,6 +464,18 @@ export default {
                 , true
             );
             this.saving = false;
+          })
+          .then(() => {
+            setTimeout(
+                () => {
+                  this.updatePassword(
+                      this.edge.node.password.placeholder
+                      , false
+                  );
+                  this.saving = false;
+                },
+                10000
+            );
           })
 
     },

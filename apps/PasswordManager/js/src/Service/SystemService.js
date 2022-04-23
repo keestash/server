@@ -32,10 +32,6 @@ export class SystemService {
         dummy.select();
         document.execCommand("copy");
         document.body.removeChild(dummy);
-
-        console.log("copied to clipboard");
-        console.log(text);
-
     }
 
 }

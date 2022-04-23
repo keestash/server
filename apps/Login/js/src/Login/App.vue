@@ -176,6 +176,7 @@ import {
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../config/routes"
 import {HEADER_NAME_TOKEN, HEADER_NAME_USER} from "../../../../../lib/js/src/Backend/Axios";
+import 'bootstrap'
 
 export default {
   name: "App",

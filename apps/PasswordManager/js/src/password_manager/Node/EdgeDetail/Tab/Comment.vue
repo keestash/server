@@ -65,7 +65,7 @@
                   rows="3" v-model="newComment"></textarea>
       </div>
 
-      <button type="button" class="btn-block btn-primary" @click.prevent="addComment">
+      <button type="button" class="btn btn-block btn-primary" @click.prevent="addComment">
         {{ $t('credential.detail.addComment') }}
       </button>
 
@@ -116,8 +116,7 @@ export default {
   computed: {
     ...mapState({
       edge: function (state) {
-        let edge = state.selectedEdge;
-        return edge;
+        return state.selectedEdge;
       }
     })
   },

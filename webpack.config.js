@@ -27,7 +27,7 @@ const env = process.env.NODE_ENV;
 const baseModule = {
     mode: env,
     entry: {
-        base: ['babel-polyfill', './lib/js/src/base.js']
+        base: ['./lib/js/src/base.js']
     },
     output: {
         path: __dirname + "/public/js/",

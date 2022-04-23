@@ -38,6 +38,7 @@ use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\View\ActionBar\IActionBar;
+use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
@@ -57,6 +58,7 @@ class AppRenderer implements IAppRenderer {
     private IRouterService            $routerService;
     private ILoader                   $loader;
     private RouterInterface           $router;
+    private IL10N                     $translator;
 
     public function __construct(
         IRouterService              $routerService
@@ -71,6 +73,7 @@ class AppRenderer implements IAppRenderer {
         , ILocaleService            $localeService
         , ILoader                   $loader
         , RouterInterface           $router
+        , IL10N                     $translator
     ) {
         $this->lockHandler      = $lockHandler;
         $this->fileService      = $fileService;
@@ -84,6 +87,7 @@ class AppRenderer implements IAppRenderer {
         $this->routerService    = $routerService;
         $this->loader           = $loader;
         $this->router           = $router;
+        $this->translator       = $translator;
     }
 
     public function renderHead(ServerRequestInterface $request): string {
@@ -154,16 +158,17 @@ class AppRenderer implements IAppRenderer {
             ->render(
                 'root::navbar'
                 , [
-                    "logopath"      => $this->httpService->getBaseURL(false) . "/asset/img/logo_no_name.png"
-                    , "logoutURL"   => $this->httpService->getBaseURL() . "logout"
-                    , "userImage"   => $profileImage
-                    , 'contextless' => $contextLess
+                    "logopath"                 => $this->httpService->getBaseURL(false) . "/asset/img/logo_no_name.png"
+                    , "logoutURL"              => $this->httpService->getBaseURL() . "logout"
+                    , "userImage"              => $profileImage
+                    , 'contextless'            => $contextLess
 
                     // TODO these are added only when not public route
-                    , "vendorName"  => $this->legacy->getApplication()->get("name")
-                    , "settings"    => $routes
-                    , "baseURL"     => $this->httpService->getBaseURL()
-                    , "mainHref"    => $this->router->generateUri(
+                    , "vendorName"             => $this->legacy->getApplication()->get("name")
+                    , "settings"               => $routes
+                    , "baseURL"                => $this->httpService->getBaseURL()
+                    , "searchInputPlaceholder" => $this->translator->translate("Search Everything")
+                    , "mainHref"               => $this->router->generateUri(
                         $this->routerService->getRouteByPath(
                             $defaultApp->getBaseRoute()
                         )['name']

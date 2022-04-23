@@ -1,10 +1,11 @@
 <template>
   <div>
     <div class="tab-pane active" id="pwm__sharing" role="tabpanel">
-      <div class="container mt-3">
-        <div class="d-flex">
-          <div class="container-fluid p-0">
+      <div class="mt-3">
+        <div class="row">
+          <div :class="isOwner ? 'col-11' : 'col-12'">
             <template v-if="state.value === state.states.STATE_LOADED">
+
               <v-select
                   label="name"
                   :filterable="true"
@@ -12,33 +13,36 @@
                   @search="onSearch"
                   :placeholder="$t('credential.detail.sharePlaceholder')"
                   @option:selected="onShareSelect"
-                  class="flex-grow-1"
                   v-if="isOwner"
               >
                 <template slot="no-options">
                   {{ $t('credential.detail.sharePlaceholder') }}
                 </template>
-                <template slot="option" slot-scope="option">
-                  <div class="d-center d-flex flex-row">
-                    <Thumbnail
-                        :skip-cache="true"
-                        :source="getAssetUrl(option.jwt)"
-                    ></Thumbnail>
-                    {{ option.name }}
+                <template slot="option" v-slot:option="option">
+                  <div class="row">
+                    <div class="col-1">
+                      <Thumbnail
+                          :skip-cache="true"
+                          :source="getAssetUrl(option.jwt)"
+                      ></Thumbnail>
+                    </div>
+                    <div class="col-11">
+                      {{ option.name }}
+                    </div>
                   </div>
                 </template>
-                <template slot="selected-option" slot-scope="option">
+                <template slot="selected-option" v-slot:option="option">
                   <div class="selected d-center">
                     {{ option.name }}
                   </div>
                 </template>
               </v-select>
-              <small v-else>You can not share passwords shared to you</small>
             </template>
             <Skeleton height="25px" v-else/>
           </div>
+
           <template v-if="state.value === state.states.STATE_LOADED">
-            <div class="justify-content-between ms-2" v-if="isOwner">
+            <div :class="isOwner ? 'col-1' : 'col-4'" class="d-flex align-middle justify-content-center" v-if="isOwner">
               <button
                   class="btn btn-primary btn-circle btn-sm btn-public-share"
                   @click="sharePublicly"
@@ -77,14 +81,14 @@
 
               <div class="col">
                 <div class="row justify-content-between">
-                  <div class="col-sm-4">
+                  <div class="col-10">
                     <div class="row">
-                      <div class="col-2">
+                      <div class="col-1">
                         <Thumbnail
                             :source="getAssetUrl(share.user.jwt)"
                         ></Thumbnail>
                       </div>
-                      <div class="col">
+                      <div class="col-11">
                         <div class="container">
                           <div class="row cropped">
                             {{ share.user.name }}
@@ -100,10 +104,9 @@
                     </div>
                   </div>
 
-                  <div class="col-sm-4 align-self-center" v-if="isOwner">
-                    <div class="row justify-content-end pe-1">
-                      <div class="col-1 me-2" @click="removeShare(share)" data-bs-toggle="modal"
-                           data-target="#remove-share-modal">
+                  <div class="col-2 align-self-center" v-if="isOwner">
+                    <div class="row justify-content-end">
+                      <div class="col-3" @click="removeShare(share)">
                         <i class="fas fa-times remove"></i>
                       </div>
                     </div>
@@ -131,9 +134,14 @@
               <div class="d-block text-center">
                 <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
               </div>
-              <button type="button" class="btn-block btn-primary mt-3" @click="doRemoveShare">
+              <button type="button" class="btn btn-block btn-primary mt-3" @click="doRemoveShare" v-if="!removingUser">
                 {{ $t('credential.detail.share.modal.positiveButton') }}
               </button>
+              <div class="d-flex justify-content-center" v-else>
+                <div class="spinner-grow text-primary" role="status">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -156,12 +164,13 @@ import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFou
 import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 import {Skeleton} from 'vue-loading-skeleton';
 import _ from "lodash";
+import {Modal} from "bootstrap";
 
 const STATE_LOADING = 1;
 const STATE_LOADED = 2;
 export default {
   name: "Share",
-  components: {NoDataFound, vSelect, Thumbnail, Skeleton},
+  components: {NoDataFound, Thumbnail, Skeleton, vSelect},
   computed: {
     isOwner() {
       const userHash = this.container.services.appStorage.getUserHash();
@@ -181,6 +190,7 @@ export default {
   },
   data() {
     return {
+      removingUser: false,
       container: {
         container: null,
         services: {
@@ -225,8 +235,12 @@ export default {
     },
     removeShare(share) {
       this.shareToDelete = share;
+
+      const m = new Modal('#remove-share-modal');
+      m.show();
     },
     doRemoveShare() {
+      this.removingUser = true;
       this.container.services.axios.post(
           ROUTES.getPasswordManagerShareeRemove()
           , {
@@ -235,7 +249,7 @@ export default {
       )
           .then((response) => {
             if (RESPONSE_CODE_OK in response.data) {
-              console.log("removed share");
+              this.removingUser = false;
               return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
             }
             return [];
@@ -258,6 +272,7 @@ export default {
           })
           .catch((error) => {
             console.log(error);
+            this.removingUser = false;
           })
     },
     removeAtWithSlice(array, index) {
@@ -386,7 +401,6 @@ export default {
                 return [];
               }
           ).then((data) => {
-
         this.users = Object.values(
             data.user_list.content
         );
