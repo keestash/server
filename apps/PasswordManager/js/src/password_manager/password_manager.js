@@ -21,17 +21,16 @@ import i18n from "./../i18n/index";
 import store from "../config/store";
 import Skeleton from 'vue-loading-skeleton';
 import {createApp} from "vue";
+import ContextMenu from '@imengyu/vue3-context-menu';
 
 window.addEventListener(
     'DOMContentLoaded'
-    , async () => {
-
+    , () => {
         createApp(App)
             .use(store)
             .use(Skeleton)
+            .use(ContextMenu)
             .use(i18n)
             .mount("#pwm");
-
-
     }
 );

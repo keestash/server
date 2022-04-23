@@ -1,40 +1,35 @@
 <template>
   <div class="row g-0">
     <div class="col-sm">
-      <div class="ks-border-bottom" id="breadcrumb-wrapper">
+      <div class="row ks-border-bottom p-0" id="breadcrumb-wrapper">
         <nav aria-label="breadcrumb">
-          <ol class="breadcrumb" id="breadcrumb">
+          <ol class="breadcrumb" id="breadcrumb" v-if="state !== 1">
             <li v-for="breadCrumb in breadCrumbs" :key="breadCrumb.id" class="breadcrumb-item"
                 @click="onBreadCrumbClick(breadCrumb.id)">
               {{ breadCrumb.name }}
             </li>
           </ol>
+          <ol class="breadcrumb" id="breadcrumb" v-else>
+            <li class="breadcrumb-item">
+              <Skeleton :count="1" height="25px" width="100px"></Skeleton>
+            </li>
+          </ol>
         </nav>
       </div>
       <div class="row g-0">
-        <div class="col-sm-3 node_container">
+        <div class="col-sm-3 node_container p-0">
           <div class="d-flex flex-column">
-            <div class="col p-3 b-b">
-              <div class="d-flex align-items-center">
-                <input
-                    :placeholder="$t('searchPasswords')"
-                    id="pwm_search_passwords"
-                    type="text"
-                    class="form-control form-control-sm"
-                >
-              </div>
-            </div>
             <div class="d-flex justify-content-between align-items-start flex-grow-1 b-b coll flex-column">
               <div class="container-fluid p-0">
-                <template v-if="state !== 1">
-                  <Edge
-                      v-for="edge in edges"
-                      :key="edge.id"
-                      :edge="edge"
-                      @wasClicked="selectRow(edge)"
-                      @wasDeleted="deleteRow(edge)"
-                  ></Edge>
-                </template>
+                <Edge
+                    v-if="state !== 1"
+                    v-for="(edge, index) in edges"
+                    :key="edge.id"
+                    :edge="edge"
+                    @wasClicked="selectRow(edge)"
+                    @wasDeleted="deleteRow(edge)"
+                    :is-first="index === 0"
+                ></Edge>
                 <Skeleton :count=15 height="25px" v-else/>
                 <NoEdges :visible="state === 2 && edges.length === 0"></NoEdges>
               </div>
@@ -70,7 +65,6 @@
                       type="text"
                       placeholder="Enter name"
                       autocomplete="off"
-                      ref="ref-node-name"
                       required
                   >
                   <label><small></small></label>
@@ -130,7 +124,7 @@
 
 <script>
 import Edge from "./Node/Edge";
-import {AXIOS, StartUp, TEMPORARY_STORAGE} from "../../../../../lib/js/src/StartUp";
+import {APP_STORAGE, AXIOS, StartUp, TEMPORARY_STORAGE} from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../config/routes";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/src/Backend/Axios";
@@ -148,6 +142,7 @@ export default {
   name: "App",
   components: {NoEdges, EdgeDetail, NoNodeSelected, Edge, Skeleton},
   data: function () {
+
     return {
       breadCrumbs: [],
       selected: null,
@@ -156,7 +151,7 @@ export default {
       temporaryStorage: null,
       noData: true,
       state: 1,
-      timer: () => {
+      timer: function () {
       },
       addEdge: {
         type: 1,
@@ -183,20 +178,22 @@ export default {
     this.container = startUp.getContainer();
     this.axios = this.container.query(AXIOS);
     this.temporaryStorage = this.container.query(TEMPORARY_STORAGE);
+    this.appStorage = this.container.query(APP_STORAGE);
+    const self = this;
 
     this.loadEdge(
+        self,
         this.temporaryStorage.get(
             STORAGE_ID_ROOT
             , NODE_ID_ROOT
         )
     );
-    const _this = this;
 
     document.addEventListener(
         EVENT_NAME_APP_NAVIGATION_CLICKED
         , function (data) {
-          _this.selected = null;
-          _this.loadEdge(data.detail.dataset.type);
+          self.selected = null;
+          self.loadEdge(self, data.detail.dataset.type);
         });
 
 
@@ -206,20 +203,17 @@ export default {
           e.stopImmediatePropagation();
           const modal = new bootstrap.Modal('#new-edge-modal');
           modal.show();
-          this.addEdge.type = e.detail.target.id;
+          self.addEdge.type = e.detail.target.id;
         }
     )
   },
   computed: {
-    noEdgeSelectedVisible: function () {
-      return this.selected === null;
-    },
     edges: function () {
       return this.$store.getters.edges;
-    }
+    },
   },
   methods: {
-    onEdgeAdd(e) {
+    onEdgeAdd: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
       e.stopPropagation();
@@ -253,7 +247,7 @@ export default {
             // TODO hide new-edge-modal
           });
     },
-    hideModal() {
+    hideModal: function () {
       this.addEdge.form.name = '';
       this.addEdge.form.username = '';
       this.addEdge.form.password.value = '';
@@ -265,29 +259,33 @@ export default {
     },
     onBreadCrumbClick: function (rootId) {
       this.selected = null;
-      this.loadEdge(rootId);
+      this.loadEdge(this, rootId);
     },
-    loadEdge: function (rootId) {
+    loadEdge: function (self, rootId) {
+      self = this;
       this.state = 1;
-      const _this = this;
 
-      this.axios.request(
+      self.axios.get(
           ROUTES.getNode(rootId)
+      ).then(
+          function (response) {
+            return response.data;
+          }
+      ).then(
+          function (data) {
+            self.parseBreadCrumb(data.breadCrumb);
+            return data;
+          }
+      ).then(
+          function (data) {
+            self.parseEdges(data.node);
+          }
       )
-          .then(function (response) {
-            const data = response.data;
-            if (data.length === 0) return;
-
-            _this.parseBreadCrumb(data.breadCrumb)
-            _this.parseEdges(data.node);
-          })
-      ;
-
     },
     selectRow: function (edge) {
       if (edge.node.type === 'folder') {
         this.selected = null;
-        this.loadEdge(edge.node.id);
+        this.loadEdge(this, edge.node.id);
         return;
       }
       this.selected = edge;
@@ -300,11 +298,11 @@ export default {
       this.breadCrumbs = [];
       for (let index in breadCrumbs) {
         if (breadCrumbs.hasOwnProperty(index)) {
-          this.breadCrumbs.push(breadCrumbs[index])
+          this.breadCrumbs.push(breadCrumbs[index]);
         }
       }
     },
-    checkEntropy() {
+    checkEntropy: function () {
       const _this = this;
       const _form = this.addEdge.form;
       const func = function () {
@@ -330,7 +328,7 @@ export default {
               return r.data;
             })
             .then((data) => {
-              console.log(data);
+
               switch (data.quality || 0) {
                 case 1:
                   _form.password.passwordClass = 'new-pw-good';
@@ -358,7 +356,6 @@ export default {
 
     },
     parseEdges: function (node) {
-
       this.temporaryStorage.set(
           STORAGE_ID_ROOT
           , node.id

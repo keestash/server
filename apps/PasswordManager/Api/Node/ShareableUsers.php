@@ -17,10 +17,12 @@ namespace KSA\PasswordManager\Api\Node;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use Keestash\Exception\AccessDeniedException;
 use Keestash\Exception\InvalidParameterException;
 use KSA\PasswordManager\Entity\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
@@ -45,17 +47,20 @@ class ShareableUsers implements RequestHandlerInterface {
     private NodeRepository  $nodeRepository;
     private ILogger         $logger;
     private IJWTService     $jwtService;
+    private AccessService   $accessService;
 
     public function __construct(
-        IUserRepository $userRepository
+        IUserRepository  $userRepository
         , NodeRepository $nodeRepository
-        , ILogger $logger
-        , IJWTService $jwtService
+        , ILogger        $logger
+        , IJWTService    $jwtService
+        , AccessService  $accessService
     ) {
         $this->userRepository = $userRepository;
         $this->nodeRepository = $nodeRepository;
         $this->logger         = $logger;
         $this->jwtService     = $jwtService;
+        $this->accessService  = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -75,8 +80,8 @@ class ShareableUsers implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
-            throw new InvalidParameterException();
+        if (!$this->accessService->hasAccess($node, $token->getUser())) {
+            throw new AccessDeniedException();
         }
 
         $all = $this->userRepository->searchUsers($query);

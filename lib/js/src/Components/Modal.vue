@@ -6,9 +6,8 @@ export default {
   ],
   watch: {
     open: function (n, o) {
-      console.log('test');
       if (n === o) return;
-      const modal = $(this.$refs['theModal']);
+      const modal = new bootstrap.Modal(this.$refs['theModal']);
       if (!n) {
         modal.hide();
         return;
@@ -23,7 +22,8 @@ export default {
 </script>
 
 <template>
-  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" ref="theModal">
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+       ref="theModal">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
