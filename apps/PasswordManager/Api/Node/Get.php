@@ -90,7 +90,7 @@ class Get implements RequestHandlerInterface {
 
         try {
             $root = $this->prepareNode($request, $token);
-        } catch (PasswordManagerException | InvalidNodeTypeException $exception) {
+        } catch (PasswordManagerException|InvalidNodeTypeException $exception) {
             $this->logger->error($exception->getMessage());
             return new JsonResponse(
                 ['no data found']
@@ -156,13 +156,15 @@ class Get implements RequestHandlerInterface {
                 usort(
                     $edges
                     , static function (Edge $current, Edge $next): int {
-                    $currentTs = null !== $current->getCreateTs()
-                        ? $current->getCreateTs()
+                    /** @var DateTime $currentTs */
+                    $currentTs = null !== $current->getNode()->getUpdateTs()
+                        ? $current->getNode()->getUpdateTs()
                         : new DateTime();
-                    $nextTs    = null !== $next->getCreateTs()
-                        ? $next->getCreateTs()
+                    /** @var DateTime $nextTs */
+                    $nextTs = null !== $next->getNode()->getUpdateTs()
+                        ? $next->getNode()->getUpdateTs()
                         : new DateTime();
-                    return $currentTs->getTimestamp() - $nextTs->getTimestamp();
+                    return $nextTs->getTimestamp() - $currentTs->getTimestamp();
                 });
 
                 $edgez = new ArrayList();

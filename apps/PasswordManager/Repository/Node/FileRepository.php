@@ -89,7 +89,7 @@ class FileRepository {
                 3
                 , $this->dateTimeService->toYMDHIS(new DateTime())
             )
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
         if (false === is_numeric($lastInsertId)) return false;
@@ -163,15 +163,16 @@ class FileRepository {
         $row    = $result->fetchAllNumeric()[0];
         $nodeId = (int) $row[0];
 
-        return $this->nodeRepository->getNode((int) $nodeId, 0, 0);
+        return $this->nodeRepository->getNode($nodeId, 0, 0);
     }
 
     public function removeByFile(IFile $file): bool {
+        // TODO notify node for update
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('pwm_node_file')
                 ->where('file_id = ?')
                 ->setParameter(0, $file->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
 }

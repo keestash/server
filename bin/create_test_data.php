@@ -198,6 +198,7 @@ function createFolder(IUser $user): array {
         $nextFolder->setType(Node::FOLDER);
         $nextFolder->setUser($user);
         $nextFolder->setCreateTs(new DateTime());
+        $nextFolder->setUpdateTs(null);
         $folders[] = $nextFolder;
     }
     return $folders;

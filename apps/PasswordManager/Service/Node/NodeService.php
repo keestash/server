@@ -39,9 +39,9 @@ class NodeService {
     private UserService     $userService;
 
     public function __construct(
-        IUserRepository $userRepository
+        IUserRepository  $userRepository
         , NodeRepository $nodeRepository
-        , UserService $userService
+        , UserService    $userService
     ) {
         $this->userRepository = $userRepository;
         $this->nodeRepository = $nodeRepository;
@@ -127,7 +127,8 @@ class NodeService {
         $root->setId($id);
         $root->setName(Node::ROOT);
         $root->setUser($user);
-        $root->setCreateTs((new DateTime()));
+        $root->setCreateTs(new DateTime());
+        $root->setUpdateTs(null);
         return $root;
     }
 

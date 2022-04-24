@@ -25,13 +25,16 @@ use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Manager\DataManager\DataManager;
+use Keestash\Exception\AccessDeniedException;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
+use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Exception\Node\Credential\NoFileException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
@@ -69,15 +72,17 @@ class Add implements RequestHandlerInterface {
     private IFileService    $uploadFileService;
     private ILogger         $logger;
     private IJWTService     $jwtService;
+    private AccessService   $accessService;
 
     public function __construct(
-        IFileRepository $uploadFileRepository
+        IFileRepository  $uploadFileRepository
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
-        , IFileService $uploadFileService
-        , ILogger $logger
-        , Config $config
-        , IJWTService $jwtService
+        , IFileService   $uploadFileService
+        , ILogger        $logger
+        , Config         $config
+        , IJWTService    $jwtService
+        , AccessService  $accessService
     ) {
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
@@ -85,6 +90,7 @@ class Add implements RequestHandlerInterface {
         $this->uploadFileService  = $uploadFileService;
         $this->logger             = $logger;
         $this->jwtService         = $jwtService;
+        $this->accessService      = $accessService;
         $this->dataManager        = new DataManager(
             ConfigProvider::APP_ID
             , $config
@@ -117,8 +123,12 @@ class Add implements RequestHandlerInterface {
             throw new CredentialException();
         }
 
-        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
+        if (false === ($node instanceof Credential)) {
             throw new CredentialException();
+        }
+
+        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
+            throw new AccessDeniedException();
         }
 
         /** @var UploadedFileInterface $file */
@@ -127,7 +137,7 @@ class Add implements RequestHandlerInterface {
             // TODO allowed extensions
 
             $file    = $this->uploadFileService->toFile($file);
-            $isValid = $this->uploadFileService->validateUploadedFile ($file);
+            $isValid = $this->uploadFileService->validateUploadedFile($file);
 
             if (false === $isValid) {
                 $this->logger->error('invalid file with name ' . $file->getClientFilename());
@@ -172,6 +182,11 @@ class Add implements RequestHandlerInterface {
                 continue;
             }
             $processedFiles[] = $nodeFile;
+        }
+
+        if (count($processedFiles) > 0) {
+            $node->setUpdateTs(new DateTime());
+            $this->nodeRepository->updateCredential($node);
         }
 
         return LegacyResponse::fromData(
