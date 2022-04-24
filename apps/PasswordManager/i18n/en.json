@@ -103,7 +103,20 @@
         }
       },
       "comment": {
-        "commentedByLabel": "Commented by "
+        "modal": {
+          "title": "Removing Comment",
+          "content": "Do you really want to remove this comment?",
+          "negativeButton": "Cancel",
+          "positiveButton": "Yes"
+        }
+      },
+      "attachment": {
+        "modal": {
+          "title": "Removing Attachment",
+          "content": "Do you really want to remove this attachment?",
+          "negativeButton": "Cancel",
+          "positiveButton": "Yes"
+        }
       }
     },
     "sharePublicly": {
