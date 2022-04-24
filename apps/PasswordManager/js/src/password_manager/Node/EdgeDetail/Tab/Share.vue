@@ -5,7 +5,6 @@
         <div class="row">
           <div :class="isOwner ? 'col-11' : 'col-12'">
             <template v-if="state.value === state.states.STATE_LOADED">
-
               <v-select
                   label="name"
                   :filterable="true"
@@ -65,59 +64,13 @@
           <Skeleton height="25px" v-else/>
         </div>
 
-        <div class="results mt-3 rounded border tab_result_box d-flex flex-column mb-2">
-
-          <NoDataFound
-              :visible="this.edge.node.shared_to.content.length === 0"
-              :text="noComments"
-              type="user"
-          ></NoDataFound>
-
-          <div class="container">
-            <div class="row border-bottom"
-                 v-for="share in this.edge.node.shared_to.content"
-                 :key="share.id"
-            >
-
-              <div class="col">
-                <div class="row justify-content-between">
-                  <div class="col-10">
-                    <div class="row">
-                      <div class="col-1">
-                        <Thumbnail
-                            :source="getAssetUrl(share.user.jwt)"
-                        ></Thumbnail>
-                      </div>
-                      <div class="col-11">
-                        <div class="container">
-                          <div class="row cropped">
-                            {{ share.user.name }}
-                          </div>
-                          <div class="row">
-                            <small> {{ $t('credential.detail.share.sharedDateTimeLabel') }}
-                              {{
-                                formatDate(share.user.create_ts.date)
-                              }}</small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="col-2 align-self-center" v-if="isOwner">
-                    <div class="row justify-content-end">
-                      <div class="col-3" @click="removeShare(share)">
-                        <i class="fas fa-times remove"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
+        <ResultBox
+            :no-data-found-text="noComments"
+            :can-remove="isOwner"
+            type="user"
+            :data="this.edge.node.shared_to.content"
+            @onRemove="removeShare"
+        ></ResultBox>
 
       </div>
     </div>
@@ -127,14 +80,19 @@
            aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">{{ $t('credential.detail.share.modal.title') }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                      @click="this.deleteShare.shareModal.hide()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
             <div class="modal-body">
-              <template>
-                {{ $t('credential.detail.share.modal.title') }}
-              </template>
               <div class="d-block text-center">
                 <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
               </div>
-              <button type="button" class="btn btn-block btn-primary mt-3" @click="doRemoveShare" v-if="!removingUser">
+              <button type="button" class="btn btn-block btn-primary mt-3" @click="doRemoveShare"
+                      v-if="this.deleteShare.shareToDelete !== null">
                 {{ $t('credential.detail.share.modal.positiveButton') }}
               </button>
               <div class="d-flex justify-content-center" v-else>
@@ -165,12 +123,13 @@ import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 import {Skeleton} from 'vue-loading-skeleton';
 import _ from "lodash";
 import {Modal} from "bootstrap";
+import ResultBox from "./ResultBox";
 
 const STATE_LOADING = 1;
 const STATE_LOADED = 2;
 export default {
   name: "Share",
-  components: {NoDataFound, Thumbnail, Skeleton, vSelect},
+  components: {ResultBox, NoDataFound, Thumbnail, Skeleton, vSelect},
   computed: {
     isOwner() {
       const userHash = this.container.services.appStorage.getUserHash();
@@ -190,7 +149,6 @@ export default {
   },
   data() {
     return {
-      removingUser: false,
       container: {
         container: null,
         services: {
@@ -208,12 +166,17 @@ export default {
           STATE_LOADED: STATE_LOADED
         }
       },
+      deleteShare: {
+        shareToDelete: null,
+        shareModal: null
+      },
       shareToDelete: null,
       noComments: "No shared users",
       doWork: () => {
       }
     }
   },
+
   created() {
     const startUp = new StartUp(
         new Container()
@@ -234,22 +197,21 @@ export default {
       return ROUTES.getAssetUrl(jsonWebToken);
     },
     removeShare(share) {
-      this.shareToDelete = share;
-
       const m = new Modal('#remove-share-modal');
       m.show();
+      this.deleteShare.shareToDelete = share;
+      this.deleteShare.shareModal = m;
     },
     doRemoveShare() {
-      this.removingUser = true;
       this.container.services.axios.post(
           ROUTES.getPasswordManagerShareeRemove()
           , {
-            shareId: this.shareToDelete.id
+            shareId: this.deleteShare.shareToDelete.id
           }
       )
           .then((response) => {
             if (RESPONSE_CODE_OK in response.data) {
-              this.removingUser = false;
+              this.deleteShare.shareToDelete = null;
               return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
             }
             return [];
@@ -268,15 +230,13 @@ export default {
             }
 
             this.$store.dispatch("setSelectedNode", newNode);
-            // TODO hide modal
+            this.deleteShare.shareModal.hide();
+            this.deleteShare.shareToDelete = null;
           })
           .catch((error) => {
-            console.log(error);
-            this.removingUser = false;
+            console.error(error);
+            this.deleteShare.shareToDelete = null;
           })
-    },
-    removeAtWithSlice(array, index) {
-      return array.slice(index).concat(array.slice(index + 1));
     },
     sharePublicly(e) {
       e.preventDefault();

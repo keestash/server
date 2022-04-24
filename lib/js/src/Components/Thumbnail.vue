@@ -5,13 +5,13 @@
         height="40px"
         width="40px"
     />
-    <template v-else>
-      <img
-          :src="this.source"
-          class="thumbnail left border-0"
-          style="height: 40px !important; width: 40px !important;"
-      >
-    </template>
+    <img
+        :src="this.source"
+        class="thumbnail left border-0"
+        style="height: 40px !important; width: 40px !important;"
+        v-else
+        alt="profile"
+    >
   </div>
 </template>
 
@@ -29,7 +29,6 @@ export default {
   components: {Skeleton},
   props: {
     source: '',
-    description: '',
     skipCache: false
   },
   data() {

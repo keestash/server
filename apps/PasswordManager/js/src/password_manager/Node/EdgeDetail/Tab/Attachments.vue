@@ -1,59 +1,15 @@
 <template>
   <div class="tab-pane" id="comment" role="tabpanel">
 
-    <div class="results mt-3 rounded border tab_result_box" id="comment__result">
+    <ResultBox
+        :no-data-found-text="noComments"
+        type="attachment"
+        :can-remove="isOwner"
+        :data="edge.node.attachments || []"
+        @onRemove="removeAttachment"
+    >
 
-      <NoDataFound
-          :visible="loading === false && (edge.node.attachments || []).length === 0"
-          :text="noComments"
-          type="attachment"
-      ></NoDataFound>
-
-      <template v-if="!this.loading">
-        <div class="container">
-          <div class="row border-bottom"
-               v-if="loading === false && (edge.node.attachments || []).length > 0"
-               v-for="attachment in edge.node.attachments || []">
-
-            <div class="col">
-              <div class="row justify-content-between">
-                <div class="col-sm-6">
-                  <div class="row align-items-center">
-                    <div class="col-2">
-                      <Thumbnail :source="getThumbnailUrl(attachment.jwt)"
-                                 :description="attachment.file.name"></Thumbnail>
-                    </div>
-                    <div class="col">
-                      <div class="container">
-                        <div class="row cropped">
-                          <a :href="getAttachmentUrl(attachment.file.id)"
-                             target="_blank">{{
-                              attachment.file.name
-                            }}</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="col-sm-4 align-self-center">
-                  <div class="row justify-content-end pe-1">
-                    <div class="col-1 me-2" @click="removeAttachment(attachment)" data-bs-toggle="modal"
-                         data-target="#attachment-modal">
-                      <i class="fas fa-times remove"></i>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </template>
-      <Skeleton :count=9 height="25px" v-else/>
-
-    </div>
+    </ResultBox>
 
     <FileUpload
         @upload="upload"
@@ -69,19 +25,19 @@
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">
                 <template>
-                  {{ $t('credential.detail.share.modal.title') }}
+                  {{ $t('credential.detail.attachment.modal.title') }}
                 </template>
               </h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="this.deleteAttachment.attachmentModal.hide()">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <div class="d-block text-center">
-                <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
+                <h3>{{ $t('credential.detail.attachment.modal.content') }}</h3>
               </div>
               <button type="button" class="btn-block btn-primary mt-3" @click="doRemoveAttachment">
-                {{ $t('credential.detail.share.modal.positiveButton') }}
+                {{ $t('credential.detail.attachment.modal.positiveButton') }}
               </button>
             </div>
           </div>
@@ -103,12 +59,23 @@ import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 import ContentList from "../../../../../../../../lib/js/src/Components/ContentList";
 import _ from "lodash";
 import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFound";
-import Modal from "../../../../../../../../lib/js/src/Components/Modal";
+import ResultBox from "./ResultBox";
+import {Modal} from "bootstrap";
 
 export default {
   name: "Attachments",
-  components: {Modal, ContentList, Thumbnail, FileUpload, Skeleton, NoDataFound},
+  components: {ResultBox, Modal, ContentList, Thumbnail, FileUpload, Skeleton, NoDataFound},
   computed: {
+    isOwner() {
+      const userHash = this.storage.getUserHash();
+      if (this.edge.node.user.hash === userHash) return true;
+
+      for (let i = 0; i < this.edge.node.shared_to.content.length; i++) {
+        const share = this.edge.node.shared_to.content[i];
+        if (userHash === share.user.hash) return false;
+      }
+      return true;
+    },
     ...mapState({
       edge: function (state) {
         return state.selectedEdge;
@@ -141,21 +108,29 @@ export default {
       newComment: "",
       attachmentToDelete: null,
       noComments: "No Attachments",
+      deleteAttachment: {
+        attachmentToDelete: null,
+        attachmentModal: null
+      }
     }
   },
   methods: {
     removeAttachment(attachment) {
-      this.attachmentToDelete = attachment;
+      const m = new Modal('#attachment-modal');
+      m.show();
+      this.deleteAttachment.attachmentToDelete = attachment;
+      this.deleteAttachment.attachmentModal = m;
     },
     doRemoveAttachment() {
       this.axios.post(
           ROUTES.getPasswordManagerAttachmentRemove()
           , {
-            fileId: this.attachmentToDelete.file.id
+            fileId: this.deleteAttachment.attachmentToDelete.file.id
           }
       )
           .then((response) => {
             if (RESPONSE_CODE_OK in response.data) {
+              this.deleteAttachment.attachmentToDelete = null;
               return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
             }
             return [];
@@ -173,6 +148,8 @@ export default {
             }
 
             this.$store.dispatch("setSelectedNode", newNode);
+            this.deleteAttachment.attachmentModal.hide();
+            this.deleteAttachment.attachmentToDelete = null;
           })
           .catch((error) => {
             console.log(error);
