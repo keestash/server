@@ -94,6 +94,8 @@ class Add implements RequestHandlerInterface {
             )
         );
         $comment = $this->commentRepository->addComment($comment);
+        $node->setUpdateTs(new DateTime());
+        $this->nodeRepository->updateCredential($node);
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK

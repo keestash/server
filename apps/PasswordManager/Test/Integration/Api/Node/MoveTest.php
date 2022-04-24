@@ -57,6 +57,7 @@ class MoveTest extends TestCase {
         $newFolder = new Folder();
         $newFolder->setUser($user);
         $newFolder->setCreateTs(new DateTime());
+        $newFolder->setUpdateTs(null);
         $newFolder->setName('TheNewFolder');
         $newFolder->setType(Folder::FOLDER);
 

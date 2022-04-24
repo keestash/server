@@ -1,7 +1,6 @@
 <?php
 
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
-use KSA\PasswordManager\Application\Application;
 
 class PasswordGraph extends KeestashMigration {
 
@@ -67,6 +66,14 @@ class PasswordGraph extends KeestashMigration {
                 , [
                     "null"      => false
                     , "default" => "CURRENT_TIMESTAMP"
+                ]
+            )
+            ->addColumn(
+                "update_ts"
+                , "datetime"
+                , [
+                    "null"      => true
+                    , "default" => null
                 ]
             )
             ->addForeignKey(

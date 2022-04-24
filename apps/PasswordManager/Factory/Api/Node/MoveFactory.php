@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -32,6 +33,7 @@ class MoveFactory {
         return new Move(
             $container->get(IL10N::class)
             , $container->get(NodeRepository::class)
+            , $container->get(AccessService::class)
         );
     }
 

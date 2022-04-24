@@ -73,6 +73,7 @@ class CredentialService {
 
         $credential = new Credential();
         $credential->setCreateTs(new DateTime());
+        $credential->setUpdateTs(null);
         $credential->setType(NodeObject::CREDENTIAL);
 
         $urlObject = new URL();
@@ -117,6 +118,7 @@ class CredentialService {
         $credential->setUrl($urlObject);
 
         $credential->setName($name);
+        $credential->setUpdateTs(new DateTime());
         $this->nodeEncryptionService->encryptNode($credential);
         return $this->nodeRepository->updateCredential($credential);
     }
@@ -128,6 +130,7 @@ class CredentialService {
         $passwordObject = $credential->getPassword();
         $passwordObject->setPlain($password);
         $credential->setPassword($passwordObject);
+        $credential->setUpdateTs(new DateTime());
         $this->nodeEncryptionService->encryptNode($credential);
         return $this->nodeRepository->updateCredential($credential);
     }

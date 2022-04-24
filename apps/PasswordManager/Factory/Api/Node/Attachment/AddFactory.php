@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
@@ -42,6 +43,7 @@ class AddFactory {
             , $container->get(ILogger::class)
             , $container->get(Config::class)
             , $container->get(IJWTService::class)
+            , $container->get(AccessService::class)
         );
     }
 
