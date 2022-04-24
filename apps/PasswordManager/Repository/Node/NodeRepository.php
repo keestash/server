@@ -147,12 +147,13 @@ class NodeRepository {
                     , 'user_id'
                     , 'type'
                     , 'create_ts'
+                    , 'update_ts'
                 ]
             )
             ->from('pwm_node')
             ->where('id = ?')
             ->setParameter(0, $id);
-        $sql = $queryBuilder->getSQL();
+        $sql          = $queryBuilder->getSQL();
         $statement    = $queryBuilder->executeQuery();
 
         $rows = $statement->fetchAllNumeric();
@@ -167,6 +168,9 @@ class NodeRepository {
         $userId   = $row[2];
         $type     = $row[3];
         $createTs = $this->dateTimeService->fromString($row[4]);
+        $updateTs = null !== $row[5]
+            ? $this->dateTimeService->fromString($row[5])
+            : null;
 
         switch ($type) {
             case Node::CREDENTIAL:
@@ -192,6 +196,7 @@ class NodeRepository {
         $node->setName((string) $name);
         $node->setUser($user);
         $node->setCreateTs($createTs);
+        $node->setUpdateTs($updateTs);
         $node->setType((string) $type);
 
         $node = $this->addOrganizationInfo($node);
@@ -287,6 +292,7 @@ class NodeRepository {
         $password = new Password();
         $password->setEncrypted($row[3]);
         $credential->setPassword($password);
+        // TODO remove createTs on credential level, rely only on node level
         $credential->setCreateTs(
             $this->dateTimeService->fromFormat(
                 $row[5]
@@ -429,7 +435,7 @@ class NodeRepository {
             ->setParameter(0, $node->getName())
             ->setParameter(1, $node->getUser()->getId())
             ->setParameter(2, $node->getType())
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
@@ -615,7 +621,7 @@ ORDER BY d.`level`;
             )
                 ->where('node_id = ?')
                 ->setParameter(0, $credential->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     public function removeEdge(string $id): bool {
@@ -625,7 +631,7 @@ ORDER BY d.`level`;
             )
                 ->where('id = ?')
                 ->setParameter(0, $id)
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     public function removeEdgeByNodeIdAndParentId(Node $node, Node $parent): bool {
@@ -637,7 +643,7 @@ ORDER BY d.`level`;
                 ->andWhere('parent_id = ?')
                 ->setParameter(0, $node->getId())
                 ->setParameter(1, $parent->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     private function updateNode(Node $node): Node {
@@ -645,10 +651,18 @@ ORDER BY d.`level`;
 
         $queryBuilder = $queryBuilder->update('pwm_node')
             ->set('name', '?')
+            ->set('update_ts', '?')
             ->where('id = ?')
             ->setParameter(0, $node->getName())
-            ->setParameter(1, $node->getId());
-        $queryBuilder->execute();
+            ->setParameter(1,
+                null !== $node->getUpdateTs()
+                    ? $this->dateTimeService->toYMDHIS(
+                    $node->getUpdateTs()
+                )
+                    : null
+            )
+            ->setParameter(2, $node->getId());
+        $queryBuilder->executeStatement();
         return $node;
     }
 
@@ -674,7 +688,7 @@ ORDER BY d.`level`;
             ->setParameter(3,
                 $credential->getCredentialId()
             );
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
         $this->backend->endTransaction();
         return $credential;
     }
@@ -699,7 +713,6 @@ ORDER BY d.`level`;
             return false;
         }
 
-
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $executed     = $queryBuilder->delete(
                 'pwm_edge'
@@ -710,7 +723,7 @@ ORDER BY d.`level`;
                 ->setParameter(0, $node->getId())
                 ->setParameter(1, $parent->getId())
                 ->setParameter(2, $targetEdge->getType())
-                ->execute() > 0;
+                ->executeStatement() > 0;
 
         if (false === $executed) return false;
 
@@ -727,7 +740,7 @@ ORDER BY d.`level`;
             ->where('node_id = ?')
             ->setParameter(0, $type)
             ->setParameter(1, $node->getId());
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     public function addEdge(Edge $edge): Edge {
@@ -749,7 +762,7 @@ ORDER BY d.`level`;
                     ? $this->dateTimeService->toYMDHIS($edge->getExpireTs())
                     : null
             )
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
@@ -777,7 +790,7 @@ ORDER BY d.`level`;
                                 )')
                 ->setParameter(0, $user->getId())
                 ->setParameter(1, $user->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
 }

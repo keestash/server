@@ -22,6 +22,7 @@ use KSA\PasswordManager\Entity\Node as NodeObject;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
@@ -47,6 +48,7 @@ class Create implements RequestHandlerInterface {
     private SanitizerService      $sanitizerService;
     private ILogger               $logger;
     private NodeEncryptionService $nodeEncryptionService;
+    private AccessService         $accessService;
 
     public function __construct(
         IL10N                   $l10n
@@ -55,6 +57,7 @@ class Create implements RequestHandlerInterface {
         , SanitizerService      $sanitizerService
         , ILogger               $logger
         , NodeEncryptionService $nodeEncryptionService
+        , AccessService         $accessService
     ) {
         $this->translator            = $l10n;
         $this->nodeRepository        = $nodeRepository;
@@ -62,6 +65,7 @@ class Create implements RequestHandlerInterface {
         $this->sanitizerService      = $sanitizerService;
         $this->logger                = $logger;
         $this->nodeEncryptionService = $nodeEncryptionService;
+        $this->accessService         = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -100,7 +104,7 @@ class Create implements RequestHandlerInterface {
             // parent is not a folder
             !$parent instanceof Folder
             // parent does not belong to me
-            || $parent->getUser()->getId() !== $token->getUser()->getId()
+            || false === $this->accessService->hasAccess($parent, $token->getUser())
         ) {
 
             return LegacyResponse::fromData(

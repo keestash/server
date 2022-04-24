@@ -42,14 +42,15 @@ abstract class Node implements
     public const ICON_ROOT   = "fas fa-tree";
     public const ICON_KEY    = "fas fa-key";
 
-    private int               $id           = 0;
-    private string            $name         = "";
-    private IUser             $user;
-    private DateTimeInterface $createTs;
-    private string            $type;
-    private ArrayList         $sharedTo;
-    private ?IOrganization    $organization = null;
-    private ?PublicShare      $publicShare  = null;
+    private int                $id           = 0;
+    private string             $name         = "";
+    private IUser              $user;
+    private DateTimeInterface  $createTs;
+    private ?DateTimeInterface $updateTs     = null;
+    private string             $type;
+    private ArrayList          $sharedTo;
+    private ?IOrganization     $organization = null;
+    private ?PublicShare       $publicShare  = null;
 
     public function __construct() {
         $this->setSharedTo(new ArrayList());
@@ -93,6 +94,14 @@ abstract class Node implements
 
     public function setCreateTs(DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
+    }
+
+    public function getUpdateTs(): ?DateTimeInterface {
+        return $this->createTs;
+    }
+
+    public function setUpdateTs(?DateTimeInterface $updateTs): void {
+        $this->updateTs = $updateTs;
     }
 
     public abstract function getType(): string;

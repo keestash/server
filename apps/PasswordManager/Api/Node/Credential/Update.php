@@ -17,7 +17,9 @@ namespace KSA\PasswordManager\Api\Node\Credential;
 use doganoo\DI\Object\String\IStringService;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -43,19 +45,22 @@ class Update implements RequestHandlerInterface {
     private CredentialService $credentialService;
     private IL10N             $translator;
     private ILogger           $logger;
+    private AccessService     $accessService;
 
     public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
-        , IStringService $stringService
+        IL10N               $l10n
+        , NodeRepository    $nodeRepository
+        , IStringService    $stringService
         , CredentialService $credentialService
-        , ILogger $logger
+        , ILogger           $logger
+        , AccessService     $accessService
     ) {
         $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
         $this->stringService     = $stringService;
         $this->credentialService = $credentialService;
         $this->logger            = $logger;
+        $this->accessService     = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -69,16 +74,19 @@ class Update implements RequestHandlerInterface {
 
         $hasChanges = false;
 
-        /** @var Credential|null $node */
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if (null === $node || $node->getUser()->getId() !== $token->getUser()->getId()) {
+        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
                     "message" => $this->translator->translate("no node found")
                 ]
             );
+        }
+
+        if (false === ($node instanceof Credential)) {
+            throw new CredentialException();
         }
 
         if (false === $this->stringService->isEmpty($username)) {

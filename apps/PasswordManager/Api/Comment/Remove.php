@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Comment;
 
+use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Repository\CommentRepository;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -37,15 +39,18 @@ class Remove implements RequestHandlerInterface {
     private CommentRepository $commentRepository;
     private IL10N             $translator;
     private AccessService     $accessService;
+    private NodeRepository    $nodeRepository;
 
     public function __construct(
         IL10N               $l10n
         , CommentRepository $commentRepository
         , AccessService     $accessService
+        , NodeRepository    $nodeRepository
     ) {
         $this->commentRepository = $commentRepository;
         $this->translator        = $l10n;
         $this->accessService     = $accessService;
+        $this->nodeRepository    = $nodeRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -85,6 +90,9 @@ class Remove implements RequestHandlerInterface {
             );
 
         }
+
+        $node->setUpdateTs(new DateTime());
+        $this->nodeRepository->updateCredential($node);
 
         return LegacyResponse::fromData(
             IResponse::RESPONSE_CODE_OK

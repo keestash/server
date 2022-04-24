@@ -109,6 +109,7 @@ class CreateTest extends TestCase {
         $folder = new Folder();
         $folder->setUser($this->getUser());
         $folder->setCreateTs(new DateTime());
+        $folder->setUpdateTs(new DateTime());
         $folder->setName('TestAddToFolder');
         $folder->setType(Node::FOLDER);
         $id = $nodeRepository->addFolder($folder);

@@ -14,10 +14,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
+use DateTime;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
@@ -36,13 +38,16 @@ class Move implements RequestHandlerInterface {
 
     private NodeRepository $nodeRepository;
     private IL10N          $translator;
+    private AccessService  $accessService;
 
     public function __construct(
-        IL10N $l10n
+        IL10N            $l10n
         , NodeRepository $nodeRepository
+        , AccessService  $accessService
     ) {
         $this->translator     = $l10n;
         $this->nodeRepository = $nodeRepository;
+        $this->accessService  = $accessService;
     }
 
 
@@ -65,7 +70,7 @@ class Move implements RequestHandlerInterface {
             );
         }
 
-        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
+        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
                 , [
@@ -88,7 +93,7 @@ class Move implements RequestHandlerInterface {
 
         if (
             $targetNode->isSharedTo($token->getUser())
-            || $targetNode->getUser()->getId() !== $token->getUser()->getId()
+            || false === $this->accessService->hasAccess($targetNode, $token->getUser())
         ) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -113,7 +118,7 @@ class Move implements RequestHandlerInterface {
 
         if (
             $targetNode->isSharedTo($token->getUser())
-            || $targetNode->getUser()->getId() !== $token->getUser()->getId()
+            || false === $this->accessService->hasAccess($targetNode, $token->getUser())
         ) {
             return LegacyResponse::fromData(
                 IResponse::RESPONSE_CODE_NOT_OK
@@ -122,6 +127,9 @@ class Move implements RequestHandlerInterface {
                 ]
             );
         }
+
+        // we consider moving nodes around as an update
+        $node->setUpdateTs(new DateTime());
 
         $moved = $this->nodeRepository->move(
             $node

@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Node\Credential;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\ILogger\ILogger;
@@ -40,6 +41,7 @@ class CreateFactory {
             , $container->get(SanitizerService::class)
             , $container->get(ILogger::class)
             , $container->get(NodeEncryptionService::class)
+            , $container->get(AccessService::class)
         );
     }
 
