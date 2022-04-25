@@ -30,11 +30,6 @@
                     </div>
                   </div>
                 </template>
-                <template slot="selected-option" v-slot:option="option">
-                  <div class="selected d-center">
-                    {{ option.name }}
-                  </div>
-                </template>
               </v-select>
             </template>
             <Skeleton height="25px" v-else/>
