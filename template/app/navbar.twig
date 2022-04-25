@@ -7,14 +7,14 @@
                 </a>
             </div>
             {% if contextless == false %}
-                <div class="d-flex col-4 flex-grow-1 align-items-center">
+                <div class="d-flex col-4 flex-grow-1 align-items-center" id="global-search-wrapper">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <div class="input-group-text border-0 bg-white">
                                 <i class="fas fa-search"></i>
                             </div>
                         </div>
-                        <input type="text" class="form-control border-0" placeholder="{{ searchInputPlaceholder }}">
+                        <input type="text" class="form-control border-0 shadow-none" placeholder="{{ searchInputPlaceholder }}" id="global-search">
                     </div>
                 </div>
 

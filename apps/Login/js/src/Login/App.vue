@@ -176,7 +176,7 @@ import {
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../config/routes"
 import {HEADER_NAME_TOKEN, HEADER_NAME_USER} from "../../../../../lib/js/src/Backend/Axios";
-import 'bootstrap'
+import {Modal} from "bootstrap";
 
 export default {
   name: "App",
@@ -232,7 +232,7 @@ export default {
           if (false === this.values.demoMode) {
             return;
           }
-          const modal = new bootstrap.Modal(this.$refs.emailAddressModal);
+          const modal = new Modal(this.$refs.emailAddressModal);
           modal.show();
         }
     )
@@ -260,7 +260,7 @@ export default {
       ).then(
           () => {
             this.container.temporaryStorage.set("demo-submitted", "true");
-            const modal = new bootstrap.Modal(this.$refs.emailAddressModal);
+            const modal = new Modal(this.$refs.emailAddressModal);
             modal.hide();
           }
       );
