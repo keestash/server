@@ -1,4 +1,6 @@
 <script>
+import {Modal} from "bootstrap";
+
 export default {
   name: 'Modal',
   props: [
@@ -7,7 +9,7 @@ export default {
   watch: {
     open: function (n, o) {
       if (n === o) return;
-      const modal = new bootstrap.Modal(this.$refs['theModal']);
+      const modal = new Modal(this.$refs['theModal']);
       if (!n) {
         modal.hide();
         return;

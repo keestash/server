@@ -28,6 +28,7 @@
                     :edge="edge"
                     @wasClicked="selectRow(edge)"
                     @wasDeleted="deleteRow(edge)"
+                    v-show="onSearch(query,edge)"
                     :is-first="index === 0"
                 ></Edge>
                 <Skeleton :count=15 height="25px" v-else/>
@@ -131,8 +132,13 @@ import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/s
 import NoNodeSelected from "./Node/NoNodeSelected";
 import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
 import {Skeleton} from "vue-loading-skeleton";
-import {EVENT_NAME_ACTION_BAR_ITEM_CLICKED, EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../../lib/js/src/base";
+import {
+  EVENT_NAME_ACTION_BAR_ITEM_CLICKED,
+  EVENT_NAME_APP_NAVIGATION_CLICKED,
+  EVENT_NAME_GLOBAL_SEARCH
+} from "../../../../../lib/js/src/base";
 import NoEdges from "./Node/NoEdges";
+import {Modal} from "bootstrap";
 import axios from "axios/index";
 
 export const NODE_ID_ROOT = "root";
@@ -144,6 +150,7 @@ export default {
   data: function () {
 
     return {
+      query: null,
       breadCrumbs: [],
       selected: null,
       container: null,
@@ -201,9 +208,16 @@ export default {
         EVENT_NAME_ACTION_BAR_ITEM_CLICKED
         , (e) => {
           e.stopImmediatePropagation();
-          const modal = new bootstrap.Modal('#new-edge-modal');
+          const modal = new Modal('#new-edge-modal');
           modal.show();
           self.addEdge.type = e.detail.target.id;
+        }
+    );
+
+    document.addEventListener(
+        EVENT_NAME_GLOBAL_SEARCH
+        , function (event) {
+          self.query = event.detail;
         }
     )
   },
@@ -213,6 +227,11 @@ export default {
     },
   },
   methods: {
+    onSearch(val, edge) {
+      if (edge === null || typeof edge === 'undefined') return true;
+      if (val === "" || val === null) return true;
+      return (edge.node.name.toLowerCase().includes(val.toLowerCase()));
+    },
     onEdgeAdd: function (e) {
       e.preventDefault();
       e.stopImmediatePropagation();
