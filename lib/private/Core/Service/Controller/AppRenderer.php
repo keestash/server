@@ -30,6 +30,7 @@ use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
+use KSA\Login\Controller\Login;
 use KSP\App\ILoader;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
@@ -214,6 +215,7 @@ class AppRenderer implements IAppRenderer {
         , string               $appContent
         , NavigationList       $navigationList
         , IActionBar           $actionBar
+        , string               $caller
     ): string {
 
         return $this->templateRenderer
@@ -228,6 +230,7 @@ class AppRenderer implements IAppRenderer {
                         , $static
                         , $contextLess
                         , $actionBar
+                        , $caller
                     )
                     , "noContext"     => true === $static
                     , "staticContext" => true === $static
@@ -259,7 +262,9 @@ class AppRenderer implements IAppRenderer {
         , bool           $static
         , bool           $contextLess
         , IActionBar     $actionBar
+        , string         $caller
     ): string {
+
         return $this->templateRenderer
             ->render(
                 'root::content'
@@ -272,6 +277,7 @@ class AppRenderer implements IAppRenderer {
                         , $actionBar
                     )
                     , "appContent"       => $appContent
+                    , "isLogin"          => $caller === Login::class
                     , "hasAppNavigation" => $hasAppNavigation
                     , "hasBreadcrumbs"   => false
                 ]
@@ -317,6 +323,7 @@ class AppRenderer implements IAppRenderer {
         , bool                 $contextLess
         , NavigationList       $navigationList
         , IActionBar           $actionBar
+        , string               $caller
     ): string {
 
         return $this->templateRenderer
@@ -335,8 +342,8 @@ class AppRenderer implements IAppRenderer {
                         , $appContent
                         , $navigationList
                         , $actionBar
+                        , $caller
                     )
-                    //                    , "noContext" => static::class === StaticAppController::class
                     , "noContext" => true === $contextLess
                     , "language"  => $this->localeService->getLocale()
                 ]

@@ -272,11 +272,6 @@ data/*
 !data/.gitkeep
 .instance.sqlite
 
-public/css/*.css
-public/js/*.js
-public/js/*hot-update.json
-public/js/*LICENSE.txt
-
 lib/scss/dist/*.css
 test/config/*.sqlite
 test/result/

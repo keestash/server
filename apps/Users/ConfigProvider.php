@@ -145,13 +145,6 @@ final class ConfigProvider {
                 CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
                     ConfigProvider::USERS => 'users'
                 ],
-                CoreConfigProvider::SETTINGS               => [
-                    ConfigProvider::USERS => [
-                        'name'      => 'Users'
-                        , 'faClass' => 'fas fa-user-circle'
-                        , 'order'   => 1
-                    ]
-                ]
             ],
             CoreConfigProvider::EVENTS     => [
                 UserStateDeleteEvent::class => [

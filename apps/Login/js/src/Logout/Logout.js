@@ -38,6 +38,6 @@ export class Logout {
     init() {
         this.appStorage.clearAPICredentials();
         this.temporaryStorage.clear();
-        this.router.routeTo("login");
+        this.router.routeTo("/login");
     }
 }
