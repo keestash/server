@@ -31,7 +31,9 @@
                     v-show="onSearch(query,edge)"
                     :is-first="index === 0"
                 ></Edge>
-                <Skeleton :count=15 height="25px" v-else/>
+                <div class="container-fluid" v-else>
+                  <Skeleton :count=15 height="25px"/>
+                </div>
                 <NoEdges :visible="state === 2 && edges.length === 0"></NoEdges>
               </div>
             </div>

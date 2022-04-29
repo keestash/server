@@ -6,8 +6,8 @@
             </div>
         {% endif %}
 
-        <div class="col g-0 flex-grow-1">
-                {{ appContent|raw }}
+        <div class="{{ (isLogin == true) ? 'col g-0 flex-grow-1 p-0' : 'col g-0 flex-grow-1' }}" id="app-content">
+            {{ appContent|raw }}
         </div>
     </div>
 </div>

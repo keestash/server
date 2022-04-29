@@ -33,6 +33,7 @@ const baseModule = {
         path: __dirname + "/public/js/",
         filename: '[name].bundle.js',
         chunkFilename: '[name].chunk.js',
+        assetModuleFilename: '../img/[hash][ext][query]'
     },
     module: {
         rules: [
@@ -53,6 +54,23 @@ const baseModule = {
                         loader: 'babel-loader'
                     }
                 ]
+            },
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                    // Creates `style` nodes from JS strings
+                    "style-loader",
+                    // Translates CSS into CommonJS
+                    "css-loader",
+                    // Compiles Sass to CSS
+                    "sass-loader",
+                ],
+            },
+            {
+                test: /\.(png)$/,
+                use: {
+                    loader: 'url-loader',
+                },
             },
         ]
     },

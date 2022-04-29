@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -58,17 +59,20 @@ class Configuration implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "appName"              => $this->legacy->getApplication()->get('name')
-                , "newAccountLink"     => $this->httpService->getBaseURL(true) . "/register"
-                , "forgotPasswordLink" => $this->httpService->getBaseURL(true) . "/forgot_password"
-                , "registeringEnabled" => $this->loader->hasApp(ConfigProvider::APP_ID)
+                "appName"                 => $this->legacy->getApplication()->get('name')
+                , "newAccountLink"        => $this->httpService->getBaseURL(true) . "/register"
+                , "forgotPasswordLink"    => $this->httpService->getBaseURL(true) . "/forgot_password"
+                , "registeringEnabled"    => $this->loader->hasApp(ConfigProvider::APP_ID)
 
                 // values
-                , "backgroundPath"     => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
-                , "logoPath"           => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
-                , "demo"               => $demo
-                , "tncLink"            => $this->httpService->getBaseURL(true) . "/tnc/"
-                , "demoMode"           => $isDemoMode
+                , "backgroundPath"        => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
+                , "logoPath"              => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
+                , "demo"                  => $demo
+                , "tncLink"               => $this->httpService->getBaseURL(true) . "/tnc/"
+                , "demoMode"              => $isDemoMode
+                // TODO check here for being enabled once apps page works!
+                , "registerEnabled"       => true && !$isDemoMode
+                , "forgotPasswordEnabled" => true && !$isDemoMode
             ]
             , IResponse::OK
         );

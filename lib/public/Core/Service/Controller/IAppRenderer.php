@@ -35,6 +35,7 @@ interface IAppRenderer {
         , bool $contextLess
         , NavigationList $navigationList
         , IActionBar $actionBar
+        , string $caller
     ): string;
 
 }
