@@ -71,6 +71,7 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
                 , $contextLess
                 , $this->navigationList
                 , $this->actionBar
+                , static::class
             )
         );
     }

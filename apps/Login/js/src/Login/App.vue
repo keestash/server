@@ -1,34 +1,35 @@
 <template>
   <div>
     <div class="main-wrapper login flex-grow-1">
-      <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
-           style="
-                 background:url('/asset/img/login-background.jpg') no-repeat center center fixed;
-                 -webkit-background-size: cover;
-                 -moz-background-size: cover;
-                 -o-background-size: cover;
-                 background-size: cover;
-                 ">
+      <div class="auth-wrapper d-flex no-block justify-content-center align-items-center">
         <div class="auth-box">
-          <div id="loginform-wrapper" class="ks-form">
+          <div class="ks-form">
             <div class="logo">
-              <span class="db"><img id="logo-image" height="30px" src="/asset/img/logo_inverted_no_background.png"
-                                    alt="logo"/></span>
+              <span class="db">
+                  <img id="logo-image" src="../../img/logo_inverted_no_background.png" alt="logo"/>
+              </span>
               <h5 class="font-medium mb-3">{{ $t('login.loginToApp') }}</h5>
             </div>
 
             <div class="d-flex flex-column" id="demoMode" v-if="this.values.demoMode">
-              <span id="sensitiveData">{{ $t('login.sensitiveData') }}</span>
-              <span class="mt-3">{{ $t('login.deleteInfo') }}</span>
-              <span class="mt-3">{{ $t('login.adminUser') }}</span>
-              <span>{{ $t('login.adminPassword') }}</span>
+              <span id="sensitiveData">{{ $t('login.demo.sensitiveData') }}</span>
+              <span class="mt-3">{{ $t('login.demo.deleteInfo') }}</span>
             </div>
 
+            <div class="row mt-2" v-if="this.values.demoMode">
+              <div class="col">
+                {{ $t('login.adminPassword') }}
+              </div>
+            </div>
+            <div class="row mb-2" v-if="this.values.demoMode">
+              <div class="col">
+                {{ $t('login.adminUser') }}
+              </div>
+            </div>
 
-            <!-- Form -->
             <div class="row">
               <div class="col-12">
-                <form class="form-horizontal mt-3" id="loginform">
+                <form>
                   <div class="input-group mb-3">
                     <div class="d-flex">
                                             <span class="icon-wrapper input-group-text" id="username-input"><i
@@ -45,8 +46,9 @@
                   </div>
                   <div class="input-group mb-3">
                     <div class="d-flex">
-                                            <span class="input-group-text icon-wrapper" id="password-input"><i
-                                                class="fas fa-pen"></i></span>
+                        <span class="input-group-text icon-wrapper" id="password-input">
+                            <i class="fas fa-pen"></i>
+                        </span>
                     </div>
                     <input type="password"
                            id="password"
@@ -59,35 +61,48 @@
                     >
                   </div>
                   <div class="form-group text-center">
-                    <div class="col-xs-12 pb-3 d-flex">
+                    <div class="col-xs-12 d-flex">
                       <button
-                          id="sign__in"
                           class="btn btn-primary btn-lg flex-grow-1"
                           type="submit"
                           @click="onLogin"
-                          :disabled="this.loginButtonDisabled === true"
+                          :disabled="this.configuration.loaded && this.loginButtonDisabled === true"
                       >{{ $t('login.signIn') }}
                       </button>
                     </div>
                   </div>
 
-                  <div class="form-group mb-0 mt-2" v-if="this.values.registerEnabled">
-                    <div class="col-sm-12 text-center">
-                      {{ $t('login.createNewAccountText') }} <a :href="this.values.newAccountLink"
-                                                                class="ml-1"><b>{{
-                        $t('login.createNewAccountActionText')
-                      }}</b></a>
+                  <div class="form-group mb-0 mt-2 text-center">
+
+                    <div v-if="configuration.loaded && this.values.registerEnabled">
+                      {{ $t('login.createNewAccountText') }}
+                      <a :href="this.values.newAccountLink" class="ml-1">
+                        <b>
+                          {{ $t('login.createNewAccountActionText') }}
+                        </b>
+                      </a>
                     </div>
+
                   </div>
 
-                  <div class="form-group mb-0 mt-2" v-if="this.values.forgotPasswordEnabled">
-                    <div class="col-sm-12 text-center">
-                      {{ $t('login.forgotPasswordText') }} <a :href=getLink()
-                                                              class="ml-1"><b>{{
-                        $t('login.forgotPasswordActionText')
-                      }}</b></a>
+                  <div class="form-group mb-0 mt-2 text-center">
+
+                    <div v-if="configuration.loaded && this.values.registerEnabled">
+                      {{ $t('login.forgotPasswordText') }}
+                      <a :href=getLink() class="ml-1">
+                        <b>
+                          {{ $t('login.forgotPasswordActionText') }}
+                        </b>
+                      </a>
                     </div>
+
                   </div>
+
+                  <div class="form-group mb-0 mt-2 text-center">
+                    <div class="spinner-grow text-primary spinner-border-sm" role="status"
+                         v-if="!configuration.loaded"></div>
+                  </div>
+
                 </form>
               </div>
             </div>
@@ -111,52 +126,78 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-body d-flex flex-column">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col">
+                  <h4>{{ $t('login.demo.modal.title') }}</h4>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  {{ $t('login.demo.modal.text') }}
+                </div>
+              </div>
+              <div class="row mb-2">
+              </div>
+              <div class="row">
+                <div class="col">
+                  <form>
+                    <div class="container-fluid">
+                      <div class="row">
+                        <div class="col">
+                          <label for="e-mail-address" class="form-label">{{
+                              $t('login.demo.modal.input.label')
+                            }}</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col">
+                          <input
+                              type="email"
+                              class="form-control"
+                              id="e-mail-address"
+                              aria-describedby="e-mail-address-description"
+                              v-model="demoModal.value"
+                          >
+                          <div id="e-mail-address-description" class="form-text small">
+                            {{ $t('login.demo.modal.input.description') }}
+                          </div>
+                        </div>
+                      </div>
 
-            <div class="alert alert-danger" role="alert" id="danger--alert" v-if="demoModal.alertVisible">
-              {{ $t('login.demo.modal.alert') }}
-            </div>
+                      <div class="row">
+                        <div class="col">
+                          <div class="alert alert-danger" role="alert" id="danger--alert"
+                               v-if="demoModal.alertVisible">
+                            {{ $t('login.demo.modal.alert') }}
+                          </div>
+                        </div>
+                      </div>
 
-            <div>
-              <h4>{{ $t('login.demo.modal.alert') }}</h4>
-            </div>
-            <div>
-              {{ $t('login.demo.modal.text') }}
-            </div>
-            <div>
-              <input
-                  type="text"
-                  class="form-control"
-                  aria-label="Default"
-                  aria-describedby="inputGroup-sizing-default"
-                  placeholder="please provide your email address"
-                  id="demouser_email_address"
-                  v-model="demoModal.value"
-              >
-            </div>
-            <small>
-              {{ $t('login.demo.modal.info') }}
-            </small>
-            <div class="d-flex flex-column">
-              <button
-                  type="button"
-                  style="background: #269dff; border-color: #269dff"
-                  class="btn btn-success"
-                  id="send-demo-email"
-                  @click="onEmailSubmitted"
-              >
-                {{ $t('login.demo.modal.sendButton') }}
-              </button>
-              <div
-                  class="spinner-border flex-grow-1 align-self-center"
-                  role="status"
-                  id="loading--spinner"
-                  v-if="demoModal.loadingSpinnerVisible"
-              >
-                <span class="sr-only">
-                    {{ $t('login.demo.modal.loadingInfo') }}
-                </span>
+                      <div class="row">
+                        <div class="col">
+                          <button type="submit" class="btn btn-primary" @click="onEmailSubmitted">
+                            {{ $t('login.demo.modal.sendButton') }}
+                          </button>
+                          <div
+                              class="spinner-border flex-grow-1 align-self-center"
+                              role="status"
+                              id="loading--spinner"
+                              v-if="demoModal.loadingSpinnerVisible"
+                          >
+                        <span class="sr-only">
+                            {{ $t('login.demo.modal.loadingInfo') }}
+                        </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
+
+
           </div>
         </div>
       </div>
@@ -177,14 +218,19 @@ import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../config/routes"
 import {HEADER_NAME_TOKEN, HEADER_NAME_USER} from "../../../../../lib/js/src/Backend/Axios";
 import {Modal} from "bootstrap";
+import IconModal from "../../../../../lib/js/src/UI/IconModal";
 
 export default {
   name: "App",
+  components: {IconModal},
   data() {
     return {
       container: {
         container: null,
         axios: null
+      },
+      configuration: {
+        loaded: false
       },
       values: {
         demo: '',
@@ -229,20 +275,38 @@ export default {
         (data) => {
           this.values = data;
 
+          this.configuration.loaded = true;
           if (false === this.values.demoMode) {
             return;
           }
+
+          if (this.isDemoUserSubmitted()) {
+            return;
+          }
+
           const modal = new Modal(this.$refs.emailAddressModal);
           modal.show();
         }
     )
 
+    this.showModal = true
+
   },
   methods: {
-    getLink() {
-      return $t('login.forgotPasswordLink');
+    closeModal() {
+      this.isModalVisible = false;
     },
-    onEmailSubmitted() {
+    getLink() {
+      return this.$t('login.forgotPasswordLink');
+    },
+    isDemoUserSubmitted() {
+      return "true" === this.container.temporaryStorage.get("demo-submitted", "false");
+    },
+    onEmailSubmitted(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
       this.demoModal.alertVisible = false;
       const email = this.demoModal.value;
 
@@ -266,17 +330,20 @@ export default {
       );
 
     },
-    onLogin() {
+    onLogin(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
 
       this.loginButtonDisabled = true;
 
       if ("" === this.models.user.trim()) {
-        // _this.inputService.invalid(user);
+        this.loginButtonDisabled = false;
         return;
       }
 
       if ("" === this.models.password.trim()) {
-        // _this.inputService.invalid(password);
+        this.loginButtonDisabled = false;
         return;
       }
 
@@ -311,24 +378,76 @@ export default {
             this.container.appStorage.storeLocale(data.data.settings.locale);
             this.container.appStorage.storeLanguage(data.data.settings.language);
 
+            this.$store.dispatch(
+                "setApiCredentials"
+                , {
+                  token: data.headers[HEADER_NAME_TOKEN]
+                  , user: data.headers[HEADER_NAME_USER]
+                }
+            );
+
+            this.$store.dispatch(
+                "setI18n"
+                , {
+                  locale: data.data.settings.locale
+                  , language: data.data.settings.language
+                }
+            );
+
             this.container.router.routeTo(data.data.routeTo);
 
           })
           .catch((data) => {
             this.loginButtonDisabled = false;
             this.container.appStorage.clearAPICredentials();
-            // _this.miniModal.show(
-            //     'Error'
-            //     , 'Ok'
-            //     , 'Not Ok'
-            //     , "There was an error. Please try again or contact our support"
-            // );
           })
     }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+#app-content {
+  padding: 0 !important;
+}
+
+.login {
+
+  .auth-wrapper {
+    min-height: 100vh;
+    position: relative;
+    background: url('./../../img/login-background.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    .auth-box {
+      background: rgba(255, 255, 255, 0.4);
+      padding: 20px;
+      max-width: 400px;
+      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .1);
+      width: 90%;
+      margin: 10% 0;
+
+      #demoMode {
+        #sensitiveData {
+          color: red;
+        }
+      }
+
+      .logo {
+        text-align: center;
+
+        #logo-image {
+          height: 5rem;
+        }
+
+      }
+    }
+
+  }
+
+}
 
 </style>
