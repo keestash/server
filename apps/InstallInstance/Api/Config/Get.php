@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Api\Config;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -37,16 +37,14 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-
         $data = $this->installerService->verifyConfigurationFile();
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "config_data" => json_encode($data)
                 , "length"    => count($data)
             ]
+            , IResponse::OK
         );
-
     }
 
 }

@@ -28,7 +28,9 @@ use Psr\Container\ContainerInterface;
 class GetFactory {
 
     public function __invoke(ContainerInterface $container): Get {
-        return new Get($container->get(InstallerService::class));
+        return new Get(
+            $container->get(InstallerService::class)
+        );
     }
 
 }

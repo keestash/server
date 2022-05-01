@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\App\Config\Diff;
 use Keestash\Core\Service\App\InstallerService;
@@ -47,12 +48,12 @@ class InstallApps implements RequestHandlerInterface {
 
     public function __construct(
         InstallerService $installer
-        , LockHandler $lockHandler
-        , HTTPService $httpService
-        , ILogger $logger
-        , ILoader $loader
+        , LockHandler    $lockHandler
+        , HTTPService    $httpService
+        , ILogger        $logger
+        , ILoader        $loader
         , IAppRepository $appRepository
-        , Diff $diff
+        , Diff           $diff
     ) {
         $this->installerService = $installer;
         $this->lockHandler      = $lockHandler;
@@ -88,22 +89,21 @@ class InstallApps implements RequestHandlerInterface {
         if (true === $installed && true === $updated) {
             $this->lockHandler->unlock();
 
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_OK
-                , [
-                    "routeTo" => $this->httpService->getLoginRoute()
+            return new JsonResponse([
+                    "routeTo" => $this->httpService->getBaseURL(false) . "/" . $this->httpService->buildWebRoute('login')
                 ]
+                , IResponse::OK
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_NOT_OK
-            , [
+        return new JsonResponse(
+            [
                 "message" => [
                     "installed" => $installed
                     , "updated" => $updated
                 ]
             ]
+            , IResponse::INTERNAL_SERVER_ERROR
         );
     }
 

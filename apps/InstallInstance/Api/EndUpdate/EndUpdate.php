@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance\Api\EndUpdate;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\PersistenceService;
@@ -30,9 +30,8 @@ use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
@@ -47,26 +46,22 @@ class EndUpdate implements RequestHandlerInterface {
     private IFileRepository        $fileRepository;
     private FileService            $fileService;
     private IUserService           $userService;
-    private IUserRepository        $userRepository;
     private PersistenceService     $persistenceService;
     private HTTPService            $httpService;
     private IL10N                  $translator;
     private ILoader                $loader;
-    private ILogger                $logger;
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
-        IL10N $l10n
-        , InstallerService $installerService
-        , LockHandler $lockHandler
-        , IFileRepository $fileRepository
-        , FileService $fileService
-        , IUserService $userService
-        , IUserRepository $userRepository
-        , PersistenceService $persistenceService
-        , HTTPService $httpService
-        , ILoader $loader
-        , ILogger $logger
+        IL10N                    $l10n
+        , InstallerService       $installerService
+        , LockHandler            $lockHandler
+        , IFileRepository        $fileRepository
+        , FileService            $fileService
+        , IUserService           $userService
+        , PersistenceService     $persistenceService
+        , HTTPService            $httpService
+        , ILoader                $loader
         , IUserRepositoryService $userRepositoryService
     ) {
         $this->installerService      = $installerService;
@@ -74,12 +69,10 @@ class EndUpdate implements RequestHandlerInterface {
         $this->fileRepository        = $fileRepository;
         $this->fileService           = $fileService;
         $this->userService           = $userService;
-        $this->userRepository        = $userRepository;
         $this->persistenceService    = $persistenceService;
         $this->httpService           = $httpService;
         $this->translator            = $l10n;
         $this->loader                = $loader;
-        $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
     }
 
@@ -88,11 +81,11 @@ class EndUpdate implements RequestHandlerInterface {
         $isInstalled = $this->installerService->isInstalled();
 
         if (false === $isInstalled) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("The instance is not finally installed. Aborting (2)")
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
@@ -109,12 +102,12 @@ class EndUpdate implements RequestHandlerInterface {
         }
 
         if (false === $added) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("Could not do final steps")
                     , "added" => $added
-                ]
+                ],
+                IResponse::INTERNAL_SERVER_ERROR
             );
         }
 
@@ -135,14 +128,11 @@ class EndUpdate implements RequestHandlerInterface {
             throw new InstallInstanceException();
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "message"    => "Ok"
-                , "route_to" => $this->httpService->buildWebRoute(
-                    $defaultApp->getBaseRoute()
-                )
+        return new JsonResponse(
+            [
+                "route_to" => $this->httpService->getBaseURL(false) . "/" . $this->httpService->buildWebRoute('install')
             ]
+            , IResponse::OK
         );
 
     }

@@ -40,6 +40,9 @@ final class ConfigProvider {
 
     public const CONFIG_PROVIDER_INSTALLATION_ROUTES = 'routes.installation.provider.config';
     public const INSTALL_INSTANCE                    = '/install_instance[/]';
+    public const INSTALL_INSTANCE_CONFIG_DATA        = '/install_instance/config_data[/]';
+    public const INSTALL_INSTANCE_END_UPDATE         = '/install_instance/end_update[/]';
+    public const INSTALL_INSTANCE_UPDATE_CONFIG      = '/install_instance/update_config[/]';
     public const APP_ID                              = 'install_instance';
 
     public function __invoke(): array {
@@ -72,9 +75,9 @@ final class ConfigProvider {
             ],
             CoreConfigProvider::INSTALL_INSTANCE_ROUTES => [
                 ConfigProvider::INSTALL_INSTANCE
-                , '/install_instance/update_config[/]'
-                , '/install_instance/config_data[/]'
-                , '/install_instance/end_update[/]'
+                , ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
+                , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
+                , ConfigProvider::INSTALL_INSTANCE_END_UPDATE
             ],
             'dependencies'                              => [
                 'factories' => [
@@ -94,28 +97,28 @@ final class ConfigProvider {
             CoreConfigProvider::API_ROUTER              => [
                 CoreConfigProvider::ROUTES        => [
                     [
-                        'path'         => '/install_instance/update_config[/]'
+                        'path'         => ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
                         , 'middleware' => Update::class
                         , 'method'     => IVerb::POST
                         , 'name'       => Update::class
                     ],
                     [
-                        'path'         => '/install_instance/config_data[/]'
+                        'path'         => ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
                         , 'middleware' => Get::class
                         , 'method'     => IVerb::GET
                         , 'name'       => Get::class
                     ],
                     [
-                        'path'         => '/install_instance/end_update[/]'
+                        'path'         => ConfigProvider::INSTALL_INSTANCE_END_UPDATE
                         , 'middleware' => EndUpdate::class
                         , 'method'     => IVerb::POST
                         , 'name'       => EndUpdate::class
                     ],
                 ],
                 CoreConfigProvider::PUBLIC_ROUTES => [
-                    '/install_instance/end_update[/]'
-                    , '/install_instance/update_config[/]'
-                    , '/install_instance/config_data[/]'
+                    ConfigProvider::INSTALL_INSTANCE_END_UPDATE
+                    , ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
+                    , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
                 ]
             ],
             CoreConfigProvider::COMMANDS                => [
