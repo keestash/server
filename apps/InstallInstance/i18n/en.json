@@ -1,6 +1,7 @@
 {
   "head": {
-    "value": "Your instance seems to be incomplete. Please follow the instructions below."
+    "value": "Your instance seems to be incomplete. Please follow the instructions below.",
+    "detail": "Keestash needs some information in order to run properly and without any interruption. Please provide credentials for database, SMTP and some further configuration in order to ensure Keestash runs as perfect as its promise :)"
   },
   "config": {
     "header": "Configuration File",
@@ -59,21 +60,18 @@
       }
     },
     "logRequests": {
-      "label": "Log requests",
-      "value": "",
-      "options": [
-        "enabled",
-        "disabled"
-      ]
+      "label": "Log requests"
+    },
+    "nothingToUpdate": "All set, nothing to update here",
+    "submit": {
+      "label": "Send"
     }
   },
-  "dirsWritable": {
-    "header": "Files and Directories that are not Writable"
-  },
-  "hasDataDirs": {
-    "header": "Data Directories that are missing"
-  },
   "endUpdate": {
-    "buttonText": "End Update"
+    "updateEnded": "Update ended, going to redirect",
+    "buttonText": {
+      "enabled":"End Update",
+      "disabled":"Please finish config..."
+    }
   }
 }

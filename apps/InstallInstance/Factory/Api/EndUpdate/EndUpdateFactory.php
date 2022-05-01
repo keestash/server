@@ -32,6 +32,7 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IPersistenceService;
+use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
@@ -46,11 +47,9 @@ class EndUpdateFactory {
             , $container->get(IFileRepository::class)
             , $container->get(FileService::class)
             , $container->get(UserService::class)
-            , $container->get(IUserRepository::class)
             , $container->get(IPersistenceService::class)
             , $container->get(HTTPService::class)
             , $container->get(ILoader::class)
-            , $container->get(ILogger::class)
             , $container->get(IUserRepositoryService::class)
         );
     }

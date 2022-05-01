@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Api\Config;
 
 use Exception;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Instance\InstallerService;
@@ -46,7 +47,7 @@ class Update implements RequestHandlerInterface {
 
     public function __construct(
         InstallerService $installerService
-        , Config $config
+        , Config         $config
     ) {
         $this->installerService = $installerService;
         $this->config           = $config;
@@ -75,9 +76,8 @@ class Update implements RequestHandlerInterface {
             || false === $this->validLogRequestOption($logRequests)
         ) {
 
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     'invalid options' => [
                         "host"           => $host
                         , "user"         => $user
@@ -88,6 +88,7 @@ class Update implements RequestHandlerInterface {
                         , "log_requests" => $logRequests
                     ]
                 ]
+                , IResponse::INTERNAL_SERVER_ERROR
             );
 
         }
@@ -102,11 +103,10 @@ class Update implements RequestHandlerInterface {
 
         if (false === $databaseConnection) {
 
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse([
                     "message" => "could not connect to database"
                 ]
+                , IResponse::INTERNAL_SERVER_ERROR
             );
 
         }
@@ -165,19 +165,17 @@ class Update implements RequestHandlerInterface {
         );
 
         if (false === $put) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse([
                     "message" => "could not create config file. Please check permissiosn and try again"
                 ]
+                , IResponse::INTERNAL_SERVER_ERROR
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse([
                 "message" => "updated"
             ]
+        , IResponse::OK
         );
 
     }
@@ -197,7 +195,7 @@ class Update implements RequestHandlerInterface {
     }
 
     private function testDatabaseConnection(
-        string $host
+        string   $host
         , string $schemaName
         , string $user
         , string $password
