@@ -26,7 +26,6 @@ use KSA\Register\Api\User\Add;
 use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
@@ -39,7 +38,6 @@ class AddFactory {
             , $container->get(UserService::class)
             , $container->get(IUserRepository::class)
             , $container->get(ILoader::class)
-            , $container->get(IUserStateRepository::class)
             , $container->get(ILogger::class)
             , $container->get(IUserRepositoryService::class)
         );

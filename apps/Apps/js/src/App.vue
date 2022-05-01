@@ -1,34 +1,40 @@
 <template>
-  <div class="container">
+  <div class="container mt-3 mb-3">
+    <div class="row">
+      <div class="col" v-if="!loading">
+        <table class="table">
+          <thead>
+          <tr>
+            <th></th>
+            <th>{{ $t('table.header.appId') }}</th>
+            <th>{{ $t('table.header.version') }}</th>
+            <th>{{ $t('table.header.createTs') }}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="app in apps">
+            <td class="collapsing" v-if="isVisible(app)">
+              <div class="ui fitted slider checkbox">
+                <input
+                    type="checkbox"
+                    :checked="app.enabled"
+                    @change="updateApp(app)"
+                >
+                <label></label>
+              </div>
+            </td>
+            <td v-if="isVisible(app)">{{ app.id }}</td>
+            <td v-if="isVisible(app)">{{ app.version }}</td>
+            <td v-if="isVisible(app)">{{ formatDate(app.create_ts.date) }}</td>
+          </tr>
+          </tbody>
+        </table>
 
-    <table class="table">
-      <thead>
-      <tr>
-        <th></th>
-        <th>{{ $t('table.header.appId') }}</th>
-        <th>{{ $t('table.header.version') }}</th>
-        <th>{{ $t('table.header.createTs') }}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="app in apps">
-        <td class="collapsing">
-          <div class="ui fitted slider checkbox">
-            <input
-                type="checkbox"
-                class="apps__app__checkbox"
-                :checked="app.enabled"
-                @change="updateApp(app)"
-            >
-            <label></label>
-          </div>
-        </td>
-        <td>{{ app.id }}</td>
-        <td>{{ app.version }}</td>
-        <td>{{ formatDate(app.create_ts.date) }}</td>
-      </tr>
-      </tbody>
-    </table>
+      </div>
+      <div class="col text-center" v-else>
+        <div class="spinner-grow text-primary spinner-border-sm" role="status"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -36,15 +42,25 @@
 import {AXIOS, DATE_TIME_SERVICE, StartUp} from "../../../../lib/js/src/StartUp";
 import {Container} from "../../../../lib/js/src/DI/Container";
 import {ROUTES} from "./config/routes";
+import {EVENT_NAME_GLOBAL_SEARCH} from "../../../../lib/js/src/base";
 
 export default {
   name: "App",
   data() {
     return {
+      query: null,
+      loading: true,
       apps: []
     }
   },
   methods: {
+    isVisible(app) {
+      console.log(
+          app
+      )
+      if (this.query === null || this.query === "") return true;
+      return (app.id.toLowerCase().includes(this.query.toLowerCase()));
+    },
     formatDate(date) {
       return this.dateTimeService.format(date);
     },
@@ -56,11 +72,12 @@ export default {
             "activate": !app.enabled
             , "app_id": app.id
           },
-      ).then((r) => console.log(r));
+      );
 
     }
   },
   created() {
+    const self = this;
     const startUp = new StartUp(
         new Container()
     );
@@ -78,9 +95,16 @@ export default {
         })
         .then((data) => {
           this.apps = data;
-          console.log(data);
+          this.loading = false;
         })
     ;
+
+    document.addEventListener(
+        EVENT_NAME_GLOBAL_SEARCH
+        , function (event) {
+          self.query = event.detail;
+        }
+    )
   }
 }
 </script>

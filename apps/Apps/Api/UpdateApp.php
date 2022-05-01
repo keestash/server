@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Apps\Api;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
@@ -44,20 +44,18 @@ class UpdateApp implements RequestHandlerInterface {
 
 
         if (null === $activate) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse([
                     "message" => "No Action Defined"
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
         if (false === $appId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse([
                     "message" => "No App Id Given"
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
@@ -65,11 +63,10 @@ class UpdateApp implements RequestHandlerInterface {
         $app = $this->appRepository->getApp((string) $appId);
 
         if (null === $app) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse([
                     "message" => "No App Found"
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
@@ -77,11 +74,11 @@ class UpdateApp implements RequestHandlerInterface {
 
         $replaced = $this->appRepository->replace($app);
 
-        return LegacyResponse::fromData(
-            $replaced ? IResponse::RESPONSE_CODE_OK : IResponse::RESPONSE_CODE_NOT_OK
-            , [
+        return new JsonResponse(
+            [
                 "message" => $replaced ? "App updated" : "No App Found"
             ]
+            , $replaced ? IResponse::OK : IResponse::INTERNAL_SERVER_ERROR
         );
 
     }

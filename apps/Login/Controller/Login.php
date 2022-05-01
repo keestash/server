@@ -54,7 +54,7 @@ class Login extends StaticAppController {
     }
 
     public function run(ServerRequestInterface $request): string {
-        $userId = $this->persistenceService->getValue("user_id");
+        $userId = $this->persistenceService->getPersistenceValue("user_id");
         $users  = $this->userRepository->getAll();
         $hashes = new HashTable();
 
