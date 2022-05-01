@@ -60,8 +60,8 @@ class Configuration implements RequestHandlerInterface {
         return new JsonResponse(
             [
                 "appName"                 => $this->legacy->getApplication()->get('name')
-                , "newAccountLink"        => $this->httpService->getBaseURL(true) . "/register"
-                , "forgotPasswordLink"    => $this->httpService->getBaseURL(true) . "/forgot_password"
+                , "newAccountLink"        => $this->httpService->getBaseURL(true, true) . "/register"
+                , "forgotPasswordLink"    => $this->httpService->getBaseURL(true, true) . "/forgot_password"
                 , "registeringEnabled"    => $this->loader->hasApp(ConfigProvider::APP_ID)
 
                 // values

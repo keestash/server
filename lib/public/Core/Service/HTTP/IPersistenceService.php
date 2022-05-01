@@ -27,7 +27,7 @@ interface IPersistenceService {
 
     public function getCookieValue(string $key, ?string $default = null): ?string;
 
-    public function getValue(string $key, ?string $default = null): ?string;
+    public function getPersistenceValue(string $key, ?string $default = null): ?string;
 
     public function setSessionValue(string $key, string $value): bool;
 

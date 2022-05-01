@@ -73,7 +73,7 @@ class LoggedInMiddleware implements MiddlewareInterface {
         }
 
         try {
-            $userId    = $this->persistenceService->getValue("user_id");
+            $userId    = $this->persistenceService->getPersistenceValue("user_id");
             $persisted = null !== $userId;
         } catch (Throwable $exception) {
             $this->logger->error('error during persistence request ' . $exception->getMessage() . ': ' . $exception->getTraceAsString());

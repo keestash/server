@@ -23,7 +23,7 @@ namespace KSA\Register\Api\User;
 
 use doganoo\PHPUtil\Datatype\StringClass;
 use Exception;
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
@@ -31,7 +31,6 @@ use KSP\App\ILoader;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
@@ -44,17 +43,15 @@ class Add implements RequestHandlerInterface {
     private IUserRepository        $userRepository;
     private IL10N                  $translator;
     private ILoader                $loader;
-    private IUserStateRepository   $userStateRepository;
     private ILogger                $logger;
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
-        IL10N $l10n
-        , UserService $userService
-        , IUserRepository $userRepository
-        , ILoader $loader
-        , IUserStateRepository $userStateRepository
-        , ILogger $logger
+        IL10N                    $l10n
+        , UserService            $userService
+        , IUserRepository        $userRepository
+        , ILoader                $loader
+        , ILogger                $logger
         , IUserRepositoryService $userRepositoryService
     ) {
 
@@ -62,7 +59,6 @@ class Add implements RequestHandlerInterface {
         $this->userRepository        = $userRepository;
         $this->translator            = $l10n;
         $this->loader                = $loader;
-        $this->userStateRepository   = $userStateRepository;
         $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
     }
@@ -77,11 +73,11 @@ class Add implements RequestHandlerInterface {
 
         if (false === $registerEnabled) {
 
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("unknown operation")
                 ]
+                , IResponse::BAD_REQUEST
             );
 
         }
@@ -178,12 +174,15 @@ class Add implements RequestHandlerInterface {
 
         }
 
-        return LegacyResponse::fromData(
-            $responseCode
-            , [
+        return new JsonResponse(
+            [
                 "response_code" => $responseCode
                 , "message"     => $message
             ]
+            ,
+            $responseCode === IResponse::RESPONSE_CODE_OK
+                ? IResponse::OK
+                : IResponse::INTERNAL_SERVER_ERROR
         );
 
     }
