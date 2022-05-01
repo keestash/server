@@ -52,7 +52,7 @@ class PersistenceService implements IPersistenceService {
         return $this->cookieManager->get($key, $default);
     }
 
-    public function getValue(string $key, ?string $default = null): ?string {
+    public function getPersistenceValue(string $key, ?string $default = null): ?string {
         $this->logger->debug("key $key, value $default");
 
         $sessionValue = $this->sessionManager->get($key, $default);

@@ -89,7 +89,7 @@
 
                     <div v-if="configuration.loaded && this.values.registerEnabled">
                       {{ $t('login.forgotPasswordText') }}
-                      <a :href=getLink() class="ml-1">
+                      <a :href="this.values.forgotPasswordLink" class="ml-1">
                         <b>
                           {{ $t('login.forgotPasswordActionText') }}
                         </b>
@@ -239,6 +239,7 @@ export default {
         demoMode: false,
         registerEnabled: false,
         newAccountLink: '',
+        forgotPasswordLink: '',
         forgotPasswordEnabled: false,
       },
       models: {
@@ -295,9 +296,6 @@ export default {
   methods: {
     closeModal() {
       this.isModalVisible = false;
-    },
-    getLink() {
-      return this.$t('login.forgotPasswordLink');
     },
     isDemoUserSubmitted() {
       return "true" === this.container.temporaryStorage.get("demo-submitted", "false");
