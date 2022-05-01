@@ -34,30 +34,14 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends FullscreenAppController {
 
-    private Legacy                    $legacy;
-    private ILoader                   $loader;
-    private IAppRepository            $appRepository;
     private TemplateRendererInterface $templateRenderer;
-    private IL10N                     $translator;
-    private Diff                      $diff;
 
     public function __construct(
-        IL10N $l10n
-        , Legacy $legacy
-        , ILoader $loader
-        , IAppRepository $appRepository
-        , TemplateRendererInterface $templateRenderer
-        , IAppRenderer $appRenderer
-        , Diff $diff
+        TemplateRendererInterface $templateRenderer
+        , IAppRenderer            $appRenderer
     ) {
         parent::__construct($appRenderer);
-
-        $this->legacy           = $legacy;
-        $this->loader           = $loader;
-        $this->appRepository    = $appRepository;
         $this->templateRenderer = $templateRenderer;
-        $this->translator       = $l10n;
-        $this->diff             = $diff;
     }
 
     public function run(ServerRequestInterface $request): string {
@@ -65,9 +49,7 @@ class Controller extends FullscreenAppController {
         return $this->templateRenderer
             ->render(
                 'install::install'
-                , [
-
-                ]
+                , []
             );
     }
 

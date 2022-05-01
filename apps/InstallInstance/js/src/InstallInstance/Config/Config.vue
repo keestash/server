@@ -1,153 +1,164 @@
 <template>
-  <div class="col">
+  <div class="container">
+
     <div class="text-center" v-if="loading.show">
-      <div class="spinner-grow text-primary" role="status" v-if="loading.show">
+      <div class="spinner-grow text-primary" role="status">
         <span class="sr-only"></span>
       </div>
     </div>
 
-    <form @submit="onSubmit" v-if="form.show">
+    <div class="row">
+      <div class="col">
 
-      <div class="form-group">
-        <label for="input-host">{{ form.content.db.host.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-host"
-            aria-describedby="text"
-            v-model="form.content.db.host.value"
-            required
-            :placeholder="form.content.db.host.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.db.host.description }}</small>
+        <form @submit="onSubmit" v-if="form.show">
+
+          <div class="form-group">
+            <label for="input-host">{{ $t('config.db.host.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-host"
+                aria-describedby="text"
+                v-model="form.content.db.host.value"
+                required
+                :placeholder="$t('config.db.host.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.db.host.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-db-user">{{ $t('config.db.user.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-db-user"
+                aria-describedby="text"
+                v-model="form.content.db.user.value"
+                required
+                :placeholder="$t('config.db.user.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.db.user.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-password">{{ $t('config.db.password.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-password"
+                aria-describedby="text"
+                v-model="form.content.db.password.value"
+                required
+                :placeholder="$t('config.db.password.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.db.password.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-db-name">{{ $t('config.db.name.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-db-name"
+                aria-describedby="text"
+                v-model="form.content.db.name.value"
+                required
+                :placeholder="$t('config.db.name.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.db.name.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-db-port">{{ $t('config.db.port.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-db-port"
+                aria-describedby="text"
+                v-model="form.content.db.port.value"
+                required
+                :placeholder="$t('config.db.port.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.db.port.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-db-charset">{{ $t('config.db.charset.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-db-charset"
+                aria-describedby="text"
+                v-model="form.content.db.charset.value"
+                required
+                :placeholder="$t('config.db.charset.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.db.charset.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-email-smtp-host">{{ $t('config.email.smtp.host.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-email-smtp-host"
+                aria-describedby="text"
+                v-model="form.content.email.smtp.host.value"
+                required
+                :placeholder="$t('config.email.smtp.host.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.email.smtp.host.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-email-smtp-user">{{ $t('config.email.smtp.user.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-email-smtp-user"
+                aria-describedby="text"
+                v-model="form.content.email.smtp.user.value"
+                required
+                :placeholder="$t('config.email.smtp.user.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.email.smtp.user.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-email-smtp-password">{{ $t('config.email.smtp.password.label') }}</label>
+            <input
+                type="text"
+                class="form-control"
+                id="input-email-smtp-password"
+                aria-describedby="text"
+                v-model="form.content.email.smtp.password.value"
+                required
+                :placeholder="$t('config.email.smtp.password.placeholder')"
+            >
+            <small class="form-text text-muted">{{ $t('config.email.smtp.password.description') }}</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-log-requests">{{ $t('config.logRequests.label') }}</label>
+            <select class="form-control" id="input-log-requests">
+              <option v-for="option in form.content.logRequests.options"
+                      v-bind:value="{ option: form.content.logRequests.value }">
+                {{ option }}
+              </option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary">{{ $t('config.submit.label') }}</button>
+        </form>
       </div>
+    </div>
 
-      <div class="form-group">
-        <label for="input-db-user">{{ form.content.db.user.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-db-user"
-            aria-describedby="text"
-            v-model="form.content.db.user.value"
-            required
-            :placeholder="form.content.db.user.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.db.user.description }}</small>
+    <div class="row">
+      <div class="col">
+        <div class="alert alert-success" role="alert" v-if="success.show">
+          {{ $t('config.nothingToUpdate') }}
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="input-password">{{ form.content.db.password.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-password"
-            aria-describedby="text"
-            v-model="form.content.db.password.value"
-            required
-            :placeholder="form.content.db.password.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.db.password.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-db-name">{{ form.content.db.name.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-db-name"
-            aria-describedby="text"
-            v-model="form.content.db.name.value"
-            required
-            :placeholder="form.content.db.name.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.db.name.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-db-port">{{ form.content.db.port.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-db-port"
-            aria-describedby="text"
-            v-model="form.content.db.port.value"
-            required
-            :placeholder="form.content.db.port.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.db.port.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-db-charset">{{ form.content.db.charset.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-db-charset"
-            aria-describedby="text"
-            v-model="form.content.db.charset.value"
-            required
-            :placeholder="form.content.db.charset.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.db.charset.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-email-smtp-host">{{ form.content.email.smtp.host.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-email-smtp-host"
-            aria-describedby="text"
-            v-model="form.content.email.smtp.host.value"
-            required
-            :placeholder="form.content.email.smtp.host.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.email.smtp.host.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-email-smtp-user">{{ form.content.email.smtp.user.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-email-smtp-user"
-            aria-describedby="text"
-            v-model="form.content.email.smtp.user.value"
-            required
-            :placeholder="form.content.email.smtp.user.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.email.smtp.user.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-email-smtp-password">{{ form.content.email.smtp.password.label }}</label>
-        <input
-            type="text"
-            class="form-control"
-            id="input-email-smtp-password"
-            aria-describedby="text"
-            v-model="form.content.email.smtp.password.value"
-            required
-            :placeholder="form.content.email.smtp.password.placeholder"
-        >
-        <small class="form-text text-muted">{{ form.content.email.smtp.password.description }}</small>
-      </div>
-
-      <div class="form-group">
-        <label for="input-log-requests">{{ form.content.logRequests.label }}</label>
-        <select class="form-control" id="input-log-requests">
-          <option v-for="option in form.content.logRequests.options">
-            {{ option }}
-          </option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
-    <div class="alert-success" v-if="success.show">
-      The config file is updated
     </div>
   </div>
 </template>
@@ -175,76 +186,43 @@ export default {
           db: {
             host: {
               value: 'localhost',
-              label: '',
-              description: '',
-              placeholder: '',
             },
             user: {
               value: 'keestash',
-              label: '',
-              description: '',
-              placeholder: '',
             },
             password: {
               value: 'keestash',
-              label: '',
-              description: '',
-              placeholder: '',
             },
             name: {
               value: 'keestash',
-              label: '',
-              description: '',
-              placeholder: '',
             },
             port: {
               value: '3306',
-              label: '',
-              description: '',
-              placeholder: '',
             },
             charset: {
               value: 'utf8mb4',
-              label: '',
-              description: '',
-              placeholder: '',
             },
           },
           email: {
             smtp: {
               host: {
                 value: 'sddsfsdf',
-                label: '',
-                description: '',
-                placeholder: '',
               },
               user: {
                 value: 'sdfsdfsdf',
-                label: '',
-                description: '',
-                placeholder: '',
               },
               password: {
                 value: 'dsfsdfs',
-                label: '',
-                description: '',
-                placeholder: '',
               },
             }
           },
           logRequests: {
-            label: '',
             value: 'enabled',
-            options: ['enabled']
+            options: ['enabled', 'disabled']
           }
         }
       },
       container: null
-    }
-  },
-  computed: {
-    isVisible() {
-      return (this.strings || []).length > 0;
     }
   },
   async created() {
@@ -258,11 +236,9 @@ export default {
 
     axios.request(
         ROUTES.GET_INSTALL_INSTANCE_CONFIG_DATA()
-    ).then((response) => {
-      return response.data[RESPONSE_CODE_OK]['messages'];
-    })
+    )
         .then((response) => {
-          const needsConfig = response.length > 0;
+          const needsConfig = response.data.length > 0;
 
           if (true === needsConfig) {
             this.showForm();
@@ -274,25 +250,9 @@ export default {
   },
   methods: {
     async showForm() {
-
       this.form.show = true;
       this.loading.show = false;
       this.success.show = false;
-
-      this.form.content.db = Object.assign(
-          this.form.content.db,
-          this.$t('config.db')
-      );
-
-      this.form.content.email = Object.assign(
-          this.form.content.email,
-          this.$t('config.email')
-      );
-
-      this.form.content.logRequests = Object.assign(
-          this.form.content.logRequests,
-          this.$t('config.logRequests')
-      );
     },
     makeSuccess() {
       this.form.show = false;
@@ -321,14 +281,9 @@ export default {
           ROUTES.INSTALL_INSTANCE_UPDATE_CONFIG(),
           value
       )
-          .then((r) => {
-            return r.data;
-          })
           .then(
               (r) => {
-                if (RESPONSE_CODE_OK in r) {
-                  this.makeSuccess();
-                }
+                this.makeSuccess();
               }
           ).catch(
           (r) => {

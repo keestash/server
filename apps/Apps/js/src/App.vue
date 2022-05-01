@@ -78,6 +78,7 @@ export default {
         })
         .then((data) => {
           this.apps = data;
+          console.log(data);
         })
     ;
   }
