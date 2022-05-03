@@ -104,27 +104,27 @@ class Add implements RequestHandlerInterface {
             $nameExists = $userName === $iUser->getName();
         }
 
-        if (null === $firstName || "" === $firstName) {
+        if ("" === $firstName) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Please name a first name");
         }
 
-        if (null === $lastName || "" === $lastName) {
+        if ("" === $lastName) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Please name a last name");
         }
 
-        if (null === $userName || "" === $userName) {
+        if ("" === $userName) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Please name a user name");
         }
 
-        if (null === $password || "" === $password) {
+        if ("" === $password) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Please name a password");
         }
 
-        if (null === $passwordRepeat || "" === $passwordRepeat) {
+        if ("" === $passwordRepeat) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("Please name a password to repeat");
         }
@@ -135,7 +135,7 @@ class Add implements RequestHandlerInterface {
             $message      = $this->translator->translate("Your passwords are not equal");
         }
 
-        if (null === $termsAndConditions) {
+        if ("" === $termsAndConditions) {
             $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
             $message      = $this->translator->translate("You have not agreed to the terms and conditions");
         }
@@ -187,8 +187,9 @@ class Add implements RequestHandlerInterface {
 
     }
 
-    private function getParameter(string $name, ServerRequestInterface $request) {
-        return $request->getParsedBody()[$name] ?? null;
+    private function getParameter(string $name, ServerRequestInterface $request): string {
+        $body = $request->getParsedBody();
+        return (string) ($body[$name] ?? null);
     }
 
 }

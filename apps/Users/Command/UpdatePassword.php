@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -65,9 +66,9 @@ class UpdatePassword extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a credential");
-        $userId         = (string) $style->ask("UserId") ?? "";
-        $password       = (string) $style->askHidden("Password") ?? "";
-        $passwordRepeat = (string) $style->askHidden("Password Repeat") ?? "";
+        $userId         = (string) ($style->ask("UserId") ?? "");
+        $password       = (string) ($style->askHidden("Password") ?? "");
+        $passwordRepeat = (string) ($style->askHidden("Password Repeat") ?? "");
         $withEvents     = (bool) $input->getOption(UpdatePassword::OPTION_NAME_WITH_EVENTS);
 
         $user = $this->userRepository->getUserById($userId);

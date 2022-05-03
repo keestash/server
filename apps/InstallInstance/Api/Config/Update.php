@@ -175,21 +175,18 @@ class Update implements RequestHandlerInterface {
         return new JsonResponse([
                 "message" => "updated"
             ]
-        , IResponse::OK
+            , IResponse::OK
         );
 
     }
 
-    private function validLogRequestOption($val): bool {
-        if (false === $this->isValid($val)) return false;
-
+    private function validLogRequestOption(?string $val): bool {
         if ($val === ConfigProvider::LOG_REQUESTS_ENABLED) return true;
         if ($val === ConfigProvider::LOG_REQUESTS_DISABLED) return true;
-
         return false;
     }
 
-    private function isValid($val): bool {
+    private function isValid(?string $val): bool {
         if (null === $val || "" === trim($val)) return false;
         return true;
     }

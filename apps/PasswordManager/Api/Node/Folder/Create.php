@@ -48,9 +48,9 @@ class Create implements RequestHandlerInterface {
     private NodeService    $nodeService;
 
     public function __construct(
-        IL10N $l10n
+        IL10N            $l10n
         , NodeRepository $nodeRepository
-        , NodeService $nodeService
+        , NodeService    $nodeService
     ) {
         $this->translator     = $l10n;
         $this->nodeRepository = $nodeRepository;
@@ -136,13 +136,13 @@ class Create implements RequestHandlerInterface {
 
     }
 
-    private function isValid($value): bool {
+    private function isValid(?string $value): bool {
         if (null === $value) return false;
-        if ("" === trim((string) $value)) return false;
+        if ("" === $value) return false;
         return true;
     }
 
-    private function getParentNode($parent, IToken $token): Folder {
+    private function getParentNode(string $parent, IToken $token): Folder {
 
         if (Node::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser());

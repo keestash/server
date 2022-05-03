@@ -2,14 +2,21 @@
 declare(strict_types=1);
 /**
  * Keestash
- * Copyright (C) 2019 Dogan Ucar <dogan@dogan-ucar.de>
  *
- * End-User License Agreement (EULA) of Keestash
- * This End-User License Agreement ("EULA") is a legal agreement between you and Keestash
- * This EULA agreement governs your acquisition and use of our Keestash software ("Software") directly from Keestash or
- * indirectly through a Keestash authorized reseller or distributor (a "Reseller"). Please read this EULA agreement
- * carefully before completing the installation process and using the Keestash software. It provides a license to use
- * the Keestash software and contains warranty information and liability disclaimers.
+ * Copyright (C) <2020> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 namespace KSA\PasswordManager\Api\Node\Credential;
@@ -146,20 +153,20 @@ class Create implements RequestHandlerInterface {
         );
     }
 
-    private function isValid($value): bool {
+    private function isValid(?string $value): bool {
         if (null === $value) return false;
         if ("" === trim($value)) return false;
         return true;
     }
 
     /**
-     * @param        $parent
+     * @param string $parent
      * @param IToken $token
      * @return NodeObject
      * @throws PasswordManagerException
      * @throws InvalidNodeTypeException
      */
-    private function getParentNode($parent, IToken $token): NodeObject {
+    private function getParentNode(string $parent, IToken $token): NodeObject {
 
         if (NodeObject::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser());
