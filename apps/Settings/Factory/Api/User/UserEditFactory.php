@@ -19,24 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Controller;
+namespace KSA\Settings\Factory\Api\User;
 
-use KSA\Settings\Controller\Controller;
-use KSA\Settings\Service\SegmentService;
-use KSA\Settings\Service\SettingService;
-use KSP\Core\Manager\SettingManager\ISettingManager;
-use KSP\Core\Service\Controller\IAppRenderer;
+use Keestash\Core\Service\User\UserService;
+use KSA\Settings\Api\User\UserEdit;
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
-class SettingsControllerFactory {
+class UserEditFactory {
 
-    public function __invoke(ContainerInterface $container): Controller {
-        return new Controller(
-            $container->get(TemplateRendererInterface::class)
-            , $container->get(IAppRenderer::class)
-            , $container->get(SegmentService::class)
+    public function __invoke(ContainerInterface $container): UserEdit {
+        return new UserEdit(
+            $container->get(IL10N::class)
+            , $container->get(IUserRepository::class)
+            , $container->get(UserService::class)
+            , $container->get(IUserRepositoryService::class)
         );
     }
 

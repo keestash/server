@@ -22,9 +22,20 @@ declare(strict_types=1);
 namespace KSA\Settings;
 
 use Keestash\ConfigProvider as CoreConfigProvider;
+use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
+use KSA\Settings\Command\UpdatePassword;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
+use KSA\Settings\Event\Listener\PostStateChange;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Event\Organization\UserChangedEvent;
+
+// TODO register background jobs
+//"background_jobs": {
+//"KSA\\Users\\BackgroundJob\\UserDeleteTask": {
+//"type": "regular.type.job",
+//"interval": 68400
+//}
+//}
 
 final class ConfigProvider {
 
@@ -51,8 +62,14 @@ final class ConfigProvider {
                 OrganizationAddedEvent::class => [
                     OrganizationAddedEventListener::class
                 ]
-            ],
-            'templates'                      => [
+                , UserStateDeleteEvent::class => [
+                    PostStateChange::class
+                ]
+            ]
+            , CoreConfigProvider::COMMANDS   => [
+                UpdatePassword::class
+            ]
+            , 'templates'                    => [
                 'paths' => [
                     'settings' => [__DIR__ . '/template/']
                 ]

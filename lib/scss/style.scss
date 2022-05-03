@@ -53,6 +53,7 @@ html {
 
 .app-navigation-background {
   background-color: $keestash-theme-color-inverted;
+  height: 100vh;
 }
 
 .avatar {
@@ -86,7 +87,6 @@ html {
 
     .action-bar-inner {
       padding-top: 0.3rem;
-      padding-bottom: 0.3rem;
     }
 
   }

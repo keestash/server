@@ -21,33 +21,40 @@ import store from "../../../../lib/js/src/Store/store";
 import Organization from "./GeneralApi/Organization/Organization";
 import Users from "./Users/Users";
 import {createApp} from "vue";
-import i18n from "../../../ForgotPassword/js/src/i18n";
+import i18n from "./i18n/index";
+import {EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../lib/js/src/base";
 
+let selected = null;
 window.addEventListener(
     'DOMContentLoaded'
     , () => {
-        bootstrap("users");
+        bootstrap("settings-users");
+        load();
     }
 );
 
 function bootstrap(id) {
+    if (id === selected) return;
+    selected = id;
     let app = null;
-    if (id === "organizations") {
+    if (id === "settings-organizations") {
         app = Organization;
-    } else if (id === "users") {
+    } else if (id === "settings-users") {
         app = Users;
     }
 
     createApp(app)
         .use(store)
         .use(i18n)
+        .use(i18n)
         .mount("#settings-app");
 
 }
 
-// TODO
-// Keestash.Main.setAppNavigationListener(
-//     (id) => {
-//         bootstrap(id)
-//     }
-// );
+function load() {
+    document.addEventListener(
+        EVENT_NAME_APP_NAVIGATION_CLICKED
+        , function (data) {
+            bootstrap(data.detail.dataset.type);
+        });
+}

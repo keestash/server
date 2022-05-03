@@ -66,18 +66,15 @@ export default {
     axios.request(
         ROUTES.GET_ALL_USERS()
     )
-        .then((r) => {
-          return r.data;
+        .then((response) => {
+            console.log(response)
+          // this.user.list = users;
         })
-        .then((data) => {
-          if (RESPONSE_CODE_OK in data) {
-            return data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES]['users']['content'];
-          }
-          return [];
-        })
-        .then(async (users) => {
-          this.user.list = users;
-        })
+        .catch(
+            (response) => {
+              console.error(response)
+            }
+        )
   },
   data() {
     return {
