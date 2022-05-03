@@ -184,7 +184,7 @@
 <script>
 import {APP_STORAGE, AXIOS, StartUp, URL_SERVICE} from "../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../lib/js/src/DI/Container";
-import {ROUTES} from "../../../config/routes";
+import {ROUTES} from "../../../../config/routes/index";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/Axios";
 import Tab from "./Tab";
 import {mapState} from "vuex";

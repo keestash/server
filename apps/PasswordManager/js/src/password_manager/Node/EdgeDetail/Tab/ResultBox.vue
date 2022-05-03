@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import {ROUTES} from "../../../../config/routes";
+import {ROUTES} from "../../../../../config/routes/index";
 import {DATE_TIME_SERVICE, StartUp} from "../../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";

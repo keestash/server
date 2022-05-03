@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import App from "./App";
-import i18n from "./../i18n/index";
-import store from "../config/store";
+import i18n from "../../config/i18n";
+import store from "../../config/vuex/index";
 import Skeleton from 'vue-loading-skeleton';
 import {createApp} from "vue";
 import ContextMenu from '@imengyu/vue3-context-menu';

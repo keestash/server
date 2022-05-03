@@ -135,7 +135,7 @@
 
 <script>
 import _ from "lodash"
-import {ROUTES} from "../../../../config/routes";
+import {ROUTES} from "../../../../../config/routes/index";
 import {AXIOS, StartUp} from "../../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
