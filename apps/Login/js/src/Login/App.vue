@@ -215,7 +215,7 @@ import {
   TEMPORARY_STORAGE
 } from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
-import {ROUTES} from "../config/routes"
+import {ROUTES} from "../../config/routes/index"
 import {HEADER_NAME_TOKEN, HEADER_NAME_USER} from "../../../../../lib/js/src/Backend/Axios";
 import {Modal} from "bootstrap";
 import IconModal from "../../../../../lib/js/src/UI/IconModal";

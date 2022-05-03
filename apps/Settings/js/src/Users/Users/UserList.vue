@@ -83,9 +83,8 @@
 </template>
 
 <script>
-import {ROUTES} from "../../config/routes";
+import {ROUTES} from "../../../config/routes/index";
 import {AXIOS, StartUp} from "../../../../../../lib/js/src/StartUp";
-import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
 import Loading from "../../../../../../lib/js/src/Components/Loading";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 import {EVENT_NAME_GLOBAL_SEARCH} from "../../../../../../lib/js/src/base";

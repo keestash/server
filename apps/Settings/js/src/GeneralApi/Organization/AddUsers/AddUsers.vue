@@ -28,15 +28,14 @@
 <script>
 import {AXIOS, StartUp} from "../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../lib/js/src/DI/Container";
-import {ROUTES} from "../../../config/routes";
-import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/Axios";
+import {ROUTES} from "../../../../config/routes/index";
 
 export default {
   name: "AddUsers",
   methods: {
     async openUser(user) {
       this.content.header = user.name;
-      this.content.memberOrganizations = ["Keestash", "check24", "blalb"];
+      this.content.memberOrganizations = ["Keestash"];
       this.content.candidateOrganizations = await this.getCandidateOrganizations(this.content.memberOrganizations);
     },
     async getCandidateOrganizations() {
@@ -67,7 +66,7 @@ export default {
         ROUTES.GET_ALL_USERS()
     )
         .then((response) => {
-            console.log(response)
+          console.log(response)
           // this.user.list = users;
         })
         .catch(

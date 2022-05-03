@@ -25,7 +25,6 @@ const host = new Host();
 
 export const ROUTES = {
 
-
     getInstallAppsAll() {
         return host.getApiHost() + INSTALL_ALL_APPS;
     }

@@ -156,8 +156,7 @@
 
 <script>
 
-
-import {ROUTES} from "../../config/routes";
+import {ROUTES} from "../../../config/routes/index";
 import {AXIOS, EMAIL_VALIDATOR, PHONE_VALIDATOR, StartUp, URL_VALIDATOR} from "../../../../../../lib/js/src/StartUp";
 import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
 import {Container} from "../../../../../../lib/js/src/DI/Container";

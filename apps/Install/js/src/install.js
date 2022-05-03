@@ -18,8 +18,8 @@
  */
 
 import store from "../../../../lib/js/src/Store/store";
-import App from "./Install/App";
-import i18n from "./i18n";
+import App from "./App";
+import i18n from "./../config/i18n/index";
 import {createApp} from "vue";
 
 window.addEventListener(

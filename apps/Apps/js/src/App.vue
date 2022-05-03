@@ -41,7 +41,7 @@
 <script>
 import {AXIOS, DATE_TIME_SERVICE, StartUp} from "../../../../lib/js/src/StartUp";
 import {Container} from "../../../../lib/js/src/DI/Container";
-import {ROUTES} from "./config/routes";
+import {ROUTES} from "../config/routes/index";
 import {EVENT_NAME_GLOBAL_SEARCH} from "../../../../lib/js/src/base";
 
 export default {
@@ -55,9 +55,6 @@ export default {
   },
   methods: {
     isVisible(app) {
-      console.log(
-          app
-      )
       if (this.query === null || this.query === "") return true;
       return (app.id.toLowerCase().includes(this.query.toLowerCase()));
     },

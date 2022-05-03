@@ -90,9 +90,9 @@
 </template>
 
 <script>
-import {AXIOS, ROUTER, StartUp} from "../../../../../lib/js/src/StartUp";
-import {Container} from "../../../../../lib/js/src/DI/Container";
-import {ROUTES} from "../config/routes";
+import {AXIOS, ROUTER, StartUp} from "../../../../lib/js/src/StartUp";
+import {Container} from "../../../../lib/js/src/DI/Container";
+import {ROUTES} from "../config/routes/index";
 
 const INSTALL_TYPE_CONFIG_NOT_LOADED = -1;
 const INSTALL_TYPE_CONFIG_NOTHING_TO_BE_UPDATED = 0;
