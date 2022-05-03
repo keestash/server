@@ -18,7 +18,7 @@
  */
 import App from "./App";
 import i18n from "../../config/i18n";
-import store from "../../config/vuex/index";
+import store from "../../../../../lib/js/src/Store/store";
 import Skeleton from 'vue-loading-skeleton';
 import {createApp} from "vue";
 import ContextMenu from '@imengyu/vue3-context-menu';
@@ -27,8 +27,8 @@ window.addEventListener(
     'DOMContentLoaded'
     , () => {
         createApp(App)
-            .use(store)
             .use(Skeleton)
+            .use(store)
             .use(ContextMenu)
             .use(i18n)
             .mount("#pwm");

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import store from "../../config/vuex/index";
+import store from "../../../../../lib/js/src/Store/store";
 import i18n from "../../config/i18n";
 import App from "./App";
 import {createApp} from "vue";

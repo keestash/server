@@ -93,7 +93,6 @@ const webpackConfig = [].concat(
     toConfig(appModules, baseModule)
 );
 
-
 module.exports = webpackConfig;
 
 function toConfig(modules, baseModule) {

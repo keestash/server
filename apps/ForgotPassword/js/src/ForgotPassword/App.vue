@@ -75,7 +75,7 @@
 <script>
 import {AXIOS, StartUp} from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
-import {ROUTES} from "../config/routes";
+import {ROUTES} from "../../config/routes/index";
 
 export default {
   name: "App",

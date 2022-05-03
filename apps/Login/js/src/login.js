@@ -18,7 +18,7 @@
  */
 
 import store from "../../../../lib/js/src/Store/store";
-import i18n from "./i18n";
+import i18n from "./../config/i18n/index";
 import App from "./Login/App";
 import {createApp} from "vue";
 

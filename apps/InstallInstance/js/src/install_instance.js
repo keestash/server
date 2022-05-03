@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import App from "./InstallInstance/App";
+import App from "./App";
 import store from "../../../../lib/js/src/Store/store";
-import i18n from "./i18n/index";
+import i18n from "./../config/i18n/index";
 import {createApp} from "vue";
 
 window.addEventListener(

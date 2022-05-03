@@ -1,8 +1,6 @@
-import {createStore} from "vuex";
 import _ from "lodash";
 
-
-export default createStore({
+export const STORE = {
     state: {
         edges: [],
         selectedEdge: null,
@@ -77,4 +75,4 @@ export default createStore({
             return state.selectedEdge;
         }
     }
-});
+}
