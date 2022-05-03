@@ -1,11 +1,13 @@
 includes:
     - %rootDir%/../../../config/phpstan/baseline.neon
 parameters:
-	excludes_analyse:
+	excludePaths:
 	    - %rootDir%/../../
 	    - %rootDir%/../../../lib/private/Core/Repository/Migration/*
 	    - %rootDir%/../../../apps/*/Repository/Migration/*
 	checkMissingIterableValueType: false
 	treatPhpDocTypesAsCertain: false
 	reportUnmatchedIgnoredErrors: true
-
+	ignoreErrors:
+	    - '#Property (.*) is never read, only written+\.#'
+	    - '#Constant (.*) is unused#'

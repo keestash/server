@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -44,7 +45,7 @@ class Routes extends KeestashCommand {
         $this->config = $config;
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setName('general-api:routes:list')
             ->setDescription('lists all routes and their corresponding info')
             ->addOption(

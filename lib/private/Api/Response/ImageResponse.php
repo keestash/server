@@ -26,7 +26,7 @@ use Laminas\Diactoros\Response\TextResponse;
 
 class ImageResponse extends TextResponse {
 
-    public function __construct($path, string $mimeType) {
+    public function __construct(string $path, string $mimeType) {
 
         $content    = null;
         $statusCode = 404;

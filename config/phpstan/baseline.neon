@@ -16,16 +16,6 @@ parameters:
 			path: ../../apps/GeneralApi/Api/UserList.php
 
 		-
-			message: "#^Method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:isValid\\(\\) has parameter \\$val with no typehint specified\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:validLogRequestOption\\(\\) has parameter \\$val with no typehint specified\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
 			message: "#^Parameter \\#1 \\$files of method KSA\\\\InstallInstance\\\\Command\\\\Uninstall\\:\\:removeFiles\\(\\) expects array, array\\<int, string\\>\\|false given\\.$#"
 			count: 2
 			path: ../../apps/InstallInstance/Command/Uninstall.php
@@ -34,6 +24,21 @@ parameters:
 			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\<int, string\\>\\|false given\\.$#"
 			count: 2
 			path: ../../apps/InstallInstance/Command/Uninstall.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 2
+			path: ../../apps/Login/Api/Configuration.php
+
+		-
+			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Password\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Comment/Add.php
+
+		-
+			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Password\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Comment/Remove.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
@@ -71,29 +76,9 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
 
 		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Credential\\\\Create\\:\\:getParentNode\\(\\) has parameter \\$parent with no typehint specified\\.$#"
+			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Credential\\\\Create\\:\\:isValid\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
-
-		-
-			message: "#^PHPDoc tag @param has invalid value \\(\\$parent\\)\\: Unexpected token \"\\$parent\", expected type at offset 25$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Credential/Create.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:getParentNode\\(\\) has parameter \\$parent with no typehint specified\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:isValid\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
+			path: ../../apps/PasswordManager/Api/Node/Move.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
@@ -114,6 +99,7 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
+
 		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
 			count: 1
@@ -175,12 +161,7 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
 
 		-
-			message: "#^Cannot access offset string on array\\|object\\|null\\.$#"
-			count: 1
-			path: ../../apps/Register/Api/User/Add.php
-
-		-
-			message: "#^Method KSA\\\\Register\\\\Api\\\\User\\\\Add\\:\\:getParameter\\(\\) has no return typehint specified\\.$#"
+			message: "#^Cannot access offset string on array\\|object\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/User/Add.php
 
@@ -255,29 +236,34 @@ parameters:
 			path: ../../apps/Users/Api/User/UserEdit.php
 
 		-
-			message: "#^Method Keestash\\\\Api\\\\Response\\\\ImageResponse\\:\\:__construct\\(\\) has parameter \\$path with no typehint specified\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Api/Response/ImageResponse.php
+			path: ../../apps/Users/Command/UpdatePassword.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			message: "#^Method Keestash\\\\Core\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Cache/NullService.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\Cache\\\\RedisService\\:\\:set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			message: "#^Method Keestash\\\\Core\\\\Cache\\\\RedisService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Cache/RedisService.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no typehint specified\\.$#"
+			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/File/FileList.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:addToIndex\\(\\) has parameter \\$item with no typehint specified\\.$#"
+			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:addToIndex\\(\\) has parameter \\$item with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/File/FileList.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Manager\\\\SessionManager\\\\SessionHandler\\:\\:gc\\(\\) should return int\\|false but returns bool\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Manager/SessionManager/SessionHandler.php
 
 		-
 			message: "#^Parameter \\#2 \\$default of method doganoo\\\\PHPUtil\\\\HTTP\\\\Session\\:\\:get\\(\\) expects null, string\\|null given\\.$#"
@@ -340,6 +326,11 @@ parameters:
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
+			message: "#^Parameter \\#1 \\$min \\(0\\) of function random_int expects lower number than parameter \\#2 \\$max \\(int\\<\\-1, max\\>\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Encryption/Password/PasswordService.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getTmpName\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
@@ -363,4 +354,14 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
+
+		-
+			message: "#^Result of \\|\\| is always true\\.$#"
+			count: 1
+			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+
+		-
+			message: "#^Variable \\$CONFIG on left side of \\?\\? is never defined\\.$#"
+			count: 1
+			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
 
