@@ -164,10 +164,9 @@
 </template>
 
 <script>
-import {AXIOS, StartUp} from "../../../../../../lib/js/src/StartUp";
-import {Container} from "../../../../../../lib/js/src/DI/Container";
+import {AXIOS, StartUp} from "../../../../../lib/js/src/StartUp";
+import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes";
-import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
 
 export default {
   name: "Config",

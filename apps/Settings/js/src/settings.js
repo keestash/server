@@ -21,7 +21,7 @@ import store from "../../../../lib/js/src/Store/store";
 import Organization from "./GeneralApi/Organization/Organization";
 import Users from "./Users/Users";
 import {createApp} from "vue";
-import i18n from "./i18n/index";
+import i18n from "./../config/i18n/index";
 import {EVENT_NAME_APP_NAVIGATION_CLICKED} from "../../../../lib/js/src/base";
 
 let selected = null;

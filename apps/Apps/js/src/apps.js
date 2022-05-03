@@ -18,10 +18,9 @@
  */
 
 import App from "./App";
-import i18n from "./i18n/index";
-import store from "./config/store";
+import i18n from "../config/i18n";
+import store from "../../../../lib/js/src/Store/store";
 import {createApp} from "vue";
-
 
 window.addEventListener(
     'DOMContentLoaded'
