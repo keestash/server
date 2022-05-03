@@ -106,6 +106,11 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
 
 		-
+			message: "#^Cannot call method fetchAllNumeric\\(\\) on Doctrine\\\\DBAL\\\\Result\\|string\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/OrganizationRepository.php
+
+		-
 			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\:\\:getEdges\\(\\)\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
@@ -186,6 +191,51 @@ parameters:
 			path: ../../apps/Settings/Api/Organization/User.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserAdd.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setDeleted\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setEmail\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setFirstName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLastName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPhone\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Command/UpdatePassword.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Repository/OrganizationRepository.php
@@ -194,51 +244,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserAdd.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setDeleted\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setEmail\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setFirstName\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLastName\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setName\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPhone\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Api/User/UserEdit.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Users/Command/UpdatePassword.php
 
 		-
 			message: "#^Method Keestash\\\\Core\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
