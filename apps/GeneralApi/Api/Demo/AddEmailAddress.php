@@ -48,7 +48,7 @@ class AddEmailAddress implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode($parameters = $request->getBody()->getContents(), true);
+        $parameters = json_decode($request->getBody()->getContents(), true);
         $email      = $parameters['email'] ?? null;
 
         if (false === $this->userService->validEmail($email)) {

@@ -32,7 +32,6 @@ use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
 use KSA\TNC\ConfigProvider as TNCConfigProvider;
-use KSA\Users\ConfigProvider as UsersConfigProvider;
 use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
 use Laminas\HttpHandlerRunner\ConfigProvider as HttpHandlerRunnerConfigProvider;
 use Laminas\Router\ConfigProvider as LaminasRouterConfigProvider;
@@ -70,5 +69,4 @@ return [
     RegisterConfigProvider::class,
     SettingsConfigProvider::class,
     TNCConfigProvider::class,
-    UsersConfigProvider::class,
 ];

@@ -1,41 +1,43 @@
-<div class="container-fluid flex-grow-1" id="app-navigation">
-    <div class="row d-flex flex-column">
-        {% if hasActionBars == true %}
-            <div class="row flex-grow-1 action-bar">
+<div class="container-fluid p-0" id="app-navigation">
+    {% if hasActionBars == true %}
+        <div class="row">
+            <div class="col action-bar">
                 {{ actionBar|raw }}
             </div>
-        {% endif %}
-        {% if appNavigation|length > 0 %}
-            <div class="row d-flex">
-                <ul class="my-list-group flex-grow-1">
-                    {% for id, segment in appNavigation %}
-                        <li>
-                            <small class="p-3 grey-text"
-                                   data-id="{{ segment.getId() }}"
-                            >{{ segment.getTitle() }}</small>
-                        </li>
-                        {% for id2, entry in segment.getEntries() %}
-                            <li
-                                    class="list-group-item clickable-navigation-item"
-                                    data-type="{{ entry.getSelector() }}"
+        </div>
+    {% endif %}
+    {% if appNavigation|length > 0 %}
+    <div class="row pt-3">
+        <div class="col p-0">
+            <ul class="my-list-group">
+                {% for id, segment in appNavigation %}
+                    <li>
+                        <small class="p-3 grey-text"
+                               data-id="{{ segment.getId() }}"
+                        >{{ segment.getTitle() }}</small>
+                    </li>
+                    {% for id2, entry in segment.getEntries() %}
+                        <li
+                                class="list-group-item clickable-navigation-item"
+                                data-type="{{ entry.getSelector() }}"
+                        >
+                            <a
+                                    id="{{ entry.getSelector() }}"
+                                    class="list-group-item-action d-flex align-items-baseline justify-content-start"
                             >
-                                <a
-                                        id="{{ entry.getSelector() }}"
-                                        class="list-group-item-action d-flex align-items-baseline justify-content-start"
-                                >
-                                    <i class="{{ entry.getIconClass() }} entry-icon"></i> {{ entry.getTitle() }}
-                                </a>
-                            </li>
-                        {% endfor %}
-
-                        {% if loop.last != true %}
-                            <li class="list-group-item">
-                                <hr>
-                            </li>
-                        {% endif %}
+                                <i class="{{ entry.getIconClass() }} entry-icon"></i> {{ entry.getTitle() }}
+                            </a>
+                        </li>
                     {% endfor %}
-                </ul>
-            </div>
+
+                    {% if loop.last != true %}
+                        <li class="list-group-item">
+                            <hr>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
         {% endif %}
     </div>
 </div>

@@ -4,14 +4,14 @@ declare(strict_types=1);
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Settings\ConfigProvider;
 use KSA\Settings\Controller\Organization\Detail;
-use KSA\Settings\Controller\SettingsController;
+use KSA\Settings\Controller\Controller;
 
 return [
     CoreConfigProvider::ROUTES                 => [
         [
             'path'         => ConfigProvider::SETTINGS
-            , 'middleware' => SettingsController::class
-            , 'name'       => SettingsController::class
+            , 'middleware' => Controller::class
+            , 'name'       => Controller::class
         ],
         [
             'path'         => ConfigProvider::ORGANIZATION_SINGLE

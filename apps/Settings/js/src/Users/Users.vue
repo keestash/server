@@ -1,10 +1,10 @@
 <template>
-  <div class="d-flex flex-grow-1 flex-column">
+  <div class="container mt-5">
     <Loading :loading="!this.loaded"></Loading>
     <UserList
         @usersLoaded="onUsersLoaded"
     ></UserList>
-    <AddUser :show="this.loaded"></AddUser>
+    <AddUser :show="this.loaded" v-if="false"></AddUser>
   </div>
 </template>
 

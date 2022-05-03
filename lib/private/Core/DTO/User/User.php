@@ -100,32 +100,6 @@ class User implements IUser {
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return array data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize(): array {
-        return
-            [
-                'id'           => $this->getId()
-                , 'name'       => $this->getName()
-                , 'create_ts'  => $this->getCreateTs()
-                , 'first_name' => $this->getFirstName()
-                , 'last_name'  => $this->getLastName()
-                , 'email'      => $this->getEmail()
-                , 'phone'      => $this->getPhone()
-                , 'website'    => $this->getWebsite()
-                , "hash"       => $this->getHash()
-                , "locked"     => $this->isLocked()
-                , "deleted"    => $this->isDeleted()
-                , 'jwt'        => $this->getJWT()
-            ];
-    }
-
-    /**
      * @return string
      */
     public function getName(): string {
@@ -247,4 +221,29 @@ class User implements IUser {
         $this->deleted = $deleted;
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return array data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize(): array {
+        return
+            [
+                'id'           => $this->getId()
+                , 'name'       => $this->getName()
+                , 'create_ts'  => $this->getCreateTs()
+                , 'first_name' => $this->getFirstName()
+                , 'last_name'  => $this->getLastName()
+                , 'email'      => $this->getEmail()
+                , 'phone'      => $this->getPhone()
+                , 'website'    => $this->getWebsite()
+                , "hash"       => $this->getHash()
+                , "locked"     => $this->isLocked()
+                , "deleted"    => $this->isDeleted()
+                , 'jwt'        => $this->getJWT()
+            ];
+    }
 }

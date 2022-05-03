@@ -19,24 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Controller;
+namespace KSA\Settings\Factory\Api\File;
 
-use KSA\Settings\Controller\Controller;
-use KSA\Settings\Service\SegmentService;
-use KSA\Settings\Service\SettingService;
-use KSP\Core\Manager\SettingManager\ISettingManager;
-use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
-use Mezzio\Template\TemplateRendererInterface;
+use Keestash\Core\Manager\FileManager\FileManager;
+use Keestash\Core\Service\File\FileService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
+use KSA\Settings\Api\User\ProfilePicture;
+use KSP\Core\Repository\User\IUserRepository;
 use Psr\Container\ContainerInterface;
 
-class SettingsControllerFactory {
+class ProfilePictureFactory {
 
-    public function __invoke(ContainerInterface $container): Controller {
-        return new Controller(
-            $container->get(TemplateRendererInterface::class)
-            , $container->get(IAppRenderer::class)
-            , $container->get(SegmentService::class)
+    public function __invoke(ContainerInterface $container): ProfilePicture {
+        return new ProfilePicture(
+            $container->get(IUserRepository::class)
+            , $container->get(FileService::class)
+            , $container->get(RawFileService::class)
+            , $container->get(FileManager::class)
         );
     }
 
