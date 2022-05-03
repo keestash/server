@@ -75,7 +75,7 @@ class SessionRepository implements ISessionRepository {
                 throw new KeestashException("found more then one user for the given name");
             }
 
-            return (string) $sessionData[0][0] ?? '';
+            return (string) ($sessionData[0][0] ?? '');
         } catch (Throwable $exception) {
             $this->logger->error(
                 (string) json_encode(

@@ -37,7 +37,7 @@ class HasMigrations extends AbstractVerification {
     private IConfigService $configService;
 
     public function __construct(
-        Config $config
+        Config           $config
         , IConfigService $configService
     ) {
         $this->config        = $config;
@@ -46,9 +46,10 @@ class HasMigrations extends AbstractVerification {
 
     public function hasProperty(): bool {
         return true;
-//        return $this->migrate();
+        // return $this->migrate();
     }
 
+    /** @phpstan-ignore-next-line */
     private function migrate(): bool {
         $phinxRoot = (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
         $phinxPath = $phinxRoot . "instance.php";
