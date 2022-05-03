@@ -1,0 +1,12 @@
+{
+  "table": {
+    "head": {
+      "name": "Name",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "website": "Website"
+    }
+  }
+}

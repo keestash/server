@@ -7,6 +7,12 @@ use KSA\Settings\Api\Organization\Get;
 use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Api\Organization\User;
+use KSA\Settings\Api\User\GetAll;
+use KSA\Settings\Api\User\ProfilePicture;
+use KSA\Settings\Api\User\UserAdd;
+use KSA\Settings\Api\User\UserEdit;
+use KSA\Settings\Api\User\UserLock;
+use KSA\Settings\Api\User\UserRemove;
 use KSA\Settings\ConfigProvider;
 use KSP\Api\IVerb;
 
@@ -47,6 +53,42 @@ return [
             , 'middleware' => User::class
             , 'method'     => IVerb::POST
             , 'name'       => User::class
+        ],
+        [
+            'path'       => '/users/edit[/]',
+            'middleware' => UserEdit::class,
+            'method'     => IVerb::POST,
+            'name'       => UserEdit::class
+        ],
+        [
+            'path'       => '/users/add[/]',
+            'middleware' => UserAdd::class,
+            'method'     => IVerb::POST,
+            'name'       => UserAdd::class
+        ],
+        [
+            'path'       => '/users/all[/]',
+            'middleware' => GetAll::class,
+            'method'     => IVerb::GET,
+            'name'       => GetAll::class
+        ],
+        [
+            'path'       => '/users/remove[/]',
+            'middleware' => UserRemove::class,
+            'method'     => IVerb::POST,
+            'name'       => UserRemove::class
+        ],
+        [
+            'path'       => '/users/lock[/]',
+            'middleware' => UserLock::class,
+            'method'     => IVerb::POST,
+            'name'       => UserLock::class
+        ],
+        [
+            'path'       => '/users/profile_pictures/:userId[/]',
+            'middleware' => ProfilePicture::class,
+            'method'     => IVerb::GET,
+            'name'       => ProfilePicture::class
         ],
     ],
 ];

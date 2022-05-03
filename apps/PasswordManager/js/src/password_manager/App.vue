@@ -205,7 +205,6 @@ export default {
           self.loadEdge(self, data.detail.dataset.type);
         });
 
-
     document.addEventListener(
         EVENT_NAME_ACTION_BAR_ITEM_CLICKED
         , (e) => {
