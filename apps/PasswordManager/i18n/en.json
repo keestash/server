@@ -103,6 +103,7 @@
         }
       },
       "comment": {
+        "commentDateTimeLabel": "Commented at ",
         "modal": {
           "title": "Removing Comment",
           "content": "Do you really want to remove this comment?",
@@ -111,6 +112,13 @@
         }
       },
       "attachment": {
+        "attachmentDateTimeLabel": "Attached at ",
+        "fileUpload": {
+          "message": "click here to upload or drag",
+          "uploadingMessage": "Uploading {number} files...",
+          "uploadedMessage": "Uploaded {number} files",
+          "uploadFailedMessage": "Upload failed"
+        },
         "modal": {
           "title": "Removing Attachment",
           "content": "Do you really want to remove this attachment?",

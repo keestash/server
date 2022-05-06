@@ -35,4 +35,6 @@ interface IFileService {
 
     public function moveUploadedFile(ICoreFile $file): bool;
 
+    public function removeUploadedFile(ICoreFile $file): bool;
+
 }

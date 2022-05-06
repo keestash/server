@@ -26,9 +26,10 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\IRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 
-class CommentRepository {
+class CommentRepository implements IRepository {
 
     private NodeRepository  $nodeRepository;
     private UserRepository  $userRepository;
@@ -87,7 +88,11 @@ class CommentRepository {
         return $comment;
     }
 
-    public function getCommentsByNode(Node $node): ?ArrayList {
+    public function getCommentsByNode(
+        Node     $node
+        , string $sortField = IRepository::FIELD_NAME_ID
+        , string $sortDir = IRepository::SORT_DIR_DESC
+    ): ?ArrayList {
         $list = new ArrayList();
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -103,6 +108,7 @@ class CommentRepository {
             )
             ->from('pwm_comment')
             ->where('node_id = ?')
+            ->orderBy($sortField, $sortDir)
             ->setParameter(0, $node->getId())
             ->executeQuery()
             ->fetchAllAssociative();

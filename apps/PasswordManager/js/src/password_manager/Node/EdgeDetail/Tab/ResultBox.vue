@@ -6,7 +6,7 @@
           :text="noDataFoundText"
           :type="type"
       ></NoDataFound>
-      <div class="container">
+      <div class="container overflow-auto row-container">
         <div class="row border-bottom"
              v-for="share in data"
              :key="share.id"
@@ -16,28 +16,43 @@
             <div class="row justify-content-between">
               <div class="col-10">
                 <div class="row">
-                  <div class="col-1">
+                  <div class="col-1 d-flex">
                     <Thumbnail
                         :source="getAssetUrl(getJwt(share))"
+                        :skip-cache="false"
                     ></Thumbnail>
                   </div>
-                  <div class="col-11">
+                  <div class="col-11 p-0">
                     <div class="container">
                       <div class="row cropped">
                         <a :href="getAttachmentUrl(share.file.id)"
                            target="_blank"
                            v-if="type==='attachment'"
-                        >{{ getName(share) }}</a>
-                        <template v-else>
+                        >
+                          <div class="container-fluid" :title="getName(share)">
+                            <div class="row">
+                              {{ getName(share) }}
+                            </div>
+                            <div class="row">
+                              <small>
+                                {{ getDescription() }}
+                                {{ formatDate(getCreateTs(share)) }}
+                              </small>
+                            </div>
+                          </div>
+                        </a>
+                        <div class="container-fluid" v-else :title="getName(share)">
+                          <div class="row">
+                            <strong>{{ getName(share) }}</strong>
+                          </div>
+                          <div class="row">
+                            <small>
+                              {{ getDescription() }}
+                              {{ formatDate(getCreateTs(share)) }}
+                            </small>
+                          </div>
 
-                          {{ getName(share) }}
-                        </template>
-                      </div>
-                      <div class="row">
-                        <small> {{ $t('credential.detail.share.sharedDateTimeLabel') }}
-                          {{
-                            formatDate(getCreateTs)
-                          }}</small>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -46,8 +61,8 @@
 
               <div class="col-2 align-self-center" v-if="canRemove">
                 <div class="row justify-content-end">
-                  <div class="col-3" @click="remove(share)">
-                    <i class="fas fa-times remove"></i>
+                  <div class="col-3">
+                    <i class="fas fa-times remove" @click="remove(share)"></i>
                   </div>
                 </div>
               </div>
@@ -114,7 +129,6 @@ export default {
     remove(data) {
       this.$emit('onRemove', data);
     },
-
     // temporary, until i find a good solution how to differ clean
     getJwt(data) {
       if (this.type === 'user') {
@@ -124,7 +138,6 @@ export default {
       } else if (this.type === 'attachment') {
         return data.jwt;
       }
-
       throw 'unknown' + this.type;
     },
     getName(data) {
@@ -135,17 +148,29 @@ export default {
       } else if (this.type === 'attachment') {
         return data.file.name;
       }
-
-
       throw 'unknown' + this.type;
     },
     getCreateTs(data) {
       if (this.type === 'user') {
-        return data.user.createTs;
+        return data.user.create_ts.date;
       } else if (this.type === 'comment') {
-        return data.createTs;
+        return data.create_ts.date;
+      } else if (this.type === 'attachment') {
+        return data.create_ts.date;
       }
 
+      throw 'unknown' + this.type;
+    },
+
+    getDescription() {
+      console.log('getdescription')
+      if (this.type === 'user') {
+        return this.$t('credential.detail.share.sharedDateTimeLabel');
+      } else if (this.type === 'comment') {
+        return this.$t('credential.detail.comment.commentDateTimeLabel');
+      } else if (this.type === 'attachment') {
+        return this.$t('credential.detail.attachment.attachmentDateTimeLabel');
+      }
       throw 'unknown' + this.type;
     },
     getAttachmentUrl: function (fileId) {
@@ -155,6 +180,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.row-container {
+  max-height: 30vh;
+}
 </style>

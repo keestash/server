@@ -40,9 +40,9 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $nodeId = $request->getAttribute("nodeId");
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
+        $nodeId    = $request->getAttribute("nodeId");
+        $sortField = $request->getAttribute("sortField");
+        $sortDir   = $request->getAttribute("sortDirection");
 
         if (null === $nodeId) {
             return new JsonResponse('no node found', IResponse::BAD_REQUEST);
@@ -54,13 +54,17 @@ class Get implements RequestHandlerInterface {
             return new JsonResponse('no node found', IResponse::NOT_FOUND);
         }
 
-        $comments = $this->commentRepository->getCommentsByNode($node);
+        $comments = $this->commentRepository->getCommentsByNode(
+            $node
+            , $sortField
+            , $sortDir
+        );
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "comments" => $comments
             ]
+            , IResponse::OK
         );
     }
 

@@ -31,7 +31,6 @@ interface IExtension extends IJsonObject {
     public const JPG               = "jpg";
     public const JPEG              = "jpeg";
     public const PDF               = "pdf";
-    public const TWIG              = "twig";
     public const JSON              = "json";
     public const TEXT = "text";
 

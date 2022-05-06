@@ -212,7 +212,6 @@ import {
   EMAIL_VALIDATOR,
   ROUTER,
   StartUp,
-  TEMPORARY_STORAGE
 } from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes/index"
@@ -262,7 +261,6 @@ export default {
     this.container.container = startUp.getContainer();
     this.container.axios = this.container.container.query(AXIOS);
     this.container.appStorage = this.container.container.query(APP_STORAGE);
-    this.container.temporaryStorage = this.container.container.query(TEMPORARY_STORAGE);
     this.container.router = this.container.container.query(ROUTER);
     this.container.emailValidator = this.container.container.query(EMAIL_VALIDATOR);
 
@@ -298,7 +296,7 @@ export default {
       this.isModalVisible = false;
     },
     isDemoUserSubmitted() {
-      return "true" === this.container.temporaryStorage.get("demo-submitted", "false");
+      return this.$store.getters.emailSubmitted;
     },
     onEmailSubmitted(e) {
       e.preventDefault();
@@ -321,7 +319,7 @@ export default {
           }
       ).then(
           () => {
-            this.container.temporaryStorage.set("demo-submitted", "true");
+            this.$store.dispatch("setEmailSubmitted", true);
             const modal = new Modal(this.$refs.emailAddressModal);
             modal.hide();
           }

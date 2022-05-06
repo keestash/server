@@ -1,39 +1,41 @@
 <template>
-  <div id="app">
-    <div class="container">
-      <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving">
-        <h1 v-if="header !== ''">{{ header }}</h1>
-        <div class="dropbox">
-          <input type="file" multiple :name="uploadFieldName" :disabled="isSaving"
-                 @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
-                 class="input-file">
-          <p v-if="isInitial">
-            {{ message }}
-          </p>
-          <p v-if="isSaving">
-            Uploading {{ fileCount }} files...
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col p-0">
+        <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving" class="d-flex flex-column">
+          <div class="dropbox btn btn-primary flex-grow-1 text-white d-flex justify-content-center flex-column">
+            <div class="text-center">
+              <div class="h4" v-if="isInitial">
+                {{ message }}
+              </div>
+              <div v-if="isSaving">
+                {{ uploadingMessage() }}
+              </div>
+            </div>
+            <input
+                type="file"
+                :name="uploadFieldName"
+                :disabled="isSaving"
+                @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
+                class="p-2 input-file"
+                multiple
+            >
+          </div>
+        </form>
+        <!--SUCCESS-->
+        <div v-if="isSuccess">
+          <h2>{{ uploadedMessage() }}</h2>
+          <p>
+            <a href="javascript:void(0)" @click="reset()">Upload again</a>
           </p>
         </div>
-      </form>
-      <!--SUCCESS-->
-      <div v-if="isSuccess">
-        <h2>Uploaded {{ uploadedFiles.length }} file(s) successfully.</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Upload again</a>
-        </p>
-        <ul class="list-unstyled">
-          <li v-for="item in uploadedFiles">
-            <img :src="item.url" class="img-responsive img-thumbnail" :alt="item.originalName">
-          </li>
-        </ul>
-      </div>
-      <!--FAILED-->
-      <div v-if="isFailed">
-        <h2>Uploaded failed.</h2>
-        <p>
-          <a href="javascript:void(0)" @click="reset()">Try again</a>
-        </p>
-        <pre>{{ uploadError }}</pre>
+        <!--FAILED-->
+        <div v-if="isFailed">
+          <h2>{{ $t('credential.detail.attachment.fileUpload.uploadFailedMessage') }}</h2>
+          <p>
+            <a href="javascript:void(0)" @click="reset()">Try again</a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -46,14 +48,14 @@ export default {
   name: 'FileUpload',
   props: {
     message: '',
-    header: ""
   },
   data() {
     return {
       uploadedFiles: [],
       uploadError: null,
       currentStatus: null,
-      uploadFieldName: 'photos'
+      uploadFieldName: 'photos',
+      fileCount: 0
     }
   },
   computed: {
@@ -71,6 +73,12 @@ export default {
     }
   },
   methods: {
+    uploadingMessage() {
+      return $t('credential.detail.attachment.fileUpload.uploadingMessage').replace('{number}', fileCount);
+    },
+    uploadedMessage() {
+      return $t('credential.detail.attachment.fileUpload.uploadedMessage').replace('{number}', fileCount);
+    },
     reset() {
       // reset form to initial state
       this.currentStatus = STATUS_INITIAL;
@@ -113,24 +121,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-//.dropbox {
-//  outline-offset: -10px;
-//  background: $keestash-theme-color-inverted;
-//  color: $keestash-text-color;
-//  padding: 10px 10px;
-//  position: relative;
-//  cursor: pointer;
-//}
-//
-//.input-file {
-//  opacity: 0; /* invisible but it's there! */
-//  width: 100%;
-//  position: absolute;
-//  cursor: pointer;
-//}
-//
-//.dropbox p {
-//  font-size: 1.2em;
-//  text-align: center;
-//}
+
+.input-file {
+  opacity: 0;
+  cursor: pointer;
+}
+
 </style>

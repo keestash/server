@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Comment;
 
 use DateTime;
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
@@ -35,7 +35,6 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\HTTP\IJWTService;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -84,7 +83,7 @@ class Add implements RequestHandlerInterface {
             $node = $this->nodeRepository->getNode((int) $nodeId);
         } catch (PasswordManagerException $exception) {
             $this->logger->error($exception->getMessage());
-            return new JsonResponse('error while retrieving node', IResponse::INTERNAL_SERVER_ERROR);
+            return new JsonResponse(['error while retrieving node'], IResponse::INTERNAL_SERVER_ERROR);
         }
 
         $comment = new Comment();
@@ -95,8 +94,8 @@ class Add implements RequestHandlerInterface {
         $comment->setJWT(
             $this->jwtService->getJWT(
                 new Audience(
-                    IAudience::TYPE_ASSET
-                    , 'default'
+                    IAudience::TYPE_USER
+                    , (string) $token->getUser()->getId()
                 )
             )
         );
@@ -104,11 +103,11 @@ class Add implements RequestHandlerInterface {
         $node->setUpdateTs(new DateTime());
         $this->nodeRepository->updateCredential($node);
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "comment" => $comment
             ]
+            , IResponse::OK
         );
 
     }

@@ -40,6 +40,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value[/]";
 
     public const APP_ID = 'passwordManager';
+    public const FILE_UPLOAD_ALLOWED_EXTENSIONS = 'extensions.allowed.upload.file';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

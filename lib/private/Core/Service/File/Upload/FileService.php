@@ -92,4 +92,8 @@ class FileService implements IFileService {
         return move_uploaded_file($temporaryPath, $file->getFullPath());
     }
 
+    public function removeUploadedFile(ICoreFile $file): bool {
+        return unlink($file->getFullPath());
+    }
+
 }

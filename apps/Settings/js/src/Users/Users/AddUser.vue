@@ -157,7 +157,7 @@
 <script>
 
 import {ROUTES} from "../../../config/routes/index";
-import {AXIOS, EMAIL_VALIDATOR, PHONE_VALIDATOR, StartUp, URL_VALIDATOR} from "../../../../../../lib/js/src/StartUp";
+import {AXIOS, EMAIL_SERVICE, PHONE_SERVICE, StartUp} from "../../../../../../lib/js/src/StartUp";
 import {RESPONSE_CODE_OK} from "../../../../../../lib/js/src/Backend/Axios";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 
@@ -318,7 +318,7 @@ export default {
       startUp.setUp();
       const diContainer = startUp.getContainer();
 
-      const emailValidator = diContainer.query(EMAIL_VALIDATOR);
+      const emailValidator = diContainer.query(EMAIL_SERVICE);
       const axios = diContainer.query(AXIOS);
       const validEmail = this.form.email.value !== "" && emailValidator.isValidAddress(this.form.email.value);
 
@@ -352,7 +352,7 @@ export default {
       );
       startUp.setUp();
       const diContainer = startUp.getContainer();
-      const emailValidator = diContainer.query(PHONE_VALIDATOR);
+      const emailValidator = diContainer.query(PHONE_SERVICE);
       this.form.phone.state = this.form.phone.value.length === 0 || emailValidator.isValidNumber(this.form.phone.value);
     },
     validatePassword() {
