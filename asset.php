@@ -25,6 +25,7 @@ use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\File\FileService;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\File\Icon\IIconService;
 use Laminas\Config\Config;
@@ -43,27 +44,38 @@ use Psr\Container\ContainerInterface;
     $iconService = $container->get(IIconService::class);
     /** @var IConfigService $configService */
     $configService = $container->get(IConfigService::class);
-    $lifeTime      = $configService->getValue(
+    /** @var ILogger $logger */
+    $logger = $container->get(ILogger::class);
+
+    $lifeTime = $configService->getValue(
         'user_lifetime'
         , ConfigProvider::DEFAULT_USER_LIFETIME
     );
 
     $token = $_GET['token'] ?? null;
 
-    if (null === $token) {
+    if (null === $token || "" === $token) {
         header("HTTP/1.0 404 Not Found");
+        $logger->info("no asset token given");
         die();
     }
 
-    $decoded = JWT::decode(
-        $token
-        , $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-        , ['HS256']
-    );
+    try {
+        $decoded = JWT::decode(
+            $token
+            , $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+            , ['HS256']
+        );
+    } catch (Throwable $exception) {
+        $logger->error($exception->getMessage() . " token: " . $token);
+        header("HTTP/1.0 500 Internal Server Error");
+        die();
+    }
 
     $then = new DateTime();
     $then->setTimestamp((int) $decoded->iat + (int) $lifeTime);
     if ((new DateTime()) > $then) {
+        $logger->info("outdated key");
         header("HTTP/1.0 404 Not Found");
         die();
     }

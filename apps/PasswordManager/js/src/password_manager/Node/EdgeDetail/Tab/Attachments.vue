@@ -13,7 +13,7 @@
 
     <FileUpload
         @upload="upload"
-        :message="infoBox"
+        :message="$t('credential.detail.attachment.fileUpload.message')"
     ></FileUpload>
 
     <div>
@@ -28,7 +28,8 @@
                   {{ $t('credential.detail.attachment.modal.title') }}
                 </template>
               </h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="this.deleteAttachment.attachmentModal.hide()">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                      @click="this.deleteAttachment.attachmentModal.hide()">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -102,9 +103,7 @@ export default {
   data() {
     return {
       loading: true,
-      icons: {},
       noAttachments: "there are no attachments",
-      infoBox: "click here to upload or drag",
       newComment: "",
       attachmentToDelete: null,
       noComments: "No Attachments",
@@ -190,29 +189,25 @@ export default {
       this.axios.post(
           ROUTES.putAttachments()
           , formData
-      ).then(
-          (response => {
-            if (RESPONSE_CODE_OK in response.data) {
-              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-      ).then((data) => {
+      ).then((response) => {
 
         let newNode = _.cloneDeep(this.edge.node);
 
-        for (let i = 0; i < data.files.length; i++) {
+        for (let i = 0; i < response.data.files.length; i++) {
           if (!Array.isArray(newNode.attachments)) {
             newNode.attachments = [];
           }
-          newNode.attachments.push(data.files[i]);
+          newNode.attachments.push(response.data.files[i]);
+        }
+
+        if (response.data.error.length > 0) {
+          alert("error with " + response.data.error.length + " files");
         }
 
         this.$store.dispatch(
             "setSelectedNode"
             , newNode
         );
-        this.icons = data.icons;
       })
     },
   }

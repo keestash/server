@@ -41,8 +41,8 @@
         </div>
         <div class="col-sm-9">
           <div id="pwm__node__detail">
-            <NoNodeSelected :visible="selected === null"></NoNodeSelected>
-            <EdgeDetail v-if="selected !== null"></EdgeDetail>
+            <NoNodeSelected :visible="getSelected() === null"></NoNodeSelected>
+            <EdgeDetail v-if="getSelected() !== null"></EdgeDetail>
           </div>
         </div>
       </div>
@@ -127,7 +127,7 @@
 
 <script>
 import Edge from "./Node/Edge";
-import {APP_STORAGE, AXIOS, StartUp, TEMPORARY_STORAGE} from "../../../../../lib/js/src/StartUp";
+import {APP_STORAGE, AXIOS, StartUp} from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes/index";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/src/Backend/Axios";
@@ -150,14 +150,11 @@ export default {
   name: "App",
   components: {NoEdges, EdgeDetail, NoNodeSelected, Edge, Skeleton},
   data: function () {
-
     return {
       query: null,
       breadCrumbs: [],
-      selected: null,
       container: null,
       axios: null,
-      temporaryStorage: null,
       noData: true,
       state: 1,
       timer: function () {
@@ -186,22 +183,18 @@ export default {
 
     this.container = startUp.getContainer();
     this.axios = this.container.query(AXIOS);
-    this.temporaryStorage = this.container.query(TEMPORARY_STORAGE);
     this.appStorage = this.container.query(APP_STORAGE);
     const self = this;
 
     this.loadEdge(
         self,
-        this.temporaryStorage.get(
-            STORAGE_ID_ROOT
-            , NODE_ID_ROOT
-        )
+        (this.getSelected() || {}).id || NODE_ID_ROOT
     );
 
     document.addEventListener(
         EVENT_NAME_APP_NAVIGATION_CLICKED
         , function (data) {
-          self.selected = null;
+          this.$store.dispatch("selectEdge", null);
           self.loadEdge(self, data.detail.dataset.type);
         });
 
@@ -228,6 +221,9 @@ export default {
     },
   },
   methods: {
+    getSelected() {
+      return this.$store.getters.selectedEdge;
+    },
     onSearch(val, edge) {
       if (edge === null || typeof edge === 'undefined') return true;
       if (val === "" || val === null) return true;
@@ -244,10 +240,7 @@ export default {
       }
 
       const data = this.addEdge.form;
-      data.parent = this.temporaryStorage.get(
-          STORAGE_ID_ROOT
-          , NODE_ID_ROOT
-      );
+      data.parent = this.getSelected();
 
       this.axios.post(
           route
@@ -278,11 +271,12 @@ export default {
       this.addEdge.form.password.hint = '';
     },
     onBreadCrumbClick: function (rootId) {
-      this.selected = null;
+      this.$store.dispatch("selectEdge", null);
       this.loadEdge(this, rootId);
     },
     loadEdge: function (self, rootId) {
       self = this;
+      this.$store.dispatch("selectEdge", null);
       this.state = 1;
 
       self.axios.get(
@@ -304,11 +298,10 @@ export default {
     },
     selectRow: function (edge) {
       if (edge.node.type === 'folder') {
-        this.selected = null;
+        this.$store.dispatch("selectEdge", null);
         this.loadEdge(this, edge.node.id);
         return;
       }
-      this.selected = edge;
       this.$store.dispatch("selectEdge", edge);
     },
     deleteRow: function (edge) {
@@ -376,10 +369,6 @@ export default {
 
     },
     parseEdges: function (node) {
-      this.temporaryStorage.set(
-          STORAGE_ID_ROOT
-          , node.id
-      );
       this.state = 2;
       this.$store.dispatch("setEdges", node.edges.content);
     }

@@ -71,6 +71,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
 
         foreach ($nodeIds as $nodeId) {
             if (false === is_numeric($nodeId)) {
+                // TODO, fail if there is no numeric value for node id?!
                 continue;
             }
             $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);

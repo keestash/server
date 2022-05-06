@@ -31,7 +31,8 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">{{ $t('credential.detail.comment.modal.title') }}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="this.deleteComment.shareModal.hide()">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                      @click="this.deleteComment.shareModal.hide()">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -130,19 +131,12 @@ export default {
           }
       )
           .then((response) => {
-            if (RESPONSE_CODE_OK in response.data) {
-              this.deleteComment.commentToDelete = null;
-              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-          .then((data) => {
-
+            this.deleteComment.commentToDelete = null;
             let newNode = _.cloneDeep(this.edge.node);
 
             for (let i = 0; i < newNode.comments.length; i++) {
               const comment = newNode.comments[i];
-              if (parseInt(comment.id) === parseInt(data.commentId)) {
+              if (parseInt(comment.id) === parseInt(response.data.commentId)) {
                 newNode.comments.splice(i, 1);
                 break;
               }
@@ -161,17 +155,14 @@ export default {
     },
     getData() {
       this.axios.request(
-          ROUTES.getComments(this.edge.node.id)
+          ROUTES.getComments(
+              this.edge.node.id
+              , 'create_ts'
+              , 'desc'
+          )
       )
           .then((response) => {
-            if (RESPONSE_CODE_OK in response.data) {
-              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-          .then((data) => {
-                this.edge.node.comments = data.comments.content;
-                this.$store.dispatch("updateSelectedEdge", this.edge);
+                this.$store.dispatch("updateSelectedEdge", {node: {comments: response.data.comments.content}});
                 this.loading = false;
               }
           )
@@ -189,15 +180,7 @@ export default {
           }
       )
           .then((response) => {
-            if (RESPONSE_CODE_OK in response.data) {
-              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-          .then((data) => {
-
-            this.edge.node.comments.push(data.comment);
-            this.$store.dispatch("updateSelectedEdge", this.edge);
+            this.$store.dispatch("updateSelectedEdge", {node: {comments: [response.data.comment]}});
             this.newComment = "";
 
           })

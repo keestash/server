@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use DateTime;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Manager\DataManager\DataManager;
@@ -36,6 +37,7 @@ use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
@@ -56,14 +58,16 @@ class Add implements RequestHandlerInterface {
     public const FIELD_NAME_ERROR    = "error";
     public const FIELD_NAME_SIZE     = "size";
 
-    private const REQUIRED_FIELDS = [
+    private const REQUIRED_FIELDS          = [
         0   => Add::FIELD_NAME_NAME
         , 1 => Add::FIELD_NAME_TYPE
         , 2 => Add::FIELD_NAME_TMP_NAME
         , 3 => Add::FIELD_NAME_ERROR
         , 4 => Add::FIELD_NAME_SIZE
     ];
-    private const CONTEXT         = "node_attachments";
+    private const CONTEXT                  = "node_attachments";
+    private const ERROR_NOT_INSERTED_IN_DB = 0;
+    private const ERROR_NOT_CONNECTED      = 1;
 
     private IFileRepository $fileRepository;
     private NodeRepository  $nodeRepository;
@@ -72,7 +76,7 @@ class Add implements RequestHandlerInterface {
     private IFileService    $uploadFileService;
     private ILogger         $logger;
     private IJWTService     $jwtService;
-    private AccessService   $accessService;
+    private Config          $config;
 
     public function __construct(
         IFileRepository  $uploadFileRepository
@@ -82,7 +86,6 @@ class Add implements RequestHandlerInterface {
         , ILogger        $logger
         , Config         $config
         , IJWTService    $jwtService
-        , AccessService  $accessService
     ) {
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
@@ -90,7 +93,7 @@ class Add implements RequestHandlerInterface {
         $this->uploadFileService  = $uploadFileService;
         $this->logger             = $logger;
         $this->jwtService         = $jwtService;
-        $this->accessService      = $accessService;
+        $this->config             = $config;
         $this->dataManager        = new DataManager(
             ConfigProvider::APP_ID
             , $config
@@ -105,15 +108,23 @@ class Add implements RequestHandlerInterface {
 
         $fileCount      = count($fileList);
         $processedFiles = [];
+        $errorFiles     = [];
         /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
+        $token             = $request->getAttribute(IToken::class);
+        $allowedExtensions = $this->config->get(ConfigProvider::FILE_UPLOAD_ALLOWED_EXTENSIONS)->toArray();
 
         if (0 === $fileCount) {
-            throw new NoFileException();
+            return new JsonResponse(
+                []
+                , IResponse::BAD_REQUEST
+            );
         }
 
         if (null === $nodeId) {
-            throw new CredentialException();
+            return new JsonResponse(
+                []
+                , IResponse::BAD_REQUEST
+            );
         }
 
         try {
@@ -127,13 +138,8 @@ class Add implements RequestHandlerInterface {
             throw new CredentialException();
         }
 
-        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-            throw new AccessDeniedException();
-        }
-
         /** @var UploadedFileInterface $file */
         foreach ($fileList as $file) {
-            // TODO check content
             // TODO allowed extensions
 
             $file    = $this->uploadFileService->toFile($file);
@@ -141,6 +147,7 @@ class Add implements RequestHandlerInterface {
 
             if (false === $isValid) {
                 $this->logger->error('invalid file with name ' . $file->getClientFilename());
+                $errorFiles[] = $file;
                 continue;
             }
             $coreFile = $this->uploadFileService->toCoreFile($file);
@@ -151,10 +158,18 @@ class Add implements RequestHandlerInterface {
                 $token->getUser()
             );
 
+            if (!in_array($coreFile->getExtension(), $allowedExtensions, true)) {
+                $this->logger->error('file with extension ' . $coreFile->getExtension() . ' not allowed');
+                $errorFiles[] = $file;
+                continue;
+            }
+
             $moved = $this->uploadFileService->moveUploadedFile($coreFile);
 
             if (false === $moved) {
                 $this->logger->error("could not move {$coreFile->getName()}");
+                $errorFiles[] = $file;
+                continue;
             }
 
             $nodeFile = new NodeFile();
@@ -172,13 +187,28 @@ class Add implements RequestHandlerInterface {
             $nodeFile->setType(NodeFile::FILE_TYPE_ATTACHMENT);
 
             $id = $this->fileRepository->add($nodeFile->getFile());
+
+            if (null === $id) {
+                $this->removeFile(
+                    Add::ERROR_NOT_INSERTED_IN_DB
+                    , $coreFile
+                );
+                $this->logger->error("could not insert {$coreFile->getName()}");
+                $errorFiles[] = $file;
+                continue;
+            }
+
             $nodeFile->getFile()->setId($id);
 
             $connected = $this->nodeFileRepository->connectFileToNode($nodeFile);
 
             if (false === $connected) {
-                // TODO clear DB
+                $this->removeFile(
+                    Add::ERROR_NOT_CONNECTED
+                    , $coreFile
+                );
                 $this->logger->error("could not connect {$nodeFile->getFile()->getId()} to {$nodeFile->getNode()->getId()}");
+                $errorFiles[] = $file;
                 continue;
             }
             $processedFiles[] = $nodeFile;
@@ -189,12 +219,19 @@ class Add implements RequestHandlerInterface {
             $this->nodeRepository->updateCredential($node);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "files" => $processedFiles
+        return new JsonResponse(
+            [
+                "files"   => $processedFiles
+                , "error" => $errorFiles
             ]
+            , IResponse::OK
         );
+    }
+
+    private function removeFile(int $type, IFile $file): void {
+        $this->uploadFileService->removeUploadedFile($file);
+        if ($type === 0) return;
+        $this->fileRepository->remove($file);
     }
 
 }

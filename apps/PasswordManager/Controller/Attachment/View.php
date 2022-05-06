@@ -57,7 +57,7 @@ class View extends AppController {
     public function run(ServerRequestInterface $request): string {
         $fileId = $request->getAttribute("fileId");
         /** @var IUser $user */
-        $user = $request->getAttribute(IToken::class)->getUser();
+        $user = $request->getAttribute(IUser::class);
 
         if (null === $fileId) {
             return $this->renderError(

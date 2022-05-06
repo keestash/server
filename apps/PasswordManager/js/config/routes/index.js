@@ -22,11 +22,12 @@ const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT = "/password_manager/public_share/de
 const PASSWORD_MANAGER_GENERATE_PASSWORD = "/password_manager/generate_password/{length}/{upperCase}/{lowerCase}/{digit}/{specialChars}/";
 const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/{value}/";
 const PASSWORD_MANAGER_ADD_COMMENT = "/password_manager/comment/add/";
-const PASSWORD_MANAGER_GET_COMMENT = "/password_manager/comment/get/{nodeId}/";
+const PASSWORD_MANAGER_GET_COMMENT = "/password_manager/comment/get/{nodeId}/{sortField/}{sortDirection/}";
 const USER_PROFILE_PICTURE = "/users/profile_pictures/{userId}/";
 const PASSWORD_MANAGER_SHAREABLE_USERS = "/password_manager/users/shareable/{nodeId}/{query}/";
 const PASSWORD_MANAGER_ATTACHMENTS_REMOVE = "/password_manager/attachments/remove/";
 const PASSWORD_MANAGER_ATTACHMENTS_GET = "/password_manager/attachments/get/{nodeId}/";
+const PASSWORD_MANAGER_ATTACHMENTS_ADD = "/password_manager/attachments/add/";
 const PASSWORD_MANAGER_USERS_UPDATE = "/password_manager/users/update/";
 const PASSWORD_MANAGER_SHARE_REMOVE = "/password_manager/share/remove/";
 const PASSWORD_MANAGER_COMMENT_REMOVE = "/password_manager/comment/remove/";
@@ -100,9 +101,17 @@ export const ROUTES = {
         return host.getApiHost() + route;
     },
 
-    getComments(nodeId) {
+    getComments(nodeId, sortField = '', sortDirection = '') {
         let route = PASSWORD_MANAGER_GET_COMMENT;
         route = route.replace("{nodeId}", nodeId);
+        if (sortField !== '') {
+            sortField = sortField + '/';
+        }
+        route = route.replace("{sortField/}", sortField);
+        if (sortDirection !== '') {
+            sortDirection = sortDirection + '/';
+        }
+        route = route.replace("{sortDirection/}", sortDirection);
         return host.getApiHost() + route;
     },
 
@@ -138,7 +147,7 @@ export const ROUTES = {
     },
 
     putAttachments() {
-        return host.getApiHost() + "/password_manager/attachments/add/";
+        return host.getApiHost() + PASSWORD_MANAGER_ATTACHMENTS_ADD;
     },
 
     getCredential(credentialId) {

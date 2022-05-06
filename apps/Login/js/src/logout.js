@@ -18,7 +18,7 @@
  */
 
 import {Logout} from "./Logout/Logout";
-import {APP_STORAGE, ROUTER, StartUp, TEMPORARY_STORAGE} from "../../../../lib/js/src/StartUp";
+import {APP_STORAGE, ROUTER, StartUp} from "../../../../lib/js/src/StartUp";
 import {Container} from "../../../../lib/js/src/DI/Container";
 
 window.addEventListener(
@@ -36,7 +36,6 @@ function bootstrap() {
     const logout = new Logout(
         diContainer.query(APP_STORAGE)
         , diContainer.query(ROUTER)
-        , diContainer.query(TEMPORARY_STORAGE)
     );
     logout.init();
 }
