@@ -1,17 +1,18 @@
 <template>
-  <div class="d-flex flex-column">
-    <Skeleton
-        v-if="this.state.value === this.state.states.STATE_LOADING"
-        height="40px"
-        width="40px"
-    />
-    <img
-        :src="this.source"
-        class="thumbnail left border-0"
-        style="height: 40px !important; width: 40px !important;"
-        v-else
-        alt="profile"
-    >
+  <div class="container-fluid d-flex flex-column justify-content-center p-0">
+    <div class="row">
+      <div class="col">
+        <div class="is-loading" v-if="this.state.value === this.state.states.STATE_LOADING"></div>
+        <img
+            :src="this.source"
+            class="rounded float-left pwm-thumbnail"
+            alt="profile"
+            v-else
+        >
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -41,7 +42,10 @@ export default {
           STATE_LOADED: STATE_LOADED
         }
       },
-      cache: {}
+      cache: {},
+      container: {
+        tempCache: null
+      }
     }
   },
   created() {
@@ -52,33 +56,36 @@ export default {
 
     const container = startUp.getContainer();
     const axios = container.query(AXIOS);
-    const tempCache = container.query(TEMPORARY_STORAGE);
-    // const cachedData = this.getCachedData(container);
+    this.container.tempCache = container.query(TEMPORARY_STORAGE);
+    const cachedData = this.getCachedData();
 
-    // if (cachedData !== null) {
-    //   this.data = cachedData;
-    //   this.state.value = STATE_LOADED;
-    //   return;
-    // }
+    if (cachedData !== null) {
+      this.data = cachedData;
+      this.state.value = STATE_LOADED;
+      return;
+    }
 
     axios.request(
         this.source
     ).then((response) => {
-      // this.data = 'data:' + response.headers['content-type'] + ';base64,' + response.data;
       this.data = response.data;
-      if (false === this.skipCache) {
-        tempCache.set(
-            this.source
-            , this.data
-        )
-      }
       this.state.value = STATE_LOADED;
+      if (true === this.skipCache) {
+        return;
+      }
+
+      this.container.tempCache.remove(this.source);
+      this.container.tempCache.set(
+          this.source
+          , this.data
+      )
+
     })
   },
   methods: {
-    getCachedData(container) {
+    getCachedData() {
       if (true === this.skipCache) return null;
-      const tempCache = container.query(TEMPORARY_STORAGE);
+      const tempCache = this.container.tempCache;
       const cachedData = tempCache.get(this.source);
       if (cachedData === null || typeof cachedData === 'undefined') return null;
       return cachedData;
@@ -87,6 +94,26 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.pwm-thumbnail {
+  height: 35px;
+  width: 35px;
+}
 
+.is-loading {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 2px;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+  display: flex;
+  height: 35px;
+  width: 35px;
+  @keyframes shine {
+    to {
+      background-position-x: -200%;
+    }
+  }
+
+}
 </style>

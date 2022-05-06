@@ -23,4 +23,8 @@ namespace KSP\Core\Repository;
 
 interface IRepository {
 
+    public const FIELD_NAME_ID = 'id';
+    public const SORT_DIR_ASC  = "ASC";
+    public const SORT_DIR_DESC = "DESC";
+
 }

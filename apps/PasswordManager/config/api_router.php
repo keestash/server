@@ -48,7 +48,7 @@ return [
             , 'name'       => Add::class
         ],
         [
-            'path'         => '/password_manager/comment/get/:nodeId[/]'
+            'path'         => '/password_manager/comment/get/:nodeId/[:sortField/][:sortDirection/]'
             , 'middleware' => [NodeAccessMiddleware::class, Get::class]
             , 'method'     => IVerb::GET
             , 'name'       => Get::class

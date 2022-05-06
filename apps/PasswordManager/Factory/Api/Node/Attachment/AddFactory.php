@@ -43,7 +43,6 @@ class AddFactory {
             , $container->get(ILogger::class)
             , $container->get(Config::class)
             , $container->get(IJWTService::class)
-            , $container->get(AccessService::class)
         );
     }
 

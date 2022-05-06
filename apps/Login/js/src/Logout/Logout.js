@@ -23,21 +23,17 @@ export class Logout {
      *
      * @param {AppStorage} appStorage
      * @param {Router} router
-     * @param {TemporaryStorage} temporaryStorage
      */
     constructor(
         appStorage
         , router
-        , temporaryStorage
     ) {
         this.appStorage = appStorage;
         this.router = router;
-        this.temporaryStorage = temporaryStorage;
     }
 
     init() {
         this.appStorage.clearAPICredentials();
-        this.temporaryStorage.clear();
         this.router.routeTo("/login");
     }
 }
