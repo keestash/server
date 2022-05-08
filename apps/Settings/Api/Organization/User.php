@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\Organization;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\UserChangedEvent;
+use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSP\Api\IResponse;
@@ -64,26 +64,30 @@ class User implements RequestHandlerInterface {
         $userId         = $parameters["user_id"] ?? null;
 
         if ("" === $organizationId || false === is_numeric($organizationId)) {
-            throw new GeneralApiException('no organization');
+            throw new SettingsException('no organization');
         }
         if ("" === $userId || false === is_numeric($userId)) {
-            throw new GeneralApiException('no user');
+            throw new SettingsException('no user');
         }
 
         $organization = $this->organizationRepository->get((int) $organizationId);
         $user         = $this->userRepository->getUserById((string) $userId);
 
         if (null === $organization) {
-            throw new GeneralApiException('no organization found');
+            throw new SettingsException('no organization found');
         }
         if (null === $user) {
-            throw new GeneralApiException('no user found');
+            throw new SettingsException('no user found');
         }
 
         switch ($mode) {
             case User::MODE_ADD:
-                $organization->addUser($user);
-                $this->organizationUserRepository->insert($organization);
+
+                if (true === $organization->hasUser($user)) {
+                    throw new SettingsException('user still in organization');
+                }
+
+                $this->organizationUserRepository->insert($user, $organization);
 
                 break;
             case User::MODE_REMOVE;
@@ -91,7 +95,7 @@ class User implements RequestHandlerInterface {
 
                 break;
             default:
-                throw new GeneralApiException('no mode given');
+                throw new SettingsException('no mode given');
         }
 
         $this->eventManager
@@ -99,11 +103,9 @@ class User implements RequestHandlerInterface {
                 new UserChangedEvent($organization)
             );
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                'messages' => 'ok'
-            ]
+        return new JsonResponse(
+            []
+            , IResponse::OK
         );
     }
 

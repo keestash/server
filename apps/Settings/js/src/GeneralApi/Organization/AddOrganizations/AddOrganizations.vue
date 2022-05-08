@@ -166,19 +166,9 @@ export default {
         ROUTES.GET_ORGANIZATION_LIST(true)
     )
         .then(
-            (r) => {
-              return r.data
-            }
-        )
-        .then(
-            (data) => {
-              return data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES]["organizations"];
-            }
-        )
-        .then(
-            (organizations) => {
-              console.log(organizations.length);
-              this.organization.list = organizations;
+            (response) => {
+              const data = response.data;
+              this.organization.list = data.organizations;
               this.state.value = this.organization.list.length === 0 ? STATE_LOADED_NO_ORGANIZATIONS : STATE_LOADED_ORGANIZATIONS_EXIST;
             }
         )

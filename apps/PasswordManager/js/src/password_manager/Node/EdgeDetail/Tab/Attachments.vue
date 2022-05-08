@@ -190,7 +190,7 @@ export default {
           ROUTES.putAttachments()
           , formData
       ).then((response) => {
-
+          console.log(response)
         let newNode = _.cloneDeep(this.edge.node);
 
         for (let i = 0; i < response.data.files.length; i++) {
