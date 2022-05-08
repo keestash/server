@@ -1,23 +1,21 @@
 <template>
   <div>
-    <div class="tab-pane" id="pwm__pw__generator" role="tabpanel">
-      <div class="container mt-3 ">
+    <div class="tab-pane" role="tabpanel">
+      <div class="container mt-3">
         <div class="row">
           <div class="col p-0">
             <div class="input-group">
               <div class="container">
                 <template v-if="this.state.value === this.state.states.STATE_LOADED">
                   <input :placeholder="$t('credential.detail.passwordGeneratorPlaceholder')"
-                         id="pwm__generator__input"
                          type="text"
                          class="form-control form-control-sm"
                          readonly
                          v-model="password"
                   >
                 </template>
-                <Skeleton height="25px" v-else/>
+                <IsLoading v-else class="my-is-loading"></IsLoading>
               </div>
-
             </div>
           </div>
         </div>
@@ -25,14 +23,14 @@
           <div class="col mt-1 p-0">
             <div class="container">
               <div class="row justify-content-between">
-                <div class="col-4">
+                <div class="col-4 d-flex ks-gap-025">
                   <small>{{ $t('credential.detail.qualityLabel') }}:</small>
                   <template v-if="this.state.value === this.state.states.STATE_LOADED">
                     <small>{{ this.qualityValue }}</small>
                   </template>
-                  <Skeleton height="25px" width="75%" v-else/>
+                    <IsLoading v-else class="my-is-loading"></IsLoading>
                 </div>
-                <div class="col-4">
+                <div class="col-4 d-flex ks-gap-025">
                   <small>{{ $t('credential.detail.entropyLabel') }}:</small>
                   <template v-if="this.state.value === this.state.states.STATE_LOADED">
                     <small>{{ entropyFormatted }}</small>
@@ -45,16 +43,15 @@
         </div>
         <small>{{ $t('credential.detail.characterTypes') }}</small>
 
-        <div class="border rounded">
+        <div class="border rounded container-fluid">
           <div class="row">
             <div class="col mt-2">
               <div class="form-check">
-
-                <input type="checkbox"
+                <input class="form-check-input"
+                       type="checkbox"
                        @change="onCheckbox($event,'upperCase')"
-                       :disabled="isLoading"
-                >
-                <label>{{ $t('credential.detail.upperCaseLabel') }}</label>
+                       :disabled="isLoading">
+                <label class="form-check-label">{{ $t('credential.detail.upperCaseLabel') }}</label>
               </div>
             </div>
           </div>
@@ -62,10 +59,11 @@
             <div class="col mt-2">
               <div class="form-check">
                 <input type="checkbox"
+                       class="form-check-input"
                        @change="onCheckbox($event,'lowerCase')"
                        :disabled="isLoading"
                 >
-                <label>{{ $t('credential.detail.lowerCaseLabel') }}</label>
+                <label class="form-check-label">{{ $t('credential.detail.lowerCaseLabel') }}</label>
               </div>
             </div>
           </div>
@@ -73,10 +71,11 @@
             <div class="col mt-2">
               <div class="form-check">
                 <input type="checkbox"
+                       class="form-check-input"
                        @change="onCheckbox($event,'digit')"
                        :disabled="isLoading"
                 >
-                <label>{{ $t('credential.detail.digitLabel') }}</label>
+                <label class="form-check-label">{{ $t('credential.detail.digitLabel') }}</label>
               </div>
             </div>
           </div>
@@ -86,15 +85,16 @@
                 <input type="checkbox"
                        @change="onCheckbox($event,'specialChar')"
                        :disabled="isLoading"
+                       class="form-check-input"
                 >
-                <label>{{ $t('credential.detail.specialCharacterLabel') }}</label>
+                <label class="form-check-label">{{ $t('credential.detail.specialCharacterLabel') }}</label>
               </div>
             </div>
           </div>
         </div>
         <hr>
         <div class="row">
-          <div class="col" id="pwm__range__input__wrapper">
+          <div class="col">
             <input
                 class="form-control-range"
                 type="range"
@@ -112,7 +112,7 @@
             <span>{{ minPasswordCharacters }}</span>
           </div>
           <div class="col">
-            <span id="pwm__character__count">{{ characterCount }}</span>
+            <span>{{ characterCount }}</span>
           </div>
           <div class="col">
             <span>{{ maxPasswordCharacters }}</span>
@@ -140,18 +140,19 @@ import {AXIOS, StartUp} from "../../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
 import {Skeleton} from 'vue-loading-skeleton';
+import IsLoading from "../../../../../../../../lib/js/src/Components/IsLoading";
 
 const STATE_LOADING = 2;
 const STATE_LOADED = 3;
 
 export default {
   name: "PasswordGenerator",
-  components: {Skeleton},
+  components: {IsLoading, Skeleton},
   data() {
     return {
       characterCount: 0,
       password: null,
-      qualityValue: "",
+      qualityValue: "---",
       entropyValue: "",
       minPasswordCharacters: 8,
       maxPasswordCharacters: 50,
@@ -257,6 +258,13 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.ks-gap-025 {
+  gap: 0.25rem;
 
+}
+
+.my-is-loading {
+  height: 35px;
+}
 </style>

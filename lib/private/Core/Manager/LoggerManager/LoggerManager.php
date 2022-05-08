@@ -57,7 +57,7 @@ class LoggerManager implements ILoggerManager {
         $logger        = new Logger(ILoggerManager::FILE_LOGGER);
         $streamHandler = new StreamHandler(
             $this->getLogfilePath()
-            , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)
+            , $this->configService->getValue("log_level", \Monolog\Logger::ERROR)
         );
         $streamHandler->setFormatter(
             new JsonFormatter()

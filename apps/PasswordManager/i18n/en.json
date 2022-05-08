@@ -8,7 +8,7 @@
       "addToOrganization": {
         "title": "Add Node To Organization",
         "noOrganizationsAvailable": "No Organizations Available",
-        "description": "You can select one of the following organizations`"
+        "description": "You can select one of the following organizations"
       }
     },
     "selection": {
@@ -58,7 +58,7 @@
         "addToOrganization": {
           "title": "Add Node To Organization",
           "noOrganizationsAvailable": "No Organizations Available",
-          "description": "You can select one of the following organizations`"
+          "description": "You can select one of the following organizations"
         }
       },
       "userNameLabel": "Username",

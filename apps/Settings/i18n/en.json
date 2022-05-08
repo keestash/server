@@ -8,5 +8,28 @@
       "phone": "Phone",
       "website": "Website"
     }
+  },
+  "organization": {
+    "description": "you can edit the organization here. Add new members, change properties, etc.",
+    "id": {
+      "label": "ID"
+    },
+    "name": {
+      "label": "Name"
+    },
+    "active": {
+      "label": "Active"
+    },
+    "created": {
+      "label": "Active"
+    },
+    "members": {
+      "description": "you can edit the organization here. Add new members, change properties, etc.",
+      "noUser": "No Users assigned",
+      "noUserDescription": "No Users are added to the organization",
+      "dropdown": {
+        "firstElement": "Please select one"
+      }
+    }
   }
 }

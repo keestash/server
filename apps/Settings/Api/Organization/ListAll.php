@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -79,11 +80,11 @@ class ListAll implements RequestHandlerInterface {
             }
         );
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "organizations" => $result
             ]
+            , IResponse::OK
         );
     }
 

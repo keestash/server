@@ -2,19 +2,27 @@
 declare(strict_types=1);
 /**
  * Keestash
- * Copyright (C) 2019 Dogan Ucar <dogan@dogan-ucar.de>
  *
- * End-User License Agreement (EULA) of Keestash
- * This End-User License Agreement ("EULA") is a legal agreement between you and Keestash
- * This EULA agreement governs your acquisition and use of our Keestash software ("Software") directly from Keestash or
- * indirectly through a Keestash authorized reseller or distributor (a "Reseller"). Please read this EULA agreement
- * carefully before completing the installation process and using the Keestash software. It provides a license to use
- * the Keestash software and contains warranty information and liability disclaimers.
+ * Copyright (C) <2022> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 namespace KSA\PasswordManager\Api\Node\Credential;
 
 use doganoo\DI\Object\String\IStringService;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
@@ -45,7 +53,6 @@ class Update implements RequestHandlerInterface {
     private CredentialService $credentialService;
     private IL10N             $translator;
     private ILogger           $logger;
-    private AccessService     $accessService;
 
     public function __construct(
         IL10N               $l10n
@@ -53,14 +60,12 @@ class Update implements RequestHandlerInterface {
         , IStringService    $stringService
         , CredentialService $credentialService
         , ILogger           $logger
-        , AccessService     $accessService
     ) {
         $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
         $this->stringService     = $stringService;
         $this->credentialService = $credentialService;
         $this->logger            = $logger;
-        $this->accessService     = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -75,15 +80,6 @@ class Update implements RequestHandlerInterface {
         $hasChanges = false;
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
-
-        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no node found")
-                ]
-            );
-        }
 
         if (false === ($node instanceof Credential)) {
             throw new CredentialException();
@@ -109,12 +105,12 @@ class Update implements RequestHandlerInterface {
             , $name
         );
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "message"       => $this->translator->translate("updated")
                 , "has_changes" => $hasChanges
             ]
+            , IResponse::OK
         );
 
 

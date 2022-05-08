@@ -22,14 +22,13 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -61,7 +60,7 @@ class Get implements RequestHandlerInterface {
 
         if (null === $organization) {
             return new JsonResponse(
-                ''
+                []
                 , IResponse::NOT_FOUND
             );
         }
@@ -90,12 +89,12 @@ class Get implements RequestHandlerInterface {
             }
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 'organization' => $organization
                 , 'users'      => $candidates
             ]
+            , IResponse::OK
         );
     }
 

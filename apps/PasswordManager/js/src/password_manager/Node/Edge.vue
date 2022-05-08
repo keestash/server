@@ -1,5 +1,6 @@
 <template>
-  <div class="pwm__row container-fluid pt-1 pb-1" :class="isFirst ? '' : 'pwm__row__border'" @click="$emit('wasClicked')">
+  <div class="pwm__row container-fluid pt-1 pb-1" :class="isFirst ? '' : 'pwm__row__border'"
+       @click="$emit('wasClicked')">
     <div class="row align-items-center">
       <div class="col-6 col-md-2 h2 m-0 d-flex">
         <img
@@ -130,6 +131,9 @@ export default {
             {
               label: this.$t('edge.selection.addToOrganization'),
               onClick: () => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
                 this.$refs['modal1' + this.edge.node.id].showModal();
               },
             }
@@ -140,6 +144,9 @@ export default {
           {
             label: this.$t('edge.selection.remove'),
             onClick: () => {
+              e.preventDefault();
+              e.stopPropagation();
+              e.stopImmediatePropagation();
               this.$emit('wasDeleted');
             },
           }
@@ -166,14 +173,8 @@ export default {
               false
           )
       )
-          .then((r) => {
-            if (RESPONSE_CODE_OK in r.data) {
-              return r.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-          .then((data) => {
-
+          .then((response) => {
+            const data = response.data;
             const organizations = [];
 
             for (let index in data.organizations) {
@@ -215,6 +216,7 @@ export default {
       }
     },
     submitOrganization: function (selected) {
+        console.log(selected)
       this.container.services.axios.httpPut(
           ROUTES.getOrganizationsAddNode(),
           {

@@ -30,28 +30,18 @@
             class="row mb-4"
             v-if="edge.node.organization !== null"
         >
-          <div
-              class="col"
-              v-if="!this.organization.loading"
-          >
-
-                        <span
-                            class="badge bg-info clickable"
-                            :title="$t('credential.detail.organization.description')"
-                            @click="openModalClick"
-                        >
-                            {{ edge.node.organization.name }}
-                        </span>
+          <div class="col-md-auto">
+              <span
+                  class="badge bg-info clickable text-white"
+                  :title="$t('credential.detail.organization.description')"
+              >{{ edge.node.organization.name }}
+              </span>
             <span
-                class="badge bg-secondary"
+                class="badge bg-secondary clickable text-white ml-1"
                 :title="$t('credential.detail.organization.description')"
-                data-bs-toggle="modal" data-target="#remove-organization-modal"
-            >
-                            x
-                        </span>
-          </div>
-          <div class="col" v-else>
-            <Skeleton width="5px"></Skeleton>
+                @click="onOrganizationModalClick"
+            >x
+            </span>
           </div>
 
         </div>
@@ -138,7 +128,7 @@
                     }}
                   </div>
                 </button>
-                <button class="btn btn-primary" @click="openUrl">{{
+                <button class="btn btn-primary ml-1" @click="openUrl">{{
                     $t('credential.url.external.proceed')
                   }}
                 </button>
@@ -148,16 +138,6 @@
         </div>
       </div>
     </div>
-
-    <SelectableListModal
-        ref-id="modal-update-organization"
-        @onSubmit="updateOrganization"
-        :options="organization.list"
-        :loading="organization.loading"
-        :no-data-text="$t('credential.detail.organization.addToOrganization.noOrganizationsAvailable')"
-        :modal-title="$t('credential.detail.organization.addToOrganization.title')"
-        :description="$t('credential.detail.organization.addToOrganization.description')"
-    ></SelectableListModal>
 
     <div class="modal" tabindex="-1" role="dialog" id="remove-organization-modal">
       <div class="modal-dialog" role="document">
@@ -169,9 +149,12 @@
             </button>
           </div>
           <div class="modal-body">
-            <form ref="form" @submit.stop.prevent="removeOrganization">
+            <form ref="form">
               <div class="h6">Do you really want to remove the node from the organization?</div>
             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @click="removeOrganization">Yes</button>
           </div>
         </div>
       </div>
@@ -195,10 +178,11 @@ import SelectableListModal from "../../Component/Modal/SelectableListModal";
 import {Host} from "../../../../../../../lib/js/src/Backend/Host";
 import {Skeleton} from "vue-loading-skeleton";
 import {Modal} from 'bootstrap';
+import IsLoading from "../../../../../../../lib/js/src/Components/IsLoading";
 
 export default {
   name: "EdgeDetail",
-  components: {Skeleton, SelectableListModal, Tab},
+  components: {IsLoading, Skeleton, SelectableListModal, Tab},
   data() {
     return {
       container: [],
@@ -230,6 +214,7 @@ export default {
   },
   watch: {
     edge(newEdge, oldEdge) {
+      if (null === newEdge) return;
       if (newEdge.id !== oldEdge.id) {
         if (false === this.passwordField.visible) {
           return;
@@ -291,22 +276,14 @@ export default {
 
     updateCredential(input) {
       const axios = this.axios;
-
       _.debounce(
           () => {
             this.saving = true;
             axios.post(
                 ROUTES.getPasswordManagerUsersUpdate()
                 , input
-            ).then(
-                (response) => {
-                  this.saving = false;
-                  if (RESPONSE_CODE_OK in response.data) {
-                    return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-                  }
-                  return [];
-                }
-            ).then((data) => {
+            ).then(() => {
+              this.saving = false;
               this.$store.dispatch(
                   "updateSelectedNode"
                   , input
@@ -323,48 +300,18 @@ export default {
 
       this.updateCredential({
         name: newName
-        , username: this.edge.node.username.plain
-        , url: this.edge.node.url.plain
+        , username: {
+          plain: this.edge.node.username.plain
+        }
+        , url: {
+          plain: this.edge.node.url.plain
+        }
         , nodeId: this.edge.node.id
       });
     },
-    openModalClick: function () {
-      this.organizationsLoading = true;
-      this.axios.get(
-          ROUTES.getAllOrganizations(
-              this.appStorage.getUserHash(),
-              false
-          )
-      )
-          .then((r) => {
-            if (RESPONSE_CODE_OK in r.data) {
-              return r.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-          .then((data) => {
-
-            const organizations = [];
-
-            for (let index in data.organizations) {
-              const organization = data.organizations[index];
-
-              if (null !== this.edge.node.organization && this.edge.node.organization.id === organization.id) {
-                continue;
-              }
-
-              organizations.push(
-                  {
-                    value: organization.id
-                    , text: organization.name
-                  }
-              )
-            }
-            this.organization.loading = false;
-            this.organization.list = organizations;
-            this.$emit('onOpenModalClick', 'modal-update-organization');
-          });
-
+    onOrganizationModalClick: function () {
+      const m = new Modal("#remove-organization-modal");
+      m.show();
     },
     updatePasswordRemote(newPassword) {
 
@@ -405,8 +352,12 @@ export default {
       if (newUserName === this.edge.node.username.plain || newUserName === "") return;
       this.updateCredential({
         name: this.edge.node.name
-        , username: newUserName
-        , url: this.edge.node.url.plain
+        , username: {
+          plain: newUserName
+        }
+        , url: {
+            plain: this.edge.node.url.plain
+          }
         , nodeId: this.edge.node.id
       });
     },
@@ -415,8 +366,12 @@ export default {
       if (newUrl === this.edge.node.url.plain || newUrl === "") return;
       this.updateCredential({
         name: this.edge.node.name
-        , username: this.edge.node.username.plain
-        , url: newUrl
+        , username: {
+          plain: this.edge.node.username.plain
+        }
+        , url: {
+            plain: newUrl
+          }
         , nodeId: this.edge.node.id
       });
     },
@@ -487,7 +442,10 @@ export default {
       this.organization.selected = null;
       this.organization.list = [];
     },
-    removeOrganization() {
+    removeOrganization(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
       this.saving = true;
       this.axios.delete(
           ROUTES.getOrganizationsRemoveNode(),
@@ -545,5 +503,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.node-edge-detail-is-loading {
+  height: 0.25rem;
+}
 
 </style>

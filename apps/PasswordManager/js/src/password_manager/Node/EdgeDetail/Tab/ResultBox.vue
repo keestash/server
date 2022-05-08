@@ -163,7 +163,6 @@ export default {
     },
 
     getDescription() {
-      console.log('getdescription')
       if (this.type === 'user') {
         return this.$t('credential.detail.share.sharedDateTimeLabel');
       } else if (this.type === 'comment') {

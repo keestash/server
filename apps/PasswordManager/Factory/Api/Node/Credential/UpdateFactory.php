@@ -39,7 +39,6 @@ class UpdateFactory {
             , $container->get(IStringService::class)
             , $container->get(CredentialService::class)
             , $container->get(ILogger::class)
-            , $container->get(AccessService::class)
         );
     }
 

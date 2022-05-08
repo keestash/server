@@ -174,7 +174,7 @@ class OrganizationRepository implements IOrganizationRepository {
                     $organization->getActiveTs()
                 )
             )
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
@@ -182,7 +182,6 @@ class OrganizationRepository implements IOrganizationRepository {
             throw new SettingsException();
         }
         $organization->setId((int) $lastInsertId);
-        $organization = $this->organizationUserRepository->insert($organization);
         return $organization;
     }
 
