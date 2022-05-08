@@ -1,18 +1,15 @@
 <template>
   <div class="flex-grow-1 d-flex justify-content-center">
     <div style="min-width: 70vw">
-      <div class="container mt-2">
+      <div class="container mt-3">
         <template v-if="this.state.value === this.state.states.STATE_LOADED">
           <h3>{{ this.organization.name }}</h3>
         </template>
-        <Skeleton :height="this.state.height" v-else/>
+        <IsLoading v-else class="organization-is-loading"></IsLoading>
       </div>
 
       <div class="container">
-        <template v-if="this.state.value === this.state.states.STATE_LOADED">
-          <p>you can edit the organization here. Add new members, change properties, etc.</p>
-        </template>
-        <Skeleton :height="this.state.height" v-else/>
+        <p>{{ $t('organization.description') }}</p>
       </div>
 
       <div class="mb-4 ps-5 pe-5">
@@ -21,21 +18,21 @@
       <div class="container d-flex mt-2">
         <div class=" row my-1 flex-grow-1 d-flex justify-content-between">
           <div class="col-sm-3">
-            <label>ID</label>
+            <label>{{ $t('organization.id.label') }}</label>
 
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
               <input type="text" class="form-control" v-model="organization.id" readonly>
             </template>
-            <Skeleton :height="this.state.height" v-else/>
+            <IsLoading v-else class="organization-is-loading"></IsLoading>
 
           </div>
           <div class="col-sm-3">
-            <label>Name</label>
+            <label>{{ $t('organization.name.label') }}</label>
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
               <input type="text" class="form-control" id="range-2" v-model="organization.name" @change="onInputChange"
                      readonly>
             </template>
-            <Skeleton :height="this.state.height" v-else/>
+            <IsLoading v-else class="organization-is-loading"></IsLoading>
 
           </div>
         </div>
@@ -43,22 +40,22 @@
       <div class="container d-flex">
         <div class="row my-1 flex-grow-1 d-flex justify-content-between">
           <div class="col-sm-3">
-            <label>Active</label>
+            <label>{{ $t('organization.active.label') }}</label>
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
               <input type="text"
                      class="form-control"
                      v-model="organization.active_ts.date"
                      readonly>
             </template>
-            <Skeleton :height="this.state.height" v-else/>
+            <IsLoading v-else class="organization-is-loading"></IsLoading>
 
           </div>
           <div class="col-sm-3">
-            <label>Created</label>
+            <label>{{ $t('organization.created.label') }}</label>
             <template v-if="this.state.value === this.state.states.STATE_LOADED">
               <input type="text" v-model="organization.create_ts.date" readonly class="form-control">
             </template>
-            <Skeleton :height="this.state.height" v-else/>
+            <IsLoading v-else class="organization-is-loading"></IsLoading>
 
           </div>
         </div>
@@ -70,21 +67,18 @@
         <h4>Members</h4>
       </div>
       <div class="container">
-        <template v-if="this.state.value === this.state.states.STATE_LOADED">
-          <p>you can edit the organization here. Add new members, change properties, etc.</p>
-        </template>
-        <Skeleton :height="this.state.height" v-else/>
+        <p>{{ $t('organization.members.description') }}</p>
       </div>
       <div class="container mt-2">
         <template v-if="this.state.value === this.state.states.STATE_LOADED">
           <select class="form-control" v-model="candidates.selected" @change="optionSelected">
-            <option disabled value="">Please select one</option>
+            <option disabled :value="$t('organization.members.dropdown.firstElement')"></option>
             <option :value="size.id" v-for="size in candidates.values" v-bind:key="candidates.id">
               {{ size.name }}
             </option>
           </select>
         </template>
-        <Skeleton :height="this.state.height" v-else/>
+        <IsLoading v-else class="organization-is-loading"></IsLoading>
 
       </div>
       <div class="container mt-2">
@@ -98,12 +92,12 @@
             </li>
           </ul>
         </template>
-        <Skeleton :height="this.state.height" v-else/>
+        <IsLoading v-else class="organization-is-loading"></IsLoading>
 
         <NoDataFound
             :visible="this.organization.users.content.length === 0 && this.state.value === this.state.states.STATE_LOADED"
-            header="No Users assigned"
-            text="No Users are added to the organization"
+            :header="$t('organization.members.noUser')"
+            :text="$t('organization.members.noUserDescription')"
         ></NoDataFound>
 
       </div>
@@ -115,24 +109,25 @@
 import {AXIOS, StartUp} from "../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../lib/js/src/DI/Container";
 import {MODE_ADD, MODE_REMOVE, ROUTES} from "../../../../config/routes/index";
-import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../lib/js/src/Backend/Axios";
 import NoDataFound from "../../../../../../../lib/js/src/Components/NoDataFound";
 import {Skeleton} from 'vue-loading-skeleton';
+import IsLoading from "../../../../../../../lib/js/src/Components/IsLoading";
 
 const STATE_LOADING = 1;
 const STATE_LOADED = 2;
 
 export default {
   name: "App",
-  components: {NoDataFound, Skeleton},
+  components: {IsLoading, NoDataFound, Skeleton},
   methods: {
 
-    handleRemove(userId) {
+    handleRemove: function (userId) {
+      userId = parseInt(userId);
       const startUp = new StartUp(
           new Container()
       );
       startUp.setUp();
-
+      const self = this;
       const container = startUp.getContainer();
       const axios = container.query(AXIOS);
 
@@ -143,30 +138,37 @@ export default {
             , organization_id: this.organization.id
             , user_id: userId
           }
-      );
-
-      let selectedUser = null;
-      this.organization.users.content = this.organization.users.content.filter(function (user) {
-
-        if (user.id === userId) {
-          selectedUser = user;
-        }
-        return user.id !== userId;
-      });
-
-      this.candidates.values.push(
-          selectedUser
       )
+          .then(
+              function () {
+                let selectedUser = null;
+                self.organization.users.content =
+                    self.organization.users.content.filter(
+                        function (user) {
 
-      this.$forceUpdate();
+                          if (user.id === userId) {
+                            selectedUser = user;
+                          }
+                          return user.id !== userId;
+                        }
+                    );
+
+                self.candidates.values.push(
+                    selectedUser
+                )
+
+                // self.$forceUpdate();
+              }
+          )
     },
-    optionSelected(event) {
-      const userId = event.target.value;
+    optionSelected: function (event) {
+      const userId = parseInt(event.target.value);
       const startUp = new StartUp(
           new Container()
       );
       startUp.setUp();
 
+      const self = this;
       const container = startUp.getContainer();
       const axios = container.query(AXIOS);
 
@@ -177,23 +179,28 @@ export default {
             , organization_id: this.organization.id
             , user_id: userId
           }
-      );
-
-      let selectedUser = null;
-      this.candidates.values = this.candidates.values.filter(function (user) {
-
-        if (user.id === userId) {
-          selectedUser = user;
-        }
-        return user.id !== userId;
-      });
-
-      this.organization.users.content.push(
-          selectedUser
       )
+          .then(
+              function () {
+                let selectedUser = null;
+                self.candidates.values =
+                    self.candidates.values.filter(function (user) {
 
-      this.organization.selected = '';
-      this.$forceUpdate();
+                      if (user.id === userId) {
+                        selectedUser = user;
+                      }
+                      return user.id !== userId;
+                    });
+
+                self.organization.users.content.push(
+                    selectedUser
+                )
+
+                self.organization.selected = '';
+                // self.$forceUpdate();
+              }
+          )
+
     },
     onInputChange() {
       const startUp = new StartUp(
@@ -232,18 +239,14 @@ export default {
     axios.request(
         ROUTES.GET_ORGANIZATION_GET(dataNode.dataset.organization_id)
     )
-        .then((response) => {
-          return response.data
-        })
-        .then((data) => {
-
-          if (RESPONSE_CODE_OK in data) {
-            this.organization = data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES].organization;
-            this.candidates.values = (data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES].users.content);
-            this.state.value = STATE_LOADED;
-          }
-        })
-
+        .then(
+            (response) => {
+              const data = response.data;
+              this.organization = data.organization;
+              this.candidates.values = data.users.content;
+              this.state.value = STATE_LOADED;
+            }
+        )
 
   },
   data() {
@@ -278,6 +281,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.organization-is-loading {
+  height: 30px;
+}
 </style>

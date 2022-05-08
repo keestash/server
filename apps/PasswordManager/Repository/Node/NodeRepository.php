@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Repository\Node;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Result;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
@@ -410,7 +409,7 @@ class NodeRepository {
                 ->setParameter(1, Edge::TYPE_SHARE)
                 ->executeStatement() !== 0;
 
-        if (true === $removed) {
+        if (true === $removed || 0 === $node->getSharedTo()->length()) {
             $node->setSharedTo(new ArrayList());
             return $node;
         }

@@ -28,7 +28,7 @@ interface IOrganizationUserRepository {
 
     public function getByOrganization(IOrganization $organization): IOrganization;
 
-    public function insert(IOrganization $organization): IOrganization;
+    public function insert(IUser $user, IOrganization $organization): IOrganization;
 
     public function remove(IUser $user, IOrganization $organization): bool;
 

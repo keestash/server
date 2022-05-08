@@ -23,7 +23,6 @@ namespace KSA\Settings\Repository;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -74,32 +73,31 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
         return $organization;
     }
 
-    public function insert(IOrganization $organization): IOrganization {
+    public function insert(IUser $user, IOrganization $organization): IOrganization {
 
         /** @var IUser $user */
-        foreach ($organization->getUsers() as $user) {
-            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-            $queryBuilder->insert('user_organization')
-                ->values(
-                    [
-                        'organization_id' => '?'
-                        , 'user_id'       => '?'
-                        , 'create_ts'     => '?'
-                    ]
-                )
-                ->setParameter(0, $organization->getId())
-                ->setParameter(1, $user->getId())
-                ->setParameter(2,
-                    $this->dateTimeService->toYMDHIS(new DateTime())
-                )
-                ->execute();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->insert('user_organization')
+            ->values(
+                [
+                    'organization_id' => '?'
+                    , 'user_id'       => '?'
+                    , 'create_ts'     => '?'
+                ]
+            )
+            ->setParameter(0, $organization->getId())
+            ->setParameter(1, $user->getId())
+            ->setParameter(2,
+                $this->dateTimeService->toYMDHIS(new DateTime())
+            )
+            ->executeStatement();
 
-            $lastInsertId = $this->backend->getConnection()->lastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-            if (false === is_numeric($lastInsertId)) {
-                throw new GeneralApiException();
-            }
+        if (false === is_numeric($lastInsertId)) {
+            throw new SettingsException();
         }
+
         return $organization;
     }
 
@@ -110,7 +108,7 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
                 ->andWhere('organization_id = ?')
                 ->setParameter(0, $user->getId())
                 ->setParameter(1, $organization->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
 }

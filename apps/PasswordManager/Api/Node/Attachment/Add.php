@@ -140,8 +140,6 @@ class Add implements RequestHandlerInterface {
 
         /** @var UploadedFileInterface $file */
         foreach ($fileList as $file) {
-            // TODO allowed extensions
-
             $file    = $this->uploadFileService->toFile($file);
             $isValid = $this->uploadFileService->validateUploadedFile($file);
 
@@ -158,7 +156,7 @@ class Add implements RequestHandlerInterface {
                 $token->getUser()
             );
 
-            if (!in_array($coreFile->getExtension(), $allowedExtensions, true)) {
+            if (false === in_array($coreFile->getExtension(), $allowedExtensions, true)) {
                 $this->logger->error('file with extension ' . $coreFile->getExtension() . ' not allowed');
                 $errorFiles[] = $file;
                 continue;

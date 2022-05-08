@@ -186,11 +186,6 @@ parameters:
 			path: ../../apps/Settings/Api/Organization/Activate.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/User.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserAdd.php

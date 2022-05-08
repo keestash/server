@@ -28,12 +28,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Detail extends AppController {
 
-    public const TEMPLATE_NAME_ORGANIZATION_DETAIL = "organization_detail.twig";
-
     private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
-        IAppRenderer $appRenderer
+        IAppRenderer                $appRenderer
         , TemplateRendererInterface $templateRenderer
     ) {
         parent::__construct($appRenderer);

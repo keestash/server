@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="modal" tabindex="-1" role="dialog" id="dasistdashausvonnikolaus">
+    <div class="modal" tabindex="-1" role="dialog" id="selectable-list-modal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -18,15 +18,13 @@
                 <span class="sr-only"></span>
               </div>
             </div>
-
-            <form ref="form" @submit.stop.prevent="onSubmit" v-else-if="!loading && options.length > 0">
-              <div class="form-group">
-                <select class="form-control" v-model="selected">
-                  <option v-for="option in options" size="4">{{ option }}</option>
-                </select>
-              </div>
-
-            </form>
+            <div class="form-group" v-else-if="!loading && options.length > 0">
+              <select class="form-control" v-model="selectedOption">
+                <option v-for="option in options" size="4" :value="option.value" v-bind:key="option.value">
+                  {{ option.text }}
+                </option>
+              </select>
+            </div>
             <div class="alert alert-info" role="alert" v-else
                  :class="(!loading && options.length === 0) ? 'show' : 'hide'">
               {{ noDataText }}
@@ -64,20 +62,28 @@ export default {
   },
   data() {
     return {
-      selected: null,
+      selectedOption: null,
+    }
+  },
+  computed: {
+    isLoading() {
+      return this.loading === true;
     }
   },
   methods: {
     showModal() {
-      const modal = new Modal("#dasistdashausvonnikolaus");
+      const modal = new Modal("#selectable-list-modal");
       modal.show();
       this.onOpen();
     },
     resetModal() {
-      this.selected = null;
+      this.selectedOption = null;
     },
-    onSubmit() {
-      this.$emit('onSubmit', this.selected);
+    onSubmit: function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      this.$emit('onSubmit', this.selectedOption);
     },
     onOpen() {
       this.$emit('onOpen');
