@@ -24,6 +24,7 @@ namespace KSA\Settings\Factory\Api\User;
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserEdit;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
@@ -36,6 +37,7 @@ class UserEditFactory {
             , $container->get(IUserRepository::class)
             , $container->get(UserService::class)
             , $container->get(IUserRepositoryService::class)
+            , $container->get(IJWTService::class)
         );
     }
 

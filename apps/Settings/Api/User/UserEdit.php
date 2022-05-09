@@ -22,11 +22,14 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
@@ -39,17 +42,20 @@ class UserEdit implements RequestHandlerInterface {
     private UserService            $userService;
     private IL10N                  $translator;
     private IUserRepositoryService $userRepositoryService;
+    private IJWTService            $jwtService;
 
     public function __construct(
         IL10N                    $l10n
         , IUserRepository        $userRepository
         , UserService            $userService
         , IUserRepositoryService $userRepositoryService
+        , IJWTService            $jwtService
     ) {
         $this->userRepository        = $userRepository;
         $this->userService           = $userService;
         $this->translator            = $l10n;
         $this->userRepositoryService = $userRepositoryService;
+        $this->jwtService            = $jwtService;
     }
 
     private function hasDifferences(IUser $repoUser, IUser $newUser): bool {
@@ -65,7 +71,7 @@ class UserEdit implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = json_decode((string) $request->getBody(), true);
-        $user       = $this->userService->toUser(json_decode($parameters['user'], true));
+        $user       = $this->userService->toUser($parameters['user']);
         $repoUser   = $this->userRepository->getUserById((string) $user->getId());
 
         if (null === $repoUser) {
@@ -100,6 +106,15 @@ class UserEdit implements RequestHandlerInterface {
         $repoUser->setPhone($user->getPhone());
         $repoUser->setLocked($user->isLocked());
         $repoUser->setDeleted($user->isDeleted());
+        $repoUser->setJWT(
+            $this->jwtService->getJWT(
+                new Audience(
+                    IAudience::TYPE_USER
+                    , (string) $repoUser->getId()
+                )
+            )
+        );
+
 
         $updated = $this->userRepositoryService->updateUser($repoUser, $oldUser);
 
@@ -114,8 +129,7 @@ class UserEdit implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "message" => $this->translator->translate("user updated"),
-                "user_id" => $repoUser->getId()
+                "user" => $repoUser
             ]
             , IResponse::OK
         );

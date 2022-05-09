@@ -126,7 +126,7 @@ class CreateTest extends TestCase {
         $response       = $create->handle(
             $this->getDefaultRequest(
                 [
-                    'parent'     => $node->getId()
+                    'parent'     => (string) $node->getId()
                     , 'name'     => 'CreateCredentialTestName'
                     , 'username' => 'CreateCredentialTest'
                     , 'password' => 'MyAwesomeSuperSecurePassword'

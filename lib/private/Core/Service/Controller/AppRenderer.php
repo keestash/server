@@ -120,6 +120,7 @@ class AppRenderer implements IAppRenderer {
         ServerRequestInterface $request
         , bool                 $static
         , bool                 $contextLess
+        , bool                 $hasGlobalSearch
     ): string {
         if (true === $static) return '';
 
@@ -169,6 +170,7 @@ class AppRenderer implements IAppRenderer {
                     , "settings"               => $routes
                     , "baseURL"                => $this->httpService->getBaseURL()
                     , "searchInputPlaceholder" => $this->translator->translate("Search Everything")
+                    , "searchInputVisible"     => $hasGlobalSearch
                     , "mainHref"               => $this->router->generateUri(
                         $this->routerService->getRouteByPath(
                             $defaultApp->getBaseRoute()
@@ -216,13 +218,19 @@ class AppRenderer implements IAppRenderer {
         , NavigationList       $navigationList
         , IActionBar           $actionBar
         , string               $caller
+        , bool                 $hasGlobalSearch
     ): string {
 
         return $this->templateRenderer
             ->render(
                 'root::body'
                 , [
-                    "navigation"      => $this->renderNavBar($request, $static, $contextLess)
+                    "navigation"      => $this->renderNavBar(
+                        $request
+                        , $static
+                        , $contextLess
+                        , $hasGlobalSearch
+                    )
                     , "content"       => $this->renderContent(
                         $hasAppNavigation
                         , $appContent
@@ -299,7 +307,11 @@ class AppRenderer implements IAppRenderer {
                 , [
                     "appNavigation"      => $navigationList->toArray(false)
                     , "hasAppNavigation" => $hasAppNavigation
-                    , "actionBar"        => $this->renderActionBars($static, $contextLess, $actionBar)
+                    , "actionBar"        => $this->renderActionBars(
+                        $static
+                        , $contextLess
+                        , $actionBar
+                    )
                     , "hasActionBars"    => $actionBar->hasElements()
                 ]
             );
@@ -324,6 +336,7 @@ class AppRenderer implements IAppRenderer {
         , NavigationList       $navigationList
         , IActionBar           $actionBar
         , string               $caller
+        , bool                 $hasGlobalSearch
     ): string {
 
         return $this->templateRenderer
@@ -343,6 +356,7 @@ class AppRenderer implements IAppRenderer {
                         , $navigationList
                         , $actionBar
                         , $caller
+                        , $hasGlobalSearch
                     )
                     , "noContext" => true === $contextLess
                     , "language"  => $this->localeService->getLocale()

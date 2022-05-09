@@ -80,8 +80,6 @@ class AddTest extends TestCase {
         $user           = $this->getUser();
         $userRoot       = $nodeRepository->getRootForUser($user);
 
-        $this->expectException(NoFileException::class);
-
         $node = $credentialService->createCredential(
             "addAttachmentNoFilesPassword"
             , "keestash.test"
@@ -90,7 +88,6 @@ class AddTest extends TestCase {
             , $user
         );
         $edge = $credentialService->insertCredential($node, $userRoot);
-
 
         $request  = $this->getDefaultRequest(
             [
@@ -103,10 +100,7 @@ class AddTest extends TestCase {
 
     public function testWithNoFilesAndNoId(): void {
         /** @var Add $add */
-        $add = $this->getServiceManager()->get(Add::class);
-
-        $this->expectException(NoFileException::class);
-
+        $add      = $this->getServiceManager()->get(Add::class);
         $request  = $this->getDefaultRequest();
         $response = $add->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
@@ -122,11 +116,13 @@ class AddTest extends TestCase {
 
         $uploadedFile = new UploadedFile(
             $file
-            , 0
+            , filesize($file)
             , 0
         );
 
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getDefaultRequest([
+            "node_id" => "1"
+        ]);
         $request  = $request->withUploadedFiles([$uploadedFile]);
         $response = $add->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));

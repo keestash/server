@@ -54,9 +54,10 @@ class GetTest extends TestCase {
         $request  = $requestService->getRequestWithToken(
             $this->getUser()
         );
-        $response = $get->handle(
-            $request->withAttribute('nodeId', $nodeId)
-        );
+        $request  = $request->withAttribute('nodeId', $nodeId)
+            ->withAttribute("sortField", "id")
+            ->withAttribute("sortDirection", "ASC");
+        $response = $get->handle($request);
 
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
     }

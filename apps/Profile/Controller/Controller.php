@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,32 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Controller;
+namespace KSA\Profile\Controller;
 
-use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\View\ActionBar\IActionBar;
+use KSP\Core\Controller\AppController;
+use KSP\Core\Service\Controller\IAppRenderer;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-interface IAppRenderer {
+class Controller extends AppController {
 
-    public function render(
-        ServerRequestInterface $request
-        , bool $hasAppNavigation
-        , string $appContent
-        , bool $static
-        , bool $contextLess
-        , NavigationList $navigationList
-        , IActionBar $actionBar
-        , string $caller
-        , bool $hasGlobalSearch
-    ): string;
+    private TemplateRendererInterface $templateRenderer;
+
+    public function __construct(
+        IAppRenderer                $appRenderer
+        , TemplateRendererInterface $templateRenderer
+    ) {
+        parent::__construct($appRenderer);
+        parent::deactivateGlobalSearch();
+
+        $this->templateRenderer = $templateRenderer;
+    }
+
+    public function run(ServerRequestInterface $request): string {
+        return $this->templateRenderer->render(
+            'profile::profile'
+            , []
+        );
+    }
 
 }

@@ -73,8 +73,8 @@ class Update implements RequestHandlerInterface {
         $token      = $request->getAttribute(IToken::class);
         $parameters = (array) $request->getParsedBody();
         $name       = $parameters["name"] ?? null;
-        $username   = $parameters["username"] ?? null;
-        $url        = $parameters["url"] ?? null;
+        $username   = ($parameters["username"]["plain"]) ?? null;
+        $url        = ($parameters["url"]["plain"]) ?? null;
         $nodeId     = $parameters["nodeId"] ?? null;
 
         $hasChanges = false;

@@ -16,8 +16,6 @@ export default {
   background-size: 200% 100%;
   animation: 1.5s shine linear infinite;
   display: flex;
-  //height: 35px;
-  //width: 35px;
   @keyframes shine {
     to {
       background-position-x: -200%;

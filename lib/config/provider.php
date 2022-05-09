@@ -28,10 +28,10 @@ use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
 use KSA\Install\ConfigProvider as InstallConfigProvider;
 use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
+use KSA\Profile\ConfigProvider as ProfileConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
-use KSA\TNC\ConfigProvider as TNCConfigProvider;
 use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
 use Laminas\HttpHandlerRunner\ConfigProvider as HttpHandlerRunnerConfigProvider;
 use Laminas\Router\ConfigProvider as LaminasRouterConfigProvider;
@@ -68,5 +68,5 @@ return [
     PasswordManagerConfigProvider::class,
     RegisterConfigProvider::class,
     SettingsConfigProvider::class,
-    TNCConfigProvider::class,
+    ProfileConfigProvider::class,
 ];
