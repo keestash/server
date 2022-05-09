@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Controller;
+namespace KSA\Profile;
 
-use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\View\ActionBar\IActionBar;
-use Psr\Http\Message\ServerRequestInterface;
+final class ConfigProvider {
 
-interface IAppRenderer {
+    public const APP_ID     = "profile";
+    public const BASE_ROUTE = "profile";
 
-    public function render(
-        ServerRequestInterface $request
-        , bool $hasAppNavigation
-        , string $appContent
-        , bool $static
-        , bool $contextLess
-        , NavigationList $navigationList
-        , IActionBar $actionBar
-        , string $caller
-        , bool $hasGlobalSearch
-    ): string;
+    public const PROFILE = "/profile[/]";
+
+    public function __invoke(): array {
+        return require __DIR__ . '/config/config.php';
+    }
 
 }

@@ -57,8 +57,12 @@ class UpdateTest extends TestCase {
         $response = $update->handle(
             $this->getDefaultRequest([
                 'name'       => 'TestUpdateNewName'
-                , 'username' => 'TestUpdateNewUsername'
-                , 'url'      => 'TestUpdateNewUrl'
+                , 'username' => [
+                    "plain" => 'TestUpdateNewUsername'
+                ]
+                , 'url'      => [
+                    "plain" => 'TestUpdateNewUrl'
+                ]
                 , 'nodeId'   => $node->getId()
             ])
         );

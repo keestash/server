@@ -21,10 +21,7 @@ declare(strict_types=1);
  */
 
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
-use KSA\GeneralApi\Api\MinimumCredential;
-use KSA\GeneralApi\Api\Template\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\Get;
-use KSA\GeneralApi\Api\UserList;
 use KSA\GeneralApi\Command\Info\Routes;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
@@ -34,11 +31,8 @@ use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\File\View;
 use KSA\GeneralApi\Controller\Route\RouteList;
 use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
-use KSA\GeneralApi\Factory\Api\MinimumCredentialFactory;
-use KSA\GeneralApi\Factory\Api\Template\GetAllFactory;
 use KSA\GeneralApi\Factory\Api\Thumbnail\FileFactory;
 use KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory;
-use KSA\GeneralApi\Factory\Api\UserListFactory;
 use KSA\GeneralApi\Factory\Command\ClearBundleJSFactory;
 use KSA\GeneralApi\Factory\Command\CompilerFactory;
 use KSA\GeneralApi\Factory\Command\Info\RoutesFactory;
@@ -51,19 +45,15 @@ use KSA\GeneralApi\Factory\Controller\Route\RouteListFactory;
 return [
     'factories' => [
         // command
-        ClearBundleJS::class     => ClearBundleJSFactory::class,
-        Compiler::class          => CompilerFactory::class,
-        MigrateApps::class       => MigrateAppsFactory::class,
-        PHPStan::class           => PHPStanFactory::class,
-        Routes::class            => RoutesFactory::class,
+        ClearBundleJS::class   => ClearBundleJSFactory::class,
+        Compiler::class        => CompilerFactory::class,
+        MigrateApps::class     => MigrateAppsFactory::class,
+        PHPStan::class         => PHPStanFactory::class,
+        Routes::class          => RoutesFactory::class,
 
         // api
-        UserList::class          => UserListFactory::class,
-        MinimumCredential::class => MinimumCredentialFactory::class,
-        AddEmailAddress::class   => AddEmailAddressFactory::class,
+        AddEmailAddress::class => AddEmailAddressFactory::class,
 
-        \KSA\GeneralApi\Api\Strings\GetAll::class => \KSA\GeneralApi\Factory\Api\Strings\GetAllFactory::class,
-        GetAll::class                             => GetAllFactory::class,
         \KSA\GeneralApi\Api\Thumbnail\File::class => FileFactory::class,
         Get::class                                => GetFactory::class,
 

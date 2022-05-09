@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +20,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Controller;
+use KSP\Core\DTO\File\IExtension;
 
-use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\View\ActionBar\IActionBar;
-use Psr\Http\Message\ServerRequestInterface;
-
-interface IAppRenderer {
-
-    public function render(
-        ServerRequestInterface $request
-        , bool $hasAppNavigation
-        , string $appContent
-        , bool $static
-        , bool $contextLess
-        , NavigationList $navigationList
-        , IActionBar $actionBar
-        , string $caller
-        , bool $hasGlobalSearch
-    ): string;
-
-}
+return [
+    IExtension::DOC,
+    IExtension::DOCX,
+    IExtension::PNG,
+    IExtension::JPEG,
+    IExtension::JPG,
+    IExtension::PDF,
+    IExtension::JSON,
+];

@@ -22,11 +22,8 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
-use KSA\GeneralApi\Api\MinimumCredential;
-use KSA\GeneralApi\Api\Strings\GetAll;
 use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Api\Thumbnail\Get;
-use KSA\GeneralApi\Api\UserList;
 use KSP\Api\IVerb;
 
 return [
@@ -38,48 +35,20 @@ return [
             , 'name'       => Get::class
         ],
         [
-            'path'         => '/demousers/user/add[/]'
+            'path'         => \KSA\GeneralApi\ConfigProvider::DEMOUSERS_ADD
             , 'middleware' => AddEmailAddress::class
             , 'method'     => IVerb::POST
             , 'name'       => AddEmailAddress::class
         ],
-
         [
-            'path'         => '/password_requirements[/]'
-            , 'middleware' => MinimumCredential::class
-            , 'method'     => IVerb::GET
-            , 'name'       => MinimumCredential::class
-        ],
-        [
-            'path'         => '/users/all/:type[/]'
-            , 'middleware' => UserList::class
-            , 'method'     => IVerb::GET
-            , 'name'       => UserList::class
-        ],
-        [
-            'path'         => '/frontend_templates/all[/]'
-            , 'middleware' => \KSA\GeneralApi\Api\Template\GetAll::class
-            , 'method'     => IVerb::GET
-            , 'name'       => \KSA\GeneralApi\Api\Template\GetAll::class
-        ],
-        [
-            'path'         => '/frontend_strings/all[/]'
-            , 'middleware' => GetAll::class
-            , 'method'     => IVerb::GET
-            , 'name'       => GetAll::class
-        ],
-        [
-            'path'         => '/icon/file/get/:extension/'
+            'path'         => \KSA\GeneralApi\ConfigProvider::ICON_FILE_GET_BY_EXTENSION
             , 'middleware' => File::class
             , 'method'     => IVerb::GET
             , 'name'       => File::class
         ],
     ],
     ConfigProvider::PUBLIC_ROUTES => [
-        '/password_requirements[/]'
-        , '/demousers/user/add[/]'
-        , '/frontend_strings/all[/]'
-        , '/frontend_templates/all[/]'
-        , '/icon/file/get/:extension/'
+        \KSA\GeneralApi\ConfigProvider::DEMOUSERS_ADD
+        , \KSA\GeneralApi\ConfigProvider::ICON_FILE_GET_BY_EXTENSION
     ]
 ];

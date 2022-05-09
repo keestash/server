@@ -21,15 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Controller;
 
-
-use Keestash\View\Navigation\App\NavigationList;
 use KSA\Settings\Service\SegmentService;
-use KSA\Settings\Service\SettingService;
 use KSP\Core\Controller\AppController;
-use KSP\Core\DTO\Setting\IContext;
-use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

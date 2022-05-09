@@ -7,7 +7,7 @@
                 </a>
             </div>
 
-            {% if contextless == false %}
+            {% if searchInputVisible == true %}
                 <div class="d-flex col-4 flex-grow-1 align-items-center" id="global-search-wrapper">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -15,10 +15,13 @@
                                 <i class="fas fa-search"></i>
                             </div>
                         </div>
-                        <input type="text" class="form-control border-0 shadow-none" placeholder="{{ searchInputPlaceholder }}" id="global-search">
+                        <input type="text" class="form-control border-0 shadow-none"
+                               placeholder="{{ searchInputPlaceholder }}" id="global-search">
                     </div>
                 </div>
+            {% endif %}
 
+            {% if contextless == false %}
                 <div class="col-1 d-flex justify-content-end p-0">
                     <div class="btn-group">
                         <button type="button"

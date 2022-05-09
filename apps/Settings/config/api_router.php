@@ -85,6 +85,12 @@ return [
             'name'       => UserLock::class
         ],
         [
+            'path'         => '/users/get/:userHash[/]'
+            , 'middleware' => \KSA\Settings\Api\User\Get::class
+            , 'method'     => IVerb::GET
+            , 'name'       => \KSA\Settings\Api\User\Get::class
+        ],
+        [
             'path'       => '/users/profile_pictures/:userId[/]',
             'middleware' => ProfilePicture::class,
             'method'     => IVerb::GET,
