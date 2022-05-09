@@ -63,7 +63,7 @@ class CreateTest extends TestCase {
         $response = $create->handle(
             $this->getDefaultRequest(
                 [
-                    'parent' => 2
+                    'parent' => "2"
                     , 'name' => 'CreateTest'
                 ]
             )
@@ -77,7 +77,7 @@ class CreateTest extends TestCase {
         $response = $create->handle(
             $this->getDefaultRequest(
                 [
-                    'parent' => 22
+                    'parent' => "22"
                     , 'name' => 'CreateTest'
                 ]
             )
@@ -118,7 +118,7 @@ class CreateTest extends TestCase {
         $response = $create->handle(
             $this->getDefaultRequest(
                 [
-                    'parent' => $folder->getId()
+                    'parent' => (string) $folder->getId()
                     , 'name' => 'CreateTest'
                 ]
             )

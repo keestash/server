@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Apps\Test\Api;
 
 use KSA\Apps\Api\UpdateApp;
+use KSA\PasswordManager\Test\Service\ResponseService;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KST\TestCase;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -30,14 +31,15 @@ use Laminas\Diactoros\ServerRequest;
 class UpdateAppTest extends TestCase {
 
     public function testHandle(): void {
-
-        $appRepository = $this->getServiceManager()->get(IAppRepository::class);
-        $updateApp     = new UpdateApp($appRepository);
+        /** @var UpdateApp $updateApp */
+        $updateApp = $this->getServiceManager()->get(UpdateApp::class);
+        /** @var ResponseService $responseService */
+        $responseService = $this->getServiceManager()->get(ResponseService::class);
         /** @var JsonResponse $response */
         $response = $updateApp->handle(new ServerRequest());
 
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertTrue(array_keys(json_decode((string) $response->getBody(), true))[0] === 2000);
+        $this->assertTrue(false === $responseService->isValidResponse($response));
 
         /** @var JsonResponse $response */
         $response = $updateApp->handle(
@@ -58,7 +60,7 @@ class UpdateAppTest extends TestCase {
         );
 
         $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertTrue(array_keys(json_decode((string) $response->getBody(), true))[0] === 2000);
+        $this->assertTrue(false === $responseService->isValidResponse($response));
 
     }
 

@@ -19,24 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Controller;
+namespace KSA\Register\Factory\Api;
 
-use Keestash\View\Navigation\App\NavigationList;
-use KSP\Core\View\ActionBar\IActionBar;
-use Psr\Http\Message\ServerRequestInterface;
+use Keestash\Core\Service\User\UserService;
+use KSA\Register\Api\MinimumCredential;
+use KSP\L10N\IL10N;
+use Psr\Container\ContainerInterface;
 
-interface IAppRenderer {
+class MinimumCredentialFactory {
 
-    public function render(
-        ServerRequestInterface $request
-        , bool $hasAppNavigation
-        , string $appContent
-        , bool $static
-        , bool $contextLess
-        , NavigationList $navigationList
-        , IActionBar $actionBar
-        , string $caller
-        , bool $hasGlobalSearch
-    ): string;
+    public function __invoke(ContainerInterface $container): MinimumCredential {
+        return new MinimumCredential(
+            $container->get(IL10N::class)
+            , $container->get(UserService::class)
+        );
+    }
 
 }

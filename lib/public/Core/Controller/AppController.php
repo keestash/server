@@ -37,6 +37,8 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
     private NavigationList $navigationList;
     private IActionBar     $actionBar;
 
+    private bool $hasGlobalSearch = true;
+
     public function __construct(IAppRenderer $appRenderer) {
         $this->appRenderer    = $appRenderer;
         $this->navigationList = new NavigationList();
@@ -52,6 +54,10 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
 
     protected function setActionBar(IActionBar $actionBar): void {
         $this->actionBar = $actionBar;
+    }
+
+    protected function deactivateGlobalSearch(): void {
+        $this->hasGlobalSearch = false;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -72,6 +78,7 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
                 , $this->navigationList
                 , $this->actionBar
                 , static::class
+                , $this->hasGlobalSearch
             )
         );
     }
