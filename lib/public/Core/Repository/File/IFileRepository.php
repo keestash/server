@@ -46,6 +46,8 @@ interface IFileRepository extends IRepository {
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile;
 
+    public function getByName(string $name): ?IFile;
+
     public function getAll(ArrayList $fileIds): FileList;
 
 }

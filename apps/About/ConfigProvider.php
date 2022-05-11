@@ -32,20 +32,20 @@ final class ConfigProvider {
 
     public function __invoke(): array {
         return [
-            CoreConfigProvider::APP_LIST   => [
+            CoreConfigProvider::APP_LIST     => [
                 ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 8,
+                    CoreConfigProvider::APP_ORDER      => 3,
                     CoreConfigProvider::APP_NAME       => 'About',
                     CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ABOUT,
                     CoreConfigProvider::APP_VERSION    => 1,
                 ],
             ],
-            'dependencies'                 => [
+            CoreConfigProvider::DEPENDENCIES => [
                 'factories' => [
                     Controller::class => ControllerFactory::class,
                 ]
             ],
-            CoreConfigProvider::WEB_ROUTER => [
+            CoreConfigProvider::WEB_ROUTER   => [
                 CoreConfigProvider::ROUTES                 => [
                     [
                         'path'         => ConfigProvider::ABOUT
@@ -61,13 +61,13 @@ final class ConfigProvider {
                 ],
                 CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::ABOUT => [
-                        'name'      => 'About'
-                        , 'faClass' => 'fas fa-info-circle'
-                        , 'order'   => 3
+                        CoreConfigProvider::SETTINGS_NAME    => 'About'
+                        , 'faClass'                          => 'fas fa-info-circle'
+                        , CoreConfigProvider::SETTINGS_ORDER => 3
                     ]
                 ],
             ],
-            'templates'                    => [
+            'templates'                      => [
                 'paths' => [
                     'about' => [__DIR__ . '/template'],
                 ],

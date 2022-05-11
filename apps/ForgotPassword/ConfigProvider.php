@@ -44,7 +44,7 @@ final class ConfigProvider {
         return [
             CoreConfigProvider::APP_LIST   => [
                 ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 2,
+                    CoreConfigProvider::APP_ORDER      => 99,
                     CoreConfigProvider::APP_NAME       => 'Forgot Password',
                     CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::FORGOT_PASSWORD,
                     CoreConfigProvider::APP_VERSION    => 1,

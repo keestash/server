@@ -41,7 +41,7 @@ final class ConfigProvider {
         return [
             CoreConfigProvider::APP_LIST   => [
                 ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 1,
+                    CoreConfigProvider::APP_ORDER      => 2,
                     CoreConfigProvider::APP_NAME       => 'Apps',
                     CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ROUTE_NAME_APPS,
                     CoreConfigProvider::APP_VERSION    => 1,
@@ -51,7 +51,7 @@ final class ConfigProvider {
                 'factories' => [
                     // api
                     UpdateApp::class  => UpdateAppFactory::class,
-                    GetApps::class => GetAppsFactory::class,
+                    GetApps::class    => GetAppsFactory::class,
 
                     // controller
                     Controller::class => ControllerFactory::class,
@@ -73,9 +73,9 @@ final class ConfigProvider {
                 ],
                 CoreConfigProvider::SETTINGS               => [
                     ConfigProvider::ROUTE_NAME_APPS => [
-                        'name'      => 'Apps'
-                        , 'faClass' => "fas fa-user-circle"
-                        , 'order'   => 3
+                        CoreConfigProvider::SETTINGS_NAME    => 'Apps'
+                        , 'faClass'                          => "fas fa-user-circle"
+                        , CoreConfigProvider::SETTINGS_ORDER => 2
                     ]
                 ]
             ],

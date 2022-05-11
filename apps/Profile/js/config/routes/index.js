@@ -20,6 +20,7 @@ import {Host} from "../../../../../lib/js/src/Backend/Host";
 
 const SETTINGS_USER_GET = '/users/get/{userHash}/';
 const SETTINGS_USER_EDIT = '/users/edit/';
+const SETTINGS_USER_UPDATE_PROFILE_IMAGE = "/users/profile_image/update/";
 
 const host = new Host();
 
@@ -37,7 +38,10 @@ export const ROUTES = {
 
     getUpdateUser() {
         return host.getApiHost() + SETTINGS_USER_EDIT;
-
     },
+
+    getUpdateProfileImage() {
+        return host.getApiHost() + SETTINGS_USER_UPDATE_PROFILE_IMAGE;
+    }
 
 }

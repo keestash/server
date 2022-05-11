@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,23 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Api\File;
+namespace KSA\Settings\Factory\Api\User;
 
-use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
-use KSA\Settings\Api\User\ProfilePicture;
-use KSP\Core\Repository\User\IUserRepository;
+use KSA\Settings\Api\User\UpdateProfileImage;
+use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\File\Upload\IFileService;
+use KSP\Core\Service\HTTP\IJWTService;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class ProfilePictureFactory {
+class UpdateProfileImageFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): ProfilePicture {
-        return new ProfilePicture(
-            $container->get(IUserRepository::class)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) {
+        return new UpdateProfileImage(
+            $container->get(Config::class)
+            , $container->get(IFileService::class)
+            , $container->get(IFileRepository::class)
+            , $container->get(IJWTService::class)
             , $container->get(FileService::class)
-            , $container->get(RawFileService::class)
-            , $container->get(FileManager::class)
         );
     }
 

@@ -84,9 +84,15 @@ use Psr\Container\ContainerInterface;
 
     $file = null;
     if ($audience->type === IAudience::TYPE_USER) {
-        $file = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/profile_image_" . (int) $audience->value;
-        if (!is_file($file)) {
+
+        $file       = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/" . md5($audience->value) . "/profile_image_" . (int) $audience->value;
+        $files      = glob($file . "*");
+        $filesCount = count((array) $files);
+
+        if (0 === $filesCount) {
             $file = $config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/' . FileService::DEFAULT_PROFILE_PICTURE . ".png";
+        } else {
+            $file = $files[0];
         }
     } else if ($audience->type === IAudience::TYPE_ASSET) {
         $fileName = $iconService->getIconForExtension($audience->value);
