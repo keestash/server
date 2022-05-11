@@ -39,9 +39,9 @@ return [
     ],
     CoreConfigProvider::SETTINGS                 => [
         ConfigProvider::PROFILE => [
-            'name'      => 'Profile'
-            , 'faClass' => "fas fa-user-alt"
-            , 'order'   => 2
+            CoreConfigProvider::SETTINGS_NAME    => 'Profile'
+            , 'faClass'                          => "fas fa-user-alt"
+            , CoreConfigProvider::SETTINGS_ORDER => 0
         ]
     ]
 ];

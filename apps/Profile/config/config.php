@@ -29,7 +29,7 @@ return [
     CoreConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php',
     CoreConfigProvider::APP_LIST     => [
         ConfigProvider::APP_ID => [
-            CoreConfigProvider::APP_ORDER      => 13,
+            CoreConfigProvider::APP_ORDER      => 1,
             CoreConfigProvider::APP_NAME       => 'Profile',
             CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::BASE_ROUTE,
             CoreConfigProvider::APP_VERSION    => 1,

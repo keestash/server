@@ -41,8 +41,8 @@ class FileRepository implements IFileRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
-        , IUserRepository $userRepository
+        IBackend           $backend
+        , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
     ) {
         $this->userRepository  = $userRepository;
@@ -189,6 +189,67 @@ class FileRepository implements IFileRepository {
         $file->setCreateTs(
             $this->dateTimeService->fromFormat($createTs)
         );
+
+        return $file;
+    }
+
+    public function getByName(string $name): ?IFile {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+
+        $queryBuilder = $queryBuilder->select(
+            [
+                'id'
+                , 'name'
+                , 'path'
+                , 'mime_type'
+                , 'hash'
+                , 'extension'
+                , 'size'
+                , 'user_id'
+                , 'create_ts'
+                , 'directory'
+            ]
+        )
+            ->from('file')
+            ->where('name = ?')
+            ->orWhere('name like ?')
+            ->setParameter(0, $name)
+            ->setParameter(1, "$name%");
+        $files        = $queryBuilder->executeQuery()->fetchAllNumeric();
+
+        $file = null;
+        foreach ($files as $row) {
+            $id        = $row[0];
+            $name      = $row[1];
+            $path      = $row[2];
+            $mimeType  = $row[3];
+            $hash      = $row[4];
+            $extension = $row[5];
+            $size      = $row[6];
+            $userId    = $row[7];
+            $createTs  = $row[8];
+            $directory = $row[9];
+
+            $user = $this->userRepository->getUserById((string) $userId);
+
+            if (null == $user) {
+                throw new KeestashException();
+            }
+
+            $file = new File();
+            $file->setId((int) $id);
+            $file->setName($name);
+            $file->setDirectory($directory);
+            $file->setMimeType($mimeType);
+            $file->setHash($hash);
+            $file->setExtension($extension);
+            $file->setSize((int) $size);
+            $file->setOwner($user);
+            $file->setCreateTs(
+                $this->dateTimeService->fromFormat($createTs)
+            );
+
+        }
 
         return $file;
     }

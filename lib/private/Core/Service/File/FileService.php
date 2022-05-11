@@ -46,7 +46,7 @@ class FileService implements IFileService {
 
     public function __construct(
         RawFileService $rawFileService
-        , Config $config
+        , Config       $config
         , IUserService $userService
     ) {
         $this->rawFileService = $rawFileService;
@@ -95,8 +95,9 @@ class FileService implements IFileService {
     }
 
     public function getProfileImage(IUser $user): string {
-        $name = $this->getProfileImageName($user);
-        $path = (string) $this->config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/" . $name;
+        $name      = $this->getProfileImageName($user);
+        $imagePath = $this->config->get(Keestash\ConfigProvider::IMAGE_PATH);
+        $path      = $imagePath . "/" . $name;
         return str_replace("//", "/", $path);
     }
 
