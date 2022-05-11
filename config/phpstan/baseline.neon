@@ -186,6 +186,26 @@ parameters:
 			path: ../../apps/Settings/Api/User/Get.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UpdateProfileImage.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UpdateProfileImage.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UpdateProfileImage.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UpdateProfileImage.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserAdd.php

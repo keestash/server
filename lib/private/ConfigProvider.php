@@ -44,6 +44,8 @@ final class ConfigProvider {
     public const ROUTES                  = 'routes';
     public const COMMANDS                = 'commands';
     public const SETTINGS                = 'settings';
+    public const SETTINGS_ORDER          = 'order.settings';
+    public const SETTINGS_NAME           = 'name.settings';
     public const PUBLIC_ROUTES           = 'routes.public';
     public const WEB_ROUTER_STYLESHEETS  = 'stylesheets.router.web';
     public const EVENTS                  = 'events';

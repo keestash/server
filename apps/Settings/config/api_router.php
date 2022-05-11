@@ -8,7 +8,7 @@ use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Api\Organization\User;
 use KSA\Settings\Api\User\GetAll;
-use KSA\Settings\Api\User\ProfilePicture;
+use KSA\Settings\Api\User\UpdateProfileImage;
 use KSA\Settings\Api\User\UserAdd;
 use KSA\Settings\Api\User\UserEdit;
 use KSA\Settings\Api\User\UserLock;
@@ -91,10 +91,10 @@ return [
             , 'name'       => \KSA\Settings\Api\User\Get::class
         ],
         [
-            'path'       => '/users/profile_pictures/:userId[/]',
-            'middleware' => ProfilePicture::class,
-            'method'     => IVerb::GET,
-            'name'       => ProfilePicture::class
+            'path'         => '/users/profile_image/update[/]'
+            , 'middleware' => UpdateProfileImage::class
+            , 'method'     => IVerb::POST
+            , 'name'       => UpdateProfileImage::class
         ],
     ],
 ];

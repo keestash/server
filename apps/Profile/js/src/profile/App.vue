@@ -9,8 +9,18 @@
                 class="img img-fluid rounded-circle mt-5"
                 :src="getProfileImage()"
                 v-else
+                @click="$refs.file.click()"
                 :alt="this.user.name"
             >
+            <form enctype="multipart/form-data" novalidate>
+              <input
+                  type="file"
+                  ref="file"
+                  style="display: none"
+                  name="profile_image"
+                  @change="uploadProfileImage($event.target.name, $event.target.files); fileCount = $event.target.files.length"
+              >
+            </form>
             <IsLoading class="profile-loading" v-if="loading"></IsLoading>
             <span class="font-weight-bold" v-else>{{ this.user.name }}</span>
             <IsLoading class="profile-loading" v-if="loading"></IsLoading>
@@ -80,6 +90,7 @@ import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes";
 import IsLoading from "../../../../../lib/js/src/Components/IsLoading";
 import _ from "lodash";
+import {EVENT_NAME_GLOBAL_SEARCH} from "../../../../../lib/js/src/base";
 
 export default {
   name: "App",
@@ -89,10 +100,62 @@ export default {
       loading: true,
       user: null,
       axios: null,
-      appStorage: null
+      appStorage: null,
+      fileCount: 0
     }
   },
   methods: {
+    uploadProfileImage(fieldName, fileList) {
+      this.loading = true;
+      let formData = new FormData();
+      if (!fileList.length) {
+        this.loading = false;
+        return;
+      }
+
+      Array
+          .from(Array(fileList.length).keys())
+          .map(x => {
+            formData.append(fieldName, fileList[x], fileList[x].name);
+          });
+
+      formData.append(
+          'user_hash', this.user.hash
+      )
+
+      _.debounce(
+          () => {
+            this.axios.post(
+                ROUTES.getUpdateProfileImage()
+                , formData
+            )
+                .then(
+                    (response) => {
+                      this.loading = false;
+                      this.user.jwt = response.data.jwt;
+                      this.$refs.file.value = null;
+
+                      document.dispatchEvent(
+                          new CustomEvent(
+                              "listenToProfileImageChange"
+                              , {
+                                detail:
+                                    {jwt: this.getProfileImage()}
+                              }
+                          )
+                      )
+                    }
+                )
+                .catch(
+                    (r) => {
+                      console.error(r);
+                      this.$refs.file.value = null;
+                      this.loading = false;
+                    }
+                )
+          }, 500
+      )();
+    },
     updateUser() {
       this.loading = true;
       _.debounce(
@@ -116,7 +179,6 @@ export default {
                 )
           }, 500
       )();
-
     },
     getProfileImage() {
       if (null === this.user) return '';

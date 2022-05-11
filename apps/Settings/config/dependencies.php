@@ -29,7 +29,7 @@ use KSA\Settings\Api\Organization\Get;
 use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Api\User\GetAll;
-use KSA\Settings\Api\User\ProfilePicture;
+use KSA\Settings\Api\User\UpdateProfileImage;
 use KSA\Settings\Api\User\UserAdd;
 use KSA\Settings\Api\User\UserEdit;
 use KSA\Settings\Api\User\UserLock;
@@ -40,7 +40,6 @@ use KSA\Settings\Controller\Organization\Detail;
 use KSA\Settings\Controller\Controller;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
-use KSA\Settings\Factory\Api\File\ProfilePictureFactory;
 use KSA\Settings\Factory\Api\Organization\ActivateFactory;
 use KSA\Settings\Factory\Api\Organization\AddFactory;
 use KSA\Settings\Factory\Api\Organization\GetFactory;
@@ -48,6 +47,7 @@ use KSA\Settings\Factory\Api\Organization\ListAllFactory;
 use KSA\Settings\Factory\Api\Organization\UpdateFactory;
 use KSA\Settings\Factory\Api\Organization\UserFactory;
 use KSA\Settings\Factory\Api\User\GetAllFactory;
+use KSA\Settings\Factory\Api\User\UpdateProfileImageFactory;
 use KSA\Settings\Factory\Api\User\UserAddFactory;
 use KSA\Settings\Factory\Api\User\UserLockFactory;
 use KSA\Settings\Factory\Api\User\UserRemoveFactory;
@@ -90,12 +90,12 @@ return [
         Update::class                              => UpdateFactory::class,
         \KSA\Settings\Api\Organization\User::class => UserFactory::class,
         UserEdit::class                            => UserEditFactory::class,
-        ProfilePicture::class                      => ProfilePictureFactory::class,
         GetAll::class                              => GetAllFactory::class,
         UserAdd::class                             => UserAddFactory::class,
         UserLock::class                            => UserLockFactory::class,
         UserRemove::class                          => UserRemoveFactory::class,
         \KSA\Settings\Api\User\Get::class          => \KSA\Settings\Factory\Api\User\GetFactory::class,
+        UpdateProfileImage::class                  => UpdateProfileImageFactory::class,
 
         // repository
         OrganizationRepository::class              => OrganizationRepositoryFactory::class,

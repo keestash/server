@@ -29,9 +29,9 @@ return [
     ],
     CoreConfigProvider::SETTINGS               => [
         ConfigProvider::SETTINGS => [
-            'name'      => 'Settings'
-            , 'faClass' => "fas fa-sliders-h"
-            , 'order'   => 1
+            CoreConfigProvider::SETTINGS_NAME    => 'Settings'
+            , 'faClass'                          => "fas fa-sliders-h"
+            , CoreConfigProvider::SETTINGS_ORDER => 1
         ]
     ]
 ];

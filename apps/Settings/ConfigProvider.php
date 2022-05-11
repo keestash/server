@@ -28,6 +28,7 @@ use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Event\Organization\UserChangedEvent;
+use KSP\Core\DTO\File\IExtension;
 
 // TODO register background jobs
 //"background_jobs": {
@@ -45,20 +46,22 @@ final class ConfigProvider {
 
     public const ORGANIZATION_SINGLE = "/organizations/:id[/]";
 
+    public const ALLOWED_PROFILE_IMAGE_EXTENSIONS = "extensions.image.profile.allowed";
+
     public function __invoke(): array {
         return [
-            CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/config/dependencies.php'
-            , CoreConfigProvider::API_ROUTER => require __DIR__ . '/config/api_router.php'
-            , CoreConfigProvider::WEB_ROUTER => require __DIR__ . '/config/web_router.php'
-            , CoreConfigProvider::APP_LIST   => [
+            CoreConfigProvider::DEPENDENCIES                   => require __DIR__ . '/config/dependencies.php'
+            , CoreConfigProvider::API_ROUTER                   => require __DIR__ . '/config/api_router.php'
+            , CoreConfigProvider::WEB_ROUTER                   => require __DIR__ . '/config/web_router.php'
+            , CoreConfigProvider::APP_LIST                     => [
                 ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 10,
+                    CoreConfigProvider::APP_ORDER      => 2,
                     CoreConfigProvider::APP_NAME       => 'Settings',
                     CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::SETTINGS,
                     CoreConfigProvider::APP_VERSION    => 1,
                 ],
             ]
-            , CoreConfigProvider::EVENTS     => [
+            , CoreConfigProvider::EVENTS                       => [
                 OrganizationAddedEvent::class => [
                     OrganizationAddedEventListener::class
                 ]
@@ -66,13 +69,18 @@ final class ConfigProvider {
                     PostStateChange::class
                 ]
             ]
-            , CoreConfigProvider::COMMANDS   => [
+            , CoreConfigProvider::COMMANDS                     => [
                 UpdatePassword::class
             ]
-            , 'templates'                    => [
+            , CoreConfigProvider::TEMPLATES                    => [
                 'paths' => [
                     'settings' => [__DIR__ . '/template/']
                 ]
+            ]
+            , ConfigProvider::ALLOWED_PROFILE_IMAGE_EXTENSIONS => [
+                IExtension::PNG
+                , IExtension::JPEG
+                , IExtension::JPG
             ]
         ];
     }

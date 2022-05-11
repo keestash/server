@@ -23,7 +23,6 @@ const PASSWORD_MANAGER_GENERATE_PASSWORD = "/password_manager/generate_password/
 const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/{value}/";
 const PASSWORD_MANAGER_ADD_COMMENT = "/password_manager/comment/add/";
 const PASSWORD_MANAGER_GET_COMMENT = "/password_manager/comment/get/{nodeId}/{sortField/}{sortDirection/}";
-const USER_PROFILE_PICTURE = "/users/profile_pictures/{userId}/";
 const PASSWORD_MANAGER_SHAREABLE_USERS = "/password_manager/users/shareable/{nodeId}/{query}/";
 const PASSWORD_MANAGER_ATTACHMENTS_REMOVE = "/password_manager/attachments/remove/";
 const PASSWORD_MANAGER_ATTACHMENTS_GET = "/password_manager/attachments/get/{nodeId}/";
@@ -118,12 +117,6 @@ export const ROUTES = {
     getAttachments(nodeId) {
         let route = PASSWORD_MANAGER_ATTACHMENTS_GET;
         route = route.replace("{nodeId}", nodeId);
-        return host.getApiHost() + route;
-    },
-
-    getUserProfilePicture(userId) {
-        let route = USER_PROFILE_PICTURE;
-        route = route.replace("{userId}", userId);
         return host.getApiHost() + route;
     },
 

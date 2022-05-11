@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Controller;
 
+use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
@@ -55,6 +56,7 @@ class AppRendererFactory {
             , $container->get(ILoader::class)
             , $container->get(RouterInterface::class)
             , $container->get(IL10N::class)
+            , $container->get(FileRepository::class)
         );
     }
 

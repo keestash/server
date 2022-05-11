@@ -116,7 +116,7 @@ class AddTest extends TestCase {
 
         $uploadedFile = new UploadedFile(
             $file
-            , filesize($file)
+            , (int) filesize($file)
             , 0
         );
 

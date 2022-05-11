@@ -23,6 +23,7 @@ namespace Keestash\Core\Service\Controller;
 
 use DateTime;
 use Keestash\ConfigProvider;
+use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
@@ -60,6 +61,7 @@ class AppRenderer implements IAppRenderer {
     private ILoader                   $loader;
     private RouterInterface           $router;
     private IL10N                     $translator;
+    private FileRepository            $fileRepository;
 
     public function __construct(
         IRouterService              $routerService
@@ -75,6 +77,7 @@ class AppRenderer implements IAppRenderer {
         , ILoader                   $loader
         , RouterInterface           $router
         , IL10N                     $translator
+        , FileRepository            $fileRepository
     ) {
         $this->lockHandler      = $lockHandler;
         $this->fileService      = $fileService;
@@ -89,6 +92,7 @@ class AppRenderer implements IAppRenderer {
         $this->loader           = $loader;
         $this->router           = $router;
         $this->translator       = $translator;
+        $this->fileRepository   = $fileRepository;
     }
 
     public function renderHead(ServerRequestInterface $request): string {
@@ -124,29 +128,27 @@ class AppRenderer implements IAppRenderer {
     ): string {
         if (true === $static) return '';
 
-        /** @var IToken|null $token */
-        $token = $request->getAttribute(IToken::class);
-
         $profileImage = $this->getProfileImage(
             $request->getAttribute(IUser::class)
             , $static
             , $contextLess
         );
 
-        $routes = $this->config
+        $settings = $this->config
             ->get(ConfigProvider::WEB_ROUTER)
             ->get(ConfigProvider::SETTINGS)
             ->toArray();
 
-        foreach ($routes as $path => $data) {
-            $routeData                 = $this->routerService->getRouteByPath($path);
-            $routes[$path]['compiled'] = $this->routerService->getUri($routeData['name']);
+        foreach ($settings as $path => $data) {
+            $routeData                                      = $this->routerService->getRouteByPath($path);
+            $settings[$path]['compiled']                    = $this->routerService->getUri($routeData['name']);
+            $settings[$path][ConfigProvider::SETTINGS_NAME] = $this->translator->translate($data[ConfigProvider::SETTINGS_NAME]);
         }
 
         uasort(
-            $routes
-            , function (array $a, array $b): int {
-            return $a['order'] - $b['order'];
+            $settings
+            , static function (array $a, array $b): int {
+            return $a[ConfigProvider::SETTINGS_ORDER] - $b[ConfigProvider::SETTINGS_ORDER];
         }
         );
 
@@ -167,7 +169,7 @@ class AppRenderer implements IAppRenderer {
 
                     // TODO these are added only when not public route
                     , "vendorName"             => $this->legacy->getApplication()->get("name")
-                    , "settings"               => $routes
+                    , "settings"               => $settings
                     , "baseURL"                => $this->httpService->getBaseURL()
                     , "searchInputPlaceholder" => $this->translator->translate("Search Everything")
                     , "searchInputVisible"     => $hasGlobalSearch
@@ -189,9 +191,14 @@ class AppRenderer implements IAppRenderer {
         ) {
             return '';
         }
+        $file = $this->fileRepository->getByName($this->fileService->getProfileImageName($user));
+        if (null === $file) {
+            $file = $this->fileService->getDefaultImage();
+        }
+
         $file = $this->fileManager->read(
             $this->rawFileService->stringToUri(
-                $this->fileService->getProfileImagePath($user)
+                $file->getFullPath()
             )
         );
 
@@ -199,14 +206,7 @@ class AppRenderer implements IAppRenderer {
             $file = $this->fileService->getDefaultImage();
         }
 
-        // TODO hotfix
-        //  we need to fix that fullpath stuff, where extension
-        //  is sometimes part of the path and sometimes not
-        $path = $file->getFullPath();
-        if (false === is_file($path)) {
-            $path = "{$file->getDirectory()}/{$file->getName()}";
-        }
-        return (string) $this->rawFileService->stringToBase64($path);
+        return (string) $this->rawFileService->stringToBase64($file->getFullPath());
     }
 
     public function renderBody(
