@@ -9,7 +9,6 @@ import PasswordField from "../Component/PasswordField";
 import {AXIOS, StartUp} from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes/index";
-import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/src/Backend/Axios";
 
 export default {
   name: "App",
@@ -51,15 +50,13 @@ export default {
           ROUTES.getPublicShareDecrypt(
               this.hash
           )
-      ).then((response) => {
-        if (RESPONSE_CODE_OK in response.data) {
-          return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-        }
-        return [];
-      }).then((otherData) => {
-        data.visible = true;
-        data.value = otherData.decrypted;
-      })
+      )
+          .then(
+              (response) => {
+                data.visible = true;
+                data.value = response.data.decrypted;
+              }
+          )
 
     }
   }

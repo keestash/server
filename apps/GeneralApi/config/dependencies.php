@@ -54,11 +54,10 @@ return [
         // api
         AddEmailAddress::class => AddEmailAddressFactory::class,
 
-        \KSA\GeneralApi\Api\Thumbnail\File::class => FileFactory::class,
-        Get::class                                => GetFactory::class,
+        Get::class  => GetFactory::class,
 
         // controller
-        View::class                               => ViewFactory::class,
+        View::class => ViewFactory::class,
 
         RouteList::class              => RouteListFactory::class,
         DefaultRouteController::class => DefaultRouteControllerFactory::class,

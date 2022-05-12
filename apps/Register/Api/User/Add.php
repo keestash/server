@@ -21,18 +21,16 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
-use doganoo\PHPUtil\Datatype\StringClass;
+use doganoo\DI\Object\String\IStringService;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,30 +38,28 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Add implements RequestHandlerInterface {
 
     private UserService            $userService;
-    private IUserRepository        $userRepository;
-    private IL10N                  $translator;
     private ILoader                $loader;
     private ILogger                $logger;
     private IUserRepositoryService $userRepositoryService;
+    private IStringService         $stringService;
 
     public function __construct(
-        IL10N                    $l10n
-        , UserService            $userService
-        , IUserRepository        $userRepository
+        UserService              $userService
         , ILoader                $loader
         , ILogger                $logger
         , IUserRepositoryService $userRepositoryService
+        , IStringService         $stringService
     ) {
 
         $this->userService           = $userService;
-        $this->userRepository        = $userRepository;
-        $this->translator            = $l10n;
         $this->loader                = $loader;
         $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
+        $this->stringService         = $stringService;
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface {
+    public
+    function handle(ServerRequestInterface $request): ResponseInterface {
 
         // a little bit out of sense, but
         // we do not want to enable registering
@@ -74,16 +70,11 @@ class Add implements RequestHandlerInterface {
         if (false === $registerEnabled) {
 
             return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("unknown operation")
-                ]
+                ['unknown operation']
                 , IResponse::BAD_REQUEST
             );
 
         }
-
-        $responseCode = IResponse::RESPONSE_CODE_OK;
-        $message      = $this->translator->translate("User successfully registered");
 
         $firstName          = $this->getParameter("first_name", $request);
         $lastName           = $this->getParameter("last_name", $request);
@@ -91,103 +82,50 @@ class Add implements RequestHandlerInterface {
         $email              = $this->getParameter("email", $request);
         $password           = $this->getParameter("password", $request);
         $passwordRepeat     = $this->getParameter("password_repeat", $request);
+        $phone              = $this->getParameter("phone", $request);
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
-        $locked             = $this->getParameter("locked", $request) === "true";
+        $website            = $this->getParameter("website", $request);
 
-        $users      = $this->userRepository->getAll();
-        $nameExists = false;
-        $mailExists = false;
-
-        /** @var IUser $iUser */
-        foreach ($users as $iUser) {
-            $mailExists = $email === $iUser->getEmail();
-            $nameExists = $userName === $iUser->getName();
+        if (true === $this->stringService->isEmpty($termsAndConditions)) {
+            return new JsonResponse(['terms and conditions are not checked'], IResponse::BAD_REQUEST);
         }
 
-        if ("" === $firstName) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Please name a first name");
+        try {
+            $this->userService->validatePasswords($password, $passwordRepeat);
+        } catch (KeestashException $exception) {
+            return new JsonResponse(['invalid password(s)'], IResponse::BAD_REQUEST);
         }
 
-        if ("" === $lastName) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Please name a last name");
-        }
-
-        if ("" === $userName) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Please name a user name");
-        }
-
-        if ("" === $password) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Please name a password");
-        }
-
-        if ("" === $passwordRepeat) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Please name a password to repeat");
-        }
-
-        $stringClass = new StringClass($password);
-        if (false === $stringClass->equals($passwordRepeat)) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Your passwords are not equal");
-        }
-
-        if ("" === $termsAndConditions) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("You have not agreed to the terms and conditions");
-        }
-
-        if (false === $this->userService->passwordHasMinimumRequirements((string) $password)) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("Your password does not fulfill the minimum requirements");
-        }
-
-        if (true === $nameExists) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("A user with this name already exists");
-        }
-
-        if (true === $mailExists) {
-            $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-            $message      = $this->translator->translate("A user with this email address already exists");
-        }
-
-        if ($responseCode === IResponse::RESPONSE_CODE_OK) {
-
-            try {
-                $user = $this->userRepositoryService->createUser(
-                    $this->userService->toNewUser((array) $request->getParsedBody())
-                );
-
-            } catch (Exception $exception) {
-                $this->logger->error($exception->getTraceAsString());
-                $user = null;
-            }
-
-            if (null === $user) {
-                $responseCode = IResponse::RESPONSE_CODE_NOT_OK;
-                $message      = $this->translator->translate("Could not register user. Please try again");
-            }
-
-        }
-
-        return new JsonResponse(
+        $user = $this->userService->toNewUser(
             [
-                "response_code" => $responseCode
-                , "message"     => $message
+                'user_name'    => $userName
+                , 'email'      => $email
+                , 'last_name'  => $lastName
+                , 'first_name' => $firstName
+                , 'password'   => $password
+                , 'phone'      => $phone
+                , 'website'    => $website
             ]
-            ,
-            $responseCode === IResponse::RESPONSE_CODE_OK
-                ? IResponse::OK
-                : IResponse::INTERNAL_SERVER_ERROR
         );
 
+        try {
+            $this->userService->validateNewUser($user);
+        } catch (KeestashException $exception) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
+        }
+
+        try {
+            $this->userRepositoryService->createUser($user);
+        } catch (Exception $exception) {
+            $this->logger->error($exception->getTraceAsString());
+            return new JsonResponse(['could not create user'], IResponse::INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse([], IResponse::OK);
     }
 
-    private function getParameter(string $name, ServerRequestInterface $request): string {
+    private
+    function getParameter(string $name, ServerRequestInterface $request): string {
         $body = $request->getParsedBody();
         return (string) ($body[$name] ?? null);
     }

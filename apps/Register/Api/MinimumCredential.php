@@ -35,7 +35,7 @@ class MinimumCredential implements RequestHandlerInterface {
     private IL10N       $translator;
 
     public function __construct(
-        IL10N $l10n
+        IL10N         $l10n
         , UserService $userService
     ) {
         $this->userService = $userService;
@@ -44,7 +44,6 @@ class MinimumCredential implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $password = $request->getQueryParams()["password"] ?? null;
-        $message  = null;
 
         if (null === $password) {
             return $this->setResponseHelper(

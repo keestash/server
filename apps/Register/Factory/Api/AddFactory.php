@@ -21,25 +21,23 @@ declare(strict_types=1);
 
 namespace KSA\Register\Factory\Api;
 
+use doganoo\DIP\Object\String\StringService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Api\User\Add;
 use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class AddFactory {
 
     public function __invoke(ContainerInterface $container): Add {
         return new Add(
-            $container->get(IL10N::class)
-            , $container->get(UserService::class)
-            , $container->get(IUserRepository::class)
+            $container->get(UserService::class)
             , $container->get(ILoader::class)
             , $container->get(ILogger::class)
             , $container->get(IUserRepositoryService::class)
+            , $container->get(StringService::class)
         );
     }
 

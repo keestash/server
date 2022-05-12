@@ -118,9 +118,11 @@ class EndUpdate implements RequestHandlerInterface {
             $this->userService->getSystemUser()
         );
 
-        $this->fileRepository->add(
-            $this->fileService->getDefaultImage()
+        $defaultImage = $this->fileService->getDefaultImage();
+        $defaultImage->setOwner(
+            $this->userService->getSystemUser()
         );
+        $this->fileRepository->add($defaultImage);
 
         $defaultApp = $this->loader->getDefaultApp();
 

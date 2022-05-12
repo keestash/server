@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,23 +19,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\User\Repository;
+namespace Keestash\Factory\Core\Builder\Validator;
 
-use KSP\Core\DTO\File\IFile;
-use KSP\Core\DTO\User\IUser;
+use Keestash\Core\Builder\Validator\UriValidatorBuilder;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\Validator\AbstractValidator;
+use Psr\Container\ContainerInterface;
 
-interface IUserRepositoryService {
+class UriValidatorFactory implements FactoryInterface {
 
-    public function removeUser(IUser $user): array;
-
-    public function createSystemUser(IUser $user): bool;
-
-    public function createUser(IUser $user, ?IFile $file = null): IUser;
-
-    public function userExistsByName(string $name): bool;
-
-    public function userExistsByEmail(string $email): bool;
-
-    public function updateUser(IUser $updatedUser, IUser $oldUser): bool;
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): AbstractValidator {
+        return (new UriValidatorBuilder())->build();
+    }
 
 }

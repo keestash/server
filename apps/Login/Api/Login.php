@@ -100,7 +100,7 @@ class Login implements RequestHandlerInterface {
             );
         }
 
-        if (false === $this->userService->validatePassword($password, $user->getPassword())) {
+        if (false === $this->userService->verifyPassword($password, $user->getPassword())) {
             return new JsonResponse(
                 [
                     "message" => $this->translator->translate("Invalid Credentials")

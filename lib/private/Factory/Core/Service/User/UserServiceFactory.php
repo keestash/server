@@ -22,11 +22,14 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\User;
 
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\HTTPService;
+use doganoo\DI\Object\String\IStringService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Laminas\I18n\Validator\PhoneNumber;
+use Laminas\Validator\EmailAddress;
+use Laminas\Validator\Uri;
 use Psr\Container\ContainerInterface;
 
 class UserServiceFactory {
@@ -35,6 +38,11 @@ class UserServiceFactory {
         return new UserService(
             $container->get(Legacy::class)
             , $container->get(IDateTimeService::class)
+            , $container->get(IStringService::class)
+            , $container->get(IUserRepositoryService::class)
+            , $container->get(EmailAddress::class)
+            , $container->get(PhoneNumber::class)
+            , $container->get(Uri::class)
         );
     }
 

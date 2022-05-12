@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Share;
 
 use DateTime;
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Password\Credential;
 use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -32,7 +32,6 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\L10N\IL10N;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -46,11 +45,11 @@ class PublicShareSingle implements RequestHandlerInterface {
     private IEventManager         $eventManager;
 
     public function __construct(
-        IL10N $l10n
+        IL10N                   $l10n
         , PublicShareRepository $shareRepository
-        , NodeRepository $nodeRepository
-        , CredentialService $credentialService
-        , IEventManager $eventManager
+        , NodeRepository        $nodeRepository
+        , CredentialService     $credentialService
+        , IEventManager         $eventManager
     ) {
         $this->translator        = $l10n;
         $this->shareRepository   = $shareRepository;
@@ -72,12 +71,12 @@ class PublicShareSingle implements RequestHandlerInterface {
                     , new DateTime()
                 )
             );
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("no password found for hash")
                     , "hash"  => $hash
                 ]
+                , IResponse::OK
             );
         }
 
@@ -97,11 +96,11 @@ class PublicShareSingle implements RequestHandlerInterface {
                     , new DateTime()
                 )
             );
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("no share found")
                 ]
+                , IResponse::NOT_FOUND
             );
         }
 
@@ -122,12 +121,12 @@ class PublicShareSingle implements RequestHandlerInterface {
             )
         );
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "response_code" => IResponse::RESPONSE_CODE_OK
                 , "decrypted"   => $this->credentialService->getDecryptedPassword($node)
             ]
+            , IResponse::OK
         );
 
 
