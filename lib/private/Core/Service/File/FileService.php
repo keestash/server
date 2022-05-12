@@ -29,7 +29,6 @@ use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\File\IFileService;
-use KSP\Core\Service\User\IUserService;
 use Laminas\Config\Config;
 
 class FileService implements IFileService {
@@ -42,16 +41,13 @@ class FileService implements IFileService {
     // TODO include default ?!
     private RawFileService $rawFileService;
     private Config         $config;
-    private IUserService   $userService;
 
     public function __construct(
         RawFileService $rawFileService
         , Config       $config
-        , IUserService $userService
     ) {
         $this->rawFileService = $rawFileService;
         $this->config         = $config;
-        $this->userService    = $userService;
     }
 
     public function getProfileImagePath(?IUser $user): string {
@@ -72,7 +68,7 @@ class FileService implements IFileService {
 
     public function getDefaultImage(): IFile {
         $name = FileService::DEFAULT_PROFILE_PICTURE;
-        $dir  = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/';
+        $dir  = $this->config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/';
         $dir  = str_replace("//", "/", $dir);
         $path = "$dir/$name.png";
 
@@ -88,9 +84,6 @@ class FileService implements IFileService {
         $file->setMimeType((string) $this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize((int) filesize($path));
-        $file->setOwner(
-            $this->userService->getSystemUser()
-        );
         return $file;
     }
 
@@ -107,31 +100,6 @@ class FileService implements IFileService {
 
     public function getAvatarName(int $nodeId): string {
         return "node_avatar_$nodeId";
-    }
-
-    public function getDefaultNodeAvatar(): IFile {
-        $name      = FileService::DEFAULT_NODE_AVATAR;
-        $extension = IExtension::JPG;
-        $dir       = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH) . "/img/";
-        $dir       = str_replace("//", "/", $dir);
-        $path      = "$dir/$name.$extension";
-
-        $file = new File();
-        $file->setId(FileService::DEFAULT_AVATAR_FILE_ID);
-        $file->setContent(
-            (string) file_get_contents($path)
-        );
-        $file->setCreateTs(new DateTime());
-        $file->setDirectory($dir);
-        $file->setExtension($extension);
-        $file->setHash((string) md5_file($path));
-        $file->setMimeType((string) $this->rawFileService->getMimeType($path));
-        $file->setName($name);
-        $file->setSize((int) filesize($path));
-        $file->setOwner(
-            $this->userService->getSystemUser()
-        );
-        return $file;
     }
 
 }

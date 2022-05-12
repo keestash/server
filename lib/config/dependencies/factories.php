@@ -81,6 +81,9 @@ use Keestash\Factory\App\Config\DiffFactory;
 use Keestash\Factory\App\Cors\ProjectConfigurationFactory;
 use Keestash\Factory\App\Loader\LoaderFactory;
 use Keestash\Factory\Core\Backend\MySQLBackendFactory;
+use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
+use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
+use Keestash\Factory\Core\Builder\Validator\UriValidatorFactory;
 use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
 use Keestash\Factory\Core\Manager\CookieManager\CookieManagerFactory;
@@ -153,7 +156,10 @@ use Keestash\Middleware\Api\UserActiveMiddleware;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Access\AccessService;
+use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
+use Laminas\Validator\EmailAddress as EmailValidator;
+use Laminas\Validator\Uri as UriValidator;
 
 return [
     // App
@@ -191,6 +197,11 @@ return [
     Diff::class                                                    => DiffFactory::class,
     Compiler::class                                                => CompilerFactory::class,
     JWTService::class                                              => JWTServiceFactory::class,
+
+    // builder
+    EmailValidator::class                                          => EmailValidatorFactory::class,
+    PhoneValidator::class                                          => PhoneValidatorFactory::class,
+    UriValidator::class                                            => UriValidatorFactory::class,
 
     // middleware
     InstanceInstalledMiddleware::class                             => InstanceInstalledMiddlewareFactory::class,

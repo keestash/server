@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\GeneralApi\Factory\Api\Thumbnail;
+namespace Keestash\Core\Builder\Validator;
 
-use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
-use KSA\GeneralApi\Api\Thumbnail\File;
-use KSP\Core\Manager\FileManager\IFileManager;
-use Psr\Container\ContainerInterface;
+use KSP\Core\Builder\Validator\IValidatorBuilder;
+use Laminas\I18n\Validator\PhoneNumber as Validator;
 
-class FileFactory {
+class PhoneValidatorBuilder implements IValidatorBuilder {
 
-    public function __invoke(ContainerInterface $container): File {
-        return new File(
-            $container->get(IFileManager::class)
-            , $container->get(FileService::class)
-            , $container->get(RawFileService::class)
+    private string $country = '';
+
+    public function withLocale(string $locale): PhoneValidatorBuilder {
+        $instance          = clone $this;
+        $instance->country = $locale;
+        return $instance;
+    }
+
+    public function build(): Validator {
+        return new Validator(
+            [
+                'country' => $this->country
+            ]
         );
     }
 

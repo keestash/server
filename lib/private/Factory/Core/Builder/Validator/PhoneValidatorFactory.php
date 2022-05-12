@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Factory\Command;
+namespace Keestash\Factory\Core\Builder\Validator;
 
-use Keestash\Core\Service\User\UserService;
-use KSA\Register\Command\CreateUser;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\User\IUserService;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Keestash\Core\Builder\Validator\PhoneValidatorBuilder;
+use KSP\Core\Service\Core\Locale\ILocaleService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Laminas\Validator\AbstractValidator;
 use Psr\Container\ContainerInterface;
 
-class CreateUserFactory {
+class PhoneValidatorFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): CreateUser {
-        return new CreateUser(
-            $container->get(IUserService::class)
-            , $container->get(IUserStateRepository::class)
-            , $container->get(IUserRepositoryService::class)
-        );
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): AbstractValidator {
+        /** @var ILocaleService $localService */
+        $localService = $container->get(ILocaleService::class);
+        return (new PhoneValidatorBuilder())
+            ->withLocale($localService->getLocale())
+            ->build();
     }
 
 }

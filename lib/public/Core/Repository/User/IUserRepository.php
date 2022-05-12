@@ -36,6 +36,8 @@ interface IUserRepository extends IRepository {
 
     public function getUserById(string $id): ?IUser;
 
+    public function getUserByEmail(string $email): ?IUser;
+
     public function getUserByHash(string $hash): ?IUser;
 
     public function getAll(): ArrayList;
