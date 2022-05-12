@@ -35,11 +35,12 @@ class PublicShareController extends ContextLessAppController {
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
-        , IAppRenderer $appRenderer
-        , PublicShareRepository $publicShareRepository
-        , NodeRepository $nodeRepository
-        , IEventManager $eventManager
+        , IAppRenderer            $appRenderer
+        , PublicShareRepository   $publicShareRepository
+        , NodeRepository          $nodeRepository
+        , IEventManager           $eventManager
     ) {
+        parent::deactivateGlobalSearch();
         parent::__construct($appRenderer);
 
         $this->templateRenderer      = $templateRenderer;

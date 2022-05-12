@@ -319,6 +319,63 @@ class UserRepository implements IUserRepository {
         return $user;
     }
 
+    public function getUserByEmail(string $email): ?IUser {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->select(
+            [
+                'u.id'
+                , 'u.name'
+                , 'u.password'
+                , 'u.create_ts'
+                , 'u.first_name'
+                , 'u.last_name'
+                , 'u.email'
+                , 'u.phone'
+                , 'u.website'
+                , 'u.hash'
+                , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
+                , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
+            ]
+        )
+            ->from('user', 'u')
+            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
+            ->where('u.email = ?')
+            ->setParameter(0, $email);
+        $users     = $queryBuilder->executeQuery()->fetchAllAssociative();
+        $userCount = count($users);
+
+        if (0 === $userCount) {
+            return null;
+        }
+
+        if ($userCount > 1) {
+            throw new KeestashException("found more then one user for the given name");
+        }
+
+        $row  = $users[0];
+        $user = new User();
+        $user->setId((int) $row['id']);
+        $user->setName($row['name']);
+        $user->setPassword($row['password']);
+        $user->setCreateTs(
+            $this->dateTimeService->fromString($row['create_ts'])
+        );
+        $user->setFirstName($row['first_name']);
+        $user->setLastName($row['last_name']);
+        $user->setEmail($row['email']);
+        $user->setPhone($row['phone']);
+        $user->setWebsite($row['website']);
+        $user->setHash($row['hash']);
+        $user->setDeleted(
+            true === (bool) $row['deleted']
+        );
+        $user->setLocked(
+            true === (bool) $row['locked']
+        );
+
+        return $user;
+    }
+
     /**
      * Returns an instance of IUser or null, if not found
      *

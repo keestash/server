@@ -26,7 +26,6 @@ final class ConfigProvider {
     public const ROUTE_LIST_ALL             = "/route_list/all[/]";
     public const THUMBNAIL_BY_EXTENSION     = "/thumbnail/:extension[/]";
     public const DEMOUSERS_ADD              = '/demousers/user/add[/]';
-    public const ICON_FILE_GET_BY_EXTENSION = '/icon/file/get/:extension/';
     public const DEFAULT_SLASH              = "/";
     public const DEFAULT                    = "";
     public const APP_ID                     = 'generalApi';

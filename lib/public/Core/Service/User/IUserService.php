@@ -28,7 +28,7 @@ interface IUserService extends IService {
 
     public const MINIMUM_NUMBER_OF_CHARACTERS_FOR_USER_PASSWORD = 8;
 
-    public function validatePassword(string $password, string $hash): bool;
+    public function verifyPassword(string $password, string $hash): bool;
 
     public function passwordHasMinimumRequirements(string $password): bool;
 
@@ -49,5 +49,9 @@ interface IUserService extends IService {
     public function toNewUser(array $userArray): IUser;
 
     public function isDisabled(?IUser $user): bool;
+
+    public function validatePasswords(string $password, string $passwordRepeat): void;
+
+    public function validateNewUser(IUser $user): IUser;
 
 }

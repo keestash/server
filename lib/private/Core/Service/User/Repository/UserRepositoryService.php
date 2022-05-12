@@ -22,8 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\User\Repository;
 
 use Exception;
-use Keestash\Core\DTO\File\File;
-use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
@@ -142,6 +140,10 @@ class UserRepositoryService implements IUserRepositoryService {
 
     public function userExistsByName(string $name): bool {
         return null !== $this->userRepository->getUser($name);
+    }
+
+    public function userExistsByEmail(string $email): bool {
+        return null !== $this->userRepository->getUserByEmail($email);
     }
 
     public function updateUser(IUser $updatedUser, IUser $oldUser): bool {

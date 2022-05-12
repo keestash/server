@@ -21,13 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Register\Command;
 
-use DateTime;
 use Exception;
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Exception\CreateUserException;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,20 +40,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CreateUser extends KeestashCommand {
 
-    private IUserRepository        $userRepository;
     private UserService            $userService;
     private IUserStateRepository   $userStateRepository;
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
-        IUserRepository $userRepository
-        , UserService $userService
-        , IUserStateRepository $userStateRepository
+        UserService              $userService
+        , IUserStateRepository   $userStateRepository
         , IUserRepositoryService $userRepositoryService
     ) {
         parent::__construct();
 
-        $this->userRepository        = $userRepository;
         $this->userService           = $userService;
         $this->userStateRepository   = $userStateRepository;
         $this->userRepositoryService = $userRepositoryService;
@@ -90,36 +84,23 @@ class CreateUser extends KeestashCommand {
         $locked         = $input->getOption('locked') ?? false;
         $deleted        = $input->getOption('deleted') ?? false;
 
-        if ("" === $password || $password !== $passwordRepeat) {
-            throw new CreateUserException("passwords are empty or do not match");
-        }
+        $this->userService->validatePasswords($password, $passwordRepeat);
 
-        $user = new User();
-        $user->setName($name);
-        $user->setPassword(
-            $this->userService->hashPassword($password)
+        $user = $this->userService->toNewUser(
+            [
+                'user_name'    => $name
+                , 'email'      => $email
+                , 'last_name'  => $lastName
+                , 'first_name' => $firstName
+                , 'password'   => $password
+                , 'phone'      => $phone
+                , 'website'    => $website
+                , 'locked'     => $locked !== false
+                , 'deleted'    => $deleted !== false
+            ]
         );
-        $user->setFirstName($firstName);
-        $user->setLastName($lastName);
-        $user->setEmail($email);
-        $user->setPhone($phone);
-        $user->setWebsite($website);
-        $user->setLocked($locked !== false);
-        $user->setHash(
-            $this->userService->getRandomHash()
-        );
-        $user->setCreateTs(new DateTime());
-        $user->setDeleted($deleted !== false);
 
-        $errors     = []; // TODO implement
-        $errorCount = count($errors);
-
-        if ($errorCount > 0) {
-            foreach ($errors as $error) {
-                $this->writeError($error, $output);
-            }
-            return 1;
-        }
+        $this->userService->validateNewUser($user);
 
         try {
             $this->userRepositoryService->createUser($user);

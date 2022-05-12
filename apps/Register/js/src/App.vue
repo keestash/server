@@ -89,6 +89,7 @@
               <option selected="">+49</option>
               <option value="1">+90</option>
               <option value="2">+44</option>
+              <option value="3">+37</option>
               <!-- TODO add more -->
             </select>
             <input
@@ -243,7 +244,8 @@ export default {
             , 'last_name': this.form.lastName
             , 'user_name': this.form.userName
             , 'email': this.form.email
-            , 'phone': this.form.phone.prefix + this.form.phone.number
+            // , 'phone': this.form.phone.prefix + this.form.phone.number
+            , 'phone': '+16508531300'
             , 'website': this.form.website
             , 'password': this.form.password
             , 'password_repeat': this.form.passwordRepeat
@@ -251,15 +253,11 @@ export default {
           }
       )
           .then((data) => {
-
             // TODO show modal
             this.registerButtonClicked = false;
             console.log(data);
           })
           .catch((data) => {
-            alert(
-                JSON.stringify(data)
-            )
             // TODO show modal
             this.registerButtonClicked = false;
             console.log(data);

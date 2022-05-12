@@ -11,6 +11,11 @@ parameters:
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Api/EndUpdate/EndUpdate.php
+
+		-
 			message: "#^Parameter \\#1 \\$files of method KSA\\\\InstallInstance\\\\Command\\\\Uninstall\\:\\:removeFiles\\(\\) expects array, array\\<int, string\\>\\|false given\\.$#"
 			count: 2
 			path: ../../apps/InstallInstance/Command/Uninstall.php
@@ -164,11 +169,6 @@ parameters:
 			message: "#^Cannot access offset string on array\\|object\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/User/Add.php
-
-		-
-			message: "#^Comparison operation \"\\>\" between 0 and 0 is always false\\.$#"
-			count: 1
-			path: ../../apps/Register/Command/CreateUser.php
 
 		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
@@ -349,6 +349,11 @@ parameters:
 			message: "#^Parameter \\#1 \\$lastRun of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setLastRun\\(\\) expects DateTime\\|null, DateTimeInterface given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 2
+			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
 
 		-
 			message: "#^Parameter \\#1 \\$min \\(0\\) of function random_int expects lower number than parameter \\#2 \\$max \\(int\\<\\-1, max\\>\\)\\.$#"

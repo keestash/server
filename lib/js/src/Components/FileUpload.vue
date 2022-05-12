@@ -3,24 +3,19 @@
     <div class="row">
       <div class="col p-0">
         <form enctype="multipart/form-data" novalidate v-if="isInitial || isSaving" class="d-flex flex-column">
-          <div class="dropbox btn btn-primary flex-grow-1 text-white d-flex justify-content-center flex-column">
-            <div class="text-center">
-              <div class="h4" v-if="isInitial">
-                {{ message }}
-              </div>
-              <div v-if="isSaving">
-                {{ uploadingMessage() }}
-              </div>
-            </div>
-            <input
-                type="file"
-                :name="uploadFieldName"
-                :disabled="isSaving"
-                @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
-                class="p-2 input-file"
-                multiple
-            >
-          </div>
+          <button class="btn btn-primary" @click="$event.preventDefault();$refs['attachment-file'].click()">{{
+              message
+            }}
+          </button>
+          <input
+              type="file"
+              ref="attachment-file"
+              :name="uploadFieldName"
+              :disabled="isSaving"
+              @change="filesChange($event.target.name, $event.target.files); fileCount = $event.target.files.length"
+              style="display: none"
+              multiple
+          >
         </form>
         <!--SUCCESS-->
         <div v-if="isSuccess">
@@ -121,10 +116,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
-.input-file {
-  opacity: 0;
-  cursor: pointer;
-}
 
 </style>

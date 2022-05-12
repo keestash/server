@@ -23,27 +23,47 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\Object\String\IStringService;
 use Keestash;
 use Keestash\Core\DTO\User\User;
 use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
+use Laminas\Validator\EmailAddress as EmailValidator;
+use Laminas\Validator\Uri as UriValidator;
 
 class UserService implements IUserService {
 
-    private Legacy           $legacy;
-    private IDateTimeService $dateTimeService;
+    private Legacy                 $legacy;
+    private IDateTimeService       $dateTimeService;
+    private IStringService         $stringService;
+    private IUserRepositoryService $userRepositoryService;
+    private EmailValidator         $emailValidator;
+    private PhoneValidator         $phoneValidator;
+    private UriValidator           $uriValidator;
 
     public function __construct(
-        Legacy $legacy
-        , IDateTimeService $dateTimeService
+        Legacy                   $legacy
+        , IDateTimeService       $dateTimeService
+        , IStringService         $stringService
+        , IUserRepositoryService $userRepositoryService
+        , EmailValidator         $emailValidator
+        , PhoneValidator         $phoneValidator
+        , UriValidator           $uriValidator
     ) {
-        $this->legacy          = $legacy;
-        $this->dateTimeService = $dateTimeService;
+        $this->legacy                = $legacy;
+        $this->dateTimeService       = $dateTimeService;
+        $this->stringService         = $stringService;
+        $this->userRepositoryService = $userRepositoryService;
+        $this->emailValidator        = $emailValidator;
+        $this->phoneValidator        = $phoneValidator;
+        $this->uriValidator          = $uriValidator;
     }
 
-    public function validatePassword(string $password, string $hash): bool {
+    public function verifyPassword(string $password, string $hash): bool {
         return true === password_verify($password, $hash);
     }
 
@@ -169,9 +189,77 @@ class UserService implements IUserService {
         );
         $user->setPhone($userArray["phone"]);
         $user->setWebsite($userArray["website"]);
+        $user->setLocked($userArray['locked'] ?? false);
+        $user->setDeleted($userArray['deleted'] ?? false);
         $user->setHash(
             $this->getRandomHash()
         );
+        return $user;
+    }
+
+    /**
+     * @param string $password
+     * @param string $passwordRepeat
+     * @return void
+     * @throws KeestashException
+     */
+    public function validatePasswords(string $password, string $passwordRepeat): void {
+        if (true === $this->stringService->isEmpty($password)) {
+            throw new KeestashException('password is empty');
+        }
+
+        if (true === $this->stringService->isEmpty($passwordRepeat)) {
+            throw new KeestashException('password repeat is empty');
+        }
+
+        if (false === $this->stringService->equals($password, $passwordRepeat)) {
+            throw new KeestashException('password and password repeat are not equal');
+        }
+
+        if (false === $this->passwordHasMinimumRequirements($password)) {
+            throw new KeestashException('password and password repeat are not equal');
+        }
+    }
+
+    /**
+     * @param IUser $user
+     * @return IUser
+     * @throws KeestashException
+     */
+    public function validateNewUser(IUser $user): IUser {
+
+        if (true === $this->stringService->isEmpty($user->getFirstName())) {
+            throw new KeestashException('invalid first name');
+        }
+
+        if (true === $this->stringService->isEmpty($user->getLastName())) {
+            throw new KeestashException('invalid last name');
+        }
+
+        if (true === $this->stringService->isEmpty($user->getName())) {
+            throw new KeestashException('invalid name name');
+        }
+
+        if (true === $this->userRepositoryService->userExistsByName($user->getName())) {
+            throw new KeestashException('name exists');
+        }
+
+        if (true === $this->userRepositoryService->userExistsByEmail($user->getEmail())) {
+            throw new KeestashException('mail exists');
+        }
+
+        if (false === $this->emailValidator->isValid($user->getEmail())) {
+            throw new KeestashException('invalid email address');
+        }
+
+        if (false === $this->phoneValidator->isValid($user->getPhone())) {
+            throw new KeestashException('invalid phone');
+        }
+
+        if (false === $this->uriValidator->isValid($user->getWebsite())) {
+            throw new KeestashException('invalid website');
+        }
+
         return $user;
     }
 

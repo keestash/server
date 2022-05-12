@@ -194,6 +194,7 @@ class AppRenderer implements IAppRenderer {
         $file = $this->fileRepository->getByName($this->fileService->getProfileImageName($user));
         if (null === $file) {
             $file = $this->fileService->getDefaultImage();
+            $file->setOwner($user);
         }
 
         $file = $this->fileManager->read(
@@ -204,6 +205,7 @@ class AppRenderer implements IAppRenderer {
 
         if (null === $file) {
             $file = $this->fileService->getDefaultImage();
+            $file->setOwner($user);
         }
 
         return (string) $this->rawFileService->stringToBase64($file->getFullPath());

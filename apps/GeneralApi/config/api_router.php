@@ -40,15 +40,8 @@ return [
             , 'method'     => IVerb::POST
             , 'name'       => AddEmailAddress::class
         ],
-        [
-            'path'         => \KSA\GeneralApi\ConfigProvider::ICON_FILE_GET_BY_EXTENSION
-            , 'middleware' => File::class
-            , 'method'     => IVerb::GET
-            , 'name'       => File::class
-        ],
     ],
     ConfigProvider::PUBLIC_ROUTES => [
         \KSA\GeneralApi\ConfigProvider::DEMOUSERS_ADD
-        , \KSA\GeneralApi\ConfigProvider::ICON_FILE_GET_BY_EXTENSION
     ]
 ];
