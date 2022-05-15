@@ -18,12 +18,10 @@ export const STORE = {
         },
         REMOVE_EDGE(state, edge) {
             state.selectedEdge = null;
-
             let _edges = _.cloneDeep(state.edges);
             _edges = _edges.filter(function (item) {
                 return item.id !== edge.id
             });
-
             state.edges = _edges;
         },
         UPDATE_SELECTED_NODE(state, newNode) {
@@ -59,9 +57,6 @@ export const STORE = {
         },
         setEdges(context, edges) {
             context.commit("SET_EDGES", edges);
-        },
-        addNodeToEdge(context, node) {
-            context.commit('ADD_NODE_TO_EDGE', node);
         }
     },
     getters: {

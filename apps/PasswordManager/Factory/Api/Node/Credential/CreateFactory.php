@@ -35,10 +35,8 @@ class CreateFactory {
 
     public function __invoke(ContainerInterface $container): Create {
         return new Create(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)
-            , $container->get(SanitizerService::class)
             , $container->get(ILogger::class)
             , $container->get(NodeEncryptionService::class)
             , $container->get(AccessService::class)

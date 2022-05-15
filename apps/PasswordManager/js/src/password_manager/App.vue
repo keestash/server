@@ -11,7 +11,7 @@
           </ol>
           <ol class="breadcrumb" id="breadcrumb" v-else>
             <li class="breadcrumb-item">
-              <Skeleton :count="1" height="25px" width="100px"></Skeleton>
+              <IsLoading class="pwm-app-is-loading"></IsLoading>
             </li>
           </ol>
         </nav>
@@ -47,81 +47,76 @@
         </div>
       </div>
     </div>
-
-    <div>
-      <div class="modal" tabindex="-1" role="dialog" id="new-edge-modal">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Modal title</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form @submit="onEdgeAdd">
-                <div class="form-group">
-                  <label for="edge-name">Name</label>
-                  <input
-                      id="edge-name"
-                      v-model="addEdge.form.name"
-                      type="text"
-                      placeholder="Enter name"
-                      autocomplete="off"
-                      required
-                  >
-                  <label><small></small></label>
-                </div>
-
-                <div class="form-group" v-if="addEdge.type === 'pwm__new__password'">
-                  <label for="edge-username">Username</label>
-                  <input
-                      id="edge-username"
-                      v-model="addEdge.form.username"
-                      type="text"
-                      placeholder="Enter Username"
-                      autocomplete="off">
-                  <label><small></small></label>
-                </div>
-
-                <div class="form-group" v-if="addEdge.type === 'pwm__new__password'">
-                  <label for="edge-password">Password</label>
-                  <input
-                      id="edge-password"
-                      v-model="addEdge.form.password.value"
-                      type="password"
-                      placeholder="Enter Password"
-                      autocomplete="off"
-                      @input="checkEntropy"
-                  >
-                  <label :class="addEdge.form.password.passwordClass">
-                    <small>
-                      {{ addEdge.form.password.hint }}
-                    </small>
-                  </label>
-                </div>
-
-                <div class="form-group" v-if="addEdge.type === 'pwm__new__password'">
-                  <label for="edge-url">URL</label>
-                  <input
-                      id="edge-url"
-                      v-model="addEdge.form.url"
-                      type="text"
-                      placeholder="Enter URL"
-                      autocomplete="off"
-                  >
-                  <label><small></small></label>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </form>
-            </div>
+    <Modal
+        :open="newEdgeModalOpen"
+        :has-description="true"
+        @closed="onEdgeModalClose"
+        @saved="onEdgeAdd"
+    >
+      <template v-slot:body-description v-if="addEdge.type === 'pwm__new__password'">
+        {{ $t('actionBar.credential.description') }}
+      </template>
+      <template v-slot:body-description v-else>
+        {{ $t('actionBar.folder.description') }}
+      </template>
+      <template v-slot:title v-if="addEdge.type === 'pwm__new__password'">{{
+          $t('actionBar.credential.title')
+        }}
+      </template>
+      <template v-slot:title v-else>{{
+          $t('actionBar.folder.title')
+        }}
+      </template>
+      <template v-slot:body v-if="addEdge.type === 'pwm__new__password'">
+        <form>
+          <div class="form-group">
+            <label for="edge-name" class="col-form-label">{{
+                $t('actionBar.credential.name.label')
+              }}</label>
+            <input type="text" class="form-control" :placeholder="$t('actionBar.credential.name.placeholder')"
+                   v-model="addEdge.form.name"
+                   autocomplete="off" required id="edge-name">
           </div>
-        </div>
-      </div>
-
-    </div>
-
+          <div class="form-group">
+            <label for="edge-username" class="col-form-label">{{ $t('actionBar.credential.username.label') }}</label>
+            <input type="text" class="form-control" id="edge-username" v-model="addEdge.form.username"
+                   :placeholder="$t('actionBar.credential.username.placeholder')">
+          </div>
+          <div class="form-group">
+            <label for="edge-password" class="col-form-label">{{ $t('actionBar.credential.password.label') }}</label>
+            <input type="text" class="form-control" id="edge-password" v-model="addEdge.form.password.value"
+                   :placeholder="$t('actionBar.credential.password.placeholder')">
+          </div>
+          <div class="form-group">
+            <label for="edge-url" class="col-form-label">{{ $t('actionBar.credential.url.label') }}</label>
+            <input type="text" class="form-control" id="edge-url" v-model="addEdge.form.url"
+                   :placeholder="$t('actionBar.credential.url.placeholder')">
+          </div>
+        </form>
+      </template>
+      <template v-slot:body v-else>
+        <form>
+          <div class="form-group">
+            <label for="edge-name" class="col-form-label">{{
+                $t('actionBar.credential.name.label')
+              }}</label>
+            <input type="text" class="form-control" :placeholder="$t('actionBar.credential.name.placeholder')"
+                   v-model="addEdge.form.name"
+                   autocomplete="off" required id="edge-name">
+          </div>
+        </form>
+      </template>
+      <template v-slot:button-text v-if="addEdge.type === 'pwm__new__password'">
+        {{ $t('actionBar.credential.buttonText') }}
+      </template>
+      <template v-slot:button-text v-else>
+        {{ $t('actionBar.folder.buttonText') }}
+      </template>
+      <template v-slot:negative-button-text v-if="addEdge.type === 'pwm__new__password'">
+        {{ $t('actionBar.credential.negativeButtonText') }}
+      </template>
+      <template v-slot:negative-button-text v-else>{{ $t('actionBar.folder.negativeButtonText') }}</template>
+    </Modal>
   </div>
 </template>
 
@@ -130,7 +125,6 @@ import Edge from "./Node/Edge";
 import {APP_STORAGE, AXIOS, StartUp} from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes/index";
-import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../lib/js/src/Backend/Axios";
 import NoNodeSelected from "./Node/NoNodeSelected";
 import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
 import {Skeleton} from "vue-loading-skeleton";
@@ -140,17 +134,19 @@ import {
   EVENT_NAME_GLOBAL_SEARCH
 } from "../../../../../lib/js/src/base";
 import NoEdges from "./Node/NoEdges";
-import {Modal} from "bootstrap";
 import axios from "axios/index";
+import Modal from "../../../../../lib/js/src/Components/Modal";
+import IsLoading from "../../../../../lib/js/src/Components/IsLoading";
 
 export const NODE_ID_ROOT = "root";
 export const STORAGE_ID_ROOT = "root.id.storage";
 
 export default {
   name: "App",
-  components: {NoEdges, EdgeDetail, NoNodeSelected, Edge, Skeleton},
+  components: {IsLoading, Modal, NoEdges, EdgeDetail, NoNodeSelected, Edge, Skeleton},
   data: function () {
     return {
+      newEdgeModalOpen: false,
       query: null,
       breadCrumbs: [],
       container: null,
@@ -169,8 +165,7 @@ export default {
             passwordClass: 'new-pw-neutral',
             hint: ''
           },
-          url: '',
-          note: ''
+          url: ''
         }
       },
     }
@@ -194,7 +189,6 @@ export default {
     document.addEventListener(
         EVENT_NAME_APP_NAVIGATION_CLICKED
         , function (data) {
-          this.$store.dispatch("selectEdge", null);
           self.loadEdge(self, data.detail.dataset.type);
         });
 
@@ -202,9 +196,8 @@ export default {
         EVENT_NAME_ACTION_BAR_ITEM_CLICKED
         , (e) => {
           e.stopImmediatePropagation();
-          const modal = new Modal('#new-edge-modal');
-          modal.show();
           self.addEdge.type = e.detail.target.id;
+          self.newEdgeModalOpen = true;
         }
     );
 
@@ -229,46 +222,39 @@ export default {
       if (val === "" || val === null) return true;
       return (edge.node.name.toLowerCase().includes(val.toLowerCase()));
     },
-    onEdgeAdd: function (e) {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      e.stopPropagation();
-
+    onEdgeModalClose() {
+      this.newEdgeModalOpen = false;
+      this.hideModal();
+    },
+    onEdgeAdd: function () {
       let route = ROUTES.getPasswordManagerFolderCreate();
       if (this.addEdge.type === 'pwm__new__password') {
         route = ROUTES.getPasswordManagerCreate();
       }
 
       const data = this.addEdge.form;
-      data.parent = this.getSelected();
+      data.parent = (this.getSelected() || {}).id || NODE_ID_ROOT;
 
       this.axios.post(
           route
           , data
-      ).then((response) => {
-
-        if (RESPONSE_CODE_OK in response.data) {
-          return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-        }
-        return [];
-      })
-          .then((data) => {
+      )
+          .then((response) => {
+            const data = response.data;
             this.$store.dispatch(
                 "addEdge"
                 , data.edge
             );
-            // TODO hide new-edge-modal
+            this.hideModal();
           });
     },
     hideModal: function () {
       this.addEdge.form.name = '';
       this.addEdge.form.username = '';
       this.addEdge.form.password.value = '';
-      this.addEdge.form.url = '';
-      this.addEdge.form.note = '';
-      this.addEdge.form.password.value = '';
       this.addEdge.form.password.passwordClass = 'new-pw-neutral';
       this.addEdge.form.password.hint = '';
+      this.addEdge.form.url = '';
     },
     onBreadCrumbClick: function (rootId) {
       this.$store.dispatch("selectEdge", null);
@@ -376,6 +362,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.pwm-app-is-loading {
+  width: 5rem;
+  height: 1.5rem;
+}
 </style>

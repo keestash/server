@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTime;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
@@ -31,6 +32,7 @@ use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
+use PHPUnit\Util\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -66,36 +68,13 @@ class Create implements RequestHandlerInterface {
         $parent     = $parameters["parent"] ?? null;
 
         if (false === $this->isValid($name) || false === $this->isValid($parent)) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no parameters set")
-                ]
-            );
-
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         try {
             $parentNode = $this->getParentNode($parent, $token);
         } catch (PasswordManagerException $exception) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no parent found")
-                ]
-            );
-        }
-
-        if ($parentNode->getUser()->getId() !== $token->getUser()->getId()) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no parent found")
-                ]
-            );
-
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         $folder = new Folder();
@@ -107,12 +86,7 @@ class Create implements RequestHandlerInterface {
         $lastId = $this->nodeRepository->addFolder($folder);
 
         if (null === $lastId || 0 === $lastId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could not add")
-                ]
-            );
+            return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
         $folder->setId($lastId);
@@ -123,17 +97,14 @@ class Create implements RequestHandlerInterface {
             , $token->getUser()
         );
 
-
         $edge = $this->nodeRepository->addEdge($edge);
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "message" => $this->translator->translate("success")
-                , "edge"  => $edge
+        return new JsonResponse(
+            [
+                "edge" => $edge
             ]
+            , IResponse::OK
         );
-
     }
 
     private function isValid(?string $value): bool {

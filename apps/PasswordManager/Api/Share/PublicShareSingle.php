@@ -76,7 +76,7 @@ class PublicShareSingle implements RequestHandlerInterface {
                     "message" => $this->translator->translate("no password found for hash")
                     , "hash"  => $hash
                 ]
-                , IResponse::OK
+                , IResponse::BAD_REQUEST
             );
         }
 

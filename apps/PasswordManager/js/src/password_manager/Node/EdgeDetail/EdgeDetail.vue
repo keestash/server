@@ -356,8 +356,8 @@ export default {
           plain: newUserName
         }
         , url: {
-            plain: this.edge.node.url.plain
-          }
+          plain: this.edge.node.url.plain
+        }
         , nodeId: this.edge.node.id
       });
     },
@@ -370,8 +370,8 @@ export default {
           plain: this.edge.node.username.plain
         }
         , url: {
-            plain: newUrl
-          }
+          plain: newUrl
+        }
         , nodeId: this.edge.node.id
       });
     },
