@@ -31,7 +31,6 @@ use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\File\View;
 use KSA\GeneralApi\Controller\Route\RouteList;
 use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
-use KSA\GeneralApi\Factory\Api\Thumbnail\FileFactory;
 use KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory;
 use KSA\GeneralApi\Factory\Command\ClearBundleJSFactory;
 use KSA\GeneralApi\Factory\Command\CompilerFactory;

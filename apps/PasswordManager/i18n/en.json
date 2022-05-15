@@ -154,5 +154,35 @@
     "number_of_passwords_in_folder_single": "1 password in this folder",
     "number_of_passwords_in_folder_multiple": "{{number}} passwords in this folder"
   },
-  "remove": "remove"
+  "remove": "remove",
+  "actionBar": {
+    "credential": {
+      "title": "Add New Password",
+      "description": "Create new password. The only mandatory entry is the name",
+      "name": {
+        "label": "Name",
+        "placeholder": "Enter name"
+      },
+      "username": {
+        "label": "Username",
+        "placeholder": "Enter Username"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter Password"
+      },
+      "url": {
+        "label": "URL",
+        "placeholder": "Enter URL"
+      },
+      "buttonText": "Save Password",
+      "negativeButtonText": "Close"
+    },
+    "folder": {
+      "title": "Add New Folder",
+      "description": "Create new folder",
+      "buttonText": "Save Folder",
+      "negativeButtonText": "Close"
+    }
+  }
 }
