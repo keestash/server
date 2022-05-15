@@ -94,7 +94,6 @@ export default {
     this.axios = this.container.query(AXIOS);
     this.dateTimeService = this.container.query(DATE_TIME_SERVICE);
     this.appStorage = this.container.query(APP_STORAGE);
-
     this.getData();
   },
   watch: {
@@ -154,6 +153,8 @@ export default {
       return ROUTES.getAssetUrl(jwt);
     },
     getData() {
+      if (this.edge === null) return;
+
       this.axios.request(
           ROUTES.getComments(
               this.edge.node.id

@@ -160,6 +160,7 @@ export default {
       return ROUTES.getAssetUrl(extension);
     },
     getData() {
+      if (this.edge === null) return;
       this.axios.request(
           ROUTES.getAttachments(this.edge.node.id)
       )

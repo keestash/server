@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node;
@@ -49,27 +49,21 @@ use Throwable;
  */
 class Create implements RequestHandlerInterface {
 
-    private IL10N                 $translator;
     private NodeRepository        $nodeRepository;
     private CredentialService     $credentialService;
-    private SanitizerService      $sanitizerService;
     private ILogger               $logger;
     private NodeEncryptionService $nodeEncryptionService;
     private AccessService         $accessService;
 
     public function __construct(
-        IL10N                   $l10n
-        , NodeRepository        $nodeRepository
+        NodeRepository          $nodeRepository
         , CredentialService     $credentialService
-        , SanitizerService      $sanitizerService
         , ILogger               $logger
         , NodeEncryptionService $nodeEncryptionService
         , AccessService         $accessService
     ) {
-        $this->translator            = $l10n;
         $this->nodeRepository        = $nodeRepository;
         $this->credentialService     = $credentialService;
-        $this->sanitizerService      = $sanitizerService;
         $this->logger                = $logger;
         $this->nodeEncryptionService = $nodeEncryptionService;
         $this->accessService         = $accessService;
@@ -81,30 +75,18 @@ class Create implements RequestHandlerInterface {
         $parameters = (array) $request->getParsedBody();
         $name       = $parameters["name"] ?? '';
         $userName   = $parameters["username"] ?? '';
-        $password   = $parameters["password"] ?? '';
+        $password   = ($parameters["password"]["value"]) ?? '';
         $folder     = $parameters["parent"] ?? '';
         $url        = $parameters["url"] ?? '';
 
         if (false === $this->isValid($name)) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("No Title")
-                ]
-            );
-
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         try {
-            $parent = $this->getParentNode($folder, $token);
+            $parent = $this->getParentNode((string) $folder, $token);
         } catch (PasswordManagerException $exception) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no parent found")
-                ]
-            );
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         if (
@@ -113,14 +95,7 @@ class Create implements RequestHandlerInterface {
             // parent does not belong to me
             || false === $this->accessService->hasAccess($parent, $token->getUser())
         ) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no parent found")
-                ]
-            );
-
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $credential = $this->credentialService->createCredential(
@@ -137,20 +112,10 @@ class Create implements RequestHandlerInterface {
             $edge->setNode($credential);
         } catch (Throwable $exception) {
             $this->logger->error($exception->getMessage());
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could not link edges")
-                ]
-            );
+            return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "edge" => $edge
-            ]
-        );
+        return new JsonResponse(['edge' => $edge], IResponse::OK);
     }
 
     private function isValid(?string $value): bool {

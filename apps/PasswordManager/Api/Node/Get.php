@@ -185,8 +185,11 @@ class Get implements RequestHandlerInterface {
                 }
                 $root->setEdges($newEdges);
                 break;
+            default:
+                throw new PasswordManagerException('unknown operation ' . $id);
         }
 
+        $this->nodeEncryptionService->decryptNode($root);
         return $root;
     }
 

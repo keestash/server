@@ -137,15 +137,22 @@ class SessionRepository implements ISessionRepository {
         return $queryBuilder->delete('session')
                 ->where('id = ?')
                 ->setParameter(0, $id)
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     public function deleteByLastUpdate(int $maxLifeTime): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $updateTs     = new DateTime();
+        $updateTs     = $updateTs->modify("-$maxLifeTime second");
+
+        if (false === ($updateTs instanceof DateTime)) {
+            throw new KeestashException();
+        }
+
         return $queryBuilder->delete('session')
                 ->where('update_ts = ?')
-                ->setParameter(0, (new DateTime())->getTimestamp() - $maxLifeTime)
-                ->execute() !== 0;
+                ->setParameter(0, $updateTs->format(IDateTimeService::FORMAT_YMD_HIS))
+                ->executeStatement() !== 0;
     }
 
     public function close(): bool {

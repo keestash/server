@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -186,7 +187,7 @@ return [
         ],
         [
             'path'         => '/password_manager/node/create[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Folder\Create::class
+            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Folder\Create::class]
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Folder\Create::class
         ],
