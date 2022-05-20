@@ -189,6 +189,37 @@
       </div>
     </div>
 
+    <Modal
+        :open="addedModalOpened"
+        :has-description="false"
+        @saved="this.addedModalOpened=false"
+        @closed="this.addedModalOpened=false"
+        :has-positive-button="true"
+        :has-negative-button="false"
+        unique-id="register-added-modal"
+    >
+      <template v-slot:title>{{ $t('modal.success.title') }}</template>
+      <template v-slot:body-description></template>
+      <template v-slot:body>{{ $t('modal.success.body') }}</template>
+      <template v-slot:button-text>{{ $t('modal.success.buttonText') }}</template>
+      <template v-slot:negative-button-text></template>
+    </Modal>
+
+    <Modal
+        :open="errorModalOpened"
+        :has-description="false"
+        @saved="this.errorModalOpened=false"
+        @closed="this.errorModalOpened=false"
+        :has-positive-button="true"
+        :has-negative-button="false"
+        unique-id="register-error-modal"
+    >
+      <template v-slot:title>{{ $t('modal.error.title') }}</template>
+      <template v-slot:body-description></template>
+      <template v-slot:body>{{ $t('modal.error.body') }}</template>
+      <template v-slot:button-text>{{ $t('modal.error.buttonText') }}</template>
+      <template v-slot:negative-button-text></template>
+    </Modal>
   </div>
 </template>
 
@@ -196,9 +227,11 @@
 import {AXIOS, StartUp} from "../../../../lib/js/src/StartUp";
 import {Container} from "../../../../lib/js/src/DI/Container";
 import {ROUTES} from "./../config/routes/index";
+import Modal from "../../../../lib/js/src/Components/Modal";
 
 export default {
   name: "App",
+  components: {Modal},
   created() {
     const startUp = new StartUp(
         new Container()
@@ -209,6 +242,8 @@ export default {
   },
   data() {
     return {
+      addedModalOpened: false,
+      errorModalOpened: false,
       container: {
         container: null,
         axios: null
@@ -253,14 +288,22 @@ export default {
           }
       )
           .then((data) => {
-            // TODO show modal
+            this.addedModalOpened = true;
             this.registerButtonClicked = false;
-            console.log(data);
+            this.form.firstName = '';
+            this.form.lastName = '';
+            this.form.userName = '';
+            this.form.email = '';
+            this.form.website = '';
+            this.form.phone.prefix = '';
+            this.form.phone.value = '';
+            this.form.password = '';
+            this.form.passwordRepeat = '';
+            this.form.termsAndConditions = false;
           })
           .catch((data) => {
-            // TODO show modal
+            this.errorModalOpened = true;
             this.registerButtonClicked = false;
-            console.log(data);
           })
     }
   }

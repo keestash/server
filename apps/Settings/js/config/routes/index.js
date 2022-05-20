@@ -30,6 +30,7 @@ const PASSWORD_REQUIREMENTS = "/password_requirements/";
 const USER_GET = "/user/exists/{userName}/";
 const USERS_ALL = "/users/all/";
 const USERS_EDIT = "/users/edit/";
+const USERS_LOCK = "/users/lock/";
 
 const EMAIL_GET = "/user/mail/exists/{address}/";
 const REGISTER_ADD = "/register/add/";
@@ -42,7 +43,7 @@ export const MODE_ADD = 'add.mode';
 export const MODE_REMOVE = 'remove.mode';
 
 export const ROUTES = {
-    GET_ORGANIZATION_LIST: ( includeInactive = false) => {
+    GET_ORGANIZATION_LIST: (includeInactive = false) => {
         const route = ORGANIZATION_LIST.replace("{includeInactive}", "" + includeInactive);
         return host.getApiHost() + route;
     },
@@ -74,6 +75,9 @@ export const ROUTES = {
     },
     USERS_ALL: () => {
         return host.getApiHost() + USERS_ALL;
+    },
+    USERS_LOCK: () => {
+        return host.getApiHost() + USERS_LOCK;
     },
     USERS_EDIT: () => {
         return host.getApiHost() + USERS_EDIT;

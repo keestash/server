@@ -110,117 +110,102 @@
         </div>
       </div>
     </div>
-
-    <!-- Modal -->
-    <div
-        class="modal"
-        ref="emailAddressModal"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true"
-        data-keyboard="false"
-        data-focus="true"
-        data-backdrop="static"
+    <Modal
+        :open="loginModal.opened"
+        :has-negative-button="false"
+        @closed="this.loginModal.opened=false"
+        @saved="loginModal.opened=false"
+        v-bind:key="0"
+        unique-id="login-loginmodal"
     >
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-body d-flex flex-column">
-            <div class="container-fluid">
-              <div class="row">
-                <div class="col">
-                  <h4>{{ $t('login.demo.modal.title') }}</h4>
-                </div>
+      <template v-slot:title>
+        {{ $t('login.modal.title') }}
+      </template>
+      <template v-slot:body>
+        {{ $t('login.modal.body') }}
+      </template>
+      <template v-slot:button-text>
+        {{ $t('login.modal.buttonText') }}
+      </template>
+      <template v-slot:negative-button-text>
+        {{ $t('login.modal.negativeButtonText') }}
+      </template>
+    </Modal>
+    <Modal
+        :open="demoModal.opened"
+        :has-positive-button="true"
+        :has-negative-button="false"
+        :closable="false"
+        @closed="this.loginModal.opened=false"
+        @saved="onEmailSubmitted"
+        unique-id="login-demomodal"
+    >
+      <template v-slot:title>
+        {{ $t('login.demo.modal.title') }}
+      </template>
+      <template v-slot:body-description>
+        {{ $t('login.demo.modal.text') }}
+      </template>
+      <template v-slot:button-text>
+        {{ $t('login.demo.modal.positiveButtonText') }}
+      </template>
+      <template v-slot:body>
+        <form>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col">
+                <label for="e-mail-address" class="form-label">{{
+                    $t('login.demo.modal.input.label')
+                  }}</label>
               </div>
-              <div class="row">
-                <div class="col">
-                  {{ $t('login.demo.modal.text') }}
-                </div>
-              </div>
-              <div class="row mb-2">
-              </div>
-              <div class="row">
-                <div class="col">
-                  <form>
-                    <div class="container-fluid">
-                      <div class="row">
-                        <div class="col">
-                          <label for="e-mail-address" class="form-label">{{
-                              $t('login.demo.modal.input.label')
-                            }}</label>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col">
-                          <input
-                              type="email"
-                              class="form-control"
-                              id="e-mail-address"
-                              aria-describedby="e-mail-address-description"
-                              v-model="demoModal.value"
-                          >
-                          <div id="e-mail-address-description" class="form-text small">
-                            {{ $t('login.demo.modal.input.description') }}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col">
-                          <div class="alert alert-danger" role="alert" id="danger--alert"
-                               v-if="demoModal.alertVisible">
-                            {{ $t('login.demo.modal.alert') }}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row">
-                        <div class="col">
-                          <button type="submit" class="btn btn-primary" @click="onEmailSubmitted">
-                            {{ $t('login.demo.modal.sendButton') }}
-                          </button>
-                          <div
-                              class="spinner-border flex-grow-1 align-self-center"
-                              role="status"
-                              id="loading--spinner"
-                              v-if="demoModal.loadingSpinnerVisible"
-                          >
-                        <span class="sr-only">
-                            {{ $t('login.demo.modal.loadingInfo') }}
-                        </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
+            </div>
+            <div class="row">
+              <div class="col">
+                <input
+                    type="email"
+                    class="form-control"
+                    id="e-mail-address"
+                    aria-describedby="e-mail-address-description"
+                    v-model="demoModal.value"
+                >
+                <div id="e-mail-address-description" class="form-text small">
+                  {{ $t('login.demo.modal.input.description') }}
                 </div>
               </div>
             </div>
 
+            <div class="row">
+              <div class="col">
+                <div class="alert alert-danger" role="alert" id="danger--alert"
+                     v-if="demoModal.alertVisible">
+                  {{ $t('login.demo.modal.alert') }}
+                </div>
+              </div>
+            </div>
 
           </div>
-        </div>
-      </div>
-    </div>
+        </form>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
 import {
-    APP_STORAGE,
-    AXIOS, EMAIL_SERVICE,
-    ROUTER,
-    StartUp,
+  APP_STORAGE,
+  AXIOS, EMAIL_SERVICE,
+  ROUTER,
+  StartUp,
 } from "../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes/index"
 import {HEADER_NAME_TOKEN, HEADER_NAME_USER} from "../../../../../lib/js/src/Backend/Axios";
-import {Modal} from "bootstrap";
 import IconModal from "../../../../../lib/js/src/UI/IconModal";
+import Modal from "../../../../../lib/js/src/Components/Modal";
 
 export default {
   name: "App",
-  components: {IconModal},
+  components: {Modal, IconModal},
   data() {
     return {
       container: {
@@ -248,7 +233,13 @@ export default {
       demoModal: {
         alertVisible: false,
         loadingSpinnerVisible: false,
-        value: ''
+        value: '',
+        opened: false,
+        id: "demoModal"
+      },
+      loginModal: {
+        opened: false,
+        id: "loginModal"
       }
     }
   },
@@ -282,8 +273,7 @@ export default {
             return;
           }
 
-          const modal = new Modal(this.$refs.emailAddressModal);
-          modal.show();
+          this.demoModal.opened = true;
         }
     )
 
@@ -291,17 +281,10 @@ export default {
 
   },
   methods: {
-    closeModal() {
-      this.isModalVisible = false;
-    },
     isDemoUserSubmitted() {
       return this.$store.getters.emailSubmitted;
     },
-    onEmailSubmitted(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-
+    onEmailSubmitted() {
       this.demoModal.alertVisible = false;
       const email = this.demoModal.value;
 
@@ -319,8 +302,7 @@ export default {
       ).then(
           () => {
             this.$store.dispatch("setEmailSubmitted", true);
-            const modal = new Modal(this.$refs.emailAddressModal);
-            modal.hide();
+            this.demoModal.opened = false
           }
       );
 
@@ -394,6 +376,7 @@ export default {
           })
           .catch((data) => {
             this.loginButtonDisabled = false;
+            this.loginModal.opened = true;
             this.container.appStorage.clearAPICredentials();
           })
     }

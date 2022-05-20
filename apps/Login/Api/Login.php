@@ -23,6 +23,7 @@ namespace KSA\Login\Api;
 
 use DateTime;
 use Keestash\ConfigProvider;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Router\Verification;
@@ -52,6 +53,7 @@ class Login implements RequestHandlerInterface {
     private ILocaleService     $localeService;
     private ILanguageService   $languageService;
     private ILogger            $logger;
+    private InstanceDB         $instanceDB;
 
     public function __construct(
         IUserRepository      $userRepository
@@ -64,6 +66,7 @@ class Login implements RequestHandlerInterface {
         , ILocaleService     $localeService
         , ILanguageService   $languageService
         , ILogger            $logger
+        , InstanceDB         $instanceDB
     ) {
         $this->userRepository     = $userRepository;
         $this->translator         = $translator;
@@ -75,20 +78,27 @@ class Login implements RequestHandlerInterface {
         $this->localeService      = $localeService;
         $this->languageService    = $languageService;
         $this->logger             = $logger;
+        $this->instanceDB         = $instanceDB;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        $isDemoMode = $this->instanceDB->getOption("demo") === "true";
         $parameters = json_decode((string) $request->getBody(), true);
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
 
-        $user = $this->userRepository->getUser($userName);
+        $user     = $this->userRepository->getUser($userName);
+        $demoUser = $this->userService->getDemoUser();
 
         if (null === $user) {
             return new JsonResponse(
                 'no user found'
                 , IResponse::NOT_FOUND
             );
+        }
+
+        if (true === $isDemoMode && $user->getId() !== $demoUser->getId()) {
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         if (true === $this->userService->isDisabled($user)) {

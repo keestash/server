@@ -7,7 +7,13 @@
         :can-remove="isOwner"
         :data="edge.node.attachments || []"
         @onRemove="removeAttachment"
+        :is-loading="this.loading"
     >
+      <template v-slot:title>{{ $t('credential.detail.attachment.modal.title') }}</template>
+      <template v-slot:body-description></template>
+      <template v-slot:body>{{ $t('credential.detail.attachment.modal.content') }}</template>
+      <template v-slot:button-text>{{ $t('credential.detail.attachment.modal.positiveButton') }}</template>
+      <template v-slot:negative-button-text>{{ $t('credential.detail.attachment.modal.negativeButton') }}</template>
     </ResultBox>
 
     <FileUpload
@@ -16,33 +22,7 @@
     ></FileUpload>
 
     <div>
-      <!-- Modal -->
-      <div class="modal fade" id="attachment-modal" tabindex="-1" role="dialog" aria-labelledby="attachment-modal"
-           aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">
-                <template>
-                  {{ $t('credential.detail.attachment.modal.title') }}
-                </template>
-              </h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                      @click="this.deleteAttachment.attachmentModal.hide()">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="d-block text-center">
-                <h3>{{ $t('credential.detail.attachment.modal.content') }}</h3>
-              </div>
-              <button type="button" class="btn-block btn-primary mt-3" @click="doRemoveAttachment">
-                {{ $t('credential.detail.attachment.modal.positiveButton') }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </template>
@@ -60,11 +40,10 @@ import ContentList from "../../../../../../../../lib/js/src/Components/ContentLi
 import _ from "lodash";
 import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFound";
 import ResultBox from "./ResultBox";
-import {Modal} from "bootstrap";
 
 export default {
   name: "Attachments",
-  components: {ResultBox, Modal, ContentList, Thumbnail, FileUpload, Skeleton, NoDataFound},
+  components: {ResultBox, ContentList, Thumbnail, FileUpload, Skeleton, NoDataFound},
   computed: {
     isOwner() {
       const userHash = this.storage.getUserHash();
@@ -104,31 +83,19 @@ export default {
       loading: true,
       noAttachments: "there are no attachments",
       newComment: "",
-      attachmentToDelete: null,
-      noComments: "No Attachments",
-      deleteAttachment: {
-        attachmentToDelete: null,
-        attachmentModal: null
-      }
+      noComments: "No Attachments"
     }
   },
   methods: {
     removeAttachment(attachment) {
-      const m = new Modal('#attachment-modal');
-      m.show();
-      this.deleteAttachment.attachmentToDelete = attachment;
-      this.deleteAttachment.attachmentModal = m;
-    },
-    doRemoveAttachment() {
       this.axios.post(
           ROUTES.getPasswordManagerAttachmentRemove()
           , {
-            fileId: this.deleteAttachment.attachmentToDelete.file.id
+            fileId: attachment.file.id
           }
       )
           .then((response) => {
             if (RESPONSE_CODE_OK in response.data) {
-              this.deleteAttachment.attachmentToDelete = null;
               return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
             }
             return [];
@@ -146,8 +113,6 @@ export default {
             }
 
             this.$store.dispatch("setSelectedNode", newNode);
-            this.deleteAttachment.attachmentModal.hide();
-            this.deleteAttachment.attachmentToDelete = null;
           })
           .catch((error) => {
             console.log(error);

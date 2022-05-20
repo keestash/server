@@ -5,7 +5,20 @@ export default {
   name: 'Modal',
   props: {
     open: false,
-    hasDescription: false
+    hasDescription: false,
+    hasPositiveButton: {
+      type: Boolean,
+      default: true
+    },
+    closable: {
+      type: Boolean,
+      default: true
+    },
+    hasNegativeButton: {
+      type: Boolean,
+      default: true
+    },
+    uniqueId: ""
   },
   data() {
     return {
@@ -22,9 +35,10 @@ export default {
       }
 
       this.modal = new Modal(
-          '#central-modal-component'
+          '#' + this.uniqueId
           , {
-            'backdrop': 'static'
+            'backdrop': false,
+            'keyboard': this.closable
           }
       );
       this.$refs["central-modal-component-ref"].addEventListener('hidden.bs.modal', function (e) {
@@ -38,26 +52,28 @@ export default {
 
 <template>
   <div>
-    <div class="modal" tabindex="-1" role="dialog" id="central-modal-component" ref="central-modal-component-ref">
-      <div class="modal-dialog" role="document">
+    <div class="modal" tabindex="-1" role="dialog" :id="uniqueId" ref="central-modal-component-ref"
+         v-bind:key="uniqueId">
+      <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-          <div class="modal-header">
-            <slot name="title"></slot>
-            <button type="button" class="close" aria-label="Close" @click="$emit('closed')">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           <div class="modal-body">
+            <h4>
+              <slot name="title"></slot>
+            </h4>
             <slot name="body-description" v-if="hasDescription"></slot>
             <slot name="body"></slot>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="$emit('saved')">
-              <slot name="button-text"></slot>
-            </button>
-            <button type="button" class="btn btn-secondary" @click="$emit('closed')">
-              <slot name="negative-button-text"></slot>
-            </button>
+            <div class="row justify-content-end">
+              <div class="col flex-grow-0 p-0">
+                <button type="button" class="btn btn-primary" @click="$emit('saved')" v-if="hasPositiveButton">
+                  <slot name="button-text"></slot>
+                </button>
+              </div>
+              <div class="col flex-grow-0">
+                <button type="button" class="btn btn-secondary" @click="$emit('closed')" v-if="hasNegativeButton">
+                  <slot name="negative-button-text"></slot>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

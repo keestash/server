@@ -21,10 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
-use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -32,14 +31,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Remove implements RequestHandlerInterface {
 
     private NodeRepository $nodeRepository;
-    private IL10N          $translator;
 
-    public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
-    ) {
+    public function __construct(NodeRepository $nodeRepository) {
         $this->nodeRepository = $nodeRepository;
-        $this->translator     = $l10n;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -47,32 +41,15 @@ class Remove implements RequestHandlerInterface {
         $shareId    = $parameters["shareId"] ?? null;
 
         if (null === $shareId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no edge found")
-                ]
-            );
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         $removed = $this->nodeRepository->removeEdge((string) $shareId);
 
         if (false === $removed) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could not remove edge")
-                ]
-            );
+            return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
-
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "shareId" => $shareId
-            ]
-        );
-
+        return new JsonResponse([], IResponse::OK);
     }
 
 }

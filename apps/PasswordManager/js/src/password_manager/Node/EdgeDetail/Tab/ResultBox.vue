@@ -62,13 +62,37 @@
               <div class="col-2 align-self-center" v-if="canRemove">
                 <div class="row justify-content-end">
                   <div class="col-3">
-                    <i class="fas fa-times remove" @click="remove(share)"></i>
+                    <i class="fas fa-times remove" @click="remove()"></i>
                   </div>
                 </div>
               </div>
 
             </div>
           </div>
+
+          <Modal
+              :open="removeModalOpened"
+              :has-description="false"
+              @saved="this.$emit('onRemove', share);this.removeModalOpened=false"
+              @closed="this.removeModalOpened=false"
+              :unique-id="getUniqueId()"
+          >
+            <template v-slot:title>
+              <slot name="title"></slot>
+            </template>
+            <template v-slot:body-description>
+              <slot name="body-description"></slot>
+            </template>
+            <template v-slot:body>
+              <slot name="body"></slot>
+            </template>
+            <template v-slot:button-text>
+              <slot name="button-text"></slot>
+            </template>
+            <template v-slot:negative-button-text>
+              <slot name="negative-button-text"></slot>
+            </template>
+          </Modal>
 
         </div>
       </div>
@@ -83,15 +107,21 @@ import {DATE_TIME_SERVICE, StartUp} from "../../../../../../../../lib/js/src/Sta
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFound";
+import Modal from "../../../../../../../../lib/js/src/Components/Modal";
+import IsLoading from "../../../../../../../../lib/js/src/Components/IsLoading";
 
 export default {
   name: "ResultBox",
-  components: {Thumbnail, NoDataFound},
+  components: {IsLoading, Modal, Thumbnail, NoDataFound},
   props: {
     noDataFoundText: '',
     removing: false,
     data: [],
     canRemove: false,
+    isLoading: {
+      type: Boolean,
+      default: true
+    },
     type: null,
     strings: {
       modal: {
@@ -103,6 +133,7 @@ export default {
   },
   data() {
     return {
+      removeModalOpened: false,
       container: {
         services: {
           dateTimeService: null
@@ -120,14 +151,17 @@ export default {
     this.container.services.dateTimeService = this.container.container.query(DATE_TIME_SERVICE);
   },
   methods: {
+    getUniqueId() {
+      return "resultbox" + this.type
+    },
     getAssetUrl(jsonWebToken) {
       return ROUTES.getAssetUrl(jsonWebToken);
     },
     formatDate(date) {
       return this.container.services.dateTimeService.format(date);
     },
-    remove(data) {
-      this.$emit('onRemove', data);
+    remove() {
+      this.removeModalOpened = true;
     },
     // temporary, until i find a good solution how to differ clean
     getJwt(data) {

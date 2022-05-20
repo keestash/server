@@ -30,8 +30,7 @@ class RemoveFactory {
 
     public function __invoke(ContainerInterface $container): Remove {
         return new Remove(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
         );
     }
 

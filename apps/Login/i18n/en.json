@@ -10,6 +10,12 @@
     "loginToApp": "Login to Keestash",
     "adminUser": "Username: admin",
     "adminPassword": "Password: admin",
+    "modal": {
+      "title": "Invalid Credentials",
+      "body": "Your credentials are invalid or unknown. Please try it again",
+      "buttonText": "Ok",
+      "negativeButtonText": "Close"
+    },
     "demo": {
       "sensitiveData": "Please do not input sensitive data as this the instance you are logging in is only for demonstration purposes!",
       "deleteInfo": "The data submitted here will be deleted after 60 minutes.",
@@ -22,7 +28,7 @@
           "label": "Email Address",
           "description": "Your email address will be used to inform you from time to time about Keestash"
         },
-        "sendButton": "Send",
+        "positiveButtonText": "Send",
         "loadingInfo": "Loading ..."
       }
     }
