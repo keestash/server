@@ -1,13 +1,19 @@
 <template>
   <div class="tab-pane" id="comment" role="tabpanel">
-
     <ResultBox
         :no-data-found-text="noComments"
         type="comment"
         :can-remove="isOwner"
         :data="edge.node.comments || []"
         @onRemove="removeComment"
-    ></ResultBox>
+        :is-loading="this.loading"
+    >
+      <template v-slot:title>{{ $t('credential.detail.comment.modal.title') }}</template>
+      <template v-slot:body-description></template>
+      <template v-slot:body>{{ $t('credential.detail.comment.modal.content') }}</template>
+      <template v-slot:button-text>{{ $t('credential.detail.comment.modal.positiveButton') }}</template>
+      <template v-slot:negative-button-text>{{ $t('credential.detail.comment.modal.negativeButton') }}</template>
+    </ResultBox>
 
     <form id="pwm__new__comment__form">
       <div class="form-group">
@@ -24,29 +30,6 @@
 
     <div>
 
-      <!-- Modal -->
-      <div class="modal fade" id="remove-comment-modal" tabindex="-1" role="dialog"
-           aria-labelledby="remove-comment-modal" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ $t('credential.detail.comment.modal.title') }}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                      @click="this.deleteComment.shareModal.hide()">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="d-block text-center">
-                <h3>{{ $t('credential.detail.comment.modal.content') }}</h3>
-              </div>
-              <button type="button" class="btn btn-block btn-primary mt-3" @click="doRemoveComment">
-                {{ $t('credential.detail.comment.modal.positiveButton') }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -55,14 +38,12 @@
 import {APP_STORAGE, AXIOS, DATE_TIME_SERVICE, StartUp} from "../../../../../../../../lib/js/src/StartUp";
 import {Container} from "../../../../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../../../../config/routes/index";
-import {RESPONSE_CODE_OK, RESPONSE_FIELD_MESSAGES} from "../../../../../../../../lib/js/src/Backend/Axios";
 import {mapState} from "vuex";
 import {Skeleton} from 'vue-loading-skeleton';
 import Thumbnail from "../../../../../../../../lib/js/src/Components/Thumbnail";
 import NoDataFound from "../../../../../../../../lib/js/src/Components/NoDataFound";
 import _ from "lodash";
 import ResultBox from "./ResultBox";
-import {Modal} from "bootstrap";
 
 export default {
   name: "Comment",
@@ -105,11 +86,7 @@ export default {
     return {
       loading: true,
       noComments: "No Comments there",
-      newComment: "",
-      deleteComment: {
-        commentToDelete: null,
-        shareModal: null,
-      }
+      newComment: ""
     }
   },
   methods: {
@@ -117,20 +94,13 @@ export default {
       return this.dateTimeService.format(date);
     },
     removeComment(comment) {
-      const m = new Modal('#remove-comment-modal');
-      m.show();
-      this.deleteComment.commentToDelete = comment;
-      this.deleteComment.commentModal = m;
-    },
-    doRemoveComment() {
       this.axios.post(
           ROUTES.getPasswordManagerCommentRemove()
           , {
-            commentId: this.deleteComment.commentToDelete.id
+            commentId: comment.id
           }
       )
           .then((response) => {
-            this.deleteComment.commentToDelete = null;
             let newNode = _.cloneDeep(this.edge.node);
 
             for (let i = 0; i < newNode.comments.length; i++) {
@@ -140,10 +110,7 @@ export default {
                 break;
               }
             }
-
             this.$store.dispatch("setSelectedNode", newNode);
-            this.deleteComment.commentModal.hide();
-            this.deleteComment.commentToDelete = null;
           })
           .catch((error) => {
             console.log(error);

@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\User;
 
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
 use KSP\Api\IResponse;
@@ -41,10 +42,10 @@ class UserLock implements RequestHandlerInterface {
     private IEventManager        $eventManager;
 
     public function __construct(
-        IL10N $l10n
-        , IUserRepository $userRepository
+        IL10N                  $l10n
+        , IUserRepository      $userRepository
         , IUserStateRepository $userStateRepository
-        , IEventManager $eventManager
+        , IEventManager        $eventManager
     ) {
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;
@@ -53,30 +54,17 @@ class UserLock implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string)$request->getBody(), true);
+        $parameters = json_decode((string) $request->getBody(), true);
         $userId     = $parameters['user_id'] ?? '';
 
         if ("" === $userId) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no parameters given")
-                ]
-            );
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $user = $this->userRepository->getUserById((string) $userId);
 
         if (null === $user) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no user found")
-                ]
-            );
-
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         $locked = $this->userStateRepository->lock($user);
@@ -91,20 +79,10 @@ class UserLock implements RequestHandlerInterface {
             );
 
         if (false === $locked) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could not delete user")
-                ]
-            );
+            return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "message" => $this->translator->translate("user remove")
-            ]
-        );
+        return new JsonResponse([], IResponse::OK);
     }
 
 }
