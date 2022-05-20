@@ -21,5 +21,17 @@
   "createNewAccount": "Create New Account",
   "createNewAccountDesc": "Sign Up for Keestash, the Open Source Password Manager",
   "backToLogin": "Log In",
-  "backToLoginQuestion": "Have an account?"
+  "backToLoginQuestion": "Have an account?",
+  "modal": {
+    "success": {
+      "title": "User registered",
+      "body": "The user is registered successfully.",
+      "buttonText": "close"
+    },
+    "error": {
+      "title": "User not registered",
+      "body": "The user is not registered successfully.",
+      "buttonText": "close"
+    }
+  }
 }

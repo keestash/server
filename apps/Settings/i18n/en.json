@@ -1,12 +1,28 @@
 {
-  "table": {
-    "head": {
-      "name": "Name",
-      "firstName": "First Name",
-      "lastName": "Last Name",
-      "email": "Email",
-      "phone": "Phone",
-      "website": "Website"
+  "users": {
+    "table": {
+      "head": {
+        "name": "Name",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phone": "Phone",
+        "website": "Website"
+      },
+      "actions": {
+        "lock": {
+          "label": "Lock",
+          "modal": {
+            "title": "Do you really want to lock this user?",
+            "bodyDescription": "The user will be locked and is not able to log in anymore.",
+            "buttonText": "Yes",
+            "negativeButtonText": "Cancel"
+          }
+        },
+        "delete": {
+          "label": "Delete"
+        }
+      }
     }
   },
   "organization": {

@@ -9,6 +9,14 @@
         "title": "Add Node To Organization",
         "noOrganizationsAvailable": "No Organizations Available",
         "description": "You can select one of the following organizations"
+      },
+      "remove": {
+        "modal": {
+          "title": "Remove Organization",
+          "positiveButton": "Yes",
+          "negativeButton": "Cancel",
+          "body": "Do you really want to remove the node from the organization?"
+        }
       }
     },
     "selection": {

@@ -39,7 +39,7 @@
             <span
                 class="badge bg-secondary clickable text-white ml-1"
                 :title="$t('credential.detail.organization.description')"
-                @click="onOrganizationModalClick"
+                @click="this.removeOrganizationOpened=true"
             >x
             </span>
           </div>
@@ -84,7 +84,7 @@
               >
               <div class="input-group-append"
                    id="pwm__url__button"
-                   @click="openRedirectModal"
+                   @click="this.redirectModalOpened=true"
               >
                 <div class="input-group-text">
                   <i class="fas fa-external-link-alt"></i>
@@ -102,64 +102,64 @@
 
     </div>
 
-    <div class="modal fade" id="url-redirect-modal" tabindex="-1" role="dialog" aria-labelledby="urlRedirectModalLabel"
-         aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-body">
-            <h3>{{ $t('credential.url.external.title') }}</h3>
-            <div>
-              <p>{{ $t('credential.url.external.text') }}</p>
-              <p>{{ $t('credential.url.external.text_info') }} </p>
-
-              <div class="alert alert-light" role="alert">
-                {{ this.edge.node.url.plain }}
-              </div>
-
-              <div class="pull-left">
-                <button class="btn btn-secondary" @click="copyToClipBoard">
-                  <div v-if="!urlField.copyClicked">{{
-                      $t('credential.url.external.copy')
-                    }}
-                  </div>
-                  <div v-else>
-                    {{
-                      $t('credential.url.external.copied')
-                    }}
-                  </div>
-                </button>
-                <button class="btn btn-primary ml-1" @click="openUrl">{{
-                    $t('credential.url.external.proceed')
-                  }}
-                </button>
-              </div>
-            </div>
-          </div>
+    <Modal
+        :open="redirectModalOpened"
+        :has-description="true"
+        :has-negative-button="true"
+        :has-positive-button="true"
+        unique-id="pwm-redirect-modal"
+        @saved="copyToClipBoard"
+        @closed="openUrl"
+    >
+      <template v-slot:title>
+        {{ $t('credential.url.external.title') }}
+      </template>
+      <template v-slot:body-description>
+        <p>{{ $t('credential.url.external.text') }}</p>
+        <p>{{ $t('credential.url.external.text_info') }} </p>
+      </template>
+      <template v-slot:body>
+        <div class="alert alert-light" role="alert">
+          {{ this.edge.node.url.plain }}
         </div>
-      </div>
-    </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="remove-organization-modal">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Remove Organization</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form ref="form">
-              <div class="h6">Do you really want to remove the node from the organization?</div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="removeOrganization">Yes</button>
-          </div>
+      </template>
+      <template v-slot:button-text>
+        <div v-if="!urlField.copyClicked">{{
+            $t('credential.url.external.copy')
+          }}
         </div>
-      </div>
-    </div>
-
+        <div v-else>
+          {{
+            $t('credential.url.external.copied')
+          }}
+        </div>
+      </template>
+      <template v-slot:negative-button-text>
+        {{ $t('credential.url.external.proceed') }}
+      </template>
+    </Modal>
+    <Modal
+        :open="removeOrganizationOpened"
+        :has-description="false"
+        @saved="removeOrganization"
+        @closed="this.removeOrganizationOpened=false"
+        unique-id="pwm-edge-detail-modal"
+        :has-positive-button="true"
+        :has-negative-button="true"
+    >
+      <template v-slot:title>
+        {{ $t('edge.contextMenu.remove.modal.title') }}
+      </template>
+      <template v-slot:button-text>
+        {{ $t('edge.contextMenu.remove.modal.positiveButton') }}
+      </template>
+      <template v-slot:negative-button-text>
+        {{ $t('edge.contextMenu.remove.modal.negativeButton') }}
+      </template>
+      <template v-slot:body>
+        {{ $t('edge.contextMenu.remove.modal.body') }}
+      </template>
+    </Modal>
   </div>
 
 </template>
@@ -177,14 +177,16 @@ import {SystemService} from "../../../Service/SystemService";
 import SelectableListModal from "../../Component/Modal/SelectableListModal";
 import {Host} from "../../../../../../../lib/js/src/Backend/Host";
 import {Skeleton} from "vue-loading-skeleton";
-import {Modal} from 'bootstrap';
 import IsLoading from "../../../../../../../lib/js/src/Components/IsLoading";
+import Modal from "../../../../../../../lib/js/src/Components/Modal";
 
 export default {
   name: "EdgeDetail",
-  components: {IsLoading, Skeleton, SelectableListModal, Tab},
+  components: {IsLoading, Skeleton, SelectableListModal, Tab, Modal},
   data() {
     return {
+      removeOrganizationOpened: false,
+      redirectModalOpened: false,
       container: [],
       organization: {
         list: [],
@@ -248,10 +250,6 @@ export default {
   },
 
   methods: {
-    openRedirectModal() {
-      const modal = new Modal('#url-redirect-modal');
-      modal.show();
-    },
     encodeUri(uri) {
       return encodeURI(uri);
     },
@@ -308,10 +306,6 @@ export default {
         }
         , nodeId: this.edge.node.id
       });
-    },
-    onOrganizationModalClick: function () {
-      const m = new Modal("#remove-organization-modal");
-      m.show();
     },
     updatePasswordRemote(newPassword) {
 
@@ -442,10 +436,7 @@ export default {
       this.organization.selected = null;
       this.organization.list = [];
     },
-    removeOrganization(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
+    removeOrganization() {
       this.saving = true;
       this.axios.delete(
           ROUTES.getOrganizationsRemoveNode(),
@@ -469,6 +460,7 @@ export default {
                 }
             )
             this.saving = false;
+            this.removeOrganizationOpened = false;
           }
       )
       ;

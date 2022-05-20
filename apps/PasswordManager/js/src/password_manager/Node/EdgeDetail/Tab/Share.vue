@@ -65,41 +65,17 @@
             type="user"
             :data="this.edge.node.shared_to.content"
             @onRemove="removeShare"
-        ></ResultBox>
+        >
+          <template v-slot:title>{{ $t('credential.detail.share.modal.title') }}</template>
+          <template v-slot:body-description></template>
+          <template v-slot:body>{{ $t('credential.detail.share.modal.content') }}</template>
+          <template v-slot:button-text>{{ $t('credential.detail.share.modal.positiveButton') }}</template>
+          <template v-slot:negative-button-text>{{ $t('credential.detail.share.modal.negativeButton') }}</template>
+        </ResultBox>
 
       </div>
     </div>
     <div>
-      <!-- Modal -->
-      <div class="modal fade" id="remove-share-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-           aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{ $t('credential.detail.share.modal.title') }}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                      @click="this.deleteShare.shareModal.hide()">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="d-block text-center">
-                <h3>{{ $t('credential.detail.share.modal.content') }}</h3>
-              </div>
-              <button type="button" class="btn btn-block btn-primary mt-3" @click="doRemoveShare"
-                      v-if="this.deleteShare.shareToDelete !== null">
-                {{ $t('credential.detail.share.modal.positiveButton') }}
-              </button>
-              <div class="d-flex justify-content-center" v-else>
-                <div class="spinner-grow text-primary" role="status">
-                  <span class="sr-only"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
 
   </div>
@@ -192,45 +168,23 @@ export default {
       return ROUTES.getAssetUrl(jsonWebToken);
     },
     removeShare(share) {
-      const m = new Modal('#remove-share-modal');
-      m.show();
-      this.deleteShare.shareToDelete = share;
-      this.deleteShare.shareModal = m;
-    },
-    doRemoveShare() {
       this.container.services.axios.post(
           ROUTES.getPasswordManagerShareeRemove()
           , {
-            shareId: this.deleteShare.shareToDelete.id
+            shareId: share.id
           }
       )
-          .then((response) => {
-            if (RESPONSE_CODE_OK in response.data) {
-              this.deleteShare.shareToDelete = null;
-              return response.data[RESPONSE_CODE_OK][RESPONSE_FIELD_MESSAGES];
-            }
-            return [];
-          })
-          .then((data) => {
-
+          .then(() => {
             let newNode = _.cloneDeep(this.edge.node);
-
-            for (let i = 0; i < newNode.shared_to.content.length; i++) {
-              const sharedTo = newNode.shared_to.content[i];
-              if (parseInt(sharedTo.id) === parseInt(data.shareId)) {
-                newNode.shared_to.content.splice(i, 1);
-                --newNode.shared_to.length;
-                break;
-              }
-            }
-
+            newNode.shared_to.content = newNode.shared_to.content.filter(
+                (s) => {
+                  return s.id !== share.id;
+                }
+            )
             this.$store.dispatch("setSelectedNode", newNode);
-            this.deleteShare.shareModal.hide();
-            this.deleteShare.shareToDelete = null;
           })
           .catch((error) => {
             console.error(error);
-            this.deleteShare.shareToDelete = null;
           })
     },
     sharePublicly(e) {

@@ -21,9 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Controller;
 
+use Keestash\View\ActionBar\ActionBarBuilder;
 use KSA\Settings\Service\SegmentService;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Service\Controller\IAppRenderer;
+use KSP\Core\View\ActionBar\IActionBar;
+use KSP\Core\View\ActionBar\IElement;
+use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

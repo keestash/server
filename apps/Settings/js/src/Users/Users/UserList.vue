@@ -1,17 +1,17 @@
 <template>
-  <div class="d-flex">
+  <div class="d-flex scrollable">
     <table
         class="table"
         v-if="this.loading === false"
     >
       <thead>
       <tr>
-        <th scope="col">{{ $t('table.head.name') }}</th>
-        <th scope="col">{{ $t('table.head.firstName') }}</th>
-        <th scope="col">{{ $t('table.head.lastName') }}</th>
-        <th scope="col">{{ $t('table.head.email') }}</th>
-        <th scope="col">{{ $t('table.head.phone') }}</th>
-        <th scope="col">{{ $t('table.head.website') }}</th>
+        <th scope="col">{{ $t('users.table.head.name') }}</th>
+        <th scope="col">{{ $t('users.table.head.firstName') }}</th>
+        <th scope="col">{{ $t('users.table.head.lastName') }}</th>
+        <th scope="col">{{ $t('users.table.head.email') }}</th>
+        <th scope="col">{{ $t('users.table.head.phone') }}</th>
+        <th scope="col">{{ $t('users.table.head.website') }}</th>
       </tr>
       </thead>
       <tbody>
@@ -24,6 +24,16 @@
                 v-model="item.name"
                 @change="onInputChange(item)"
             >
+          </div>
+          <div class="row">
+            <div class="col">
+              <button class="btn btn-info" @click="actions.lock.modalOpened = true" disabled>
+                {{ $t('users.table.actions.lock.label') }}
+              </button>
+            </div>
+            <div class="col">
+              <button class="btn btn-danger" disabled>{{ $t('users.table.actions.delete.label') }}</button>
+            </div>
           </div>
         </th>
         <th scope="row">
@@ -79,6 +89,7 @@
       </tr>
       </tbody>
     </table>
+
   </div>
 </template>
 
@@ -88,11 +99,36 @@ import {AXIOS, StartUp} from "../../../../../../lib/js/src/StartUp";
 import Loading from "../../../../../../lib/js/src/Components/Loading";
 import {Container} from "../../../../../../lib/js/src/DI/Container";
 import {EVENT_NAME_GLOBAL_SEARCH} from "../../../../../../lib/js/src/base";
+import Modal from "../../../../../../lib/js/src/Components/Modal";
 
 export default {
   name: "UserList",
-  components: {Loading},
+  components: {Modal, Loading},
   methods: {
+    lockUser(user) {
+      this.axios.post(
+          ROUTES.USERS_LOCK()
+          , {
+            user_id: user.id
+          }
+      )
+          .then(
+              () => {
+                this.items = this.items.filter(
+                    (u) => {
+                      return u.id === user.id;
+                    }
+                )
+                this.actions.lock.modalOpened = false;
+              }
+          )
+          .catch(
+              (response) => {
+                console.error(response)
+              }
+          );
+      this.actions.lock.modalOpened = false;
+    },
     onInputChange(item) {
       this.axios.post(
           ROUTES.USERS_EDIT()
@@ -161,6 +197,14 @@ export default {
   , data() {
     return {
       query: null,
+      actions: {
+        lock: {
+          modalOpened: false
+        },
+        delete: {
+          modalOpened: false
+        }
+      },
       loading: true,
       updated: null,
       container: null,
@@ -177,4 +221,9 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.scrollable {
+  overflow: scroll;
+  height: 50rem;
+}
+</style>

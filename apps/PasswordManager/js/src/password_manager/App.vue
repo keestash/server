@@ -52,6 +52,7 @@
         :has-description="true"
         @closed="onEdgeModalClose"
         @saved="onEdgeAdd"
+        unique-id="password-manager-new-edge-modal"
     >
       <template v-slot:body-description v-if="addEdge.type === 'pwm__new__password'">
         {{ $t('actionBar.credential.description') }}
@@ -224,7 +225,7 @@ export default {
     },
     onEdgeModalClose() {
       this.newEdgeModalOpen = false;
-      this.hideModal();
+      this.resetForm();
     },
     onEdgeAdd: function () {
       let route = ROUTES.getPasswordManagerFolderCreate();
@@ -245,10 +246,10 @@ export default {
                 "addEdge"
                 , data.edge
             );
-            this.hideModal();
+            this.resetForm();
           });
     },
-    hideModal: function () {
+    resetForm: function () {
       this.addEdge.form.name = '';
       this.addEdge.form.username = '';
       this.addEdge.form.password.value = '';
