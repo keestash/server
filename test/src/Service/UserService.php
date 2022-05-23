@@ -24,6 +24,8 @@ namespace KST\Service\Service;
 use DateTime;
 use Keestash\Core\DTO\User\User;
 use Keestash\Legacy\Legacy;
+use KSP\Core\Service\Core\Language\ILanguageService;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
@@ -60,15 +62,21 @@ class UserService {
     private Legacy                 $legacy;
     private IUserRepositoryService $userRepositoryService;
     private IUserService           $userService;
+    private ILocaleService         $localeService;
+    private ILanguageService       $languageService;
 
     public function __construct(
-        Legacy $legacy
+        Legacy                   $legacy
         , IUserRepositoryService $userRepositoryService
-        , IUserService $userService
+        , IUserService           $userService
+        , ILocaleService         $localeService
+        , ILanguageService       $languageService
     ) {
         $this->legacy                = $legacy;
         $this->userRepositoryService = $userRepositoryService;
         $this->userService           = $userService;
+        $this->languageService       = $languageService;
+        $this->localeService         = $localeService;
     }
 
     public function createTestUsers(): void {
@@ -88,6 +96,12 @@ class UserService {
             $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
             $user->setPassword($data['password']);
             $user->setLocked($data['locked']);
+            $user->setLocale(
+                $this->localeService->getLocale()
+            );
+            $user->setLanguage(
+                $this->languageService->getLanguage()
+            );
             $this->userRepositoryService->createUser($user);
         }
     }

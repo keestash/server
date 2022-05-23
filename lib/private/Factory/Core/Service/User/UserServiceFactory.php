@@ -25,6 +25,8 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
+use KSP\Core\Service\Core\Language\ILanguageService;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\I18n\Validator\PhoneNumber;
@@ -43,6 +45,8 @@ class UserServiceFactory {
             , $container->get(EmailAddress::class)
             , $container->get(PhoneNumber::class)
             , $container->get(Uri::class)
+            , $container->get(ILocaleService::class)
+            , $container->get(ILanguageService::class)
         );
     }
 
