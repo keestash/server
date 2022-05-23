@@ -2,7 +2,7 @@
   <div class="tab-pane" id="comment" role="tabpanel">
 
     <ResultBox
-        :no-data-found-text="noComments"
+        :no-data-found-text="$t('credential.detail.attachment.emptyAttachmentsMessage')"
         type="attachment"
         :can-remove="isOwner"
         :data="edge.node.attachments || []"
@@ -80,10 +80,7 @@ export default {
   },
   data() {
     return {
-      loading: true,
-      noAttachments: "there are no attachments",
-      newComment: "",
-      noComments: "No Attachments"
+      loading: true
     }
   },
   methods: {

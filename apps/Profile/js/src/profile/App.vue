@@ -30,51 +30,130 @@
         <div class="col-md-5 border-right">
           <div class="p-3 py-5">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h4 class="text-right">Profile Settings</h4>
+              <h4 class="text-right">{{ $t('settingsTitle') }}</h4>
             </div>
             <div class="row mt-2">
               <div class="col-md-6">
-                <label class="labels">Name</label>
+                <label class="labels">{{ $t('settings.firstName') }}</label>
                 <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="first name" v-model="user.first_name" v-else
-                       @blur="updateUser">
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.settingsTitle')"
+                    v-model="user.first_name"
+                    v-else
+                    @blur="updateUser"
+                >
               </div>
               <div class="col-md-6">
-                <label class="labels">Surname</label>
+                <label class="labels">{{ $t('settings.lastName') }}</label>
                 <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="surname" v-model="user.last_name" v-else
-                       @blur="updateUser">
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.lastName')"
+                    v-model="user.last_name"
+                    v-else
+                    @blur="updateUser"
+                >
               </div>
             </div>
             <div class="row mt-3">
               <div class="col-md-12">
-                <label class="labels">E-Mail</label>
+                <label class="labels">{{ $t('settings.email') }}</label>
                 <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="enter address line 1" v-model="user.email" v-else
-                       @blur="updateUser">
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.settingsTitle')"
+                    v-model="user.email"
+                    v-else
+                    @blur="updateUser"
+                >
               </div>
               <div class="col-md-12">
-                <label class="labels">Phone</label>
+                <label class="labels">{{ $t('settings.phone') }}</label>
                 <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="enter address line 2" v-model="user.phone" v-else
-                       @blur="updateUser">
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.phone')"
+                    v-model="user.phone"
+                    v-else
+                    @blur="updateUser"
+                >
               </div>
               <div class="col-md-12">
-                <label class="labels">Website</label>
+                <label class="labels">{{ $t('settings.website') }}</label>
                 <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="enter address line 2" v-model="user.website"
-                       v-else @blur="updateUser"></div>
-              <div class="col-md-12">
-                <label class="labels">Created</label>
-                <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="enter address line 2" v-model="user.create_ts.date"
-                       v-else @blur="updateUser">
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.website')"
+                    v-model="user.website"
+                    v-else
+                    @blur="updateUser"
+                >
               </div>
               <div class="col-md-12">
-                <label class="labels">Hash</label>
+                <label class="labels">{{ $t('settings.created') }}</label>
                 <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
-                <input type="text" class="form-control" placeholder="enter address line 2" v-model="user.hash" v-else
-                       disabled>
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.created')"
+                    v-model="user.create_ts.date"
+                    v-else
+                    @blur="updateUser"
+                >
+              </div>
+              <div class="col-md-12">
+                <label class="labels">{{ $t('settings.locale') }}</label>
+                <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
+
+                <select
+                    class="form-control form-select"
+                    :aria-label="$t('settings.locale')"
+                    v-model="user.locale"
+                    v-else
+                    @change="updateUser"
+                >
+                  <option v-for="(locale, key) in this.locales" :value="key" :selected="key === user.locale">
+                    {{ locale }}
+                  </option>
+                </select>
+
+              </div>
+
+              <div class="col-md-12">
+                <label class="labels">{{ $t('settings.language') }}</label>
+                <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
+
+                <select
+                    class="form-control form-select"
+                    :aria-label="$t('settings.language')"
+                    v-model="user.language"
+                    v-else
+                    @change="updateUser"
+                >
+                  <option v-for="(language, key) in this.languages" :value="key" :selected="key === user.language">
+                    {{ language }}
+                  </option>
+                </select>
+
+              </div>
+
+              <div class="col-md-12">
+                <label class="labels">{{ $t('settings.hash') }}</label>
+                <IsLoading class="profile-loading-long" v-if="loading"></IsLoading>
+                <input
+                    type="text"
+                    class="form-control"
+                    :placeholder="$t('settings.hash')"
+                    v-model="user.hash"
+                    v-else
+                    disabled
+                >
               </div>
             </div>
           </div>
@@ -101,7 +180,17 @@ export default {
       user: null,
       axios: null,
       appStorage: null,
-      fileCount: 0
+      fileCount: 0,
+      languages: {
+        "": "",
+        "en_US": "English (US)",
+        "de_DE": "German (Germany)",
+      },
+      locales: {
+        "": "",
+        "US": "USA",
+        "DE": "Germany",
+      }
     }
   },
   methods: {
@@ -203,6 +292,8 @@ export default {
             (r) => {
               this.loading = false;
               this.user = r.data.user;
+
+              console.log(r.data.user)
             }
         )
         .catch(

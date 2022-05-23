@@ -21,17 +21,18 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Migration\Base;
 
-use Phinx\Db\Adapter\MysqlAdapter;
+use Phinx\Db\Adapter\AdapterInterface;
 use Phinx\Migration\AbstractMigration;
 
 abstract class KeestashMigration extends AbstractMigration {
 
     // MySQL Column Types
-    public const BLOB     = MysqlAdapter::PHINX_TYPE_BLOB;
-    public const INTEGER  = MysqlAdapter::PHINX_TYPE_INTEGER;
-    public const STRING   = MysqlAdapter::PHINX_TYPE_STRING;
-    public const ENUM     = MysqlAdapter::PHINX_TYPE_ENUM;
-    public const DATETIME = MysqlAdapter::PHINX_TYPE_DATETIME;
+    public const BLOB     = AdapterInterface::PHINX_TYPE_BLOB;
+    public const INTEGER  = AdapterInterface::PHINX_TYPE_INTEGER;
+    public const STRING   = AdapterInterface::PHINX_TYPE_STRING;
+    public const ENUM     = AdapterInterface::PHINX_TYPE_ENUM;
+    public const DATETIME = AdapterInterface::PHINX_TYPE_DATETIME;
+    public const JSON     = AdapterInterface::PHINX_TYPE_JSON;
 
     // MySQL Option Fields
     public const OPTION_NAME_VALUES = "values";
