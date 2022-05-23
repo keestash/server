@@ -1,7 +1,7 @@
 <template>
   <div class="tab-pane" id="comment" role="tabpanel">
     <ResultBox
-        :no-data-found-text="noComments"
+        :no-data-found-text="$t('credential.detail.comment.emptyCommentsMessage')"
         type="comment"
         :can-remove="isOwner"
         :data="edge.node.comments || []"
@@ -85,7 +85,6 @@ export default {
   data() {
     return {
       loading: true,
-      noComments: "No Comments there",
       newComment: ""
     }
   },

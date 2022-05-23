@@ -38,12 +38,10 @@ class LocaleService implements ILocaleService {
      *
      * @param IUser $user
      *
-     * TODO implement
-     *
      * @return string
      */
     public function getLocaleForUser(IUser $user): string {
-        return $this->getLocale();
+        return $user->getLocale();
     }
 
     /**

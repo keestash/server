@@ -26,7 +26,6 @@ use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;

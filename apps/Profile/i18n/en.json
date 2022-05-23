@@ -1,1 +1,14 @@
-{}
+{
+  "settingsTitle": "Personal Settings",
+  "settings": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "E-Mail",
+    "phone": "Phone",
+    "website": "Website",
+    "created": "Created",
+    "hash": "Hash",
+    "locale": "Locale",
+    "language": "Language"
+  }
+}

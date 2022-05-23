@@ -341,6 +341,11 @@ class AppRenderer implements IAppRenderer {
         , bool                 $hasGlobalSearch
     ): string {
 
+        $token    = $request->getAttribute(IToken::class);
+        $language = null === $token
+            ? $this->localeService->getLocale()
+            : $this->localeService->getLocaleForUser($token->getUser());
+
         return $this->templateRenderer
             ->render(
                 'root::html'
@@ -361,7 +366,7 @@ class AppRenderer implements IAppRenderer {
                         , $hasGlobalSearch
                     )
                     , "noContext" => true === $contextLess
-                    , "language"  => $this->localeService->getLocale()
+                    , "language"  => $language
                 ]
             );
     }

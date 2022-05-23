@@ -28,8 +28,7 @@ use Locale;
 
 class LanguageService implements ILanguageService {
 
-    /** @var ILocaleService */
-    private $localeService;
+    private ILocaleService $localeService;
 
     public function __construct(ILocaleService $localeService) {
         $this->localeService = $localeService;
