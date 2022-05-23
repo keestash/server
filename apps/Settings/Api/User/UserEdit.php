@@ -66,6 +66,8 @@ class UserEdit implements RequestHandlerInterface {
         if ($repoUser->getPhone() !== $newUser->getPhone()) return true;
         if ($repoUser->isLocked() !== $newUser->isLocked()) return true;
         if ($repoUser->isDeleted() !== $newUser->isDeleted()) return true;
+        if ($repoUser->getLanguage() !== $newUser->getLanguage()) return true;
+        if ($repoUser->getLocale() !== $newUser->getLocale()) return true;
         return false;
     }
 
@@ -106,6 +108,8 @@ class UserEdit implements RequestHandlerInterface {
         $repoUser->setPhone($user->getPhone());
         $repoUser->setLocked($user->isLocked());
         $repoUser->setDeleted($user->isDeleted());
+        $repoUser->setLanguage($user->getLanguage());
+        $repoUser->setLocale($user->getLocale());
         $repoUser->setJWT(
             $this->jwtService->getJWT(
                 new Audience(
@@ -114,7 +118,6 @@ class UserEdit implements RequestHandlerInterface {
                 )
             )
         );
-
 
         $updated = $this->userRepositoryService->updateUser($repoUser, $oldUser);
 

@@ -113,6 +113,26 @@ class MinimalApp extends AbstractMigration {
                     , "after" => "phone"
                 ]
             )
+            ->addColumn(
+                "locale"
+                , KeestashMigration::STRING
+                , [
+                    "length"    => "20"
+                    , "null"    => false
+                    , "default" => "US"
+                    , "after"   => 'website'
+                ]
+            )
+            ->addColumn(
+                "language"
+                , KeestashMigration::STRING
+                , [
+                    "length"    => "20"
+                    , "null"    => false
+                    , "default" => "en_US"
+                    , "after"   => 'locale'
+                ]
+            )
             ->addIndex(
                 ['name']
                 , ['unique' => true]

@@ -59,6 +59,10 @@ interface IUser extends
 
     public function getPhone(): string;
 
+    public function getLocale(): string;
+
+    public function getLanguage(): string;
+
     public function getWebsite(): string;
 
     public function getHash(): string;

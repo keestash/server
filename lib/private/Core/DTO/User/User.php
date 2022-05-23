@@ -45,6 +45,36 @@ class User implements IUser {
     private bool              $locked  = false;
     private bool              $deleted = false;
     private ?string           $jwt     = null;
+    private string            $locale;
+    private string            $language;
+
+    /**
+     * @return string
+     */
+    public function getLocale(): string {
+        return $this->locale;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage(): string {
+        return $this->language;
+    }
+
+    /**
+     * @param string $locale
+     */
+    public function setLocale(string $locale): void {
+        $this->locale = $locale;
+    }
+
+    /**
+     * @param string $language
+     */
+    public function setLanguage(string $language): void {
+        $this->language = $language;
+    }
 
     /**
      * @return string|null
@@ -244,6 +274,9 @@ class User implements IUser {
                 , "locked"     => $this->isLocked()
                 , "deleted"    => $this->isDeleted()
                 , 'jwt'        => $this->getJWT()
+                , 'language'   => $this->getLanguage()
+                , 'locale'     => $this->getLocale()
             ];
     }
+
 }

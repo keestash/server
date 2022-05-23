@@ -60,7 +60,7 @@
         </div>
 
         <ResultBox
-            :no-data-found-text="noComments"
+            :no-data-found-text="$t('credential.detail.share.emptySharesMessage')"
             :can-remove="isOwner"
             type="user"
             :data="this.edge.node.shared_to.content"
@@ -142,7 +142,6 @@ export default {
         shareModal: null
       },
       shareToDelete: null,
-      noComments: "No shared users",
       doWork: () => {
       }
     }

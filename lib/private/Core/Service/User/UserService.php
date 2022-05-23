@@ -174,6 +174,8 @@ class UserService implements IUserService {
         $user->setPassword(IUser::VERY_DUMB_ATTEMPT_TO_MOCK_PASSWORDS_ON_SYSTEM_LEVEL_BUT_SECURITY_GOES_FIRST);
         $user->setPhone($userArray['phone']);
         $user->setWebsite($userArray['website']);
+        $user->setLanguage($userArray['language']);
+        $user->setLocale($userArray['locale']);
         return $user;
     }
 
@@ -252,6 +254,7 @@ class UserService implements IUserService {
             throw new KeestashException('invalid email address');
         }
 
+        $this->phoneValidator->setOptions(['country' => $user->getLocale()]);
         if (false === $this->phoneValidator->isValid($user->getPhone())) {
             throw new KeestashException('invalid phone');
         }

@@ -76,6 +76,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
+                , 'u.locale'
+                , 'u.language'
                 , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
                 , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
             ]
@@ -112,11 +114,13 @@ class UserRepository implements IUserRepository {
         $user->setPhone($row[7]);
         $user->setWebsite($row[8]);
         $user->setHash($row[9]);
+        $user->setLocale($row[10]);
+        $user->setLanguage($row[11]);
         $user->setDeleted(
-            true === (bool) $row[10]
+            true === (bool) $row[12]
         );
         $user->setLocked(
-            true === (bool) $row[11]
+            true === (bool) $row[13]
         );
 
         return $user;
@@ -145,6 +149,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
+                , 'u.locale'
+                , 'u.language'
                 , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
                 , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
             ]
@@ -172,6 +178,8 @@ class UserRepository implements IUserRepository {
             $user->setHash($row['hash']);
             $user->setDeleted((bool) $row['deleted']);
             $user->setLocked((bool) $row['locked']);
+            $user->setLocale($row['locale']);
+            $user->setLanguage($row['language']);
 
             $list->add($user);
         }
@@ -200,6 +208,8 @@ class UserRepository implements IUserRepository {
                     , 'password'  => '?'
                     , 'website'   => '?'
                     , 'hash'      => '?'
+                    , 'locale'    => '?'
+                    , 'language'  => '?'
                 ]
             )
             ->setParameter(0, $user->getFirstName())
@@ -210,6 +220,8 @@ class UserRepository implements IUserRepository {
             ->setParameter(5, $user->getPassword())
             ->setParameter(6, $user->getWebsite())
             ->setParameter(7, $user->getHash())
+            ->setParameter(8, $user->getLocale())
+            ->setParameter(9, $user->getLanguage())
             ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
@@ -238,6 +250,8 @@ class UserRepository implements IUserRepository {
             ->set('u.password', '?')
             ->set('u.website', '?')
             ->set('u.hash', '?')
+            ->set('u.locale', '?')
+            ->set('u.language', '?')
             ->where('u.id = ?')
             ->setParameter(0, $user->getFirstName())
             ->setParameter(1, $user->getLastName())
@@ -247,7 +261,9 @@ class UserRepository implements IUserRepository {
             ->setParameter(5, $user->getPassword())
             ->setParameter(6, $user->getWebsite())
             ->setParameter(7, $user->getHash())
-            ->setParameter(8, $user->getId())
+            ->setParameter(8, $user->getLocale())
+            ->setParameter(9, $user->getLanguage())
+            ->setParameter(10, $user->getId())
             ->execute();
 
         return true;
@@ -276,6 +292,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
+                , 'u.locale'
+                , 'u.language'
                 , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
                 , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
             ]
@@ -309,6 +327,8 @@ class UserRepository implements IUserRepository {
         $user->setPhone($row['phone']);
         $user->setWebsite($row['website']);
         $user->setHash($row['hash']);
+        $user->setLocale($row['locale']);
+        $user->setLanguage($row['language']);
         $user->setDeleted(
             true === (bool) $row['deleted']
         );
@@ -333,6 +353,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
+                , 'u.locale'
+                , 'u.language'
                 , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
                 , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
             ]
@@ -366,6 +388,8 @@ class UserRepository implements IUserRepository {
         $user->setPhone($row['phone']);
         $user->setWebsite($row['website']);
         $user->setHash($row['hash']);
+        $user->setLocale($row['locale']);
+        $user->setLanguage($row['language']);
         $user->setDeleted(
             true === (bool) $row['deleted']
         );
@@ -398,6 +422,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
+                , 'u.locale'
+                , 'u.language'
                 , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
                 , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
             ]
@@ -431,6 +457,8 @@ class UserRepository implements IUserRepository {
         $user->setPhone($row['phone']);
         $user->setWebsite($row['website']);
         $user->setHash($row['hash']);
+        $user->setLocale($row['locale']);
+        $user->setLanguage($row['language']);
         $user->setDeleted(
             true === (bool) $row['deleted']
         );
@@ -440,7 +468,6 @@ class UserRepository implements IUserRepository {
 
         return $user;
     }
-
 
     /**
      * Removes an instance of IUser
@@ -454,7 +481,7 @@ class UserRepository implements IUserRepository {
         return $queryBuilder->delete('user')
                 ->where('id = ?')
                 ->setParameter(0, $user->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     public function searchUsers(string $name): ArrayList {
@@ -473,6 +500,8 @@ class UserRepository implements IUserRepository {
                 , 'u.phone'
                 , 'u.website'
                 , 'u.hash'
+                , 'u.language'
+                , 'u.locale'
                 , 'CASE us.state WHEN \'delete.state.user\' THEN true ELSE false END AS deleted'
                 , 'CASE us.state WHEN \'lock.state.user\' THEN true ELSE false END AS locked'
             ]
@@ -500,6 +529,8 @@ class UserRepository implements IUserRepository {
             $user->setPhone($row['phone']);
             $user->setWebsite($row['website']);
             $user->setHash($row['hash']);
+            $user->setLanguage($row['language']);
+            $user->setLocale($row['locale']);
             $user->setDeleted((bool) $row['deleted']);
             $user->setLocked((bool) $row['locked']);
 
