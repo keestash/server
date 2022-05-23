@@ -29,6 +29,8 @@ use Keestash\Core\DTO\User\User;
 use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Core\Language\ILanguageService;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
@@ -44,6 +46,8 @@ class UserService implements IUserService {
     private EmailValidator         $emailValidator;
     private PhoneValidator         $phoneValidator;
     private UriValidator           $uriValidator;
+    private ILocaleService         $localeService;
+    private ILanguageService       $languageService;
 
     public function __construct(
         Legacy                   $legacy
@@ -53,6 +57,8 @@ class UserService implements IUserService {
         , EmailValidator         $emailValidator
         , PhoneValidator         $phoneValidator
         , UriValidator           $uriValidator
+        , ILocaleService         $localeService
+        , ILanguageService       $languageService
     ) {
         $this->legacy                = $legacy;
         $this->dateTimeService       = $dateTimeService;
@@ -61,6 +67,8 @@ class UserService implements IUserService {
         $this->emailValidator        = $emailValidator;
         $this->phoneValidator        = $phoneValidator;
         $this->uriValidator          = $uriValidator;
+        $this->languageService       = $languageService;
+        $this->localeService         = $localeService;
     }
 
     public function verifyPassword(string $password, string $hash): bool {
@@ -118,6 +126,12 @@ class UserService implements IUserService {
         $user->setLastName((string) $this->legacy->getApplication()->get("name"));
         $user->setPhone((string) $this->legacy->getApplication()->get("phone"));
         $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
+        $user->setLocale(
+            $this->localeService->getLocale()
+        );
+        $user->setLanguage(
+            $this->languageService->getLanguage()
+        );
         $user->setPassword(
             $this->hashPassword($user->getName())
         );
@@ -140,6 +154,12 @@ class UserService implements IUserService {
         $user->setLastName((string) $this->legacy->getApplication()->get("name"));
         $user->setPhone((string) $this->legacy->getApplication()->get("phone"));
         $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
+        $user->setLocale(
+            $this->localeService->getLocale()
+        );
+        $user->setLanguage(
+            $this->languageService->getLanguage()
+        );
         $user->setPassword(
             $this->hashPassword(IUser::DEMO_USER_NAME)
         );
