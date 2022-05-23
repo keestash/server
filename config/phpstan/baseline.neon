@@ -231,7 +231,17 @@ parameters:
 			path: ../../apps/Settings/Api/User/UserEdit.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLanguage\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLastName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocale\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserEdit.php
 

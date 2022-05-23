@@ -37,7 +37,6 @@ class SettingsControllerFactory {
             $container->get(TemplateRendererInterface::class)
             , $container->get(IAppRenderer::class)
             , $container->get(SegmentService::class)
-            , $container->get(IL10N::class)
         );
     }
 
