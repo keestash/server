@@ -1,16 +1,21 @@
 {
   "name": "keestash/server",
-  "type": "project",
   "description": "Open Source Password Manager",
-  "homepage": "https://keestash.com",
-  "readme": "README.md",
   "license": "AGPL-3.0-or-later",
+  "type": "project",
+  "readme": "README.md",
   "authors": [
     {
       "name": "Dogan Ucar",
       "email": "dogan@dogan-ucar.de"
     }
   ],
+  "homepage": "https://keestash.com",
+  "support": {
+    "email": "dogan@dogan-ucar.de",
+    "issues": "https://github.com/keestash/server/issues",
+    "source": "https://github.com/keestash/server"
+  },
   "require": {
     "php": "7.4.*",
     "ext-curl": "*",
@@ -27,10 +32,10 @@
     "ext-sqlite3": "*",
     "ext-zip": "*",
     "doctrine/dbal": "^3.1.4",
-    "doganoo/backgrounder": "^3.1",
-    "doganoo/di-services": "^0.0",
-    "doganoo/php-algorithms": "^1.0.7",
-    "doganoo/php-util": "^0.3",
+    "doganoo/backgrounder": "^4.0.1",
+    "doganoo/di-services": "^0.0.30",
+    "doganoo/php-algorithms": "^2.0.0",
+    "doganoo/php-util": "^0.5",
     "ezyang/htmlpurifier": "^4.13",
     "firebase/php-jwt": "^5.2",
     "laminas/laminas-config": "^3.5",
@@ -46,6 +51,7 @@
     "mezzio/mezzio-twigrenderer": "^2.6",
     "monolog/monolog": "^2.2",
     "phpmailer/phpmailer": "^6.1",
+    "psr/container": "^1.0",
     "psr/log": "^1.1",
     "ramsey/uuid": "^4.1",
     "robmorgan/phinx": "^0.12",
@@ -69,6 +75,8 @@
     "symfony/var-dumper": "^5.2",
     "vimeo/psalm": "^4.11"
   },
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "Keestash\\": "lib/private/",
@@ -78,25 +86,18 @@
       "KST\\Service\\": "test/src/"
     }
   },
-  "minimum-stability": "stable",
-  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true,
+      "ergebnis/composer-normalize": true
+    },
+    "sort-packages": true
+  },
   "scripts": {
     "add-php-compatibility": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
     "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",
     "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 8 --memory-limit=2G",
     "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 8 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
     "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose"
-  },
-  "support": {
-    "email": "dogan@dogan-ucar.de",
-    "issues": "https://github.com/keestash/server/issues",
-    "source": "https://github.com/keestash/server"
-  },
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "composer/package-versions-deprecated": true,
-      "ergebnis/composer-normalize": true
-    }
   }
 }

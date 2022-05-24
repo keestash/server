@@ -28,6 +28,6 @@ use KSP\Core\DTO\BackgroundJob\IJob;
  * Class Job
  * @package Keestash\Core\DTO\BackgroundJob
  */
-class Job extends BackgrounderJob implements IJob {
+class Job extends BackgrounderJob implements IJob{
 
 }
