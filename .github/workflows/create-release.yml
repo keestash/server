@@ -28,6 +28,7 @@ jobs:
         with:
           dev: yes
           args: --profile --ignore-platform-reqs
+          php_extensions: intl
           php_version: 7.4
 
       - name: PHPUnit Tests
@@ -48,6 +49,7 @@ jobs:
         with:
           dev: no
           args: --profile --ignore-platform-reqs
+          php_extensions: intl
           php_version: 7.4
 
       - name: Build Project
