@@ -35,6 +35,7 @@ jobs:
         uses: php-actions/phpunit@v3
         with:
           configuration: test/phpunit.xml
+          php_extensions: intl
           memory_limit: 256M
 
       # end tests
