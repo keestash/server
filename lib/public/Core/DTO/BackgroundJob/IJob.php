@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\BackgroundJob;
 
-use DateTime;
+use DateTimeInterface;
 
 interface IJob {
 
@@ -47,9 +47,9 @@ interface IJob {
     public function getInterval(): int;
 
     /**
-     * @return DateTime|null
+     * @return DateTimeInterface|null
      */
-    public function getLastRun(): ?DateTime;
+    public function getLastRun(): ?DateTimeInterface;
 
     /**
      * @return array|null
@@ -57,8 +57,8 @@ interface IJob {
     public function getInfo(): ?array;
 
     /**
-     * @return DateTime
+     * @return DateTimeInterface
      */
-    public function getCreateTs(): DateTime;
+    public function getCreateTs(): DateTimeInterface;
 
 }

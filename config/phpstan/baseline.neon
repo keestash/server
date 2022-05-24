@@ -351,16 +351,6 @@ parameters:
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$createTs of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setCreateTs\\(\\) expects DateTime, DateTimeInterface given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$lastRun of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setLastRun\\(\\) expects DateTime\\|null, DateTimeInterface given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
