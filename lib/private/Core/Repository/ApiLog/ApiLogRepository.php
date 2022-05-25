@@ -53,7 +53,7 @@ class ApiLogRepository implements IApiLogRepository {
             ->setParameter(3, $request->getStart())
             ->setParameter(4, $request->getEnd())
             ->setParameter(5, $request->getRoute())
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
 
@@ -66,7 +66,7 @@ class ApiLogRepository implements IApiLogRepository {
         return $queryBuilder->delete('apilog')
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
 }

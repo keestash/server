@@ -42,6 +42,7 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Repository\Job\JobRepository;
+use Keestash\Core\Repository\Queue\QueueRepository;
 use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
@@ -100,6 +101,7 @@ use Keestash\Factory\Core\Repository\FileRepositoryFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceDBFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceRepositoryFactory;
 use Keestash\Factory\Core\Repository\Job\JobRepositoryFactory;
+use Keestash\Factory\Core\Repository\Queue\QueueRepositoryFactory;
 use Keestash\Factory\Core\Repository\Session\SessionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Token\TokenRepositoryFactory;
 use Keestash\Factory\Core\Repository\User\UserStateRepositoryFactory;
@@ -132,6 +134,8 @@ use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactor
 use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
+use Keestash\Factory\Queue\Handler\EmailHandlerFactory;
+use Keestash\Factory\Queue\WorkerFactory;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
@@ -153,6 +157,7 @@ use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMid
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use Keestash\Middleware\Web\SessionHandlerMiddleware;
 use Keestash\Middleware\Api\UserActiveMiddleware;
+use Keestash\Queue\Handler\EmailHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Access\AccessService;
@@ -163,26 +168,30 @@ use Laminas\Validator\Uri as UriValidator;
 
 return [
     // App
-    ProjectConfiguration::class => ProjectConfigurationFactory::class,
+    ProjectConfiguration::class      => ProjectConfigurationFactory::class,
 
-    ApiLogRepository::class                                        => ApiLogRepositoryFactory::class,
-    MySQLBackend::class                                            => MySQLBackendFactory::class,
-    FileRepository::class                                          => FileRepositoryFactory::class,
-    UserRepository::class                                          => UserRepositoryFactory::class,
+    // repository
+    ApiLogRepository::class          => ApiLogRepositoryFactory::class,
+    MySQLBackend::class              => MySQLBackendFactory::class,
+    FileRepository::class            => FileRepositoryFactory::class,
+    UserRepository::class            => UserRepositoryFactory::class,
+    UserKeyRepository::class         => UserKeyRepositoryFactory::class,
+    OrganizationKeyRepository::class => OrganizationKeyRepositoryFactory::class,
+    UserStateRepository::class       => UserStateRepositoryFactory::class,
+    InstanceRepository::class        => InstanceRepositoryFactory::class,
+    TokenRepository::class           => TokenRepositoryFactory::class,
+    AppRepository::class             => AppRepositoryFactory::class,
+    SessionRepository::class         => SessionRepositoryFactory::class,
+    QueueRepository::class           => QueueRepositoryFactory::class,
+
     LoggerManager::class                                           => LoggerManagerFactory::class,
     ILogger::class                                                 => LoggerFactory::class,
     Legacy::class                                                  => LegacyFactory::class,
-    UserKeyRepository::class                                       => UserKeyRepositoryFactory::class,
-    OrganizationKeyRepository::class                               => OrganizationKeyRepositoryFactory::class,
-    UserStateRepository::class                                     => UserStateRepositoryFactory::class,
-    InstanceRepository::class                                      => InstanceRepositoryFactory::class,
     EventManager::class                                            => EventManagerFactory::class,
     Loader::class                                                  => LoaderFactory::class,
     Verification::class                                            => VerificationFactory::class,
-    TokenRepository::class                                         => TokenRepositoryFactory::class,
     EventDispatcher::class                                         => EventDispatcherFactory::class,
     InstanceDB::class                                              => InstanceDBFactory::class,
-    AppRepository::class                                           => AppRepositoryFactory::class,
     CookieManager::class                                           => CookieManagerFactory::class,
     FileManager::class                                             => FileManagerFactory::class,
     Migrator::class                                                => MigratorFactory::class,
@@ -191,7 +200,6 @@ return [
     \Keestash\Core\System\Installation\Instance\LockHandler::class => InstanceLockHandlerFactory::class,
     SessionManager::class                                          => SessionManagerFactory::class,
     SessionHandler::class                                          => SessionHandlerFactory::class,
-    SessionRepository::class                                       => SessionRepositoryFactory::class,
     LoggedInMiddleware::class                                      => LoggedInMiddlewareFactory::class,
     AppRenderer::class                                             => AppRendererFactory::class,
     Diff::class                                                    => DiffFactory::class,
@@ -259,4 +267,10 @@ return [
     \doganoo\PHPUtil\HTTP\Session::class                      => InvokableFactory::class,
     SettingManager::class                                     => InvokableFactory::class,
     HTMLPurifier::class                                       => InvokableFactory::class,
+
+    // command
+    \Keestash\Queue\Worker::class                             => WorkerFactory::class,
+
+    // handler
+    EmailHandler::class                                       => EmailHandlerFactory::class
 ];
