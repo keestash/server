@@ -167,7 +167,7 @@ class TokenRepository implements ITokenRepository {
             )
                 ->where('id = ?')
                 ->setParameter(0, $token->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
     public function removeForUser(IUser $user): bool {
@@ -177,7 +177,7 @@ class TokenRepository implements ITokenRepository {
             )
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())
-                ->execute() !== 0;
+                ->executeStatement() !== 0;
     }
 
 }
