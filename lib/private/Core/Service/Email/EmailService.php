@@ -50,14 +50,14 @@ class EmailService implements IEmailService {
     private Legacy        $legacy;
 
     public function __construct(
-        Legacy $legacy
+        Legacy          $legacy
         , ConfigService $configService
-        , ILogger $logger
-        , InstanceDB $instanceDB
+        , ILogger       $logger
+        , InstanceDB    $instanceDB
     ) {
         $this->logger          = $logger;
         $this->instanceDb      = $instanceDB;
-        $this->mailer          = new PHPMailer(EmailService::HAS_EXCEPTIONS);
+        $this->mailer          = new PHPMailer(EmailService::PHPMAILER_SMTP_DEBUG_COMMANDS);
         $this->recipients      = new HashTable();
         $this->carbonCopy      = new HashTable();
         $this->blindCarbonCopy = new HashTable();
