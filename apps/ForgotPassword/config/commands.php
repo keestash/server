@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 /**
  * Keestash
  *
@@ -18,39 +17,6 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+return [
 
-namespace Keestash\Core\DTO\Queue;
-
-use KSP\Core\DTO\Queue\IResult;
-
-class Result implements IResult {
-
-    private int $code;
-
-    /**
-     * @return int
-     */
-    public function getCode(): int {
-        return $this->code;
-    }
-
-    /**
-     * @param int $code
-     */
-    public function setCode(int $code): void {
-        $this->code = $code;
-    }
-
-    public static function getOk(): IResult {
-        $result = new Result();
-        $result->setCode(IResult::RETURN_CODE_OK);
-        return $result;
-    }
-
-    public static function getNotOk(): IResult {
-        $result = new Result();
-        $result->setCode(IResult::RETURN_CODE_NOT_OK);
-        return $result;
-    }
-
-}
+];

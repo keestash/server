@@ -19,38 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Queue;
+namespace KSP\Core\Service\Queue;
 
-use KSP\Core\DTO\Queue\IResult;
+use KSP\Core\DTO\Queue\IEmailMessage;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\IService;
 
-class Result implements IResult {
+interface IMessageService extends IService {
 
-    private int $code;
-
-    /**
-     * @return int
-     */
-    public function getCode(): int {
-        return $this->code;
-    }
-
-    /**
-     * @param int $code
-     */
-    public function setCode(int $code): void {
-        $this->code = $code;
-    }
-
-    public static function getOk(): IResult {
-        $result = new Result();
-        $result->setCode(IResult::RETURN_CODE_OK);
-        return $result;
-    }
-
-    public static function getNotOk(): IResult {
-        $result = new Result();
-        $result->setCode(IResult::RETURN_CODE_NOT_OK);
-        return $result;
-    }
+    public function toEmailMessage(string $subject, string $content, IUser $recipient): IEmailMessage;
 
 }

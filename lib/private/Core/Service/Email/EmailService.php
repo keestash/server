@@ -29,16 +29,12 @@ use Keestash\Legacy\Legacy;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Email\IEmailService;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class EmailService implements IEmailService {
 
-    public const HAS_EXCEPTIONS                                           = true;
-    public const IS_HTML                                                  = true;
-    public const PHPMAILER_SMTP_DEBUG_NO_OUTPUT                           = 0;
-    public const PHPMAILER_SMTP_DEBUG_COMMANDS                            = 1;
-    public const PHPMAILER_SMTP_DEBUG_DATA_AND_COMMANDS                   = 2;
-    public const PHPMAILER_SMTP_DEBUG_DATA_COMMANDS_AND_CONNECTION_STATUS = 3;
-    public const PHPMAILER_SMTP_DEBUG_LOW_LEVEL_DATA_OUTPUT               = 4;
+    public const HAS_EXCEPTIONS = true;
+    public const IS_HTML        = true;
 
     private PHPMailer     $mailer;
     private ConfigService $configService;
@@ -57,7 +53,7 @@ class EmailService implements IEmailService {
     ) {
         $this->logger          = $logger;
         $this->instanceDb      = $instanceDB;
-        $this->mailer          = new PHPMailer(EmailService::PHPMAILER_SMTP_DEBUG_COMMANDS);
+        $this->mailer          = new PHPMailer(EmailService::HAS_EXCEPTIONS);
         $this->recipients      = new HashTable();
         $this->carbonCopy      = new HashTable();
         $this->blindCarbonCopy = new HashTable();
@@ -69,14 +65,14 @@ class EmailService implements IEmailService {
 
     private function putDefaults(): void {
         //Server settings
-        $this->mailer->SMTPDebug = EmailService::PHPMAILER_SMTP_DEBUG_DATA_COMMANDS_AND_CONNECTION_STATUS;
+        $this->mailer->SMTPDebug = SMTP::DEBUG_CONNECTION;
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth   = true;
-        $this->mailer->Username   = $this->configService->getValue("email_user");
-        $this->mailer->Password   = $this->configService->getValue("email_password");
-        $this->mailer->Host       = $this->configService->getValue("email_smtp_host");
-        $this->mailer->SMTPSecure = 'ssl';
-        $this->mailer->Port       = 465;
+        $this->mailer->Username   = (string) $this->configService->getValue("email_user");
+        $this->mailer->Password   = (string) $this->configService->getValue("email_password");
+        $this->mailer->Host       = (string) $this->configService->getValue("email_smtp_host");
+        $this->mailer->SMTPSecure = (string) $this->configService->getValue("email_protocol");
+        $this->mailer->Port       = (int) $this->configService->getValue("email_port");
 
         $this->mailer->setFrom(
             $this->legacy->getApplication()->get("email")

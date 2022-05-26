@@ -22,7 +22,10 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\Queue;
 
 use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\Queue\IMessage;
+use KSP\Core\DTO\Queue\IStamp;
 
 abstract class Message implements IMessage {
 
@@ -33,6 +36,11 @@ abstract class Message implements IMessage {
     private DateTimeInterface $reservedTs;
     private array             $payload;
     private string            $type;
+    private HashTable         $stamps;
+
+    public function __construct() {
+        $this->stamps = new HashTable();
+    }
 
     /**
      * @return string
@@ -132,6 +140,22 @@ abstract class Message implements IMessage {
         $this->type = $type;
     }
 
+    public function getStamps(): HashTable {
+        return $this->stamps;
+    }
+
+    public function setStamps(HashTable $stamps): void {
+        $this->stamps = $stamps;
+    }
+
+    public function addStamp(IStamp $stamp): void {
+        $this->stamps->add($stamp->getName(), $stamp);
+    }
+
+    public function getStamp(string $name): ?IStamp {
+        return $this->stamps->get($name);
+    }
+
     /**
      * @return array
      */
@@ -144,6 +168,7 @@ abstract class Message implements IMessage {
             , "reserved_ts" => $this->getReservedTs()
             , "payload"     => $this->getPayload()
             , 'type'        => $this->getType()
+            , 'stamps'      => $this->getStamps()
         ];
     }
 

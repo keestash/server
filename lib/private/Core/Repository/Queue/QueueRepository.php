@@ -24,11 +24,14 @@ namespace Keestash\Core\Repository\Queue;
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\Queue\EmailMessage;
+use Keestash\Core\DTO\Queue\Stamp;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use Laminas\Config\Config;
 
 class QueueRepository implements IQueueRepository {
 
@@ -55,6 +58,7 @@ class QueueRepository implements IQueueRepository {
                 , 'q.reserved_ts'
                 , 'q.payload'
                 , 'q.type'
+                , 'q.stamps'
             ]
         )
             ->from('queue', 'q');
@@ -77,7 +81,23 @@ class QueueRepository implements IQueueRepository {
             $message->setPayload(
                 json_decode((string) $q["payload"], true)
             );
+
             $message->setType($q['type']);
+
+            $stamps       = (array) json_decode($q['stamps'], true);
+            $stampObjects = [];
+            foreach ($stamps as $key => $stamp) {
+                $stampObject = new Stamp();
+                $stampObject->setName($stamp['name']);
+                $stampObject->setValue($stamp['value']);
+                $stampObject->setCreateTs(
+                    $this->dateTimeService->fromFormat($stamp['create_ts']['date'])
+                );
+                $stampObjects[$key] = $stampObject;
+            }
+            $message->setStamps(
+                HashTable::fromIterable($stampObjects)
+            );
             $queueList->add($message);
         }
         return $queueList;
@@ -98,6 +118,7 @@ class QueueRepository implements IQueueRepository {
                 , 'q.reserved_ts'
                 , 'q.payload'
                 , 'q.type'
+                , 'q.stamps'
             ]
         )
             ->from('queue', 'q')
@@ -125,6 +146,20 @@ class QueueRepository implements IQueueRepository {
                 json_decode((string) $q["payload"], true)
             );
             $message->setType($q['type']);
+            $stamps       = (array) json_decode($q['stamps'], true);
+            $stampObjects = [];
+            foreach ($stamps as $key => $stamp) {
+                $stampObject = new Stamp();
+                $stampObject->setName($stamp['name']);
+                $stampObject->setValue($stamp['value']);
+                $stampObject->setCreateTs(
+                    $this->dateTimeService->fromFormat($stamp['create_ts']['date'])
+                );
+                $stampObjects[$key] = $stamp;
+            }
+            $message->setStamps(
+                HashTable::fromIterable($stampObjects)
+            );
             $queueList->add($message);
         }
         return $queueList;
@@ -152,6 +187,7 @@ class QueueRepository implements IQueueRepository {
                     , "`type`"        => '?'
                     , "`reserved_ts`" => '?'
                     , "`create_ts`"   => '?'
+                    , "`stamps`"      => '?'
                 ]
             )
             ->setParameter(0, $message->getId())
@@ -161,6 +197,7 @@ class QueueRepository implements IQueueRepository {
             ->setParameter(4, $message->getType())
             ->setParameter(5, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
             ->setParameter(6, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
+            ->setParameter(7, json_encode($message->getStamps()->toArray()))
             ->executeStatement();
 
         return $message;
@@ -176,6 +213,7 @@ class QueueRepository implements IQueueRepository {
             ->set('`type`', '?')
             ->set('`reserved_ts`', '?')
             ->set('`create_ts`', '?')
+            ->set('`stamps`', '?')
             ->where('`id` = ?')
             ->setParameter(0, $message->getPriority())
             ->setParameter(1, $message->getAttempts())
@@ -183,7 +221,8 @@ class QueueRepository implements IQueueRepository {
             ->setParameter(3, $message->getType())
             ->setParameter(4, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
             ->setParameter(5, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
-            ->setParameter(6, $message->getId());
+            ->setParameter(6, json_encode($message->getStamps()->toArray()))
+            ->setParameter(7, $message->getId());
 
         $rowCount = $queryBuilder->executeStatement();
 
