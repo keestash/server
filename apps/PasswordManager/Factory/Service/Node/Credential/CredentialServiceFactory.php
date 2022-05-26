@@ -34,11 +34,8 @@ class CredentialServiceFactory {
 
     public function __invoke(ContainerInterface $container): CredentialService {
         return new CredentialService(
-            $container->get(EncryptionService::class)
-            , $container->get(KeyService::class)
-            , $container->get(EdgeService::class)
+            $container->get(EdgeService::class)
             , $container->get(NodeRepository::class)
-            , $container->get(NodeService::class)
             , $container->get(NodeEncryptionService::class)
         );
     }

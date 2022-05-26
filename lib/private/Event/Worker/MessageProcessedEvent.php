@@ -19,38 +19,34 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Queue;
+namespace Keestash\Event\Worker;
 
+use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
+use Symfony\Contracts\EventDispatcher\Event;
 
-class Result implements IResult {
+class MessageProcessedEvent extends Event {
 
-    private int $code;
+    private IMessage $message;
+    private IResult  $result;
 
-    /**
-     * @return int
-     */
-    public function getCode(): int {
-        return $this->code;
+    public function __construct(IMessage $message, IResult $result) {
+        $this->message = $message;
+        $this->result  = $result;
     }
 
     /**
-     * @param int $code
+     * @return IMessage
      */
-    public function setCode(int $code): void {
-        $this->code = $code;
+    public function getMessage(): IMessage {
+        return $this->message;
     }
 
-    public static function getOk(): IResult {
-        $result = new Result();
-        $result->setCode(IResult::RETURN_CODE_OK);
-        return $result;
-    }
-
-    public static function getNotOk(): IResult {
-        $result = new Result();
-        $result->setCode(IResult::RETURN_CODE_NOT_OK);
-        return $result;
+    /**
+     * @return IResult
+     */
+    public function getResult(): IResult {
+        return $this->result;
     }
 
 }

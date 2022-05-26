@@ -41,12 +41,15 @@ class EmailHandler implements IEmailHandler {
 
     public function handle(IMessage $message): IResult {
 
+        // todo implement rate limiting
+        // todo implement intelligent spam detection
+
         if (!$message instanceof IEmailMessage) {
             throw new Exception();
         }
 
         $payload = $message->getPayload();
-        $this->emailService->addRecipient($payload['to'], $payload['to']);
+        $this->emailService->addRecipient($payload['recipient']['name'], $payload['recipient']['email']);
         $this->emailService->setSubject($payload['subject']);
         $this->emailService->setBody($payload['content']);
         $sent = $this->emailService->send();

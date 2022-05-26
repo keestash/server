@@ -67,6 +67,7 @@ use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\Queue\MessageService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
@@ -115,6 +116,7 @@ use KSP\Core\Service\HTTP\IPersistenceService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Phinx\IMigrator;
+use KSP\Core\Service\Queue\IMessageService;
 use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
@@ -167,6 +169,7 @@ return [
     IAccessService::class                             => AccessService::class,
     \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class,
     IPasswordService::class                           => PasswordService::class,
+    IMessageService::class                            => MessageService::class,
 
     // manager
     ILoggerManager::class                             => LoggerManager::class,
@@ -184,5 +187,4 @@ return [
     IMigrator::class               => Migrator::class,
     ConfigurationInterface::class  => ProjectConfiguration::class,
     IEmailHandler::class           => EmailHandler::class
-
 ];

@@ -22,51 +22,14 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\Queue;
 
 use DateTimeInterface;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\Entity\IJsonObject;
 
-interface IMessage extends IJsonObject {
+interface IStamp extends IJsonObject {
 
-    public const TYPE_EMAIL = 'email.type';
+    public function getValue();
 
-    /**
-     * @return string
-     */
-    public function getId(): string;
+    public function getName(): string;
 
-    /**
-     * @return DateTimeInterface
-     */
     public function getCreateTs(): DateTimeInterface;
-
-    /**
-     * @return int
-     */
-    public function getPriority(): int;
-
-    /**
-     * @return int
-     */
-    public function getAttempts(): int;
-
-    /**
-     * @return DateTimeInterface
-     */
-    public function getReservedTs(): DateTimeInterface;
-
-    /**
-     * @return array
-     */
-    public function getPayload(): array;
-
-    /**
-     * @return string
-     */
-    public function getType(): string;
-
-    public function getStamps(): HashTable;
-
-    public function getStamp(string $name): ?IStamp;
 
 }

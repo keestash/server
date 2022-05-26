@@ -23,19 +23,25 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Api;
 
 use DateTime;
+use doganoo\DI\Object\String\IStringService;
 use doganoo\PHPUtil\Datatype\StringClass;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\Queue\Stamp;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
+use KSA\ForgotPassword\ConfigProvider;
+use KSA\ForgotPassword\Entity\Queue\Stamp\PasswordLinkGeneratedStamp;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
+use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Queue\IMessageService;
 use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -44,7 +50,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ForgotPassword implements RequestHandlerInterface {
 
-    private EmailService              $emailService;
     private Legacy                    $legacy;
     private UserService               $userService;
     private IUserStateRepository      $userStateRepository;
@@ -52,18 +57,22 @@ class ForgotPassword implements RequestHandlerInterface {
     private IUserRepository           $userRepository;
     private TemplateRendererInterface $templateRenderer;
     private HTTPService               $httpService;
+    private IMessageService           $messageService;
+    private IQueueRepository          $queueRepository;
+    private IStringService            $stringService;
 
     public function __construct(
-        EmailService                $emailService
-        , Legacy                    $legacy
+        Legacy                      $legacy
         , UserService               $userService
         , IUserStateRepository      $userStateRepository
         , IL10N                     $translator
         , IUserRepository           $userRepository
         , TemplateRendererInterface $templateRenderer
         , HTTPService               $httpService
+        , IMessageService           $messageService
+        , IQueueRepository          $queueRepository
+        , IStringService            $stringService
     ) {
-        $this->emailService        = $emailService;
         $this->legacy              = $legacy;
         $this->userService         = $userService;
         $this->userStateRepository = $userStateRepository;
@@ -71,6 +80,9 @@ class ForgotPassword implements RequestHandlerInterface {
         $this->userRepository      = $userRepository;
         $this->templateRenderer    = $templateRenderer;
         $this->httpService         = $httpService;
+        $this->messageService      = $messageService;
+        $this->queueRepository     = $queueRepository;
+        $this->stringService       = $stringService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -82,24 +94,20 @@ class ForgotPassword implements RequestHandlerInterface {
 
         if (null === $input || "" === $input) {
             return new JsonResponse(
-                [
-                    "header"    => $responseHeader
-                    , "message" => $this->translator->translate("No parameter given")
-                ]
+                ['no input given']
                 , IResponse::BAD_REQUEST
             );
         }
 
-        $users       = $this->userRepository->getAll();
-        $user        = null;
-        $inputObject = new StringClass($input);
+        $users = $this->userRepository->getAll();
+        $user  = null;
 
         /** @var IUser $iUser */
         foreach ($users as $iUser) {
 
             if (
-                $inputObject->equalsIgnoreCase($iUser->getEmail())
-                || $inputObject->equalsIgnoreCase($iUser->getName())
+                $this->stringService->equalsIgnoreCase($input, $iUser->getEmail())
+                || $this->stringService->equalsIgnoreCase($input, $iUser->getName())
             ) {
                 $user = $iUser;
                 break;
@@ -109,23 +117,16 @@ class ForgotPassword implements RequestHandlerInterface {
 
         if (null === $user) {
             return new JsonResponse(
-                [
-                    "header"    => $responseHeader
-                    , "message" => $this->translator->translate("No user found")
-                ]
+                ["No user found"]
                 , IResponse::NOT_FOUND
             );
         }
 
         if (true === $this->userService->isDisabled($user)) {
             return new JsonResponse(
-                [
-                    "header"    => $responseHeader
-                    , "message" => $this->translator->translate("Can not reset the user. Please contact your admin")
-                ]
+                ["Can not reset the user. Please contact your admin"]
                 , IResponse::FORBIDDEN
             );
-
         }
 
         $userStates       = $this->userStateRepository->getUsersWithPasswordResetRequest();
@@ -189,18 +190,20 @@ class ForgotPassword implements RequestHandlerInterface {
 
         // TODO check them
         //   make sure that there is no bot triggering a lot of mails
-        $this->emailService->setBody($rendered);
-        $this->emailService->setSubject($this->translator->translate("Resetting Password"));
-        $this->emailService->addRecipient(
-            $user->getName()
-            , $user->getEmail()
-        );
-        $sent = $this->emailService->send();
 
-        if (true === $sent || true === $debug) {
-            $this->userStateRepository->revertPasswordChangeRequest($user);
-            $this->userStateRepository->requestPasswordReset($user, $uuid);
-        }
+        $message = $this->messageService->toEmailMessage(
+            $this->translator->translate("Resetting Password")
+            , $rendered
+            , $user
+        );
+
+        $stamp = new Stamp();
+        $stamp->setCreateTs(new DateTime());
+        $stamp->setName(ConfigProvider::STAMP_NAME_PASSWORD_RESET_MAIL_SENT);
+        $stamp->setValue($uuid);
+        $message->addStamp($stamp);
+
+        $this->queueRepository->insert($message);
 
         $response = [
             "header"    => $responseHeader

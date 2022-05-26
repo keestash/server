@@ -19,31 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Queue;
+namespace KSA\ForgotPassword\Factory\Event\Listener;
 
-use Keestash\Command\KeestashCommand;
-use Keestash\Queue\Worker;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
-use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Queue\Handler\IEmailHandler;
+use KSA\ForgotPassword\Event\Listener\PasswordResetMailSendListener;
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class WorkerFactory implements FactoryInterface {
+class PasswordResetMailSendListenerFactory implements FactoryInterface {
 
     public function __invoke(
-        ContainerInterface $container,
-                           $requestedName,
-        ?array             $options = null
-    ): KeestashCommand {
-        return new Worker(
-            $container->get(IQueueRepository::class)
-            , $container->get(IEmailHandler::class)
-            , $container->get(ILogger::class)
-            , $container->get(IEventManager::class)
-            , $container->get(Config::class)
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): PasswordResetMailSendListener {
+        return new PasswordResetMailSendListener(
+            $container->get(Config::class)
+            , $container->get(IUserStateRepository::class)
+            , $container->get(IUserRepository::class)
         );
     }
 

@@ -83,6 +83,16 @@ $CONFIG =
         , "email_user"      => ""
 
         /*
+        * The mail clients protocol (tls, ssl)
+        */
+        , 'email_protocol'  => 'ssl'
+
+        /*
+        * The mail clients port
+        */
+        , 'email_port'      => 0
+
+        /*
          * The password belonging to email_user
          */
         , "email_password"  => ""
@@ -96,5 +106,11 @@ $CONFIG =
          * The redis server port used to cache data
          */
         , 'redis_port'      => 6379
+
+        /*
+         * The verbosity of the logger.
+         * Uses Monolog Log levels
+         */
+        , 'log_level'       => 100
 
     ];
