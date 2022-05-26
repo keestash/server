@@ -39,26 +39,17 @@ use KSP\Core\DTO\User\IUser;
 
 class CredentialService {
 
-    private EncryptionService     $encryptionService;
-    private KeyService            $keyService;
     private EdgeService           $edgeService;
     private NodeRepository        $nodeRepository;
-    private NodeService           $nodeService;
     private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
-        EncryptionService       $encryptionService
-        , KeyService            $keyService
-        , EdgeService           $edgeService
+        EdgeService             $edgeService
         , NodeRepository        $nodeRepository
-        , NodeService           $nodeService
         , NodeEncryptionService $nodeEncryptionService
     ) {
-        $this->encryptionService     = $encryptionService;
-        $this->keyService            = $keyService;
         $this->edgeService           = $edgeService;
         $this->nodeRepository        = $nodeRepository;
-        $this->nodeService           = $nodeService;
         $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
@@ -69,7 +60,6 @@ class CredentialService {
         , string $title
         , IUser  $user
     ): Credential {
-
 
         $credential = new Credential();
         $credential->setCreateTs(new DateTime());

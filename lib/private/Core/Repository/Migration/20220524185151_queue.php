@@ -59,6 +59,16 @@ final class Queue extends KeestashMigration {
                 ]
             )
             ->addColumn(
+                "stamps"
+                , KeestashMigration::BLOB
+                , [
+                    "comment"   => "The message stamps"
+                    , "null"    => false
+                    , "after"   => "attempts"
+                    , "default" => ''
+                ]
+            )
+            ->addColumn(
                 "type"
                 , KeestashMigration::ENUM
                 , [

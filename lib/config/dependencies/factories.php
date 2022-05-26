@@ -70,6 +70,7 @@ use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
+use Keestash\Core\Service\Queue\MessageService;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
@@ -261,6 +262,7 @@ return [
     IniConfigService::class                                        => InvokableFactory::class,
     StringService::class                                           => InvokableFactory::class,
     AccessService::class                                           => InvokableFactory::class,
+    MessageService::class                                          => InvokableFactory::class,
 
     GetText::class                                            => InvokableFactory::class,
     \Symfony\Component\EventDispatcher\EventDispatcher::class => InvokableFactory::class,

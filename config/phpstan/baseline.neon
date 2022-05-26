@@ -6,6 +6,11 @@ parameters:
 			path: ../../apps/Apps/Api/UpdateApp.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IEmailMessage\\:\\:addStamp\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Api/ForgotPassword.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
@@ -296,6 +301,16 @@ parameters:
 			path: ../../lib/private/Core/DTO/File/FileList.php
 
 		-
+			message: "#^Method Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:getValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/DTO/Queue/Stamp.php
+
+		-
+			message: "#^Property Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:\\$value has no type specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/DTO/Queue/Stamp.php
+
+		-
 			message: "#^Method Keestash\\\\Core\\\\Manager\\\\SessionManager\\\\SessionHandler\\:\\:gc\\(\\) should return int\\|false but returns bool\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Manager/SessionManager/SessionHandler.php
@@ -394,4 +409,49 @@ parameters:
 			message: "#^Variable \\$CONFIG on left side of \\?\\? is never defined\\.$#"
 			count: 1
 			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:addRecipient\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Handler/EmailHandler.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:send\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Handler/EmailHandler.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:setBody\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Handler/EmailHandler.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:setSubject\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Handler/EmailHandler.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IMessage\\:\\:setAttempts\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Worker.php
+
+		-
+			message: "#^Left side of \\|\\| is always true\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Worker.php
+
+		-
+			message: "#^Right side of \\|\\| is always true\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Worker.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../lib/private/Queue/Worker.php
+
+		-
+			message: "#^Method KSP\\\\Core\\\\DTO\\\\Queue\\\\IStamp\\:\\:getValue\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: ../../lib/public/Core/DTO/Queue/IStamp.php
 
