@@ -34,7 +34,7 @@ final class ConfigProvider {
     public const RESET_PASSWORD_UPDATE          = '/reset_password/update[/]';
 
     public function __invoke(): array {
-        return require_once __DIR__ . '/config/config.php';
+        return require __DIR__ . '/config/config.php';
     }
 
 }
