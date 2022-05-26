@@ -32,11 +32,11 @@ return [
             CoreConfigProvider::APP_VERSION    => 1,
         ],
     ]
-    , CoreConfigProvider::DEPENDENCIES => require_once __DIR__ . '/dependencies.php'
-    , CoreConfigProvider::WEB_ROUTER   => require_once __DIR__ . '/web_router.php'
-    , CoreConfigProvider::API_ROUTER   => require_once __DIR__ . '/api_router.php'
-    , CoreConfigProvider::COMMANDS     => require_once __DIR__ . '/commands.php'
-    , CoreConfigProvider::EVENTS       => require_once __DIR__ . '/events.php'
+    , CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php'
+    , CoreConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php'
+    , CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php'
+    , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
+    , CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php'
     , CoreConfigProvider::TEMPLATES    => [
         'paths' => [
             'forgotPassword' => [realpath(__DIR__ . '/../template/')]
