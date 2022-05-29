@@ -32,7 +32,12 @@
                     :is-first="index === 0"
                 ></Edge>
                 <div class="container-fluid" v-else>
-                  <Skeleton :count=15 height="25px"/>
+                  <div class="row" v-for="i in 15">
+                    <div class="col">
+                      <IsLoading
+                          style="height: 1.75rem; width: 100%; margin-bottom: 0.25rem"></IsLoading>
+                    </div>
+                  </div>
                 </div>
                 <NoEdges :visible="state === 2 && edges.length === 0"></NoEdges>
               </div>
@@ -128,7 +133,6 @@ import {Container} from "../../../../../lib/js/src/DI/Container";
 import {ROUTES} from "../../config/routes/index";
 import NoNodeSelected from "./Node/NoNodeSelected";
 import EdgeDetail from "./Node/EdgeDetail/EdgeDetail";
-import {Skeleton} from "vue-loading-skeleton";
 import {
   EVENT_NAME_ACTION_BAR_ITEM_CLICKED,
   EVENT_NAME_APP_NAVIGATION_CLICKED,
@@ -144,7 +148,7 @@ export const STORAGE_ID_ROOT = "root.id.storage";
 
 export default {
   name: "App",
-  components: {IsLoading, Modal, NoEdges, EdgeDetail, NoNodeSelected, Edge, Skeleton},
+  components: {IsLoading, Modal, NoEdges, EdgeDetail, NoNodeSelected, Edge},
   data: function () {
     return {
       newEdgeModalOpen: false,

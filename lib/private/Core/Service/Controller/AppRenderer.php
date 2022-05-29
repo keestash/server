@@ -242,7 +242,6 @@ class AppRenderer implements IAppRenderer {
                         , $actionBar
                         , $caller
                     )
-                    , "noContext"     => true === $static
                     , "staticContext" => true === $static
                     , "footer"        => $this->renderFooter($static)
                 ]

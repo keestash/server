@@ -213,6 +213,12 @@ class UserService implements IUserService {
         $user->setWebsite($userArray["website"]);
         $user->setLocked($userArray['locked'] ?? false);
         $user->setDeleted($userArray['deleted'] ?? false);
+        $user->setLocale(
+            $this->localeService->getLocale()
+        );
+        $user->setLanguage(
+            $this->languageService->getLanguage()
+        );
         $user->setHash(
             $this->getRandomHash()
         );
