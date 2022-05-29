@@ -280,7 +280,7 @@ export default {
             , 'user_name': this.form.userName
             , 'email': this.form.email
             // , 'phone': this.form.phone.prefix + this.form.phone.number
-            , 'phone': '+16508531300'
+            , 'phone': '+16508532112'
             , 'website': this.form.website
             , 'password': this.form.password
             , 'password_repeat': this.form.passwordRepeat

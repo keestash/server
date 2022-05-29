@@ -22,12 +22,8 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Controller;
 
 use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Legacy\Legacy;
 use KSP\Core\Controller\ContextLessAppController;
-use KSP\Core\Controller\FullScreen\FullscreenAppController;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -45,13 +41,14 @@ class Controller extends ContextLessAppController {
 
         $this->installerService = $installerService;
         $this->templateRenderer = $templateRenderer;
+        $this->deactivateGlobalSearch();
     }
 
     public function run(ServerRequestInterface $request): string {
 
-        if (true === $this->installerService->hasIdAndHash()) {
-            // TODO we need to redirect, anyhow
-        }
+//        if (true === $this->installerService->hasIdAndHash()) {
+//            // TODO we need to redirect, anyhow
+//        }
 
         return $this->templateRenderer
             ->render(

@@ -21,14 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Install\Controller;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\App\Config\Diff;
-use Keestash\Legacy\Legacy;
-use KSP\App\ILoader;
 use KSP\Core\Controller\FullScreen\FullscreenAppController;
-use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -42,6 +36,7 @@ class Controller extends FullscreenAppController {
     ) {
         parent::__construct($appRenderer);
         $this->templateRenderer = $templateRenderer;
+        $this->deactivateGlobalSearch();
     }
 
     public function run(ServerRequestInterface $request): string {
