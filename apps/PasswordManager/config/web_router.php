@@ -20,34 +20,38 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider as ConfigProviderAlias;
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Controller\Attachment\View;
 use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
+use KSP\Api\IRoute;
 
 return [
-    ConfigProviderAlias::ROUTES => [
+    CoreConfigProvider::ROUTES                   => [
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_VIEW
-            , 'middleware' => View::class
-            , 'name'       => View::class
-        ],
-        [
-            'path'         => ConfigProvider::PASSWORD_MANAGER
-            , 'middleware' => \KSA\PasswordManager\Controller\PasswordManager\Controller::class
-            , 'name'       => \KSA\PasswordManager\Controller\PasswordManager\Controller::class
-        ],
-        [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE
-            , 'middleware' => PublicShareController::class
-            , 'name'       => PublicShareController::class
-        ],
-    ],
-    ConfigProviderAlias::WEB_ROUTER_STYLESHEETS => [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_VIEW
+            , IRoute::MIDDLEWARE => View::class
+            , IRoute::NAME       => View::class
+        ]
+        , [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER
+            , IRoute::MIDDLEWARE => \KSA\PasswordManager\Controller\PasswordManager\Controller::class
+            , IRoute::NAME       => \KSA\PasswordManager\Controller\PasswordManager\Controller::class
+        ]
+        , [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE
+            , IRoute::MIDDLEWARE => PublicShareController::class
+            , IRoute::NAME       => PublicShareController::class
+        ]
+    ]
+    , CoreConfigProvider::PUBLIC_ROUTES          => [
+        ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE
+    ]
+    , CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::PASSWORD_MANAGER                       => 'password_manager'
         , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE => 'public_share'
     ],
-    ConfigProviderAlias::WEB_ROUTER_SCRIPTS => [
+    CoreConfigProvider::WEB_ROUTER_SCRIPTS       => [
         ConfigProvider::PASSWORD_MANAGER                       => 'password_manager'
         , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE => 'public_share'
     ]

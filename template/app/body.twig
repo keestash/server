@@ -1,5 +1,5 @@
 <body>
-<div class="container-fluid">
+<div class="{{ staticContext ? 'container-fluid p-0' : 'container-fluid' }} ">
     {% if staticContext == false %}
         <div class="row">
             {{ navigation|raw }}

@@ -274,6 +274,7 @@ export default {
 
     updateCredential(input) {
       const axios = this.axios;
+      this.saving = true;
       _.debounce(
           () => {
             this.saving = true;
@@ -281,11 +282,11 @@ export default {
                 ROUTES.getPasswordManagerUsersUpdate()
                 , input
             ).then(() => {
-              this.saving = false;
               this.$store.dispatch(
                   "updateSelectedNode"
                   , input
               );
+              this.saving = false;
             })
 
           }, 500
