@@ -58,7 +58,7 @@
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
-    "npm": "^8.6.0",
+    "npm": "^8.11.0",
     "sass": "^1.50.1",
     "style-loader": "^3.3.1",
     "url-loader": "^4.1.1",
