@@ -68,6 +68,7 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
+use Keestash\Core\Service\HTTP\Response\ResponseService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\MessageService;
@@ -121,6 +122,7 @@ use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\PersistenceServiceFactory;
+use Keestash\Factory\Core\Service\HTTP\Response\ResponseServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
@@ -263,6 +265,7 @@ return [
     StringService::class                                           => InvokableFactory::class,
     AccessService::class                                           => InvokableFactory::class,
     MessageService::class                                          => InvokableFactory::class,
+    ResponseService::class                                         => ResponseServiceFactory::class,
 
     GetText::class                                            => InvokableFactory::class,
     \Symfony\Component\EventDispatcher\EventDispatcher::class => InvokableFactory::class,

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,13 +20,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Api;
+use KSP\Core\DTO\Country\ICountry;
+use KSP\Core\DTO\Country\IPrefix;
 
-interface IRoute {
-
-    public const PATH       = 'path';
-    public const MIDDLEWARE = 'middleware';
-    public const METHOD     = 'method';
-    public const NAME       = 'name';
-
-}
+return [
+    ICountry::GERMANY         => IPrefix::GERMANY
+    , ICountry::UNITED_STATES => IPrefix::UNITED_STATES
+    , ICountry::GREAT_BRITAIN => IPrefix::GREAT_BRITAIN
+    , ICountry::BELGIUM       => IPrefix::BELGIUM
+    , ICountry::DENMARK       => IPrefix::DENMARK
+    , ICountry::FINLAND       => IPrefix::FINLAND
+    , ICountry::FRANCE        => IPrefix::FRANCE
+    , ICountry::GREECE        => IPrefix::GREECE
+    , ICountry::ITALY         => IPrefix::ITALY
+    , ICountry::MONACO        => IPrefix::MONACO
+    , ICountry::NETHERLANDS   => IPrefix::NETHERLANDS
+    , ICountry::NORWAY        => IPrefix::NORWAY
+    , ICountry::TURKEY        => IPrefix::TURKEY
+];

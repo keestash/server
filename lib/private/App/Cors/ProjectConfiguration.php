@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -27,6 +28,5 @@ class ProjectConfiguration extends AbstractConfiguration {
     public function setAllowedMethods(array $array): void {
         $this->allowedMethods = $array;
     }
-
 
 }

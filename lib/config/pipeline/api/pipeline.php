@@ -19,15 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Middleware\Api\ExceptionHandlerMiddleware;
+use Keestash\Middleware\Api\KeestashHeaderMiddleware;
+use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\AppsInstalledMiddleware;
 use Keestash\Middleware\BooleanizeMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
-use Keestash\Middleware\Api\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use Keestash\Middleware\Api\RemoveBasePathMiddleware;
-use Keestash\Middleware\Api\UserActiveMiddleware;
 use Mezzio\Application;
 use Mezzio\Cors\Middleware\CorsMiddleware;
 use Mezzio\Helper\BodyParams\BodyParamsMiddleware;

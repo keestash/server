@@ -64,6 +64,7 @@ use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\PersistenceService;
+use Keestash\Core\Service\HTTP\Response\ResponseService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
@@ -113,6 +114,7 @@ use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IPersistenceService;
+use KSP\Core\Service\HTTP\Response\IResponseService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Phinx\IMigrator;
@@ -170,6 +172,7 @@ return [
     \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class,
     IPasswordService::class                           => PasswordService::class,
     IMessageService::class                            => MessageService::class,
+    IResponseService::class                           => ResponseService::class,
 
     // manager
     ILoggerManager::class                             => LoggerManager::class,

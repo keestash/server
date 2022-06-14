@@ -401,10 +401,8 @@ export default {
     background-size: cover;
 
     .auth-box {
-      background: rgba(255, 255, 255, 0.4);
       padding: 20px;
       max-width: 400px;
-      box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .1);
       width: 90%;
       margin: 10% 0;
 
