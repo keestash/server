@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register;
+namespace KSA\Register\Factory\Api\Configuration;
 
-final class ConfigProvider {
+use KSA\Register\Api\Configuration\Configuration;
+use KSP\Core\Service\HTTP\IHTTPService;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-    public const REGISTER               = '/register[/]';
-    public const REGISTER_ADD           = '/register/add[/]';
-    public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';
-    public const REGISTER_CONFIGURATION = '/register/configuration[/]';
-    public const APP_ID                 = 'register';
+class ConfigurationFactory implements FactoryInterface {
 
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Configuration {
+        return new Configuration(
+            $container->get(Config::class)
+            , $container->get(IHTTPService::class)
+        );
     }
 
 }

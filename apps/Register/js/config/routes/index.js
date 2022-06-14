@@ -23,6 +23,7 @@ const host = new Host();
 const PASSWORD_REQUIREMENTS = "/password_requirements/";
 const REGISTER_ADD = "/register/add/";
 const USER_GET = "/user/exists/{userName}/";
+const CONFIGURATION = "/register/configuration/";
 
 export const ROUTES = {
 
@@ -32,6 +33,10 @@ export const ROUTES = {
 
     , getRegisterAdd() {
         return host.getApiHost() + REGISTER_ADD;
+    }
+
+    , getConfiguration() {
+        return host.getApiHost() + CONFIGURATION;
     }
 
     , getUserExists(userName) {

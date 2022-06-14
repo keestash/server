@@ -17,7 +17,9 @@ $keestash-theme-color-border-grey-darker: #605E5C;
 $keestash-text-color: #000;
 $keestash-text-color-white: #FFF;
 $keestash-error-text-color-red: #DC143C;
+$keestash-error-text-color-darkred: #8B0000FF;
 $keestash-error-text-color-green: #5CB85C;
+$keestash-error-text-color-olivegreen: #556B2FFF;
 $keestash-error-text-color-yellow: #FFE24F;
 $keestash-color-yellow: #FFE24F;
 
@@ -230,6 +232,14 @@ a:visited, a:hover, a:active {
 
 .error {
   color: $keestash-error-text-color-red;
+}
+
+.darkred {
+  color: $keestash-error-text-color-darkred;
+}
+
+.olivegreen {
+  color: $keestash-error-text-color-olivegreen;
 }
 
 .ks-border-bottom {

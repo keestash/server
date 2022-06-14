@@ -83,7 +83,7 @@ const baseModule = {
         }
     },
     plugins: [
-        new VueLoaderPlugin()
+        new VueLoaderPlugin(),
     ]
 };
 

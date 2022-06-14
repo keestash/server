@@ -29,7 +29,6 @@ export default {
   },
   methods: {
     eyeClick() {
-      // this.passwordField.visible = !this.passwordField.visible;
       this.$emit("eyeClick", this.passwordField)
     }
   }

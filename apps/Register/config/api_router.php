@@ -20,42 +20,51 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\Register\Api\Configuration\Configuration;
 use KSA\Register\Api\MinimumCredential;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Exists;
 use KSA\Register\Api\User\MailExists;
 use KSA\Register\ConfigProvider;
+use KSP\Api\IRoute;
 use KSP\Api\IVerb;
 
 return [
     CoreConfigProvider::PUBLIC_ROUTES => [
-        ConfigProvider::REGISTER_ADD,
-        ConfigProvider::PASSWORD_REQUIREMENTS
+        ConfigProvider::REGISTER_ADD
+        , ConfigProvider::PASSWORD_REQUIREMENTS
+        , ConfigProvider::REGISTER_CONFIGURATION
     ],
     CoreConfigProvider::ROUTES        => [
         [
-            'path'       => ConfigProvider::REGISTER_ADD,
-            'middleware' => Add::class,
-            'method'     => IVerb::POST,
-            'name'       => Add::class
+            IRoute::PATH         => ConfigProvider::REGISTER_ADD
+            , IRoute::MIDDLEWARE => Add::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Add::class
         ],
         [
-            'path'       => '/user/mail/exists/:address[/]',
-            'middleware' => MailExists::class,
-            'method'     => IVerb::GET,
-            'name'       => MailExists::class
+            IRoute::PATH         => '/user/mail/exists/:address[/]'
+            , IRoute::MIDDLEWARE => MailExists::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => MailExists::class
         ],
         [
-            'path'       => '/user/exists/:userName[/]',
-            'middleware' => Exists::class,
-            'method'     => IVerb::GET,
-            'name'       => Exists::class
+            IRoute::PATH         => '/user/exists/:userName[/]'
+            , IRoute::MIDDLEWARE => Exists::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Exists::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_REQUIREMENTS
-            , 'middleware' => MinimumCredential::class
-            , 'method'     => IVerb::GET
-            , 'name'       => MinimumCredential::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_REQUIREMENTS
+            , IRoute::MIDDLEWARE => MinimumCredential::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => MinimumCredential::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::REGISTER_CONFIGURATION
+            , IRoute::MIDDLEWARE => Configuration::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Configuration::class
         ],
     ]
 ];
