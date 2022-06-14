@@ -35,7 +35,7 @@ class RawFileService {
         $f = finfo_open();
 
         if (false === is_resource($f)) {
-            throw new KeestashException();
+            throw new KeestashException('file info could not opened');
         }
 
         $buffer = finfo_buffer($f, (string) file_get_contents($path), FILEINFO_MIME_TYPE);

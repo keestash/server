@@ -52,7 +52,7 @@ class UriValidatorBuilderTest extends TestCase {
             , ['www.keestash.com', true]
             , ['https://www.keestash.com', true]
             , ['http://www.keestash.com', true]
-            , ['http://aa.keestash.com', false]
+            , ['http://aa.keestash.com', true]
         ];
     }
 
