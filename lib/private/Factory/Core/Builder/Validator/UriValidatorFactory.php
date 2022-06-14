@@ -33,7 +33,10 @@ class UriValidatorFactory implements FactoryInterface {
         ,                  $requestedName
         , ?array           $options = null
     ): AbstractValidator {
-        return (new UriValidatorBuilder())->build();
+        return (new UriValidatorBuilder())
+            ->withAbsolute(true)
+            ->withRelative(true)
+            ->build();
     }
 
 }

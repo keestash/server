@@ -1,5 +1,7 @@
 css/*.css
 js/*.js
+js/*.js.gz
 js/*hot-update.json
+js/*hot-update.json.gz
 js/*LICENSE.txt
 img/*.jpg

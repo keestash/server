@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register;
+namespace KSP\Core\DTO\Country;
 
-final class ConfigProvider {
+interface IPrefix {
 
-    public const REGISTER               = '/register[/]';
-    public const REGISTER_ADD           = '/register/add[/]';
-    public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';
-    public const REGISTER_CONFIGURATION = '/register/configuration[/]';
-    public const APP_ID                 = 'register';
-
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
-    }
+    public const BELGIUM       = '+32';
+    public const DENMARK       = '+45';
+    public const FINLAND       = '+358';
+    public const FRANCE        = '+33';
+    public const GERMANY       = '+49';
+    public const GREECE        = '+30';
+    public const ITALY         = '+39';
+    public const MONACO        = '+377';
+    public const NETHERLANDS   = '+31';
+    public const NORWAY        = '+47';
+    public const TURKEY        = '+90';
+    public const UNITED_STATES = '+1';
+    public const GREAT_BRITAIN = '+44';
 
 }

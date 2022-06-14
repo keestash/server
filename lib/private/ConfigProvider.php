@@ -56,6 +56,8 @@ final class ConfigProvider {
     public const FACTORIES               = 'factories';
     public const TEMPLATES               = 'templates';
     public const PATHS                   = 'paths';
+    public const COUNTRY_CODES           = 'codes.country';
+    public const COUNTRY_PREFIXES        = 'prefixes.country';
 
     public const APP_LIST       = 'list.app';
     public const APP_ID         = 'id.app';

@@ -24,18 +24,19 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Login\ConfigProvider;
 use KSA\Login\Controller\Login;
 use KSA\Login\Controller\Logout;
+use KSP\Api\IRoute;
 
 return [
     CoreConfigProvider::ROUTES                 => [
         [
-            'path'         => ConfigProvider::LOGOUT
-            , 'middleware' => Logout::class
-            , 'name'       => Logout::class
+            IRoute::PATH         => ConfigProvider::LOGOUT
+            , IRoute::MIDDLEWARE => Logout::class
+            , IRoute::NAME       => Logout::class
         ],
         [
-            'path'         => ConfigProvider::LOGIN
-            , 'middleware' => Login::class
-            , 'name'       => Login::class
+            IRoute::PATH         => ConfigProvider::LOGIN
+            , IRoute::MIDDLEWARE => Login::class
+            , IRoute::NAME       => Login::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES          => [

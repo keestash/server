@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register;
+namespace Keestash\Core\Service\HTTP\Response;
 
-final class ConfigProvider {
+use KSP\Core\Service\HTTP\Response\IResponseService;
 
-    public const REGISTER               = '/register[/]';
-    public const REGISTER_ADD           = '/register/add[/]';
-    public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';
-    public const REGISTER_CONFIGURATION = '/register/configuration[/]';
-    public const APP_ID                 = 'register';
+class ResponseService implements IResponseService {
 
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
+    public function createError(
+        string   $status
+        , array  $data
+        , string $message
+    ): array {
+        return [
+            "status"       => $status
+            , "data"       => $data
+            , "message"    => $message
+        ];
     }
 
 }

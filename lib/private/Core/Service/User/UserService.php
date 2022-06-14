@@ -33,6 +33,7 @@ use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Laminas\Config\Config;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\Validator\EmailAddress as EmailValidator;
 use Laminas\Validator\Uri as UriValidator;
@@ -48,6 +49,7 @@ class UserService implements IUserService {
     private UriValidator           $uriValidator;
     private ILocaleService         $localeService;
     private ILanguageService       $languageService;
+    private Config                 $config;
 
     public function __construct(
         Legacy                   $legacy
@@ -59,6 +61,7 @@ class UserService implements IUserService {
         , UriValidator           $uriValidator
         , ILocaleService         $localeService
         , ILanguageService       $languageService
+        , Config                 $config
     ) {
         $this->legacy                = $legacy;
         $this->dateTimeService       = $dateTimeService;
@@ -69,6 +72,7 @@ class UserService implements IUserService {
         $this->uriValidator          = $uriValidator;
         $this->languageService       = $languageService;
         $this->localeService         = $localeService;
+        $this->config                = $config;
     }
 
     public function verifyPassword(string $password, string $hash): bool {
@@ -281,7 +285,7 @@ class UserService implements IUserService {
         }
 
         $this->phoneValidator->setOptions(['country' => $user->getLocale()]);
-        if (false === $this->phoneValidator->isValid($user->getPhone())) {
+        if (false === $this->validateWithAllCountries($user->getPhone())) {
             throw new KeestashException('invalid phone');
         }
 
@@ -290,6 +294,17 @@ class UserService implements IUserService {
         }
 
         return $user;
+    }
+
+    public function validateWithAllCountries(string $phone): bool {
+        $countryCodes = $this->config->get(Keestash\ConfigProvider::COUNTRY_CODES);
+        foreach ($countryCodes as $countryCode) {
+            $this->phoneValidator->setCountry($countryCode);
+            if ($this->phoneValidator->isValid($phone)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function isDisabled(?IUser $user): bool {

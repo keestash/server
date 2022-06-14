@@ -29,6 +29,7 @@ use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Laminas\Config\Config;
 use Laminas\I18n\Validator\PhoneNumber;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\Uri;
@@ -47,6 +48,7 @@ class UserServiceFactory {
             , $container->get(Uri::class)
             , $container->get(ILocaleService::class)
             , $container->get(ILanguageService::class)
+            , $container->get(Config::class)
         );
     }
 

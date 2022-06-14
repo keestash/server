@@ -30,6 +30,7 @@ use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\HTTP\Response\IResponseService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,6 +43,7 @@ class Add implements RequestHandlerInterface {
     private ILogger                $logger;
     private IUserRepositoryService $userRepositoryService;
     private IStringService         $stringService;
+    private IResponseService       $responseService;
 
     public function __construct(
         UserService              $userService
@@ -49,6 +51,7 @@ class Add implements RequestHandlerInterface {
         , ILogger                $logger
         , IUserRepositoryService $userRepositoryService
         , IStringService         $stringService
+        , IResponseService       $responseService
     ) {
 
         $this->userService           = $userService;
@@ -56,11 +59,10 @@ class Add implements RequestHandlerInterface {
         $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
         $this->stringService         = $stringService;
+        $this->responseService       = $responseService;
     }
 
-    public
-    function handle(ServerRequestInterface $request): ResponseInterface {
-
+    public function handle(ServerRequestInterface $request): ResponseInterface {
         // a little bit out of sense, but
         // we do not want to enable registering
         // even if someone has found a hacky way
@@ -81,19 +83,33 @@ class Add implements RequestHandlerInterface {
         $userName           = $this->getParameter("user_name", $request);
         $email              = $this->getParameter("email", $request);
         $password           = $this->getParameter("password", $request);
-        $passwordRepeat     = $this->getParameter("password_repeat", $request);
+        $passwordRepeat     = $password;
         $phone              = $this->getParameter("phone", $request);
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
         $website            = $this->getParameter("website", $request);
 
         if (true === $this->stringService->isEmpty($termsAndConditions)) {
-            return new JsonResponse(['terms and conditions are not checked'], IResponse::BAD_REQUEST);
+            return new JsonResponse(
+                $this->responseService->createError(
+                    "error"
+                    , []
+                    , 'terms and conditions are not checked'
+                )
+                , IResponse::BAD_REQUEST
+            );
         }
 
         try {
             $this->userService->validatePasswords($password, $passwordRepeat);
         } catch (KeestashException $exception) {
-            return new JsonResponse(['invalid password(s)'], IResponse::BAD_REQUEST);
+            return new JsonResponse(
+                $this->responseService->createError(
+                    "error"
+                    , []
+                    , $exception->getMessage()
+                )
+                , IResponse::BAD_REQUEST
+            );
         }
 
         $user = $this->userService->toNewUser(
@@ -111,14 +127,28 @@ class Add implements RequestHandlerInterface {
         try {
             $this->userService->validateNewUser($user);
         } catch (KeestashException $exception) {
-            return new JsonResponse([], IResponse::BAD_REQUEST);
+            return new JsonResponse(
+                $this->responseService->createError(
+                    "error"
+                    , []
+                    , $exception->getMessage()
+                )
+                , IResponse::BAD_REQUEST
+            );
         }
 
         try {
             $this->userRepositoryService->createUser($user);
         } catch (Exception $exception) {
             $this->logger->error($exception->getTraceAsString());
-            return new JsonResponse(['could not create user'], IResponse::INTERNAL_SERVER_ERROR);
+            return new JsonResponse(
+                $this->responseService->createError(
+                    "error"
+                    , []
+                    , 'could not create user'
+                )
+                , IResponse::INTERNAL_SERVER_ERROR
+            );
         }
 
         return new JsonResponse([], IResponse::OK);
