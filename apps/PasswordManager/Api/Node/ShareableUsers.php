@@ -19,7 +19,7 @@ use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Exception\AccessDeniedException;
 use Keestash\Exception\InvalidParameterException;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;

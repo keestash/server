@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -21,6 +22,7 @@
 namespace KSP\Core\Service\Encryption\Password;
 
 use Keestash\Core\DTO\Encryption\Password\Password;
+use KSP\Core\DTO\Encryption\Password\IPassword;
 use KSP\Core\Service\IService;
 
 interface IPasswordService extends IService {
@@ -38,6 +40,7 @@ interface IPasswordService extends IService {
 
     public function generatePassword(int $length, bool $hasUpperCase, bool $hasLowerCase, bool $hasDigits, bool $hasSpecialChars): Password;
 
-    public function measureQuality(Password $password): Password;
+    public function measureQuality(IPassword $password): IPassword;
 
+    public function findCharacterSet(string $password):array;
 }

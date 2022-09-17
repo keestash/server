@@ -27,7 +27,6 @@ use KSA\Settings\Command\UpdatePassword;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
-use KSA\Settings\Event\Organization\UserChangedEvent;
 use KSP\Core\DTO\File\IExtension;
 
 // TODO register background jobs

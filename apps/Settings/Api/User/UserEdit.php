@@ -87,7 +87,7 @@ class UserEdit implements RequestHandlerInterface {
                 [
                     'message' => $this->translator->translate("no differences detected")
                 ]
-                , IResponse::BAD_REQUEST
+                , IResponse::NOT_MODIFIED
             );
         }
 

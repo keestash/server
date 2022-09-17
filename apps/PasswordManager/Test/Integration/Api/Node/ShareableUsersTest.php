@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
 use KSA\PasswordManager\Api\Node\ShareableUsers;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KST\TestCase;
 

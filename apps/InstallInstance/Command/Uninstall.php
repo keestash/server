@@ -35,11 +35,16 @@ class Uninstall extends KeestashCommand {
 
     public function __construct(
         InstanceRepository $instanceRepository
-        , Config $config
+        , Config           $config
     ) {
-        parent::__construct("instance:uninstall");
+        parent::__construct();
         $this->instanceRepository = $instanceRepository;
         $this->config             = $config;
+    }
+
+    protected function configure(): void {
+        $this->setName("instance:uninstall")
+            ->setDescription("uninstalls the instance");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {

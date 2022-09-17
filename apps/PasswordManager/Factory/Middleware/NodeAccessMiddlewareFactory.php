@@ -25,6 +25,7 @@ use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
+use KSP\Core\ILogger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class NodeAccessMiddlewareFactory implements FactoryInterface {
@@ -37,6 +38,7 @@ class NodeAccessMiddlewareFactory implements FactoryInterface {
         return new NodeAccessMiddleware(
             $container->get(AccessService::class)
             , $container->get(NodeRepository::class)
+            , $container->get(ILogger::class)
         );
     }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> Dogan Ucar <dogan@dogan-ucar.de>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,14 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Entity\Password;
+namespace Keestash\Factory\Core\System\RateLimit;
 
-class URL extends Encryptable {
+use Keestash\Core\System\RateLimit\FileRateLimiter;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use RateLimit\Rate;
+use RateLimit\RateLimiter;
 
-    public function jsonSerialize(): array {
-        return parent::jsonSerialize() + [
-                'plain' => $this->getPlain()
-            ];
+class FileRateLimiterFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): RateLimiter {
+        return new FileRateLimiter(
+            Rate::perSecond(2)
+        );
     }
 
 }

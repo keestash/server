@@ -21,13 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Service\Node\Credential;
 
-use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
+use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Encryption\Password\IPasswordService;
 use Psr\Container\ContainerInterface;
 
 class CredentialServiceFactory {
@@ -37,6 +36,8 @@ class CredentialServiceFactory {
             $container->get(EdgeService::class)
             , $container->get(NodeRepository::class)
             , $container->get(NodeEncryptionService::class)
+            , $container->get(IPasswordService::class)
+            , $container->get(IEventManager::class)
         );
     }
 

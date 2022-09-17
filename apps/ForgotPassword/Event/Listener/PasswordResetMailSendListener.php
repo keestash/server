@@ -23,7 +23,6 @@ namespace KSA\ForgotPassword\Event\Listener;
 
 use Keestash\Event\Worker\MessageProcessedEvent;
 use KSA\ForgotPassword\ConfigProvider;
-use KSA\ForgotPassword\Entity\Queue\Stamp\PasswordLinkGeneratedStamp;
 use KSA\ForgotPassword\Exception\ForgotPasswordException;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Manager\EventManager\IListener;

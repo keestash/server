@@ -21,18 +21,19 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Repository\Node;
 
-use Doctrine\DBAL\Result;
+use Doctrine\DBAL\Exception;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
-use KSA\PasswordManager\Entity\Node;
-use KSA\PasswordManager\Entity\Password\Credential;
-use KSA\PasswordManager\Entity\Password\Password;
-use KSA\PasswordManager\Entity\Password\URL;
-use KSA\PasswordManager\Entity\Password\Username;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Entropy;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Password;
+use KSA\PasswordManager\Entity\Node\Credential\Password\URL;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Username;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\Share;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\Node\NodeException;
@@ -80,33 +81,46 @@ class NodeRepository {
 
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): Root {
         $type         = Node::ROOT;
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
-            ->select(
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $this->logger->debug('requesting root for user', ['user' => $user]);
+        try {
+            $queryBuilder->select(
                 [
                     'id'
                 ]
             )
-            ->from('pwm_node')
-            ->where('user_id = ?')
-            ->andWhere('type = ?')
-            ->setParameter(0, $user->getId())
-            ->setParameter(1, $type);
-        $statement    = $queryBuilder->executeQuery();
+                ->from('pwm_node')
+                ->where('user_id = ?')
+                ->andWhere('type = ?')
+                ->setParameter(0, $user->getId())
+                ->setParameter(1, $type);
+            $statement = $queryBuilder->executeQuery();
 
-        if (!$statement instanceof Result) {
-            $this->logger->error('error while retrieving data ' . $queryBuilder->getSQL());
-            throw new PasswordManagerException();
+        } catch (Exception $exception) {
+            $this->logger->error(
+                'error while retrieving data',
+                [
+                    'userId'    => $user->getId(),
+                    'type'      => $type,
+                    'sql'       => $queryBuilder->getSQL(),
+                    'exception' => $exception
+                ]
+            );
+            throw new PasswordManagerException('no root folder found');
         }
-        $rows = $statement->fetchAllNumeric();
-        $id   = ($rows[0] ?? [])[0] ?? null;
-        if (null === $id) {
+
+        $rows = $statement->fetchAllAssociative();
+        $id   = $rows[0]['id'] ?? 0;
+        $id   = (int) $id;
+        $this->logger->debug('node result', ['rows' => $rows, 'id' => $id]);
+        if (0 === $id) {
             throw new PasswordManagerException();
         }
 
         /** @var Root $root */
-        $root = $this->getNode((int) $rows[0][0], $depth, $maxDepth);
+        $root = $this->getNode($id, $depth, $maxDepth);
 
-        $root->setId((int) $rows[0][0]);
+        $root->setId($id);
         $root->setType($type);
         return $root;
     }
@@ -136,8 +150,16 @@ class NodeRepository {
         return $list;
     }
 
+    /**
+     * @param int $id
+     * @param int $depth
+     * @param int $maxDepth
+     * @return Node
+     * @throws Exception
+     * @throws InvalidNodeTypeException
+     * @throws PasswordManagerException
+     */
     public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): Node {
-
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
                 [
@@ -152,13 +174,18 @@ class NodeRepository {
             ->from('pwm_node')
             ->where('id = ?')
             ->setParameter(0, $id);
-        $sql          = $queryBuilder->getSQL();
         $statement    = $queryBuilder->executeQuery();
 
         $rows = $statement->fetchAllNumeric();
 
         if (0 === count($rows)) {
-            throw new PasswordManagerException('no data found, count is 0, id is: ' . $id . ', sql is: ' . $sql);
+            $this->logger->error(
+                'no node found',
+                [
+                    'id' => $id
+                ]
+            );
+            throw new PasswordManagerException('no node found');
         }
         $row = $rows[0];
 
@@ -185,7 +212,7 @@ class NodeRepository {
                 throw new InvalidNodeTypeException("no type for $type found for id $id");
         }
 
-        $user = $this->userRepository->getUserById($userId);
+        $user = $this->userRepository->getUserById((string) $userId);
 
         if (null === $user) {
             throw new PasswordManagerException();
@@ -269,6 +296,7 @@ class NodeRepository {
                 , 'url'
                 , 'create_ts'
                 , 'note'
+                , 'entropy'
             ])
             ->from('`pwm_credential`')
             ->where('`node_id` = ?')
@@ -297,6 +325,11 @@ class NodeRepository {
                 $row[5]
             )
         );
+
+        $entropy = new Entropy();
+        $entropy->setEncrypted((string) $row[7]);
+        $credential->setEntropy($entropy);
+
         return $credential;
     }
 
@@ -347,7 +380,6 @@ class NodeRepository {
 
             $folder->addEdge($edge);
         }
-
 
     }
 
@@ -461,12 +493,14 @@ class NodeRepository {
                     , 'username' => '?'
                     , 'password' => '?'
                     , 'url'      => '?'
+                    , 'entropy'  => '?'
                 ]
             )
             ->setParameter(0, $nodeId)
             ->setParameter(1, $credential->getUsername()->getEncrypted())
             ->setParameter(2, $credential->getPassword()->getEncrypted())
             ->setParameter(3, $credential->getUrl()->getEncrypted())
+            ->setParameter(4, $credential->getEntropy()->getEncrypted())
             ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
@@ -584,6 +618,11 @@ ORDER BY d.`level`;
     }
 
     public function remove(Node $node): bool {
+
+        if ($node instanceof Root) {
+            throw new PasswordManagerException();
+        }
+
         $edgesRemoved = $this->removeEdges($node);
         if (false === $edgesRemoved) return false;
 
@@ -645,7 +684,7 @@ ORDER BY d.`level`;
                 ->executeStatement() !== 0;
     }
 
-    private function updateNode(Node $node): Node {
+    public function updateNode(Node $node): Node {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $queryBuilder = $queryBuilder->update('pwm_node')
@@ -674,6 +713,7 @@ ORDER BY d.`level`;
             ->set('username', '?')
             ->set('password', '?')
             ->set('url', '?')
+            ->set('entropy', '?')
             ->where('id = ?')
             ->setParameter(0,
                 $credential->getUsername()->getEncrypted()
@@ -685,6 +725,9 @@ ORDER BY d.`level`;
                 $credential->getUrl()->getEncrypted()
             )
             ->setParameter(3,
+                $credential->getEntropy()->getEncrypted()
+            )
+            ->setParameter(4,
                 $credential->getCredentialId()
             );
         $queryBuilder->executeStatement();

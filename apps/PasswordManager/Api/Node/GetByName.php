@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
-use Keestash\Api\Response\LegacyResponse;
-use KSA\PasswordManager\Entity\Node;
+use Keestash\Api\Response\JsonResponse;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -48,11 +48,11 @@ class GetByName implements RequestHandlerInterface {
         $token = $request->getAttribute(IToken::class);
 
         if (null === $name) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => "no username"
-                ]
+                ],
+                IResponse::BAD_REQUEST
             );
         }
 
@@ -65,11 +65,11 @@ class GetByName implements RequestHandlerInterface {
             }
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "message" => $list
             ]
+            , IResponse::OK
         );
     }
 

@@ -27,9 +27,13 @@ use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
+use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\StreamHandler;
+use Sentry\Monolog\Handler;
+use Sentry\SentrySdk;
+use function Sentry\init;
 
 /**
  * Class LoggerManager
@@ -42,7 +46,7 @@ class LoggerManager implements ILoggerManager {
 
     public function __construct(
         ConfigService $configService
-        , Legacy $legacy
+        , Legacy      $legacy
     ) {
         $this->configService = $configService;
         $this->legacy        = $legacy;
@@ -54,22 +58,54 @@ class LoggerManager implements ILoggerManager {
     }
 
     public function getFileLogger(): ILogger {
+        $logLevel      = $this->configService->getValue("log_level", \Monolog\Logger::ERROR);
+        $jsonFormatter = new JsonFormatter();
         $logger        = new Logger(ILoggerManager::FILE_LOGGER);
+        $debug         = (bool) $this->configService->getValue("debug", false);
         $streamHandler = new StreamHandler(
             $this->getLogfilePath()
-            , $this->configService->getValue("log_level", \Monolog\Logger::ERROR)
+            , $logLevel
         );
-        $streamHandler->setFormatter(
-            new JsonFormatter()
-        );
-        $logger->pushHandler($streamHandler);
+        $streamHandler->setFormatter($jsonFormatter);
 
-        $logger = $this->addDevHandler($logger);
+        $logger->pushHandler($streamHandler);
+        $logger = $this->addSentryHandler(
+            $logger
+            , $jsonFormatter
+            , (int) $logLevel
+            , $debug
+        );
+        return $this->addDevHandler($logger, $debug);
+    }
+
+    private function addSentryHandler(
+        ILogger              $logger
+        , FormatterInterface $formatter
+        , int                $logLevel
+        , bool               $debug
+    ): ILogger {
+        $sentryDsn = $this->configService->getValue('sentry_dsn');
+
+        if (null === $sentryDsn) {
+            return $logger;
+        }
+        if (true === $debug) {
+            return $logger;
+        }
+
+        init(['dsn' => $sentryDsn]);
+        $sentryHandler = new Handler(
+            SentrySdk::getCurrentHub()
+        );
+        $sentryHandler->setFormatter($formatter);
+        $sentryHandler->setLevel($logLevel);
+
+        $logger->pushHandler($sentryHandler);
         return $logger;
     }
 
-    private function addDevHandler(Logger $logger): Logger {
-        if (false === $this->configService->getValue("debug", false)) return $logger;
+    private function addDevHandler(ILogger $logger, bool $debug): ILogger {
+        if (false === $debug) return $logger;
         $htmlStreamHandler = new StreamHandler(
             $this->getLogfilePath() . ".html"
             , $this->configService->getValue("log_level", \Monolog\Logger::DEBUG)

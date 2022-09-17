@@ -22,35 +22,44 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service\Node\Credential;
 
 use DateTime;
-use Keestash\Core\Service\Encryption\Key\KeyService;
+use DateTimeImmutable;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Node as NodeObject;
-use KSA\PasswordManager\Entity\Password\Credential;
-use KSA\PasswordManager\Entity\Password\Password;
-use KSA\PasswordManager\Entity\Password\URL;
-use KSA\PasswordManager\Entity\Password\Username;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Entropy;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Password;
+use KSA\PasswordManager\Entity\Node\Credential\Password\URL;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Username;
+use KSA\PasswordManager\Entity\Node\Node as NodeObject;
+use KSA\PasswordManager\Event\Node\Credential\CredentialCreatedEvent;
+use KSA\PasswordManager\Event\Node\Credential\CredentialUpdatedEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Encryption\Password\IPasswordService;
 
 class CredentialService {
 
     private EdgeService           $edgeService;
     private NodeRepository        $nodeRepository;
     private NodeEncryptionService $nodeEncryptionService;
+    private IPasswordService      $passwordService;
+    private IEventManager         $eventManager;
 
     public function __construct(
         EdgeService             $edgeService
         , NodeRepository        $nodeRepository
         , NodeEncryptionService $nodeEncryptionService
+        , IPasswordService      $passwordService
+        , IEventManager         $eventManager
     ) {
         $this->edgeService           = $edgeService;
         $this->nodeRepository        = $nodeRepository;
         $this->nodeEncryptionService = $nodeEncryptionService;
+        $this->passwordService       = $passwordService;
+        $this->eventManager          = $eventManager;
     }
 
     public function createCredential(
@@ -80,15 +89,28 @@ class CredentialService {
         $credential->setName($title);
         $credential->setUser($user);
 
+        $corePassword = new \Keestash\Core\DTO\Encryption\Password\Password();
+        $corePassword->setValue((string) $p->getPlain());
+        $corePassword->setCharacterSet(
+            $this->passwordService->findCharacterSet((string) $p->getPlain())
+        );
+        $corePassword = $this->passwordService->measureQuality($corePassword);
+        $entropy      = new Entropy();
+        $entropy->setPlain((string) $corePassword->getEntropy());
+        $credential->setEntropy($entropy);
         return $credential;
     }
 
     public function insertCredential(Credential $credential, Folder $parent): Edge {
         $this->nodeEncryptionService->encryptNode($credential);
         $credential = $this->nodeRepository->addCredential($credential);
-        return $this->nodeRepository->addEdge(
+        $edge       = $this->nodeRepository->addEdge(
             $this->edgeService->prepareRegularEdge($credential, $parent)
         );
+        $this->eventManager->execute(
+            new CredentialCreatedEvent($credential)
+        );
+        return $edge;
     }
 
     public function updateCredential(
@@ -109,8 +131,16 @@ class CredentialService {
 
         $credential->setName($name);
         $credential->setUpdateTs(new DateTime());
+
         $this->nodeEncryptionService->encryptNode($credential);
-        return $this->nodeRepository->updateCredential($credential);
+        $credential = $this->nodeRepository->updateCredential($credential);
+        $this->eventManager->execute(
+            new CredentialUpdatedEvent(
+                $credential
+                , new DateTimeImmutable()
+            )
+        );
+        return $credential;
     }
 
     public function updatePassword(
@@ -121,8 +151,27 @@ class CredentialService {
         $passwordObject->setPlain($password);
         $credential->setPassword($passwordObject);
         $credential->setUpdateTs(new DateTime());
+
+        $corePassword = new \Keestash\Core\DTO\Encryption\Password\Password();
+        $corePassword->setValue((string) $credential->getPassword()->getPlain());
+        $corePassword->setCharacterSet(
+            $this->passwordService->findCharacterSet((string) $credential->getPassword()->getPlain())
+        );
+
+        $corePassword = $this->passwordService->measureQuality($corePassword);
+        $entropy      = new Entropy();
+        $entropy->setPlain((string) $corePassword->getEntropy());
+        $credential->setEntropy($entropy);
+
         $this->nodeEncryptionService->encryptNode($credential);
-        return $this->nodeRepository->updateCredential($credential);
+        $credential = $this->nodeRepository->updateCredential($credential);
+        $this->eventManager->execute(
+            new CredentialUpdatedEvent(
+                $credential
+                , new DateTimeImmutable()
+            )
+        );
+        return $credential;
     }
 
     public function getDecryptedPassword(Credential $credential): string {

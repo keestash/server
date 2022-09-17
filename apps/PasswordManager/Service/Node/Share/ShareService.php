@@ -14,7 +14,7 @@ namespace KSA\PasswordManager\Service\Node\Share;
 
 use DateTime;
 use DateTimeInterface;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 
 class ShareService {

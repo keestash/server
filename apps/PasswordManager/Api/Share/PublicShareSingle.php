@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Api\Share;
 
 use DateTime;
 use Keestash\Api\Response\JsonResponse;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;

@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -21,6 +22,7 @@ declare(strict_types=1);
 
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
+use Keestash\Middleware\Api\RateLimiterMiddleware;
 use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\AppsInstalledMiddleware;
@@ -41,8 +43,9 @@ return function (Application $app) {
     $app->pipe(ApplicationStartedMiddleware::class);
     $app->pipe(ExceptionHandlerMiddleware::class);
 //    $app->pipe(new RemoveBasePathMiddleware("/api.php"));
-  //  $app->pipe(\Keestash\Middleware\Web\SessionHandlerMiddleware::class);
+    //  $app->pipe(\Keestash\Middleware\Web\SessionHandlerMiddleware::class);
     $app->pipe(CorsMiddleware::class);
+    $app->pipe(RateLimiterMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
     $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);

@@ -21,9 +21,13 @@ declare(strict_types=1);
  */
 
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
+use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
+use KSA\PasswordManager\Command\Node\ImportPwned;
 
-return [
+return array(
     CreateFolder::class
     , CreateCredential::class
-];
+    , Dump::class
+    , ImportPwned::class
+);

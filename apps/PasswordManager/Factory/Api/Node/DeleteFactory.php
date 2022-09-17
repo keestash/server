@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -32,7 +31,6 @@ class DeleteFactory {
     public function __invoke(ContainerInterface $container): Delete {
         return new Delete(
             $container->get(IL10N::class)
-            , $container->get(NodeService::class)
             , $container->get(NodeRepository::class)
         );
     }

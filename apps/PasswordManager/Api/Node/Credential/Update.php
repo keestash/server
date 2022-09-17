@@ -21,16 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential;
 
+use DateTimeImmutable;
 use doganoo\DI\Object\String\IStringService;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Api\Response\LegacyResponse;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
@@ -69,20 +68,20 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token      = $request->getAttribute(IToken::class);
-        $parameters = (array) $request->getParsedBody();
-        $name       = $parameters["name"] ?? null;
-        $username   = ($parameters["username"]["plain"]) ?? null;
-        $url        = ($parameters["url"]["plain"]) ?? null;
-        $nodeId     = $parameters["nodeId"] ?? null;
+        $parameters   = (array) $request->getParsedBody();
+        $name         = $parameters["name"] ?? null;
+        $username     = ($parameters["username"]["plain"]) ?? null;
+        $url          = ($parameters["url"]["plain"]) ?? null;
+        $nodeId       = $parameters["nodeId"] ?? null;
+        $password     = $parameters["password"]['plain'] ?? null;
+        $savePassword = null !== $password;
 
         $hasChanges = false;
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
         if (false === ($node instanceof Credential)) {
-            throw new CredentialException();
+            throw new CredentialException('node is not instance of credential');
         }
 
         if (false === $this->stringService->isEmpty($username)) {
@@ -97,6 +96,10 @@ class Update implements RequestHandlerInterface {
             $hasChanges = true;
         }
 
+        if (false === $this->stringService->isEmpty($password)) {
+            $hasChanges = true;
+        }
+
         // TODO abort when no changes?!
         $this->credentialService->updateCredential(
             $node
@@ -105,10 +108,23 @@ class Update implements RequestHandlerInterface {
             , $name
         );
 
+        if (true === $savePassword) {
+            $this->credentialService->updatePassword($node, $password);
+        }
+
+        /** @var Node $parent */
+        $parent = $this->nodeRepository->getParentNode(
+            $node->getId()
+        );
+
+        $parent->setUpdateTs(new DateTimeImmutable());
+        $this->nodeRepository->updateNode($parent);
+
         return new JsonResponse(
             [
-                "message"       => $this->translator->translate("updated")
-                , "has_changes" => $hasChanges
+                "message"           => $this->translator->translate("updated")
+                , "has_changes"     => $hasChanges
+                , "passwordChanged" => $savePassword
             ]
             , IResponse::OK
         );

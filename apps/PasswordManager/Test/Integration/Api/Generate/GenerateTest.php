@@ -37,7 +37,7 @@ class GenerateTest extends TestCase {
             , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "true", "specialChars" => "true"], true]
             , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "true"], true]
             , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "false"], true]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => false], true]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "false"], true]
             , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => 1235, "specialChars" => false], false]
         ];
     }

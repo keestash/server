@@ -18,7 +18,7 @@ use DateTime;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
 use doganoo\PHPAlgorithms\Common\Util\Comparator;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\User\IUser;
 

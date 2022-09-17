@@ -23,16 +23,15 @@ namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTime;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
-use PHPUnit\Util\Json;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -48,15 +47,18 @@ class Create implements RequestHandlerInterface {
     private IL10N          $translator;
     private NodeRepository $nodeRepository;
     private NodeService    $nodeService;
+    private ILogger        $logger;
 
     public function __construct(
         IL10N            $l10n
         , NodeRepository $nodeRepository
         , NodeService    $nodeService
+        , ILogger        $logger
     ) {
         $this->translator     = $l10n;
         $this->nodeRepository = $nodeRepository;
         $this->nodeService    = $nodeService;
+        $this->logger         = $logger;
     }
 
 
@@ -65,10 +67,14 @@ class Create implements RequestHandlerInterface {
         $token      = $request->getAttribute(IToken::class);
         $parameters = (array) $request->getParsedBody();
         $name       = $parameters["name"] ?? null;
-        $parent     = $parameters["parent"] ?? null;
+        $parent     = $parameters['parent'] ?? null;
+        if (null !== $parent) {
+            $parent = (string) $parent;
+        }
 
+        $this->logger->debug('input', ['parsedbody' => $request->getParsedBody()]);
         if (false === $this->isValid($name) || false === $this->isValid($parent)) {
-            return new JsonResponse([], IResponse::BAD_REQUEST);
+            return new JsonResponse(['invalid name or parent'], IResponse::BAD_REQUEST);
         }
 
         try {

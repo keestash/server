@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Credential\Password;
 use Keestash\Api\Response\ErrorResponse;
 use Keestash\Api\Response\NotFoundResponse;
 use Keestash\Api\Response\OkResponse;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
