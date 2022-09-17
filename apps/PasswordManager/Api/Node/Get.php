@@ -25,18 +25,19 @@ use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
-use KSA\PasswordManager\Entity\Node;
-use KSA\PasswordManager\Entity\Node as NodeEntity;
+use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Entity\Node\Node as NodeEntity;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
+use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,27 +51,30 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Get implements RequestHandlerInterface {
 
-    private IL10N                 $translator;
-    private NodeRepository        $nodeRepository;
-    private BreadCrumbService     $breadCrumbService;
-    private ILogger               $logger;
-    private NodeEncryptionService $nodeEncryptionService;
-    private CommentRepository     $commentRepository;
+    private NodeRepository           $nodeRepository;
+    private BreadCrumbService        $breadCrumbService;
+    private ILogger                  $logger;
+    private NodeEncryptionService    $nodeEncryptionService;
+    private CommentRepository        $commentRepository;
+    private PwnedPasswordsRepository $pwnedPasswordsRepository;
+    private PwnedBreachesRepository  $pwnedBreachesRepository;
 
     public function __construct(
-        IL10N                   $l10n
-        , NodeRepository        $nodeRepository
-        , BreadCrumbService     $breadCrumbService
-        , ILogger               $logger
-        , NodeEncryptionService $nodeEncryptionService
-        , CommentRepository     $commentRepository
+        NodeRepository             $nodeRepository
+        , BreadCrumbService        $breadCrumbService
+        , ILogger                  $logger
+        , NodeEncryptionService    $nodeEncryptionService
+        , CommentRepository        $commentRepository
+        , PwnedPasswordsRepository $pwnedPasswordsRepository
+        , PwnedBreachesRepository  $pwnedBreachesRepository
     ) {
-        $this->translator            = $l10n;
-        $this->nodeRepository        = $nodeRepository;
-        $this->breadCrumbService     = $breadCrumbService;
-        $this->logger                = $logger;
-        $this->nodeEncryptionService = $nodeEncryptionService;
-        $this->commentRepository     = $commentRepository;
+        $this->nodeRepository           = $nodeRepository;
+        $this->breadCrumbService        = $breadCrumbService;
+        $this->logger                   = $logger;
+        $this->nodeEncryptionService    = $nodeEncryptionService;
+        $this->commentRepository        = $commentRepository;
+        $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
+        $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -81,15 +85,13 @@ class Get implements RequestHandlerInterface {
 
         if (null === $rootId) {
             return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("no node id given. Could not retrieve data")
-                ]
+                ["no node id given. Could not retrieve data"]
                 , IResponse::NOT_FOUND
             );
         }
 
         try {
-            $root = $this->prepareNode($request, $token);
+            $root = $this->prepareNode($rootId, $token);
         } catch (PasswordManagerException|InvalidNodeTypeException $exception) {
             $this->logger->error($exception->getMessage());
             return new JsonResponse(
@@ -111,6 +113,18 @@ class Get implements RequestHandlerInterface {
                 // for the app. Therefore, we will have this here until we find a
                 // proper solution (to the text above).
                 , "comments" => $this->commentRepository->getCommentsByNode($root)
+                // as with comments, pwned are part of node. However, since we do
+                // not want to blow up the node/credential, we retrieve them as separate
+                // field.
+                //
+                // We should extract pwned as standalone services as well.
+                // However, the comments in the response here are actually needed
+                // for the app. Therefore, we will have this here until we find a
+                // proper solution (to the text above).
+                , "pwned"    => [
+                'passwords'  => $this->pwnedPasswordsRepository->getPwnedByNode($root)->toArray()
+                , 'breaches' => $this->pwnedBreachesRepository->getPwnedByNode($root)->toArray()
+            ]
             ]
             , IResponse::OK
         );
@@ -118,19 +132,22 @@ class Get implements RequestHandlerInterface {
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @param IToken                 $token
+     * @param string $id
+     * @param IToken $token
      * @return NodeEntity
      * @throws PasswordManagerException
      * @throws InvalidNodeTypeException
      */
-    private function prepareNode(ServerRequestInterface $request, IToken $token): NodeEntity {
-        $id = $request->getAttribute("node_id");
+    private function prepareNode(string $id, IToken $token): NodeEntity {
 
         // base case 1: we are requesting a regular node.
         //      select and return
         if (true === is_numeric($id)) {
-            $node = $this->nodeRepository->getNode((int) $id, 0, 1);
+            $node = $this->nodeRepository->getNode(
+                (int) $id
+                , 0
+                , 2
+            );
             $this->nodeEncryptionService->decryptNode($node);
             return $node;
         }
@@ -138,7 +155,7 @@ class Get implements RequestHandlerInterface {
         $root = $this->nodeRepository->getRootForUser(
             $token->getUser()
             , 0
-            , 1
+            , 2
         );
 
         // base case 2: we are requesting the root. No need to do the following stuff

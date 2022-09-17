@@ -21,6 +21,11 @@ parameters:
 			path: ../../apps/InstallInstance/Api/EndUpdate/EndUpdate.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Install.php
+
+		-
 			message: "#^Parameter \\#1 \\$files of method KSA\\\\InstallInstance\\\\Command\\\\Uninstall\\:\\:removeFiles\\(\\) expects array, array\\<int, string\\>\\|false given\\.$#"
 			count: 2
 			path: ../../apps/InstallInstance/Command/Uninstall.php
@@ -36,14 +41,29 @@ parameters:
 			path: ../../apps/Login/Api/Configuration.php
 
 		-
-			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Password\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node given\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Comment/Add.php
+			path: ../../apps/Login/Api/Login.php
 
 		-
-			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Password\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node given\\.$#"
+			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Comment/Remove.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Generate/Quality.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setQuality\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Generate/Quality.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setValue\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Generate/Quality.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
@@ -81,6 +101,11 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
 
 		-
+			message: "#^Parameter \\#1 \\$parent of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:getParentNode\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
+
+		-
 			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Move.php
@@ -89,6 +114,11 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
+
+		-
+			message: "#^Variable \\$passwords in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$candidates, \\$candidate$#"
+			count: 1
+			path: ../../apps/PasswordManager/Command/Node/ImportPwned.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
@@ -106,7 +136,7 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
 
 		-
-			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\|null\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
 
@@ -116,7 +146,17 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/OrganizationRepository.php
 
 		-
-			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\:\\:getEdges\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
+
+		-
+			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/PwnedPasswordsRepository.php
+
+		-
+			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
 
@@ -146,7 +186,7 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
 
 		-
-			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\|null\\.$#"
+			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\|null\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/MoveTest.php
 
@@ -281,6 +321,11 @@ parameters:
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
 
 		-
+			message: "#^Method Keestash\\\\Command\\\\KeestashCommand\\:\\:askQuestion\\(\\) has parameter \\$default with no type specified\\.$#"
+			count: 1
+			path: ../../lib/private/Command/KeestashCommand.php
+
+		-
 			message: "#^Method Keestash\\\\Core\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Cache/NullService.php
@@ -309,6 +354,16 @@ parameters:
 			message: "#^Property Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:\\$value has no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\ILogger\\\\ILogger\\:\\:pushHandler\\(\\)\\.$#"
+			count: 2
+			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
+
+		-
+			message: "#^Parameter \\#1 \\$level of method Monolog\\\\Handler\\\\AbstractHandler\\:\\:setLevel\\(\\) expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'alert'\\|'ALERT'\\|'critical'\\|'CRITICAL'\\|'debug'\\|'DEBUG'\\|'EMERGENCY'\\|'emergency'\\|'error'\\|'ERROR'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
 		-
 			message: "#^Method Keestash\\\\Core\\\\Manager\\\\SessionManager\\\\SessionHandler\\:\\:gc\\(\\) should return int\\|false but returns bool\\.$#"
@@ -369,6 +424,16 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Encryption/Password/PasswordService.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setQuality\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Encryption/Password/PasswordService.php
 
 		-
 			message: "#^Parameter \\#1 \\$min \\(0\\) of function random_int expects lower number than parameter \\#2 \\$max \\(int\\<\\-1, max\\>\\)\\.$#"

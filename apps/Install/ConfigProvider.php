@@ -24,9 +24,11 @@ namespace KSA\Install;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Install\Api\InstallApps;
 use KSA\Install\Api\InstallConfiguration;
+use KSA\Install\Command\Install;
 use KSA\Install\Controller\Controller;
 use KSA\Install\Factory\Api\InstallAppsFactory;
 use KSA\Install\Factory\Api\InstallConfigurationFactory;
+use KSA\Install\Factory\Command\InstallFactory;
 use KSA\Install\Factory\Controller\ControllerFactory;
 use KSP\Api\IVerb;
 
@@ -39,6 +41,9 @@ final class ConfigProvider {
 
     public function __invoke(): array {
         return [
+            CoreConfigProvider::COMMANDS              => [
+                Install::class
+            ],
             CoreConfigProvider::APP_LIST            => [
                 ConfigProvider::APP_ID => [
                     CoreConfigProvider::APP_ORDER      => 4,
@@ -55,6 +60,9 @@ final class ConfigProvider {
 
                     // controller
                     , Controller::class           => ControllerFactory::class
+
+                    // command
+                    , Install::class              => InstallFactory::class
                 ]
             ],
             CoreConfigProvider::WEB_ROUTER          => [

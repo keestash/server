@@ -31,6 +31,7 @@ interface IResponse {
     public const HEADER_CONTENT_TYPE = "Content-Type";
 
     public const OK                    = 200;
+    public const NOT_MODIFIED          = 304;
     public const BAD_REQUEST           = 400;
     public const UNAUTHORIZED          = 401;
     public const FORBIDDEN             = 403;

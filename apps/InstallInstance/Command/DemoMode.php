@@ -48,12 +48,17 @@ class DemoMode extends KeestashCommand {
         , Config $config
         , IUserRepositoryService $userRepositoryService
     ) {
-        parent::__construct("instance:demomode");
+        parent::__construct();
         $this->instanceDb            = $instanceDB;
         $this->userService           = $userService;
         $this->userRepository        = $userRepository;
         $this->config                = $config;
         $this->userRepositoryService = $userRepositoryService;
+    }
+
+    protected function configure(): void {
+        $this->setName("instance:demomode")
+            ->setDescription("turns the demo mode on");
     }
 
     private function enable(string $path): bool {

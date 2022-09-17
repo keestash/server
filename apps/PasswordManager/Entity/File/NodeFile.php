@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Entity\File;
 
 use DateTimeInterface;
 use Exception;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Entity\JWT;
 use KSP\Core\DTO\File\IFile;
 

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Service\Node\BreadCrumb;
 
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\User\IUser;

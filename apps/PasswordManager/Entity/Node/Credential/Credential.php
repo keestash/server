@@ -19,11 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Entity\Password;
+namespace KSA\PasswordManager\Entity\Node\Credential;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use JsonSerializable;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Entropy;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Password;
+use KSA\PasswordManager\Entity\Node\Credential\Password\URL;
+use KSA\PasswordManager\Entity\Node\Credential\Password\Username;
+use KSA\PasswordManager\Entity\Node\Node;
 
 /**
  * Class Credential
@@ -31,13 +34,14 @@ use KSA\PasswordManager\Entity\Node;
  * @package KSA\PasswordManager\Entity\Password
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Credential extends Node implements JsonSerializable {
+class Credential extends Node {
 
     private Username   $username;
     private Password   $password;
     private URL        $url;
     private ?ArrayList $attachments  = null;
     private int        $credentialId = 0;
+    private Entropy    $entropy;
 
     public function getType(): string {
         return Node::CREDENTIAL;
@@ -126,6 +130,20 @@ class Credential extends Node implements JsonSerializable {
     }
 
     /**
+     * @param Entropy $entropy
+     */
+    public function setEntropy(Entropy $entropy): void {
+        $this->entropy = $entropy;
+    }
+
+    /**
+     * @return Entropy
+     */
+    public function getEntropy(): Entropy {
+        return $this->entropy;
+    }
+
+    /**
      * Specify data which should be serialized to JSON
      *
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -140,6 +158,7 @@ class Credential extends Node implements JsonSerializable {
                 , "attachments"   => $this->getAttachments()
                 , "url"           => $this->getUrl()
                 , "credential_id" => $this->getCredentialId()
+                , "entropy"       => $this->getEntropy()
             ];
     }
 

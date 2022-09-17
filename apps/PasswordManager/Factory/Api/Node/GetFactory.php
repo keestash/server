@@ -24,22 +24,24 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 use KSA\PasswordManager\Api\Node\Get;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
+use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class GetFactory {
 
     public function __invoke(ContainerInterface $container): Get {
         return new Get(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
             , $container->get(BreadCrumbService::class)
             , $container->get(ILogger::class)
             , $container->get(NodeEncryptionService::class)
             , $container->get(CommentRepository::class)
+            , $container->get(PwnedPasswordsRepository::class)
+            , $container->get(PwnedBreachesRepository::class)
         );
     }
 

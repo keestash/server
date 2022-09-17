@@ -26,6 +26,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 abstract class KeestashCommand extends Command {
 
@@ -80,6 +81,17 @@ abstract class KeestashCommand extends Command {
         }
 
         return $arguments;
+    }
+
+    protected function askQuestion(
+        string            $question
+        , InputInterface  $input
+        , OutputInterface $output
+        ,                 $default = null
+    ): bool {
+        $helper   = $this->getHelper('question');
+        $question = new ConfirmationQuestion($question, $default);
+        return $helper->ask($input, $output, $question);
     }
 
 }

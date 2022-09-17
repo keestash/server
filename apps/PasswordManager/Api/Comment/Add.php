@@ -22,9 +22,11 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Comment;
 
 use DateTime;
+use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use KSA\PasswordManager\Entity\Comment\Comment;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Exception\Node\Comment\CommentRepositoryException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -86,6 +88,10 @@ class Add implements RequestHandlerInterface {
             return new JsonResponse(['error while retrieving node'], IResponse::INTERNAL_SERVER_ERROR);
         }
 
+        if (false === ($node instanceof Credential)) {
+            return new JsonResponse(['not found'], IResponse::NOT_FOUND);
+        }
+
         $comment = new Comment();
         $comment->setComment($commentString);
         $comment->setCreateTs(new DateTime());
@@ -100,7 +106,7 @@ class Add implements RequestHandlerInterface {
             )
         );
         $comment = $this->commentRepository->addComment($comment);
-        $node->setUpdateTs(new DateTime());
+        $node->setUpdateTs(new DateTimeImmutable());
         $this->nodeRepository->updateCredential($node);
 
         return new JsonResponse(

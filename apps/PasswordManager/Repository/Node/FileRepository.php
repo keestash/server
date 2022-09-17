@@ -28,7 +28,7 @@ use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\File\FileRepository as CoreFileRepository;
 use KSA\PasswordManager\Entity\File\NodeFile;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;

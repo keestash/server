@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository;
 
 use doganoo\DI\DateTime\IDateTimeService;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;

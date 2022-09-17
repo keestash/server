@@ -16,7 +16,7 @@ namespace KSA\PasswordManager\Entity\Folder;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\PasswordManager\Entity\Edge\Edge;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 
 class Folder extends Node {
 
@@ -39,19 +39,19 @@ class Folder extends Node {
         return Node::ICON_FOLDER;
     }
 
-    public function jsonSerialize(): array {
-        return parent::jsonSerialize() + [
-                "edges"       => $this->getEdges()
-                , "edge_size" => $this->getEdges()->length()
-            ];
-    }
-
     public function getEdges(): ArrayList {
         return $this->edges;
     }
 
     public function setEdges(ArrayList $edges): void {
         $this->edges = $edges;
+    }
+
+    public function jsonSerialize(): array {
+        return parent::jsonSerialize() + [
+                "edges"       => $this->getEdges()
+                , "edge_size" => $this->getEdges()->length()
+            ];
     }
 
 }

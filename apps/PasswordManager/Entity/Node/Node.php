@@ -19,19 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Entity;
+namespace KSA\PasswordManager\Entity\Node;
 
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use JsonSerializable;
 use Keestash\Core\DTO\Access\IAccessable;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Entity\Share\Share;
+use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
 abstract class Node implements
-    JsonSerializable
+    IJsonObject
     , IAccessable {
 
     public const ROOT       = "root";
@@ -97,7 +97,7 @@ abstract class Node implements
     }
 
     public function getUpdateTs(): ?DateTimeInterface {
-        return $this->createTs;
+        return $this->updateTs;
     }
 
     public function setUpdateTs(?DateTimeInterface $updateTs): void {
@@ -169,6 +169,7 @@ abstract class Node implements
             , "shared_to"    => $this->getSharedTo()
             , "public_share" => $this->getPublicShare()
             , "organization" => $this->getOrganization()
+            , "update_ts"    => $this->getUpdateTs()
         ];
     }
 

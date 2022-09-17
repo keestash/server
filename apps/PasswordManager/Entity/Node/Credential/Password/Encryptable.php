@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Entity\Password;
+namespace KSA\PasswordManager\Entity\Node\Credential\Password;
 
 use KSP\Core\DTO\Entity\IJsonObject;
 

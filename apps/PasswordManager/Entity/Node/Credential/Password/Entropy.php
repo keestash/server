@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Entity\Password;
+namespace KSA\PasswordManager\Entity\Node\Credential\Password;
 
-class Password extends Encryptable {
+class Entropy extends Encryptable {
+
+    public function jsonSerialize(): array {
+        return parent::jsonSerialize() + [
+                'plain' => $this->getPlain()
+            ];
+    }
 
 }

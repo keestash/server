@@ -21,12 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Middleware;
 
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\ILogger\ILogger;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,22 +39,25 @@ class NodeAccessMiddleware implements MiddlewareInterface {
 
     private AccessService  $accessService;
     private NodeRepository $nodeRepository;
+    private ILogger        $logger;
 
     public function __construct(
         AccessService    $accessService
         , NodeRepository $nodeRepository
+        , ILogger        $logger
     ) {
         $this->accessService  = $accessService;
         $this->nodeRepository = $nodeRepository;
+        $this->logger         = $logger;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $nodeIds = [];
-        $nodeIds = $this->extractNodeIds($request->getAttributes(), $nodeIds);
-
         if (true === $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC)) {
             return $handler->handle($request);
         }
+
+        $nodeIds = [];
+        $nodeIds = $this->extractNodeIds($request->getAttributes(), $nodeIds);
 
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
@@ -70,11 +75,16 @@ class NodeAccessMiddleware implements MiddlewareInterface {
         }
 
         foreach ($nodeIds as $nodeId) {
-            if (false === is_numeric($nodeId)) {
-                // TODO, fail if there is no numeric value for node id?!
+            $node = null;
+            try {
+                $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
+            } catch (PasswordManagerException $exception) {
+                $this->logger->info('no node found', ['nodeId' => $nodeId]);
+            }
+
+            if (null === $node) {
                 continue;
             }
-            $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
 
             if (false === $this->accessService->hasAccess($node, $token->getUser())) {
                 return new JsonResponse(

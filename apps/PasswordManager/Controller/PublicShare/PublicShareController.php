@@ -16,7 +16,7 @@ namespace KSA\PasswordManager\Controller\PublicShare;
 
 
 use DateTime;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Event\PublicShare\ControllerOpened;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential\Password;
 
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;

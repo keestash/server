@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Country;
 
+/**
+ * copy from here if needed: https://justcall.io/app/country-code-information.html
+ */
 interface ICountry {
 
     public const BELGIUM       = 'BE';

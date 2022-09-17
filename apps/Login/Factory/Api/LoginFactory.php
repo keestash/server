@@ -25,13 +25,11 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Api\Login;
 use KSA\Login\Service\TokenService;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
-use KSP\Core\Service\HTTP\IPersistenceService;
+use KSP\Core\Service\HTTP\IJWTService;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -44,12 +42,10 @@ class LoginFactory {
             , $container->get(UserService::class)
             , $container->get(ITokenRepository::class)
             , $container->get(TokenService::class)
-            , $container->get(IPersistenceService::class)
-            , $container->get(IConfigService::class)
             , $container->get(ILocaleService::class)
             , $container->get(ILanguageService::class)
-            , $container->get(ILogger::class)
             , $container->get(InstanceDB::class)
+            , $container->get(IJWTService::class)
         );
     }
 

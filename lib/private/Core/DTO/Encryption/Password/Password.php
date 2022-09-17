@@ -31,14 +31,10 @@ use KSP\Core\DTO\Encryption\Password\IPassword;
  */
 class Password implements IPassword {
 
-    /** @var string $value */
-    private $value;
-    /** @var array $characterSet */
-    private $characterSet;
-    /** @var float $entropy */
-    private $entropy;
-    /** @var int $quality */
-    private $quality;
+    private string $value;
+    private array  $characterSet;
+    private float  $entropy;
+    private int    $quality;
 
     public function __construct() {
         $this->characterSet = [];
@@ -112,11 +108,11 @@ class Password implements IPassword {
      * Specify data which should be serialized to JSON
      *
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "value"           => $this->getValue()
             , "character_set" => $this->getCharacterSet()

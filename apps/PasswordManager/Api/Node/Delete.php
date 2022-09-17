@@ -23,9 +23,7 @@ namespace KSA\PasswordManager\Api\Node;
 
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -40,17 +38,14 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Delete implements RequestHandlerInterface {
 
-    private NodeService    $nodeService;
     private NodeRepository $nodeRepository;
     private IL10N          $translator;
 
     public function __construct(
-        IL10N $l10n
-        , NodeService $nodeService
+        IL10N            $l10n
         , NodeRepository $nodeRepository
     ) {
         $this->translator     = $l10n;
-        $this->nodeService    = $nodeService;
         $this->nodeRepository = $nodeRepository;
     }
 
@@ -58,27 +53,14 @@ class Delete implements RequestHandlerInterface {
         $parameters = (array) $request->getParsedBody();
         $id         = $parameters["node_id"] ?? null;
 
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
-
         try {
             $node = $this->nodeRepository->getNode((int) $id);
         } catch (PasswordManagerException $exception) {
-            return new JsonResponse([$this->translator->translate("no node found")], IResponse::NOT_FOUND);
-        }
-
-        if ($node->getUser()->getId() !== $token->getUser()->getId()) {
-            return new JsonResponse([$this->translator->translate("you are not allowed to do this action")], IResponse::UNAUTHORIZED);
-        }
-
-        $deletable = $this->nodeService->isDeletable($node->getType());
-
-        if (false === $deletable) {
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("type {$node->getType()} is not deletable")
+                    $this->translator->translate("no node found")
                 ]
-                , IResponse::INTERNAL_SERVER_ERROR
+                , IResponse::NOT_FOUND
             );
         }
 

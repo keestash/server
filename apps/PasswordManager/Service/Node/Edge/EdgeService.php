@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Service\Node\Edge;
 
 use DateTime;
 use KSA\PasswordManager\Entity\Edge\Edge;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 
 class EdgeService {
 
