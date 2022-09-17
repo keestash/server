@@ -65,6 +65,7 @@ use Keestash\Core\Service\Encryption\Password\PasswordService;
 use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
+use Keestash\Core\Service\File\Mime\MimeTypeService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
@@ -278,6 +279,7 @@ return [
     MessageService::class                                          => InvokableFactory::class,
     ResponseService::class                                         => ResponseServiceFactory::class,
     CSVService::class                                              => CSVServiceFactory::class,
+    MimeTypeService::class                                         => InvokableFactory::class,
 
     GetText::class                                            => InvokableFactory::class,
     \Symfony\Component\EventDispatcher\EventDispatcher::class => InvokableFactory::class,

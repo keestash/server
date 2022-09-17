@@ -63,8 +63,7 @@
     "symfony/event-dispatcher": "^5.2",
     "symfony/mime": "^4.4",
     "symfony/string": "^5.4",
-    "twitter/bootstrap": "^4.5",
-    "xobotyi/php-mime-type": "^1.2"
+    "twitter/bootstrap": "^4.5"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.8",

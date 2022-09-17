@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7de5b4c40e25ccc75e446dd210c59a0b",
+    "content-hash": "8aa922e68cea8074f2c55522e8622a3c",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -7060,66 +7060,6 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
-        },
-        {
-            "name": "xobotyi/php-mime-type",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/xobotyi/php-mime-type.git",
-                "reference": "88a2477a47a5ced33e8fafa736ad4bc8803172a8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/xobotyi/php-mime-type/zipball/88a2477a47a5ced33e8fafa736ad4bc8803172a8",
-                "reference": "88a2477a47a5ced33e8fafa736ad4bc8803172a8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "require-dev": {
-                "codacy/coverage": "1.4.2",
-                "ext-curl": "*",
-                "ext-json": "*",
-                "phpunit/phpunit": "^7"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "xobotyi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "src/"
-            ],
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Anton Zinovyev",
-                    "homepage": "https://github.com/xobotyi"
-                }
-            ],
-            "description": "A comprehensive MIME-types lib for PHP.",
-            "homepage": "https://github.com/xobotyi/php-mime-type",
-            "keywords": [
-                "ext",
-                "extension",
-                "file",
-                "library",
-                "mime",
-                "mimetype",
-                "type",
-                "util"
-            ],
-            "support": {
-                "issues": "https://github.com/xobotyi/php-mime-type/issues",
-                "source": "https://github.com/xobotyi/php-mime-type/tree/master"
-            },
-            "time": "2019-01-23T14:25:50+00:00"
         }
     ],
     "packages-dev": [

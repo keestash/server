@@ -24,9 +24,15 @@ namespace Keestash\Core\Service\File\RawFile;
 use Keestash\Core\DTO\URI\URI;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
-use xobotyi\MimeType;
+use KSP\Core\Service\File\Mime\IMimeTypeService;
 
 class RawFileService {
+
+    private IMimeTypeService $mimeTypeService;
+
+    public function __construct(IMimeTypeService $mimeTypeService) {
+        $this->mimeTypeService = $mimeTypeService;
+    }
 
     public function getMimeType(string $path): ?string {
         $path = realpath($path);
@@ -48,10 +54,10 @@ class RawFileService {
         return $buffer;
     }
 
-    public function getFileExtensions(string $path): ?array {
+    public function getFileExtensions(string $path): array {
         $mimeType = $this->getMimeType($path);
-        if (null === $mimeType) return null;
-        return MimeType::getExtensions($mimeType);
+        if (null === $mimeType) return [];
+        return $this->mimeTypeService->getExtension($mimeType);
     }
 
     public function stringToUri(string $path, bool $strict = true): ?IUniformResourceIdentifier {
