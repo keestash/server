@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\File\RawFile;
+namespace Keestash\Exception;
 
-use Keestash\Core\Service\File\RawFile\RawFileService;
-use KSP\Core\Service\File\Mime\IMimeTypeService;
-use Psr\Container\ContainerInterface;
-
-class RawFileServiceFactory {
-
-    public function __invoke(ContainerInterface $container): RawFileService {
-        return new RawFileService(
-            $container->get(IMimeTypeService::class)
-        );
-    }
+class IndexOutOfBoundsException extends KeestashException {
 
 }
