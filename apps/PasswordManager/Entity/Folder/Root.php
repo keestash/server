@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Entity\Folder;
 
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 
 class Root extends Folder {
 

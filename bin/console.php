@@ -45,7 +45,7 @@ use Symfony\Component\Console\Application;
     /** @var Config $config */
     $config = $container->get(Config::class);
     /** @var Legacy $legacy */
-    $legacy      = $container->get(Legacy::class);
+    $legacy = $container->get(Legacy::class);
 
     /** @var IEnvironmentService $environmentService */
     $environmentService = $container->get(IEnvironmentService::class);

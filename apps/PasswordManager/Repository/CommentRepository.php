@@ -19,7 +19,7 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\User\UserRepository;
 use KSA\PasswordManager\Entity\Comment\Comment;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\Node\Comment\CommentRepositoryException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;

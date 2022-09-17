@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node\Folder;
 use DateTime;
 use KSA\PasswordManager\Api\Node\Folder\Create;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KST\TestCase;
 

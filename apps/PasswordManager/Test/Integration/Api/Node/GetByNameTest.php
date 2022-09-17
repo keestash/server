@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Entity\Folder\Root;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KST\TestCase;
 

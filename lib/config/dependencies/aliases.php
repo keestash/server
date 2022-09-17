@@ -25,6 +25,8 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
@@ -53,6 +55,7 @@ use Keestash\Core\Service\Core\Access\IAccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
+use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
@@ -73,6 +76,7 @@ use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\L10N\GetText;
 use Keestash\Queue\Handler\EmailHandler;
 use KSP\App\ILoader;
@@ -103,6 +107,7 @@ use KSP\Core\Service\Core\Access\AccessService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\CSV\ICSVService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
@@ -126,6 +131,7 @@ use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use KSP\Queue\Handler\IEmailHandler;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
+use RateLimit\RateLimiter;
 
 return [
     // repository
@@ -173,6 +179,7 @@ return [
     IPasswordService::class                           => PasswordService::class,
     IMessageService::class                            => MessageService::class,
     IResponseService::class                           => ResponseService::class,
+    ICSVService::class                                => CSVService::class,
 
     // manager
     ILoggerManager::class                             => LoggerManager::class,
@@ -189,5 +196,11 @@ return [
     IAppRenderer::class            => AppRenderer::class,
     IMigrator::class               => Migrator::class,
     ConfigurationInterface::class  => ProjectConfiguration::class,
-    IEmailHandler::class           => EmailHandler::class
+    IEmailHandler::class           => EmailHandler::class,
+
+    // third party
+    ClientInterface::class         => Client::class,
+
+    // system
+    RateLimiter::class             => FileRateLimiter::class,
 ];

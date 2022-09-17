@@ -249,7 +249,7 @@ class UserService implements IUserService {
         }
 
         if (false === $this->passwordHasMinimumRequirements($password)) {
-            throw new KeestashException('password and password repeat are not equal');
+            throw new KeestashException('password minimum requirements are not met');
         }
     }
 

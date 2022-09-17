@@ -21,17 +21,21 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Password;
 
+use doganoo\DI\Object\String\IStringService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\Encryption\Password\Password;
 use Keestash\Exception\KeestashException;
+use KSP\Core\DTO\Encryption\Password\IPassword;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 
 class PasswordService implements IPasswordService {
 
-    private HashTable $characterTable;
+    private HashTable      $characterTable;
+    private IStringService $stringService;
 
-    public function __construct() {
+    public function __construct(IStringService $stringService) {
         $this->characterTable = new HashTable();
+        $this->stringService  = $stringService;
         $this->initCharTable();
     }
 
@@ -55,7 +59,24 @@ class PasswordService implements IPasswordService {
 
     }
 
-    private function getCharacterSet(string $key): string {
+    public function findCharacterSet(string $password): array {
+        $characterSet = [];
+        if (strlen($this->stringService->intersect($password, IPasswordService::DIGITS)) > 0) {
+            $characterSet[] = IPasswordService::DIGITS;
+        }
+        if (strlen($this->stringService->intersect($password, IPasswordService::SPECIAL_CHARACTERS)) > 0) {
+            $characterSet[] = IPasswordService::SPECIAL_CHARACTERS;
+        }
+        if (strlen($this->stringService->intersect($password, IPasswordService::LOWER_CASE_CHARACTERS)) > 0) {
+            $characterSet[] = IPasswordService::LOWER_CASE_CHARACTERS;
+        }
+        if (strlen($this->stringService->intersect($password, IPasswordService::UPPER_CASE_CHARACTERS)) > 0) {
+            $characterSet[] = IPasswordService::UPPER_CASE_CHARACTERS;
+        }
+        return $characterSet;
+    }
+
+    public function getCharacterSet(string $key): string {
         if (false === $this->characterTable->containsKey($key)) {
             throw new KeestashException("no character set found for $key");
         }
@@ -140,7 +161,7 @@ class PasswordService implements IPasswordService {
         return 1;
     }
 
-    private function getPasswordEntropy(Password $password): float {
+    private function getPasswordEntropy(IPassword $password): float {
         $characterSet      = $password->getCharacterSet();
         $alphabet          = implode("", $characterSet);
         $length            = $password->getLength();
@@ -150,7 +171,7 @@ class PasswordService implements IPasswordService {
         return log($possiblePasswords) / log(2);
     }
 
-    public function measureQuality(Password $password): Password {
+    public function measureQuality(IPassword $password): IPassword {
         $entropy = $this->getPasswordEntropy($password);
         $password->setEntropy($entropy);
         $password->setQuality(

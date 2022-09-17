@@ -21,20 +21,18 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
-use DateTime;
-use Keestash\ConfigProvider;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\HTTP\IJWTService;
 use KSP\L10N\IL10N;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -43,42 +41,36 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Login implements RequestHandlerInterface {
 
-    private IUserRepository    $userRepository;
-    private IL10N              $translator;
-    private UserService        $userService;
-    private ITokenRepository   $tokenRepository;
-    private TokenService       $tokenService;
-    private PersistenceService $persistenceService;
-    private ConfigService      $configService;
-    private ILocaleService     $localeService;
-    private ILanguageService   $languageService;
-    private ILogger            $logger;
-    private InstanceDB         $instanceDB;
+    private IUserRepository  $userRepository;
+    private IL10N            $translator;
+    private UserService      $userService;
+    private ITokenRepository $tokenRepository;
+    private TokenService     $tokenService;
+    private ILocaleService   $localeService;
+    private ILanguageService $languageService;
+    private InstanceDB       $instanceDB;
+    private IJWTService      $jwtService;
 
     public function __construct(
-        IUserRepository      $userRepository
-        , IL10N              $translator
-        , UserService        $userService
-        , ITokenRepository   $tokenManager
-        , TokenService       $tokenService
-        , PersistenceService $persistenceService
-        , ConfigService      $configService
-        , ILocaleService     $localeService
-        , ILanguageService   $languageService
-        , ILogger            $logger
-        , InstanceDB         $instanceDB
+        IUserRepository    $userRepository
+        , IL10N            $translator
+        , UserService      $userService
+        , ITokenRepository $tokenManager
+        , TokenService     $tokenService
+        , ILocaleService   $localeService
+        , ILanguageService $languageService
+        , InstanceDB       $instanceDB
+        , IJWTService      $jwtService
     ) {
-        $this->userRepository     = $userRepository;
-        $this->translator         = $translator;
-        $this->userService        = $userService;
-        $this->tokenRepository    = $tokenManager;
-        $this->tokenService       = $tokenService;
-        $this->persistenceService = $persistenceService;
-        $this->configService      = $configService;
-        $this->localeService      = $localeService;
-        $this->languageService    = $languageService;
-        $this->logger             = $logger;
-        $this->instanceDB         = $instanceDB;
+        $this->userRepository  = $userRepository;
+        $this->translator      = $translator;
+        $this->userService     = $userService;
+        $this->tokenRepository = $tokenManager;
+        $this->tokenService    = $tokenService;
+        $this->localeService   = $localeService;
+        $this->languageService = $languageService;
+        $this->instanceDB      = $instanceDB;
+        $this->jwtService      = $jwtService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -122,25 +114,21 @@ class Login implements RequestHandlerInterface {
 
         $this->tokenRepository->add($token);
 
-        $expireTs = (new DateTime())->getTimestamp() +
-            $this->configService->getValue(
-                "user_lifetime"
-                , (string) ConfigProvider::DEFAULT_USER_LIFETIME
-            );
-        $this->persistenceService->setPersistenceValue(
-            "user_id"
-            , (string) $user->getId()
-            , (int) $expireTs
+        $user->setJWT(
+            $this->jwtService->getJWT(
+                new Audience(
+                    IAudience::TYPE_USER
+                    , (string) $user->getId()
+                )
+            )
         );
-
         return new JsonResponse(
             [
-                "message"    => $this->translator->translate("Ok")
-                , "routeTo"  => '/password_manager/'
-                , "settings" => [
-                "locale"     => $this->localeService->getLocaleForUser($user)
-                , "language" => $this->languageService->getLanguageForUser($user)
-            ]
+                "settings" => [
+                    "locale"     => $this->localeService->getLocaleForUser($user)
+                    , "language" => $this->languageService->getLanguageForUser($user)
+                ],
+                "user"     => $user
             ],
             IResponse::OK
             , [

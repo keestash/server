@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Entity\Comment;
 
 use DateTimeInterface;
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\Entity\JWT;
 use KSP\Core\DTO\User\IUser;

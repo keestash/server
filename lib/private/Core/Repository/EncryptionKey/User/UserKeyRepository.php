@@ -40,15 +40,17 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
+    private ILogger          $logger;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger $logger
+        , ILogger          $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
         $this->dateTimeService = $dateTimeService;
         $this->backend         = $backend;
+        $this->logger          = $logger;
     }
 
     public function storeKey(IUser $user, IKey $key): bool {
@@ -104,20 +106,30 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         }
 
         if (null === $key) {
-            throw new KeestashException();
+            throw new KeestashException('no key found');
         }
 
         return $key;
     }
 
     public function remove(IUser $user): bool {
-        $key          = $this->getKey($user);
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->delete('user_key')
-            ->where('key_id = ?')
-            ->setParameter(0, $key->getId())
-            ->execute();
-        return $this->_remove($key);
+        try {
+            $key          = $this->getKey($user);
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('user_key')
+                ->where('key_id = ?')
+                ->setParameter(0, $key->getId())
+                ->executeStatement();
+            return $this->_remove($key);
+        } catch (KeestashException $exception) {
+            $this->logger->warning(
+                'no key found. Normally, this is not possible since a user gets a key created during sign up.'
+                , [
+                    'exception' => $exception
+                ]
+            );
+        }
+        return true;
     }
 
 }

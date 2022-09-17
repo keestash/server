@@ -45,9 +45,9 @@ class CreateCredential extends KeestashCommand {
     private NodeRepository    $nodeRepository;
 
     public function __construct(
-        IUserRepository $userRepository
+        IUserRepository     $userRepository
         , CredentialService $credentialService
-        , NodeRepository $nodeRepository
+        , NodeRepository    $nodeRepository
     ) {
         parent::__construct();
 
@@ -65,10 +65,10 @@ class CreateCredential extends KeestashCommand {
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|void
+     * @return int
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a credential");
         $name     = $style->ask("Name") ?? "";
@@ -84,7 +84,7 @@ class CreateCredential extends KeestashCommand {
         if (null === $user) {
             throw new PasswordManagerException();
         }
-        
+
         if (!($parent instanceof Folder)) {
             throw new PasswordManagerException();
         }
@@ -99,7 +99,7 @@ class CreateCredential extends KeestashCommand {
 
         if ($parent->getUser()->getId() !== $user->getId()) {
             $this->writeError('parent does not belong to user', $output);
-            return;
+            return 1;
         }
 
         try {
@@ -110,7 +110,7 @@ class CreateCredential extends KeestashCommand {
         } catch (Exception $exception) {
             $this->writeError("Could not create credential $name", $output);
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);
-            return;
+            return 1;
         }
         $this->writeInfo("$name created", $output);
         return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;

@@ -31,6 +31,8 @@ use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
+use KSA\PasswordManager\Api\Node\Pwned\ChartData;
+use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
@@ -115,7 +117,7 @@ return [
         ],
         [
             'path'         => '/password_manager/node/name/:name[/]'
-            , 'middleware' => GetByName::class
+            , 'middleware' => [NodeAccessMiddleware::class, GetByName::class]
             , 'method'     => IVerb::GET
             , 'name'       => GetByName::class
         ],
@@ -168,10 +170,22 @@ return [
             , 'name'       => Update::class
         ],
         [
-            'path'         => '/password_manager/node/credential/create[/]'
+            'path'         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_CREATE
             , 'middleware' => Create::class
             , 'method'     => IVerb::POST
             , 'name'       => Create::class
+        ],
+        [
+            'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_ALL
+            , 'middleware' => ChartData::class
+            , 'method'     => IVerb::GET
+            , 'name'       => ChartData::class
+        ],
+        [
+            'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL
+            , 'middleware' => ChartDetailData::class
+            , 'method'     => IVerb::GET
+            , 'name'       => ChartDetailData::class
         ],
         [
             'path'         => '/password_manager/credential/get/:node_id[/]'
@@ -180,7 +194,7 @@ return [
             , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
         ],
         [
-            'path'         => '/password_manager/users/update[/]'
+            'path'         => '/password_manager/credential/update[/]'
             , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Update::class]
             , 'method'     => IVerb::POST
             , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Update::class

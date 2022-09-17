@@ -113,4 +113,16 @@ $CONFIG =
          */
         , 'log_level'       => 100
 
+        /*
+         * The api key for HIBP
+         * Used for Password Health Check
+         */
+        , 'hibp_api_key'    => 'your-api-key-goes-here'
+
+        /*
+         * The dsn for Sentry
+         * Used for Monitoring
+         */
+        , 'sentry_dsn'    => 'your-sentry-api-key-goes-here'
+
     ];

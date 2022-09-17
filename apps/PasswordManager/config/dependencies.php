@@ -33,17 +33,22 @@ use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
 use KSA\PasswordManager\Api\Node\Organization\Update as UpdateNodeOrganization;
+use KSA\PasswordManager\Api\Node\Pwned\ChartData;
+use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Share\Share;
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
+use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
+use KSA\PasswordManager\Command\Node\ImportPwned;
 use KSA\PasswordManager\Controller\Attachment\View;
 use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
+use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
 use KSA\PasswordManager\Factory\Api\Comment\AddFactory as AddCommentFactory;
@@ -59,17 +64,22 @@ use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\UpdateFactory as UpdateNodeOrganizationFactory;
+use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDataFactory;
+use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDetailDataFactory;
 use KSA\PasswordManager\Factory\Api\Node\ShareableUsersFactory;
 use KSA\PasswordManager\Factory\Api\Share\PublicShareFactory;
 use KSA\PasswordManager\Factory\Api\Share\PublicShareSingleFactory;
 use KSA\PasswordManager\Factory\Api\Share\ShareFactory;
 use KSA\PasswordManager\Factory\Command\CreateCredentialFactory;
 use KSA\PasswordManager\Factory\Command\CreateFolderFactory;
+use KSA\PasswordManager\Factory\Command\DumpFactory;
+use KSA\PasswordManager\Factory\Command\ImportPwnedFactory;
 use KSA\PasswordManager\Factory\Controller\Attachment\ViewFactory;
 use KSA\PasswordManager\Factory\Controller\PasswordManager\ControllerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CreateStarterPasswordFactory;
+use KSA\PasswordManager\Factory\Event\Listener\CredentialChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Middleware\NodeAccessMiddlewareFactory;
@@ -77,24 +87,30 @@ use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\OrganizationRepositoryFactory;
+use KSA\PasswordManager\Factory\Repository\Node\PwnedBreachesRepositoryFactory;
+use KSA\PasswordManager\Factory\Repository\Node\PwnedPasswordsRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\PublicShareRepositoryFactory;
 use KSA\PasswordManager\Factory\Service\AccessServiceFactory;
 use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
+use KSA\PasswordManager\Factory\Service\Node\PwnedServiceFactory;
 use KSA\PasswordManager\Factory\Service\NodeEncryptionServiceFactory;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
+use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
+use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\Node\PwnedService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -123,6 +139,11 @@ return [
         Move::class                                                       => MoveFactory::class,
         ShareableUsers::class                                             => ShareableUsersFactory::class,
         Delete::class                                                     => DeleteFactory::class,
+
+        // ---- Node
+        // ---- ---- Pwned
+        ChartData::class                                                  => ChartDataFactory::class,
+        ChartDetailData::class                                            => ChartDetailDataFactory::class,
 
         // ---- Organization
         AddNodeOrganization::class                                        => AddFactory::class,
@@ -162,6 +183,7 @@ return [
         CredentialService::class                                          => CredentialServiceFactory::class,
         ShareService::class                                               => InvokableFactory::class,
         AccessService::class                                              => AccessServiceFactory::class,
+        PwnedService::class                                               => PwnedServiceFactory::class,
 
         // event
         // ---- listener
@@ -170,6 +192,7 @@ return [
         AfterPasswordChanged::class                                       => AfterPasswordChangedListenerFactory::class,
         RemoveExpired::class                                              => RemoveExpiredFactory::class,
         OrganizationChangeListener::class                                 => OrganizationAddListenerFactory::class,
+        CredentialChangedListener::class                                  => CredentialChangedListenerFactory::class,
 
         // dependency
         NodeAccessMiddleware::class                                       => NodeAccessMiddlewareFactory::class,
@@ -177,6 +200,8 @@ return [
         // command
         CreateFolder::class                                               => CreateFolderFactory::class,
         CreateCredential::class                                           => CreateCredentialFactory::class,
+        Dump::class                                                       => DumpFactory::class,
+        ImportPwned::class                                                => ImportPwnedFactory::class,
 
         // controller
         View::class                                                       => ViewFactory::class,
@@ -189,5 +214,7 @@ return [
         OrganizationRepository::class                                     => OrganizationRepositoryFactory::class,
         CommentRepository::class                                          => CommentRepositoryFactory::class,
         PublicShareRepository::class                                      => PublicShareRepositoryFactory::class,
+        PwnedPasswordsRepository::class                                   => PwnedPasswordsRepositoryFactory::class,
+        PwnedBreachesRepository::class                                    => PwnedBreachesRepositoryFactory::class
     ]
 ];

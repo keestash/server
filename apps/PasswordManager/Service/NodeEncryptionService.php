@@ -23,8 +23,8 @@ namespace KSA\PasswordManager\Service;
 
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Node;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\ILogger\ILogger;
@@ -103,6 +103,14 @@ class NodeEncryptionService {
                 )
             );
 
+        $credential->getEntropy()
+            ->setPlain(
+                $this->encryptionService->decrypt(
+                    $key
+                    , (string) $credential->getEntropy()->getEncrypted()
+                )
+            );
+
     }
 
     public function encryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
@@ -155,11 +163,19 @@ class NodeEncryptionService {
                 )
             );
 
+        $credential->getEntropy()
+            ->setEncrypted(
+                $this->encryptionService->encrypt(
+                    $key
+                    , $credential->getEntropy()->getPlain()
+                )
+            );
+
         $passwordObject = $credential->getPassword();
         $passwordObject->setEncrypted(
             $this->encryptionService->encrypt(
                 $key
-                , $passwordObject->getPlain()
+                , (string) $passwordObject->getPlain()
             )
         );
         $credential->setPassword($passwordObject);

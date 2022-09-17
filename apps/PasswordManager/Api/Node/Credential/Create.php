@@ -22,10 +22,9 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Node;
-use KSA\PasswordManager\Entity\Node as NodeObject;
+use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Entity\Node\Node as NodeObject;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -35,7 +34,6 @@ use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -73,19 +71,25 @@ class Create implements RequestHandlerInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
         $parameters = (array) $request->getParsedBody();
-        $name       = $parameters["name"] ?? '';
-        $userName   = $parameters["username"] ?? '';
-        $password   = ($parameters["password"]["value"]) ?? '';
-        $folder     = $parameters["parent"] ?? '';
-        $url        = $parameters["url"] ?? '';
+        $this->logger->debug('input', ['parsedBody' => $parameters, 'body' => $request->getBody()]);
+        $name     = $parameters["name"] ?? '';
+        $userName = $parameters["username"] ?? '';
+        $password = ($parameters["password"]["value"]) ?? '';
+        $folder   = $parameters["parent"] ?? '';
+        $url      = $parameters["url"] ?? '';
 
         if (false === $this->isValid($name)) {
-            return new JsonResponse([], IResponse::BAD_REQUEST);
+            $this->logger->info('invalid name given', ['name' => $name]);
+            return new JsonResponse(
+                ['invalid name'],
+                IResponse::BAD_REQUEST
+            );
         }
 
         try {
             $parent = $this->getParentNode((string) $folder, $token);
         } catch (PasswordManagerException $exception) {
+            $this->logger->error('exception occured while parent request', ['exception' => $exception]);
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
@@ -99,9 +103,9 @@ class Create implements RequestHandlerInterface {
         }
 
         $credential = $this->credentialService->createCredential(
-            $password
+            (string) $password
             , $url
-            , $userName
+            , (string) $userName
             , $name
             , $token->getUser()
         );
@@ -132,9 +136,9 @@ class Create implements RequestHandlerInterface {
      * @throws InvalidNodeTypeException
      */
     private function getParentNode(string $parent, IToken $token): NodeObject {
-
+        $this->logger->debug($parent);
         if (NodeObject::ROOT === $parent) {
-            return $this->nodeRepository->getRootForUser($token->getUser());
+            return $this->nodeRepository->getRootForUser($token->getUser(), 0, 1);
         }
         return $this->nodeRepository->getNode((int) $parent);
     }

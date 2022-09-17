@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -26,8 +27,8 @@ use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
-use KSA\PasswordManager\Entity\Node;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
@@ -61,7 +62,7 @@ use Psr\Container\ContainerInterface;
     /** @var CredentialService $credentialService */
     $credentialService = $container->get(CredentialService::class);
 
-    $user = $userRepository->getUser("dogano");
+    $user = $userRepository->getUser("doganooo");
 
     if (null === $user) {
 
@@ -78,7 +79,9 @@ use Psr\Container\ContainerInterface;
         $user->setFirstName("Dogan");
         $user->setEmail("info@example.com");
         $user->setDeleted(false);
-        $user->setName("dogano");
+        $user->setName("doganooo");
+        $user->setLocale('de_DE');
+        $user->setLanguage('de');
 
         $user = $userRepositoryService->createUser($user);
 
@@ -123,12 +126,12 @@ use Psr\Container\ContainerInterface;
 })();
 
 function addNodesToParent(
-        Folder $parent
-        , IUser $user
-        , int $level
-        , int $maxLevel
-        , NodeRepository $nodeRepository
-        , NodeService $nodeService
+        Folder              $parent
+        , IUser             $user
+        , int               $level
+        , int               $maxLevel
+        , NodeRepository    $nodeRepository
+        , NodeService       $nodeService
         , CredentialService $credentialService
 ) {
     if ($level > $maxLevel) return;
@@ -169,7 +172,7 @@ function addNodesToParent(
 
 function createCredential(
         CredentialService $credentialService
-        , IUser $user
+        , IUser           $user
 ): array {
 //    $credentialSize = rand(1, 5 );
     $credentialSize = 3;

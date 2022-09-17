@@ -26,12 +26,14 @@ use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
 use KSA\InstallInstance\Command\DemoMode;
+use KSA\InstallInstance\Command\Install;
 use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Controller\Controller;
 use KSA\InstallInstance\Factory\Api\Config\GetFactory;
 use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
 use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\DemoModeFactory;
+use KSA\InstallInstance\Factory\Command\InstallFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
 use KSA\InstallInstance\Factory\Controller\ControllerFactory;
 use KSP\Api\IVerb;
@@ -82,16 +84,17 @@ final class ConfigProvider {
             'dependencies'                              => [
                 'factories' => [
                     // api
-                    Get::class        => GetFactory::class,
-                    Update::class     => UpdateFactory::class,
-                    EndUpdate::class  => EndUpdateFactory::class,
+                    Get::class          => GetFactory::class
+                    , Update::class     => UpdateFactory::class
+                    , EndUpdate::class  => EndUpdateFactory::class
 
                     // command
-                    DemoMode::class   => DemoModeFactory::class,
-                    Uninstall::class  => UninstallFactory::class,
+                    , DemoMode::class   => DemoModeFactory::class
+                    , Uninstall::class  => UninstallFactory::class
+                    , Install::class    => InstallFactory::class
 
                     // controller
-                    Controller::class => ControllerFactory::class,
+                    , Controller::class => ControllerFactory::class
                 ]
             ],
             CoreConfigProvider::API_ROUTER              => [
@@ -124,6 +127,7 @@ final class ConfigProvider {
             CoreConfigProvider::COMMANDS                => [
                 Uninstall::class
                 , DemoMode::class
+                , Install::class
             ],
             'templates'                                 => [
                 'paths' => [

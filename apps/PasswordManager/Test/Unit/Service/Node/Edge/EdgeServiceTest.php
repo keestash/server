@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Test\Unit\Service\Node\Edge;
 use DateTime;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Password\Credential;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KST\TestCase;

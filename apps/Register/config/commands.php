@@ -21,7 +21,9 @@ declare(strict_types=1);
  */
 
 use KSA\Register\Command\CreateUser;
+use KSA\Register\Command\DeleteUser;
 
 return [
     CreateUser::class
+    , DeleteUser::class
 ];

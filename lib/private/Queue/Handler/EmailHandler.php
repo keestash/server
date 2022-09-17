@@ -44,8 +44,8 @@ class EmailHandler implements IEmailHandler {
         // todo implement rate limiting
         // todo implement intelligent spam detection
 
-        if (!$message instanceof IEmailMessage) {
-            throw new Exception();
+        if (!($message instanceof IEmailMessage)) {
+            throw new \Exception();
         }
 
         $payload = $message->getPayload();

@@ -23,6 +23,7 @@ declare(strict_types=1);
 use Doctrine\DBAL\Connection;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
+use GuzzleHttp\Client;
 use Keestash\App\Config\Diff;
 use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
@@ -55,6 +56,7 @@ use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
+use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
@@ -80,6 +82,7 @@ use Keestash\Core\Service\Stylesheet\Compiler;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler;
+use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\App\Config\DiffFactory;
 use Keestash\Factory\App\Cors\ProjectConfigurationFactory;
 use Keestash\Factory\App\Loader\LoaderFactory;
@@ -112,10 +115,12 @@ use Keestash\Factory\Core\Service\App\InstallerServiceFactory;
 use Keestash\Factory\Core\Service\Config\ConfigServiceFactory;
 use Keestash\Factory\Core\Service\Controller\AppRendererFactory;
 use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
+use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
 use Keestash\Factory\Core\Service\Email\EmailServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
+use Keestash\Factory\Core\Service\Encryption\Password\PasswordServiceFactory;
 use Keestash\Factory\Core\Service\Event\EventDispatcherFactory;
 use Keestash\Factory\Core\Service\File\FileServiceFactory;
 use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
@@ -134,32 +139,35 @@ use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
+use Keestash\Factory\Core\System\RateLimit\FileRateLimiterFactory;
 use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
+use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
+use Keestash\Factory\Middleware\Api\RateLimiterMiddlewareFactory;
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
-use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
-use Keestash\Factory\Queue\Handler\EmailHandlerFactory;
-use Keestash\Factory\Queue\WorkerFactory;
-use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
-use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
+use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\LoggedInMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\SessionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
+use Keestash\Factory\Queue\Handler\EmailHandlerFactory;
+use Keestash\Factory\Queue\WorkerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
 use Keestash\L10N\GetText;
 use Keestash\Legacy\Legacy;
+use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
+use Keestash\Middleware\Api\KeestashHeaderMiddleware;
+use Keestash\Middleware\Api\RateLimiterMiddleware;
+use Keestash\Middleware\Api\UserActiveMiddleware;
+use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\AppsInstalledMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
 use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMiddleware;
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use Keestash\Middleware\Web\SessionHandlerMiddleware;
-use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Queue\Handler\EmailHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
@@ -219,6 +227,8 @@ return [
     AppsInstalledMiddleware::class                                 => AppsInstalledMiddlewareFactory::class,
     DispatchMiddleware::class                                      => DispatchMiddlewareFactory::class,
     ApplicationStartedMiddleware::class                            => ApplicationStartedMiddlewareFactory::class,
+    RateLimiterMiddleware::class                                   => RateLimiterMiddlewareFactory::class,
+
     // api
     KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
     ApiExceptionHandlerMiddlerware::class                          => ApiExceptionHandlerMiddlewareFactory::class,
@@ -232,6 +242,7 @@ return [
     DateTimeService::class                                         => DateTimeServiceFactory::class,
     Connection::class                                              => ConnectionFactory::class,
     \doganoo\DIP\HTTP\HTTPService::class                           => InvokableFactory::class,
+    Client::class                                                  => InvokableFactory::class,
 
     // service
     UserService::class                                             => UserServiceFactory::class,
@@ -260,12 +271,13 @@ return [
     AppService::class                                              => InvokableFactory::class,
     EdgeService::class                                             => InvokableFactory::class,
     IconService::class                                             => InvokableFactory::class,
-    PasswordService::class                                         => InvokableFactory::class,
+    PasswordService::class                                         => PasswordServiceFactory::class,
     IniConfigService::class                                        => InvokableFactory::class,
     StringService::class                                           => InvokableFactory::class,
     AccessService::class                                           => InvokableFactory::class,
     MessageService::class                                          => InvokableFactory::class,
     ResponseService::class                                         => ResponseServiceFactory::class,
+    CSVService::class                                              => CSVServiceFactory::class,
 
     GetText::class                                            => InvokableFactory::class,
     \Symfony\Component\EventDispatcher\EventDispatcher::class => InvokableFactory::class,
@@ -275,6 +287,9 @@ return [
 
     // command
     \Keestash\Queue\Worker::class                             => WorkerFactory::class,
+
+    // system
+    FileRateLimiter::class                                    => FileRateLimiterFactory::class,
 
     // handler
     EmailHandler::class                                       => EmailHandlerFactory::class

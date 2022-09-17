@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Node\Folder;
 use KSA\PasswordManager\Api\Node\Folder\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
@@ -34,6 +35,7 @@ class CreateFactory {
             $container->get(IL10N::class)
             , $container->get(NodeRepository::class)
             , $container->get(NodeService::class)
+            , $container->get(ILogger::class)
         );
     }
 

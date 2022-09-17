@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event;
 
-use KSA\PasswordManager\Entity\Node;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Organization\IOrganization;
 use Symfony\Contracts\EventDispatcher\Event;
 

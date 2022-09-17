@@ -34,12 +34,16 @@ final class ConfigProvider {
 
     public const PASSWORD_MANAGER_NODE_DELETE                = '/password_manager/node/delete[/]';
     public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE = "/password_manager/credential/password/update/";
+    public const PASSWORD_MANAGER_CREDENTIAL_CREATE          = '/password_manager/node/credential/create[/]';
+
+    public const PASSWORD_MANAGER_NODE_PWNED_CHART_ALL    = '/password_manager/node/pwned/chart/all';
+    public const PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL = '/password_manager/node/pwned/chart/detail';
 
     public const PASSWORD_MANAGER_ATTACHMENTS_VIEW = "/password_manager/attachments/view/:fileId[/]";
 
     public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value[/]";
 
-    public const APP_ID = 'passwordManager';
+    public const APP_ID                         = 'passwordManager';
     public const FILE_UPLOAD_ALLOWED_EXTENSIONS = 'extensions.allowed.upload.file';
 
     public function __invoke(): array {
