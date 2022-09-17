@@ -25,14 +25,16 @@ use Keestash\Core\Manager\LoggerManager\LoggerManager;
 use Keestash\Legacy\Legacy;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Psr\Container\ContainerInterface;
 
 class LoggerManagerFactory {
 
     public function __invoke(ContainerInterface $container): ILoggerManager {
         return new LoggerManager(
-            $container->get(IConfigService::class),
-            $container->get(Legacy::class)
+            $container->get(IConfigService::class)
+            , $container->get(Legacy::class)
+            , $container->get(IEnvironmentService::class)
         );
     }
 
