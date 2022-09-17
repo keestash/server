@@ -27,6 +27,7 @@ use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Formatter\JsonFormatter;
@@ -41,15 +42,18 @@ use function Sentry\init;
  */
 class LoggerManager implements ILoggerManager {
 
-    private ConfigService $configService;
-    private Legacy        $legacy;
+    private ConfigService       $configService;
+    private Legacy              $legacy;
+    private IEnvironmentService $environmentService;
 
     public function __construct(
-        ConfigService $configService
-        , Legacy      $legacy
+        ConfigService         $configService
+        , Legacy              $legacy
+        , IEnvironmentService $environmentService
     ) {
-        $this->configService = $configService;
-        $this->legacy        = $legacy;
+        $this->configService      = $configService;
+        $this->legacy             = $legacy;
+        $this->environmentService = $environmentService;
     }
 
     private function getLogfilePath(): string {
@@ -85,11 +89,12 @@ class LoggerManager implements ILoggerManager {
         , bool               $debug
     ): ILogger {
         $sentryDsn = $this->configService->getValue('sentry_dsn');
+        $isTest    = $this->environmentService->isUnitTest();
 
         if (null === $sentryDsn) {
             return $logger;
         }
-        if (true === $debug) {
+        if (true === $debug || true === $isTest) {
             return $logger;
         }
 
