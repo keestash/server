@@ -54,23 +54,9 @@ jobs:
           php_extensions: intl
           php_version: 7.4
 
-      - name: Build Project
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.3.0'
-
-      - run: npm install
-      - run: npm run build:prod
-
       - name: create configs
         run: |
           cp config/config.sample.php config/config.php
-
-      - name: create stylesheets
-        run: |
-          cd bin/
-          php console.php general-api:compile-scss
-          cd ../
 
       - name: Clean Up
         run: |
