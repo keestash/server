@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\System\RateLimit;
 
 use Keestash\Core\System\RateLimit\FileRateLimiter;
+use KSP\Core\ILogger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use RateLimit\Rate;
@@ -36,6 +37,7 @@ class FileRateLimiterFactory implements FactoryInterface {
     ): RateLimiter {
         return new FileRateLimiter(
             Rate::perSecond(2)
+            , $container->get(ILogger::class)
         );
     }
 

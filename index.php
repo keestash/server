@@ -30,6 +30,7 @@ use KSP\Core\Service\Event\IEventDispatcher;
 use Laminas\Config\Config;
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
+
 (function () {
     chdir(dirname(__DIR__));
 
@@ -70,7 +71,10 @@ use Psr\Container\ContainerInterface;
         );
     }
 
-
-    $app->run();
+    // since we split the frontend with the backend,
+    // the index.php is not necessary anymore. However,
+    // we will keep this until we migrated all features to
+    // the new frontend.
+    // $app->run();
 
 })();
