@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\Service\File\Upload;
 
+use Keestash\Core\DTO\File\Validation\Result;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
 use KSP\Core\ILogger\ILogger;
@@ -41,7 +42,7 @@ class FileServiceFactory {
         $fileService->shouldReceive('moveUploadedFile')
             ->andReturn(true);
         $fileService->shouldReceive('validateUploadedFile')
-            ->andReturn(true);
+            ->andReturn(new Result());
 
         return $fileService;
     }
