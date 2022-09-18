@@ -21,22 +21,52 @@ declare(strict_types=1);
 
 namespace Keestash\Core\System\RateLimit;
 
+use Exception;
+use KSP\Core\ILogger\ILogger;
 use RateLimit\ConfigurableRateLimiter;
 use RateLimit\Exception\LimitExceeded;
+use RateLimit\Rate;
 use RateLimit\RateLimiter;
 
 class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
 
-    private array $store = [];
+    private array   $store = [];
+    private ILogger $logger;
+
+    public function __construct(
+        Rate      $rate
+        , ILogger $logger
+    ) {
+        parent::__construct($rate);
+        $this->logger = $logger;
+    }
 
     private function loadStore(): void {
-        $fileName = __DIR__ . '/tmp.json';
-        if (file_exists($fileName)) {
-            $this->store = json_decode(
-                (string) file_get_contents($fileName)
-                , true
-            );
+        $fileName   = __DIR__ . '/tmp.json';
+        $fileExists = file_exists($fileName);
+        $decoded    = [];
+
+        if (true === $fileExists) {
+            $content = (string) file_get_contents($fileName);
+            try {
+                $decoded = json_decode(
+                    $content
+                    , true
+                    , 512
+                    , JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT
+                );
+            } catch (Exception $exception) {
+                $this->logger->error('error while reading rate limiting file', [
+                        'exception' => $exception
+                        , 'file'    => [
+                            'name'      => $fileName
+                            , 'content' => $content
+                        ]
+                    ]
+                );
+            }
         }
+        $this->store = $decoded;
     }
 
     private function writeStore(): void {
@@ -44,6 +74,7 @@ class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
             __DIR__ . '/tmp.json'
             , json_encode(
                 $this->store
+                , JSON_THROW_ON_ERROR
             )
         );
     }
