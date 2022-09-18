@@ -137,7 +137,8 @@ class Add implements RequestHandlerInterface {
         /** @var UploadedFileInterface $file */
         foreach ($fileList as $file) {
             $file    = $this->uploadFileService->toFile($file);
-            $isValid = $this->uploadFileService->validateUploadedFile($file);
+            $result  = $this->uploadFileService->validateUploadedFile($file);
+            $isValid = $result->getResults()->length() === 0;
 
             if (false === $isValid) {
                 $this->logger->error('invalid file with name ' . $file->getClientFilename());

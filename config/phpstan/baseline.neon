@@ -446,11 +446,6 @@ parameters:
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getType\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/File/Upload/FileService.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
