@@ -116,7 +116,9 @@ class Update implements RequestHandlerInterface {
             }
         }
 
-        $isValid = $this->uploadFileService->validateUploadedFile($nodeAvatar);
+        $result = $this->uploadFileService->validateUploadedFile($nodeAvatar);
+        $isValid = $result->getResults()->length() === 0;
+
         if (false === $isValid) {
             throw new InvalidFileException("file is invalid");
         }

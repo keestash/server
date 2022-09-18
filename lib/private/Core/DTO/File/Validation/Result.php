@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,23 +19,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\File\Upload;
+namespace Keestash\Core\DTO\File\Validation;
 
-use KSP\Core\DTO\File\IFile as ICoreFile;
-use KSP\Core\DTO\File\Upload\IFile;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\File\Validation\IResult;
-use Psr\Http\Message\UploadedFileInterface;
 
-interface IFileService {
+class Result implements IResult {
 
-    public function validateUploadedFile(IFile $file): IResult;
+    private ArrayList $result;
 
-    public function toFile(UploadedFileInterface $file): IFile;
+    public function __construct() {
+        $this->result = new ArrayList();
+    }
 
-    public function toCoreFile(IFile $file): ICoreFile;
+    public function getResults(): ArrayList {
+        return $this->result;
+    }
 
-    public function moveUploadedFile(ICoreFile $file): bool;
+    public function add(string $message): void {
+        $this->result->add($message);
+    }
 
-    public function removeUploadedFile(ICoreFile $file): bool;
+    public function jsonSerialize(): array {
+        return $this->result->toArray();
+    }
 
 }

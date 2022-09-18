@@ -23,6 +23,7 @@ namespace KST\Service\Factory\Service\File\Upload;
 
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\File\Upload\IFileService;
 use Mockery;
 use Psr\Container\ContainerInterface;
@@ -32,6 +33,7 @@ class FileServiceFactory {
     public function __invoke(ContainerInterface $container): IFileService {
         $fileService = new FileService(
             $container->get(IniConfigService::class)
+            , $container->get(ILogger::class)
         );
 
         $fileService = Mockery::mock($fileService);
