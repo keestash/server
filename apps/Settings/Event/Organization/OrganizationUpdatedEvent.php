@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Event\Organization;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\Organization\IOrganization;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class OrganizationUpdatedEvent extends Event {
 
@@ -39,5 +39,10 @@ class OrganizationUpdatedEvent extends Event {
         return $this->organization;
     }
 
+    public function jsonSerialize(): array {
+        return [
+            'organization' => $this->getOrganization()
+        ];
+    }
 
 }

@@ -77,7 +77,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
         foreach ($nodeIds as $nodeId) {
             $node = null;
             try {
-                $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
+                $node = $this->nodeRepository->getNode((int) $nodeId, 0, 0);
             } catch (PasswordManagerException $exception) {
                 $this->logger->info('no node found', ['nodeId' => $nodeId]);
             }

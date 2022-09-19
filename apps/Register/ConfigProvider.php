@@ -23,6 +23,8 @@ namespace KSA\Register;
 
 final class ConfigProvider {
 
+    public const STAMP_NAME_USER_REGISTERED = 'registered.user.name.stamp';
+
     public const REGISTER               = '/register[/]';
     public const REGISTER_ADD           = '/register/add[/]';
     public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';

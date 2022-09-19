@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\User\IUser;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class UserStateLockEvent extends Event {
 
@@ -55,6 +55,14 @@ class UserStateLockEvent extends Event {
      */
     public function getUser(): IUser {
         return $this->user;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'stateType' => $this->getStateType()
+            , 'user'    => $this->getUser()
+            , 'locked'  => $this->isLocked()
+        ];
     }
 
 }

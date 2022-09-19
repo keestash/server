@@ -25,6 +25,7 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\L10N\IL10N;
 
 class BreadCrumbService {
@@ -34,15 +35,18 @@ class BreadCrumbService {
     private ICacheService  $cacheService;
     private NodeRepository $nodeRepository;
     private IL10N          $translator;
+    private ILogger        $logger;
 
     public function __construct(
-        ICacheService $cacheService
+        ICacheService    $cacheService
         , NodeRepository $nodeRepository
-        , IL10N $translator
+        , IL10N          $translator
+        , ILogger        $logger
     ) {
         $this->cacheService   = $cacheService;
         $this->nodeRepository = $nodeRepository;
         $this->translator     = $translator;
+        $this->logger         = $logger;
     }
 
     public function getBreadCrumbs(Node $node, IUser $user): array {
@@ -90,7 +94,7 @@ class BreadCrumbService {
         if ($this->cacheService->exists($cacheKey)) {
             return $this->cacheService->get($cacheKey);
         }
-        $root    = $this->nodeRepository->getRootForUser($user, 0, 1);
+        $root    = $this->nodeRepository->getRootForUser($user, 0, 0);
         $encoded = json_encode(
             [
                 'id'        => $root->getId()

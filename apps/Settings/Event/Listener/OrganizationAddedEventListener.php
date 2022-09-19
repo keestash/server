@@ -23,9 +23,9 @@ namespace KSA\Settings\Event\Listener;
 
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Exception\SettingsException;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class OrganizationAddedEventListener implements IListener {
 
@@ -36,10 +36,10 @@ class OrganizationAddedEventListener implements IListener {
     }
 
     /**
-     * @param Event $event
+     * @param IEvent $event
      * @throws SettingsException
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 
         if (false === $event instanceof OrganizationAddedEvent) {
             throw new SettingsException(

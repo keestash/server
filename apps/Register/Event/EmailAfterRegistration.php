@@ -24,60 +24,68 @@ namespace KSA\Register\Event;
 use DateTime;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
-use Keestash\Core\Service\Email\EmailService;
+use doganoo\PHPUtil\Util\StringUtil;
+use Keestash\Core\DTO\Queue\Stamp;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
+use KSA\Register\ConfigProvider;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Queue\IMessageService;
 use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class EmailAfterRegistration implements IListener {
 
     public const TEMPLATE_NAME = "mail.twig";
 
-    private TemplateRendererInterface $templateManager;
-    private EmailService              $emailService;
+    private TemplateRendererInterface $templateRenderer;
     private Legacy                    $legacy;
     private IL10N                     $translator;
     private ILogger                   $logger;
     private HTTPService               $httpService;
+    private IMessageService           $messageService;
+    private IQueueRepository          $queueRepository;
 
     public function __construct(
-        TemplateRendererInterface $templateManager
-        , EmailService $emailService
-        , Legacy $legacy
-        , IL10N $l10n
-        , ILogger $logger
-        , HTTPService $httpService
+        TemplateRendererInterface $templateRenderer
+        , Legacy                  $legacy
+        , IL10N                   $l10n
+        , ILogger                 $logger
+        , HTTPService             $httpService
+        , IMessageService         $messageService
+        , IQueueRepository        $queueRepository
     ) {
-        $this->templateManager = $templateManager;
-        $this->emailService    = $emailService;
-        $this->legacy          = $legacy;
-        $this->translator      = $l10n;
-        $this->logger          = $logger;
-        $this->httpService     = $httpService;
+        $this->templateRenderer = $templateRenderer;
+        $this->legacy           = $legacy;
+        $this->translator       = $l10n;
+        $this->logger           = $logger;
+        $this->httpService      = $httpService;
+        $this->messageService   = $messageService;
+        $this->queueRepository  = $queueRepository;
     }
 
     /**
-     * @param Event|UserCreatedEvent $event
+     * @param IEvent|UserCreatedEvent $event
      * @throws InvalidKeyTypeException
      * @throws UnsupportedKeyTypeException
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
         $this->logger->debug('implement me :(');
-        return; // TODO implement
+
         if (
             $event->getUser()->getId() === IUser::SYSTEM_USER_ID
             || $event->getUser()->getName() === IUser::DEMO_USER_NAME
         ) {
             return;
         }
-        $appName = $this->legacy->getApplication()->get("name");
-        $this->templateManager->replace(
+
+        $appName  = $this->legacy->getApplication()->get("name");
+        $rendered = $this->templateRenderer->render(
             EmailAfterRegistration::TEMPLATE_NAME,
             [
                 "title"              => $this->translator->translate("Welcome To $appName")
@@ -99,11 +107,20 @@ class EmailAfterRegistration implements IListener {
                 , "copyRightHref"    => $this->httpService->getBaseURL(false)
             ]
         );
-        $rendered = $this->templateManager->render(EmailAfterRegistration::TEMPLATE_NAME);
-        $this->emailService->addRecipient($event->getUser()->getName(), $event->getUser()->getEmail());
-        $this->emailService->setSubject($this->translator->translate("You are registered for $appName"));
-        $this->emailService->setBody($rendered);
-        $this->emailService->send();
+
+        $message = $this->messageService->toEmailMessage(
+            $this->translator->translate("You are registered for $appName")
+            , $rendered
+            , $event->getUser()
+        );
+
+        $stamp = new Stamp();
+        $stamp->setCreateTs(new DateTime());
+        $stamp->setName(ConfigProvider::STAMP_NAME_USER_REGISTERED);
+        $stamp->setValue(StringUtil::getUUID());
+        $message->addStamp($stamp);
+
+        $this->queueRepository->insert($message);
 
     }
 

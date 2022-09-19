@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,27 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Event\Organization;
+namespace KSP\Core\Manager\EventManager;
 
-use Keestash\Core\Manager\EventManager\Event;
-use KSP\Core\DTO\Organization\IOrganization;
+use KSP\Core\DTO\Entity\IJsonObject;
 
-class OrganizationAddedEvent extends Event {
-
-    private IOrganization $organization;
-
-    public function __construct(IOrganization $organization) {
-        $this->organization = $organization;
-    }
-
-    public function getOrganization(): IOrganization {
-        return $this->organization;
-    }
-
-    public function jsonSerialize(): array {
-        return [
-            'organization' => $this->getOrganization()
-        ];
-    }
+interface IEvent extends IJsonObject {
 
 }

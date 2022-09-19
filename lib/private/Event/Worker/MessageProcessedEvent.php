@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Event\Worker;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class MessageProcessedEvent extends Event {
 
@@ -47,6 +47,13 @@ class MessageProcessedEvent extends Event {
      */
     public function getResult(): IResult {
         return $this->result;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'message'  => $this->getMessage()
+            , 'result' => $this->getResult()
+        ];
     }
 
 }

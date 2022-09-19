@@ -24,8 +24,8 @@ namespace KSA\Settings\Event\Listener;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class PostStateChange implements IListener {
 
@@ -48,7 +48,7 @@ class PostStateChange implements IListener {
     /**
      * @param UserStateDeleteEvent $event
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 
         if (false === $event->isDeleted()) {
             $this->logger->info("user is not removed. Not making any actions");

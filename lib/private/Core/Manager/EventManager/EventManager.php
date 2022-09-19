@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Manager\EventManager;
 
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\EventManager\IListener;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class EventManager implements IEventManager {
 
@@ -40,7 +40,7 @@ class EventManager implements IEventManager {
         $this->container       = $container;
     }
 
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
         $listeners = $this->eventDispatcher->getListeners(get_class($event));
 
         foreach ($listeners as $listener) {

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Core\Event;
 
 use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+use Keestash\Core\Manager\EventManager\Event;
 
 class ApplicationStartedEvent extends Event {
 
@@ -34,6 +34,12 @@ class ApplicationStartedEvent extends Event {
 
     public function getDateTime(): DateTimeInterface {
         return $this->dateTime;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'dateTime' => $this->getDateTime()
+        ];
     }
 
 }

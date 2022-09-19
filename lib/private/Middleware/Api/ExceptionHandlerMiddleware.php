@@ -44,11 +44,11 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
     private function setHandler(): void {
         set_error_handler(
         /** @phpstan-ignore-next-line */
-            function (int $id
-                , string  $message
-                , string  $file
-                , int     $line
-                , array   $context
+            static function (int $id
+                , string         $message
+                , string         $file
+                , int            $line
+                , array          $context = []
             ) {
 
                 $this->logger->error(
@@ -68,7 +68,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
             });
 
         set_exception_handler(
-            function (Throwable $exception): void {
+            static function (Throwable $exception): void {
 
                 $this->logger->error(
                     (string) json_encode(

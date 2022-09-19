@@ -94,6 +94,7 @@ class LoggerManager implements ILoggerManager {
         if (null === $sentryDsn) {
             return $logger;
         }
+
         if (true === $debug || true === $isTest) {
             return $logger;
         }
@@ -101,6 +102,9 @@ class LoggerManager implements ILoggerManager {
         init(['dsn' => $sentryDsn]);
         $sentryHandler = new Handler(
             SentrySdk::getCurrentHub()
+            , $logLevel
+            , true
+            , true
         );
         $sentryHandler->setFormatter($formatter);
         $sentryHandler->setLevel($logLevel);

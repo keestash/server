@@ -270,6 +270,9 @@ config/sys_config
 config/config.php
 data/*
 !data/.gitkeep
+!data/image
+!data/image/.gitkeep
+data/image/*
 .instance.sqlite
 
 lib/scss/dist/*.css
