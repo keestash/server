@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\User\IUser;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class UserPreRemovedEvent extends Event {
 
@@ -37,6 +37,12 @@ class UserPreRemovedEvent extends Event {
      */
     public function getDeletedUser(): IUser {
         return $this->deletedUser;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'deletedUser' => $this->getDeletedUser()
+        ];
     }
 
 }

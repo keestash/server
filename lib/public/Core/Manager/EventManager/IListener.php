@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\EventManager;
 
-use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Interface IEvent
@@ -29,6 +28,6 @@ use Symfony\Contracts\EventDispatcher\Event;
  */
 interface IListener {
 
-    public function execute(Event $event): void;
+    public function execute(IEvent $event): void;
 
 }

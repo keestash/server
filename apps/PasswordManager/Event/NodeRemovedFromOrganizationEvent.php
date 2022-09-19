@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Organization\IOrganization;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class NodeRemovedFromOrganizationEvent extends Event {
 
@@ -48,5 +48,12 @@ class NodeRemovedFromOrganizationEvent extends Event {
     public function getOrganization(): ?IOrganization {
         return $this->organization;
     }
-    
+
+    public function jsonSerialize(): array {
+        return [
+            'node'           => $this->getNode()
+            , 'organization' => $this->getOrganization()
+        ];
+    }
+
 }

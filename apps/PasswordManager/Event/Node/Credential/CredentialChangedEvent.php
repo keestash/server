@@ -23,10 +23,10 @@ namespace KSA\PasswordManager\Event\Node\Credential;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use Keestash\Core\Manager\EventManager\Event;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class CredentialChangedEvent extends Event {
 
@@ -59,6 +59,13 @@ class CredentialChangedEvent extends Event {
 
     public function getBreaches(): Breaches {
         return $this->breaches;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'passwords'  => $this->getPasswords()
+            , 'breaches' => $this->getBreaches()
+        ];
     }
 
 }

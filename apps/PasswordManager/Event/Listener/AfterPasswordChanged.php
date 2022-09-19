@@ -28,10 +28,10 @@ use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSA\PasswordManager\Exception\KeyNotUpdatedException;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class AfterPasswordChanged
@@ -63,7 +63,7 @@ class AfterPasswordChanged implements IListener {
      * @throws KeyNotFoundException
      * @throws KeyNotUpdatedException
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 
         if ($event->getUpdatedUser()->getPassword() === $event->getOldUser()->getPassword()) return;
 

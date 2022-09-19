@@ -24,8 +24,8 @@ namespace KSA\PasswordManager\Event\Listener;
 use KSA\PasswordManager\Event\Node\Credential\CredentialChangedEvent;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class CredentialChangedListener implements IListener {
 
@@ -40,7 +40,7 @@ class CredentialChangedListener implements IListener {
         $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
     }
 
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
         if (!($event instanceof CredentialChangedEvent)) {
             return;
         }

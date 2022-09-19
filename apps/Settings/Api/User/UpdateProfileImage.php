@@ -23,10 +23,9 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\DTO\URI\URI;
-use Keestash\Core\DTO\URI\URL\URL;
 use Keestash\Core\Service\File\FileService;
 use KSA\Settings\ConfigProvider;
+use KSA\Settings\Exception\SettingsException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -87,7 +86,7 @@ class UpdateProfileImage implements RequestHandlerInterface {
             );
         }
 
-        $file    = $this->uploadFileService->toFile(array_values($files)[0]);
+        $file             = $this->uploadFileService->toFile(array_values($files)[0]);
         $validationResult = $this->uploadFileService->validateUploadedFile($file);
 
         if ($validationResult->getResults()->length() !== 0) {
@@ -105,9 +104,16 @@ class UpdateProfileImage implements RequestHandlerInterface {
         }
 
         $directory = $this->config->get(\Keestash\ConfigProvider::IMAGE_PATH) . '/' . md5((string) $token->getUser()->getId()) . '/';
+        $created   = is_dir($directory);
 
         if (false === is_dir($directory)) {
-            mkdir($directory);
+            $created = mkdir($directory, 0777, true);
+        }
+
+        if (false === $created) {
+            throw new SettingsException(
+                sprintf('directory %s could not be created', $directory)
+            );
         }
 
         $fileName = $this->fileService->getProfileImageName($token->getUser());

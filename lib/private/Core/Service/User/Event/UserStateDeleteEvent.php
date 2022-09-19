@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\User\IUser;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class UserStateDeleteEvent extends Event {
 
@@ -55,6 +55,14 @@ class UserStateDeleteEvent extends Event {
      */
     public function isDeleted(): bool {
         return $this->deleted;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'stateType' => $this->getStateType()
+            , 'user'    => $this->getUser()
+            , 'deleted' => $this->isDeleted()
+        ];
     }
 
 }

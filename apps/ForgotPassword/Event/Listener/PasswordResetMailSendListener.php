@@ -25,11 +25,11 @@ use Keestash\Event\Worker\MessageProcessedEvent;
 use KSA\ForgotPassword\ConfigProvider;
 use KSA\ForgotPassword\Exception\ForgotPasswordException;
 use KSP\Core\DTO\Queue\IResult;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use Laminas\Config\Config;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class PasswordResetMailSendListener implements IListener {
 
@@ -47,7 +47,7 @@ class PasswordResetMailSendListener implements IListener {
         $this->userRepository      = $userRepository;
     }
 
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
         if (!$event instanceof MessageProcessedEvent) {
             throw new ForgotPasswordException();
         }

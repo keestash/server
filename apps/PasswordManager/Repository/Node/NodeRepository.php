@@ -112,7 +112,6 @@ class NodeRepository {
         $rows = $statement->fetchAllAssociative();
         $id   = $rows[0]['id'] ?? 0;
         $id   = (int) $id;
-        $this->logger->debug('node result', ['rows' => $rows, 'id' => $id]);
         if (0 === $id) {
             throw new PasswordManagerException();
         }
@@ -179,7 +178,7 @@ class NodeRepository {
         $rows = $statement->fetchAllNumeric();
 
         if (0 === count($rows)) {
-            $this->logger->error(
+            $this->logger->warning(
                 'no node found',
                 [
                     'id' => $id
