@@ -22,15 +22,15 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener\PublicShare;
 
 use KSA\PasswordManager\Event\PublicShare\PublicShareEvent;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class PublicShareListener implements IListener {
 
     /**
      * @param PublicShareEvent $event
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
         // TODO log
     }
 

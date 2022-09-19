@@ -37,8 +37,8 @@ use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
-use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class OrganizationChangeListener
@@ -66,10 +66,10 @@ class OrganizationChangeListener implements IListener {
     }
 
     /**
-     * @param Event $event
+     * @param IEvent $event
      * @throws PasswordManagerException
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 
         if (
             false === $event instanceof NodeAddedToOrganizationEvent

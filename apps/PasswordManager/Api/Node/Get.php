@@ -78,7 +78,6 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-
         /** @var IToken $token */
         $token  = $request->getAttribute(IToken::class);
         $rootId = $request->getAttribute("node_id");
@@ -124,7 +123,7 @@ class Get implements RequestHandlerInterface {
                 , "pwned"    => [
                 'passwords'  => $this->pwnedPasswordsRepository->getPwnedByNode($root)->toArray()
                 , 'breaches' => $this->pwnedBreachesRepository->getPwnedByNode($root)->toArray()
-            ]
+            ],
             ]
             , IResponse::OK
         );

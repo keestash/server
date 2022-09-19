@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace KSP\Core\Manager\EventManager;
 
 use KSP\Core\Manager\IManager;
-use Symfony\Contracts\EventDispatcher\Event;
+
 
 interface IEventManager extends IManager {
 
     public function registerListener(string $eventName, string $event): void;
 
-    public function execute(Event $event): void;
+    public function execute(IEvent $event): void;
 
 }

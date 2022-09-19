@@ -30,9 +30,9 @@ use KSA\PasswordManager\Exception\DefaultPropertiesNotSetException;
 use KSA\PasswordManager\Exception\KeyNotCreatedException;
 use KSA\PasswordManager\Exception\KeyNotStoredException;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class AfterRegistration
@@ -63,7 +63,7 @@ class AfterRegistration implements IListener {
      * @throws InvalidKeyTypeException
      * @throws UnsupportedKeyTypeException
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 
         // base case: we do not create stuff for the system user
         if ($event->getUser()->getId() === IUser::SYSTEM_USER_ID) {

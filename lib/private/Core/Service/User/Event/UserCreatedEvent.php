@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\User\IUser;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class UserCreatedEvent extends Event {
 
@@ -37,6 +37,12 @@ class UserCreatedEvent extends Event {
      */
     public function getUser(): IUser {
         return $this->user;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'user' => $this->getUser()
+        ];
     }
 
 }

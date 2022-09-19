@@ -26,8 +26,8 @@ use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class RemoveExpired implements IListener {
 
@@ -48,7 +48,7 @@ class RemoveExpired implements IListener {
     /**
      * @param ApplicationStartedEvent $event
      */
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
         if (false === $this->installerService->hasIdAndHash()) return;
         try {
             $this->publicShareRepository->removeOutdated();

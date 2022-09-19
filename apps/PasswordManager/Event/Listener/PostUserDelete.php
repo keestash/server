@@ -22,14 +22,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener;
 
 use Keestash\Core\Manager\DataManager\DataManager;
-use KSA\PasswordManager\Application\Application;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use Laminas\Config\Config;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class PostUserDelete implements IListener {
 
@@ -39,8 +38,8 @@ class PostUserDelete implements IListener {
 
     public function __construct(
         CommentRepository $commentRepository
-        , NodeRepository $nodeRepository
-        , Config $config
+        , NodeRepository  $nodeRepository
+        , Config          $config
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
@@ -50,7 +49,7 @@ class PostUserDelete implements IListener {
         );
     }
 
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 //        /** @var string $type */
 //        $type = $parameters[0][0];
 //        /** @var IUser $user */

@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
+use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\User\IUser;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class UserUpdatedEvent extends Event {
 
@@ -55,6 +55,14 @@ class UserUpdatedEvent extends Event {
      */
     public function isUpdated(): bool {
         return $this->updated;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'updatedUser' => $this->getUpdatedUser()
+            , 'oldUser'   => $this->getOldUser()
+            , 'updated'   => $this->isUpdated()
+        ];
     }
 
 }

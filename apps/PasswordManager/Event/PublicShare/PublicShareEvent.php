@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\PublicShare;
 
 use DateTimeInterface;
-use Symfony\Contracts\EventDispatcher\Event;
+use Keestash\Core\Manager\EventManager\Event;
 
 class PublicShareEvent extends Event {
 
@@ -46,6 +46,13 @@ class PublicShareEvent extends Event {
      */
     public function getOpenTs(): DateTimeInterface {
         return $this->openTs;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'data'     => $this->getData()
+            , 'openTs' => $this->getOpenTs()
+        ];
     }
 
 }

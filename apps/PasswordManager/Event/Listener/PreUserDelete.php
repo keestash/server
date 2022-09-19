@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener;
 
 use KSA\PasswordManager\Repository\Node\FileRepository;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Repository\File\IFileRepository;
-use Symfony\Contracts\EventDispatcher\Event;
 
 class PreUserDelete implements IListener {
 
@@ -35,14 +35,14 @@ class PreUserDelete implements IListener {
     private $coreFileRepository;
 
     public function __construct(
-        FileRepository $fileRepository
+        FileRepository    $fileRepository
         , IFileRepository $coreFileRepository
     ) {
         $this->fileRepository     = $fileRepository;
         $this->coreFileRepository = $coreFileRepository;
     }
 
-    public function execute(Event $event): void {
+    public function execute(IEvent $event): void {
 //        /** @var IUser $user */
 //        $type = $parameters[0][0];
 //        $user = $parameters[0][1];
