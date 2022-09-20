@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,19 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Web;
+namespace KSP\Core\Service\Queue;
 
-use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Middleware\Web\SessionHandlerMiddleware;
-use Psr\Container\ContainerInterface;
-use SessionHandlerInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use KSP\Core\Service\IService;
 
-class SessionHandlerMiddlewareFactory {
+interface IQueueService extends IService {
 
-    public function __invoke(ContainerInterface $container): SessionHandlerMiddleware {
-        return new SessionHandlerMiddleware(
-            $container->get(SessionHandlerInterface::class)
-        );
-    }
+    public function prepareQueue(bool $forceAll = false): ArrayList;
 
 }

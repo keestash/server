@@ -61,7 +61,7 @@ class LoggerManager implements ILoggerManager {
         return realpath(__DIR__ . '/../../../../../data/') . "/$name.log";
     }
 
-    public function getFileLogger(): ILogger {
+    public function getLogger(): ILogger {
         $logLevel      = $this->configService->getValue("log_level", \Monolog\Logger::ERROR);
         $jsonFormatter = new JsonFormatter();
         $logger        = new Logger(ILoggerManager::FILE_LOGGER);
@@ -71,7 +71,6 @@ class LoggerManager implements ILoggerManager {
             , $logLevel
         );
         $streamHandler->setFormatter($jsonFormatter);
-
         $logger->pushHandler($streamHandler);
         $logger = $this->addSentryHandler(
             $logger

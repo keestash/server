@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Manager\EventManager;
 
 use Keestash\Core\Manager\EventManager\EventManager;
 use KSP\Core\Manager\EventManager\IEventManager;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Repository\Queue\IQueueRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -33,6 +33,7 @@ class EventManagerFactory {
         return new EventManager(
             $container->get(EventDispatcher::class)
             , $container
+            , $container->get(IQueueRepository::class)
         );
     }
 

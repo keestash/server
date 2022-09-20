@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Queue\Handler;
 
-use _PHPStan_c24aa5a16\Nette\Neon\Exception;
+use Exception;
 use Keestash\Core\DTO\Queue\Result;
 use Keestash\Core\Service\Email\EmailService;
 use KSP\Core\DTO\Queue\IEmailMessage;
@@ -45,7 +45,7 @@ class EmailHandler implements IEmailHandler {
         // todo implement intelligent spam detection
 
         if (!($message instanceof IEmailMessage)) {
-            throw new \Exception();
+            throw new Exception();
         }
 
         $payload = $message->getPayload();

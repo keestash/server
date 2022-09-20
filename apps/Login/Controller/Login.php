@@ -23,7 +23,6 @@ namespace KSA\Login\Controller;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\PersistenceService;
 use KSP\Core\Controller\StaticAppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
@@ -33,28 +32,25 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Login extends StaticAppController {
 
-    private PersistenceService        $persistenceService;
     private InstanceDB                $instanceDb;
     private IUserRepository           $userRepository;
     private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
-        PersistenceService          $persistenceService
-        , InstanceDB                $instanceDB
+        InstanceDB                  $instanceDB
         , IAppRenderer              $appRenderer
         , IUserRepository           $userRepository
         , TemplateRendererInterface $templateRenderer
     ) {
-        $this->persistenceService = $persistenceService;
-        $this->instanceDb         = $instanceDB;
-        $this->userRepository     = $userRepository;
-        $this->templateRenderer   = $templateRenderer;
+        $this->instanceDb       = $instanceDB;
+        $this->userRepository   = $userRepository;
+        $this->templateRenderer = $templateRenderer;
 
         parent::__construct($appRenderer);
     }
 
     public function run(ServerRequestInterface $request): string {
-        $userId = $this->persistenceService->getPersistenceValue("user_id");
+        $userId = null;
         $users  = $this->userRepository->getAll();
         $hashes = new HashTable();
 
@@ -64,10 +60,6 @@ class Login extends StaticAppController {
                 $user->getHash()
                 , $user->getId()
             );
-        }
-
-        if (null !== $userId && $hashes->containsValue((int) $userId)) {
-            // TODO redirect to $this->loader->getDefaultApp()->getBaseRoute()
         }
 
         $isDemoMode = $this->instanceDb->getOption("demo") === "true";

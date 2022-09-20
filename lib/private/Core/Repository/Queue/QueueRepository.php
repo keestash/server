@@ -23,15 +23,10 @@ namespace Keestash\Core\Repository\Queue;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\Core\DTO\Queue\EmailMessage;
-use Keestash\Core\DTO\Queue\Stamp;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use Laminas\Config\Config;
 
 class QueueRepository implements IQueueRepository {
 
@@ -46,8 +41,7 @@ class QueueRepository implements IQueueRepository {
         $this->backend         = $backend;
     }
 
-    public function getQueue(): ArrayList {
-        $queueList    = new ArrayList();
+    public function getQueue(): array {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
@@ -64,47 +58,10 @@ class QueueRepository implements IQueueRepository {
             ->from('queue', 'q');
 
         $result = $queryBuilder->executeQuery();
-        $queue  = $result->fetchAllAssociative();
-
-        foreach ($queue as $q) {
-
-            $message = new EmailMessage();
-            $message->setId((string) $q["id"]);
-            $message->setCreateTs(
-                $this->dateTimeService->fromFormat((string) $q["create_ts"])
-            );
-            $message->setPriority((int) $q["priority"]);
-            $message->setAttempts((int) $q["attempts"]);
-            $message->setReservedTs(
-                $this->dateTimeService->fromFormat((string) $q["reserved_ts"])
-            );
-            $message->setPayload(
-                json_decode((string) $q["payload"], true)
-            );
-
-            $message->setType($q['type']);
-
-            $stamps       = (array) json_decode($q['stamps'], true);
-            $stampObjects = [];
-            foreach ($stamps as $key => $stamp) {
-                $stampObject = new Stamp();
-                $stampObject->setName($stamp['name']);
-                $stampObject->setValue($stamp['value']);
-                $stampObject->setCreateTs(
-                    $this->dateTimeService->fromFormat($stamp['create_ts']['date'])
-                );
-                $stampObjects[$key] = $stampObject;
-            }
-            $message->setStamps(
-                HashTable::fromIterable($stampObjects)
-            );
-            $queueList->add($message);
-        }
-        return $queueList;
+        return $result->fetchAllAssociative();
     }
 
-    public function getSchedulableMessages(): ArrayList {
-        $queueList    = new ArrayList();
+    public function getSchedulableMessages(): array {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $fiveMinutesAgo = new DateTime();
@@ -128,41 +85,7 @@ class QueueRepository implements IQueueRepository {
             ->setParameter(1, $this->dateTimeService->toYMDHIS($fiveMinutesAgo));
 
         $result = $queryBuilder->executeQuery();
-        $queue  = $result->fetchAllAssociative();
-
-        foreach ($queue as $q) {
-
-            $message = new EmailMessage();
-            $message->setId((string) $q["id"]);
-            $message->setCreateTs(
-                $this->dateTimeService->fromFormat((string) $q["create_ts"])
-            );
-            $message->setPriority((int) $q["priority"]);
-            $message->setAttempts((int) $q["attempts"]);
-            $message->setReservedTs(
-                $this->dateTimeService->fromFormat((string) $q["reserved_ts"])
-            );
-            $message->setPayload(
-                json_decode((string) $q["payload"], true)
-            );
-            $message->setType($q['type']);
-            $stamps       = (array) json_decode($q['stamps'], true);
-            $stampObjects = [];
-            foreach ($stamps as $key => $stamp) {
-                $stampObject = new Stamp();
-                $stampObject->setName($stamp['name']);
-                $stampObject->setValue($stamp['value']);
-                $stampObject->setCreateTs(
-                    $this->dateTimeService->fromFormat($stamp['create_ts']['date'])
-                );
-                $stampObjects[$key] = $stamp;
-            }
-            $message->setStamps(
-                HashTable::fromIterable($stampObjects)
-            );
-            $queueList->add($message);
-        }
-        return $queueList;
+        return $result->fetchAllAssociative();
     }
 
     public function delete(IMessage $message): void {

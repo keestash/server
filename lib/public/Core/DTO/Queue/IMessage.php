@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\Queue;
 
 use DateTimeInterface;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IMessage extends IJsonObject {
 
     public const TYPE_EMAIL = 'email.type';
+    public const TYPE_EVENT = 'event.type';
 
     /**
      * @return string

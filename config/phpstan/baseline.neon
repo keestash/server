@@ -216,7 +216,7 @@ parameters:
 			path: ../../apps/Register/Api/User/Add.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IEmailMessage\\:\\:addStamp\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Register/Event/EmailAfterRegistration.php
 
@@ -362,6 +362,11 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$level of method Monolog\\\\Handler\\\\AbstractHandler\\:\\:setLevel\\(\\) expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'alert'\\|'ALERT'\\|'critical'\\|'CRITICAL'\\|'debug'\\|'DEBUG'\\|'EMERGENCY'\\|'emergency'\\|'error'\\|'ERROR'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
+
+		-
+			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'alert'\\|'ALERT'\\|'critical'\\|'CRITICAL'\\|'debug'\\|'DEBUG'\\|'EMERGENCY'\\|'emergency'\\|'error'\\|'ERROR'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
