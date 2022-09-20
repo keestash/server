@@ -77,6 +77,7 @@ class EmailAfterRegistration implements IListener {
      */
     public function execute(IEvent $event): void {
         $this->logger->debug('implement me :(');
+        return;
 
         if (false === ($event instanceof UserCreatedEvent)) {
             throw new RegisterException();

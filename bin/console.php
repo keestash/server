@@ -24,8 +24,8 @@ declare(strict_types=1);
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Legacy\Legacy;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Event\IEventDispatcher;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
@@ -56,9 +56,9 @@ use Symfony\Component\Console\Application;
             , $cliVersion
     );
 
-    /** @var IEventDispatcher $eventDispatcher */
-    $eventDispatcher = $container->get(IEventDispatcher::class);
-    $eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
+    /** @var IEventManager $eventManager */
+    $eventManager = $container->get(IEventManager::class);
+    $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
 
     foreach ($config->get(ConfigProvider::COMMANDS)->toArray() as $commandClass) {
 

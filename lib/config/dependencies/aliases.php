@@ -61,7 +61,6 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
-use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\Mime\MimeTypeService;
@@ -115,7 +114,6 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
-use KSP\Core\Service\Event\IEventDispatcher;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Mime\IMimeTypeService;
@@ -196,7 +194,6 @@ return [
 
     IL10N::class                   => GetText::class,
     ILoader::class                 => Loader::class,
-    IEventDispatcher::class        => EventDispatcher::class,
     SessionHandlerInterface::class => SessionHandler::class,
     IAppRenderer::class            => AppRenderer::class,
     IMigrator::class               => Migrator::class,

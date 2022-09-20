@@ -29,28 +29,19 @@ use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use Laminas\Serializer\Adapter\PhpSerialize;
-use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class EventManager implements IEventManager {
 
-    private EventDispatcher    $eventDispatcher;
-    private ContainerInterface $container;
-    private IQueueRepository   $queueRepository;
+    private IQueueRepository $queueRepository;
+    private array            $listeners;
 
-    public function __construct(
-        EventDispatcher      $eventDispatcher
-        , ContainerInterface $container
-        , IQueueRepository   $queueRepository
-    ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->container       = $container;
+    public function __construct(IQueueRepository $queueRepository) {
         $this->queueRepository = $queueRepository;
     }
 
     public function execute(IEvent $event): void {
-        $listeners  = $this->eventDispatcher->getListeners(get_class($event));
+        $listeners  = $this->listeners[get_class($event)];
         $serializer = new PhpSerialize();
 
         foreach ($listeners as $listener) {
@@ -88,8 +79,16 @@ class EventManager implements IEventManager {
 
     }
 
-    public function registerListener(string $eventName, string $event): void {
-        $this->eventDispatcher->addListener($eventName, $event);
+    public function registerAll(array $events): void {
+        foreach ($events as $event => $listeners) {
+            foreach ($listeners as $listener) {
+                $this->register($event, $listener);
+            }
+        }
+    }
+
+    public function register(string $event, string $listener): void {
+        $this->listeners[$event][] = $listener;
     }
 
 }
