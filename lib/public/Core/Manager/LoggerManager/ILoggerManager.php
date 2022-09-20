@@ -31,6 +31,6 @@ interface ILoggerManager {
 
     public const FILE_LOGGER = "logger.file";
 
-    public function getFileLogger(): ILogger;
+    public function getLogger(): ILogger;
 
 }

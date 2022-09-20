@@ -93,7 +93,7 @@ class Table implements ITable {
     /**
      * @inheritDoc
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "name"                => $this->getName()
             , "column"            => $this->getColumn()

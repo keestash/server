@@ -70,11 +70,11 @@ use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
-use Keestash\Core\Service\HTTP\PersistenceService;
 use Keestash\Core\Service\HTTP\Response\ResponseService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\MessageService;
+use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
@@ -132,6 +132,7 @@ use Keestash\Factory\Core\Service\HTTP\Response\ResponseServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
+use Keestash\Factory\Core\Service\Queue\QueueServiceFactory;
 use Keestash\Factory\Core\Service\Router\ApiRequestServiceFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
@@ -150,9 +151,9 @@ use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\LoggedInMiddlewareFactory;
-use Keestash\Factory\Middleware\Web\SessionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EmailHandlerFactory;
+use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\Queue\WorkerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
@@ -168,8 +169,8 @@ use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMiddleware;
 use Keestash\Middleware\Web\LoggedInMiddleware;
-use Keestash\Middleware\Web\SessionHandlerMiddleware;
 use Keestash\Queue\Handler\EmailHandler;
+use Keestash\Queue\Handler\EventHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Access\AccessService;
@@ -235,7 +236,6 @@ return [
     ApiExceptionHandlerMiddlerware::class                          => ApiExceptionHandlerMiddlewareFactory::class,
 
     // web
-    SessionHandlerMiddleware::class                                => SessionHandlerMiddlewareFactory::class,
     UserActiveMiddleware::class                                    => UserActiveMiddlewareFactory::class,
     WebExceptionHandlerMiddleware::class                           => WebExceptionHandlerMiddlewareFactory::class,
 
@@ -258,7 +258,6 @@ return [
     InstallerService::class                                        => InstallerServiceFactory::class,
     HTTPService::class                                             => HTTPServiceFactory::class,
     \Keestash\Core\Service\Instance\InstallerService::class        => \Keestash\Factory\Core\Service\Instance\InstallerServiceFactory::class,
-    PersistenceService::class                                      => PersistenceServiceFactory::class,
     LanguageService::class                                         => LanguageServiceFactory::class,
     RouterService::class                                           => RouterServiceFactory::class,
     UserRepositoryService::class                                   => UserRepositoryServiceFactory::class,
@@ -280,6 +279,7 @@ return [
     ResponseService::class                                         => ResponseServiceFactory::class,
     CSVService::class                                              => CSVServiceFactory::class,
     MimeTypeService::class                                         => InvokableFactory::class,
+    QueueService::class                                            => QueueServiceFactory::class,
 
     GetText::class                                            => InvokableFactory::class,
     \Symfony\Component\EventDispatcher\EventDispatcher::class => InvokableFactory::class,
@@ -294,5 +294,6 @@ return [
     FileRateLimiter::class                                    => FileRateLimiterFactory::class,
 
     // handler
-    EmailHandler::class                                       => EmailHandlerFactory::class
+    EmailHandler::class                                       => EmailHandlerFactory::class,
+    EventHandler::class                                       => EventHandlerFactory::class
 ];

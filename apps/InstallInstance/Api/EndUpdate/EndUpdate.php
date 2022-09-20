@@ -46,7 +46,6 @@ class EndUpdate implements RequestHandlerInterface {
     private IFileRepository        $fileRepository;
     private FileService            $fileService;
     private IUserService           $userService;
-    private PersistenceService     $persistenceService;
     private HTTPService            $httpService;
     private IL10N                  $translator;
     private ILoader                $loader;
@@ -59,7 +58,6 @@ class EndUpdate implements RequestHandlerInterface {
         , IFileRepository        $fileRepository
         , FileService            $fileService
         , IUserService           $userService
-        , PersistenceService     $persistenceService
         , HTTPService            $httpService
         , ILoader                $loader
         , IUserRepositoryService $userRepositoryService
@@ -69,7 +67,6 @@ class EndUpdate implements RequestHandlerInterface {
         $this->fileRepository        = $fileRepository;
         $this->fileService           = $fileService;
         $this->userService           = $userService;
-        $this->persistenceService    = $persistenceService;
         $this->httpService           = $httpService;
         $this->translator            = $l10n;
         $this->loader                = $loader;
@@ -112,7 +109,6 @@ class EndUpdate implements RequestHandlerInterface {
         }
 
         $this->lockHandler->unlock();
-        $this->persistenceService->killAll();
 
         $this->userRepositoryService->createSystemUser(
             $this->userService->getSystemUser()

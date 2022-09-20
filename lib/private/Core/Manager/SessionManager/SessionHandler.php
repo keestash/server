@@ -24,6 +24,9 @@ namespace Keestash\Core\Manager\SessionManager;
 use KSP\Core\Repository\Session\ISessionRepository;
 use SessionHandlerInterface;
 
+/**
+ * @deprecated
+ */
 class SessionHandler implements SessionHandlerInterface {
 
     private ISessionRepository $sessionRepository;
@@ -34,6 +37,7 @@ class SessionHandler implements SessionHandlerInterface {
 
     /**
      * @inheritDoc
+     * @deprecated
      */
     public function open($save_path, $name) {
         return $this->sessionRepository->open();
@@ -41,6 +45,7 @@ class SessionHandler implements SessionHandlerInterface {
 
     /**
      * @inheritDoc
+     * @deprecated
      */
     public function read($session_id) {
         return $this->sessionRepository->get($session_id);
@@ -48,6 +53,7 @@ class SessionHandler implements SessionHandlerInterface {
 
     /**
      * @inheritDoc
+     * @deprecated
      */
     public function write($session_id, $session_data) {
         return $this->sessionRepository->replace($session_id, $session_data);
@@ -55,6 +61,7 @@ class SessionHandler implements SessionHandlerInterface {
 
     /**
      * @inheritDoc
+     * @deprecated
      */
     public function gc($maxlifetime) {
         return $this->sessionRepository->deleteByLastUpdate($maxlifetime);
@@ -62,6 +69,7 @@ class SessionHandler implements SessionHandlerInterface {
 
     /**
      * @inheritDoc
+     * @deprecated
      */
     public function destroy($session_id) {
         return $this->sessionRepository->deleteById($session_id);
@@ -69,6 +77,7 @@ class SessionHandler implements SessionHandlerInterface {
 
     /**
      * @inheritDoc
+     * @deprecated
      */
     public function close() {
         return $this->sessionRepository->close();

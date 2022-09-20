@@ -14,9 +14,9 @@ namespace KSA\PasswordManager\Entity\Share;
 
 use DateTime;
 use DateTimeInterface;
-use JsonSerializable;
+use KSP\Core\DTO\Entity\IJsonObject;
 
-class PublicShare implements JsonSerializable {
+class PublicShare implements IJsonObject {
 
     private int               $id;
     private string            $hash;
@@ -63,11 +63,11 @@ class PublicShare implements JsonSerializable {
     /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * @return array data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
-    public function jsonSerialize() {
+    public function jsonSerialize(): array {
         return [
             "id"           => $this->getId()
             , "hash"       => $this->getHash()

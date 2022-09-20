@@ -281,3 +281,4 @@ test/result/
 /.phpunit.result.cache
 /.scannerwork/
 smtp.php
+/lib/private/Core/System/RateLimit/tmp.json
