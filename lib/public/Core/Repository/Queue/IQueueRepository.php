@@ -21,15 +21,14 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Queue;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\IRepository;
 
 interface IQueueRepository extends IRepository {
 
-    public function getQueue(): ArrayList;
+    public function getQueue(): array;
 
-    public function getSchedulableMessages(): ArrayList;
+    public function getSchedulableMessages(): array;
 
     public function insert(IMessage $message): IMessage;
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login\Factory\Controller;
+namespace Keestash\Core\Manager\LoggerManager\Handler;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use KSA\Login\Controller\Login;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Controller\IAppRenderer;
-use Mezzio\Template\TemplateRendererInterface;
-use Psr\Container\ContainerInterface;
+use Monolog\Handler\AbstractProcessingHandler;
 
-class LoginFactory {
+class DumpHandler extends AbstractProcessingHandler {
 
-    public function __invoke(ContainerInterface $container): Login {
-        return new Login(
-            $container->get(InstanceDB::class)
-            , $container->get(IAppRenderer::class)
-            , $container->get(IUserRepository::class)
-            , $container->get(TemplateRendererInterface::class)
-        );
+    protected function write(array $record): void {
+//        dump($record);
+//        var_dump($record);
     }
 
 }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,23 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\HTTP;
+namespace Keestash\Core\DTO\Queue;
 
-use Keestash\Core\Service\HTTP\PersistenceService;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\CookieManager\ICookieManager;
-use KSP\Core\Manager\SessionManager\ISessionManager;
-use KSP\Core\Service\HTTP\IPersistenceService;
-use Psr\Container\ContainerInterface;
+use KSP\Core\DTO\Queue\IEventMessage;
 
-class PersistenceServiceFactory {
-
-    public function __invoke(ContainerInterface $container): IPersistenceService {
-        return new PersistenceService(
-            $container->get(ISessionManager::class)
-            , $container->get(ICookieManager::class)
-            , $container->get(ILogger::class)
-        );
-    }
+class EventMessage extends Message implements IEventMessage {
 
 }

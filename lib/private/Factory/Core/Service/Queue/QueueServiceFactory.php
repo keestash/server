@@ -19,35 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Queue;
+namespace Keestash\Factory\Core\Service\Queue;
 
-use Keestash\Command\KeestashCommand;
-use Keestash\Queue\Worker;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use doganoo\DI\DateTime\IDateTimeService;
+use Keestash\Core\Service\Queue\QueueService;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
-use KSP\Queue\Handler\IEmailHandler;
-use KSP\Queue\Handler\IEventHandler;
-use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class WorkerFactory implements FactoryInterface {
+class QueueServiceFactory implements FactoryInterface {
 
     public function __invoke(
-        ContainerInterface $container,
-                           $requestedName,
-        ?array             $options = null
-    ): KeestashCommand {
-        return new Worker(
-            $container->get(IQueueService::class)
-            , $container->get(IEmailHandler::class)
-            , $container->get(ILogger::class)
-            , $container->get(IEventManager::class)
-            , $container->get(Config::class)
-            , $container->get(IQueueRepository::class)
-            , $container->get(IEventHandler::class)
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): IQueueService {
+        return new QueueService(
+            $container->get(IQueueRepository::class)
+            , $container->get(IDateTimeService::class)
         );
     }
 

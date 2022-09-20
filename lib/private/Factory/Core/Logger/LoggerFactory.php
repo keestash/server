@@ -30,7 +30,7 @@ class LoggerFactory {
     public function __invoke(ContainerInterface $container): ILogger {
         /** @var ILoggerManager $loggerManager */
         $loggerManager = $container->get(ILoggerManager::class);
-        return $loggerManager->getFileLogger();
+        return $loggerManager->getLogger();
     }
 
 }

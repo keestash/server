@@ -30,7 +30,9 @@ use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEmailHandler;
+use KSP\Queue\Handler\IEventHandler;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,26 +40,32 @@ use Throwable;
 
 class Worker extends KeestashCommand {
 
-    private IQueueRepository $queueRepository;
+    private IQueueService    $queueService;
     private IEmailHandler    $emailHandler;
     private ILogger          $logger;
     private IEventManager    $eventManager;
     private Config           $config;
+    private IQueueRepository $queueRepository;
+    private IEventHandler    $eventHandler;
 
     public function __construct(
-        IQueueRepository $queueRepository
-        , IEmailHandler  $emailHandler
-        , ILogger        $logger
-        , IEventManager  $eventManager
-        , Config         $config
+        IQueueService      $queueService
+        , IEmailHandler    $emailHandler
+        , ILogger          $logger
+        , IEventManager    $eventManager
+        , Config           $config
+        , IQueueRepository $queueRepository
+        , IEventHandler    $eventHandler
     ) {
         parent::__construct();
 
-        $this->queueRepository = $queueRepository;
+        $this->queueService    = $queueService;
         $this->emailHandler    = $emailHandler;
         $this->logger          = $logger;
         $this->eventManager    = $eventManager;
         $this->config          = $config;
+        $this->queueRepository = $queueRepository;
+        $this->eventHandler    = $eventHandler;
     }
 
     protected function configure(): void {
@@ -68,17 +76,16 @@ class Worker extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $execute = true;
         while (true || $execute) {
-
-            if (true === ((bool) $this->config->get("debug", false))) {
-                $queue = $this->queueRepository->getSchedulableMessages();
-            } else {
-                $queue = $this->queueRepository->getQueue();
-            }
+            $queue = $this->queueService->prepareQueue(
+//                (bool) $this->config->get("debug", false)
+                true
+            );
 
             if (0 === $queue->length()) {
                 usleep(500000);
                 continue;
             }
+
             $this->logger->debug("processing {$queue->length()} messages");
 
             /** @var IMessage $message */
@@ -89,8 +96,12 @@ class Worker extends KeestashCommand {
 
                     switch ($message->getType()) {
                         case IMessage::TYPE_EMAIL:
-                            $this->logger->debug('handing an email message');
+                            $this->logger->debug('handling an email message');
                             $result = $this->emailHandler->handle($message);
+                            break;
+                        case IMessage::TYPE_EVENT:
+                            $this->logger->debug('handling an event message');
+                            $result = $this->eventHandler->handle($message);
                             break;
                         default:
                             throw new KeestashException();
@@ -112,12 +123,12 @@ class Worker extends KeestashCommand {
                         throw new KeestashException();
                 }
 
-                $this->eventManager->execute(
-                    new MessageProcessedEvent(
-                        $message
-                        , $result
-                    )
-                );
+//                $this->eventManager->execute(
+//                    new MessageProcessedEvent(
+//                        $message
+//                        , $result
+//                    )
+//                );
 
             }
         }

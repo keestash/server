@@ -22,19 +22,16 @@ declare(strict_types=1);
 namespace Keestash\Factory\Middleware\Web;
 
 use Keestash\Core\Service\HTTP\HTTPService;
-use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\HTTP\IPersistenceService;
 use Psr\Container\ContainerInterface;
 
 class LoggedInMiddlewareFactory {
 
     public function __invoke(ContainerInterface $container): LoggedInMiddleware {
         return new LoggedInMiddleware(
-            $container->get(IPersistenceService::class)
-            , $container->get(ILogger::class)
+            $container->get(ILogger::class)
             , $container->get(HTTPService::class)
             , $container->get(IUserRepository::class)
         );

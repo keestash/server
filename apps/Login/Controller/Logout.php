@@ -35,19 +35,16 @@ class Logout extends StaticAppController {
 
     private ITokenRepository          $tokenRepository;
     private ILoader                   $loader;
-    private IPersistenceService       $persistenceService;
     private TemplateRendererInterface $templateRenderer;
 
     public function __construct(
         ITokenRepository            $tokenRepository
         , ILoader                   $loader
-        , IPersistenceService       $persistenceService
         , TemplateRendererInterface $templateRenderer
         , IAppRenderer              $appRenderer
     ) {
         $this->tokenRepository    = $tokenRepository;
         $this->loader             = $loader;
-        $this->persistenceService = $persistenceService;
         $this->templateRenderer   = $templateRenderer;
 
         parent::__construct($appRenderer);
@@ -57,7 +54,6 @@ class Logout extends StaticAppController {
         /** @var IUser|null $user */
         $user       = $request->getAttribute(IUser::class);
         $defaultApp = $this->loader->getDefaultApp();
-        $this->persistenceService->killAll();
 
         if (null === $defaultApp) {
             throw new KeestashException();

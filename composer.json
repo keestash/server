@@ -42,6 +42,7 @@
     "laminas/laminas-config-aggregator": "^1.5",
     "laminas/laminas-diactoros": "^2.5",
     "laminas/laminas-i18n": "^2.15",
+    "laminas/laminas-serializer": "^2.13",
     "laminas/laminas-servicemanager": "^3.6",
     "laminas/laminas-validator": "^2.13",
     "league/csv": "^9.8",

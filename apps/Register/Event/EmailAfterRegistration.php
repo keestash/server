@@ -30,6 +30,7 @@ use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
 use KSA\Register\ConfigProvider;
+use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEvent;
@@ -72,10 +73,14 @@ class EmailAfterRegistration implements IListener {
     /**
      * @param IEvent|UserCreatedEvent $event
      * @throws InvalidKeyTypeException
-     * @throws UnsupportedKeyTypeException
+     * @throws UnsupportedKeyTypeException|RegisterException
      */
     public function execute(IEvent $event): void {
         $this->logger->debug('implement me :(');
+
+        if (false === ($event instanceof UserCreatedEvent)) {
+            throw new RegisterException();
+        }
 
         if (
             $event->getUser()->getId() === IUser::SYSTEM_USER_ID
