@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -20,8 +21,9 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
+use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Event\IEventDispatcher;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Service\UserService;
 use KST\Service\ThirdParty\Phinx\Adapter\SQLiteAdapter;
@@ -33,9 +35,8 @@ const __PHPUNIT_MODE__ = true;
 
 /** @var ContainerInterface $container */
 $container = require __DIR__ . '/config/service_manager.php';
-
-$config   = $container->get(Config::class);
-$fileName = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
+$config    = $container->get(Config::class);
+$fileName  = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
 
 if (is_file($fileName)) {
     unlink($fileName);
@@ -48,14 +49,15 @@ AdapterFactory::instance()
 $environmentService = $container->get(IEnvironmentService::class);
 $environmentService->setEnv(ConfigProvider::ENVIRONMENT_UNIT_TEST);
 
-/** @var IEventDispatcher $eventDispatcher */
-$eventDispatcher = $container->get(IEventDispatcher::class);
-$eventDispatcher->register($config->get(ConfigProvider::EVENTS)->toArray());
-
 /** @var IMigrator $migrator */
 $migrator = $container->get(IMigrator::class);
 $migrator->runCore();
 $migrator->runApps();
+
+/** @var IEventManager $eventManager */
+$eventManager = $container->get(IEventManager::class);
+$eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
+$eventManager->execute(new ApplicationStartedEvent(new DateTime()));
 
 /** @var UserService $userService */
 $userService = $container->get(UserService::class);

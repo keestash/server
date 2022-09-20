@@ -62,7 +62,6 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
-use Keestash\Core\Service\Event\EventDispatcher;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\Mime\MimeTypeService;
@@ -122,12 +121,10 @@ use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Password\PasswordServiceFactory;
-use Keestash\Factory\Core\Service\Event\EventDispatcherFactory;
 use Keestash\Factory\Core\Service\File\FileServiceFactory;
 use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
-use Keestash\Factory\Core\Service\HTTP\PersistenceServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\Response\ResponseServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
@@ -203,7 +200,6 @@ return [
     EventManager::class                                            => EventManagerFactory::class,
     Loader::class                                                  => LoaderFactory::class,
     Verification::class                                            => VerificationFactory::class,
-    EventDispatcher::class                                         => EventDispatcherFactory::class,
     InstanceDB::class                                              => InstanceDBFactory::class,
     CookieManager::class                                           => CookieManagerFactory::class,
     FileManager::class                                             => FileManagerFactory::class,
@@ -281,19 +277,18 @@ return [
     MimeTypeService::class                                         => InvokableFactory::class,
     QueueService::class                                            => QueueServiceFactory::class,
 
-    GetText::class                                            => InvokableFactory::class,
-    \Symfony\Component\EventDispatcher\EventDispatcher::class => InvokableFactory::class,
-    \doganoo\PHPUtil\HTTP\Session::class                      => InvokableFactory::class,
-    SettingManager::class                                     => InvokableFactory::class,
-    HTMLPurifier::class                                       => InvokableFactory::class,
+    GetText::class                       => InvokableFactory::class,
+    \doganoo\PHPUtil\HTTP\Session::class => InvokableFactory::class,
+    SettingManager::class                => InvokableFactory::class,
+    HTMLPurifier::class                  => InvokableFactory::class,
 
     // command
-    \Keestash\Queue\Worker::class                             => WorkerFactory::class,
+    \Keestash\Queue\Worker::class        => WorkerFactory::class,
 
     // system
-    FileRateLimiter::class                                    => FileRateLimiterFactory::class,
+    FileRateLimiter::class               => FileRateLimiterFactory::class,
 
     // handler
-    EmailHandler::class                                       => EmailHandlerFactory::class,
-    EventHandler::class                                       => EventHandlerFactory::class
+    EmailHandler::class                  => EmailHandlerFactory::class,
+    EventHandler::class                  => EventHandlerFactory::class
 ];
