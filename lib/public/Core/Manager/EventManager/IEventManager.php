@@ -26,7 +26,9 @@ use KSP\Core\Manager\IManager;
 
 interface IEventManager extends IManager {
 
-    public function registerListener(string $eventName, string $event): void;
+    public function registerAll(array $events): void;
+
+    public function register(string $event, string $listener): void;
 
     public function execute(IEvent $event): void;
 

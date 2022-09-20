@@ -25,15 +25,12 @@ use Keestash\Core\Manager\EventManager\EventManager;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class EventManagerFactory {
 
     public function __invoke(ContainerInterface $container): IEventManager {
         return new EventManager(
-            $container->get(EventDispatcher::class)
-            , $container
-            , $container->get(IQueueRepository::class)
+            $container->get(IQueueRepository::class)
         );
     }
 

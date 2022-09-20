@@ -216,7 +216,7 @@ parameters:
 			path: ../../apps/Register/Api/User/Add.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IEmailMessage\\:\\:addStamp\\(\\)\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../apps/Register/Event/EmailAfterRegistration.php
 
