@@ -19,17 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Queue;
+namespace Keestash\Factory\Command\Keestash;
 
+use Keestash\Command\Keestash\Worker;
 use Keestash\Command\KeestashCommand;
-use Keestash\Queue\Worker;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEmailHandler;
 use KSP\Queue\Handler\IEventHandler;
-use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -44,8 +42,6 @@ class WorkerFactory implements FactoryInterface {
             $container->get(IQueueService::class)
             , $container->get(IEmailHandler::class)
             , $container->get(ILogger::class)
-            , $container->get(IEventManager::class)
-            , $container->get(Config::class)
             , $container->get(IQueueRepository::class)
             , $container->get(IEventHandler::class)
         );

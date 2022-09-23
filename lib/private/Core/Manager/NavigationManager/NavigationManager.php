@@ -101,20 +101,4 @@ class NavigationManager implements INavigationManager {
         return $this->navigationMap->put($name, $navigation);
     }
 
-    public function addPart(string $name, IPart $part): bool {
-        $navigation = $this->getByName($name);
-        if (null === $navigation) return false;
-        $navigation->addPart($part);
-        return true;
-    }
-
-    public function getByName(string $name): ?Navigation {
-        if (false === $this->navigationMap->containsKey($name)) return null;
-        /** @var Navigation|null $navigation */
-        $navigation = $this->navigationMap->get($name);
-
-        if ($navigation instanceof Navigation) return $navigation;
-        return null;
-    }
-
 }

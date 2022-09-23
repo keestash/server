@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1122ed5b69d53216b949820960fc313b",
+    "content-hash": "f72d13252838687d2bc6bfc6ec57850d",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1042,6 +1042,59 @@
                 "source": "https://github.com/doganoo/PHPUtil/tree/0.5.0"
             },
             "time": "2021-09-11T07:04:55+00:00"
+        },
+        {
+            "name": "doganoo/simple-rbac",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doganoo/simple-rbac.git",
+                "reference": "8f3c5ab73cb95b6fbf6600766a29ec224466845f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doganoo/simple-rbac/zipball/8f3c5ab73cb95b6fbf6600766a29ec224466845f",
+                "reference": "8f3c5ab73cb95b6fbf6600766a29ec224466845f",
+                "shasum": ""
+            },
+            "require": {
+                "doganoo/php-algorithms": "^2.0",
+                "ext-json": "*",
+                "laminas/laminas-diactoros": "^2.17",
+                "laminas/laminas-servicemanager": "^3.16",
+                "mezzio/mezzio": "^3.11"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.28",
+                "phpcompatibility/php-compatibility": "^9.3",
+                "phpstan/phpstan": "^1.8",
+                "phpunit/phpunit": "6.5",
+                "squizlabs/php_codesniffer": "^3.7"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "doganoo\\SimpleRBAC\\": "src/",
+                    "doganoo\\SimpleRBAC\\Test\\": "test/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dogan Ucar",
+                    "email": "dogan@dogan-ucar.de"
+                }
+            ],
+            "description": "Simple leightweight PHP Role Based Access Control library",
+            "support": {
+                "issues": "https://github.com/doganoo/simple-rbac/issues",
+                "source": "https://github.com/doganoo/simple-rbac/tree/master"
+            },
+            "time": "2022-09-22T18:33:54+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -2504,16 +2557,16 @@
         },
         {
             "name": "laminas/laminas-servicemanager",
-            "version": "3.16.0",
+            "version": "3.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-servicemanager.git",
-                "reference": "863c66733740cd36ebf5e700f4258ef2c68a2a24"
+                "reference": "360be5f16955dd1edbcce1cfaa98ed82a17f02ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-servicemanager/zipball/863c66733740cd36ebf5e700f4258ef2c68a2a24",
-                "reference": "863c66733740cd36ebf5e700f4258ef2c68a2a24",
+                "url": "https://api.github.com/repos/laminas/laminas-servicemanager/zipball/360be5f16955dd1edbcce1cfaa98ed82a17f02ec",
+                "reference": "360be5f16955dd1edbcce1cfaa98ed82a17f02ec",
                 "shasum": ""
             },
             "require": {
@@ -2535,7 +2588,7 @@
             },
             "require-dev": {
                 "composer/package-versions-deprecated": "^1.0",
-                "laminas/laminas-coding-standard": "~2.3.0",
+                "laminas/laminas-coding-standard": "~2.4.0",
                 "laminas/laminas-container-config-test": "^0.7",
                 "laminas/laminas-dependency-plugin": "^2.1.2",
                 "mikey179/vfsstream": "^1.6.10@alpha",
@@ -2591,7 +2644,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-07-27T14:58:17+00:00"
+            "time": "2022-09-22T11:33:46+00:00"
         },
         {
             "name": "laminas/laminas-stdlib",
@@ -3441,16 +3494,16 @@
         },
         {
             "name": "mezzio/mezzio-twigrenderer",
-            "version": "2.10.0",
+            "version": "2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mezzio/mezzio-twigrenderer.git",
-                "reference": "111c2f0042e41815cd323c5044dc325a2bd81639"
+                "reference": "f01a5e802d137e366de959e20d0b4565fe350fed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mezzio/mezzio-twigrenderer/zipball/111c2f0042e41815cd323c5044dc325a2bd81639",
-                "reference": "111c2f0042e41815cd323c5044dc325a2bd81639",
+                "url": "https://api.github.com/repos/mezzio/mezzio-twigrenderer/zipball/f01a5e802d137e366de959e20d0b4565fe350fed",
+                "reference": "f01a5e802d137e366de959e20d0b4565fe350fed",
                 "shasum": ""
             },
             "require": {
@@ -3509,7 +3562,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-09-14T08:21:09+00:00"
+            "time": "2022-09-20T22:25:16+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -5171,16 +5224,16 @@
         },
         {
             "name": "sentry/sentry",
-            "version": "3.8.0",
+            "version": "3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getsentry/sentry-php.git",
-                "reference": "dc599ef4ac5459fef95cc0414d26ac47e300e1dc"
+                "reference": "5150776a0a9835c4ea56ff0ecd94e0a109b6c163"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/dc599ef4ac5459fef95cc0414d26ac47e300e1dc",
-                "reference": "dc599ef4ac5459fef95cc0414d26ac47e300e1dc",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/5150776a0a9835c4ea56ff0ecd94e0a109b6c163",
+                "reference": "5150776a0a9835c4ea56ff0ecd94e0a109b6c163",
                 "shasum": ""
             },
             "require": {
@@ -5259,7 +5312,7 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
-                "source": "https://github.com/getsentry/sentry-php/tree/3.8.0"
+                "source": "https://github.com/getsentry/sentry-php/tree/3.8.1"
             },
             "funding": [
                 {
@@ -5271,7 +5324,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2022-09-05T14:25:47+00:00"
+            "time": "2022-09-21T11:01:17+00:00"
         },
         {
             "name": "symfony/config",
@@ -9440,12 +9493,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "264a5085afd6e127daba3f47751fa971d3c29c3d"
+                "reference": "ecbc17ac0817caed746a243e3805dd256be9fcdb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/264a5085afd6e127daba3f47751fa971d3c29c3d",
-                "reference": "264a5085afd6e127daba3f47751fa971d3c29c3d",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/ecbc17ac0817caed746a243e3805dd256be9fcdb",
+                "reference": "ecbc17ac0817caed746a243e3805dd256be9fcdb",
                 "shasum": ""
             },
             "conflict": {
@@ -9507,7 +9560,7 @@
                 "contao/core-bundle": "<4.9.18|>=4.10,<4.11.7|>=4.13,<4.13.3|= 4.10.0",
                 "contao/listing-bundle": ">=4,<4.4.8",
                 "contao/managed-edition": "<=1.5",
-                "craftcms/cms": "<3.7.36",
+                "craftcms/cms": ">= 4.0.0-RC1, < 4.2.1|<3.7.55.2",
                 "croogo/croogo": "<3.0.7",
                 "cuyz/valinor": "<0.12",
                 "czproject/git-php": "<4.0.3",
@@ -9643,7 +9696,7 @@
                 "league/commonmark": "<0.18.3",
                 "league/flysystem": "<1.1.4|>=2,<2.1.1",
                 "lexik/jwt-authentication-bundle": "<2.10.7|>=2.11,<2.11.3",
-                "librenms/librenms": "<22.4",
+                "librenms/librenms": "<=22.8",
                 "limesurvey/limesurvey": "<3.27.19",
                 "livehelperchat/livehelperchat": "<=3.91",
                 "livewire/livewire": ">2.2.4,<2.2.6",
@@ -9659,7 +9712,7 @@
                 "mautic/core": "<4.3|= 2.13.1",
                 "mediawiki/core": ">=1.27,<1.27.6|>=1.29,<1.29.3|>=1.30,<1.30.2|>=1.31,<1.31.9|>=1.32,<1.32.6|>=1.32.99,<1.33.3|>=1.33.99,<1.34.3|>=1.34.99,<1.35",
                 "mezzio/mezzio-swoole": "<3.7|>=4,<4.3",
-                "microweber/microweber": "<1.3.1",
+                "microweber/microweber": "<=1.3.1",
                 "miniorange/miniorange-saml": "<1.4.3",
                 "mittwald/typo3_forum": "<1.2.1",
                 "modx/revolution": "<= 2.8.3-pl|<2.8",
@@ -9882,7 +9935,7 @@
                 "wpanel/wpanel4-cms": "<=4.3.1",
                 "wwbn/avideo": "<=11.6",
                 "yeswiki/yeswiki": "<4.1",
-                "yetiforce/yetiforce-crm": "<6.4",
+                "yetiforce/yetiforce-crm": "<=6.4",
                 "yidashi/yii2cmf": "<=2",
                 "yii2mod/yii2-cms": "<1.9.2",
                 "yiisoft/yii": ">=1.1.14,<1.1.15",
@@ -9956,7 +10009,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-09-16T22:04:31+00:00"
+            "time": "2022-09-22T16:04:41+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -11279,6 +11332,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "doganoo/simple-rbac": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,

@@ -27,6 +27,7 @@ use KSP\Core\DTO\Queue\IEventMessage;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\Serializer\Adapter\PhpSerialize;
@@ -62,21 +63,23 @@ class EventHandler implements IEventHandler {
         $executed = false;
         if ($listenerObject instanceof IListener) {
 
-            try {
-                $listenerObject->execute(
-                    $serializer->unserialize($serialized)
-                );
-                $executed = true;
-            } catch (Exception $exception) {
-                $this->logger->error(
-                    'error while handling event'
-                    , [
-                        'message'     => $message
-                        , 'exception' => $exception
-                    ]
-                );
-            }
+            $event = $serializer->unserialize($serialized);
 
+            if ($event instanceof IEvent) {
+
+                try {
+                    $listenerObject->execute($event);
+                    $executed = true;
+                } catch (Exception $exception) {
+                    $this->logger->error(
+                        'error while handling event'
+                        , [
+                            'message'     => $message
+                            , 'exception' => $exception
+                        ]
+                    );
+                }
+            }
         }
 
         $result = new Result();

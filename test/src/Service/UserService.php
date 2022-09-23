@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KST\Service\Service;
 
 use DateTime;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\User\User;
 use Keestash\Legacy\Legacy;
 use KSP\Core\Service\Core\Language\ILanguageService;
@@ -102,6 +103,7 @@ class UserService {
             $user->setLanguage(
                 $this->languageService->getLanguage()
             );
+            $user->setRoles(new HashTable());
             $this->userRepositoryService->createUser($user);
         }
     }

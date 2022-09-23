@@ -49,7 +49,7 @@ class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
         if (true === $fileExists) {
             $content = (string) file_get_contents($fileName);
             try {
-                $decoded = json_decode(
+                $decoded = (array) json_decode(
                     $content
                     , true
                     , 512

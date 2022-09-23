@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use doganoo\SimpleRBAC\ConfigProvider as SimpleRBACConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\About\ConfigProvider as AboutConfigProvider;
 use KSA\Apps\ConfigProvider as AppsConfigProvider;
@@ -28,8 +29,8 @@ use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
 use KSA\Install\ConfigProvider as InstallConfigProvider;
 use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
-use KSA\Profile\ConfigProvider as ProfileConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
+use KSA\Profile\ConfigProvider as ProfileConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
 use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
@@ -37,11 +38,11 @@ use Laminas\HttpHandlerRunner\ConfigProvider as HttpHandlerRunnerConfigProvider;
 use Laminas\Router\ConfigProvider as LaminasRouterConfigProvider;
 use Laminas\Validator\ConfigProvider as ValidatorConfigProvider;
 use Mezzio\ConfigProvider as MezzioConfigProvider;
+use Mezzio\Cors\ConfigProvider as CorsConfigProvider;
 use Mezzio\Helper\ConfigProvider as HelperConfigProvider;
 use Mezzio\Router\ConfigProvider as RouterConfigProvider;
 use Mezzio\Router\LaminasRouter\ConfigProvider as MezzioRouterConfigProvider;
 use Mezzio\Twig\ConfigProvider as TwigConfigProvider;
-use Mezzio\Cors\ConfigProvider as CorsConfigProvider;
 
 return [
     // framework
@@ -69,4 +70,7 @@ return [
     RegisterConfigProvider::class,
     SettingsConfigProvider::class,
     ProfileConfigProvider::class,
+
+    // Third Party libs
+    SimpleRBACConfigProvider::class
 ];

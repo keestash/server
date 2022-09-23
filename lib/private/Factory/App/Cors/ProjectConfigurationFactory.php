@@ -32,8 +32,9 @@ class ProjectConfigurationFactory implements FactoryInterface {
         ,                  $requestedName
         , ?array           $options = null
     ): ConfigurationInterface {
+        $config = (array) $container->get('config');
         return new ProjectConfiguration(
-            $container->get('config')[ConfigurationInterface::CONFIGURATION_IDENTIFIER] ?? []
+            $config[ConfigurationInterface::CONFIGURATION_IDENTIFIER] ?? []
         );
     }
 
