@@ -48,7 +48,7 @@ class FileService implements IFileService {
     }
 
     public function toFile(UploadedFileInterface $file): IFile {
-        $uri = $file->getStream()->getMetadata('uri');
+        $uri = (string) $file->getStream()->getMetadata('uri');
 
         /** @var \Keestash\Core\DTO\File\Upload\File $file */
         $file = \Keestash\Core\DTO\File\Upload\File::fromUploadedFile($file);

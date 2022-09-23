@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Repository;
+namespace Keestash\Factory\Core\Repository\RBAC;
 
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\SimpleRBAC\Repository\PermissionRepositoryInterface;
 use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
-use Interop\Container\ContainerInterface;
-use Keestash\Core\Repository\User\UserRepository;
+use Keestash\Core\Repository\RBAC\RBACRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\User\IUserRepository;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-class UserRepositoryFactory {
+class PermissionRepositoryFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): IUserRepository {
-        return new UserRepository(
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): RBACRepositoryInterface {
+        return new RBACRepository(
             $container->get(IBackend::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(ILogger::class)
-            , $container->get(RBACRepositoryInterface::class)
         );
     }
 

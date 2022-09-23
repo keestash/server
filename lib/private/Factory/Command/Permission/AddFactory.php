@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,20 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Keestash\Factory\Command\Permission;
 
-namespace KSP\Core\Service\Core\Access;
+use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\Command\Permission\Add;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-use Keestash\Core\DTO\Access\IAccessable;
-use Keestash\Core\Service\Core\Access\IAccessService;
-use KSP\Core\DTO\User\IUser;
+class AddFactory implements FactoryInterface {
 
-class AccessService implements IAccessService {
-
-    public function hasAccess(IAccessable $accessable, IUser $user): bool {
-        return $user->getId() === $accessable->getUser()->getId()
-            || (null !== $accessable->getOrganization()
-                && true === $accessable->getOrganization()->hasUser($user)
-            );
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Add {
+        return new Add(
+            $container->get(RBACRepositoryInterface::class)
+            , $container->get(IDateTimeService::class)
+        );
     }
 
 }

@@ -42,7 +42,7 @@ class ApiRequestService implements IApiRequestService {
         IEnvironmentService $environmentService
         , IApiLogRepository $apiLogRepository
         , IInstallerService $installerService
-        , IRouterService $routerService
+        , IRouterService    $routerService
     ) {
         $this->environmentService = $environmentService;
         $this->apiLogRepository   = $apiLogRepository;
@@ -65,7 +65,7 @@ class ApiRequestService implements IApiRequestService {
         }
 
         $apiRequest = new APIRequest();
-        $apiRequest->setStart($request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START));
+        $apiRequest->setStart((float) $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START));
         $apiRequest->setEnd($end);
         $apiRequest->setRoute($this->routerService->getMatchedPath($request));
         $apiRequest->setToken($request->getAttribute(IToken::class));

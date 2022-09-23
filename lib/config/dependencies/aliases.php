@@ -25,6 +25,8 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
+use doganoo\SimpleRBAC\Repository\PermissionRepositoryInterface;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Keestash\App\Cors\ProjectConfiguration;
@@ -44,6 +46,7 @@ use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
+use Keestash\Core\Repository\RBAC\RBACRepository;
 use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
@@ -150,6 +153,7 @@ return [
     ISessionRepository::class                         => SessionRepository::class,
     IQueueRepository::class                           => QueueRepository::class,
     IUserStateRepository::class                       => UserStateRepository::class,
+    RBACRepositoryInterface::class                    => RBACRepository::class,
 
     // service
     IUserService::class                               => UserService::class,

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,20 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace KSP\Core\Service\Core\RBAC;
 
-namespace KSP\Core\Service\Core\Access;
-
-use Keestash\Core\DTO\Access\IAccessable;
-use Keestash\Core\Service\Core\Access\IAccessService;
-use KSP\Core\DTO\User\IUser;
-
-class AccessService implements IAccessService {
-
-    public function hasAccess(IAccessable $accessable, IUser $user): bool {
-        return $user->getId() === $accessable->getUser()->getId()
-            || (null !== $accessable->getOrganization()
-                && true === $accessable->getOrganization()->hasUser($user)
-            );
-    }
+interface IRBACService {
 
 }

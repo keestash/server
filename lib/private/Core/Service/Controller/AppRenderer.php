@@ -218,7 +218,6 @@ class AppRenderer implements IAppRenderer {
         , bool                 $hasAppNavigation
         , string               $appContent
         , NavigationList       $navigationList
-        , IActionBar           $actionBar
         , string               $caller
         , bool                 $hasGlobalSearch
     ): string {
@@ -239,7 +238,6 @@ class AppRenderer implements IAppRenderer {
                         , $navigationList
                         , $static
                         , $contextLess
-                        , $actionBar
                         , $caller
                     )
                     , "staticContext" => true === $static
@@ -270,7 +268,6 @@ class AppRenderer implements IAppRenderer {
         , NavigationList $navigationList
         , bool           $static
         , bool           $contextLess
-        , IActionBar     $actionBar
         , string         $caller
     ): string {
 
@@ -283,7 +280,6 @@ class AppRenderer implements IAppRenderer {
                         , $navigationList
                         , $static
                         , $contextLess
-                        , $actionBar
                     )
                     , "appContent"       => $appContent
                     , "isLogin"          => $caller === Login::class
@@ -299,7 +295,6 @@ class AppRenderer implements IAppRenderer {
         , NavigationList $navigationList
         , bool           $static
         , bool           $contextLess
-        , IActionBar     $actionBar
     ): string {
 
         return $this->templateRenderer
@@ -311,19 +306,16 @@ class AppRenderer implements IAppRenderer {
                     , "actionBar"        => $this->renderActionBars(
                         $static
                         , $contextLess
-                        , $actionBar
                     )
-                    , "hasActionBars"    => $actionBar->hasElements()
                 ]
             );
     }
 
-    private function renderActionBars(bool $static, bool $contextLess, IActionBar $actionBar): string {
+    private function renderActionBars(bool $static, bool $contextLess): string {
         if (true === $static || true === $contextLess) return '';
         return $this->templateRenderer->render(
             'root::actionbar'
             , [
-                'actionBar' => $actionBar
             ]
         );
     }
@@ -335,7 +327,6 @@ class AppRenderer implements IAppRenderer {
         , bool                 $static
         , bool                 $contextLess
         , NavigationList       $navigationList
-        , IActionBar           $actionBar
         , string               $caller
         , bool                 $hasGlobalSearch
     ): string {
@@ -360,7 +351,6 @@ class AppRenderer implements IAppRenderer {
                         , $hasAppNavigation
                         , $appContent
                         , $navigationList
-                        , $actionBar
                         , $caller
                         , $hasGlobalSearch
                     )

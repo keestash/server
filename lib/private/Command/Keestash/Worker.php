@@ -19,21 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Queue;
+namespace Keestash\Command\Keestash;
 
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\Queue\Result;
-use Keestash\Event\Worker\MessageProcessedEvent;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEmailHandler;
 use KSP\Queue\Handler\IEventHandler;
-use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -43,8 +40,6 @@ class Worker extends KeestashCommand {
     private IQueueService    $queueService;
     private IEmailHandler    $emailHandler;
     private ILogger          $logger;
-    private IEventManager    $eventManager;
-    private Config           $config;
     private IQueueRepository $queueRepository;
     private IEventHandler    $eventHandler;
 
@@ -52,8 +47,6 @@ class Worker extends KeestashCommand {
         IQueueService      $queueService
         , IEmailHandler    $emailHandler
         , ILogger          $logger
-        , IEventManager    $eventManager
-        , Config           $config
         , IQueueRepository $queueRepository
         , IEventHandler    $eventHandler
     ) {
@@ -62,8 +55,6 @@ class Worker extends KeestashCommand {
         $this->queueService    = $queueService;
         $this->emailHandler    = $emailHandler;
         $this->logger          = $logger;
-        $this->eventManager    = $eventManager;
-        $this->config          = $config;
         $this->queueRepository = $queueRepository;
         $this->eventHandler    = $eventHandler;
     }
@@ -122,13 +113,6 @@ class Worker extends KeestashCommand {
                     default:
                         throw new KeestashException();
                 }
-
-//                $this->eventManager->execute(
-//                    new MessageProcessedEvent(
-//                        $message
-//                        , $result
-//                    )
-//                );
 
             }
         }

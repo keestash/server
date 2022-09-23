@@ -22,9 +22,12 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\User;
 
 use DateTime;
+use DateTimeImmutable;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
+use Keestash\Core\DTO\RBAC\Role;
 use Keestash\Core\DTO\User\User;
 use Keestash\Exception\KeestashException;
 use Keestash\Legacy\Legacy;
@@ -140,6 +143,7 @@ class UserService implements IUserService {
             $this->hashPassword($user->getName())
         );
         $user->setLocked(true);
+        $user->setRoles(new HashTable());
         return $user;
     }
 
@@ -167,6 +171,7 @@ class UserService implements IUserService {
         $user->setPassword(
             $this->hashPassword(IUser::DEMO_USER_NAME)
         );
+        $user->setRoles(new HashTable());
         return $user;
     }
 
@@ -200,6 +205,20 @@ class UserService implements IUserService {
         $user->setWebsite($userArray['website']);
         $user->setLanguage($userArray['language']);
         $user->setLocale($userArray['locale']);
+
+        $roles = new HashTable();
+        foreach (($userArray['roles'] ?? []) as $role) {
+            $roles->put(
+                (int) $role['id']
+                , new Role(
+                    (int) $role['id']
+                    , $role['name']
+                    , new HashTable()
+                    , new DateTimeImmutable()
+                )
+            );
+        }
+        $user->setRoles($roles);
         return $user;
     }
 
@@ -226,6 +245,19 @@ class UserService implements IUserService {
         $user->setHash(
             $this->getRandomHash()
         );
+        $roles = new HashTable();
+        foreach (($userArray['roles'] ?? []) as $key => $role) {
+            $roles->put(
+                $key
+                , new Role(
+                    $key
+                    , $role['name']
+                    , new HashTable()
+                    , new DateTimeImmutable()
+                )
+            );
+        }
+        $user->setRoles($roles);
         return $user;
     }
 
@@ -297,9 +329,9 @@ class UserService implements IUserService {
     }
 
     public function validateWithAllCountries(string $phone): bool {
-        $countryCodes = $this->config->get(Keestash\ConfigProvider::COUNTRY_CODES);
+        $countryCodes = (array) $this->config->get(Keestash\ConfigProvider::COUNTRY_CODES);
         foreach ($countryCodes as $countryCode) {
-            $this->phoneValidator->setCountry($countryCode);
+            $this->phoneValidator->setCountry((string) $countryCode);
             if ($this->phoneValidator->isValid($phone)) {
                 return true;
             }

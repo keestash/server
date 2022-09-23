@@ -35,6 +35,7 @@
     "doganoo/di-services": "^0.0",
     "doganoo/php-algorithms": "^2.0.0",
     "doganoo/php-util": "^0.5",
+    "doganoo/simple-rbac": "dev-master",
     "ezyang/htmlpurifier": "^4.13",
     "firebase/php-jwt": "^5.2",
     "guzzlehttp/guzzle": "^7.0",
@@ -99,8 +100,8 @@
   "scripts": {
     "add-php-compatibility": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
     "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",
-    "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 8 --memory-limit=2G",
-    "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 8 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
+    "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G",
+    "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
     "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose"
   }
 }

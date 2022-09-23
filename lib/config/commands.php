@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -17,6 +19,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+use Keestash\Command\Permission\Add;
+use Keestash\Command\Permission\AssignPermissionToRole;
+use Keestash\Command\Permission\Get;
+use Keestash\Command\Permission\PermissionsByRole;
+use Keestash\Command\Role\AssignRoleToUser;
+use Keestash\Command\Role\RolesByUser;
+
 return [
-    \Keestash\Queue\Worker::class
+    \Keestash\Command\Keestash\Worker::class
+    , Get::class
+    , \Keestash\Command\Role\Get::class
+    , RolesByUser::class
+    , PermissionsByRole::class
+    , Add::class
+    , \Keestash\Command\Role\Add::class
+    , AssignRoleToUser::class
+    , AssignPermissionToRole::class
 ];

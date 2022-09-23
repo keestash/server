@@ -29,15 +29,16 @@ use Psr\Container\ContainerInterface;
 class ConnectionFactory {
 
     public function __invoke(ContainerInterface $container): Connection {
+        /** @var IConfigService $config */
         $config = $container->get(IConfigService::class);
         return DriverManager::getConnection(
             [
                 'driver'     => 'pdo_mysql'
-                , 'host'     => $config->getValue('db_host')
-                , 'dbname'   => $config->getValue('db_name')
-                , 'port'     => $config->getValue('db_port')
-                , 'user'     => $config->getValue('db_user')
-                , 'password' => $config->getValue('db_password')
+                , 'host'     => (string) $config->getValue('db_host')
+                , 'dbname'   => (string) $config->getValue('db_name')
+                , 'port'     => (int) $config->getValue('db_port')
+                , 'user'     => (string) $config->getValue('db_user')
+                , 'password' => (string) $config->getValue('db_password')
             ]
         );
     }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,15 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\ActionBar\ActionBar;
+namespace Keestash\Factory\Command\Permission;
 
-class NullActionBar extends ActionBar {
+use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\Command\Permission\PermissionsByRole;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-    public function __construct() {
-        $this->setType("");
-        $this->setId("");
-        $this->setDescription("");
-        parent::__construct();
+class PermissionsByRoleFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): PermissionsByRole {
+        return new PermissionsByRole(
+            $container->get(RBACRepositoryInterface::class)
+            , $container->get(IDateTimeService::class)
+        );
     }
 
 }

@@ -29,7 +29,6 @@ use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Phinx\Console\PhinxApplication;
-use Phinx\Db\Adapter\AdapterFactory;
 use Phinx\Wrapper\TextWrapper;
 
 class Migrator implements IMigrator {
@@ -39,8 +38,8 @@ class Migrator implements IMigrator {
     private IConfigService $configService;
 
     public function __construct(
-        ILogger $logger
-        , Config $config
+        ILogger          $logger
+        , Config         $config
         , IConfigService $configService
     ) {
         $this->logger        = $logger;
@@ -49,7 +48,7 @@ class Migrator implements IMigrator {
     }
 
     protected function getFilePath(): string {
-        return $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
+        return (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
     }
 
     public function runCore(): bool {

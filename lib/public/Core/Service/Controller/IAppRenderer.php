@@ -34,7 +34,6 @@ interface IAppRenderer {
         , bool $static
         , bool $contextLess
         , NavigationList $navigationList
-        , IActionBar $actionBar
         , string $caller
         , bool $hasGlobalSearch
     ): string;
