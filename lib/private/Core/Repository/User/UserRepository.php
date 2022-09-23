@@ -23,6 +23,7 @@ namespace Keestash\Core\Repository\User;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
@@ -40,18 +41,21 @@ use KSP\Core\Repository\User\IUserRepository;
  */
 class UserRepository implements IUserRepository {
 
-    private IDateTimeService $dateTimeService;
-    private ILogger          $logger;
-    private IBackend         $backend;
+    private IDateTimeService        $dateTimeService;
+    private ILogger                 $logger;
+    private IBackend                $backend;
+    private RBACRepositoryInterface $rbacRepository;
 
     public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        IBackend                  $backend
+        , IDateTimeService        $dateTimeService
+        , ILogger                 $logger
+        , RBACRepositoryInterface $rbacRepository
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
+        $this->rbacRepository  = $rbacRepository;
     }
 
     /**
@@ -122,7 +126,9 @@ class UserRepository implements IUserRepository {
         $user->setLocked(
             true === (bool) $row[13]
         );
-
+        $user->setRoles(
+            $this->rbacRepository->getRolesByUser($user)
+        );
         return $user;
     }
 
@@ -180,6 +186,9 @@ class UserRepository implements IUserRepository {
             $user->setLocked((bool) $row['locked']);
             $user->setLocale($row['locale']);
             $user->setLanguage($row['language']);
+            $user->setRoles(
+                $this->rbacRepository->getRolesByUser($user)
+            );
 
             $list->add($user);
         }
@@ -264,7 +273,9 @@ class UserRepository implements IUserRepository {
             ->setParameter(8, $user->getLocale())
             ->setParameter(9, $user->getLanguage())
             ->setParameter(10, $user->getId())
-            ->execute();
+            ->executeStatement();
+
+        // TODO update roles 
 
         return true;
 
@@ -335,6 +346,9 @@ class UserRepository implements IUserRepository {
         $user->setLocked(
             true === (bool) $row['locked']
         );
+        $user->setRoles(
+            $this->rbacRepository->getRolesByUser($user)
+        );
 
         return $user;
     }
@@ -395,6 +409,9 @@ class UserRepository implements IUserRepository {
         );
         $user->setLocked(
             true === (bool) $row['locked']
+        );
+        $user->setRoles(
+            $this->rbacRepository->getRolesByUser($user)
         );
 
         return $user;
@@ -465,6 +482,9 @@ class UserRepository implements IUserRepository {
         $user->setLocked(
             true === (bool) $row['locked']
         );
+        $user->setRoles(
+            $this->rbacRepository->getRolesByUser($user)
+        );
 
         return $user;
     }
@@ -533,6 +553,9 @@ class UserRepository implements IUserRepository {
             $user->setLocale($row['locale']);
             $user->setDeleted((bool) $row['deleted']);
             $user->setLocked((bool) $row['locked']);
+            $user->setRoles(
+                $this->rbacRepository->getRolesByUser($user)
+            );
 
             $list->add($user);
         }

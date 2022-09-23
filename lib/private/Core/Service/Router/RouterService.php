@@ -60,7 +60,9 @@ class RouterService implements IRouterService {
     }
 
     public function getRouteByPath(string $path): array {
+        /** @var Config $webRoutes */
         $webRoutes = $this->config->get(ConfigProvider::WEB_ROUTER);
+        /** @var Config $apiRoutes */
         $apiRoutes = $this->config->get(ConfigProvider::API_ROUTER);
         $allRoutes = array_merge_recursive($webRoutes->toArray(), $apiRoutes->toArray());
 

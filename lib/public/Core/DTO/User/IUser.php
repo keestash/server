@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTimeInterface;
+use doganoo\SimpleRBAC\Entity\UserInterface;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Entity\IComparable;
 use KSP\Core\DTO\Entity\IJsonObject;
@@ -36,7 +37,8 @@ interface IUser extends
     IJsonObject
     , IComparable
     , IKeyHolder
-    , JWT {
+    , JWT
+    , UserInterface {
 
     public const SYSTEM_USER_ID                                                              = 1;
     public const DEMO_USER_NAME                                                              = "demo";

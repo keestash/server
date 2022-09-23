@@ -78,17 +78,26 @@ class QueueService implements IQueueService {
                 $this->dateTimeService->fromFormat((string) $messageArray["reserved_ts"])
             );
             $message->setPayload(
-                json_decode((string) $messageArray["payload"], true)
+                (array) json_decode(
+                    (string) $messageArray["payload"]
+                    , true
+                    , 512
+                    , JSON_THROW_ON_ERROR
+                )
             );
 
             $stamps       = (array) json_decode($messageArray['stamps'], true);
             $stampObjects = [];
+            /**
+             * @var int    $key
+             * @var  array $stamp
+             */
             foreach ($stamps as $key => $stamp) {
                 $stampObject = new Stamp();
                 $stampObject->setName($stamp['name']);
                 $stampObject->setValue($stamp['value']);
                 $stampObject->setCreateTs(
-                    $this->dateTimeService->fromFormat($stamp['create_ts']['date'])
+                    $this->dateTimeService->fromFormat((string) $stamp['create_ts']['date'])
                 );
                 $stampObjects[$key] = $stampObject;
             }

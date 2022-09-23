@@ -38,7 +38,7 @@ class InstallerService {
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
     public function __construct(
-        IMigrator $migrator
+        IMigrator        $migrator
         , IAppRepository $appRepository
         , IJobRepository $jobRepository
     ) {

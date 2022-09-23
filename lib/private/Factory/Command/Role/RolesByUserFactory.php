@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\View\ActionBar\ActionBar;
+namespace Keestash\Factory\Command\Role;
 
-class SettingsActionBar extends ActionBar {
+use doganoo\DI\DateTime\IDateTimeService;
+use Keestash\Command\Role\RolesByUser;
+use KSP\Core\Repository\User\IUserRepository;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+
+class RolesByUserFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): RolesByUser {
+        return new RolesByUser(
+            $container->get(IUserRepository::class)
+            , $container->get(IDateTimeService::class)
+        );
+    }
 
 }

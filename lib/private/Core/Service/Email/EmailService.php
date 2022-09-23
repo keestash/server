@@ -75,12 +75,12 @@ class EmailService implements IEmailService {
         $this->mailer->Port       = (int) $this->configService->getValue("email_port");
 
         $this->mailer->setFrom(
-            $this->legacy->getApplication()->get("email")
-            , $this->legacy->getApplication()->get("name")
+            (string) $this->legacy->getApplication()->get("email")
+            , (string) $this->legacy->getApplication()->get("name")
         );
         $this->mailer->addReplyTo(
-            $this->legacy->getApplication()->get("email")
-            , $this->legacy->getApplication()->get("name")
+            (string) $this->legacy->getApplication()->get("email")
+            , (string) $this->legacy->getApplication()->get("name")
         );
         $this->mailer->Debugoutput = function ($message) {
             $this->logger->debug($message);
@@ -140,8 +140,8 @@ class EmailService implements IEmailService {
         if (null === $productionModeDate || "" === $productionModeDate) {
             $this->mailer->clearAllRecipients();
             $this->mailer->addAddress(
-                $this->configService->getValue("email_user")
-                , $this->configService->getValue("email_user")
+                (string) $this->configService->getValue("email_user")
+                , (string) $this->configService->getValue("email_user")
             );
             return;
         }

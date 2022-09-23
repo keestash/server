@@ -1,0 +1,92 @@
+<?php
+declare(strict_types=1);
+/**
+ * Keestash
+ *
+ * Copyright (C) <2022> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Keestash\Command\Permission;
+
+use DateTimeImmutable;
+use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\Command\KeestashCommand;
+use Keestash\Core\DTO\RBAC\NullPermission;
+use Keestash\Core\DTO\RBAC\Permission;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+class Add extends KeestashCommand {
+
+    private RBACRepositoryInterface $rbacRepository;
+    private IDateTimeService        $dateTimeService;
+
+    public function __construct(
+        RBACRepositoryInterface $rbacRepository
+        , IDateTimeService      $dateTimeService
+    ) {
+        parent::__construct();
+        $this->rbacRepository  = $rbacRepository;
+        $this->dateTimeService = $dateTimeService;
+    }
+
+    protected function configure(): void {
+        $this->setName("permission:add")
+            ->setDescription("add a new permission");
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int {
+
+        $style = new SymfonyStyle($input, $output);
+        $style->title("Please provide the data required to create a permission");
+        $name = $style->ask("Name") ?? "";
+
+        $permission = $this->rbacRepository->getPermissionByName($name);
+
+        if (false === ($permission instanceof NullPermission)) {
+            $this->writeError('permission with this name already exists', $output);
+            return 0;
+        }
+
+        $newPermission = new Permission(
+            0
+            , $name
+            , new DateTimeImmutable()
+        );
+
+        $newPermission = $this->rbacRepository->createPermission($newPermission);
+
+        $this->writeInfo('permission created', $output);
+        $table = new Table($output);
+        $table
+            ->setHeaders(['ID', 'Name', 'Create Ts'])
+            ->setRows(
+                [
+                    [$newPermission->getId()
+                     , $newPermission->getName()
+                     , $this->dateTimeService->toDMYHIS(
+                        $newPermission->getCreateTs()
+                    )]
+                ]
+            );
+        $table->render();
+        return 0;
+    }
+
+}

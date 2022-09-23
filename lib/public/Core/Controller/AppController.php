@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\Core\Controller;
 
-use Keestash\View\ActionBar\ActionBar\NullActionBar;
 use Keestash\View\Navigation\App\NavigationList;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\View\ActionBar\IActionBar;
@@ -35,14 +34,12 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
     private IAppRenderer $appRenderer;
 
     private NavigationList $navigationList;
-    private IActionBar     $actionBar;
 
     private bool $hasGlobalSearch = true;
 
     public function __construct(IAppRenderer $appRenderer) {
         $this->appRenderer    = $appRenderer;
         $this->navigationList = new NavigationList();
-        $this->actionBar      = new NullActionBar();
     }
 
     public abstract function run(ServerRequestInterface $request): string;
@@ -50,10 +47,6 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
 
     protected function setAppNavigation(NavigationList $navigationList): void {
         $this->navigationList = $navigationList;
-    }
-
-    protected function setActionBar(IActionBar $actionBar): void {
-        $this->actionBar = $actionBar;
     }
 
     protected function deactivateGlobalSearch(): void {
@@ -76,7 +69,6 @@ abstract class AppController implements IAppController, RequestHandlerInterface 
                 , $static
                 , $contextLess
                 , $this->navigationList
-                , $this->actionBar
                 , static::class
                 , $this->hasGlobalSearch
             )

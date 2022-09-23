@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\User;
 
 use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\User\IUser;
 
 /**
@@ -47,6 +48,7 @@ class User implements IUser {
     private ?string           $jwt     = null;
     private string            $locale;
     private string            $language;
+    private HashTable         $roles;
 
     /**
      * @return string
@@ -251,6 +253,14 @@ class User implements IUser {
         $this->deleted = $deleted;
     }
 
+    public function getRoles(): HashTable {
+        return $this->roles;
+    }
+
+    public function setRoles(HashTable $roles): void {
+        $this->roles = $roles;
+    }
+
     /**
      * Specify data which should be serialized to JSON
      *
@@ -276,6 +286,7 @@ class User implements IUser {
                 , 'jwt'        => $this->getJWT()
                 , 'language'   => $this->getLanguage()
                 , 'locale'     => $this->getLocale()
+                , 'roles'      => $this->getRoles()
             ];
     }
 

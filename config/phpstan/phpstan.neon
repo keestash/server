@@ -11,3 +11,5 @@ parameters:
 	ignoreErrors:
 	    - '#Property (.*) is never read, only written+\.#'
 	    - '#Constant (.*) is unused#'
+	    - '#Cannot cast mixed to (.*)#'
+	    - '#Parameter (.*) of class (.*) constructor expects (.*), mixed given\.#'

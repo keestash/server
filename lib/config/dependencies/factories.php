@@ -27,6 +27,12 @@ use GuzzleHttp\Client;
 use Keestash\App\Config\Diff;
 use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
+use Keestash\Command\Permission\Add;
+use Keestash\Command\Permission\AssignPermissionToRole;
+use Keestash\Command\Permission\Get;
+use Keestash\Command\Permission\PermissionsByRole;
+use Keestash\Command\Role\AssignRoleToUser;
+use Keestash\Command\Role\RolesByUser;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
 use Keestash\Core\Manager\CookieManager\CookieManager;
@@ -44,6 +50,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
+use Keestash\Core\Repository\RBAC\RBACRepository;
 use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
@@ -86,6 +93,13 @@ use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\App\Config\DiffFactory;
 use Keestash\Factory\App\Cors\ProjectConfigurationFactory;
 use Keestash\Factory\App\Loader\LoaderFactory;
+use Keestash\Factory\Command\Keestash\WorkerFactory;
+use Keestash\Factory\Command\Permission\AddFactory;
+use Keestash\Factory\Command\Permission\AssignPermissionToRoleFactory;
+use Keestash\Factory\Command\Permission\GetFactory;
+use Keestash\Factory\Command\Permission\PermissionsByRoleFactory;
+use Keestash\Factory\Command\Role\AssignRoleToUserFactory;
+use Keestash\Factory\Command\Role\RolesByUserFactory;
 use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
@@ -107,6 +121,7 @@ use Keestash\Factory\Core\Repository\Instance\InstanceDBFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceRepositoryFactory;
 use Keestash\Factory\Core\Repository\Job\JobRepositoryFactory;
 use Keestash\Factory\Core\Repository\Queue\QueueRepositoryFactory;
+use Keestash\Factory\Core\Repository\RBAC\PermissionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Session\SessionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Token\TokenRepositoryFactory;
 use Keestash\Factory\Core\Repository\User\UserStateRepositoryFactory;
@@ -151,7 +166,6 @@ use Keestash\Factory\Middleware\Web\LoggedInMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EmailHandlerFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
-use Keestash\Factory\Queue\WorkerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
 use Keestash\L10N\GetText;
@@ -193,6 +207,7 @@ return [
     AppRepository::class             => AppRepositoryFactory::class,
     SessionRepository::class         => SessionRepositoryFactory::class,
     QueueRepository::class           => QueueRepositoryFactory::class,
+    RBACRepository::class            => PermissionRepositoryFactory::class,
 
     LoggerManager::class                                           => LoggerManagerFactory::class,
     ILogger::class                                                 => LoggerFactory::class,
@@ -277,18 +292,26 @@ return [
     MimeTypeService::class                                         => InvokableFactory::class,
     QueueService::class                                            => QueueServiceFactory::class,
 
-    GetText::class                       => InvokableFactory::class,
-    \doganoo\PHPUtil\HTTP\Session::class => InvokableFactory::class,
-    SettingManager::class                => InvokableFactory::class,
-    HTMLPurifier::class                  => InvokableFactory::class,
+    GetText::class                           => InvokableFactory::class,
+    \doganoo\PHPUtil\HTTP\Session::class     => InvokableFactory::class,
+    SettingManager::class                    => InvokableFactory::class,
+    HTMLPurifier::class                      => InvokableFactory::class,
 
     // command
-    \Keestash\Queue\Worker::class        => WorkerFactory::class,
+    \Keestash\Command\Keestash\Worker::class => WorkerFactory::class
+    , Get::class                             => GetFactory::class
+    , \Keestash\Command\Role\Get::class      => \Keestash\Factory\Command\Role\GetFactory::class
+    , RolesByUser::class                     => RolesByUserFactory::class
+    , PermissionsByRole::class               => PermissionsByRoleFactory::class
+    , Add::class                             => AddFactory::class
+    , \Keestash\Command\Role\Add::class      => \Keestash\Factory\Command\Role\AddFactory::class
+    , AssignRoleToUser::class                => AssignRoleToUserFactory::class
+    , AssignPermissionToRole::class          => AssignPermissionToRoleFactory::class
 
     // system
-    FileRateLimiter::class               => FileRateLimiterFactory::class,
+    , FileRateLimiter::class                 => FileRateLimiterFactory::class,
 
     // handler
-    EmailHandler::class                  => EmailHandlerFactory::class,
-    EventHandler::class                  => EventHandlerFactory::class
+    EmailHandler::class                      => EmailHandlerFactory::class,
+    EventHandler::class                      => EventHandlerFactory::class
 ];
