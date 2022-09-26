@@ -14,13 +14,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Comment;
 
-use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -21,10 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\Organization;
 
-use DateTime;
+use DateTimeImmutable;
 use doganoo\DI\Encryption\User\IUserService;
 use Exception;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
@@ -57,13 +56,13 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-
         $parameters = json_decode((string) $request->getBody(), true);
         $name       = $parameters["organization"];
 
         if (null === $name || "" === $name) {
             throw new GeneralApiException('no organization found');
         }
+
         $organization = new Organization();
         $organization->setName($name);
         $organization->setPassword(
@@ -71,8 +70,8 @@ class Add implements RequestHandlerInterface {
                 bin2hex(random_bytes(16))
             )
         );
-        $organization->setCreateTs(new DateTime());
-        $organization->setActiveTs(new DateTime());
+        $organization->setCreateTs(new DateTimeImmutable());
+        $organization->setActiveTs(new DateTimeImmutable());
 
         try {
             $organization = $this->organizationRepository->insert($organization);
@@ -87,13 +86,11 @@ class Add implements RequestHandlerInterface {
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "organization" => $organization
             ]
         );
     }
-
 
 }

@@ -37,6 +37,7 @@ return [
     , CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php'
     , CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php'
     , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
+    , CoreConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php'
     , CoreConfigProvider::TEMPLATES    => [
         'paths' => [
             'register' => [__DIR__ . '/../template']

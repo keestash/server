@@ -24,6 +24,7 @@ namespace Keestash\Factory\Core\Repository;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\File\FileRepository;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Container\ContainerInterface;
@@ -32,9 +33,10 @@ class FileRepositoryFactory {
 
     public function __invoke(ContainerInterface $container): IFileRepository {
         return new FileRepository(
-            $container->get(IBackend::class),
-            $container->get(IUserRepository::class),
-            $container->get(IDateTimeService::class)
+            $container->get(IBackend::class)
+            , $container->get(IUserRepository::class)
+            , $container->get(IDateTimeService::class)
+            , $container->get(ILogger::class)
         );
     }
 

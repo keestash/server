@@ -25,15 +25,13 @@ use KSA\Settings\Api\User\UserLock;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class UserLockFactory {
 
     public function __invoke(ContainerInterface $container): UserLock {
         return new UserLock(
-            $container->get(IL10N::class)
-            , $container->get(IUserRepository::class)
+            $container->get(IUserRepository::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(IEventManager::class)
         );

@@ -42,7 +42,6 @@ class UpdateApp implements RequestHandlerInterface {
         $appId      = $parameters["app_id"] ?? null;
         $activate   = $parameters["activate"] ?? null;
 
-
         if (null === $activate) {
             return new JsonResponse([
                     "message" => "No Action Defined"

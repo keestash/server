@@ -221,7 +221,7 @@ parameters:
 			path: ../../apps/InstallInstance/Command/Uninstall.php
 
 		-
-			message: "#^Parameter \\#1 \\$var of function count expects array\\|Countable, array\\<int, string\\>\\|false given\\.$#"
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\<int, string\\>\\|false given\\.$#"
 			count: 2
 			path: ../../apps/InstallInstance/Command/Uninstall.php
 
@@ -321,6 +321,11 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Remove.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
@@ -389,16 +394,6 @@ parameters:
 			message: "#^Cannot access offset 'organization_id' on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Organization/Update.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Api/Node/Pwned/ChartDetailData.php
-
-		-
-			message: "#^Cannot call method getName\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Api/Node/Pwned/ChartDetailData.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
@@ -506,11 +501,6 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/CommentRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$file of method KSA\\\\PasswordManager\\\\Entity\\\\File\\\\NodeFile\\:\\:setFile\\(\\) expects KSP\\\\Core\\\\DTO\\\\File\\\\IFile, KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
-
-		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
@@ -601,7 +591,7 @@ parameters:
 			path: ../../apps/PasswordManager/Service/Node/BreadCrumb/BreadCrumbService.php
 
 		-
-			message: "#^Parameter \\#1 \\$input of function array_reverse expects array, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$array of function array_reverse expects array, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Service/Node/BreadCrumb/BreadCrumbService.php
 
@@ -661,32 +651,7 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Service/Factory/Repository/Node/NodeRepositoryFactory.php
 
 		-
-			message: "#^Cannot access offset 'messages' on mixed\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
-			message: "#^Cannot access offset 1000 on mixed\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
-			message: "#^Cannot access offset 2000 on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
 			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\ResponseService\\:\\:getFailedResponseData\\(\\) should return array but returns mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\ResponseService\\:\\:getLegacyFailedResponseData\\(\\) should return array but returns mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\ResponseService\\:\\:getLegacyResponseData\\(\\) should return array but returns mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
 
@@ -776,14 +741,9 @@ parameters:
 			path: ../../apps/Register/Api/User/Add.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function strtolower expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$name of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUser\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/User/Exists.php
-
-		-
-			message: "#^Parameter \\#1 \\$str of function strtolower expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Register/Api/User/MailExists.php
 
 		-
 			message: "#^Parameter \\#1 \\$password of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:validatePasswords\\(\\) expects string, mixed given\\.$#"
@@ -829,6 +789,11 @@ parameters:
 			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\DTO\\\\Organization\\\\Organization\\:\\:setName\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/Organization/Add.php
+
+		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/Organization/Get.php
 
 		-
 			message: "#^Cannot access offset 'organization' on mixed\\.$#"
@@ -901,11 +866,6 @@ parameters:
 			path: ../../apps/Settings/Api/User/UserAdd.php
 
 		-
-			message: "#^Parameter \\#1 \\$params of method KSA\\\\Settings\\\\Api\\\\User\\\\UserAdd\\:\\:toUser\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserAdd.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setDeleted\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserEdit.php
@@ -961,6 +921,11 @@ parameters:
 			path: ../../apps/Settings/Api/User/UserEdit.php
 
 		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserEdit.php
+
+		-
 			message: "#^Parameter \\#1 \\$userArray of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:toUser\\(\\) expects array, mixed given\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserEdit.php
@@ -971,7 +936,17 @@ parameters:
 			path: ../../apps/Settings/Api/User/UserLock.php
 
 		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserLock.php
+
+		-
 			message: "#^Cannot access offset 'user_id' on mixed\\.$#"
+			count: 1
+			path: ../../apps/Settings/Api/User/UserRemove.php
+
+		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserRemove.php
 
@@ -1001,6 +976,11 @@ parameters:
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
 
 		-
+			message: "#^Class Keestash\\\\Core\\\\Manager\\\\SessionManager\\\\SessionManager not found\\.$#"
+			count: 1
+			path: ../../lib/config/dependencies/aliases.php
+
+		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/App/Loader/Loader.php
@@ -1009,6 +989,11 @@ parameters:
 			message: "#^Method Keestash\\\\App\\\\Loader\\\\Loader\\:\\:getDefaultApp\\(\\) should return KSP\\\\App\\\\IApp\\|null but returns mixed\\.$#"
 			count: 1
 			path: ../../lib/private/App/Loader/Loader.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Keestash/Events.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IMessage\\:\\:setAttempts\\(\\)\\.$#"
@@ -1126,12 +1111,12 @@ parameters:
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
 		-
-			message: "#^Parameter \\#1 \\$level of method Monolog\\\\Handler\\\\AbstractHandler\\:\\:setLevel\\(\\) expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'alert'\\|'ALERT'\\|'critical'\\|'CRITICAL'\\|'debug'\\|'DEBUG'\\|'EMERGENCY'\\|'emergency'\\|'error'\\|'ERROR'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			message: "#^Parameter \\#1 \\$level of method Monolog\\\\Handler\\\\AbstractHandler\\:\\:setLevel\\(\\) expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
 		-
-			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'alert'\\|'ALERT'\\|'critical'\\|'CRITICAL'\\|'debug'\\|'DEBUG'\\|'EMERGENCY'\\|'emergency'\\|'error'\\|'ERROR'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
@@ -1149,16 +1134,6 @@ parameters:
 			message: "#^Instantiated class Keestash\\\\View\\\\Navigation\\\\Navigation not found\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Manager/NavigationManager/NavigationManager.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\Manager\\\\SessionManager\\\\SessionHandler\\:\\:gc\\(\\) should return int\\|false but returns bool\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/SessionManager/SessionHandler.php
-
-		-
-			message: "#^Parameter \\#2 \\$default of method doganoo\\\\PHPUtil\\\\HTTP\\\\Session\\:\\:get\\(\\) expects null, string\\|null given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/SessionManager/SessionManager.php
 
 		-
 			message: "#^Cannot access an offset on mixed\\.$#"
@@ -1306,6 +1281,11 @@ parameters:
 			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/User/UserRepository.php
+
+		-
 			message: "#^Parameter \\#1 \\$dateTime of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromString\\(\\) expects string, mixed given\\.$#"
 			count: 6
 			path: ../../lib/private/Core/Repository/User/UserRepository.php
@@ -1451,14 +1431,14 @@ parameters:
 			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setId\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
+			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
 			count: 1
-			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
+			path: ../../lib/private/Core/Service/User/UserService.php
 
 		-
 			message: "#^Result of \\|\\| is always true\\.$#"
@@ -1469,6 +1449,16 @@ parameters:
 			message: "#^Variable \\$CONFIG on left side of \\?\\? is never defined\\.$#"
 			count: 1
 			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 2
+			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
+
+		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:addRecipient\\(\\)\\.$#"

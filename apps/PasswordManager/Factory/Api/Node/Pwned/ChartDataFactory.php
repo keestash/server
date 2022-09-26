@@ -25,6 +25,7 @@ use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\ILogger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -41,6 +42,7 @@ class ChartDataFactory implements FactoryInterface {
             , $container->get(PwnedPasswordsRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(ILogger::class)
+            , $container->get(AccessService::class)
         );
     }
 

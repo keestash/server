@@ -21,8 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\GeneralApi\Api\Demo;
 
-use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Manager\CookieManager\CookieManager;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Repository\DemoUsersRepository;
@@ -35,16 +34,13 @@ class AddEmailAddress implements RequestHandlerInterface {
 
     private DemoUsersRepository $demoUsersRepository;
     private UserService         $userService;
-    private CookieManager       $cookieManager;
 
     public function __construct(
         DemoUsersRepository $demoUsersRepository
-        , UserService $userService
-        , CookieManager $cookieManager
+        , UserService       $userService
     ) {
         $this->demoUsersRepository = $demoUsersRepository;
         $this->userService         = $userService;
-        $this->cookieManager       = $cookieManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -56,14 +52,12 @@ class AddEmailAddress implements RequestHandlerInterface {
         }
 
         $this->demoUsersRepository->add($email);
-        $put = $this->cookieManager->set("demo-submitted", "true");
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "message"  => "ok"
-                , "cookie" => $put
+        return new JsonResponse(
+            [
+                "message" => "ok"
             ]
+            , IResponse::OK
         );
     }
 

@@ -29,187 +29,191 @@ use KSA\PasswordManager\Api\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Delete;
+use KSA\PasswordManager\Api\Node\Get as NodeGet;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
+use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Api\Share\PublicShare;
 use KSA\PasswordManager\Api\Share\PublicShareSingle;
+use KSA\PasswordManager\Api\Share\Remove as RemoveShare;
 use KSA\PasswordManager\Api\Share\Share;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
+use KSP\Api\IRoute;
 use KSP\Api\IVerb;
 
 return [
     CoreConfigProvider::ROUTES        => [
         [
-            'path'         => '/password_manager/comment/add[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, Add::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => Add::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_COMMENT_ADD
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Add::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Add::class
         ],
         [
-            'path'         => '/password_manager/comment/get/:nodeId/[:sortField/][:sortDirection/]'
-            , 'middleware' => [NodeAccessMiddleware::class, Get::class]
-            , 'method'     => IVerb::GET
-            , 'name'       => Get::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_COMMENT_GET_BY_NODE_ID
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Get::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Get::class
         ],
         [
-            'path'         => '/password_manager/comment/remove[/]'
-            , 'middleware' => Remove::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Remove::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_COMMENT_REMOVE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Remove::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Remove::class
         ],
         [
-            'path'         => '/password_manager/generate_password/:length/:upperCase/:lowerCase/:digit/:specialChars[/]'
-            , 'middleware' => Generate::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Generate::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_GENERATE_PASSWORD
+            , IRoute::MIDDLEWARE => Generate::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Generate::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_GENERATE_QUALITY
-            , 'middleware' => Quality::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Quality::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_GENERATE_QUALITY
+            , IRoute::MIDDLEWARE => Quality::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Quality::class
         ],
         [
-            'path'         => '/password_manager/share/public[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, PublicShare::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => PublicShare::class
+            IRoute::PATH         => '/password_manager/share/public[/]'
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, PublicShare::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => PublicShare::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
-            , 'middleware' => PublicShareSingle::class
-            , 'method'     => IVerb::GET
-            , 'name'       => PublicShareSingle::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
+            , IRoute::MIDDLEWARE => PublicShareSingle::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => PublicShareSingle::class
         ],
         [
-            'path'         => '/password_manager/share/remove[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Share\Remove::class
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Share\Remove::class
+            IRoute::PATH         => '/password_manager/share/remove[/]'
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, RemoveShare::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => RemoveShare::class
         ],
         [
-            'path'         => '/password_manager/share[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, Share::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => Share::class
+            IRoute::PATH         => '/password_manager/share[/]'
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Share::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Share::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Add::class]
-            , 'method'     => IVerb::PUT
-            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Add::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_ADD
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, AddOrganization::class]
+            , IRoute::METHOD     => IVerb::PUT
+            , IRoute::NAME       => AddOrganization::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_DELETE
-            , 'middleware' => [NodeAccessMiddleware::class, Delete::class]
-            , 'method'     => IVerb::DELETE
-            , 'name'       => Delete::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_DELETE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Delete::class]
+            , IRoute::METHOD     => IVerb::DELETE
+            , IRoute::NAME       => Delete::class
         ],
         [
-            'path'         => '/password_manager/node/get/:node_id[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Get::class]
-            , 'method'     => IVerb::GET
-            , 'name'       => \KSA\PasswordManager\Api\Node\Get::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_GET_BY_ID
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, NodeGet::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => NodeGet::class
         ],
         [
-            'path'         => '/password_manager/node/name/:name[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, GetByName::class]
-            , 'method'     => IVerb::GET
-            , 'name'       => GetByName::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_GET_BY_NAME
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, GetByName::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => GetByName::class
         ],
         [
-            'path'         => '/password_manager/node/move[/]'
-            , 'middleware' => Move::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Move::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_MOVE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Move::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Move::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Update::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Update::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Update::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Organization\Update::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Remove::class]
-            , 'method'     => IVerb::DELETE
-            , 'name'       => \KSA\PasswordManager\Api\Node\Organization\Remove::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Organization\Remove::class]
+            , IRoute::METHOD     => IVerb::DELETE
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Organization\Remove::class
         ],
         [
-            'path'         => '/password_manager/users/shareable/:nodeId/:query/'
-            , 'middleware' => [NodeAccessMiddleware::class, ShareableUsers::class]
-            , 'method'     => IVerb::GET
-            , 'name'       => ShareableUsers::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_USERS_SHAREABLE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, ShareableUsers::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => ShareableUsers::class
         ],
         [
-            'path'         => '/password_manager/attachments/add[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Add::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Add::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_ADD
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Add::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Add::class
         ],
         [
-            'path'         => '/password_manager/attachments/get/:nodeId[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Get::class]
-            , 'method'     => IVerb::GET
-            , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Get::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_GET_BY_NODE_ID
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Get::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Get::class
         ],
         [
-            'path'         => '/password_manager/attachments/remove[/]'
-            , 'middleware' => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_REMOVE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Remove::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
         ],
         [
-            'path'         => '/password_manager/node/update/avatar[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, Update::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => Update::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE_AVATAR
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Update::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Update::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_CREATE
-            , 'middleware' => Create::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Create::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_CREATE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Create::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Create::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_ALL
-            , 'middleware' => ChartData::class
-            , 'method'     => IVerb::GET
-            , 'name'       => ChartData::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_ALL
+            , IRoute::MIDDLEWARE => ChartData::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => ChartData::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL
-            , 'middleware' => ChartDetailData::class
-            , 'method'     => IVerb::GET
-            , 'name'       => ChartDetailData::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL
+            , IRoute::MIDDLEWARE => ChartDetailData::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => ChartDetailData::class
         ],
         [
-            'path'         => '/password_manager/credential/get/:node_id[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Get::class]
-            , 'method'     => IVerb::GET
-            , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_GET_BY_NODE_ID
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Get::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
         ],
         [
-            'path'         => '/password_manager/credential/update[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Update::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Update::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Update::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Update::class
         ],
         [
-            'path'         => '/password_manager/node/create[/]'
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Folder\Create::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Node\Folder\Create::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_CREATE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Folder\Create::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Folder\Create::class
         ],
         [
-            'path'         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
-            , 'middleware' => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Update::class]
-            , 'method'     => IVerb::POST
-            , 'name'       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Update::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [

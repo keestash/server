@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Repository\Node;
 
 use DateTime;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\PHPAlgorithms\Common\Exception\NodeNotFoundException;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\DTO\Http\JWT\Audience;
@@ -45,12 +46,12 @@ class FileRepository {
     private IBackend           $backend;
 
     public function __construct(
-        IBackend $backend
-        , NodeRepository $nodeRepository
-        , IDateTimeService $dateTimeService
+        IBackend             $backend
+        , NodeRepository     $nodeRepository
+        , IDateTimeService   $dateTimeService
         , CoreFileRepository $fileRepository
-        , ILogger $logger
-        , IJWTService $jwtService
+        , ILogger            $logger
+        , IJWTService        $jwtService
     ) {
         $this->nodeRepository  = $nodeRepository;
         $this->dateTimeService = $dateTimeService;
@@ -148,7 +149,7 @@ class FileRepository {
 
     }
 
-    public function getNode(IFile $file): ?Node {
+    public function getNode(IFile $file): Node {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
             [
@@ -159,11 +160,19 @@ class FileRepository {
             ->where('file_id = ?')
             ->setParameter(0, $file->getId());
 
-        $result = $queryBuilder->executeQuery();
-        $row    = $result->fetchAllNumeric()[0];
-        $nodeId = (int) $row[0];
+        $result   = $queryBuilder->executeQuery();
+        $rows     = $result->fetchAllNumeric();
+        $rowCount = count($rows);
 
-        return $this->nodeRepository->getNode($nodeId, 0, 0);
+        if (0 === $rowCount) {
+            throw new NodeNotFoundException();
+        }
+
+        return $this->nodeRepository->getNode(
+            (int) $rows[0][0]
+            , 0
+            , 0
+        );
     }
 
     public function removeByFile(IFile $file): bool {

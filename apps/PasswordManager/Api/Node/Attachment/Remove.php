@@ -21,11 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
+use Keestash\Exception\FileNotFoundException;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
@@ -41,16 +44,19 @@ class Remove implements RequestHandlerInterface {
     private DataManager     $dataManager;
     private FileRepository  $nodeFileRepository;
     private IL10N           $translator;
+    private AccessService   $accessService;
 
     public function __construct(
-        IFileRepository $fileRepository
-        , IL10N $l10n
+        IFileRepository  $fileRepository
+        , IL10N          $l10n
         , FileRepository $nodeFileRepository
-        , Config $config
+        , Config         $config
+        , AccessService  $accessService
     ) {
         $this->translator         = $l10n;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->fileRepository     = $fileRepository;
+        $this->accessService      = $accessService;
 
         $this->dataManager = new DataManager(
             ConfigProvider::APP_ID
@@ -61,70 +67,51 @@ class Remove implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
-        $fileId     = $parameters["fileId"] ?? null;
+        $fileId     = $parameters["fileId"] ?? -1;
+        $user       = $request->getAttribute(IToken::class)->getUser();
 
-        if (null === $fileId) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no subject id given")
-                ]
-            );
-
+        try {
+            $file = $this->fileRepository->get((int) $fileId);
+        } catch (FileNotFoundException $exception) {
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        $file = $this->fileRepository->get((int) $fileId);
+        $node = $this->nodeFileRepository->getNode($file);
 
-        if (null == $file) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no file found")
-                ]
-            );
+        if (false === $this->accessService->hasAccess($node, $user)) {
+            return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
         $removed = $this->dataManager->remove($file);
 
         if (false === $removed) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could not remove from file system")
-                ]
-            );
+            return new JsonResponse([
+                "message" => $this->translator->translate("could not remove from file system")
+            ], IResponse::NOT_MODIFIED);
         }
 
         $removed = $this->nodeFileRepository->removeByFile($file);
 
         if (false === $removed) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could unlink to node")
-                ]
-            );
-
+            return new JsonResponse([
+                "message" => $this->translator->translate("could unlink to node")
+            ], IResponse::NOT_MODIFIED);
         }
 
         $removed = $this->fileRepository->remove($file);
 
         if (false === $removed) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("could not remove")
-                ]
-            );
+            return new JsonResponse([
+                "message" => $this->translator->translate("could not remove")
+            ], IResponse::NOT_MODIFIED);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "message" => $this->translator->translate("file removed")
                 , "file"  => $file
             ]
+            , IResponse::OK
         );
 
     }

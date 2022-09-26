@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use Keestash\Api\Response\JsonResponse;
-use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\UserChangedEvent;
 use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -55,7 +54,6 @@ class User implements RequestHandlerInterface {
         $this->userRepository             = $userRepository;
         $this->eventManager               = $eventManager;
     }
-
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters     = json_decode((string) $request->getBody(), true);

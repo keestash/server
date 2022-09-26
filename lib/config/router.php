@@ -22,14 +22,16 @@ declare(strict_types=1);
 
 use Keestash\Api\PingHandler;
 use Keestash\ConfigProvider;
+use KSP\Api\IRoute;
+use KSP\Api\IVerb;
 
 return [
-    ConfigProvider::ROUTES => [
+    ConfigProvider::ROUTES        => [
         [
-            'path'       => '/ping[/]',
-            'middleware' => PingHandler::class,
-            'name'       => PingHandler::class,
-            'method'     => 'get'
+            IRoute::PATH       => '/ping[/]',
+            IRoute::MIDDLEWARE => PingHandler::class,
+            IRoute::NAME       => PingHandler::class,
+            IRoute::METHOD     => IVerb::GET
         ]
     ],
     ConfigProvider::PUBLIC_ROUTES => [

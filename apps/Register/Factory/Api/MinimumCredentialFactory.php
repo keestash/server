@@ -21,17 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\Register\Factory\Api;
 
-use Keestash\Core\Service\User\UserService;
 use KSA\Register\Api\MinimumCredential;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
 
 class MinimumCredentialFactory {
 
     public function __invoke(ContainerInterface $container): MinimumCredential {
         return new MinimumCredential(
-            $container->get(IL10N::class)
-            , $container->get(UserService::class)
+            $container->get(IUserService::class)
         );
     }
 

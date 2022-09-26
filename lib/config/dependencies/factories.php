@@ -27,6 +27,7 @@ use GuzzleHttp\Client;
 use Keestash\App\Config\Diff;
 use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
+use Keestash\Command\Keestash\Events;
 use Keestash\Command\Permission\Add;
 use Keestash\Command\Permission\AssignPermissionToRole;
 use Keestash\Command\Permission\Get;
@@ -39,7 +40,6 @@ use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\EventManager\EventManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\LoggerManager\LoggerManager;
-use Keestash\Core\Manager\SessionManager\SessionManager;
 use Keestash\Core\Manager\SettingManager\SettingManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
@@ -90,9 +90,11 @@ use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
+use Keestash\Event\Listener\RolesAndPermissionsListener;
 use Keestash\Factory\App\Config\DiffFactory;
 use Keestash\Factory\App\Cors\ProjectConfigurationFactory;
 use Keestash\Factory\App\Loader\LoaderFactory;
+use Keestash\Factory\Command\Keestash\EventsFactory;
 use Keestash\Factory\Command\Keestash\WorkerFactory;
 use Keestash\Factory\Command\Permission\AddFactory;
 use Keestash\Factory\Command\Permission\AssignPermissionToRoleFactory;
@@ -110,8 +112,6 @@ use Keestash\Factory\Core\Manager\CookieManager\CookieManagerFactory;
 use Keestash\Factory\Core\Manager\EventManager\EventManagerFactory;
 use Keestash\Factory\Core\Manager\FileManager\FileManagerFactory;
 use Keestash\Factory\Core\Manager\Logger\LoggerManagerFactory;
-use Keestash\Factory\Core\Manager\SessionManager\SessionHandlerFactory;
-use Keestash\Factory\Core\Manager\SessionManager\SessionManagerFactory;
 use Keestash\Factory\Core\Repository\ApiLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\AppRepository\AppRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositoryFactory;
@@ -154,8 +154,10 @@ use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
 use Keestash\Factory\Core\System\RateLimit\FileRateLimiterFactory;
+use Keestash\Factory\Event\Listener\RolesAndPermissionsListenerFactory;
 use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
+use Keestash\Factory\Middleware\Api\PermissionMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\RateLimiterMiddlewareFactory;
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
 use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
@@ -172,6 +174,7 @@ use Keestash\L10N\GetText;
 use Keestash\Legacy\Legacy;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
+use Keestash\Middleware\Api\PermissionMiddleware;
 use Keestash\Middleware\Api\RateLimiterMiddleware;
 use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
@@ -222,8 +225,6 @@ return [
     JobRepository::class                                           => JobRepositoryFactory::class,
     LockHandler::class                                             => AppLockHandlerFactory::class,
     \Keestash\Core\System\Installation\Instance\LockHandler::class => InstanceLockHandlerFactory::class,
-    SessionManager::class                                          => SessionManagerFactory::class,
-    SessionHandler::class                                          => SessionHandlerFactory::class,
     LoggedInMiddleware::class                                      => LoggedInMiddlewareFactory::class,
     AppRenderer::class                                             => AppRendererFactory::class,
     Diff::class                                                    => DiffFactory::class,
@@ -241,6 +242,7 @@ return [
     DispatchMiddleware::class                                      => DispatchMiddlewareFactory::class,
     ApplicationStartedMiddleware::class                            => ApplicationStartedMiddlewareFactory::class,
     RateLimiterMiddleware::class                                   => RateLimiterMiddlewareFactory::class,
+    PermissionMiddleware::class                                    => PermissionMiddlewareFactory::class,
 
     // api
     KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
@@ -299,6 +301,12 @@ return [
 
     // command
     \Keestash\Command\Keestash\Worker::class => WorkerFactory::class
+    , Events::class                          => EventsFactory::class
+
+    // command
+    // --- listener
+    , RolesAndPermissionsListener::class     => RolesAndPermissionsListenerFactory::class
+
     , Get::class                             => GetFactory::class
     , \Keestash\Command\Role\Get::class      => \Keestash\Factory\Command\Role\GetFactory::class
     , RolesByUser::class                     => RolesByUserFactory::class

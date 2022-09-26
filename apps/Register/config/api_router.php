@@ -43,13 +43,13 @@ return [
             , IRoute::NAME       => Add::class
         ],
         [
-            IRoute::PATH         => '/user/mail/exists/:address[/]'
+            IRoute::PATH         => ConfigProvider::USER_EXISTS_BY_MAIL
             , IRoute::MIDDLEWARE => MailExists::class
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => MailExists::class
         ],
         [
-            IRoute::PATH         => '/user/exists/:userName[/]'
+            IRoute::PATH         => ConfigProvider::USER_EXISTS_BY_USERNAME
             , IRoute::MIDDLEWARE => Exists::class
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => Exists::class

@@ -25,6 +25,7 @@ use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Router\Verification;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\UserNotFoundException;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -79,16 +80,15 @@ class Login implements RequestHandlerInterface {
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
 
-        $user     = $this->userRepository->getUser($userName);
-        $demoUser = $this->userService->getDemoUser();
-
-        if (null === $user) {
+        try {
+            $user     = $this->userRepository->getUser($userName);
+            $demoUser = $this->userService->getDemoUser();
+        } catch (UserNotFoundException $exception) {
             return new JsonResponse(
                 'no user found'
                 , IResponse::NOT_FOUND
             );
         }
-
         if (true === $isDemoMode && $user->getId() !== $demoUser->getId()) {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }

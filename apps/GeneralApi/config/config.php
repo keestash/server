@@ -21,24 +21,13 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use KSA\GeneralApi\Command\Info\Routes;
-use KSA\GeneralApi\Command\Migration\MigrateApps;
-use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
-use KSA\GeneralApi\Command\QualityTool\PHPStan;
-use KSA\GeneralApi\Command\Stylesheet\Compiler;
 
 return [
-    'dependencies'             => require __DIR__ . '/dependencies.php',
-    ConfigProvider::API_ROUTER => require __DIR__ . '/api_router.php',
-    ConfigProvider::WEB_ROUTER => require __DIR__ . '/web_router.php',
-    ConfigProvider::COMMANDS   => [
-        MigrateApps::class
-        , PHPStan::class
-        , ClearBundleJS::class
-        , Compiler::class
-        , Routes::class
-    ],
-
+    ConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
+    ConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php',
+    ConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php',
+    ConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php',
+    ConfigProvider::COMMANDS     => require __DIR__ . '/commands.php',
     'templates'              => [
         'paths' => [
             'generalApi' => [__DIR__ . '/../template/']

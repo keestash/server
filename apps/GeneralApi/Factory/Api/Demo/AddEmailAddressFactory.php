@@ -24,7 +24,6 @@ namespace KSA\GeneralApi\Factory\Api\Demo;
 use Keestash\Core\Service\User\UserService;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\Settings\Repository\DemoUsersRepository;
-use KSP\Core\Manager\CookieManager\ICookieManager;
 use Psr\Container\ContainerInterface;
 
 class AddEmailAddressFactory {
@@ -33,7 +32,6 @@ class AddEmailAddressFactory {
         return new AddEmailAddress(
             $container->get(DemoUsersRepository::class)
             , $container->get(UserService::class)
-            , $container->get(ICookieManager::class)
         );
     }
 

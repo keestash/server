@@ -29,7 +29,10 @@ final class ConfigProvider {
     public const REGISTER_ADD           = '/register/add[/]';
     public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';
     public const REGISTER_CONFIGURATION = '/register/configuration[/]';
-    public const APP_ID                 = 'register';
+
+    public const USER_EXISTS_BY_USERNAME = '/user/exists/:userName[/]';
+    public const USER_EXISTS_BY_MAIL     = '/user/mail/exists/:address[/]';
+    public const APP_ID                  = 'register';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

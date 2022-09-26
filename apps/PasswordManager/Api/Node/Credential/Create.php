@@ -136,7 +136,6 @@ class Create implements RequestHandlerInterface {
      * @throws InvalidNodeTypeException
      */
     private function getParentNode(string $parent, IToken $token): NodeObject {
-        $this->logger->debug($parent);
         if (NodeObject::ROOT === $parent) {
             return $this->nodeRepository->getRootForUser($token->getUser(), 0, 1);
         }

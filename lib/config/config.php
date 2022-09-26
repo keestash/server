@@ -42,6 +42,7 @@ return [
     , ConfigProvider::INSTALL_INSTANCE_ROUTE           => 'install_instance'
     , ConfigProvider::DEPENDENCIES                     => require __DIR__ . '/dependencies.php'
     , ConfigProvider::COMMANDS                         => require __DIR__ . '/commands.php'
+    , ConfigProvider::EVENTS                           => require __DIR__ . '/events.php'
     , ConfigProvider::API_ROUTER                       => require __DIR__ . '/router.php'
     , ConfigProvider::TEMPLATES                        => [
         'extension' => 'twig'

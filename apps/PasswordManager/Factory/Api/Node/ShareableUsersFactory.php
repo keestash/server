@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\ShareableUsers;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
@@ -37,7 +36,6 @@ class ShareableUsersFactory {
             , $container->get(NodeRepository::class)
             , $container->get(ILogger::class)
             , $container->get(IJWTService::class)
-            , $container->get(AccessService::class)
         );
     }
 

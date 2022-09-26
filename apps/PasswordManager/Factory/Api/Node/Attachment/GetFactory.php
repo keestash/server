@@ -25,7 +25,6 @@ use KSA\PasswordManager\Api\Node\Attachment\Get;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Service\File\Icon\IIconService;
-use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -33,8 +32,7 @@ class GetFactory {
 
     public function __invoke(ContainerInterface $container): Get {
         return new Get(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
             , $container->get(FileRepository::class)
             , $container->get(IIconService::class)
             , $container->get(Config::class)

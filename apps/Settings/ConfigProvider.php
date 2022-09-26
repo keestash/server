@@ -21,67 +21,31 @@ declare(strict_types=1);
 
 namespace KSA\Settings;
 
-use Keestash\ConfigProvider as CoreConfigProvider;
-use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
-use KSA\Settings\Command\UpdatePassword;
-use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
-use KSA\Settings\Event\Listener\PostStateChange;
-use KSA\Settings\Event\Organization\OrganizationAddedEvent;
-use KSP\Core\DTO\File\IExtension;
-
-// TODO register background jobs
-//"background_jobs": {
-//"KSA\\Users\\BackgroundJob\\UserDeleteTask": {
-//"type": "regular.type.job",
-//"interval": 68400
-//}
-//}
-
 final class ConfigProvider {
 
-    public const SETTINGS              = "/settings[/]";
-    public const APP_ID                = 'settings';
-    public const ORGANIZATION_LIST_ALL = '/organizations/all/[:includeInactive/][:userHash/]';
+    public const SETTINGS = "/settings[/]";
+    public const APP_ID   = 'settings';
 
-    public const ORGANIZATION_SINGLE = "/organizations/:id[/]";
+    public const USER_GET_HASH             = '/users/get/:userHash[/]';
+    public const USER_GET_ALL              = '/users/all[/]';
+    public const USER_LOCK                 = '/users/lock[/]';
+    public const USER_PROFILE_IMAGE_UPDATE = '/users/profile_image/update[/]';
+    public const USER_ADD                  = '/users/add[/]';
+    public const USER_EDIT                 = '/users/edit[/]';
+    public const USER_REMOVE               = '/users/remove[/]';
+
+    public const ORGANIZATION_SINGLE      = "/organizations/:id[/]";
+    public const ORGANIZATION_LIST_ALL    = '/organizations/all/[:includeInactive/][:userHash/]';
+    public const ORGANIZATION_ACTIVATE    = '/organizations/activate[/]';
+    public const ORGANIZATION_ADD         = '/organizations/add[/]';
+    public const ORGANIZATION_BY_ID       = '/organizations/:id[/]';
+    public const ORGANIZATION_UPDATE      = '/organizations/update[/]';
+    public const ORGANIZATION_USER_CHANGE = '/organizations/user/change[/]';
 
     public const ALLOWED_PROFILE_IMAGE_EXTENSIONS = "extensions.image.profile.allowed";
 
     public function __invoke(): array {
-        return [
-            CoreConfigProvider::DEPENDENCIES                   => require __DIR__ . '/config/dependencies.php'
-            , CoreConfigProvider::API_ROUTER                   => require __DIR__ . '/config/api_router.php'
-            , CoreConfigProvider::WEB_ROUTER                   => require __DIR__ . '/config/web_router.php'
-            , CoreConfigProvider::APP_LIST                     => [
-                ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 2,
-                    CoreConfigProvider::APP_NAME       => 'Settings',
-                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::SETTINGS,
-                    CoreConfigProvider::APP_VERSION    => 1,
-                ],
-            ]
-            , CoreConfigProvider::EVENTS                       => [
-                OrganizationAddedEvent::class => [
-                    OrganizationAddedEventListener::class
-                ]
-                , UserStateDeleteEvent::class => [
-                    PostStateChange::class
-                ]
-            ]
-            , CoreConfigProvider::COMMANDS                     => [
-                UpdatePassword::class
-            ]
-            , CoreConfigProvider::TEMPLATES                    => [
-                'paths' => [
-                    'settings' => [__DIR__ . '/template/']
-                ]
-            ]
-            , ConfigProvider::ALLOWED_PROFILE_IMAGE_EXTENSIONS => [
-                IExtension::PNG
-                , IExtension::JPEG
-                , IExtension::JPG
-            ]
-        ];
+        return require __DIR__ . '/config/config.php';
     }
 
 }

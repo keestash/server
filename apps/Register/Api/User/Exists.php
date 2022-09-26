@@ -21,9 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,31 +33,32 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Exists implements RequestHandlerInterface {
 
     private IUserRepository $userRepository;
+    private ILogger         $logger;
 
-    public function __construct(IUserRepository $userRepository) {
+    public function __construct(
+        IUserRepository $userRepository
+        , ILogger       $logger
+    ) {
         $this->userRepository = $userRepository;
+        $this->logger         = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $userName = $request->getAttribute("userName");
-        $users    = $this->userRepository->getAll();
-        $user     = null;
+        $userName  = $request->getAttribute("userName");
+        $userFound = false;
 
-        /** @var IUser $iUser */
-        foreach ($users as $iUser) {
-
-            if (strtolower($userName) === strtolower($iUser->getName())) {
-                $user = $iUser;
-                break;
-            }
-
+        try {
+            $this->userRepository->getUser($userName);
+            $userFound = true;
+        } catch (UserNotFoundException $exception) {
+            $this->logger->warning('no user found', ['exception' => $exception]);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "user_exists" => $user !== null
+        return new JsonResponse(
+            [
+                "user_exists" => $userFound
             ]
+            , IResponse::OK
         );
     }
 

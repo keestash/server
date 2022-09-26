@@ -77,7 +77,7 @@
     "roave/security-advisories": "dev-latest",
     "squizlabs/php_codesniffer": "^3.5",
     "symfony/var-dumper": "^5.2",
-    "vimeo/psalm": "^4.11"
+    "vimeo/psalm": "^4.27.0"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

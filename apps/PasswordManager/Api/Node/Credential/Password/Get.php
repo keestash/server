@@ -59,7 +59,7 @@ class Get implements RequestHandlerInterface {
         $nodeId = (int) $request->getAttribute("node_id", 0);
 
         try {
-            $node = $this->nodeRepository->getNode($nodeId, 0, 1);
+            $node = $this->nodeRepository->getNode($nodeId, 0, 0);
         } catch (PasswordManagerException $exception) {
             $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
             return new ErrorResponse();

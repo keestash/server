@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Pwned;
 
 use doganoo\PHPAlgorithms\Datastructure\Set\HashSet;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
@@ -40,22 +40,24 @@ class ChartDetailData implements RequestHandlerInterface {
     private PwnedBreachesRepository  $pwnedBreachesRepository;
     private PwnedPasswordsRepository $pwnedPasswordsRepository;
     private NodeRepository           $nodeRepository;
+    private AccessService            $accessService;
 
     public function __construct(
         PwnedBreachesRepository    $pwnedBreachesRepository
         , PwnedPasswordsRepository $pwnedPasswordsRepository
         , NodeRepository           $nodeRepository
+        , AccessService            $accessService
     ) {
         $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
         $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
         $this->nodeRepository           = $nodeRepository;
+        $this->accessService            = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken|null $token */
         $token  = $request->getAttribute(IToken::class);
         $result = [];
-        $cache  = new HashTable();
 
         if (null === $token) {
             return new JsonResponse(['user not found'], IResponse::NOT_FOUND);
@@ -70,17 +72,14 @@ class ChartDetailData implements RequestHandlerInterface {
             /** @var Passwords $password */
             $password = $passwords->get($key);
 
-            if ($cache->contains($password->getNodeId())) {
-                $node = $cache->get($password->getNodeId());
-            } else {
-                $node = $this->nodeRepository->getNode($password->getNodeId(), 0, 1);
-                $cache->put($password->getNodeId(), $node);
+            if (false === $this->accessService->hasAccess($password->getNode(), $token->getUser())) {
+                $passwords->remove($key);
             }
 
             $result['passwords'][] = [
                 'node'       => [
-                    'id'     => $node->getId()
-                    , 'name' => $node->getName()
+                    'id'     => $password->getNode()->getId()
+                    , 'name' => $password->getNode()->getName()
                 ]
                 , 'severity' => $password->getSeverity()
             ];
@@ -90,21 +89,18 @@ class ChartDetailData implements RequestHandlerInterface {
             /** @var Breaches $breaches */
             $breaches = $breachesTable->get($key);
 
+            if (false === $this->accessService->hasAccess($breaches->getNode(), $token->getUser())) {
+                $breachesTable->remove($key);
+            }
+
             if (null === $breaches->getHibpData()) {
                 continue;
             }
 
-            if ($cache->contains($breaches->getNodeId())) {
-                $node = $cache->get($breaches->getNodeId());
-            } else {
-                $node = $this->nodeRepository->getNode($breaches->getNodeId(), 0, 1);
-                $cache->put($breaches->getNodeId(), $node);
-            }
-
             $result['breaches'][] = [
                 'node'   => [
-                    'id'     => $node->getId()
-                    , 'name' => $node->getName()
+                    'id'     => $breaches->getNode()->getId()
+                    , 'name' => $breaches->getNode()->getName()
                 ]
                 , 'hibp' => $this->getHibpData($breaches->getHibpData())
             ];

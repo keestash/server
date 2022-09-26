@@ -81,7 +81,7 @@ class UserDeleteTask extends Task {
                     new UserPreRemovedEvent($userState->getUser())
                 );
 
-            $response = $removed = $this->userService->removeUser($userState->getUser());
+            $response = $this->userService->removeUser($userState->getUser());
             $removed  = true === $response["success"];
 
             if (true === $removed) {

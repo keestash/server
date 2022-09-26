@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Avatar;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
 use Keestash\Core\Service\File\FileService as CoreFileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
@@ -34,6 +34,7 @@ use KSA\PasswordManager\Exception\Node\Credential\NoFileException;
 use KSA\PasswordManager\Exception\Node\NodeNotFoundException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\DataManager\IDataManager;
@@ -55,15 +56,17 @@ class Update implements RequestHandlerInterface {
     private NodeRepository     $nodeRepository;
     private RawFileService     $rawFileService;
     private CoreFileService    $coreFileService;
+    private AccessService      $accessService;
 
     public function __construct(
         IUploadFileService $uploadFileService
-        , IFileRepository $fileRepository
-        , FileRepository $nodeFileRepository
-        , NodeRepository $nodeRepository
-        , RawFileService $rawFileService
-        , CoreFileService $coreFileService
-        , Config $config
+        , IFileRepository  $fileRepository
+        , FileRepository   $nodeFileRepository
+        , NodeRepository   $nodeRepository
+        , RawFileService   $rawFileService
+        , CoreFileService  $coreFileService
+        , Config           $config
+        , AccessService    $accessService
     ) {
         $this->uploadFileService  = $uploadFileService;
         $this->fileRepository     = $fileRepository;
@@ -71,6 +74,7 @@ class Update implements RequestHandlerInterface {
         $this->nodeRepository     = $nodeRepository;
         $this->rawFileService     = $rawFileService;
         $this->coreFileService    = $coreFileService;
+        $this->accessService      = $accessService;
         $this->dataManager        = new DataManager(
             ConfigProvider::APP_ID
             , $config
@@ -101,8 +105,8 @@ class Update implements RequestHandlerInterface {
 
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
-        if ($token->getUser()->getId() !== $node->getUser()->getId()) {
-            throw new NodeNotFoundException("node does not belong to user");
+        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
+            return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
         $avatarFile = null;
@@ -116,7 +120,7 @@ class Update implements RequestHandlerInterface {
             }
         }
 
-        $result = $this->uploadFileService->validateUploadedFile($nodeAvatar);
+        $result  = $this->uploadFileService->validateUploadedFile($nodeAvatar);
         $isValid = $result->getResults()->length() === 0;
 
         if (false === $isValid) {
@@ -164,12 +168,13 @@ class Update implements RequestHandlerInterface {
             $this->fileRepository->update($avatarFile->getFile());
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "base64" => $this->rawFileService->stringToBase64($avatarFile->getFile()->getFullPath())
             ]
+            , IResponse::OK
         );
     }
+
 
 }

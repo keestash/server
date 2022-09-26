@@ -20,28 +20,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider;
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
-use KSA\GeneralApi\Api\Thumbnail\File;
 use KSA\GeneralApi\Api\Thumbnail\Get;
+use KSA\GeneralApi\ConfigProvider;
+use KSP\Api\IRoute;
 use KSP\Api\IVerb;
 
 return [
-    ConfigProvider::ROUTES        => [
+    CoreConfigProvider::ROUTES        => [
         [
-            'path'         => \KSA\GeneralApi\ConfigProvider::THUMBNAIL_BY_EXTENSION
-            , 'middleware' => Get::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Get::class
+            IRoute::PATH         => ConfigProvider::THUMBNAIL_BY_EXTENSION
+            , IRoute::MIDDLEWARE => Get::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Get::class
         ],
         [
-            'path'         => \KSA\GeneralApi\ConfigProvider::DEMOUSERS_ADD
-            , 'middleware' => AddEmailAddress::class
-            , 'method'     => IVerb::POST
-            , 'name'       => AddEmailAddress::class
+            IRoute::PATH         => ConfigProvider::DEMOUSERS_ADD
+            , IRoute::MIDDLEWARE => AddEmailAddress::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => AddEmailAddress::class
         ],
     ],
-    ConfigProvider::PUBLIC_ROUTES => [
-        \KSA\GeneralApi\ConfigProvider::DEMOUSERS_ADD
+    CoreConfigProvider::PUBLIC_ROUTES => [
+        ConfigProvider::DEMOUSERS_ADD
     ]
 ];

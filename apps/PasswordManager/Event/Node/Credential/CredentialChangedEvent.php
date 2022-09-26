@@ -39,14 +39,14 @@ class CredentialChangedEvent extends Event {
     ) {
 
         $this->passwords = new Passwords(
-            $credential->getId()
+            $credential
             , 0
             , new DateTimeImmutable()
             , $updateTs
         );
 
         $this->breaches = new Breaches(
-            $credential->getId()
+            $credential
             , null
             , new DateTimeImmutable()
             , $updateTs
