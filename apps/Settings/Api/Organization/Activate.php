@@ -21,13 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\Organization;
 
-use DateTime;
+use DateTimeImmutable;
+use doganoo\SimpleRBAC\Service\RBACServiceInterface;
 use Exception;
-use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\OrganizationActivatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -69,7 +70,7 @@ class Activate implements RequestHandlerInterface {
 
         $organization->setActiveTs(
             true === $activate
-                ? new DateTime()
+                ? new DateTimeImmutable()
                 : null
         );
 
@@ -86,13 +87,12 @@ class Activate implements RequestHandlerInterface {
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "organization" => $organization
             ]
+            , IResponse::OK
         );
     }
-
 
 }

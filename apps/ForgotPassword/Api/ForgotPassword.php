@@ -24,16 +24,13 @@ namespace KSA\ForgotPassword\Api;
 
 use DateTime;
 use doganoo\DI\Object\String\IStringService;
-use doganoo\PHPUtil\Datatype\StringClass;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Queue\Stamp;
-use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\ConfigProvider;
-use KSA\ForgotPassword\Entity\Queue\Stamp\PasswordLinkGeneratedStamp;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;

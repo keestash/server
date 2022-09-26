@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Api\User;
 
-use KSA\Settings\Api\User\UserLock;
 use KSA\Settings\Api\User\UserRemove;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;

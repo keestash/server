@@ -21,14 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\User;
 
-use DateTime;
 use doganoo\PHPUtil\Datatype\StringClass;
-use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\DTO\User\User;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\UserNotCreatedException;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,74 +35,49 @@ use Psr\Http\Server\RequestHandlerInterface;
 class UserAdd implements RequestHandlerInterface {
 
     private UserService            $userService;
-    private IUserRepository        $userRepository;
     private IUserRepositoryService $userRepositoryService;
+    private ILogger                $logger;
 
     public function __construct(
-        UserService $userService
-        , IUserRepository $userManager
+        UserService              $userService
         , IUserRepositoryService $userRepositoryService
+        , ILogger                $logger
     ) {
         $this->userService           = $userService;
-        $this->userRepository        = $userManager;
         $this->userRepositoryService = $userRepositoryService;
-    }
-
-    private function toUser(array $params): IUser {
-        $userName  = $params[0];
-        $firstName = $params[1];
-        $lastName  = $params[2];
-        $email     = $params[3];
-        $phone     = $params[4];
-        $password  = $params[5];
-        $website   = $params[7];
-
-        $user = new User();
-        $user->setName($userName);
-        $user->setFirstName($firstName);
-        $user->setLastName($lastName);
-        $user->setEmail($email);
-        $user->setPhone($phone);
-        $user->setPassword($password);
-        $user->setCreateTs(new DateTime());
-        $user->setWebsite($website);
-        $user->setHash($this->userService->getRandomHash());
-
-        return $user;
+        $this->logger                = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-
-        $parameters     = json_decode((string) $request->getBody(), true);
-        $passwordRepeat = $parameters["password_repeat"];
-        $user           = $this->toUser($parameters);
-
-        $response = LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_NOT_OK
-            , []
+        $parameters     = json_decode(
+            (string) $request->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
         );
-        if (true === $this->userRepositoryService->userExistsByName($user->getName())) return $response;
-        if (false === (new StringClass($user->getPassword()))->equals($passwordRepeat)) return $response;
-        if (false === $this->userService->passwordHasMinimumRequirements($user->getPassword())) return $response;
-        if (false === $this->userService->validEmail($user->getEmail())) return $response;
-        if (false === $this->userService->validWebsite($user->getWebsite())) return $response;
+        $passwordRepeat = $parameters["password_repeat"];
+        $user           = $this->userService->toUser((array) $parameters);
+
+        if (true === $this->userRepositoryService->userExistsByName($user->getName())) return new JsonResponse([], IResponse::NOT_FOUND);
+        if (false === (new StringClass($user->getPassword()))->equals($passwordRepeat)) return new JsonResponse([], IResponse::BAD_REQUEST);
+        if (false === $this->userService->passwordHasMinimumRequirements($user->getPassword())) return new JsonResponse([], IResponse::BAD_REQUEST);
+        if (false === $this->userService->validEmail($user->getEmail())) return new JsonResponse([], IResponse::BAD_REQUEST);
+        if (false === $this->userService->validWebsite($user->getWebsite())) return new JsonResponse([], IResponse::BAD_REQUEST);
 
         $hash = $this->userService->hashPassword($user->getPassword());
         $user->setPassword($hash);
 
-        $userId = $this->userRepository->insert($user);
-
-        if (null !== $userId) {
-
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_OK
-                , [
-                    "User Created"
-                ]
+        try {
+            $this->userRepositoryService->createUser($user);
+            return new JsonResponse(
+                []
+                , IResponse::OK
             );
+        } catch (UserNotCreatedException $exception) {
+            $this->logger->error('failed to create user', ['exception' => $exception]);
+            return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
-        return $response;
     }
 
 }

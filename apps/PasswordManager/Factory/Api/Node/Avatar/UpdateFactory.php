@@ -26,6 +26,7 @@ use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
 use Laminas\Config\Config;
@@ -42,6 +43,7 @@ class UpdateFactory {
             , $container->get(RawFileService::class)
             , $container->get(FileService::class)
             , $container->get(Config::class)
+            , $container->get(AccessService::class)
         );
     }
 

@@ -21,23 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\InstallInstance;
 
-use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\InstallInstance\Api\Config\Get;
-use KSA\InstallInstance\Api\Config\Update;
-use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
-use KSA\InstallInstance\Command\DemoMode;
-use KSA\InstallInstance\Command\Install;
-use KSA\InstallInstance\Command\Uninstall;
-use KSA\InstallInstance\Controller\Controller;
-use KSA\InstallInstance\Factory\Api\Config\GetFactory;
-use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
-use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
-use KSA\InstallInstance\Factory\Command\DemoModeFactory;
-use KSA\InstallInstance\Factory\Command\InstallFactory;
-use KSA\InstallInstance\Factory\Command\UninstallFactory;
-use KSA\InstallInstance\Factory\Controller\ControllerFactory;
-use KSP\Api\IVerb;
-
 final class ConfigProvider {
 
     public const CONFIG_PROVIDER_INSTALLATION_ROUTES = 'routes.installation.provider.config';
@@ -48,93 +31,7 @@ final class ConfigProvider {
     public const APP_ID                              = 'install_instance';
 
     public function __invoke(): array {
-        return [
-            CoreConfigProvider::APP_LIST                => [
-                ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 6,
-                    CoreConfigProvider::APP_NAME       => 'Install Instance',
-                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::INSTALL_INSTANCE,
-                    CoreConfigProvider::APP_VERSION    => 1,
-                ],
-            ],
-            CoreConfigProvider::WEB_ROUTER              => [
-                CoreConfigProvider::ROUTES                 => [
-                    [
-                        'path'         => ConfigProvider::INSTALL_INSTANCE
-                        , 'middleware' => Controller::class
-                        , 'name'       => Controller::class
-                    ],
-                ],
-                CoreConfigProvider::PUBLIC_ROUTES          => [
-                    ConfigProvider::INSTALL_INSTANCE
-                ],
-                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
-                    ConfigProvider::INSTALL_INSTANCE => 'install_instance'
-                ],
-                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
-                    ConfigProvider::INSTALL_INSTANCE => 'install_instance'
-                ],
-            ],
-            CoreConfigProvider::INSTALL_INSTANCE_ROUTES => [
-                ConfigProvider::INSTALL_INSTANCE
-                , ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
-                , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
-                , ConfigProvider::INSTALL_INSTANCE_END_UPDATE
-            ],
-            'dependencies'                              => [
-                'factories' => [
-                    // api
-                    Get::class          => GetFactory::class
-                    , Update::class     => UpdateFactory::class
-                    , EndUpdate::class  => EndUpdateFactory::class
-
-                    // command
-                    , DemoMode::class   => DemoModeFactory::class
-                    , Uninstall::class  => UninstallFactory::class
-                    , Install::class    => InstallFactory::class
-
-                    // controller
-                    , Controller::class => ControllerFactory::class
-                ]
-            ],
-            CoreConfigProvider::API_ROUTER              => [
-                CoreConfigProvider::ROUTES        => [
-                    [
-                        'path'         => ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
-                        , 'middleware' => Update::class
-                        , 'method'     => IVerb::POST
-                        , 'name'       => Update::class
-                    ],
-                    [
-                        'path'         => ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
-                        , 'middleware' => Get::class
-                        , 'method'     => IVerb::GET
-                        , 'name'       => Get::class
-                    ],
-                    [
-                        'path'         => ConfigProvider::INSTALL_INSTANCE_END_UPDATE
-                        , 'middleware' => EndUpdate::class
-                        , 'method'     => IVerb::POST
-                        , 'name'       => EndUpdate::class
-                    ],
-                ],
-                CoreConfigProvider::PUBLIC_ROUTES => [
-                    ConfigProvider::INSTALL_INSTANCE_END_UPDATE
-                    , ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
-                    , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
-                ]
-            ],
-            CoreConfigProvider::COMMANDS                => [
-                Uninstall::class
-                , DemoMode::class
-                , Install::class
-            ],
-            'templates'                                 => [
-                'paths' => [
-                    'installInstance' => [__DIR__ . '/template']
-                ]
-            ]
-        ];
+        return require __DIR__ . '/config/config.php';
     }
 
 }

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Router;
 
-use Keestash\Core\Manager\RouterManager\Router\APIRouter;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -35,7 +35,7 @@ class Verification {
     private IUserRepository  $userRepository;
 
     public function __construct(
-        ITokenRepository $tokenRepository
+        ITokenRepository  $tokenRepository
         , IUserRepository $userRepository
     ) {
         $this->tokenRepository = $tokenRepository;
@@ -43,24 +43,25 @@ class Verification {
     }
 
     public function verifyToken(array $parameters): ?IToken {
+        try {
 
-        $tokenString = $parameters[Verification::FIELD_NAME_TOKEN] ?? null;
-        $userHash    = $parameters[Verification::FIELD_NAME_USER_HASH] ?? null;
+            $tokenString = $parameters[Verification::FIELD_NAME_TOKEN] ?? null;
+            $userHash    = $parameters[Verification::FIELD_NAME_USER_HASH] ?? null;
 
-        if (null === $tokenString) return null;
-        if (null === $userHash) return null;
+            if (null === $userHash) return null;
+            if (null === $tokenString) return null;
 
-        $user = $this->userRepository->getUserByHash($userHash);
+            $this->userRepository->getUserByHash($userHash);
+            $token = $this->tokenRepository->getByHash((string) $tokenString);
 
-        if (null === $user) return null;
+            if (null === $token) return null;
+            if ($token->getValue() !== $tokenString) return null;
+            if (true === $token->expired()) return null;
 
-        $token = $this->tokenRepository->getByHash((string) $tokenString);
-
-        if (null === $token) return null;
-        if ($token->getValue() !== $tokenString) return null;
-        if (true === $token->expired()) return null;
-
-        return $token;
+            return $token;
+        } catch (UserNotFoundException $exception) {
+            return null;
+        }
     }
 
 }

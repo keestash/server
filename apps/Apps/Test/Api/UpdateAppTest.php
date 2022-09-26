@@ -36,27 +36,18 @@ class UpdateAppTest extends TestCase {
         /** @var ResponseService $responseService */
         $responseService = $this->getServiceManager()->get(ResponseService::class);
         /** @var JsonResponse $response */
-        $response = $updateApp->handle(new ServerRequest());
+        $response = $updateApp->handle(
+            $this->getDefaultRequest()
+        );
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertTrue(false === $responseService->isValidResponse($response));
 
-        /** @var JsonResponse $response */
-        $response = $updateApp->handle(
-            new ServerRequest(
-                []
-                , []
-                , null
-                , null
-                , 'php://input'
-                , []
-                , []
-                , []
-                , [
-                    'app_id'     => 1
-                    , 'activate' => "true"
-                ]
-            )
+        $this->getDefaultRequest(
+            [
+                'app_id'     => 1
+                , 'activate' => "true"
+            ]
         );
 
         $this->assertInstanceOf(JsonResponse::class, $response);

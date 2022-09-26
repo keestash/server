@@ -23,10 +23,10 @@ namespace KSA\PasswordManager\Api\Node;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Node\Node;
-use KSA\PasswordManager\Entity\Node\Node as NodeEntity;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
@@ -38,7 +38,6 @@ use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -133,11 +132,11 @@ class Get implements RequestHandlerInterface {
     /**
      * @param string $id
      * @param IToken $token
-     * @return NodeEntity
+     * @return Node
      * @throws PasswordManagerException
      * @throws InvalidNodeTypeException
      */
-    private function prepareNode(string $id, IToken $token): NodeEntity {
+    private function prepareNode(string $id, IToken $token): Node {
 
         // base case 1: we are requesting a regular node.
         //      select and return

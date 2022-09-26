@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
@@ -37,9 +38,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 class GetByName implements RequestHandlerInterface {
 
     private NodeRepository $nodeRepository;
+    private AccessService  $accessService;
 
-    public function __construct(NodeRepository $nodeRepository) {
+    public function __construct(
+        NodeRepository  $nodeRepository
+        , AccessService $accessService
+    ) {
         $this->nodeRepository = $nodeRepository;
+        $this->accessService  = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -60,7 +66,7 @@ class GetByName implements RequestHandlerInterface {
 
         /** @var Node $node */
         foreach ($list as $key => $node) {
-            if ($node->getUser()->getId() !== $token->getUser()->getId()) {
+            if (false === $this->accessService->hasAccess($node, $token->getUser())) {
                 $list->remove($key);
             }
         }

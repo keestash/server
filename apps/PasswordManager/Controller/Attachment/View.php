@@ -22,9 +22,10 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Controller\Attachment;
 
 
+use Keestash\Exception\FileNotFoundException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Controller\AppController;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
@@ -41,10 +42,10 @@ class View extends AppController {
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
-        , IL10N $l10n
-        , FileRepository $nodeFileRepository
-        , IFileRepository $fileRepository
-        , IAppRenderer $appRenderer
+        , IL10N                   $l10n
+        , FileRepository          $nodeFileRepository
+        , IFileRepository         $fileRepository
+        , IAppRenderer            $appRenderer
     ) {
         parent::__construct($appRenderer);
 
@@ -65,17 +66,18 @@ class View extends AppController {
             );
         }
 
-        $file = $this->fileRepository->get((int) $fileId);
-
-        if (null === $file) {
+        try {
+            $file = $this->fileRepository->get((int) $fileId);
+        } catch (FileNotFoundException $exception) {
             return $this->renderError(
                 $this->translator->translate("No file found (2)")
             );
         }
 
-        $node = $this->nodeFileRepository->getNode($file);
 
-        if (null === $node) {
+        try {
+            $node = $this->nodeFileRepository->getNode($file);
+        } catch (PasswordManagerException $exception) {
             return $this->renderError(
                 $this->translator->translate("No file found (3)")
             );

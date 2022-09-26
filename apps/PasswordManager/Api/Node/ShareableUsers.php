@@ -15,17 +15,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Exception\AccessDeniedException;
 use Keestash\Exception\InvalidParameterException;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
@@ -47,28 +43,23 @@ class ShareableUsers implements RequestHandlerInterface {
     private NodeRepository  $nodeRepository;
     private ILogger         $logger;
     private IJWTService     $jwtService;
-    private AccessService   $accessService;
 
     public function __construct(
         IUserRepository  $userRepository
         , NodeRepository $nodeRepository
         , ILogger        $logger
         , IJWTService    $jwtService
-        , AccessService  $accessService
     ) {
         $this->userRepository = $userRepository;
         $this->nodeRepository = $nodeRepository;
         $this->logger         = $logger;
         $this->jwtService     = $jwtService;
-        $this->accessService  = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $start  = microtime(true);
         $nodeId = $request->getAttribute("nodeId");
         $query  = $request->getAttribute("query");
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
             throw new InvalidParameterException();
@@ -80,21 +71,17 @@ class ShareableUsers implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        if (!$this->accessService->hasAccess($node, $token->getUser())) {
-            throw new AccessDeniedException();
-        }
-
         $all = $this->userRepository->searchUsers($query);
         $all = $this->excludeInvalidUsers($node, $all);
 
         $duration = microtime(true) - $start;
         $this->logger->debug('all users duration: ' . $duration);
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "user_list"  => $all
                 , "duration" => $duration
             ]
+            , IResponse::OK
         );
     }
 

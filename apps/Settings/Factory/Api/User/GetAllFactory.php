@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Api\User;
 
 use KSA\Settings\Api\User\GetAll;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Container\ContainerInterface;
 
@@ -30,8 +29,7 @@ class GetAllFactory {
 
     public function __invoke(ContainerInterface $container): GetAll {
         return new GetAll(
-            $container->get(ILogger::class)
-            , $container->get(IUserRepository::class)
+            $container->get(IUserRepository::class)
         );
     }
 

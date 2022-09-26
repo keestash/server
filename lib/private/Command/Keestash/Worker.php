@@ -77,10 +77,13 @@ class Worker extends KeestashCommand {
                 continue;
             }
 
-            $this->logger->debug("processing {$queue->length()} messages");
-
             /** @var IMessage $message */
             foreach ($queue as $message) {
+
+                if ($message->getAttempts() > 3) {
+                    continue;
+                }
+
                 $result = Result::getNotOk();
 
                 try {
@@ -102,7 +105,6 @@ class Worker extends KeestashCommand {
                     $this->logger->error('error processing message', ['exception' => $exception]);
                 }
 
-                $this->logger->debug('result code: ' . $result->getCode());
                 switch ($result->getCode()) {
                     case IResult::RETURN_CODE_OK:
                         $this->queueRepository->delete($message);

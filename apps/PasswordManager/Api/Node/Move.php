@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
-use DateTime;
-use Keestash\Api\Response\LegacyResponse;
+use DateTimeImmutable;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -30,7 +30,6 @@ use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -57,7 +56,6 @@ class Move implements RequestHandlerInterface {
         $this->accessService  = $accessService;
     }
 
-
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters   = (array) $request->getParsedBody();
         $nodeId       = $parameters["id"] ?? null;
@@ -78,12 +76,10 @@ class Move implements RequestHandlerInterface {
         }
 
         if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse([
                     "message" => $this->translator->translate("node does not exist")
                 ]
-            );
+                , IResponse::FORBIDDEN);
         }
 
         try {
@@ -98,16 +94,12 @@ class Move implements RequestHandlerInterface {
             );
         }
 
-        if (
-            $targetNode->isSharedTo($token->getUser())
-            || false === $this->accessService->hasAccess($targetNode, $token->getUser())
-        ) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+        if (false === $this->accessService->hasAccess($targetNode, $token->getUser())) {
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("target does not exist")
                 ]
-            );
+                , IResponse::FORBIDDEN);
         }
 
         try {
@@ -124,16 +116,16 @@ class Move implements RequestHandlerInterface {
         }
 
         if (false === $this->accessService->hasAccess($targetNode, $token->getUser())) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("parent does not exist")
                 ]
+                , IResponse::FORBIDDEN
             );
         }
 
         // we consider moving nodes around as an update
-        $node->setUpdateTs(new DateTime());
+        $node->setUpdateTs(new DateTimeImmutable());
 
         $moved = $this->nodeRepository->move(
             $node
@@ -142,19 +134,15 @@ class Move implements RequestHandlerInterface {
         );
 
         if (false === $moved) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "could not move node"
-                ]
-            );
+            return new JsonResponse([
+                "message" => "could not move node"
+            ], IResponse::NOT_MODIFIED);
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse([
                 "message" => "moved node"
             ]
+            , IResponse::OK
         );
     }
 

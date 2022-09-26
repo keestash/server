@@ -21,16 +21,22 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\File;
 
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
+use Keestash\Exception\FileNotFoundException;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\TooManyFilesException;
+use Keestash\Exception\TooManyRowsException;
+use Keestash\Exception\UserNotFoundException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 
@@ -39,15 +45,18 @@ class FileRepository implements IFileRepository {
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
+    private ILogger          $logger;
 
     public function __construct(
         IBackend           $backend
         , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
+        , ILogger          $logger
     ) {
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
         $this->backend         = $backend;
+        $this->logger          = $logger;
     }
 
     public function addAll(FileList &$files): bool {
@@ -121,7 +130,6 @@ class FileRepository implements IFileRepository {
         $fileList = new FileList();
 
         foreach ($fileIds as $id) {
-            /** @var IFile $file */
             $file = $this->get($id);
             $fileList->add($file);
         }
@@ -129,68 +137,78 @@ class FileRepository implements IFileRepository {
         return $fileList;
     }
 
-    public function get(int $id): ?IFile {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->select(
-            [
-                'id'
-                , 'name'
-                , 'directory'
-                , 'path'
-                , 'mime_type'
-                , 'hash'
-                , 'extension'
-                , 'size'
-                , 'create_ts'
-                , 'user_id'
-            ]
-        )
-            ->from('file')
-            ->where('id = ?')
-            ->setParameter(0, $id);
-        $files     = $queryBuilder->executeQuery()->fetchAllAssociative();
-        $fileCount = count($files);
+    /**
+     * @param int $id
+     * @return IFile
+     * @throws FileNotFoundException
+     * @throws KeestashException
+     */
+    public function get(int $id): IFile {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->select(
+                [
+                    'id'
+                    , 'name'
+                    , 'directory'
+                    , 'path'
+                    , 'mime_type'
+                    , 'hash'
+                    , 'extension'
+                    , 'size'
+                    , 'create_ts'
+                    , 'user_id'
+                ]
+            )
+                ->from('file')
+                ->where('id = ?')
+                ->setParameter(0, $id);
+            $files     = $queryBuilder->executeQuery()->fetchAllAssociative();
+            $fileCount = count($files);
 
-        if (0 === $fileCount) {
-            return null;
+            if (0 === $fileCount) {
+                throw new FileNotFoundException();
+            }
+
+            if ($fileCount > 1) {
+                throw new TooManyRowsException("found more then one user for the given name");
+            }
+
+            $row       = $files[0];
+            $id        = $row["id"];
+            $name      = $row["name"];
+            $directory = $row["directory"];
+            $mimeType  = $row["mime_type"];
+            $hash      = $row["hash"];
+            $extension = $row["extension"];
+            $size      = $row["size"];
+            $createTs  = $row["create_ts"];
+            $userId    = $row["user_id"];
+
+            $user = $this->userRepository->getUserById((string) $userId);
+
+            if (null == $user) {
+                throw new UserNotFoundException();
+            }
+
+            $file = new File();
+            $file->setId((int) $id);
+            $file->setName($name);
+            $file->setDirectory($directory);
+            $file->setMimeType($mimeType);
+            $file->setHash($hash);
+            $file->setExtension($extension);
+            $file->setSize((int) $size);
+            $file->setOwner($user);
+            $file->setCreateTs(
+                $this->dateTimeService->fromFormat($createTs)
+            );
+
+            return $file;
+        } catch (Exception $exception) {
+            $this->logger->error('error with retrieving file', ['exception' => $exception]);
+            throw new FileNotFoundException();
         }
-
-        if ($fileCount > 1) {
-            throw new KeestashException("found more then one user for the given name");
-        }
-
-
-        $row       = $files[0];
-        $id        = $row["id"];
-        $name      = $row["name"];
-        $directory = $row["directory"];
-        $mimeType  = $row["mime_type"];
-        $hash      = $row["hash"];
-        $extension = $row["extension"];
-        $size      = $row["size"];
-        $createTs  = $row["create_ts"];
-        $userId    = $row["user_id"];
-
-        $user = $this->userRepository->getUserById((string) $userId);
-
-        if (null == $user) {
-            throw new KeestashException();
-        }
-
-        $file = new File();
-        $file->setId((int) $id);
-        $file->setName($name);
-        $file->setDirectory($directory);
-        $file->setMimeType($mimeType);
-        $file->setHash($hash);
-        $file->setExtension($extension);
-        $file->setSize((int) $size);
-        $file->setOwner($user);
-        $file->setCreateTs(
-            $this->dateTimeService->fromFormat($createTs)
-        );
-
-        return $file;
     }
 
     public function getByName(string $name): ?IFile {

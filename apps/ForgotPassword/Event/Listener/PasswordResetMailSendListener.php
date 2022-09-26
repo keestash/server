@@ -66,10 +66,6 @@ class PasswordResetMailSendListener implements IListener {
                 (string) $event->getMessage()->getPayload()['recipient']['email']
             );
 
-            if (null === $user) {
-                throw new ForgotPasswordException();
-            }
-
             $this->userStateRepository->revertPasswordChangeRequest($user);
             $this->userStateRepository->requestPasswordReset($user, $stamp->getValue());
         }

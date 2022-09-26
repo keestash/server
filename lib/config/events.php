@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +20,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Manager\SessionManager;
+use Keestash\Core\Service\User\Event\UserCreatedEvent;
+use Keestash\Event\Listener\RolesAndPermissionsListener;
 
-use doganoo\PHPUtil\HTTP\Session;
-use Keestash\Core\Manager\SessionManager\SessionManager;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\SessionManager\ISessionManager;
-use Psr\Container\ContainerInterface;
-
-class SessionManagerFactory {
-
-    public function __invoke(ContainerInterface $container): ISessionManager {
-        return new SessionManager(
-            $container->get(Session::class)
-            , $container->get(ILogger::class)
-        );
-    }
-
-}
+return [
+    UserCreatedEvent::class => [
+        RolesAndPermissionsListener::class
+    ]
+];

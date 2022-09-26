@@ -42,10 +42,10 @@ class DemoMode extends KeestashCommand {
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
-        InstanceDB $instanceDB
-        , IUserService $userService
-        , IUserRepository $userRepository
-        , Config $config
+        InstanceDB               $instanceDB
+        , IUserService           $userService
+        , IUserRepository        $userRepository
+        , Config                 $config
         , IUserRepositoryService $userRepositoryService
     ) {
         parent::__construct();
@@ -83,11 +83,6 @@ class DemoMode extends KeestashCommand {
 
         if (true === $disabled) {
             $demoUser = $this->userRepository->getUser(IUser::DEMO_USER_NAME);
-
-            if (null === $demoUser) {
-                throw new InstallInstanceException();
-            }
-
             $this->userRepositoryService->removeUser($demoUser);
             $this->instanceDb->removeOption("demo");
         }
@@ -98,13 +93,13 @@ class DemoMode extends KeestashCommand {
         return true === is_file($path);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $dataRoot     = (string) $this->config->get(ConfigProvider::DATA_PATH);
         $dataRoot     = realpath($dataRoot);
         $demoModePath = $dataRoot . "/.mode.demo";
 
         if (false === $dataRoot) {
-            throw new InstallInstanceException("no");
+            throw new InstallInstanceException();
         }
 
         $ran = false;

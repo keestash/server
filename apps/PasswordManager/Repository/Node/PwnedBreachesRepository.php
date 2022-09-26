@@ -38,15 +38,18 @@ class PwnedBreachesRepository {
     private IBackend         $backend;
     private ILogger          $logger;
     private IDateTimeService $dateTimeService;
+    private NodeRepository   $nodeRepository;
 
     public function __construct(
         IBackend           $backend
         , ILogger          $logger
         , IDateTimeService $dateTimeService
+        , NodeRepository   $nodeRepository
     ) {
         $this->backend         = $backend;
         $this->logger          = $logger;
         $this->dateTimeService = $dateTimeService;
+        $this->nodeRepository  = $nodeRepository;
     }
 
     public function replace(Breaches $breaches): Breaches {
@@ -61,7 +64,7 @@ class PwnedBreachesRepository {
                     , 'update_ts' => '?'
                 ]
             )
-            ->setParameter(0, $breaches->getNodeId())
+            ->setParameter(0, $breaches->getNode()->getId())
             ->setParameter(1,
                 null !== $breaches->getHibpData()
                     ? json_encode($breaches->getHibpData())
@@ -90,7 +93,7 @@ class PwnedBreachesRepository {
             'pwm_pwned_breaches'
         )
             ->where('node_id = ?')
-            ->setParameter(0, $pwned->getNodeId())
+            ->setParameter(0, $pwned->getNode()->getId())
             ->executeStatement();
         return $pwned;
     }
@@ -121,7 +124,7 @@ class PwnedBreachesRepository {
             ->fetchAllAssociative();
         foreach ($pwned as $row) {
             $pwned = new Breaches(
-                (int) $row['node_id']
+                $this->nodeRepository->getNode((int) $row['node_id'], 0, 0)
                 , null !== $row['hibp_data']
                 ? json_decode($row['hibp_data'], true)
                 : null
@@ -177,7 +180,7 @@ class PwnedBreachesRepository {
 
         foreach ($pwned as $row) {
             $pwned = new Breaches(
-                (int) $row['node_id']
+                $this->nodeRepository->getNode((int) $row['node_id'], 0, 0)
                 , null === $row['hibp_data']
                 ? null
                 : json_decode($row['hibp_data'], true)
@@ -187,7 +190,7 @@ class PwnedBreachesRepository {
                 : null
             );
 
-            $hashTable->put($pwned->getNodeId(), $pwned);
+            $hashTable->put($pwned->getNode()->getId(), $pwned);
         }
     }
 

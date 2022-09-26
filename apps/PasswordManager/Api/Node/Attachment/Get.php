@@ -16,17 +16,13 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\File\NodeFile;
-use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\File\Icon\IIconService;
-use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,17 +33,14 @@ class Get implements RequestHandlerInterface {
     private NodeRepository $nodeRepository;
     private FileRepository $nodeFileRepository;
     private IIconService   $iconService;
-    private IL10N          $translator;
     private Config         $config;
 
     public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
+        NodeRepository   $nodeRepository
         , FileRepository $nodeFileRepository
-        , IIconService $iconService
-        , Config $config
+        , IIconService   $iconService
+        , Config         $config
     ) {
-        $this->translator         = $l10n;
         $this->nodeRepository     = $nodeRepository;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->iconService        = $iconService;
@@ -56,31 +49,11 @@ class Get implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $nodeId = $request->getAttribute("nodeId");
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
-
-        if (null === $nodeId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no node id given")
-                ]
-            );
-        }
 
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId);
         } catch (PasswordManagerException $exception) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => $this->translator->translate("no node found")
-                ]
-            );
-        }
-
-        if (false === $this->hasAccess($token->getUser(), $node)) {
-            throw new PasswordManagerException();
+            return new JsonResponse(['node not found'], IResponse::INTERNAL_SERVER_ERROR);
         }
 
         $list = $this->nodeFileRepository->getFilesPerNode(
@@ -88,14 +61,13 @@ class Get implements RequestHandlerInterface {
             , NodeFile::FILE_TYPE_ATTACHMENT
         );
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "fileList" => $list
                 , "icons"  => $this->addIcons($list)
             ]
+            , IResponse::OK
         );
-
     }
 
     private function addIcons(ArrayList $fileList): array {
@@ -111,12 +83,6 @@ class Get implements RequestHandlerInterface {
         }
 
         return $icons;
-    }
-
-    private function hasAccess(IUser $user, Node $node): bool {
-        if ($node->getUser()->getId() === $user->getId()) return true;
-        if (true === $node->isSharedTo($user)) return true;
-        return false;
     }
 
 }

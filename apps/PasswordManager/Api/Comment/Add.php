@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Comment;
 
-use DateTime;
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use Keestash\Exception\UserNotFoundException;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
@@ -65,6 +65,7 @@ class Add implements RequestHandlerInterface {
      * @return ResponseInterface
      * @throws CommentException
      * @throws CommentRepositoryException
+     * @throws UserNotFoundException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters    = (array) $request->getParsedBody();
@@ -94,7 +95,7 @@ class Add implements RequestHandlerInterface {
 
         $comment = new Comment();
         $comment->setComment($commentString);
-        $comment->setCreateTs(new DateTime());
+        $comment->setCreateTs(new DateTimeImmutable());
         $comment->setNode($node);
         $comment->setUser($token->getUser());
         $comment->setJWT(

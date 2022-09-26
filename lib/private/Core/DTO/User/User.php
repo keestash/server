@@ -286,7 +286,7 @@ class User implements IUser {
                 , 'jwt'        => $this->getJWT()
                 , 'language'   => $this->getLanguage()
                 , 'locale'     => $this->getLocale()
-                , 'roles'      => $this->getRoles()
+                , 'roles'      => $this->getRoles()->toArray()
             ];
     }
 

@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Api;
 
 use DateTime;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\UserService;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;

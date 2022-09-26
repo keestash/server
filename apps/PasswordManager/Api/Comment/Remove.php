@@ -25,9 +25,7 @@ use DateTime;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,26 +35,21 @@ class Remove implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private IL10N             $translator;
-    private AccessService     $accessService;
     private NodeRepository    $nodeRepository;
 
     public function __construct(
         IL10N               $l10n
         , CommentRepository $commentRepository
-        , AccessService     $accessService
         , NodeRepository    $nodeRepository
     ) {
         $this->commentRepository = $commentRepository;
         $this->translator        = $l10n;
-        $this->accessService     = $accessService;
         $this->nodeRepository    = $nodeRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $commentId  = $parameters["commentId"] ?? null;
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
 
         if (null === $commentId) {
             return new JsonResponse(
@@ -67,14 +60,7 @@ class Remove implements RequestHandlerInterface {
             );
         }
 
-        $node = $this->commentRepository->getNodeByCommentId((int) $commentId);
-        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-            return new JsonResponse(
-                []
-                , IResponse::UNAUTHORIZED
-            );
-        }
-
+        $node    = $this->commentRepository->getNodeByCommentId((int) $commentId);
         $removed = $this->commentRepository->remove((int) $commentId);
 
         if (false === $removed) {

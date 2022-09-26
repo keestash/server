@@ -22,32 +22,33 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Entity\Node\Pwned;
 
 use DateTimeInterface;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 class Breaches implements IJsonObject {
 
-    private int                $nodeId;
+    private Node               $node;
     private ?array             $hibpData;
     private DateTimeInterface  $createTs;
     private ?DateTimeInterface $updateTs;
 
     public function __construct(
-        int                  $nodeId
+        Node                 $node
         , ?array             $hibpData
         , DateTimeInterface  $createTs
         , ?DateTimeInterface $updateTs
     ) {
-        $this->nodeId   = $nodeId;
+        $this->node     = $node;
         $this->createTs = $createTs;
         $this->updateTs = $updateTs;
         $this->hibpData = $hibpData;
     }
 
     /**
-     * @return int
+     * @return Node
      */
-    public function getNodeId(): int {
-        return $this->nodeId;
+    public function getNode(): Node {
+        return $this->node;
     }
 
     /**
@@ -73,7 +74,7 @@ class Breaches implements IJsonObject {
 
     public function jsonSerialize(): array {
         return [
-            'nodeId'      => $this->getNodeId()
+            'nodeId'      => $this->getNode()->getId()
             , 'hibp_data' => $this->getHibpData()
             , 'createTs'  => $this->getCreateTs()
             , 'updateTs'  => $this->getUpdateTs()

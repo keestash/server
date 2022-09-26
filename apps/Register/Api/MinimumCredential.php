@@ -21,62 +21,34 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api;
 
-use Keestash\Api\Response\LegacyResponse;
-use Keestash\Core\Service\User\UserService;
+use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\User\IUserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class MinimumCredential implements RequestHandlerInterface {
 
-    private UserService $userService;
-    private IL10N       $translator;
+    private IUserService $userService;
 
-    public function __construct(
-        IL10N         $l10n
-        , UserService $userService
-    ) {
+    public function __construct(IUserService $userService) {
         $this->userService = $userService;
-        $this->translator  = $l10n;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $password = $request->getQueryParams()["password"] ?? null;
 
         if (null === $password) {
-            return $this->setResponseHelper(
-                $this->translator->translate("No password provided")
-                , IResponse::RESPONSE_CODE_NOT_OK
-            );
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $hasRequirements = $this->userService->passwordHasMinimumRequirements($password);
-
-        if (false == $hasRequirements) {
-
-            return $this->setResponseHelper(
-                $this->translator->translate("Your password does not fulfill the minimum requirements")
-                , IResponse::RESPONSE_CODE_NOT_OK
-            );
-
-        }
-
-        return $this->setResponseHelper(
-            $this->translator->translate("Password is valid")
-            , IResponse::RESPONSE_CODE_OK
-        );
-
-    }
-
-    private function setResponseHelper(string $message, int $responseCode): ResponseInterface {
-        return LegacyResponse::fromData(
-            $responseCode
-            , [
-                "response_code" => $responseCode
-                , "message"     => $message
+        return new JsonResponse(
+            [
+                'valid' => $hasRequirements
             ]
+            , IResponse::OK
         );
     }
 

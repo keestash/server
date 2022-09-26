@@ -25,6 +25,7 @@ use Doctrine\DBAL\Exception;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use Keestash\Exception\UserNotFoundException;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
@@ -157,6 +158,7 @@ class NodeRepository {
      * @throws Exception
      * @throws InvalidNodeTypeException
      * @throws PasswordManagerException
+     * @throws UserNotFoundException
      */
     public function getNode(int $id, int $depth = 0, int $maxDepth = PHP_INT_MAX): Node {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
@@ -214,7 +216,7 @@ class NodeRepository {
         $user = $this->userRepository->getUserById((string) $userId);
 
         if (null === $user) {
-            throw new PasswordManagerException();
+            throw new UserNotFoundException();
         }
 
         $node->setId((int) $id);

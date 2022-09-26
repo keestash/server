@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,33 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Api\Response;
+namespace Keestash\Factory\Command\Keestash;
 
-use Laminas\Diactoros\Response\JsonResponse;
+use Keestash\Command\Keestash\Events;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-/**
- * Class LegacyResponse
- * @package    Keestash\Api\Response
- * @author     Dogan Ucar <dogan@dogan-ucar.de>
- * @deprecated use regular responses instead
- */
-class LegacyResponse extends JsonResponse {
+class EventsFactory implements FactoryInterface {
 
-    public static function fromData(
-        int     $code
-        , array $messages
-        , int   $statusCode = 200
-        , array $headers = []
-    ): LegacyResponse {
-        return new LegacyResponse(
-            [
-                $code => [
-                    "code"       => $code
-                    , "messages" => $messages
-                ]
-            ],
-            $statusCode,
-            $headers
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Events {
+        return new Events(
+            $container->get(Config::class)
         );
     }
 

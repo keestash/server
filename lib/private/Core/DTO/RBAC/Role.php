@@ -25,8 +25,9 @@ use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use doganoo\SimpleRBAC\Entity\RoleInterface;
+use KSP\Core\DTO\RBAC\IRole;
 
-class Role implements RoleInterface {
+class Role implements IRole {
 
     private int               $id;
     private string            $name;
@@ -57,6 +58,10 @@ class Role implements RoleInterface {
         return $this->permissions;
     }
 
+    public function getCreateTs(): DateTimeInterface {
+        return $this->createTs;
+    }
+
     public function compareTo($object): int {
         if (!$object instanceof RoleInterface) {
             return IComparable::IS_LESS;
@@ -73,8 +78,13 @@ class Role implements RoleInterface {
         return IComparable::IS_LESS;
     }
 
-    public function getCreateTs(): DateTimeInterface {
-        return $this->createTs;
+    public function jsonSerialize(): array {
+        return [
+            'id'            => $this->getId()
+            , 'name'        => $this->getName()
+            , 'permissions' => $this->getPermissions()->toArray()
+            , 'create_ts'   => $this->getCreateTs()
+        ];
     }
 
 }

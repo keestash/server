@@ -27,6 +27,7 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
@@ -73,8 +74,15 @@ class UserEdit implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = json_decode((string) $request->getBody(), true);
-        $user       = $this->userService->toUser($parameters['user']);
-        $repoUser   = $this->userRepository->getUserById((string) $user->getId());
+        $user       = $request->getAttribute(IToken::class)->getUser();
+        $userToEdit = $this->userService->toUser($parameters['user']);
+        $repoUser   = $this->userRepository->getUserById((string) $userToEdit->getId());
+
+        // TODO $user has permission to edit users and/or update organizations
+        //  this constraint could be limiting
+        if ($user->getId() !== $userToEdit->getId()) {
+            return new JsonResponse([], IResponse::FORBIDDEN);
+        }
 
         if (null === $repoUser) {
             throw new SettingsException();
@@ -82,7 +90,7 @@ class UserEdit implements RequestHandlerInterface {
 
         $oldUser = clone $repoUser;
 
-        if (false === $this->hasDifferences($repoUser, $user)) {
+        if (false === $this->hasDifferences($repoUser, $userToEdit)) {
             return new JsonResponse(
                 [
                     'message' => $this->translator->translate("no differences detected")
@@ -101,15 +109,15 @@ class UserEdit implements RequestHandlerInterface {
             );
         }
 
-        $repoUser->setName($user->getName());
-        $repoUser->setFirstName($user->getFirstName());
-        $repoUser->setLastName($user->getLastName());
-        $repoUser->setEmail($user->getEmail());
-        $repoUser->setPhone($user->getPhone());
-        $repoUser->setLocked($user->isLocked());
-        $repoUser->setDeleted($user->isDeleted());
-        $repoUser->setLanguage($user->getLanguage());
-        $repoUser->setLocale($user->getLocale());
+        $repoUser->setName($userToEdit->getName());
+        $repoUser->setFirstName($userToEdit->getFirstName());
+        $repoUser->setLastName($userToEdit->getLastName());
+        $repoUser->setEmail($userToEdit->getEmail());
+        $repoUser->setPhone($userToEdit->getPhone());
+        $repoUser->setLocked($userToEdit->isLocked());
+        $repoUser->setDeleted($userToEdit->isDeleted());
+        $repoUser->setLanguage($userToEdit->getLanguage());
+        $repoUser->setLocale($userToEdit->getLocale());
         $repoUser->setJWT(
             $this->jwtService->getJWT(
                 new Audience(

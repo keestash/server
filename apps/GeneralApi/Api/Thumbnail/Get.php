@@ -39,8 +39,8 @@ class Get implements RequestHandlerInterface {
 
     public function __construct(
         IIconService $iconService
-        , Config $config
-        , ILogger $logger
+        , Config     $config
+        , ILogger    $logger
     ) {
         $this->iconService = $iconService;
         $this->config      = $config;

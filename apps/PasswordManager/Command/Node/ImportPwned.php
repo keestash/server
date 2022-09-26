@@ -103,11 +103,9 @@ class ImportPwned extends KeestashCommand {
         /** @var Breaches $candidate */
         foreach ($candidates as $candidate) {
             $breachFound = [];
-            $this->writeInfo(sprintf('processing %s', $candidate->getNodeId()), $output);
+            $this->writeInfo(sprintf('processing %s', $candidate->getNode()->getId()), $output);
             try {
-                $node = $this->nodeRepository->getNode(
-                    $candidate->getNodeId()
-                );
+                $node = $candidate->getNode();
 
                 if (false === ($node instanceof Credential)) {
                     continue;
@@ -144,7 +142,7 @@ class ImportPwned extends KeestashCommand {
 
             $this->pwnedBreachesRepository->replace(
                 new Breaches(
-                    $candidate->getNodeId()
+                    $candidate->getNode()
                     , count($breachFound) > 0
                     ? $breachFound
                     : null
@@ -204,7 +202,7 @@ class ImportPwned extends KeestashCommand {
 
             $this->pwnedPasswordsRepository->replace(
                 new \KSA\PasswordManager\Entity\Node\Pwned\Passwords(
-                    $candidate->getNodeId()
+                    $this->nodeRepository->getNode($candidate->getNodeId(), 0, 0)
                     , null !== $passwordsNode
                     ? (int) floor($passwordsNode->getValue()->getCount() % 10)
                     : 0

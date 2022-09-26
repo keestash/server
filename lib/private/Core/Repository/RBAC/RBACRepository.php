@@ -170,13 +170,14 @@ class RBACRepository implements RBACRepositoryInterface {
             ->where('r.`id` = ?')
             ->setParameter(0, $roleId);
 
-        $result = $queryBuilder->executeQuery();
+        $result   = $queryBuilder->executeQuery();
+        $rows     = $result->fetchAllNumeric();
+        $rowCount = count($rows);
 
-        if (0 === $result->rowCount()) {
+        if (0 === $rowCount) {
             return new NullRole();
         }
 
-        $rows = $result->fetchAllNumeric();
         return new Role(
             (int) $rows[0][0]
             , (string) $rows[0][1]
@@ -198,13 +199,14 @@ class RBACRepository implements RBACRepositoryInterface {
             ->where('p.`id` = ?')
             ->setParameter(0, $permissionId);
 
-        $result = $queryBuilder->executeQuery();
+        $result   = $queryBuilder->executeQuery();
+        $rows     = $result->fetchAllNumeric();
+        $rowCount = count($rows);
 
-        if (0 === $result->rowCount()) {
+        if (0 === $rowCount) {
             return new NullPermission();
         }
 
-        $rows = $result->fetchAllNumeric();
         return new Permission(
             (int) $rows[0][0]
             , (string) $rows[0][1]
@@ -225,13 +227,14 @@ class RBACRepository implements RBACRepositoryInterface {
             ->where('p.`name` = ?')
             ->setParameter(0, $name);
 
-        $result = $queryBuilder->executeQuery();
+        $result   = $queryBuilder->executeQuery();
+        $rows     = $result->fetchAllNumeric();
+        $rowCount = count($rows);
 
-        if (0 === $result->rowCount()) {
+        if (0 === $rowCount) {
             return new NullPermission();
         }
 
-        $rows = $result->fetchAllNumeric();
         return new Permission(
             (int) $rows[0][0]
             , (string) $rows[0][1]
@@ -252,13 +255,13 @@ class RBACRepository implements RBACRepositoryInterface {
             ->where('r.`name` = ?')
             ->setParameter(0, $name);
 
-        $result = $queryBuilder->executeQuery();
-
-        if (0 === $result->rowCount()) {
+        $result   = $queryBuilder->executeQuery();
+        $rows     = $result->fetchAllNumeric();
+        $rowCount = count($rows);
+        if (0 === $rowCount) {
             return new NullRole();
         }
 
-        $rows = $result->fetchAllNumeric();
         return new Role(
             (int) $rows[0][0]
             , (string) $rows[0][1]

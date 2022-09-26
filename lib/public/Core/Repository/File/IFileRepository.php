@@ -23,6 +23,7 @@ namespace KSP\Core\Repository\File;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
+use Keestash\Exception\FileNotFoundException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
@@ -42,7 +43,12 @@ interface IFileRepository extends IRepository {
 
     public function removeAll(FileList $files): bool;
 
-    public function get(int $id): ?IFile;
+    /**
+     * @param int $id
+     * @return IFile
+     * @throws FileNotFoundException
+     */
+    public function get(int $id): IFile;
 
     public function getByUri(IUniformResourceIdentifier $uri): ?IFile;
 
