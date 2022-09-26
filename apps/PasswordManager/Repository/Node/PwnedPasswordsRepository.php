@@ -38,15 +38,18 @@ class PwnedPasswordsRepository {
     private IBackend         $backend;
     private ILogger          $logger;
     private IDateTimeService $dateTimeService;
+    private NodeRepository   $nodeRepository;
 
     public function __construct(
         IBackend           $backend
         , ILogger          $logger
         , IDateTimeService $dateTimeService
+        , NodeRepository   $nodeRepository
     ) {
         $this->backend         = $backend;
         $this->logger          = $logger;
         $this->dateTimeService = $dateTimeService;
+        $this->nodeRepository  = $nodeRepository;
     }
 
     public function replace(Passwords $passwords): Passwords {
@@ -61,7 +64,7 @@ class PwnedPasswordsRepository {
                     , 'update_ts' => '?'
                 ]
             )
-            ->setParameter(0, $passwords->getNodeId())
+            ->setParameter(0, $passwords->getNode()->getId())
             ->setParameter(1, $passwords->getSeverity())
             ->setParameter(2,
                 $this->dateTimeService->toYMDHIS(
@@ -86,7 +89,7 @@ class PwnedPasswordsRepository {
             'pwm_pwned_passwords'
         )
             ->where('node_id = ?')
-            ->setParameter(0, $pwned->getNodeId())
+            ->setParameter(0, $pwned->getNode()->getId())
             ->executeStatement();
         return $pwned;
     }
@@ -131,7 +134,7 @@ class PwnedPasswordsRepository {
             ->fetchAllAssociative();
         foreach ($pwned as $row) {
             $pwned = new Passwords(
-                (int) $row['node_id']
+                $this->nodeRepository->getNode((int) $row['node_id'], 0, 0)
                 , (int) $row['severity']
                 , $this->dateTimeService->fromFormat($row['create_ts'])
                 , null !== $row['update_ts']
@@ -169,12 +172,12 @@ class PwnedPasswordsRepository {
             ->andWhere('severity > ?')
             ->setParameter(0, $node->getId())
             ->setParameter(1, $minimumSeverity);
-        $pwned = $pwned->executeQuery()
+        $pwned        = $pwned->executeQuery()
             ->fetchAllAssociative();
 
         foreach ($pwned as $row) {
             $pwned = new Passwords(
-                (int) $row['node_id']
+                $this->nodeRepository->getNode((int) $row['node_id'], 0, 0)
                 , (int) $row['severity']
                 , $this->dateTimeService->fromFormat($row['create_ts'])
                 , null !== $row['update_ts']
@@ -183,7 +186,7 @@ class PwnedPasswordsRepository {
 
             );
 
-            $hashTable->put($pwned->getNodeId(), $pwned);
+            $hashTable->put($pwned->getNode()->getId(), $pwned);
         }
     }
 

@@ -27,6 +27,7 @@ return [
     CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
     CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php',
     CoreConfigProvider::WEB_ROUTER   => require __DIR__ . '/web_router.php',
+    CoreConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php',
     CoreConfigProvider::APP_LIST     => [
         ConfigProvider::APP_ID => [
             CoreConfigProvider::APP_ORDER      => 1,

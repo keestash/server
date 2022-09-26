@@ -21,15 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Apps;
 
-use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\Apps\Api\GetApps;
-use KSA\Apps\Api\UpdateApp;
-use KSA\Apps\Controller\Controller;
-use KSA\Apps\Factory\Api\GetAppsFactory;
-use KSA\Apps\Factory\Api\UpdateAppFactory;
-use KSA\Apps\Factory\Controller\ControllerFactory;
-use KSP\Api\IVerb;
-
 final class ConfigProvider {
 
     public const ROUTE_NAME_APPS         = '/apps[/]';
@@ -38,70 +29,7 @@ final class ConfigProvider {
     public const APP_ID                  = 'apps';
 
     public function __invoke(): array {
-        return [
-            CoreConfigProvider::APP_LIST   => [
-                ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 2,
-                    CoreConfigProvider::APP_NAME       => 'Apps',
-                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ROUTE_NAME_APPS,
-                    CoreConfigProvider::APP_VERSION    => 1,
-                ],
-            ],
-            'dependencies'                 => [
-                'factories' => [
-                    // api
-                    UpdateApp::class  => UpdateAppFactory::class,
-                    GetApps::class    => GetAppsFactory::class,
-
-                    // controller
-                    Controller::class => ControllerFactory::class,
-                ]
-            ],
-            CoreConfigProvider::WEB_ROUTER => [
-                CoreConfigProvider::ROUTES                 => [
-                    [
-                        'path'         => ConfigProvider::ROUTE_NAME_APPS
-                        , 'middleware' => Controller::class
-                        , 'name'       => Controller::class
-                    ],
-                ],
-                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
-                    ConfigProvider::ROUTE_NAME_APPS => 'apps'
-                ],
-                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
-                    ConfigProvider::ROUTE_NAME_APPS => 'apps'
-                ],
-                CoreConfigProvider::SETTINGS               => [
-                    ConfigProvider::ROUTE_NAME_APPS => [
-                        CoreConfigProvider::SETTINGS_NAME    => 'Apps'
-                        , 'faClass'                          => "fas fa-user-circle"
-                        , CoreConfigProvider::SETTINGS_ORDER => 2
-                    ]
-                ]
-            ],
-            CoreConfigProvider::API_ROUTER => [
-                CoreConfigProvider::ROUTES => [
-                    [
-                        'path'         => ConfigProvider::ROUTE_NAME_APPS_UPDATE
-                        , 'middleware' => UpdateApp::class
-                        , 'method'     => IVerb::POST
-                        , 'name'       => UpdateApp::class
-                    ],
-                    [
-                        'path'         => ConfigProvider::ROUTE_NAME_APPS_GET_ALL
-                        , 'middleware' => GetApps::class
-                        , 'method'     => IVerb::GET
-                        , 'name'       => GetApps::class
-                    ]
-
-                ]
-            ],
-            'templates'                    => [
-                'paths' => [
-                    'apps' => [__DIR__ . '/template']
-                ]
-            ]
-        ];
+        return require __DIR__ . '/config/config.php';
     }
 
 }

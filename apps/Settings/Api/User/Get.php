@@ -25,7 +25,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -33,25 +33,21 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private IJWTService $jwtService;
+    private IJWTService     $jwtService;
+    private IUserRepository $userRepository;
 
-    public function __construct(IJWTService $jwtService) {
-        $this->jwtService = $jwtService;
+    public function __construct(
+        IJWTService       $jwtService
+        , IUserRepository $userRepository
+    ) {
+        $this->jwtService     = $jwtService;
+        $this->userRepository = $userRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token    = $request->getAttribute(IToken::class);
-        $userHash = $request->getAttribute("userHash");
+        $userHash = (string) $request->getAttribute("userHash", "");
 
-        if ($token->getUser()->getHash() !== $userHash) {
-            return new JsonResponse(
-                []
-                , IResponse::FORBIDDEN
-            );
-        }
-
-        $user = clone $token->getUser();
+        $user = $this->userRepository->getUserByHash($userHash);
         $user->setJWT(
             $this->jwtService->getJWT(
                 new Audience(

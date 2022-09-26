@@ -25,9 +25,10 @@ use Exception;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
-use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotDeletedException;
+use Keestash\Exception\UserNotFoundException;
 use Keestash\Exception\UserNotLockedException;
+use Keestash\Exception\UserNotUpdatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
@@ -51,14 +52,14 @@ class UserRepositoryService implements IUserRepositoryService {
     private IEventManager        $eventManager;
 
     public function __construct(
-        IApiLogRepository $apiLogRepository
-        , IFileRepository $fileRepository
-        , IUserKeyRepository $keyRepository
-        , IUserRepository $userRepository
+        IApiLogRepository      $apiLogRepository
+        , IFileRepository      $fileRepository
+        , IUserKeyRepository   $keyRepository
+        , IUserRepository      $userRepository
         , IUserStateRepository $userStateRepository
-        , FileService $fileService
-        , ILogger $logger
-        , IEventManager $eventManager
+        , FileService          $fileService
+        , ILogger              $logger
+        , IEventManager        $eventManager
     ) {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
@@ -75,7 +76,15 @@ class UserRepositoryService implements IUserRepositoryService {
         $logsRemoved  = $this->apiLogRepository->removeForUser($user);
         $filesRemoved = $this->fileRepository->removeForUser($user);
         $keysRemoved  = $this->keyRepository->remove($user);
-        $userRemoved  = $this->userRepository->remove($user);
+        $userRemoved  = false;
+
+        try {
+            $this->userRepository->remove($user);
+            $userRemoved = true;
+        } catch (UserNotDeletedException $exception) {
+            $this->logger->error('error while deleting', ['exception' => $exception]);
+            $userRemoved = false;
+        }
 
         return [
             "logs_removed"    => $logsRemoved
@@ -105,14 +114,7 @@ class UserRepositoryService implements IUserRepositoryService {
 
     public function createUser(IUser $user, ?IFile $file = null): IUser {
 
-        $userId = $this->userRepository->insert($user);
-
-        if (null === $userId) {
-            throw new UserNotCreatedException();
-        }
-
-        $user->setId($userId);
-
+        $user = $this->userRepository->insert($user);
         $this->eventManager->execute(new UserCreatedEvent($user));
 
         if (false === $user->isLocked()) return $user;
@@ -139,15 +141,33 @@ class UserRepositoryService implements IUserRepositoryService {
     }
 
     public function userExistsByName(string $name): bool {
-        return null !== $this->userRepository->getUser($name);
+        try {
+            $this->userRepository->getUser($name);
+            return true;
+        } catch (UserNotFoundException $exception) {
+            return false;
+        }
     }
 
     public function userExistsByEmail(string $email): bool {
-        return null !== $this->userRepository->getUserByEmail($email);
+        try {
+            $this->userRepository->getUserByEmail($email);
+            return true;
+        } catch (UserNotFoundException $exception) {
+            return false;
+        }
     }
 
     public function updateUser(IUser $updatedUser, IUser $oldUser): bool {
-        $updated = $this->userRepository->update($updatedUser);
+        $updated = false;
+
+        try {
+            $this->userRepository->update($updatedUser);
+            $updated = true;
+        } catch (UserNotUpdatedException $exception) {
+            $this->logger->error('error with update', ['exception' => $exception]);
+            $updated = false;
+        }
 
         $this->eventManager->execute(
             new UserUpdatedEvent(

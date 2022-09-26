@@ -20,29 +20,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider;
+use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login;
-use KSA\Login\ConfigProvider as LoginConfigProvider;
+use KSA\Login\ConfigProvider;
 use KSP\Api\IVerb;
 
 return [
-    ConfigProvider::ROUTES        => [
+    CoreConfigProvider::ROUTES        => [
         [
-            'path'         => LoginConfigProvider::LOGIN_SUBMIT
+            'path'         => ConfigProvider::LOGIN_SUBMIT
             , 'middleware' => Login::class
             , 'method'     => IVerb::POST
             , 'name'       => Login::class
         ],
         [
-            'path'         => LoginConfigProvider::APP_CONFIGURATION
+            'path'         => ConfigProvider::APP_CONFIGURATION
             , 'middleware' => Configuration::class
             , 'method'     => IVerb::GET
             , 'name'       => Configuration::class
         ],
     ],
-    ConfigProvider::PUBLIC_ROUTES => [
-        LoginConfigProvider::LOGIN_SUBMIT
-        , LoginConfigProvider::APP_CONFIGURATION
+    CoreConfigProvider::PUBLIC_ROUTES => [
+        ConfigProvider::LOGIN_SUBMIT
+        , ConfigProvider::APP_CONFIGURATION
     ]
 ];

@@ -22,14 +22,13 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,27 +37,25 @@ class UserLock implements RequestHandlerInterface {
 
     private IUserRepository      $userRepository;
     private IUserStateRepository $userStateRepository;
-    private IL10N                $translator;
     private IEventManager        $eventManager;
 
     public function __construct(
-        IL10N                  $l10n
-        , IUserRepository      $userRepository
+        IUserRepository        $userRepository
         , IUserStateRepository $userStateRepository
         , IEventManager        $eventManager
     ) {
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;
-        $this->translator          = $l10n;
         $this->eventManager        = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = json_decode((string) $request->getBody(), true);
-        $userId     = $parameters['user_id'] ?? '';
+        $userId     = (int) ($parameters['user_id'] ?? -1);
+        $user       = $request->getAttribute(IToken::class)->getUser();
 
-        if ("" === $userId) {
-            return new JsonResponse([], IResponse::BAD_REQUEST);
+        if ($user->getId() !== $userId) {
+            return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
         $user = $this->userRepository->getUserById((string) $userId);

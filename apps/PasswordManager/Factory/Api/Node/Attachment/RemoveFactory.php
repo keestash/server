@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
 use KSA\PasswordManager\Api\Node\Attachment\Remove;
 use KSA\PasswordManager\Repository\Node\FileRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
@@ -36,6 +37,7 @@ class RemoveFactory {
             , $container->get(IL10N::class)
             , $container->get(FileRepository::class)
             , $container->get(Config::class)
+            , $container->get(AccessService::class)
         );
     }
 

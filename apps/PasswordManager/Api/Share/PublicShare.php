@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\Response\LegacyResponse;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
@@ -44,8 +43,8 @@ class PublicShare implements RequestHandlerInterface {
     private PublicShareRepository $shareRepository;
 
     public function __construct(
-        NodeRepository $nodeRepository
-        , ShareService $shareService
+        NodeRepository          $nodeRepository
+        , ShareService          $shareService
         , PublicShareRepository $shareRepository
     ) {
         $this->nodeRepository  = $nodeRepository;
@@ -61,12 +60,9 @@ class PublicShare implements RequestHandlerInterface {
         $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "no node found"
-                ]
-            );
+            return new JsonResponse([
+                "message" => "no node found"
+            ], IResponse::BAD_REQUEST);
         }
 
         try {
@@ -91,12 +87,9 @@ class PublicShare implements RequestHandlerInterface {
 
         $node = $this->shareRepository->shareNode($node);
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "share" => $node->getPublicShare()
-            ]
-        );
+        return new JsonResponse([
+            "share" => $node->getPublicShare()
+        ], IResponse::OK);
     }
 
 }

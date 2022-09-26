@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,29 +39,20 @@ class MailExists implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $emailAddress = $request->getAttribute("address");
-        $users        = $this->userRepository->getAll();
-        $user         = null;
+        $exists       = true;
 
-        /** @var IUser $iUser */
-        foreach ($users as $iUser) {
-
-            if (strtolower($emailAddress) === strtolower($iUser->getEmail())) {
-                $user = $iUser;
-                break;
-            }
-
+        try {
+            $this->userRepository->getUserByEmail((string) $emailAddress);
+        } catch (UserNotFoundException $exception) {
+            $exists = false;
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
-                "email_address_exists" => $user !== null
+        return new JsonResponse(
+            [
+                "email_address_exists" => $exists
             ]
+            , IResponse::OK
         );
-
-    }
-
-    public function afterCreate(): void {
 
     }
 

@@ -21,58 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\About;
 
-use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\About\Controller\Controller;
-use KSA\About\Factory\Controller\ControllerFactory;
-
 final class ConfigProvider {
 
     public const ABOUT  = '/about[/]';
     public const APP_ID = 'about';
 
     public function __invoke(): array {
-        return [
-            CoreConfigProvider::APP_LIST     => [
-                ConfigProvider::APP_ID => [
-                    CoreConfigProvider::APP_ORDER      => 3,
-                    CoreConfigProvider::APP_NAME       => 'About',
-                    CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::ABOUT,
-                    CoreConfigProvider::APP_VERSION    => 1,
-                ],
-            ],
-            CoreConfigProvider::DEPENDENCIES => [
-                'factories' => [
-                    Controller::class => ControllerFactory::class,
-                ]
-            ],
-            CoreConfigProvider::WEB_ROUTER   => [
-                CoreConfigProvider::ROUTES                 => [
-                    [
-                        'path'         => ConfigProvider::ABOUT
-                        , 'middleware' => Controller::class
-                        , 'name'       => Controller::class
-                    ]
-                ],
-                CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
-                    ConfigProvider::ABOUT => 'about'
-                ],
-                CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
-                    ConfigProvider::ABOUT => 'about'
-                ],
-                CoreConfigProvider::SETTINGS               => [
-                    ConfigProvider::ABOUT => [
-                        CoreConfigProvider::SETTINGS_NAME    => 'About'
-                        , 'faClass'                          => 'fas fa-info-circle'
-                        , CoreConfigProvider::SETTINGS_ORDER => 3
-                    ]
-                ],
-            ],
-            'templates'                      => [
-                'paths' => [
-                    'about' => [__DIR__ . '/template'],
-                ],
-            ]
-        ];
+        return require __DIR__ . '/config/config.php';
     }
 
 }

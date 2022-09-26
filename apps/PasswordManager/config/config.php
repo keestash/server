@@ -28,6 +28,7 @@ return [
     ConfigProvider::WEB_ROUTER                                          => require __DIR__ . '/web_router.php',
     ConfigProvider::EVENTS                                              => require __DIR__ . '/events.php',
     ConfigProvider::COMMANDS                                            => require __DIR__ . '/commands.php',
+    ConfigProvider::PERMISSIONS                                         => require __DIR__ . '/permissions.php',
     \KSA\PasswordManager\ConfigProvider::FILE_UPLOAD_ALLOWED_EXTENSIONS => require __DIR__ . '/allowed_extensions.php',
     ConfigProvider::TEMPLATES                                           => [
         'paths' => [

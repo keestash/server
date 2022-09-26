@@ -22,9 +22,12 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Pwned;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
+use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
@@ -38,17 +41,20 @@ class ChartData implements RequestHandlerInterface {
     private PwnedPasswordsRepository $pwnedPasswordsRepository;
     private NodeRepository           $nodeRepository;
     private ILogger                  $logger;
+    private AccessService            $accessService;
 
     public function __construct(
         PwnedBreachesRepository    $pwnedBreachesRepository
         , PwnedPasswordsRepository $pwnedPasswordsRepository
         , NodeRepository           $nodeRepository
         , ILogger                  $logger
+        , AccessService            $accessService
     ) {
         $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
         $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
         $this->nodeRepository           = $nodeRepository;
         $this->logger                   = $logger;
+        $this->accessService            = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -62,7 +68,21 @@ class ChartData implements RequestHandlerInterface {
         $root = $this->nodeRepository->getRootForUser($token->getUser());
 
         $passwords = $this->pwnedPasswordsRepository->getPwnedByNode($root, 1);
-        $breaches  = $this->pwnedBreachesRepository->getPwnedByNode($root);
+
+        /** @var Passwords $password */
+        foreach ($passwords->toArray() as $key => $password) {
+            if (false === $this->accessService->hasAccess($password->getNode(), $token->getUser())) {
+                $passwords->remove($key);
+            }
+        }
+        $breaches = $this->pwnedBreachesRepository->getPwnedByNode($root);
+        /** @var Breaches $breach */
+        foreach ($breaches->toArray() as $key => $breach) {
+            if (false === $this->accessService->hasAccess($breach->getNode(), $token->getUser())) {
+                $breaches->remove($key);
+            }
+        }
+
         return new JsonResponse(
             [
                 'passwords'   => [

@@ -23,6 +23,9 @@ namespace Keestash\Core\Service\HTTP\Response;
 
 use KSP\Core\Service\HTTP\Response\IResponseService;
 
+/**
+ * @deprecated
+ */
 class ResponseService implements IResponseService {
 
     public function createError(
@@ -31,9 +34,9 @@ class ResponseService implements IResponseService {
         , string $message
     ): array {
         return [
-            "status"       => $status
-            , "data"       => $data
-            , "message"    => $message
+            "status"    => $status
+            , "data"    => $data
+            , "message" => $message
         ];
     }
 

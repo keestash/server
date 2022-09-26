@@ -21,10 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Register\Factory\Command;
 
-use Keestash\Core\Service\User\UserService;
 use KSA\Register\Command\CreateUser;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
@@ -34,7 +31,6 @@ class CreateUserFactory {
     public function __invoke(ContainerInterface $container): CreateUser {
         return new CreateUser(
             $container->get(IUserService::class)
-            , $container->get(IUserStateRepository::class)
             , $container->get(IUserRepositoryService::class)
         );
     }

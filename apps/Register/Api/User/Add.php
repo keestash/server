@@ -78,6 +78,8 @@ class Add implements RequestHandlerInterface {
 
         }
 
+        // TODO create a token and forward it to the frontend
+        //  in order to prevent multiple user creation
         $firstName          = $this->getParameter("first_name", $request);
         $lastName           = $this->getParameter("last_name", $request);
         $userName           = $this->getParameter("user_name", $request);
@@ -154,8 +156,7 @@ class Add implements RequestHandlerInterface {
         return new JsonResponse([], IResponse::OK);
     }
 
-    private
-    function getParameter(string $name, ServerRequestInterface $request): string {
+    private function getParameter(string $name, ServerRequestInterface $request): string {
         $body = $request->getParsedBody();
         return (string) ($body[$name] ?? null);
     }

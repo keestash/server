@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use Exception;
-use Keestash\Api\Response\LegacyResponse;
 use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\OrganizationUpdatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -78,11 +77,11 @@ class Update implements RequestHandlerInterface {
             );
         }
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 'organization' => $organization
             ]
+            , IResponse::OK
         );
     }
 

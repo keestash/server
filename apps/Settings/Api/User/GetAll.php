@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Api\Response\LegacyResponse;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,14 +30,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class GetAll implements RequestHandlerInterface {
 
-    private ILogger         $logger;
     private IUserRepository $userRepository;
 
-    public function __construct(
-        ILogger           $logger
-        , IUserRepository $userRepository
-    ) {
-        $this->logger         = $logger;
+    public function __construct(IUserRepository $userRepository) {
         $this->userRepository = $userRepository;
     }
 

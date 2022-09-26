@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Share;
 
-use Keestash\Api\Response\LegacyResponse;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
@@ -41,10 +41,10 @@ class Share implements RequestHandlerInterface {
     private IL10N           $translator;
 
     public function __construct(
-        IL10N $l10n
-        , NodeRepository $nodeRepository
+        IL10N             $l10n
+        , NodeRepository  $nodeRepository
         , IUserRepository $userRepository
-        , NodeService $nodeService
+        , NodeService     $nodeService
     ) {
         $this->nodeRepository = $nodeRepository;
         $this->userRepository = $userRepository;
@@ -60,31 +60,29 @@ class Share implements RequestHandlerInterface {
         $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
-                    "message" => "no node found"
-                ]
+            return new JsonResponse([
+                "message" => "no node found"
+            ], IResponse::BAD_REQUEST
             );
         }
 
         if (null === $userId) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => "no user found"
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
         $shareable = $this->nodeService->isShareable((int) $nodeId, (string) $userId);
 
         if (false === $shareable) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("can not share with owner / already shared")
                 ]
+                , IResponse::BAD_REQUEST
             );
         }
 
@@ -103,11 +101,11 @@ class Share implements RequestHandlerInterface {
         );
 
         if ($edge->getId() === 0) {
-            return LegacyResponse::fromData(
-                IResponse::RESPONSE_CODE_NOT_OK
-                , [
+            return new JsonResponse(
+                [
                     "message" => $this->translator->translate("could not insert")
                 ]
+                , IResponse::INTERNAL_SERVER_ERROR
             );
         }
 
@@ -120,11 +118,11 @@ class Share implements RequestHandlerInterface {
 
         $share = $node->getShareByUser($user);
 
-        return LegacyResponse::fromData(
-            IResponse::RESPONSE_CODE_OK
-            , [
+        return new JsonResponse(
+            [
                 "share" => $share
             ]
+            , IResponse::OK
         );
     }
 

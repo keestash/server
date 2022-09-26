@@ -22,32 +22,33 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Entity\Node\Pwned;
 
 use DateTimeInterface;
+use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 class Passwords implements IJsonObject {
 
-    private int                $nodeId;
+    private Node               $node;
     private int                $severity;
     private DateTimeInterface  $createTs;
     private ?DateTimeInterface $updateTs;
 
     public function __construct(
-        int                  $nodeId
+        Node                 $node
         , int                $severity
         , DateTimeInterface  $createTs
         , ?DateTimeInterface $updateTs
     ) {
-        $this->nodeId   = $nodeId;
+        $this->node     = $node;
         $this->severity = $severity;
         $this->createTs = $createTs;
         $this->updateTs = $updateTs;
     }
 
     /**
-     * @return int
+     * @return Node
      */
-    public function getNodeId(): int {
-        return $this->nodeId;
+    public function getNode(): Node {
+        return $this->node;
     }
 
     /**
@@ -73,7 +74,7 @@ class Passwords implements IJsonObject {
 
     public function jsonSerialize(): array {
         return [
-            'nodeId'     => $this->getNodeId()
+            'nodeId'     => $this->getNode()->getId()
             , 'severity' => $this->getSeverity()
             , 'createTs' => $this->getCreateTs()
             , 'updateTs' => $this->getUpdateTs()

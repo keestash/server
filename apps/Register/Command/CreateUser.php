@@ -25,7 +25,6 @@ use Exception;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Exception\CreateUserException;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -41,18 +40,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CreateUser extends KeestashCommand {
 
     private UserService            $userService;
-    private IUserStateRepository   $userStateRepository;
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
         UserService              $userService
-        , IUserStateRepository   $userStateRepository
         , IUserRepositoryService $userRepositoryService
     ) {
         parent::__construct();
 
         $this->userService           = $userService;
-        $this->userStateRepository   = $userStateRepository;
         $this->userRepositoryService = $userRepositoryService;
     }
 
@@ -99,19 +95,10 @@ class CreateUser extends KeestashCommand {
                 , 'deleted'    => $deleted !== false
             ]
         );
-
         $this->userService->validateNewUser($user);
 
         try {
             $this->userRepositoryService->createUser($user);
-
-            if (true === $locked) {
-                $this->userStateRepository->lock($user);
-            }
-
-            if (true === $deleted) {
-                $this->userStateRepository->delete($user);
-            }
         } catch (Exception $exception) {
             $this->writeError("Could not create user $name", $output);
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);

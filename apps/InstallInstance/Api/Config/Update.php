@@ -23,7 +23,6 @@ namespace KSA\InstallInstance\Api\Config;
 
 use Exception;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Api\Response\LegacyResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSA\InstallInstance\Exception\InstallInstanceException;

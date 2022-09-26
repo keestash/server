@@ -65,7 +65,7 @@ class UpdateProfileImage implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
-        $userHash   = $parameters['user_hash'] ?? null;
+        $userHash   = $parameters['user_hash'] ?? '';
         /** @var IToken $token */
         $token             = $request->getAttribute(IToken::class);
         $files             = $request->getUploadedFiles();

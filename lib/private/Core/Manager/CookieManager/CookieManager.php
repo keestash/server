@@ -30,6 +30,9 @@ use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Service\Config\IConfigService;
 
+/**
+ * @deprecated
+ */
 class CookieManager implements ICookieManager {
 
     private HTTPService    $httpService;

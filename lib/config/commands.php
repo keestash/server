@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Command\Keestash\Events;
 use Keestash\Command\Permission\Add;
 use Keestash\Command\Permission\AssignPermissionToRole;
 use Keestash\Command\Permission\Get;
@@ -37,4 +38,5 @@ return [
     , \Keestash\Command\Role\Add::class
     , AssignRoleToUser::class
     , AssignPermissionToRole::class
+    , Events::class
 ];

@@ -318,7 +318,7 @@ class UserService implements IUserService {
 
         $this->phoneValidator->setOptions(['country' => $user->getLocale()]);
         if (false === $this->validateWithAllCountries($user->getPhone())) {
-            throw new KeestashException('invalid phone');
+//            throw new KeestashException('invalid phone');
         }
 
         if (false === $this->uriValidator->isValid($user->getWebsite())) {

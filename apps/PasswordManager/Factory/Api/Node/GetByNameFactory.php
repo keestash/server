@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
 use Psr\Container\ContainerInterface;
 
 class GetByNameFactory {
@@ -30,6 +31,7 @@ class GetByNameFactory {
     public function __invoke(ContainerInterface $container): GetByName {
         return new GetByName(
             $container->get(NodeRepository::class)
+            , $container->get(AccessService::class)
         );
     }
 

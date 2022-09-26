@@ -23,7 +23,6 @@ namespace KSA\Settings\Factory\Api\Organization;
 
 use KSA\Settings\Api\Organization\Get;
 use KSA\Settings\Repository\IOrganizationRepository;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Container\ContainerInterface;
 
@@ -32,7 +31,6 @@ class GetFactory {
     public function __invoke(ContainerInterface $container): Get {
         return new Get(
             $container->get(IOrganizationRepository::class)
-            , $container->get(ILogger::class)
             , $container->get(IUserRepository::class)
         );
     }

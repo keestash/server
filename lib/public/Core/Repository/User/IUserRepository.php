@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Exception\UserNotCreatedException;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
@@ -32,21 +34,41 @@ use KSP\Core\Repository\IRepository;
  */
 interface IUserRepository extends IRepository {
 
-    public function getUser(string $name): ?IUser;
+    /**
+     * @param string $name
+     * @return IUser
+     * @throws UserNotFoundException
+     */
+    public function getUser(string $name): IUser;
+
+    /**
+     * @param string $email
+     * @return IUser
+     * @throws UserNotFoundException
+     */
+    public function getUserByEmail(string $email): IUser;
+
+    /**
+     * @param string $hash
+     * @return IUser
+     * @throws UserNotFoundException
+     */
+    public function getUserByHash(string $hash): IUser;
 
     public function getUserById(string $id): ?IUser;
 
-    public function getUserByEmail(string $email): ?IUser;
-
-    public function getUserByHash(string $hash): ?IUser;
-
     public function getAll(): ArrayList;
 
-    public function insert(IUser $user): ?int;
+    /**
+     * @param IUser $user
+     * @return IUser
+     * @throws UserNotCreatedException
+     */
+    public function insert(IUser $user): IUser;
 
-    public function update(IUser $user): bool;
+    public function update(IUser $user): IUser;
 
-    public function remove(IUser $user): bool;
+    public function remove(IUser $user): IUser;
 
     public function searchUsers(string $name): ArrayList;
 

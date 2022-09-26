@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\L10N\IL10N;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

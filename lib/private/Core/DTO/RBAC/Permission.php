@@ -6,8 +6,9 @@ namespace Keestash\Core\DTO\RBAC;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
 use doganoo\SimpleRBAC\Entity\PermissionInterface;
+use KSP\Core\DTO\RBAC\IPermission;
 
-class Permission implements PermissionInterface {
+class Permission implements IPermission {
 
     private int               $id;
     private string            $name;
@@ -31,6 +32,10 @@ class Permission implements PermissionInterface {
         return $this->name;
     }
 
+    public function getCreateTs(): DateTimeInterface {
+        return $this->createTs;
+    }
+
     public function compareTo($object): int {
         if (!$object instanceof PermissionInterface) {
             return IComparable::IS_LESS;
@@ -47,8 +52,12 @@ class Permission implements PermissionInterface {
         return IComparable::IS_LESS;
     }
 
-    public function getCreateTs(): DateTimeInterface {
-        return $this->createTs;
+    public function jsonSerialize(): array {
+        return [
+            'id'          => $this->getId()
+            , 'name'      => $this->getName()
+            , 'create_ts' => $this->getCreateTs()
+        ];
     }
 
 }
