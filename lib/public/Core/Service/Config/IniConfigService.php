@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
-
 /**
- * Keestash
+ * server
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -20,9 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider;
+namespace KSP\Core\Service\Config;
 
-return [
-    ConfigProvider::PERMISSION_FREE    => [],
-    ConfigProvider::PERMISSION_MAPPING => [],
-];
+interface IniConfigService extends IConfigService {
+
+    /**
+     * @param string $value
+     * @return int
+     */
+    public function toBytes(string $value): int;
+
+}

@@ -66,7 +66,7 @@ class FileService implements IFileService {
         $tmpName        = $file->getTmpName();
         $size           = $file->getSize();
         $isUploadedFile = is_uploaded_file($tmpName);
-        $maxSize        = $this->iniConfigService->getValue("upload_max_filesize", -1);
+        $maxSize        = (int) $this->iniConfigService->getValue("upload_max_filesize", -1);
 
         if (0 !== $error) {
             $result->add(
@@ -88,11 +88,12 @@ class FileService implements IFileService {
 
         if (null === $size || $maxSize < $size) {
             $result->add(
-                sprintf('file %s has a total size of %s and is too large'
+                sprintf('file %s has a total size of %s and is larger than allowed (%s)'
                     , $tmpName
                     , null === $size
                         ? 'null'
                         : $size
+                    , $maxSize
                 )
             );
         }

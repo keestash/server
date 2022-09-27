@@ -123,7 +123,7 @@ class PublicShareSingle implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "response_code" => IResponse::RESPONSE_CODE_OK
+                "response_code" => IResponse::OK
                 , "decrypted"   => $this->credentialService->getDecryptedPassword($node)
             ]
             , IResponse::OK

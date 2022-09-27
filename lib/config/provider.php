@@ -22,15 +22,12 @@ declare(strict_types=1);
 
 use doganoo\SimpleRBAC\ConfigProvider as SimpleRBACConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\About\ConfigProvider as AboutConfigProvider;
-use KSA\Apps\ConfigProvider as AppsConfigProvider;
 use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
 use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
 use KSA\Install\ConfigProvider as InstallConfigProvider;
 use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
-use KSA\Profile\ConfigProvider as ProfileConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
 use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
@@ -46,31 +43,28 @@ use Mezzio\Twig\ConfigProvider as TwigConfigProvider;
 
 return [
     // framework
-    TwigConfigProvider::class,
-    CorsConfigProvider::class,
-    HttpHandlerRunnerConfigProvider::class,
-    LaminasRouterConfigProvider::class,
-    MezzioRouterConfigProvider::class,
-    ValidatorConfigProvider::class,
-    DiactorosConfigProvider::class,
-    RouterConfigProvider::class,
-    HelperConfigProvider::class,
-    MezzioConfigProvider::class,
+    TwigConfigProvider::class
+    , CorsConfigProvider::class
+    , HttpHandlerRunnerConfigProvider::class
+    , LaminasRouterConfigProvider::class
+    , MezzioRouterConfigProvider::class
+    , ValidatorConfigProvider::class
+    , DiactorosConfigProvider::class
+    , RouterConfigProvider::class
+    , HelperConfigProvider::class
+    , MezzioConfigProvider::class
 
     // Keestash
-    CoreConfigProvider::class,
-    AboutConfigProvider::class,
-    AppsConfigProvider::class,
-    ForgotPasswordConfigProvider::class,
-    GeneralApiConfigProvider::class,
-    InstallConfigProvider::class,
-    InstallInstanceConfigProvider::class,
-    LoginConfigProvider::class,
-    PasswordManagerConfigProvider::class,
-    RegisterConfigProvider::class,
-    SettingsConfigProvider::class,
-    ProfileConfigProvider::class,
+    , CoreConfigProvider::class
+    , ForgotPasswordConfigProvider::class
+    , GeneralApiConfigProvider::class
+    , InstallConfigProvider::class
+    , InstallInstanceConfigProvider::class
+    , LoginConfigProvider::class
+    , PasswordManagerConfigProvider::class
+    , RegisterConfigProvider::class
+    , SettingsConfigProvider::class
 
     // Third Party libs
-    SimpleRBACConfigProvider::class
+    , SimpleRBACConfigProvider::class
 ];

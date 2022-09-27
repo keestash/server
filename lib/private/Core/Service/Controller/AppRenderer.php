@@ -39,7 +39,6 @@ use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Router\IRouterService;
-use KSP\Core\View\ActionBar\IActionBar;
 use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
@@ -282,7 +281,7 @@ class AppRenderer implements IAppRenderer {
                         , $contextLess
                     )
                     , "appContent"       => $appContent
-                    , "isLogin"          => $caller === Login::class
+                    , "isLogin"          => false
                     , "hasAppNavigation" => $hasAppNavigation
                     , "hasBreadcrumbs"   => false
                 ]

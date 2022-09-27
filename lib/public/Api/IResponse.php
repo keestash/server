@@ -23,11 +23,6 @@ namespace KSP\Api;
 
 interface IResponse {
 
-    public const RESPONSE_CODE_OK              = 1000;
-    public const RESPONSE_CODE_NOT_OK          = 2000;
-    public const RESPONSE_CODE_SESSION_EXPIRED = 3000;
-    public const RESPONSE_CODE_NEEDS_UPGRADE   = 4000;
-
     public const HEADER_CONTENT_TYPE = "Content-Type";
 
     public const OK                    = 200;
