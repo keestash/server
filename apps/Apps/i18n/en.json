@@ -1,9 +1,0 @@
-{
-  "table": {
-    "header": {
-      "appId": "ID",
-      "version": "Version",
-      "createTs": "Created"
-    }
-  }
-}

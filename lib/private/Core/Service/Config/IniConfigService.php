@@ -22,14 +22,26 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Config;
 
-use KSP\Core\Service\Config\IConfigService;
-
-class IniConfigService implements IConfigService {
+class IniConfigService implements \KSP\Core\Service\Config\IniConfigService {
 
     public function getValue(string $key, $default = null) {
         $ini = ini_get($key);
         if ("" === $ini || false === $ini) return $default;
         return $ini;
+    }
+
+    public function toBytes(string $value): int {
+        $value = trim($value);
+        $last  = strtolower($value[strlen($value) - 1]);
+        switch ($last) {
+            case 'g':
+                $value *= 1024;
+            case 'm':
+                $value *= 1024;
+            case 'k':
+                $value *= 1024;
+        }
+        return (int) $value;
     }
 
 }
