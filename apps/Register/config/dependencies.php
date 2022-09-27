@@ -28,7 +28,6 @@ use KSA\Register\Api\User\Exists;
 use KSA\Register\Api\User\MailExists;
 use KSA\Register\Command\CreateUser;
 use KSA\Register\Command\DeleteUser;
-use KSA\Register\Controller\Controller;
 use KSA\Register\Event\EmailAfterRegistration;
 use KSA\Register\Factory\Api\AddFactory;
 use KSA\Register\Factory\Api\Configuration\ConfigurationFactory;
@@ -37,7 +36,6 @@ use KSA\Register\Factory\Api\MailExistsFactory;
 use KSA\Register\Factory\Api\MinimumCredentialFactory;
 use KSA\Register\Factory\Command\CreateUserFactory;
 use KSA\Register\Factory\Command\DeleteUserFactory;
-use KSA\Register\Factory\Controller\ControllerFactory;
 use KSA\Register\Factory\Event\Listener\EmailAfterRegistrationListenerFactory;
 
 return [
@@ -50,11 +48,8 @@ return [
         , MinimumCredential::class      => MinimumCredentialFactory::class
         , Configuration::class          => ConfigurationFactory::class
 
-        // controller
-        , Controller::class             => ControllerFactory::class,
-
         // command
-        CreateUser::class               => CreateUserFactory::class
+        , CreateUser::class             => CreateUserFactory::class
         , DeleteUser::class             => DeleteUserFactory::class
     ]
 ];

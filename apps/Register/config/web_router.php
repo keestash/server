@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -21,23 +22,16 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Register\ConfigProvider;
-use KSA\Register\Controller\Controller;
 
 return [
-    CoreConfigProvider::ROUTES                 => [
-        [
-            'path'         => ConfigProvider::REGISTER
-            , 'middleware' => Controller::class
-            , 'name'       => Controller::class
-        ],
-    ],
-    CoreConfigProvider::PUBLIC_ROUTES          => [
+    CoreConfigProvider::ROUTES                   => []
+    , CoreConfigProvider::PUBLIC_ROUTES          => [
         ConfigProvider::REGISTER
-    ],
-    CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
+    ]
+    , CoreConfigProvider::WEB_ROUTER_SCRIPTS     => [
         ConfigProvider::REGISTER => 'register'
-    ],
-    CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
+    ]
+    , CoreConfigProvider::WEB_ROUTER_STYLESHEETS => [
         ConfigProvider::REGISTER => 'register'
     ]
 ];
