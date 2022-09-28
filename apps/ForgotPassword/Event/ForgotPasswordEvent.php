@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,39 +19,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\User\Event;
+namespace KSA\ForgotPassword\Event;
 
-use Keestash\Core\Manager\EventManager\Event;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Queue\IMessage;
+use KSP\Core\Manager\EventManager\IEvent;
 
-class UserUpdatedEvent extends Event {
+class ForgotPasswordEvent implements IEvent {
 
-    private IUser $updatedUser;
-    private IUser $oldUser;
+    private IMessage $message;
 
-    public function __construct(IUser $updatedUser, IUser $oldUser, bool $updated) {
-        $this->updatedUser = $updatedUser;
-        $this->oldUser     = $oldUser;
+    public function __construct(IMessage $message) {
+        $this->message = $message;
     }
 
     /**
-     * @return IUser
+     * @return IMessage
      */
-    public function getUpdatedUser(): IUser {
-        return $this->updatedUser;
-    }
-
-    /**
-     * @return IUser
-     */
-    public function getOldUser(): IUser {
-        return $this->oldUser;
+    public function getMessage(): IMessage {
+        return $this->message;
     }
 
     public function jsonSerialize(): array {
         return [
-            'updatedUser' => $this->getUpdatedUser()
-            , 'oldUser'   => $this->getOldUser()
+            'message' => $this->getMessage()
         ];
     }
 

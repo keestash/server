@@ -39,6 +39,10 @@ class TestCase extends FrameworkTestCase {
         return $this->serviceManager;
     }
 
+    protected function getService(string $name) {
+        return $this->getServiceManager()->get($name);
+    }
+
     protected function setUp(): void {
         parent::setUp();
         $this->serviceManager  = require __DIR__ . '/config/service_manager.php';

@@ -52,7 +52,6 @@ foreach ($mockedApps as $path) {
 foreach ($mockedAliases as $alias => $name) {
     $container->setAlias($alias, $name);
 }
-
 foreach ($mockedAliasesApps as $path) {
 
     if (false === is_file($path)) {

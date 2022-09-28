@@ -28,7 +28,6 @@ use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use Keestash\Exception\UserNotDeletedException;
 use Keestash\Exception\UserNotFoundException;
 use Keestash\Exception\UserNotLockedException;
-use Keestash\Exception\UserNotUpdatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
@@ -158,26 +157,16 @@ class UserRepositoryService implements IUserRepositoryService {
         }
     }
 
-    public function updateUser(IUser $updatedUser, IUser $oldUser): bool {
-        $updated = false;
-
-        try {
-            $this->userRepository->update($updatedUser);
-            $updated = true;
-        } catch (UserNotUpdatedException $exception) {
-            $this->logger->error('error with update', ['exception' => $exception]);
-            $updated = false;
-        }
-
+    public function updateUser(IUser $updatedUser, IUser $oldUser): IUser {
+        $updatedUser = $this->userRepository->update($updatedUser);
         $this->eventManager->execute(
             new UserUpdatedEvent(
                 $updatedUser
                 , $oldUser
-                , $updated
+                , true
             )
         );
-
-        return $updated;
+        return $updatedUser;
     }
 
 }
