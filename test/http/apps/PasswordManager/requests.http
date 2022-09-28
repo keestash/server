@@ -1,0 +1,24 @@
+### Send POST request with json body
+POST https://localhost:8080/api.php/login/submit
+Content-Type: application/json
+
+{
+  "user": "dogano",
+  "password": "Dogancan1@"
+}
+
+### Send POST request with json body
+POST https://localhost:8080/api.php/password_manager/node/credential/create
+Content-Type: application/json
+X-Keestash-User: bd1c28fe943a42ca56f4a68da6547e9bb8c29a7fe1ebafa050356794f3486d99
+X-Keestash-Token: 8b93da4eb2e50ece730f8c8e339aa950
+
+{
+  "name": "PHPSTORM REQUEST FILE",
+  "username": "PHPSTORM",
+  "password": {
+    "value": "PHPSTORM PASSWORD"
+  },
+  "parent": "root",
+  "url": "keestash.com"
+}
