@@ -25,6 +25,9 @@ use Keestash\Core\Manager\EventManager\Event;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 
+/**
+ * @deprecated
+ */
 class MessageProcessedEvent extends Event {
 
     private IMessage $message;

@@ -47,7 +47,7 @@ class AccountDetails implements RequestHandlerInterface {
         if (null === $token) {
             return new JsonResponse(
                 []
-                , IResponse::FORBIDDEN
+                , IResponse::BAD_REQUEST
             );
         }
 

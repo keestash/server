@@ -23,21 +23,23 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Api;
 
 use DateTime;
-use doganoo\DI\Object\String\IStringService;
+use DateTimeImmutable;
 use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Queue\Stamp;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\UserNotFoundException;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\ConfigProvider;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
+use KSP\Core\ILogger\ILogger;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Queue\IMessageService;
 use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
@@ -53,10 +55,10 @@ class ForgotPassword implements RequestHandlerInterface {
     private IL10N                     $translator;
     private IUserRepository           $userRepository;
     private TemplateRendererInterface $templateRenderer;
-    private HTTPService               $httpService;
+    private IHTTPService              $httpService;
     private IMessageService           $messageService;
     private IQueueRepository          $queueRepository;
-    private IStringService            $stringService;
+    private ILogger                   $logger;
 
     public function __construct(
         Legacy                      $legacy
@@ -65,10 +67,10 @@ class ForgotPassword implements RequestHandlerInterface {
         , IL10N                     $translator
         , IUserRepository           $userRepository
         , TemplateRendererInterface $templateRenderer
-        , HTTPService               $httpService
+        , IHTTPService              $httpService
         , IMessageService           $messageService
         , IQueueRepository          $queueRepository
-        , IStringService            $stringService
+        , ILogger                   $logger
     ) {
         $this->legacy              = $legacy;
         $this->userService         = $userService;
@@ -79,12 +81,11 @@ class ForgotPassword implements RequestHandlerInterface {
         $this->httpService         = $httpService;
         $this->messageService      = $messageService;
         $this->queueRepository     = $queueRepository;
-        $this->stringService       = $stringService;
+        $this->logger              = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-
-        $parameters     = json_decode((string) $request->getBody(), true);
+        $parameters     = (array) $request->getParsedBody();
         $input          = $parameters["input"] ?? null;
         $responseHeader = $this->translator->translate("Password reset");
         $debug          = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
@@ -96,21 +97,22 @@ class ForgotPassword implements RequestHandlerInterface {
             );
         }
 
-        $users = $this->userRepository->getAll();
-        $user  = null;
-
-        /** @var IUser $iUser */
-        foreach ($users as $iUser) {
-
-            if (
-                $this->stringService->equalsIgnoreCase($input, $iUser->getEmail())
-                || $this->stringService->equalsIgnoreCase($input, $iUser->getName())
-            ) {
-                $user = $iUser;
-                break;
-            }
-
+        $userByMail = null;
+        $userByName = null;
+        try {
+            $userByMail = $this->userRepository->getUserByEmail($input);
+        } catch (UserNotFoundException $exception) {
+            $this->logger->error('no users found', ['exception' => $exception]);
         }
+        try {
+            $userByName = $this->userRepository->getUser($input);
+        } catch (UserNotFoundException $exception) {
+            $this->logger->error('no users found', ['exception' => $exception]);
+        }
+
+        $user = null === $userByMail
+            ? $userByName
+            : $userByMail;
 
         if (null === $user) {
             return new JsonResponse(
@@ -133,7 +135,7 @@ class ForgotPassword implements RequestHandlerInterface {
             /** @var IUserState $userState */
             $userState = $userStates->get($userStateId);
             if ($user->getId() === $userState->getUser()->getId()) {
-                $difference       = $userState->getCreateTs()->diff(new DateTime());
+                $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
                 $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
             }
         }
@@ -149,6 +151,7 @@ class ForgotPassword implements RequestHandlerInterface {
             );
 
         }
+
         $uuid      = StringUtil::getUUID();
         $appName   = $this->legacy->getApplication()->get("name");
         $appSlogan = $this->legacy->getApplication()->get("slogan");
