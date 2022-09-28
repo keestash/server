@@ -54,10 +54,11 @@ class ResetPassword implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters  = json_decode((string) $request->getBody(), true);
+        $parameters  = (array) $request->getParsedBody();
         $hash        = $parameters["hash"] ?? '';
         $newPassword = $parameters["input"] ?? '';
-        $debug       = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
+
+        $debug = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
 
         $userState = $this->findCandidate($hash, $debug);
 
@@ -70,7 +71,6 @@ class ResetPassword implements RequestHandlerInterface {
                 , IResponse::NOT_FOUND
             );
         }
-
         $validPassword = $this->userService->passwordHasMinimumRequirements($newPassword);
         if (false === $validPassword) {
             return new JsonResponse(
@@ -89,24 +89,16 @@ class ResetPassword implements RequestHandlerInterface {
             $this->userService->hashPassword($newPassword)
         );
 
-        $updated = $this->userRepositoryService->updateUser($newUser, $oldUser);
-
-        if (true === $updated) {
-
-            $this->userStateRepository->revertPasswordChangeRequest($oldUser);
-            return new JsonResponse(
-                [
-                    "header"    => $this->translator->translate("User updated")
-                    , "message" => $this->translator->translate("We sent an email to reset your password")
-                ]
-                , IResponse::OK
-            );
-        }
-
+        $this->userRepositoryService->updateUser($newUser, $oldUser);
+        $this->userStateRepository->revertPasswordChangeRequest($oldUser);
         return new JsonResponse(
-            [],
-            IResponse::INTERNAL_SERVER_ERROR
+            [
+                "header"    => $this->translator->translate("User updated")
+                , "message" => $this->translator->translate("We sent an email to reset your password")
+            ]
+            , IResponse::OK
         );
+
     }
 
     private function findCandidate(string $hash, bool $debug = false): ?IUserState {

@@ -73,7 +73,6 @@ class UserRepository implements IUserRepository {
      */
     public function getUser(string $name): IUser {
         try {
-
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder = $queryBuilder->select(
                 [
@@ -89,8 +88,14 @@ class UserRepository implements IUserRepository {
                     , 'u.hash'
                     , 'u.locale'
                     , 'u.language'
-                    , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
-                    , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+                    //                    , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
+                    , 'CASE WHEN us.state = \'delete.state.user\' THEN true ELSE false END AS deleted'
+                    //                    CASE WHEN Password IS NOT NULL
+                    //       THEN 'Yes'
+                    //       ELSE 'No'
+                    //       END AS PasswordPresent
+                    //                    , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+                    , 'CASE WHEN us.state = \'lock.state.user\' THEN true ELSE false END AS locked'
                 ]
             )
                 ->from('user', 'u')
@@ -262,6 +267,7 @@ class UserRepository implements IUserRepository {
             $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
             if (false === is_numeric($lastInsertId)) {
+                $this->logger->error('error with creating user', ['lastInsertId' => $lastInsertId, 'sql' => $queryBuilder->getSQL()]);
                 throw new UserNotCreatedException();
             }
 
@@ -286,18 +292,18 @@ class UserRepository implements IUserRepository {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         try {
-            $queryBuilder->update('user', 'u')
-                ->set('u.first_name', '?')
-                ->set('u.last_name', '?')
-                ->set('u.name', '?')
-                ->set('u.email', '?')
-                ->set('u.phone', '?')
-                ->set('u.password', '?')
-                ->set('u.website', '?')
-                ->set('u.hash', '?')
-                ->set('u.locale', '?')
-                ->set('u.language', '?')
-                ->where('u.id = ?')
+            $queryBuilder->update('user')
+                ->set('first_name', '?')
+                ->set('last_name', '?')
+                ->set('name', '?')
+                ->set('email', '?')
+                ->set('phone', '?')
+                ->set('password', '?')
+                ->set('website', '?')
+                ->set('hash', '?')
+                ->set('locale', '?')
+                ->set('language', '?')
+                ->where('id = ?')
                 ->setParameter(0, $user->getFirstName())
                 ->setParameter(1, $user->getLastName())
                 ->setParameter(2, $user->getName())
@@ -314,11 +320,11 @@ class UserRepository implements IUserRepository {
             $this->logger->error(
                 'error while updating user'
                 , [
-                    'exception' => $exception
+                    'exception' => $exception->getMessage()
                     , 'sql'     => $queryBuilder->getSQL()
                 ]
             );
-            throw new UserNotUpdatedException();
+            throw new UserNotUpdatedException($queryBuilder->getSQL());
         }
 
         return $user;

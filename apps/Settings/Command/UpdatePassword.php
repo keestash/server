@@ -103,12 +103,12 @@ class UpdatePassword extends KeestashCommand {
             $this->userService->hashPassword($password)
         );
 
-        $updated = $this->userRepositoryService->updateUser(
+        $this->userRepositoryService->updateUser(
             $newUser
             , $user
         );
 
-        $this->writeInfo('Password Updated: ' . ($updated ? 'true' : 'false'), $output);
+        $this->writeInfo('Password Updated', $output);
 
         return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }

@@ -32,31 +32,58 @@ use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 class UserService {
 
-    public const TEST_USER_ID_2        = 2;
-    public const TEST_USER_ID_3        = 3;
-    public const TEST_LOCKED_USER_ID_4 = 4;
+    public const TEST_USER_ID_2                      = 2;
+    public const TEST_USER_ID_2_NAME                 = 'TestUser2';
+    public const TEST_USER_ID_3                      = 3;
+    public const TEST_LOCKED_USER_ID_4               = 4;
+    public const TEST_PASSWORD_RESET_USER_ID_5       = 5;
+    public const TEST_PASSWORD_FORGOT_USER_ID_6      = 6;
+    public const TEST_PASSWORD_FORGOT_USER_ID_6_NAME = 'TestUser6';
+    public const TEST_RESET_PASSWORD_USER_ID_7       = 7;
+    public const TEST_RESET_PASSWORD_USER_ID_7_NAME  = 'TestUser7';
 
     private array $userData = [
         [
-            'id'         => self::TEST_USER_ID_2
-            , 'name'     => 'TestUser2'
-            , 'hash'     => self::TEST_USER_ID_2
+            'id'         => UserService::TEST_USER_ID_2
+            , 'name'     => UserService::TEST_USER_ID_2_NAME
+            , 'hash'     => UserService::TEST_USER_ID_2
             , 'password' => ''
             , 'locked'   => false
         ],
         [
-            'id'         => self::TEST_USER_ID_3
+            'id'         => UserService::TEST_USER_ID_3
             , 'name'     => 'TestUser3'
-            , 'hash'     => self::TEST_USER_ID_3
+            , 'hash'     => UserService::TEST_USER_ID_3
             , 'password' => ''
             , 'locked'   => false
         ],
         [
-            'id'         => self::TEST_LOCKED_USER_ID_4
+            'id'         => UserService::TEST_LOCKED_USER_ID_4
             , 'name'     => 'TestUser4'
-            , 'hash'     => self::TEST_LOCKED_USER_ID_4
+            , 'hash'     => UserService::TEST_LOCKED_USER_ID_4
             , 'password' => ''
             , 'locked'   => true
+        ],
+        [
+            'id'         => UserService::TEST_PASSWORD_RESET_USER_ID_5
+            , 'name'     => 'TestUser5'
+            , 'hash'     => UserService::TEST_PASSWORD_RESET_USER_ID_5
+            , 'password' => ''
+            , 'locked'   => false
+        ],
+        [
+            'id'         => UserService::TEST_PASSWORD_FORGOT_USER_ID_6
+            , 'name'     => UserService::TEST_PASSWORD_FORGOT_USER_ID_6_NAME
+            , 'hash'     => UserService::TEST_PASSWORD_FORGOT_USER_ID_6
+            , 'password' => ''
+            , 'locked'   => false
+        ],
+        [
+            'id'         => UserService::TEST_RESET_PASSWORD_USER_ID_7
+            , 'name'     => UserService::TEST_RESET_PASSWORD_USER_ID_7_NAME
+            , 'hash'     => UserService::TEST_RESET_PASSWORD_USER_ID_7
+            , 'password' => ''
+            , 'locked'   => false
         ]
     ];
 

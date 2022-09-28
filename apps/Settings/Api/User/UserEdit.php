@@ -127,17 +127,7 @@ class UserEdit implements RequestHandlerInterface {
             )
         );
 
-        $updated = $this->userRepositoryService->updateUser($repoUser, $oldUser);
-
-        if (false === $updated) {
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("user could not be found")
-                ]
-                , IResponse::INTERNAL_SERVER_ERROR
-            );
-        }
-
+        $repoUser = $this->userRepositoryService->updateUser($repoUser, $oldUser);
         return new JsonResponse(
             [
                 "user" => $repoUser

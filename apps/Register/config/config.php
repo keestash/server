@@ -39,8 +39,6 @@ return [
     , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
     , CoreConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php'
     , CoreConfigProvider::TEMPLATES    => [
-        'paths' => [
-            'register' => [__DIR__ . '/../template']
-        ]
+        'paths' => []
     ]
 ];
