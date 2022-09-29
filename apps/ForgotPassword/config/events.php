@@ -14,17 +14,18 @@ declare(strict_types=1);
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General Public Liocense for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Event\Worker\MessageProcessedEvent;
-use KSA\ForgotPassword\Event\Listener\PasswordResetMailSendListener;
+use KSA\ForgotPassword\Event\ForgotPasswordEvent;
+use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
 
 return [
-    MessageProcessedEvent::class => [
-        PasswordResetMailSendListener::class
+    ForgotPasswordEvent::class => [
+        ForgotPasswordMailLinkListener::class
+        //        , PasswordResetMailSendListener::class
     ]
 ];

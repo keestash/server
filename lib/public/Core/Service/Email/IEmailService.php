@@ -25,4 +25,20 @@ use KSP\Core\Service\IService;
 
 interface IEmailService extends IService {
 
+    public function addRecipient(string $name, string $email): void;
+
+    public function addCarbonCopy(string $name, string $email): void;
+
+    public function addBlindCarbonCopy(string $name, string $email): void;
+
+    public function addAttachment(string $path, string $name = ""): void;
+
+    public function setSubject(string $subject): void;
+
+    public function send(int $delay = 0): bool;
+
+    public function setBody(string $body): void;
+
+    public function setAlternativeBody(string $body): void;
+
 }

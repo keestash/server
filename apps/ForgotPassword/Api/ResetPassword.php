@@ -22,11 +22,13 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Api;
 
 use DateTime;
-use Keestash\Core\Service\User\UserService;
+use KSA\ForgotPassword\Event\ResetPasswordEvent;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -37,20 +39,23 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ResetPassword implements RequestHandlerInterface {
 
     private IUserStateRepository   $userStateRepository;
-    private UserService            $userService;
+    private IUserService           $userService;
     private IL10N                  $translator;
     private IUserRepositoryService $userRepositoryService;
+    private IEventManager          $eventManager;
 
     public function __construct(
         IL10N                    $l10n
         , IUserStateRepository   $userStateRepository
-        , UserService            $userService
+        , IUserService           $userService
         , IUserRepositoryService $userRepositoryService
+        , IEventManager          $eventManager
     ) {
         $this->userStateRepository   = $userStateRepository;
         $this->userService           = $userService;
         $this->translator            = $l10n;
         $this->userRepositoryService = $userRepositoryService;
+        $this->eventManager          = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -91,6 +96,9 @@ class ResetPassword implements RequestHandlerInterface {
 
         $this->userRepositoryService->updateUser($newUser, $oldUser);
         $this->userStateRepository->revertPasswordChangeRequest($oldUser);
+
+        $this->eventManager->execute(new ResetPasswordEvent());
+
         return new JsonResponse(
             [
                 "header"    => $this->translator->translate("User updated")

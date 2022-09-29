@@ -27,9 +27,6 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IMessage extends IJsonObject {
 
-    public const TYPE_EMAIL = 'email.type';
-    public const TYPE_EVENT = 'event.type';
-
     /**
      * @return string
      */
@@ -59,11 +56,6 @@ interface IMessage extends IJsonObject {
      * @return array
      */
     public function getPayload(): array;
-
-    /**
-     * @return string
-     */
-    public function getType(): string;
 
     public function getStamps(): HashTable;
 

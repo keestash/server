@@ -22,73 +22,51 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Api;
 
-use DateTime;
 use DateTimeImmutable;
-use doganoo\PHPUtil\Util\StringUtil;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\DTO\Queue\Stamp;
-use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\UserNotFoundException;
-use Keestash\Legacy\Legacy;
-use KSA\ForgotPassword\ConfigProvider;
-use KSP\Api\IRequest;
+use KSA\ForgotPassword\Event\ForgotPasswordEvent;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
-use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\Core\Service\Queue\IMessageService;
+use KSP\Core\Service\User\IUserService;
 use KSP\L10N\IL10N;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class ForgotPassword implements RequestHandlerInterface {
 
-    private Legacy                    $legacy;
-    private UserService               $userService;
-    private IUserStateRepository      $userStateRepository;
-    private IL10N                     $translator;
-    private IUserRepository           $userRepository;
-    private TemplateRendererInterface $templateRenderer;
-    private IHTTPService              $httpService;
-    private IMessageService           $messageService;
-    private IQueueRepository          $queueRepository;
-    private ILogger                   $logger;
+    private IUserService         $userService;
+    private IUserStateRepository $userStateRepository;
+    private IL10N                $translator;
+    private IUserRepository      $userRepository;
+    private ILogger              $logger;
+    private IEventManager        $eventManager;
 
     public function __construct(
-        Legacy                      $legacy
-        , UserService               $userService
-        , IUserStateRepository      $userStateRepository
-        , IL10N                     $translator
-        , IUserRepository           $userRepository
-        , TemplateRendererInterface $templateRenderer
-        , IHTTPService              $httpService
-        , IMessageService           $messageService
-        , IQueueRepository          $queueRepository
-        , ILogger                   $logger
+        IUserService           $userService
+        , IUserStateRepository $userStateRepository
+        , IL10N                $translator
+        , IUserRepository      $userRepository
+        , ILogger              $logger
+        , IEventManager        $eventManager
     ) {
-        $this->legacy              = $legacy;
         $this->userService         = $userService;
         $this->userStateRepository = $userStateRepository;
         $this->translator          = $translator;
         $this->userRepository      = $userRepository;
-        $this->templateRenderer    = $templateRenderer;
-        $this->httpService         = $httpService;
-        $this->messageService      = $messageService;
-        $this->queueRepository     = $queueRepository;
         $this->logger              = $logger;
+        $this->eventManager        = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters     = (array) $request->getParsedBody();
         $input          = $parameters["input"] ?? null;
         $responseHeader = $this->translator->translate("Password reset");
-        $debug          = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
 
         if (null === $input || "" === $input) {
             return new JsonResponse(
@@ -152,70 +130,14 @@ class ForgotPassword implements RequestHandlerInterface {
 
         }
 
-        $uuid      = StringUtil::getUUID();
-        $appName   = $this->legacy->getApplication()->get("name");
-        $appSlogan = $this->legacy->getApplication()->get("slogan");
-
-        $baseUrl = $this->httpService->getBaseURL(true, true);
-
-        $ctaLink = $baseUrl . "/reset_password/" . $uuid;
-
-        $rendered = $this->templateRenderer->render(
-            'forgotPassword::forgot_email'
-            , [
-                // changeable
-                "appName"          => $appName
-                , "logoAlt"        => $appName
-                , "appSlogan"      => $appSlogan
-
-                // TODO load this from theming
-                , "bodyBackground" => "#f8f8f8"
-                , "themeColor"     => "#269dff"
-
-                // strings
-                , "mailTitle"      => $this->translator->translate("Reset Password")
-                , "salutation"     => $this->translator->translate("Dear {$user->getName()},")
-                , "text"           => $this->translator->translate("This email was sent to {$user->getEmail()} to reset your password. If you did not request a reset, please ignore this mail or let us know.")
-                , "ctaButtonText"  => $this->translator->translate("Reset Password")
-                , "thanksText"     => $this->translator->translate("-Thanks $appName")
-                , "poweredByText"  => $this->translator->translate("Powered By $appName")
-
-                // values
-                , "logoPath"       => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted.png"
-                , "ctaLink"        => $ctaLink
-                , "baseUrl"        => $baseUrl
-                , "hasUnsubscribe" => false
-            ]
+        $this->eventManager->execute(
+            new ForgotPasswordEvent($user)
         );
-
-        // TODO check them
-        //   make sure that there is no bot triggering a lot of mails
-
-        $message = $this->messageService->toEmailMessage(
-            $this->translator->translate("Resetting Password")
-            , $rendered
-            , $user
-        );
-
-        $stamp = new Stamp();
-        $stamp->setCreateTs(new DateTime());
-        $stamp->setName(ConfigProvider::STAMP_NAME_PASSWORD_RESET_MAIL_SENT);
-        $stamp->setValue($uuid);
-        $message->addStamp($stamp);
-
-        $this->queueRepository->insert($message);
-
-        $response = [
-            "header"    => $responseHeader
-            , "message" => $this->translator->translate("We sent an email to reset your password")
-        ];
-
-        if (true === $debug) {
-            $response['uuid'] = $ctaLink;
-        }
 
         return new JsonResponse(
-            $response
+            [
+                "header" => $responseHeader
+            ]
             , IResponse::OK
         );
     }

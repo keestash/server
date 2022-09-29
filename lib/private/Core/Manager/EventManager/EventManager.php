@@ -24,7 +24,6 @@ namespace Keestash\Core\Manager\EventManager;
 use DateTimeImmutable;
 use Keestash\Core\DTO\Queue\EventMessage;
 use Keestash\Core\DTO\Queue\Stamp;
-use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\Queue\IQueueRepository;
@@ -52,7 +51,6 @@ class EventManager implements IEventManager {
 
             $message = new EventMessage();
             $message->setId((string) Uuid::uuid4());
-            $message->setType(IMessage::TYPE_EVENT);
             $message->setPayload(
                 [
                     'listener' => $listener
