@@ -21,27 +21,27 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Event;
 
-use KSP\Core\DTO\Queue\IMessage;
-use KSP\Core\Manager\EventManager\IEvent;
+use Keestash\Core\Manager\EventManager\Event;
+use KSP\Core\DTO\User\IUser;
 
-class ForgotPasswordEvent implements IEvent {
+class ForgotPasswordEvent extends Event {
 
-    private IMessage $message;
+    private IUser $user;
 
-    public function __construct(IMessage $message) {
-        $this->message = $message;
+    public function __construct(IUser $user) {
+        $this->user = $user;
     }
 
     /**
-     * @return IMessage
+     * @return IUser
      */
-    public function getMessage(): IMessage {
-        return $this->message;
+    public function getUser(): IUser {
+        return $this->user;
     }
 
     public function jsonSerialize(): array {
         return [
-            'message' => $this->getMessage()
+            'user' => $this->getUser()
         ];
     }
 

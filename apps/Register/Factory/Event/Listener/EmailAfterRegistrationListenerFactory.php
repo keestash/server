@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\Register\Factory\Event\Listener;
 
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Event\EmailAfterRegistration;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Service\Queue\IMessageService;
+use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
@@ -39,9 +39,8 @@ class EmailAfterRegistrationListenerFactory {
             , $container->get(Legacy::class)
             , $container->get(IL10N::class)
             , $container->get(ILogger::class)
-            , $container->get(HTTPService::class)
-            , $container->get(IMessageService::class)
-            , $container->get(IQueueRepository::class)
+            , $container->get(IHTTPService::class)
+            , $container->get(IEmailService::class)
         );
     }
 

@@ -24,11 +24,8 @@ namespace Keestash\Core\Service\Queue;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\Core\DTO\Queue\EmailMessage;
 use Keestash\Core\DTO\Queue\EventMessage;
 use Keestash\Core\DTO\Queue\Stamp;
-use Keestash\Exception\KeestashException;
-use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
 
@@ -57,17 +54,7 @@ class QueueService implements IQueueService {
         /** @var array $messageArray */
         foreach ($messages as $messageArray) {
 
-            $type = $messageArray['type'];
-            if ($type === IMessage::TYPE_EMAIL) {
-                $message = new EmailMessage();
-                $message->setType(IMessage::TYPE_EMAIL);
-            } else if ($type === IMessage::TYPE_EVENT) {
-                $message = new EventMessage();
-                $message->setType(IMessage::TYPE_EVENT);
-            } else {
-                throw new KeestashException();
-            }
-
+            $message = new EventMessage();
             $message->setId((string) $messageArray["id"]);
             $message->setCreateTs(
                 $this->dateTimeService->fromFormat((string) $messageArray["create_ts"])

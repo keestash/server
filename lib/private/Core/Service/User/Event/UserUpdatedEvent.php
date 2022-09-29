@@ -29,7 +29,7 @@ class UserUpdatedEvent extends Event {
     private IUser $updatedUser;
     private IUser $oldUser;
 
-    public function __construct(IUser $updatedUser, IUser $oldUser, bool $updated) {
+    public function __construct(IUser $updatedUser, IUser $oldUser) {
         $this->updatedUser = $updatedUser;
         $this->oldUser     = $oldUser;
     }

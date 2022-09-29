@@ -1,39 +1,9 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#3 \\$subject of function str_replace expects array\\|string, mixed given\\.$#"
-			count: 3
-			path: ../../apps/About/Controller/Controller.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\App\\\\Config\\\\IApp\\:\\:setEnabled\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Apps/Api/UpdateApp.php
-
-		-
 			message: "#^Parameter \\#1 \\$hash of method KSA\\\\ForgotPassword\\\\Api\\\\AccountDetails\\:\\:hasHash\\(\\) expects string\\|null, mixed given\\.$#"
 			count: 1
 			path: ../../apps/ForgotPassword/Api/AccountDetails.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IEmailMessage\\:\\:addStamp\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ForgotPassword.php
-
-		-
-			message: "#^Cannot access offset 'input' on mixed\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ForgotPassword.php
-
-		-
-			message: "#^Parameter \\#1 \\$first of method doganoo\\\\DI\\\\Object\\\\String\\\\IStringService\\:\\:equalsIgnoreCase\\(\\) expects string, mixed given\\.$#"
-			count: 2
-			path: ../../apps/ForgotPassword/Api/ForgotPassword.php
-
-		-
-			message: "#^Part \\$appName \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
-			path: ../../apps/ForgotPassword/Api/ForgotPassword.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
@@ -41,34 +11,59 @@ parameters:
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
 
 		-
-			message: "#^Cannot access offset 'hash' on mixed\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ResetPassword.php
-
-		-
-			message: "#^Cannot access offset 'input' on mixed\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ResetPassword.php
-
-		-
-			message: "#^Parameter \\#1 \\$hash of method KSA\\\\ForgotPassword\\\\Api\\\\ResetPassword\\:\\:findCandidate\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ResetPassword.php
-
-		-
-			message: "#^Parameter \\#1 \\$password of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:passwordHasMinimumRequirements\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ResetPassword.php
-
-		-
-			message: "#^Parameter \\#1 \\$plain of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:hashPassword\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/ResetPassword.php
-
-		-
 			message: "#^Parameter \\#2 \\$debug of method KSA\\\\ForgotPassword\\\\Api\\\\ResetPassword\\:\\:findCandidate\\(\\) expects bool, mixed given\\.$#"
 			count: 1
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
+
+		-
+			message: "#^Part \\$appName \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			count: 2
+			path: ../../apps/ForgotPassword/Event/Listener/ForgotPasswordMailLinkListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:requestPasswordReset\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/AccountDetailsTest.php
+
+		-
+			message: "#^Cannot call method getHash\\(\\) on KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:lock\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:requestPasswordReset\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:revertPasswordChangeRequest\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:unlock\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:requestPasswordReset\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 2
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ResetPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:revertPasswordChangeRequest\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ResetPasswordTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:unlock\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
+			count: 1
+			path: ../../apps/ForgotPassword/Test/Integration/Api/ResetPasswordTest.php
 
 		-
 			message: "#^Cannot access offset 'email' on mixed\\.$#"
@@ -621,6 +616,11 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
 
 		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Attachment/GetTest.php
+
+		-
 			message: "#^Parameter \\#1 \\$user of method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\RequestService\\:\\:getRequestWithToken\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/DeleteTest.php
@@ -976,11 +976,6 @@ parameters:
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
 
 		-
-			message: "#^Class Keestash\\\\Core\\\\Manager\\\\SessionManager\\\\SessionManager not found\\.$#"
-			count: 1
-			path: ../../lib/config/dependencies/aliases.php
-
-		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/App/Loader/Loader.php
@@ -1099,11 +1094,6 @@ parameters:
 			message: "#^Method Keestash\\\\Core\\\\Manager\\\\ActionBarManager\\\\ActionBarManager\\:\\:get\\(\\) should return KSP\\\\Core\\\\View\\\\ActionBar\\\\IBag\\|null but returns mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Manager/ActionBarManager/ActionBarManager.php
-
-		-
-			message: "#^Parameter \\#1 \\$lifetime of function session_set_cookie_params expects int, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/CookieManager/CookieManager.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\ILogger\\\\ILogger\\:\\:pushHandler\\(\\)\\.$#"
@@ -1459,26 +1449,6 @@ parameters:
 			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:addRecipient\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Queue/Handler/EmailHandler.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:send\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Queue/Handler/EmailHandler.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:setBody\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Queue/Handler/EmailHandler.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Email\\\\IEmailService\\:\\:setSubject\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Queue/Handler/EmailHandler.php
 
 		-
 			message: "#^Method KSP\\\\Core\\\\DTO\\\\Queue\\\\IStamp\\:\\:getValue\\(\\) has no return type specified\\.$#"

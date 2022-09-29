@@ -24,6 +24,7 @@ namespace KSA\ForgotPassword\Test\Integration\Api;
 use KSA\ForgotPassword\Api\ResetPassword;
 use KSA\ForgotPassword\Test\TestCase;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
@@ -49,6 +50,7 @@ class ResetPasswordTest extends TestCase {
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
         $user                = $userRepository->getUserById((string) UserService::TEST_RESET_PASSWORD_USER_ID_7);
+        $this->assertInstanceOf(IUser::class, $user);
         $userStateRepository->requestPasswordReset($user, (string) $hash);
 
         /** @var ResetPassword $resetPassword */
@@ -75,6 +77,7 @@ class ResetPasswordTest extends TestCase {
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
         $user                = $userRepository->getUserById((string) UserService::TEST_RESET_PASSWORD_USER_ID_7);
+        $this->assertInstanceOf(IUser::class, $user);
         $userStateRepository->revertPasswordChangeRequest($user);
         $userStateRepository->unlock($user);
         $userStateRepository->requestPasswordReset($user, (string) $hash);

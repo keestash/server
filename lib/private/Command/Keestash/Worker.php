@@ -29,7 +29,6 @@ use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
-use KSP\Queue\Handler\IEmailHandler;
 use KSP\Queue\Handler\IEventHandler;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,14 +37,12 @@ use Throwable;
 class Worker extends KeestashCommand {
 
     private IQueueService    $queueService;
-    private IEmailHandler    $emailHandler;
     private ILogger          $logger;
     private IQueueRepository $queueRepository;
     private IEventHandler    $eventHandler;
 
     public function __construct(
         IQueueService      $queueService
-        , IEmailHandler    $emailHandler
         , ILogger          $logger
         , IQueueRepository $queueRepository
         , IEventHandler    $eventHandler
@@ -53,7 +50,6 @@ class Worker extends KeestashCommand {
         parent::__construct();
 
         $this->queueService    = $queueService;
-        $this->emailHandler    = $emailHandler;
         $this->logger          = $logger;
         $this->queueRepository = $queueRepository;
         $this->eventHandler    = $eventHandler;
@@ -87,20 +83,8 @@ class Worker extends KeestashCommand {
                 $result = Result::getNotOk();
 
                 try {
-
-                    switch ($message->getType()) {
-                        case IMessage::TYPE_EMAIL:
-                            $this->logger->debug('handling an email message');
-                            $result = $this->emailHandler->handle($message);
-                            break;
-                        case IMessage::TYPE_EVENT:
-                            $this->logger->debug('handling an event message');
-                            $result = $this->eventHandler->handle($message);
-                            break;
-                        default:
-                            throw new KeestashException();
-                    }
-
+                    $this->logger->debug('handling an event message');
+                    $result = $this->eventHandler->handle($message);
                 } catch (Throwable $exception) {
                     $this->logger->error('error processing message', ['exception' => $exception]);
                 }

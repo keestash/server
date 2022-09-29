@@ -25,7 +25,6 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
-use doganoo\SimpleRBAC\Repository\PermissionRepositoryInterface;
 use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -33,11 +32,9 @@ use Keestash\App\Cors\ProjectConfiguration;
 use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
-use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\EventManager\EventManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\LoggerManager\LoggerManager;
-use Keestash\Core\Manager\SessionManager\SessionManager;
 use Keestash\Core\Manager\SettingManager\SettingManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
@@ -69,11 +66,9 @@ use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\Mime\MimeTypeService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\JWTService;
-use Keestash\Core\Service\HTTP\Response\ResponseService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
-use Keestash\Core\Service\Queue\MessageService;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
@@ -81,17 +76,14 @@ use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\L10N\GetText;
-use Keestash\Queue\Handler\EmailHandler;
 use Keestash\Queue\Handler\EventHandler;
 use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
 use KSP\Core\Cache\ICacheService;
-use KSP\Core\Manager\CookieManager\ICookieManager;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
-use KSP\Core\Manager\SessionManager\ISessionManager;
 use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
@@ -122,18 +114,15 @@ use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Mime\IMimeTypeService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\HTTP\Response\IResponseService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Phinx\IMigrator;
-use KSP\Core\Service\Queue\IMessageService;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\L10N\IL10N;
-use KSP\Queue\Handler\IEmailHandler;
 use KSP\Queue\Handler\IEventHandler;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
 use RateLimit\RateLimiter;
@@ -182,8 +171,6 @@ return [
     IAccessService::class                             => AccessService::class,
     \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class,
     IPasswordService::class                           => PasswordService::class,
-    IMessageService::class                            => MessageService::class,
-    IResponseService::class                           => ResponseService::class,
     ICSVService::class                                => CSVService::class,
     IMimeTypeService::class                           => MimeTypeService::class,
     IQueueService::class                              => QueueService::class,
@@ -191,9 +178,7 @@ return [
     // manager
     ILoggerManager::class                             => LoggerManager::class,
     IEventManager::class                              => EventManager::class,
-    ICookieManager::class                             => CookieManager::class,
     IFileManager::class                               => FileManager::class,
-    ISessionManager::class                            => SessionManager::class,
     ISettingManager::class                            => SettingManager::class,
 
     IL10N::class                   => GetText::class,
@@ -204,7 +189,6 @@ return [
     ConfigurationInterface::class  => ProjectConfiguration::class,
 
     // handler
-    IEmailHandler::class           => EmailHandler::class,
     IEventHandler::class           => EventHandler::class,
 
     // third party

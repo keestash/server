@@ -40,7 +40,6 @@ class WorkerFactory implements FactoryInterface {
     ): KeestashCommand {
         return new Worker(
             $container->get(IQueueService::class)
-            , $container->get(IEmailHandler::class)
             , $container->get(ILogger::class)
             , $container->get(IQueueRepository::class)
             , $container->get(IEventHandler::class)

@@ -51,7 +51,6 @@ class QueueRepository implements IQueueRepository {
                 , 'q.attempts'
                 , 'q.reserved_ts'
                 , 'q.payload'
-                , 'q.type'
                 , 'q.stamps'
             ]
         )
@@ -74,7 +73,6 @@ class QueueRepository implements IQueueRepository {
                 , 'q.attempts'
                 , 'q.reserved_ts'
                 , 'q.payload'
-                , 'q.type'
                 , 'q.stamps'
             ]
         )
@@ -107,7 +105,6 @@ class QueueRepository implements IQueueRepository {
                     , "`priority`"    => '?'
                     , "`attempts`"    => '?'
                     , "`payload`"     => '?'
-                    , "`type`"        => '?'
                     , "`reserved_ts`" => '?'
                     , "`create_ts`"   => '?'
                     , "`stamps`"      => '?'
@@ -117,10 +114,9 @@ class QueueRepository implements IQueueRepository {
             ->setParameter(1, $message->getPriority())
             ->setParameter(2, $message->getAttempts())
             ->setParameter(3, json_encode($message->getPayload()))
-            ->setParameter(4, $message->getType())
-            ->setParameter(5, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
-            ->setParameter(6, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
-            ->setParameter(7, json_encode($message->getStamps()->toArray()))
+            ->setParameter(4, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
+            ->setParameter(5, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
+            ->setParameter(6, json_encode($message->getStamps()->toArray()))
             ->executeStatement();
 
         return $message;
@@ -133,7 +129,6 @@ class QueueRepository implements IQueueRepository {
             ->set('`priority`', '?')
             ->set('`attempts`', '?')
             ->set('`payload`', '?')
-            ->set('`type`', '?')
             ->set('`reserved_ts`', '?')
             ->set('`create_ts`', '?')
             ->set('`stamps`', '?')
@@ -141,11 +136,10 @@ class QueueRepository implements IQueueRepository {
             ->setParameter(0, $message->getPriority())
             ->setParameter(1, $message->getAttempts())
             ->setParameter(2, json_encode($message->getPayload()))
-            ->setParameter(3, $message->getType())
-            ->setParameter(4, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
-            ->setParameter(5, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
-            ->setParameter(6, json_encode($message->getStamps()->toArray()))
-            ->setParameter(7, $message->getId());
+            ->setParameter(3, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
+            ->setParameter(4, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
+            ->setParameter(5, json_encode($message->getStamps()->toArray()))
+            ->setParameter(6, $message->getId());
 
         $rowCount = $queryBuilder->executeStatement();
 

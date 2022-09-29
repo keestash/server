@@ -21,33 +21,25 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Factory\Api;
 
-use Keestash\Core\Service\User\UserService;
-use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Api\ForgotPassword;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\Core\Service\Queue\IMessageService;
+use KSP\Core\Service\User\IUserService;
 use KSP\L10N\IL10N;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
 class ForgotPasswordFactory {
 
     public function __invoke(ContainerInterface $container): ForgotPassword {
         return new ForgotPassword(
-            $container->get(Legacy::class)
-            , $container->get(UserService::class)
+            $container->get(IUserService::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(IL10N::class)
             , $container->get(IUserRepository::class)
-            , $container->get(TemplateRendererInterface::class)
-            , $container->get(IHTTPService::class)
-            , $container->get(IMessageService::class)
-            , $container->get(IQueueRepository::class)
             , $container->get(ILogger::class)
+            , $container->get(IEventManager::class)
         );
     }
 

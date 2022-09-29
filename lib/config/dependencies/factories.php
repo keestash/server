@@ -36,7 +36,6 @@ use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Cache\NullService;
-use Keestash\Core\Manager\CookieManager\CookieManager;
 use Keestash\Core\Manager\EventManager\EventManager;
 use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\LoggerManager\LoggerManager;
@@ -76,10 +75,8 @@ use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
-use Keestash\Core\Service\HTTP\Response\ResponseService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
-use Keestash\Core\Service\Queue\MessageService;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiRequestService;
@@ -140,7 +137,6 @@ use Keestash\Factory\Core\Service\File\FileServiceFactory;
 use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
-use Keestash\Factory\Core\Service\HTTP\Response\ResponseServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
@@ -166,7 +162,6 @@ use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\LoggedInMiddlewareFactory;
 use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
-use Keestash\Factory\Queue\Handler\EmailHandlerFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
@@ -183,7 +178,6 @@ use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMiddleware;
 use Keestash\Middleware\Web\LoggedInMiddleware;
-use Keestash\Queue\Handler\EmailHandler;
 use Keestash\Queue\Handler\EventHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\ILogger\ILogger;
@@ -219,7 +213,6 @@ return [
     Loader::class                                                  => LoaderFactory::class,
     Verification::class                                            => VerificationFactory::class,
     InstanceDB::class                                              => InstanceDBFactory::class,
-    CookieManager::class                                           => CookieManagerFactory::class,
     FileManager::class                                             => FileManagerFactory::class,
     Migrator::class                                                => MigratorFactory::class,
     JobRepository::class                                           => JobRepositoryFactory::class,
@@ -288,8 +281,6 @@ return [
     IniConfigService::class                                        => InvokableFactory::class,
     StringService::class                                           => InvokableFactory::class,
     AccessService::class                                           => InvokableFactory::class,
-    MessageService::class                                          => InvokableFactory::class,
-    ResponseService::class                                         => ResponseServiceFactory::class,
     CSVService::class                                              => CSVServiceFactory::class,
     MimeTypeService::class                                         => InvokableFactory::class,
     QueueService::class                                            => QueueServiceFactory::class,
@@ -320,6 +311,5 @@ return [
     , FileRateLimiter::class                 => FileRateLimiterFactory::class,
 
     // handler
-    EmailHandler::class                      => EmailHandlerFactory::class,
     EventHandler::class                      => EventHandlerFactory::class
 ];

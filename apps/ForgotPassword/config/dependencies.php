@@ -25,12 +25,12 @@ use KSA\ForgotPassword\Api\AccountDetails;
 use KSA\ForgotPassword\Api\Configuration;
 use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Api\ResetPassword;
-use KSA\ForgotPassword\Event\Listener\PasswordResetMailSendListener;
+use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
 use KSA\ForgotPassword\Factory\Api\AccountDetailsFactory;
 use KSA\ForgotPassword\Factory\Api\ConfigurationFactory;
 use KSA\ForgotPassword\Factory\Api\ForgotPasswordFactory;
 use KSA\ForgotPassword\Factory\Api\ResetPasswordFactory;
-use KSA\ForgotPassword\Factory\Event\Listener\PasswordResetMailSendListenerFactory;
+use KSA\ForgotPassword\Factory\Event\Listener\ForgotPasswordMailLinkListenerFactory;
 
 return [
     CoreConfigProvider::FACTORIES => [
@@ -46,6 +46,6 @@ return [
 
         // event
         // listener
-        , PasswordResetMailSendListener::class                 => PasswordResetMailSendListenerFactory::class
+        , ForgotPasswordMailLinkListener::class                => ForgotPasswordMailLinkListenerFactory::class
     ]
 ];

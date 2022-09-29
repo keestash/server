@@ -163,7 +163,6 @@ class UserRepositoryService implements IUserRepositoryService {
             new UserUpdatedEvent(
                 $updatedUser
                 , $oldUser
-                , true
             )
         );
         return $updatedUser;

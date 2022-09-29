@@ -19,8 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Queue\Handler;
+namespace KSA\ForgotPassword\Event;
 
-interface IEmailHandler extends IHandler {
+use Keestash\Core\Manager\EventManager\Event;
+
+class ResetPasswordEvent extends Event {
+
+    public function jsonSerialize(): array {
+        return [];
+    }
 
 }

@@ -24,19 +24,15 @@ namespace KSA\Register\Event;
 use DateTime;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
-use doganoo\PHPUtil\Util\StringUtil;
-use Keestash\Core\DTO\Queue\Stamp;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
-use KSA\Register\ConfigProvider;
 use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEvent;
 use KSP\Core\Manager\EventManager\IListener;
-use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Service\Queue\IMessageService;
+use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 
@@ -48,26 +44,23 @@ class EmailAfterRegistration implements IListener {
     private Legacy                    $legacy;
     private IL10N                     $translator;
     private ILogger                   $logger;
-    private HTTPService               $httpService;
-    private IMessageService           $messageService;
-    private IQueueRepository          $queueRepository;
+    private IHTTPService              $httpService;
+    private IEmailService             $emailService;
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
         , Legacy                  $legacy
         , IL10N                   $l10n
         , ILogger                 $logger
-        , HTTPService             $httpService
-        , IMessageService         $messageService
-        , IQueueRepository        $queueRepository
+        , IHTTPService            $httpService
+        , IEmailService           $emailService
     ) {
         $this->templateRenderer = $templateRenderer;
         $this->legacy           = $legacy;
         $this->translator       = $l10n;
         $this->logger           = $logger;
         $this->httpService      = $httpService;
-        $this->messageService   = $messageService;
-        $this->queueRepository  = $queueRepository;
+        $this->emailService     = $emailService;
     }
 
     /**
@@ -114,19 +107,17 @@ class EmailAfterRegistration implements IListener {
             ]
         );
 
-        $message = $this->messageService->toEmailMessage(
-            $this->translator->translate("You are registered for $appName")
-            , $rendered
-            , $event->getUser()
+
+        $this->emailService->addRecipient(
+            $event->getUser()->getName()
+            , $event->getUser()->getEmail()
         );
 
-        $stamp = new Stamp();
-        $stamp->setCreateTs(new DateTime());
-        $stamp->setName(ConfigProvider::STAMP_NAME_USER_REGISTERED);
-        $stamp->setValue(StringUtil::getUUID());
-        $message->addStamp($stamp);
-
-        $this->queueRepository->insert($message);
+        $this->emailService->setSubject(
+            $this->translator->translate("You are registered for $appName")
+        );
+        $this->emailService->setBody($rendered);
+        $this->emailService->send();
 
     }
 

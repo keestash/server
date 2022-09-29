@@ -92,11 +92,11 @@ class Add implements RequestHandlerInterface {
 
         if (true === $this->stringService->isEmpty($termsAndConditions)) {
             return new JsonResponse(
-                $this->responseService->createError(
-                    "error"
-                    , []
-                    , 'terms and conditions are not checked'
-                )
+                [
+                    "status"    => 'error'
+                    , "data"    => []
+                    , "message" => 'terms and conditions are not checked'
+                ]
                 , IResponse::BAD_REQUEST
             );
         }
@@ -105,11 +105,11 @@ class Add implements RequestHandlerInterface {
             $this->userService->validatePasswords($password, $passwordRepeat);
         } catch (KeestashException $exception) {
             return new JsonResponse(
-                $this->responseService->createError(
-                    "error"
-                    , []
-                    , $exception->getMessage()
-                )
+                [
+                    "status"    => 'error'
+                    , "data"    => []
+                    , "message" => 'invalid passwords'
+                ]
                 , IResponse::BAD_REQUEST
             );
         }
@@ -130,11 +130,12 @@ class Add implements RequestHandlerInterface {
             $this->userService->validateNewUser($user);
         } catch (KeestashException $exception) {
             return new JsonResponse(
-                $this->responseService->createError(
-                    "error"
-                    , []
-                    , $exception->getMessage()
-                )
+                [
+                    "status"    => 'error'
+                    , "data"    => []
+                    , "message" => 'invalid new user'
+                ]
+
                 , IResponse::BAD_REQUEST
             );
         }
@@ -144,11 +145,11 @@ class Add implements RequestHandlerInterface {
         } catch (Exception $exception) {
             $this->logger->error($exception->getTraceAsString());
             return new JsonResponse(
-                $this->responseService->createError(
-                    "error"
-                    , []
-                    , 'could not create user'
-                )
+                [
+                    "status"    => 'error'
+                    , "data"    => []
+                    , "message" => 'could not create user'
+                ]
                 , IResponse::INTERNAL_SERVER_ERROR
             );
         }

@@ -35,7 +35,6 @@ abstract class Message implements IMessage {
     private int               $attempts;
     private DateTimeInterface $reservedTs;
     private array             $payload;
-    private string            $type;
     private HashTable         $stamps;
 
     public function __construct() {
@@ -126,20 +125,6 @@ abstract class Message implements IMessage {
         $this->payload = $payload;
     }
 
-    /**
-     * @return string
-     */
-    public function getType(): string {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void {
-        $this->type = $type;
-    }
-
     public function getStamps(): HashTable {
         return $this->stamps;
     }
@@ -167,7 +152,6 @@ abstract class Message implements IMessage {
             , "attempts"    => $this->getAttempts()
             , "reserved_ts" => $this->getReservedTs()
             , "payload"     => $this->getPayload()
-            , 'type'        => $this->getType()
             , 'stamps'      => $this->getStamps()
         ];
     }

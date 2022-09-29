@@ -24,6 +24,7 @@ namespace KSA\ForgotPassword\Test\Integration\Api;
 use KSA\ForgotPassword\Api\AccountDetails;
 use KSA\ForgotPassword\Test\TestCase;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KST\Service\Service\UserService;
@@ -62,6 +63,7 @@ class AccountDetailsTest extends TestCase {
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
         $user           = $userRepository->getUserById((string) UserService::TEST_PASSWORD_RESET_USER_ID_5);
+        $this->assertInstanceOf(IUser::class, $user);
         $userStateRepository->requestPasswordReset($user, $token);
 
         /** @var AccountDetails $accountDetails */
@@ -71,7 +73,7 @@ class AccountDetailsTest extends TestCase {
                 ->withAttribute('resetPasswordToken', $token)
         );
 
-        $responseData = json_decode(
+        $responseData = (array) json_decode(
             (string) $response->getBody()
             , true
             , 512

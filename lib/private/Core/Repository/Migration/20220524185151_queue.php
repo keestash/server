@@ -69,17 +69,6 @@ final class Queue extends KeestashMigration {
                 ]
             )
             ->addColumn(
-                "type"
-                , KeestashMigration::ENUM
-                , [
-                    "length"    => "100"
-                    , "null"    => false
-                    , "default" => IMessage::TYPE_EMAIL
-                    , 'values'  => [IMessage::TYPE_EMAIL]
-                    , "after"   => 'payload'
-                ]
-            )
-            ->addColumn(
                 "reserved_ts"
                 , KeestashMigration::DATETIME
                 , [
