@@ -22,9 +22,12 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Organization;
 
 use doganoo\DI\DateTime\IDateTimeService;
+use Exception;
 use Keestash\Core\DTO\Organization\Organization;
+use Keestash\Exception\IndexNotFoundException;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\Service\Organization\IOrganizationService;
+use TypeError;
 
 class OrganizationService implements IOrganizationService {
 
@@ -34,18 +37,23 @@ class OrganizationService implements IOrganizationService {
         $this->dateTimeService = $dateTimeService;
     }
 
+    /**
+     * @param array $data
+     * @return IOrganization
+     * @throws IndexNotFoundException
+     */
     public function toOrganization(array $data): IOrganization {
-        $organization = new Organization();
-        $organization->setId((int) $data["id"]);
-        $organization->setActiveTs(
-            $this->dateTimeService->fromString($data["active_ts"]["date"])
-        );
-        $organization->setCreateTs(
-            $this->dateTimeService->fromString($data["create_ts"]["date"])
-        );
+        try {
+            $organization = new Organization();
+            $organization->setId((int) $data["id"]);
+            $organization->setActiveTs($data["active_ts"]);
+            $organization->setCreateTs($data["create_ts"]);
 //        $organization->setMemberCount((int) $data['users']); // TODO to users!
-        $organization->setName($data['name']);
-        return $organization;
+            $organization->setName($data['name']);
+            return $organization;
+        } catch (Exception|TypeError $exception) {
+            throw new IndexNotFoundException($exception->getMessage());
+        }
     }
 
 }

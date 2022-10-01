@@ -55,7 +55,15 @@ interface IUserRepository extends IRepository {
      */
     public function getUserByHash(string $hash): IUser;
 
-    public function getUserById(string $id): ?IUser;
+    /**
+     * Returns an instance of IUser or null, if not found
+     *
+     * @param string $id
+     *
+     * @return IUser
+     * @throws UserNotFoundException
+     */
+    public function getUserById(string $id): IUser;
 
     public function getAll(): ArrayList;
 

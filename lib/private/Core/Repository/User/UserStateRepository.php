@@ -100,10 +100,6 @@ class UserStateRepository implements IUserStateRepository {
 
             $user = $this->userRepository->getUserById((string) $userId);
 
-            if (null === $user) {
-                throw new KeestashException();
-            }
-
             $userState = new UserState();
             $userState->setId((int) $id);
             $userState->setUser($user);

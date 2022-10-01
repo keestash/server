@@ -137,6 +137,10 @@ class MinimalApp extends AbstractMigration {
                 ['name']
                 , ['unique' => true]
             )
+            ->addIndex(
+                ['email']
+                , ['unique' => true]
+            )
             ->save();
 
         $this->createUserState();

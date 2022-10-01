@@ -27,7 +27,6 @@ use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Exception;
 use Keestash;
 use Keestash\Core\DTO\User\User;
-use Keestash\Exception\KeestashException;
 use Keestash\Exception\TooManyRowsException;
 use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotDeletedException;
@@ -88,13 +87,7 @@ class UserRepository implements IUserRepository {
                     , 'u.hash'
                     , 'u.locale'
                     , 'u.language'
-                    //                    , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
                     , 'CASE WHEN us.state = \'delete.state.user\' THEN true ELSE false END AS deleted'
-                    //                    CASE WHEN Password IS NOT NULL
-                    //       THEN 'Yes'
-                    //       ELSE 'No'
-                    //       END AS PasswordPresent
-                    //                    , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
                     , 'CASE WHEN us.state = \'lock.state.user\' THEN true ELSE false END AS locked'
                 ]
             )
@@ -186,8 +179,9 @@ class UserRepository implements IUserRepository {
                 , 'u.hash'
                 , 'u.locale'
                 , 'u.language'
-                , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
-                , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+                , 'CASE WHEN us.state = \'delete.state.user\' THEN true ELSE false END AS deleted'
+                , 'CASE WHEN us.state = \'lock.state.user\' THEN true ELSE false END AS locked'
+
             ]
         )
             ->from('user', 'u')
@@ -336,71 +330,76 @@ class UserRepository implements IUserRepository {
      *
      * @param string $id
      *
-     * @return IUser|null
-     * @throws KeestashException
+     * @return IUser
+     * @throws UserNotFoundException
      */
-    public function getUserById(string $id): ?IUser {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->select(
-            [
-                'u.id'
-                , 'u.name'
-                , 'u.password'
-                , 'u.create_ts'
-                , 'u.first_name'
-                , 'u.last_name'
-                , 'u.email'
-                , 'u.phone'
-                , 'u.website'
-                , 'u.hash'
-                , 'u.locale'
-                , 'u.language'
-                , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
-                , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
-            ]
-        )
-            ->from('user', 'u')
-            ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
-            ->where('u.id = ?')
-            ->setParameter(0, $id);
-        $users     = $queryBuilder->executeQuery()->fetchAllAssociative();
-        $userCount = count($users);
+    public function getUserById(string $id): IUser {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->select(
+                [
+                    'u.id'
+                    , 'u.name'
+                    , 'u.password'
+                    , 'u.create_ts'
+                    , 'u.first_name'
+                    , 'u.last_name'
+                    , 'u.email'
+                    , 'u.phone'
+                    , 'u.website'
+                    , 'u.hash'
+                    , 'u.locale'
+                    , 'u.language'
+                    , 'case when us.state = \'delete.state.user\' then true else false end AS deleted'
+                    , 'case when us.state = \'lock.state.user\' then true else false end AS locked'
+                ]
+            )
+                ->from('user', 'u')
+                ->leftJoin('u', 'user_state', 'us', 'u.id = us.user_id')
+                ->where('u.id = ?')
+                ->setParameter(0, $id);
+            $users     = $queryBuilder->executeQuery()->fetchAllAssociative();
+            $userCount = count($users);
 
-        if (0 === $userCount) {
-            return null;
+            if (0 === $userCount) {
+                throw new UserNotFoundException();
+            }
+
+            if ($userCount > 1) {
+                throw new TooManyRowsException("found more then one user for the given name");
+            }
+
+            $row  = $users[0];
+            $user = new User();
+            $user->setId((int) $row['id']);
+            $user->setName($row['name']);
+            $user->setPassword($row['password']);
+            $user->setCreateTs(
+                $this->dateTimeService->fromString($row['create_ts'])
+            );
+            $user->setFirstName($row['first_name']);
+            $user->setLastName($row['last_name']);
+            $user->setEmail($row['email']);
+            $user->setPhone($row['phone']);
+            $user->setWebsite($row['website']);
+            $user->setHash($row['hash']);
+            $user->setLocale($row['locale']);
+            $user->setLanguage($row['language']);
+            $user->setDeleted(
+                true === (bool) $row['deleted']
+            );
+            $user->setLocked(
+                true === (bool) $row['locked']
+            );
+            $user->setRoles(
+                $this->rbacRepository->getRolesByUser($user)
+            );
+
+            return $user;
+        } catch (\Doctrine\DBAL\Exception|TooManyRowsException $exception) {
+            $this->logger->error('error while retrieving user', ['exception' => $exception, 'id' => $id]);
+            throw new UserNotFoundException();
         }
-
-        if ($userCount > 1) {
-            throw new KeestashException("found more then one user for the given name");
-        }
-
-        $row  = $users[0];
-        $user = new User();
-        $user->setId((int) $row['id']);
-        $user->setName($row['name']);
-        $user->setPassword($row['password']);
-        $user->setCreateTs(
-            $this->dateTimeService->fromString($row['create_ts'])
-        );
-        $user->setFirstName($row['first_name']);
-        $user->setLastName($row['last_name']);
-        $user->setEmail($row['email']);
-        $user->setPhone($row['phone']);
-        $user->setWebsite($row['website']);
-        $user->setHash($row['hash']);
-        $user->setLocale($row['locale']);
-        $user->setLanguage($row['language']);
-        $user->setDeleted(
-            true === (bool) $row['deleted']
-        );
-        $user->setLocked(
-            true === (bool) $row['locked']
-        );
-        $user->setRoles(
-            $this->rbacRepository->getRolesByUser($user)
-        );
-
-        return $user;
     }
 
     /**
@@ -516,8 +515,8 @@ class UserRepository implements IUserRepository {
                     , 'u.hash'
                     , 'u.locale'
                     , 'u.language'
-                    , 'IF(us.state = \'delete.state.user\', true, false) AS deleted'
-                    , 'IF(us.state = \'lock.state.user\', true, false) AS locked'
+                    , 'CASE us.state WHEN \'delete.state.user\' THEN true ELSE false END AS deleted'
+                    , 'CASE us.state WHEN \'lock.state.user\' THEN true ELSE false END AS locked'
                 ]
             )
                 ->from('user', 'u')

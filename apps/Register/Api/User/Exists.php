@@ -48,7 +48,7 @@ class Exists implements RequestHandlerInterface {
         $userFound = false;
 
         try {
-            $this->userRepository->getUser($userName);
+            $this->userRepository->getUser((string) $userName);
             $userFound = true;
         } catch (UserNotFoundException $exception) {
             $this->logger->warning('no user found', ['exception' => $exception]);

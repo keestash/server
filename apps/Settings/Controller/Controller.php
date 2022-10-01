@@ -22,40 +22,26 @@ declare(strict_types=1);
 namespace KSA\Settings\Controller;
 
 use Keestash\View\ActionBar\ActionBarBuilder;
-use KSA\Settings\Service\SegmentService;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\Core\View\ActionBar\IActionBar;
-use KSP\Core\View\ActionBar\IElement;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Controller extends AppController {
 
     private TemplateRendererInterface $templateRenderer;
-    private SegmentService            $segmentService;
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
         , IAppRenderer            $appRenderer
-        , SegmentService          $segmentService
     ) {
         parent::__construct($appRenderer);
 
         $this->templateRenderer = $templateRenderer;
-        $this->segmentService   = $segmentService;
     }
 
     public function run(ServerRequestInterface $request): string {
-        $this->buildAppNavigation();
         return $this->templateRenderer->render('settings::settings', []);
-    }
-
-    private function buildAppNavigation(): void {
-        $this->setAppNavigation(
-            $this->segmentService->buildAppNavigation()
-        );
     }
 
 }

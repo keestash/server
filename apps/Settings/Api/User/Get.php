@@ -23,8 +23,10 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Http\Message\ResponseInterface;
@@ -35,19 +37,28 @@ class Get implements RequestHandlerInterface {
 
     private IJWTService     $jwtService;
     private IUserRepository $userRepository;
+    private ILogger         $logger;
 
     public function __construct(
         IJWTService       $jwtService
         , IUserRepository $userRepository
+        , ILogger         $logger
     ) {
         $this->jwtService     = $jwtService;
         $this->userRepository = $userRepository;
+        $this->logger         = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $userHash = (string) $request->getAttribute("userHash", "");
 
-        $user = $this->userRepository->getUserByHash($userHash);
+        try {
+            $user = $this->userRepository->getUserByHash($userHash);
+        } catch (UserNotFoundException $exception) {
+            $this->logger->warning('error finding user', ['exception' => $exception, 'userHash' => $userHash]);
+            return new JsonResponse([], IResponse::NOT_FOUND);
+        }
+
         $user->setJWT(
             $this->jwtService->getJWT(
                 new Audience(
@@ -56,6 +67,7 @@ class Get implements RequestHandlerInterface {
                 )
             )
         );
+
         return new JsonResponse(
             [
                 "user" => $user

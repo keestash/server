@@ -215,10 +215,6 @@ class NodeRepository {
 
         $user = $this->userRepository->getUserById((string) $userId);
 
-        if (null === $user) {
-            throw new UserNotFoundException();
-        }
-
         $node->setId((int) $id);
         $node->setName((string) $name);
         $node->setUser($user);
@@ -407,10 +403,13 @@ class NodeRepository {
             $createTs = $row[1];
             $id       = $row[2];
 
-            $user     = $this->userRepository->getUserById((string) $userId);
+            try {
+                $user = $this->userRepository->getUserById((string) $userId);
+            } catch (UserNotFoundException $exception) {
+                $this->logger->error('user not found', ['exception' => $exception]);
+                continue;
+            }
             $createTs = $this->dateTimeService->fromString($createTs);
-
-            if (null === $user) continue;
 
             $user->setJWT(
                 $this->jwtService->getJWT(

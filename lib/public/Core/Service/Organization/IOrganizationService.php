@@ -21,11 +21,17 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Organization;
 
+use Keestash\Exception\IndexNotFoundException;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\Service\IService;
 
 interface IOrganizationService extends IService {
 
+    /**
+     * @param array $data
+     * @return IOrganization
+     * @throws IndexNotFoundException
+     */
     public function toOrganization(array $data): IOrganization;
 
 }

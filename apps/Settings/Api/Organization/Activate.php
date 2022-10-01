@@ -22,13 +22,10 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use DateTimeImmutable;
-use doganoo\SimpleRBAC\Service\RBACServiceInterface;
 use Exception;
-use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\OrganizationActivatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -54,18 +51,18 @@ class Activate implements RequestHandlerInterface {
 
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
-        $id         = $parameters['id'] ?? null;
+        $parameters = (array) $request->getParsedBody();
+        $id         = (int) ($parameters['id'] ?? 0);
         $activate   = $parameters['activate'] ?? null;
 
-        if (null === $id || "" === $id || false === is_numeric($id)) {
-            throw new GeneralApiException('no id provided');
+        if ($id < 1) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $organization = $this->organizationRepository->get((int) $id);
+        $organization = $this->organizationRepository->get($id);
 
         if (null === $organization) {
-            throw new GeneralApiException('no organization found');
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         $organization->setActiveTs(

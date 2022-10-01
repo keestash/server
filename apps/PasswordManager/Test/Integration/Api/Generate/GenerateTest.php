@@ -28,20 +28,6 @@ use KST\TestCase;
 
 class GenerateTest extends TestCase {
 
-    // TODO add more cases
-    public function provideData(): array {
-        return [
-            [['length' => "8", 'upperCase' => "true", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], true]
-            , [['length' => null, 'upperCase' => "true", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], false]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], true]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "true", "specialChars" => "true"], true]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "true"], true]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "false"], true]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "false"], true]
-            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => 1235, "specialChars" => false], false]
-        ];
-    }
-
     /**
      * @dataProvider provideData
      */
@@ -63,6 +49,20 @@ class GenerateTest extends TestCase {
 
         $response = $generate->handle($request);
         $this->assertTrue($valid === $responseService->isValidResponse($response));
+    }
+
+    // TODO add more cases
+    public function provideData(): array {
+        return [
+            [['length' => "8", 'upperCase' => "true", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], true]
+            , [['length' => null, 'upperCase' => "true", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], false]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], true]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "true", "specialChars" => "true"], true]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "true"], true]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "false"], true]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => "false", "specialChars" => "false"], true]
+            , [['length' => "8", 'upperCase' => "false", 'lowerCase' => "false", "digit" => 1235, "specialChars" => false], false]
+        ];
     }
 
 }

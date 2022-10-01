@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\User;
 
-use doganoo\PHPUtil\Datatype\StringClass;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\UserNotCreatedException;
@@ -31,6 +30,7 @@ use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TypeError;
 
 class UserAdd implements RequestHandlerInterface {
 
@@ -49,20 +49,20 @@ class UserAdd implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters     = json_decode(
-            (string) $request->getBody()
-            , true
-            , 512
-            , JSON_THROW_ON_ERROR
-        );
-        $passwordRepeat = $parameters["password_repeat"];
-        $user           = $this->userService->toUser((array) $parameters);
+        $parameters = (array) $request->getParsedBody();
 
-        if (true === $this->userRepositoryService->userExistsByName($user->getName())) return new JsonResponse([], IResponse::NOT_FOUND);
-        if (false === (new StringClass($user->getPassword()))->equals($passwordRepeat)) return new JsonResponse([], IResponse::BAD_REQUEST);
-        if (false === $this->userService->passwordHasMinimumRequirements($user->getPassword())) return new JsonResponse([], IResponse::BAD_REQUEST);
-        if (false === $this->userService->validEmail($user->getEmail())) return new JsonResponse([], IResponse::BAD_REQUEST);
-        if (false === $this->userService->validWebsite($user->getWebsite())) return new JsonResponse([], IResponse::BAD_REQUEST);
+        try {
+            $user = $this->userService->toNewUser($parameters);
+        } catch (TypeError $error) {
+            $this->logger->error('error while converting to user', ['error' => $error]);
+            return new JsonResponse([], IResponse::BAD_REQUEST);
+        }
+
+        if (true === $this->userRepositoryService->userExistsByName($user->getName())) return new JsonResponse(['user exists'], IResponse::BAD_REQUEST);
+        if ($parameters['password'] !== $parameters['password_repeat']) return new JsonResponse(['passwords do not match'], IResponse::BAD_REQUEST);
+        if (false === $this->userService->passwordHasMinimumRequirements($user->getPassword())) return new JsonResponse(['minimum requirements do not match'], IResponse::BAD_REQUEST);
+        if (false === $this->userService->validEmail($user->getEmail())) return new JsonResponse(['invalid email'], IResponse::BAD_REQUEST);
+        if (false === $this->userService->validWebsite($user->getWebsite())) return new JsonResponse(['invalid website'], IResponse::BAD_REQUEST);
 
         $hash = $this->userService->hashPassword($user->getPassword());
         $user->setPassword($hash);

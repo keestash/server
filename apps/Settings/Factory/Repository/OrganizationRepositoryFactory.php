@@ -26,15 +26,17 @@ use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\ILogger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class OrganizationRepositoryFactory {
 
     public function __invoke(ContainerInterface $container): IOrganizationRepository {
         return new OrganizationRepository(
-            $container->get(IOrganizationUserRepository::class),
-            $container->get(IDateTimeService::class),
-            $container->get(IBackend::class)
+            $container->get(IOrganizationUserRepository::class)
+            , $container->get(IDateTimeService::class)
+            , $container->get(IBackend::class)
+            , $container->get(ILogger::class)
         );
     }
 

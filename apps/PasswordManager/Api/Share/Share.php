@@ -109,13 +109,8 @@ class Share implements RequestHandlerInterface {
             );
         }
 
-        $node = $this->nodeRepository->getNode((int) $nodeId);
-        $user = $this->userRepository->getUserById((string) $userId);
-
-        if (null === $user) {
-            throw new PasswordManagerException();
-        }
-
+        $node  = $this->nodeRepository->getNode((int) $nodeId);
+        $user  = $this->userRepository->getUserById((string) $userId);
         $share = $node->getShareByUser($user);
 
         return new JsonResponse(

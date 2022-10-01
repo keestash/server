@@ -24,14 +24,13 @@ namespace KSA\Settings\Api\Organization;
 use DateTimeImmutable;
 use doganoo\DI\Encryption\User\IUserService;
 use Exception;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Organization\Organization;
-use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -56,11 +55,11 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
-        $name       = $parameters["organization"];
+        $parameters = (array) $request->getParsedBody();
+        $name       = (string) ($parameters["organization"] ?? '');
 
-        if (null === $name || "" === $name) {
-            throw new GeneralApiException('no organization found');
+        if ("" === $name) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $organization = new Organization();
@@ -81,7 +80,7 @@ class Add implements RequestHandlerInterface {
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
             return new JsonResponse(
-                'error while adding organization'
+                ['error while adding organization']
                 , IResponse::INTERNAL_SERVER_ERROR
             );
         }
@@ -90,6 +89,7 @@ class Add implements RequestHandlerInterface {
             [
                 "organization" => $organization
             ]
+            , IResponse::OK
         );
     }
 

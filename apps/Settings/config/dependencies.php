@@ -60,20 +60,17 @@ use KSA\Settings\Factory\Event\Listener\OrganizationAddedEventListenerFactory;
 use KSA\Settings\Factory\Event\Listener\PostStateChangeFactory;
 use KSA\Settings\Factory\Repository\OrganizationRepositoryFactory;
 use KSA\Settings\Factory\Repository\OrganizationUserRepositoryFactory;
-use KSA\Settings\Factory\Service\SegmentServiceFactory;
 use KSA\Settings\Repository\DemoUsersRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
 use KSA\Settings\Repository\OrganizationUserRepository;
-use KSA\Settings\Service\SegmentService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'factories' => [
         // service
         UserService::class                           => InvokableFactory::class
-        , SegmentService::class                      => SegmentServiceFactory::class
 
         // controller
         , Controller::class                          => SettingsControllerFactory::class

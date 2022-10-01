@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Exception\UserNotFoundException;
 use KSA\Settings\Event\Organization\UserChangedEvent;
 use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -56,26 +57,27 @@ class User implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters     = json_decode((string) $request->getBody(), true);
-        $mode           = $parameters["mode"] ?? null;
-        $organizationId = $parameters["organization_id"] ?? null;
-        $userId         = $parameters["user_id"] ?? null;
+        $parameters     = (array) $request->getParsedBody();
+        $mode           = (string) ($parameters["mode"] ?? '');
+        $organizationId = (int) ($parameters["organization_id"] ?? -1);
+        $userId         = (string) ($parameters["user_id"] ?? -1);
 
-        if ("" === $organizationId || false === is_numeric($organizationId)) {
-            throw new SettingsException('no organization');
+        if ($organizationId < 1) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
-        if ("" === $userId || false === is_numeric($userId)) {
-            throw new SettingsException('no user');
+        if ($userId < 1) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $organization = $this->organizationRepository->get((int) $organizationId);
-        $user         = $this->userRepository->getUserById((string) $userId);
+        $organization = $this->organizationRepository->get($organizationId);
+        try {
+            $user = $this->userRepository->getUserById($userId);
+        } catch (UserNotFoundException $exception) {
+            return new JsonResponse([], IResponse::NOT_FOUND);
+        }
 
         if (null === $organization) {
-            throw new SettingsException('no organization found');
-        }
-        if (null === $user) {
-            throw new SettingsException('no user found');
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         switch ($mode) {
@@ -93,7 +95,7 @@ class User implements RequestHandlerInterface {
 
                 break;
             default:
-                throw new SettingsException('no mode given');
+                return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $this->eventManager

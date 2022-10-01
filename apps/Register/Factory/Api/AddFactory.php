@@ -26,7 +26,6 @@ use Keestash\Core\Service\User\UserService;
 use KSA\Register\Api\User\Add;
 use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\HTTP\Response\IResponseService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
@@ -39,7 +38,6 @@ class AddFactory {
             , $container->get(ILogger::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(StringService::class)
-            , $container->get(IResponseService::class)
         );
     }
 

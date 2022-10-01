@@ -49,7 +49,7 @@ class Remove implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = (array) $request->getParsedBody();
 
         $nodeId         = (int) ($parameters['node_id'] ?? 0);
         $organizationId = (int) ($parameters['organization_id'] ?? 0);

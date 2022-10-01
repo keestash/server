@@ -37,14 +37,6 @@ use KST\TestCase;
  */
 class PublicShareTest extends TestCase {
 
-    public function provideData(): array {
-        return [
-            [['node_id' => 845763], false]
-            , [['node_id' => 2], true]
-            , [[], false]
-        ];
-    }
-
     /**
      * @param array $params
      * @param bool  $isValid
@@ -89,6 +81,14 @@ class PublicShareTest extends TestCase {
             $shareService->getDefaultExpireDate()->format('d.m.Y')
             === (new DateTime($data['share']['expire_ts']['date']))->format('d.m.Y')
         );
+    }
+
+    public function provideData(): array {
+        return [
+            [['node_id' => 845763], false]
+            , [['node_id' => 2], true]
+            , [[], false]
+        ];
     }
 
 }

@@ -43,7 +43,7 @@ class MinimumCredential implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $hasRequirements = $this->userService->passwordHasMinimumRequirements($password);
+        $hasRequirements = $this->userService->passwordHasMinimumRequirements((string) $password);
         return new JsonResponse(
             [
                 'valid' => $hasRequirements

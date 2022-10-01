@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Api\Generate;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Encryption\Password\Password;
-use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use Psr\Http\Message\ResponseInterface;
@@ -40,8 +39,9 @@ class Quality implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $value = $request->getAttribute('value');
+
         if (null === $value) {
-            throw new PasswordManagerException();
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $password = new Password();

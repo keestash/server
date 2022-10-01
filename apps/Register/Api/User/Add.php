@@ -30,7 +30,6 @@ use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\App\ILoader;
 use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\HTTP\Response\IResponseService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -43,7 +42,6 @@ class Add implements RequestHandlerInterface {
     private ILogger                $logger;
     private IUserRepositoryService $userRepositoryService;
     private IStringService         $stringService;
-    private IResponseService       $responseService;
 
     public function __construct(
         UserService              $userService
@@ -51,7 +49,6 @@ class Add implements RequestHandlerInterface {
         , ILogger                $logger
         , IUserRepositoryService $userRepositoryService
         , IStringService         $stringService
-        , IResponseService       $responseService
     ) {
 
         $this->userService           = $userService;
@@ -59,7 +56,6 @@ class Add implements RequestHandlerInterface {
         $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
         $this->stringService         = $stringService;
-        $this->responseService       = $responseService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -129,6 +125,7 @@ class Add implements RequestHandlerInterface {
         try {
             $this->userService->validateNewUser($user);
         } catch (KeestashException $exception) {
+            $this->logger->error('error validating new user', ['exception' => $exception]);
             return new JsonResponse(
                 [
                     "status"    => 'error'

@@ -40,6 +40,7 @@ use Laminas\Config\Config;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\Validator\EmailAddress as EmailValidator;
 use Laminas\Validator\Uri as UriValidator;
+use TypeError;
 
 class UserService implements IUserService {
 
@@ -187,6 +188,11 @@ class UserService implements IUserService {
         return $hashed;
     }
 
+    /**
+     * @param array $userArray
+     * @return IUser
+     * @throws TypeError
+     */
     public function toUser(array $userArray): IUser {
         $user = new User();
         $user->setId((int) $userArray['id']);
@@ -200,7 +206,7 @@ class UserService implements IUserService {
         $user->setLastName($userArray['last_name']);
         $user->setHash($userArray['hash']);
         $user->setLocked($userArray['locked']);
-        $user->setPassword(IUser::VERY_DUMB_ATTEMPT_TO_MOCK_PASSWORDS_ON_SYSTEM_LEVEL_BUT_SECURITY_GOES_FIRST);
+        $user->setPassword($userArray['password'] ?? IUser::VERY_DUMB_ATTEMPT_TO_MOCK_PASSWORDS_ON_SYSTEM_LEVEL_BUT_SECURITY_GOES_FIRST);
         $user->setPhone($userArray['phone']);
         $user->setWebsite($userArray['website']);
         $user->setLanguage($userArray['language']);
@@ -318,7 +324,7 @@ class UserService implements IUserService {
 
         $this->phoneValidator->setOptions(['country' => $user->getLocale()]);
         if (false === $this->validateWithAllCountries($user->getPhone())) {
-//            throw new KeestashException('invalid phone');
+            throw new KeestashException('invalid phone');
         }
 
         if (false === $this->uriValidator->isValid($user->getWebsite())) {
@@ -329,7 +335,7 @@ class UserService implements IUserService {
     }
 
     public function validateWithAllCountries(string $phone): bool {
-        $countryCodes = (array) $this->config->get(Keestash\ConfigProvider::COUNTRY_CODES);
+        $countryCodes = $this->config->get(Keestash\ConfigProvider::COUNTRY_CODES)->toArray();
         foreach ($countryCodes as $countryCode) {
             $this->phoneValidator->setCountry((string) $countryCode);
             if ($this->phoneValidator->isValid($phone)) {

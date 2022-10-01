@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Command\Node\Folder;
 
 use DateTime;
 use Keestash\Command\KeestashCommand;
+use Keestash\Exception\UserNotFoundException;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Node;
@@ -39,7 +40,7 @@ class CreateFolder extends KeestashCommand {
     private IUserRepository $userRepository;
 
     public function __construct(
-        NodeRepository $nodeRepository
+        NodeRepository    $nodeRepository
         , IUserRepository $userRepository
     ) {
         parent::__construct();
@@ -61,9 +62,9 @@ class CreateFolder extends KeestashCommand {
         $name   = $input->getArgument("name");
         $parent = (int) $input->getArgument("parent");
 
-        $user = $this->userRepository->getUserById($userId);
-
-        if (null === $user) {
+        try {
+            $user = $this->userRepository->getUserById($userId);
+        } catch (UserNotFoundException $exception) {
             $this->writeError("No User found for $userId. Aborting!", $output);
             exit(1);
         }

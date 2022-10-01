@@ -65,10 +65,6 @@ class NodeService {
 
         $user = $this->userRepository->getUserById($userId);
 
-        if (null === $user) {
-            throw new PasswordManagerException();
-        }
-
         return
             $node !== null
             && false === $this->userService->isDisabled($user)
@@ -95,12 +91,7 @@ class NodeService {
      * @return Edge
      */
     private function prepareEdge(int $nodeId, string $userId): Edge {
-        $user = $this->userRepository->getUserById($userId);
-
-        if (null === $user) {
-            throw new PasswordManagerException();
-        }
-
+        $user       = $this->userRepository->getUserById($userId);
         $node       = $this->nodeRepository->getNode($nodeId);
         $parentNode = $this->nodeRepository->getRootForUser($user);
 

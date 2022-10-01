@@ -76,7 +76,7 @@ class Login implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $isDemoMode = $this->instanceDB->getOption("demo") === "true";
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = (array) $request->getParsedBody();
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
 

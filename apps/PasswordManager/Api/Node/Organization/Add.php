@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 
 use DateTime;
 use Doctrine\DBAL\Exception;
+use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -31,7 +32,6 @@ use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -59,14 +59,14 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
+        $parameters = (array) $request->getParsedBody();
 
         $nodeId         = (int) ($parameters['node_id'] ?? 0);
         $organizationId = (int) ($parameters['organization_id'] ?? 0);
 
         if ($nodeId === 0 || $organizationId === 0) {
             return new JsonResponse(
-                'node id or organization id not given'
+                ['node id or organization id not given']
                 , IResponse::NOT_ACCEPTABLE
             );
         }
@@ -75,7 +75,7 @@ class Add implements RequestHandlerInterface {
 
         if (null !== $node->getOrganization()) {
             return new JsonResponse(
-                'node still belongs to an organization'
+                ['node still belongs to an organization']
                 , IResponse::FORBIDDEN
             );
         }
@@ -84,14 +84,14 @@ class Add implements RequestHandlerInterface {
 
         if (null === $organization) {
             return new JsonResponse(
-                'no organization found'
+                ['no organization found']
                 , IResponse::NOT_FOUND
             );
         }
 
         if (null === $organization->getActiveTs() || $organization->getActiveTs() > (new DateTime())) {
             return new JsonResponse(
-                'organization is not active'
+                ['organization is not active']
                 , IResponse::FORBIDDEN
             );
         }
@@ -101,11 +101,10 @@ class Add implements RequestHandlerInterface {
                 $node
                 , $organization
             );
-
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage() . ': ' . $exception->getTraceAsString());
             return new JsonResponse(
-                'could not add node to organization'
+                ['could not add node to organization']
                 , IResponse::INTERNAL_SERVER_ERROR
             );
         }
@@ -117,8 +116,9 @@ class Add implements RequestHandlerInterface {
         return new JsonResponse(
             [
                 'organization' => $organization
-                , 'type' => Edge::TYPE_ORGANIZATION
+                , 'type'       => Edge::TYPE_ORGANIZATION
             ]
+            , IResponse::OK
         );
     }
 

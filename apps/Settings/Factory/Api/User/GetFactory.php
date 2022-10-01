@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Api\User;
 
 use KSA\Settings\Api\User\Get;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -37,6 +38,7 @@ class GetFactory implements FactoryInterface {
         return new Get(
             $container->get(IJWTService::class)
             , $container->get(IUserRepository::class)
+            , $container->get(ILogger::class)
         );
     }
 

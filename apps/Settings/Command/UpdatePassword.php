@@ -73,10 +73,6 @@ class UpdatePassword extends KeestashCommand {
 
         $user = $this->userRepository->getUserById($userId);
 
-        if (null === $user) {
-            throw new SettingsException('no user found for ' . $userId);
-        }
-
         if (
             $user->getId() === IUser::SYSTEM_USER_ID
             || $user->getName() === IUser::DEMO_USER_NAME
