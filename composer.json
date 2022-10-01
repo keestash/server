@@ -65,6 +65,7 @@
     "symfony/event-dispatcher": "^5.2",
     "symfony/mime": "^4.4",
     "symfony/string": "^5.4",
+    "twig/twig": "3.4.3",
     "twitter/bootstrap": "^4.5"
   },
   "require-dev": {
