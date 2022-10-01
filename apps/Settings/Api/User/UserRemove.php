@@ -23,6 +23,7 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
@@ -55,9 +56,13 @@ class UserRemove implements RequestHandlerInterface {
 
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
-        $userId     = (int) ($parameters['user_id'] ?? 0);
+        $parameters = (array) $request->getParsedBody();
+        $userId     = (int) ($parameters['user_id'] ?? -1);
         $user       = $request->getAttribute(IToken::class)->getUser();
+
+        if ($userId < 1) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
+        }
 
         if ($user->getId() !== $userId) {
             return new JsonResponse(
@@ -68,9 +73,9 @@ class UserRemove implements RequestHandlerInterface {
             );
         }
 
-        $user = $this->userRepository->getUserById((string) $userId);
-
-        if (null === $user) {
+        try {
+            $user = $this->userRepository->getUserById((string) $userId);
+        } catch (UserNotFoundException $exception) {
             return new JsonResponse(
                 [
                     "message" => $this->translator->translate("no user found")

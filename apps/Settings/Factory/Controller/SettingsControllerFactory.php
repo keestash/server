@@ -22,11 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Controller;
 
 use KSA\Settings\Controller\Controller;
-use KSA\Settings\Service\SegmentService;
-use KSA\Settings\Service\SettingService;
-use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
@@ -36,7 +32,6 @@ class SettingsControllerFactory {
         return new Controller(
             $container->get(TemplateRendererInterface::class)
             , $container->get(IAppRenderer::class)
-            , $container->get(SegmentService::class)
         );
     }
 

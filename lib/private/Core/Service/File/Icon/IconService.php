@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\Icon;
 
 use Keestash;
-use Keestash\Exception\UnknownIconException;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Service\File\Icon\IIconService;
 
@@ -32,7 +31,6 @@ class IconService implements IIconService {
      * @param string $extension
      *
      * @return string
-     * @throws UnknownIconException
      */
     public function getIconForExtension(string $extension): string {
         $icon = null;

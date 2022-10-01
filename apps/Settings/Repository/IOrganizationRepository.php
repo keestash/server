@@ -21,7 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Repository;
 
+use Doctrine\DBAL\Exception;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Exception\OrganizationNotUpdatedException;
+use KSA\Settings\Exception\OrganizationNotFoundException;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
@@ -41,6 +44,7 @@ interface IOrganizationRepository {
     /**
      * @param IOrganization $organization
      * @return IOrganization
+     * @throws OrganizationNotUpdatedException
      */
     public function update(IOrganization $organization): IOrganization;
 
@@ -59,5 +63,15 @@ interface IOrganizationRepository {
      * @return IOrganization|null
      */
     public function get(int $id): ?IOrganization;
+
+    /**
+     * @param string $name
+     * @return IOrganization
+     * @throws Exception
+     * @throws OrganizationNotFoundException
+     */
+    public function getByName(string $name): IOrganization;
+
+    public function remove(IOrganization $organization): IOrganization;
 
 }

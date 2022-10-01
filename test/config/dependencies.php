@@ -24,6 +24,7 @@ namespace KST\config;
 use Doctrine\DBAL\Connection;
 use Keestash\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Manager\EventManager\EventManager;
+use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Factory\Core\Manager\EventManager\EventManagerFactory;
@@ -33,12 +34,14 @@ use KST\Service\Factory\Service\File\Upload\FileServiceFactory;
 use KST\Service\Factory\Service\UserServiceFactory;
 use KST\Service\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use KST\Service\Service\UserService;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    Connection::class    => ConnectionFactory::class
-    , Migrator::class    => MigratorFactory::class
-    , HTTPService::class => HTTPServiceFactory::class
-    , UserService::class => UserServiceFactory::class
-    , FileService::class => FileServiceFactory::class
-    , EventManager::class => EventManagerFactory::class
+    Connection::class      => ConnectionFactory::class
+    , Migrator::class      => MigratorFactory::class
+    , HTTPService::class   => HTTPServiceFactory::class
+    , UserService::class   => UserServiceFactory::class
+    , FileService::class   => FileServiceFactory::class
+    , EventManager::class  => EventManagerFactory::class
+    , LocaleService::class => InvokableFactory::class
 ];

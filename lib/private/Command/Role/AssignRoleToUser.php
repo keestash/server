@@ -25,6 +25,7 @@ use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\RBAC\NullRole;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -66,13 +67,13 @@ class AssignRoleToUser extends KeestashCommand {
         $userId = $input->getArgument(AssignRoleToUser::ARGUMENT_NAME_USER_ID);
         $roleId = $input->getArgument(AssignRoleToUser::ARGUMENT_NAME_ROLE_ID);
 
-        $user = $this->userRepository->getUserById((string) $userId);
-        $role = $this->rbacRepository->getRole((int) $roleId);
-
-        if (null === $user) {
+        try {
+            $user = $this->userRepository->getUserById((string) $userId);
+        } catch (UserNotFoundException $exception) {
             $this->writeError('no user found', $output);
             return 0;
         }
+        $role = $this->rbacRepository->getRole((int) $roleId);
 
         if ($role instanceof NullRole) {
             $this->writeError('no role found', $output);

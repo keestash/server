@@ -22,11 +22,12 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Api\Thumbnail;
 
 use Keestash\Api\Response\ImageResponse;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
+use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\File\Icon\IIconService;
 use Laminas\Config\Config;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -51,7 +52,10 @@ class Get implements RequestHandlerInterface {
         $extension = $request->getAttribute('extension');
 
         if (null === $extension) {
-            return new JsonResponse(['no thumbnail for ' . $extension . 'found']);
+            return new JsonResponse(
+                ['no thumbnail for ' . $extension . 'found']
+                , IResponse::BAD_REQUEST
+            );
         }
 
         $assetDir = (string) $this->config->get(ConfigProvider::ASSET_PATH);

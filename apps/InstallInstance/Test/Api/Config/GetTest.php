@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,14 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Integration\Api\Node;
+namespace KSA\InstallInstance\Test\Api\Config;
 
-use KST\TestCase;
+use KSA\InstallInstance\Test\TestCase;
 
-class OrganizationTest extends TestCase {
+class GetTest extends TestCase {
 
-    public function testOrganization(): void {
-        $this->markTestSkipped('please implement me :(');
+    public function testInstallApps(): void {
+        $this->markTestSkipped('need to find a way to use the installer during bootstrap but mock in this test');
     }
 
 }

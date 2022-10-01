@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\Organization;
 
-use Exception;
-use KSA\GeneralApi\Exception\GeneralApiException;
+use DateTimeImmutable;
+use Keestash\Api\Response\JsonResponse;
+use Keestash\Exception\OrganizationNotUpdatedException;
 use KSA\Settings\Event\Organization\OrganizationUpdatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Organization\IOrganizationService;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -54,25 +54,36 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters   = json_decode((string) $request->getBody(), true);
-        $organization = $parameters['organization'] ?? null;
-        $organization = json_decode($organization, true);
+        $parameters = (array) $request->getParsedBody();
+        $id         = $parameters['id'] ?? -1;
+        $active     = true === ($parameters['active'] ?? false);
+        $name       = (string) ($parameters['name'] ?? '');
+
+        $organization = $this->organizationRepository->get((int) $id);
 
         if (null === $organization) {
-            throw new GeneralApiException();
+            return new JsonResponse([], IResponse::NOT_FOUND);
+        }
+        if ("" === $name) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $organization = $this->organizationService->toOrganization($organization);
+        $organization->setActiveTs(
+            true === $active
+                ? (new DateTimeImmutable())
+                : null
+        );
+        $organization->setName($name);
 
         try {
             $organization = $this->organizationRepository->update($organization);
             $this->eventManager->execute(
                 new OrganizationUpdatedEvent($organization)
             );
-        } catch (Exception $exception) {
-            $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
+        } catch (OrganizationNotUpdatedException $exception) {
+            $this->logger->error('error while converting to organization', ['exception' => $exception]);
             return new JsonResponse(
-                'error while updating organization'
+                ['error while updating organization']
                 , IResponse::INTERNAL_SERVER_ERROR
             );
         }

@@ -25,6 +25,7 @@ use Exception;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
+use Keestash\Exception\UserNotCreatedException;
 use Keestash\Exception\UserNotDeletedException;
 use Keestash\Exception\UserNotFoundException;
 use Keestash\Exception\UserNotLockedException;
@@ -111,8 +112,15 @@ class UserRepositoryService implements IUserRepositoryService {
         }
     }
 
+    /**
+     * @param IUser      $user
+     * @param IFile|null $file
+     * @return IUser
+     * @throws UserNotDeletedException
+     * @throws UserNotLockedException
+     * @throws UserNotCreatedException
+     */
     public function createUser(IUser $user, ?IFile $file = null): IUser {
-
         $user = $this->userRepository->insert($user);
         $this->eventManager->execute(new UserCreatedEvent($user));
 

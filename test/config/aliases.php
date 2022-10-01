@@ -21,14 +21,17 @@ declare(strict_types=1);
  */
 
 use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Core\Manager\EventManager\EventManager;
+use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 
 return [
-    IMigrator::class       => Migrator::class
-    , IHTTPService::class  => HTTPService::class
-    , IEventManager::class => EventManager::class
+    IMigrator::class        => Migrator::class
+    , IHTTPService::class   => HTTPService::class
+    , IEventManager::class  => EventManager::class
+    , ILocaleService::class => LocaleService::class
 ];

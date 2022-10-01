@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,25 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Install\Factory\Controller;
+namespace KSA\Register\Test;
 
-use Keestash\App\Config\Diff;
-use Keestash\Legacy\Legacy;
-use KSA\Install\Controller\Controller;
-use KSP\App\ILoader;
-use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
-use Mezzio\Template\TemplateRendererInterface;
-use Psr\Container\ContainerInterface;
-
-class ControllerFactory {
-
-    public function __invoke(ContainerInterface $container): Controller {
-        return new Controller(
-            $container->get(TemplateRendererInterface::class)
-            , $container->get(IAppRenderer::class)
-        );
-    }
+class TestCase extends \KST\TestCase {
 
 }

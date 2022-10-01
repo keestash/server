@@ -21,12 +21,14 @@ declare(strict_types=1);
 
 namespace KST;
 
+use JsonException;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class TestCase extends FrameworkTestCase {
@@ -69,6 +71,20 @@ class TestCase extends FrameworkTestCase {
             , []
             , []
             , $body
+        );
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return array
+     * @throws JsonException
+     */
+    protected function getResponseBody(ResponseInterface $response): array {
+        return (array) json_decode(
+            (string) $response->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
         );
     }
 

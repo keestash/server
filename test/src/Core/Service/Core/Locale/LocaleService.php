@@ -19,23 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Service;
+namespace KST\Service\Core\Service\Core\Locale;
 
-use Interop\Container\ContainerInterface;
-use KSA\Settings\Service\SegmentService;
-use KSP\L10N\IL10N;
-use Laminas\ServiceManager\Factory\FactoryInterface;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Core\Locale\ILocaleService;
 
-class SegmentServiceFactory implements FactoryInterface {
+class LocaleService implements ILocaleService {
 
-    public function __invoke(
-        ContainerInterface $container,
-                           $requestedName,
-        ?array             $options = null
-    ): SegmentService {
-        return new SegmentService(
-            $container->get(IL10N::class)
-        );
+    public function getLocaleForUser(IUser $user): string {
+        return 'DE';
+    }
+
+    public function getLocale(): string {
+        return 'DE';
     }
 
 }

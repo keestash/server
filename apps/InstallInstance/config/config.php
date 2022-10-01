@@ -42,9 +42,4 @@ return [
         , ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
         , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
     ]
-    , 'templates'                       => [
-        'paths' => [
-            'installInstance' => [__DIR__ . '/../template']
-        ]
-    ]
 ];

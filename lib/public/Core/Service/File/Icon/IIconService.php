@@ -21,15 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\File\Icon;
 
-use Keestash\Exception\UnknownIconException;
-
 interface IIconService {
 
     /**
      * @param string $extension
      *
      * @return string
-     * @throws UnknownIconException
      */
     public function getIconForExtension(string $extension): string;
 

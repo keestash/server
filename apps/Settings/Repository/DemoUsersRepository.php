@@ -32,7 +32,7 @@ class DemoUsersRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
     ) {
         $this->dateTimeService = $dateTimeService;
@@ -54,7 +54,7 @@ class DemoUsersRepository {
                     new DateTime()
                 )
             )
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
@@ -62,6 +62,22 @@ class DemoUsersRepository {
             throw new GeneralApiException();
         }
         return $email;
+    }
+
+    public function hasEmailAddress(string $address): bool {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder = $queryBuilder->select(
+            [
+                'email'
+            ]
+        )
+            ->from('demo_users')
+            ->where('email = ?')
+            ->setParameter(0, $address);
+        $result       = $queryBuilder->executeQuery();
+        $users        = $result->fetchAllNumeric();
+        $userCount    = count($users);
+        return $userCount > 0;
     }
 
 }

@@ -26,7 +26,6 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,8 +55,6 @@ class PublicShare implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $nodeId     = $parameters["node_id"] ?? null;
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId) {
             return new JsonResponse([

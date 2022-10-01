@@ -22,15 +22,10 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\SimpleRBAC\Service\RBACServiceInterface;
 use Keestash\Api\Response\JsonResponse;
-use KSA\GeneralApi\Exception\GeneralApiException;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\RBAC\IPermission;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,14 +45,13 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $id   = $request->getAttribute('id');
-        $user = $request->getAttribute(IToken::class)->getUser();
+        $id = (int) $request->getAttribute('id', 0);
 
-        if (null === $id || "" === $id || false === is_numeric($id)) {
-            throw new GeneralApiException('no id found');
+        if ($id < 1) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $organization = $this->organizationRepository->get((int) $id);
+        $organization = $this->organizationRepository->get($id);
 
         if (null === $organization) {
             return new JsonResponse(

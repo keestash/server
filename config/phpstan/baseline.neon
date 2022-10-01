@@ -21,66 +21,6 @@ parameters:
 			path: ../../apps/ForgotPassword/Event/Listener/ForgotPasswordMailLinkListener.php
 
 		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:requestPasswordReset\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/AccountDetailsTest.php
-
-		-
-			message: "#^Cannot call method getHash\\(\\) on KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:lock\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:requestPasswordReset\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:revertPasswordChangeRequest\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:unlock\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ForgotPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:requestPasswordReset\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 2
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ResetPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:revertPasswordChangeRequest\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ResetPasswordTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserStateRepository\\:\\:unlock\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Test/Integration/Api/ResetPasswordTest.php
-
-		-
-			message: "#^Cannot access offset 'email' on mixed\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Demo/AddEmailAddress.php
-
-		-
-			message: "#^Parameter \\#1 \\$email of method KSA\\\\Settings\\\\Repository\\\\DemoUsersRepository\\:\\:add\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Demo/AddEmailAddress.php
-
-		-
-			message: "#^Parameter \\#1 \\$email of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:validEmail\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Demo/AddEmailAddress.php
-
-		-
 			message: "#^Parameter \\#1 \\$extension of method KSP\\\\Core\\\\Service\\\\File\\\\Icon\\\\IIconService\\:\\:getIconForExtension\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/GeneralApi/Api/Thumbnail/Get.php
@@ -231,24 +171,9 @@ parameters:
 			path: ../../apps/Login/Api/Login.php
 
 		-
-			message: "#^Cannot access offset 'password' on mixed\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
-			path: ../../apps/Login/Api/Login.php
-
-		-
-			message: "#^Cannot access offset 'user' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Login/Api/Login.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUser\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Login/Api/Login.php
-
-		-
-			message: "#^Parameter \\#1 \\$password of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:verifyPassword\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Login/Api/Login.php
+			path: ../../apps/Login/Test/Api/LoginTest.php
 
 		-
 			message: "#^Property KSA\\\\Login\\\\Test\\\\Service\\\\TokenServiceTest\\:\\:\\$tokenService \\(KSA\\\\Login\\\\Service\\\\TokenService\\) does not accept mixed\\.$#"
@@ -359,36 +284,6 @@ parameters:
 			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Move.php
-
-		-
-			message: "#^Cannot access offset 'node_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Add.php
-
-		-
-			message: "#^Cannot access offset 'organization_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Add.php
-
-		-
-			message: "#^Cannot access offset 'node_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Remove.php
-
-		-
-			message: "#^Cannot access offset 'organization_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Remove.php
-
-		-
-			message: "#^Cannot access offset 'node_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Update.php
-
-		-
-			message: "#^Cannot access offset 'organization_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Update.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
@@ -621,11 +516,6 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Attachment/GetTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$user of method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\RequestService\\:\\:getRequestWithToken\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser, KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Node/DeleteTest.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Token\\\\IToken\\:\\:setUser\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
@@ -741,11 +631,6 @@ parameters:
 			path: ../../apps/Register/Api/User/Add.php
 
 		-
-			message: "#^Parameter \\#1 \\$name of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUser\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Register/Api/User/Exists.php
-
-		-
 			message: "#^Parameter \\#1 \\$password of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:validatePasswords\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/Register/Command/CreateUser.php
@@ -771,59 +656,14 @@ parameters:
 			path: ../../apps/Settings/Api/Organization/Activate.php
 
 		-
-			message: "#^Cannot access offset 'activate' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/Activate.php
-
-		-
-			message: "#^Cannot access offset 'id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/Activate.php
-
-		-
-			message: "#^Cannot access offset 'organization' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/Add.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\DTO\\\\Organization\\\\Organization\\:\\:setName\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/Add.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/Get.php
-
-		-
-			message: "#^Cannot access offset 'organization' on mixed\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setActiveTs\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/Organization/Update.php
 
 		-
-			message: "#^Parameter \\#1 \\$data of method KSP\\\\Core\\\\Service\\\\Organization\\\\IOrganizationService\\:\\:toOrganization\\(\\) expects array, mixed given\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setName\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/Organization/Update.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/Update.php
-
-		-
-			message: "#^Cannot access offset 'mode' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/User.php
-
-		-
-			message: "#^Cannot access offset 'organization_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/User.php
-
-		-
-			message: "#^Cannot access offset 'user_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/Organization/User.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
@@ -857,11 +697,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserAdd.php
-
-		-
-			message: "#^Cannot access offset 'password_repeat' on mixed\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserAdd.php
 
@@ -916,34 +751,14 @@ parameters:
 			path: ../../apps/Settings/Api/User/UserEdit.php
 
 		-
-			message: "#^Cannot access offset 'user' on mixed\\.$#"
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/Settings/Api/User/UserEdit.php
 
 		-
 			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
-			path: ../../apps/Settings/Api/User/UserEdit.php
-
-		-
-			message: "#^Parameter \\#1 \\$userArray of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:toUser\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserEdit.php
-
-		-
-			message: "#^Cannot access offset 'user_id' on mixed\\.$#"
-			count: 1
 			path: ../../apps/Settings/Api/User/UserLock.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserLock.php
-
-		-
-			message: "#^Cannot access offset 'user_id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserRemove.php
 
 		-
 			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
@@ -962,7 +777,7 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 6
+			count: 8
 			path: ../../apps/Settings/Repository/OrganizationRepository.php
 
 		-
@@ -974,6 +789,16 @@ parameters:
 			message: "#^Parameter \\#1 \\$id of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUserById\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
+
+		-
+			message: "#^Cannot call method getActiveTs\\(\\) on KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\|null\\.$#"
+			count: 1
+			path: ../../apps/Settings/Test/Api/Organization/ActivateTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/Settings/Test/Api/User/UserRemoveTest.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
@@ -1424,6 +1249,11 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setLocked\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/User/Repository/UserRepositoryService.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/User/UserService.php
 
 		-
 			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"

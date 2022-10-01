@@ -81,10 +81,6 @@ class CreateCredential extends KeestashCommand {
         $user   = $this->userRepository->getUserById($userId);
         $parent = $this->nodeRepository->getNode((int) $parentId, 0, 1);
 
-        if (null === $user) {
-            throw new PasswordManagerException();
-        }
-
         if (!($parent instanceof Folder)) {
             throw new PasswordManagerException();
         }

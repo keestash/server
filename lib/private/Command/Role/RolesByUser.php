@@ -24,6 +24,7 @@ namespace Keestash\Command\Role;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\SimpleRBAC\Entity\RoleInterface;
 use Keestash\Command\KeestashCommand;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -58,13 +59,15 @@ class RolesByUser extends KeestashCommand {
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId    = $input->getArgument(RolesByUser::ARGUMENT_NAME_USER_ID);
-        $user      = $this->userRepository->getUserById((string) $userId);
         $tableRows = [];
 
-        if (null === $user) {
+        try {
+            $user = $this->userRepository->getUserById((string) $userId);
+        } catch (UserNotFoundException $exception) {
             $this->writeError('no user found', $output);
             return 0;
         }
+
         /** @var RoleInterface $role */
         foreach ($user->getRoles()->toArray() as $role) {
             $tableRows[] = [

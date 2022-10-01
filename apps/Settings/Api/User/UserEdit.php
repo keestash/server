@@ -24,11 +24,11 @@ namespace KSA\Settings\Api\User;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\User\UserService;
-use KSA\Settings\Exception\SettingsException;
+use Keestash\Exception\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -36,6 +36,7 @@ use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TypeError;
 
 class UserEdit implements RequestHandlerInterface {
 
@@ -44,6 +45,7 @@ class UserEdit implements RequestHandlerInterface {
     private IL10N                  $translator;
     private IUserRepositoryService $userRepositoryService;
     private IJWTService            $jwtService;
+    private ILogger                $logger;
 
     public function __construct(
         IL10N                    $l10n
@@ -51,53 +53,35 @@ class UserEdit implements RequestHandlerInterface {
         , UserService            $userService
         , IUserRepositoryService $userRepositoryService
         , IJWTService            $jwtService
+        , ILogger                $logger
     ) {
         $this->userRepository        = $userRepository;
         $this->userService           = $userService;
         $this->translator            = $l10n;
         $this->userRepositoryService = $userRepositoryService;
         $this->jwtService            = $jwtService;
-    }
-
-    private function hasDifferences(IUser $repoUser, IUser $newUser): bool {
-        if ($repoUser->getName() !== $newUser->getName()) return true;
-        if ($repoUser->getFirstName() !== $newUser->getFirstName()) return true;
-        if ($repoUser->getLastName() !== $newUser->getLastName()) return true;
-        if ($repoUser->getEmail() !== $newUser->getEmail()) return true;
-        if ($repoUser->getPhone() !== $newUser->getPhone()) return true;
-        if ($repoUser->isLocked() !== $newUser->isLocked()) return true;
-        if ($repoUser->isDeleted() !== $newUser->isDeleted()) return true;
-        if ($repoUser->getLanguage() !== $newUser->getLanguage()) return true;
-        if ($repoUser->getLocale() !== $newUser->getLocale()) return true;
-        return false;
+        $this->logger                = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = json_decode((string) $request->getBody(), true);
-        $user       = $request->getAttribute(IToken::class)->getUser();
-        $userToEdit = $this->userService->toUser($parameters['user']);
-        $repoUser   = $this->userRepository->getUserById((string) $userToEdit->getId());
+        $parameters   = (array) $request->getParsedBody();
+        $userIdToEdit = (int) ($parameters['id'] ?? -1);
+        $user         = $request->getAttribute(IToken::class)->getUser();
+
+        try {
+            $repoUser = $this->userRepository->getUserById((string) $userIdToEdit);
+        } catch (UserNotFoundException $exception) {
+            $this->logger->warning('no user found', ['exception' => $exception]);
+            return new JsonResponse([], IResponse::NOT_FOUND);
+        }
 
         // TODO $user has permission to edit users and/or update organizations
         //  this constraint could be limiting
-        if ($user->getId() !== $userToEdit->getId()) {
+        if ($user->getId() !== $userIdToEdit) {
             return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
-        if (null === $repoUser) {
-            throw new SettingsException();
-        }
-
         $oldUser = clone $repoUser;
-
-        if (false === $this->hasDifferences($repoUser, $userToEdit)) {
-            return new JsonResponse(
-                [
-                    'message' => $this->translator->translate("no differences detected")
-                ]
-                , IResponse::NOT_MODIFIED
-            );
-        }
 
         if (true === $this->userService->isDisabled($repoUser)) {
 
@@ -109,23 +93,28 @@ class UserEdit implements RequestHandlerInterface {
             );
         }
 
-        $repoUser->setName($userToEdit->getName());
-        $repoUser->setFirstName($userToEdit->getFirstName());
-        $repoUser->setLastName($userToEdit->getLastName());
-        $repoUser->setEmail($userToEdit->getEmail());
-        $repoUser->setPhone($userToEdit->getPhone());
-        $repoUser->setLocked($userToEdit->isLocked());
-        $repoUser->setDeleted($userToEdit->isDeleted());
-        $repoUser->setLanguage($userToEdit->getLanguage());
-        $repoUser->setLocale($userToEdit->getLocale());
-        $repoUser->setJWT(
-            $this->jwtService->getJWT(
-                new Audience(
-                    IAudience::TYPE_USER
-                    , (string) $repoUser->getId()
+        try {
+            $repoUser->setName($parameters['name']);
+            $repoUser->setFirstName($parameters['first_name']);
+            $repoUser->setLastName($parameters['last_name']);
+            $repoUser->setEmail($parameters['email']);
+            $repoUser->setPhone($parameters['phone']);
+            $repoUser->setLocked($parameters['locked']);
+            $repoUser->setDeleted($parameters['deleted']);
+            $repoUser->setLanguage($parameters['language']);
+            $repoUser->setLocale($parameters['locale']);
+            $repoUser->setJWT(
+                $this->jwtService->getJWT(
+                    new Audience(
+                        IAudience::TYPE_USER
+                        , (string) $repoUser->getId()
+                    )
                 )
-            )
-        );
+            );
+        } catch (TypeError $error) {
+            $this->logger->error('error creating user', ['error' => $error, 'parameters' => $parameters]);
+            return new JsonResponse([], IResponse::BAD_REQUEST);
+        }
 
         $repoUser = $this->userRepositoryService->updateUser($repoUser, $oldUser);
         return new JsonResponse(

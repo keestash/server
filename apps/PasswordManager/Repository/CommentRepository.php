@@ -21,7 +21,6 @@ use Keestash\Core\Repository\User\UserRepository;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\Node\Comment\CommentRepositoryException;
-use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -123,10 +122,6 @@ class CommentRepository implements IRepository {
 
             $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
             $user = $this->userRepository->getUserById((string) $userId);
-
-            if (null === $user) {
-                throw new PasswordManagerException();
-            }
 
             $comment = new Comment();
             $comment->setId((int) $id);
