@@ -21,17 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSP\Core\DTO\User\IUser;
 
 class UserRemovedEvent extends Event {
 
     private IUser $user;
-    private bool  $removed;
 
-    public function __construct(IUser $user, bool $removed) {
-        $this->user    = $user;
-        $this->removed = $removed;
+    public function __construct(IUser $user) {
+        $this->user = $user;
     }
 
     /**
@@ -41,17 +39,9 @@ class UserRemovedEvent extends Event {
         return $this->user;
     }
 
-    /**
-     * @return bool
-     */
-    public function isRemoved(): bool {
-        return $this->removed;
-    }
-
     public function jsonSerialize(): array {
         return [
-            'user'      => $this->getUser()
-            , 'removed' => $this->isRemoved()
+            'user' => $this->getUser()
         ];
     }
 

@@ -25,11 +25,14 @@ use KSA\Register\Test\TestCase;
 use KSA\Settings\Api\User\UserAdd;
 use KSA\Settings\Test\Api\Organization\AddTest;
 use KSP\Api\IResponse;
+use Ramsey\Uuid\Uuid;
 
 class UserAddTest extends TestCase {
 
     public function testWithEmptyRequest(): void {
-        $this->expectWarning();
+        if (PHP_VERSION_ID > 70400) {
+            $this->expectWarning();
+        }
         /** @var UserAdd $userAdd */
         $userAdd = $this->getService(UserAdd::class);
 
@@ -153,8 +156,8 @@ class UserAddTest extends TestCase {
                 [
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
-                    , 'user_name'            => AddTest::class
-                    , 'email'                => 'dev@null.com'
+                    , 'user_name'            => Uuid::uuid4()->toString()
+                    , 'email'                => Uuid::uuid4() . '@keestash.com'
                     , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
                     , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
                     , 'phone'                => '0049691234566'
@@ -179,8 +182,8 @@ class UserAddTest extends TestCase {
                 [
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
-                    , 'user_name'            => AddTest::class
-                    , 'email'                => 'dev@null.com'
+                    , 'user_name'            => Uuid::uuid4()->toString()
+                    , 'email'                => Uuid::uuid4() . '@keestash.com'
                     , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
                     , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
                     , 'phone'                => '0049691234566'

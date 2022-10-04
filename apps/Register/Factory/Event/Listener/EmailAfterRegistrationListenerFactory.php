@@ -23,11 +23,10 @@ namespace KSA\Register\Factory\Event\Listener;
 
 use Keestash\Legacy\Legacy;
 use KSA\Register\Event\EmailAfterRegistration;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 

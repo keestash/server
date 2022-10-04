@@ -25,9 +25,12 @@ use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Test\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use KST\Integration\Core\Repository\User\UserRepositoryTest;
 use KST\Service\Service\UserService;
+use Ramsey\Uuid\Uuid;
 
 class ForgotPasswordTest extends TestCase {
 
@@ -56,35 +59,64 @@ class ForgotPasswordTest extends TestCase {
     }
 
     public function testWithDisabledUser(): void {
-        /** @var IUserRepository $userRepository */
-        $userRepository = $this->getService(IUserRepository::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
-        $user                = $userRepository->getUserById((string) UserService::TEST_PASSWORD_FORGOT_USER_ID_6);
+        /** @var IUserRepositoryService $userRepositoryService */
+        $userRepositoryService = $this->getService(IUserRepositoryService::class);
+        /** @var IUserService $userService */
+        $userService = $this->getService(IUserService::class);
+        $user        = $userRepositoryService->createUser(
+            $userService->toNewUser(
+                [
+                    'user_name'    => Uuid::uuid4()->toString()
+                    , 'email'      => Uuid::uuid4() . '@keestash.com'
+                    , 'last_name'  => UserRepositoryTest::class
+                    , 'first_name' => UserRepositoryTest::class
+                    , 'password'   => md5((string) time())
+                    , 'phone'      => '0049123456789'
+                    , 'website'    => 'https://keestash.com'
+                    , 'locked'     => true
+                    , 'deleted'    => false
+                ]
+            )
+        );
+
         $this->assertInstanceOf(IUser::class, $user);
-        $userStateRepository->lock($user);
         /** @var ForgotPassword $forgotPassword */
         $forgotPassword = $this->getService(ForgotPassword::class);
         $response       = $forgotPassword->handle(
             $this->getDefaultRequest(
                 [
-                    'input' => UserService::TEST_PASSWORD_FORGOT_USER_ID_6_NAME
+                    'input' => $user->getName()
                 ]
             )
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::FORBIDDEN === $response->getStatusCode());
+        $userRepositoryService->removeUser($user);
     }
 
     public function testWithAlreadyRequested(): void {
-        /** @var IUserRepository $userRepository */
-        $userRepository = $this->getService(IUserRepository::class);
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
-        $user                = $userRepository->getUserById((string) UserService::TEST_PASSWORD_FORGOT_USER_ID_6);
+        /** @var IUserRepositoryService $userRepositoryService */
+        $userRepositoryService = $this->getService(IUserRepositoryService::class);
+        /** @var IUserService $userService */
+        $userService = $this->getService(IUserService::class);
+        $user        = $userRepositoryService->createUser(
+            $userService->toNewUser(
+                [
+                    'user_name'    => Uuid::uuid4()->toString()
+                    , 'email'      => Uuid::uuid4() . '@keestash.com'
+                    , 'last_name'  => UserRepositoryTest::class
+                    , 'first_name' => UserRepositoryTest::class
+                    , 'password'   => md5((string) time())
+                    , 'phone'      => '0049123456789'
+                    , 'website'    => 'https://keestash.com'
+                    , 'locked'     => false
+                    , 'deleted'    => false
+                ]
+            )
+        );
         $this->assertInstanceOf(IUser::class, $user);
-        $userStateRepository->revertPasswordChangeRequest($user);
-        $userStateRepository->unlock($user);
         $userStateRepository->requestPasswordReset($user, $user->getHash());
 
         /** @var ForgotPassword $forgotPassword */
@@ -92,12 +124,14 @@ class ForgotPasswordTest extends TestCase {
         $response       = $forgotPassword->handle(
             $this->getDefaultRequest(
                 [
-                    'input' => UserService::TEST_PASSWORD_FORGOT_USER_ID_6_NAME
+                    'input' => $user->getName()
                 ]
             )
         );
+
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::NOT_ACCEPTABLE === $response->getStatusCode());
+        $userRepositoryService->removeUser($user);
     }
 
 

@@ -28,8 +28,8 @@ use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,15 +37,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private UserService            $userService;
-    private ILoader                $loader;
-    private ILogger                $logger;
+    private UserService    $userService;
+    private ILoaderService $loader;
+    private ILogger        $logger;
     private IUserRepositoryService $userRepositoryService;
     private IStringService         $stringService;
 
     public function __construct(
         UserService              $userService
-        , ILoader                $loader
+        , ILoaderService         $loader
         , ILogger                $logger
         , IUserRepositoryService $userRepositoryService
         , IStringService         $stringService

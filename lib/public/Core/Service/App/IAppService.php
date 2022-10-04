@@ -21,10 +21,12 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\App;
 
-use KSP\App\IApp;
+use KSP\Core\DTO\App\IApp;
 
 interface IAppService {
 
     public function toApp(string $id, array $data): IApp;
+
+    public function toConfigApp(IApp $app): \KSP\Core\DTO\App\Config\IApp;
 
 }

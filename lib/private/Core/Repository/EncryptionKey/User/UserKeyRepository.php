@@ -21,15 +21,16 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\EncryptionKey\User;
 
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
-use Keestash\Exception\KeestashException;
+use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 /**
  * Class UserKeyRepository
@@ -70,7 +71,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
             ->setParameter(1, $key->getId())
             ->setParameter(2, $this->dateTimeService->toYMDHIS($key->getCreateTs()));
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
 
         return null !== $this->backend->getConnection()->lastInsertId();
     }
@@ -79,6 +80,12 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         return $this->_update($key);
     }
 
+    /**
+     * @param IUser $user
+     * @return IKey
+     * @throws Exception
+     * @throws KeyNotFoundException
+     */
     public function getKey(IUser $user): IKey {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -106,7 +113,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         }
 
         if (null === $key) {
-            throw new KeestashException('no key found');
+            throw new KeyNotFoundException('no key found');
         }
 
         return $key;
@@ -121,11 +128,12 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
                 ->setParameter(0, $key->getId())
                 ->executeStatement();
             return $this->_remove($key);
-        } catch (KeestashException $exception) {
+        } catch (KeyNotFoundException $exception) {
             $this->logger->warning(
                 'no key found. Normally, this is not possible since a user gets a key created during sign up.'
                 , [
                     'exception' => $exception
+                    , 'user'    => $user
                 ]
             );
         }

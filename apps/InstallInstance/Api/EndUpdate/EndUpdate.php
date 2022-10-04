@@ -29,12 +29,11 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Service\Router\IRouterService;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -48,7 +47,7 @@ class EndUpdate implements RequestHandlerInterface {
     private IUserService           $userService;
     private HTTPService            $httpService;
     private IL10N                  $translator;
-    private ILoader                $loader;
+    private ILoaderService         $loader;
     private IUserRepositoryService $userRepositoryService;
 
     public function __construct(
@@ -59,7 +58,7 @@ class EndUpdate implements RequestHandlerInterface {
         , FileService            $fileService
         , IUserService           $userService
         , HTTPService            $httpService
-        , ILoader                $loader
+        , ILoaderService         $loader
         , IUserRepositoryService $userRepositoryService
     ) {
         $this->installerService      = $installerService;

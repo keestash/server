@@ -22,14 +22,14 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\AppRepository;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\App\Config\IApp;
+use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\IRepository;
 
 interface IAppRepository extends IRepository {
 
     public function getAllApps(): HashTable;
 
-    public function getApp(string $id): ?IApp;
+    public function getApp(string $id): IApp;
 
     public function replace(IApp $app): bool;
 

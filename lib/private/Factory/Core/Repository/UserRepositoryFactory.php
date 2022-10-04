@@ -26,8 +26,8 @@ use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Interop\Container\ContainerInterface;
 use Keestash\Core\Repository\User\UserRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 class UserRepositoryFactory {
 

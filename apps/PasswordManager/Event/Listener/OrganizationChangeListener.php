@@ -34,11 +34,11 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\Logger\ILogger;
 
 /**
  * Class OrganizationChangeListener

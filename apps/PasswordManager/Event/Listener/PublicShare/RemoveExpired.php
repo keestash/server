@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener\PublicShare;
 
 use Exception;
-use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
+use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
+use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\Logger\ILogger;
 
 class RemoveExpired implements IListener {
 

@@ -30,7 +30,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\User\IUser;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 
 class CreateStarterPassword {
 

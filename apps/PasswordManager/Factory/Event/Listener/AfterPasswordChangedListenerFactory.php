@@ -23,9 +23,9 @@ namespace KSA\PasswordManager\Factory\Event\Listener;
 
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class AfterPasswordChangedListenerFactory {

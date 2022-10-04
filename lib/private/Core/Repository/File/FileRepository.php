@@ -23,22 +23,23 @@ namespace Keestash\Core\Repository\File;
 
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
-use Keestash\Exception\FileNotFoundException;
+use Keestash\Exception\File\FileNotCreatedException;
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\File\FileNotFoundException;
+use Keestash\Exception\File\FileNotUpdatedException;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\TooManyFilesException;
 use Keestash\Exception\TooManyRowsException;
-use Keestash\Exception\UserNotFoundException;
-use KSA\PasswordManager\Exception\PasswordManagerException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 class FileRepository implements IFileRepository {
 
@@ -59,82 +60,97 @@ class FileRepository implements IFileRepository {
         $this->logger          = $logger;
     }
 
-    public function addAll(FileList &$files): bool {
-        $addedAll = false;
+    /**
+     * @param FileList $files
+     * @return FileList
+     * @throws FileNotCreatedException
+     */
+    public function addAll(FileList $files): FileList {
         /** @var IFile $file */
-        foreach ($files as $file) {
-            $fileId   = $this->add($file);
-            $addedAll = false;
+        foreach ($files as $key => $file) {
+            $files->set($key,
+                $this->add($file)
+            );
+        }
+        return $files;
+    }
 
-            if (null !== $fileId) {
-                $file->setId($fileId);
-                $addedAll = true;
+    /**
+     * @param IFile $file
+     * @return IFile
+     * @throws FileNotCreatedException
+     */
+    public function add(IFile $file): IFile {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->insert("`file`")
+                ->values(
+                    [
+                        "`name`"        => '?'
+                        , "`path`"      => '?'
+                        , "`mime_type`" => '?'
+                        , "`hash`"      => '?'
+                        , "`extension`" => '?'
+                        , "`size`"      => '?'
+                        , "`user_id`"   => '?'
+                        , "`create_ts`" => '?'
+                        , "`directory`" => '?'
+                    ]
+                )
+                ->setParameter(0, $file->getName())
+                ->setParameter(1, $file->getFullPath())
+                ->setParameter(2, $file->getMimeType())
+                ->setParameter(3, $file->getHash())
+                ->setParameter(4, $file->getExtension())
+                ->setParameter(5, $file->getSize())
+                ->setParameter(6, $file->getOwner()->getId())
+                ->setParameter(7, $this->dateTimeService->toYMDHIS($file->getCreateTs()))
+                ->setParameter(8, $file->getDirectory())
+                ->executeStatement();
+
+            $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
+
+            if (0 === $lastInsertId) {
+                throw new FileNotCreatedException();
             }
 
+            $file->setId($lastInsertId);
+            return $file;
+        } catch (Exception $exception) {
+            $this->logger->error('error creating file', ['exception' => $exception]);
+            throw new FileNotCreatedException();
         }
-        return $addedAll;
     }
 
-    public function add(IFile $file): ?int {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->insert("`file`")
-            ->values(
-                [
-                    "`name`"        => '?'
-                    , "`path`"      => '?'
-                    , "`mime_type`" => '?'
-                    , "`hash`"      => '?'
-                    , "`extension`" => '?'
-                    , "`size`"      => '?'
-                    , "`user_id`"   => '?'
-                    , "`create_ts`" => '?'
-                    , "`directory`" => '?'
-                ]
-            )
-            ->setParameter(0, $file->getName())
-            ->setParameter(1, $file->getFullPath())
-            ->setParameter(2, $file->getMimeType())
-            ->setParameter(3, $file->getHash())
-            ->setParameter(4, $file->getExtension())
-            ->setParameter(5, $file->getSize())
-            ->setParameter(6, $file->getOwner()->getId())
-            ->setParameter(7, $this->dateTimeService->toYMDHIS($file->getCreateTs()))
-            ->setParameter(8, $file->getDirectory())
-            ->execute();
-
-        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
-
-        if (0 === $lastInsertId) return null;
-        return $lastInsertId;
-    }
-
-    public function removeAll(FileList $files): bool {
-        $removedAll = false;
+    /**
+     * @param FileList $files
+     * @return FileList
+     * @throws FileNotDeletedException
+     */
+    public function removeAll(FileList $files): FileList {
         foreach ($files as $file) {
-            $removed    = $this->remove($file);
-            $removedAll = $removedAll || $removed;
+            $this->remove($file);
         }
-        return $removedAll;
+        return $files;
     }
 
-    public function remove(IFile $file): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete('file')
+    /**
+     * @param IFile $file
+     * @return IFile
+     * @throws FileNotDeletedException
+     */
+    public function remove(IFile $file): IFile {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('file')
                 ->where('id = ?')
                 ->setParameter(0, $file->getId())
-                ->execute() > 0;
-    }
-
-    public function getAll(ArrayList $fileIds): FileList {
-
-        $fileList = new FileList();
-
-        foreach ($fileIds as $id) {
-            $file = $this->get($id);
-            $fileList->add($file);
+                ->executeStatement();
+            return $file;
+        } catch (Exception $exception) {
+            $this->logger->error('file not deleted', ['exception' => $exception]);
+            throw new FileNotDeletedException();
         }
-
-        return $fileList;
     }
 
     /**
@@ -211,169 +227,201 @@ class FileRepository implements IFileRepository {
         }
     }
 
-    public function getByName(string $name): ?IFile {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+    /**
+     * @param string $name
+     * @return IFile
+     * @throws FileNotFoundException
+     * @throws UserNotFoundException
+     */
+    public function getByName(string $name): IFile {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->select(
+                [
+                    'id'
+                    , 'name'
+                    , 'path'
+                    , 'mime_type'
+                    , 'hash'
+                    , 'extension'
+                    , 'size'
+                    , 'user_id'
+                    , 'create_ts'
+                    , 'directory'
+                ]
+            )
+                ->from('file')
+                ->where('name = ?')
+                ->orWhere('name like ?')
+                ->setParameter(0, $name)
+                ->setParameter(1, "$name%");
+            $files        = $queryBuilder->executeQuery()->fetchAllNumeric();
+            $fileCount    = count($files);
 
-        $queryBuilder = $queryBuilder->select(
-            [
-                'id'
-                , 'name'
-                , 'path'
-                , 'mime_type'
-                , 'hash'
-                , 'extension'
-                , 'size'
-                , 'user_id'
-                , 'create_ts'
-                , 'directory'
-            ]
-        )
-            ->from('file')
-            ->where('name = ?')
-            ->orWhere('name like ?')
-            ->setParameter(0, $name)
-            ->setParameter(1, "$name%");
-        $files        = $queryBuilder->executeQuery()->fetchAllNumeric();
-
-        $file = null;
-        foreach ($files as $row) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $path      = $row[2];
-            $mimeType  = $row[3];
-            $hash      = $row[4];
-            $extension = $row[5];
-            $size      = $row[6];
-            $userId    = $row[7];
-            $createTs  = $row[8];
-            $directory = $row[9];
-
-            $user = $this->userRepository->getUserById((string) $userId);
-
-            if (null == $user) {
-                throw new KeestashException();
+            if (0 === $fileCount) {
+                throw new FileNotFoundException();
             }
 
             $file = new File();
-            $file->setId((int) $id);
-            $file->setName($name);
-            $file->setDirectory($directory);
-            $file->setMimeType($mimeType);
-            $file->setHash($hash);
-            $file->setExtension($extension);
-            $file->setSize((int) $size);
-            $file->setOwner($user);
-            $file->setCreateTs(
-                $this->dateTimeService->fromFormat($createTs)
-            );
+            foreach ($files as $row) {
+                $id        = $row[0];
+                $name      = $row[1];
+                $path      = $row[2];
+                $mimeType  = $row[3];
+                $hash      = $row[4];
+                $extension = $row[5];
+                $size      = $row[6];
+                $userId    = $row[7];
+                $createTs  = $row[8];
+                $directory = $row[9];
 
-        }
+                $user = $this->userRepository->getUserById((string) $userId);
 
-        return $file;
-    }
+                $file->setId((int) $id);
+                $file->setName($name);
+                $file->setDirectory($directory);
+                $file->setMimeType($mimeType);
+                $file->setHash($hash);
+                $file->setExtension($extension);
+                $file->setSize((int) $size);
+                $file->setOwner($user);
+                $file->setCreateTs(
+                    $this->dateTimeService->fromFormat($createTs)
+                );
 
-    public function getByUri(IUniformResourceIdentifier $uri): ?IFile {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-
-        $queryBuilder = $queryBuilder->select(
-            [
-                'id'
-                , 'name'
-                , 'path'
-                , 'mime_type'
-                , 'hash'
-                , 'extension'
-                , 'size'
-                , 'user_id'
-                , 'create_ts'
-                , 'directory'
-            ]
-        )
-            ->from('file')
-            ->where('path = ?')
-            ->orWhere('path like ?')
-            ->setParameter(0, $uri->getIdentifier())
-            ->setParameter(1, "{$uri->getIdentifier()}%");
-        $files        = $queryBuilder->executeQuery()->fetchAllNumeric();
-
-        $file = null;
-        foreach ($files as $row) {
-            $id        = $row[0];
-            $name      = $row[1];
-            $path      = $row[2];
-            $mimeType  = $row[3];
-            $hash      = $row[4];
-            $extension = $row[5];
-            $size      = $row[6];
-            $userId    = $row[7];
-            $createTs  = $row[8];
-            $directory = $row[9];
-
-            $user = $this->userRepository->getUserById((string) $userId);
-
-            if (null == $user) {
-                throw new KeestashException();
             }
 
-            $file = new File();
-            $file->setId((int) $id);
-            $file->setName($name);
-            $file->setDirectory($directory);
-            $file->setMimeType($mimeType);
-            $file->setHash($hash);
-            $file->setExtension($extension);
-            $file->setSize((int) $size);
-            $file->setOwner($user);
-            $file->setCreateTs(
-                $this->dateTimeService->fromFormat($createTs)
-            );
-
+            return $file;
+        } catch (Exception $exception) {
+            $this->logger->error('error while getting file', ['exception' => $exception]);
+            throw new FileNotFoundException();
         }
-
-        return $file;
     }
 
-    public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete('file')
+    /**
+     * @param IUniformResourceIdentifier $uri
+     * @return IFile
+     * @throws FileNotFoundException
+     */
+    public function getByUri(IUniformResourceIdentifier $uri): IFile {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->select(
+                [
+                    'id'
+                    , 'name'
+                    , 'path'
+                    , 'mime_type'
+                    , 'hash'
+                    , 'extension'
+                    , 'size'
+                    , 'user_id'
+                    , 'create_ts'
+                    , 'directory'
+                ]
+            )
+                ->from('file')
+                ->where('path = ?')
+                ->orWhere('path like ?')
+                ->setParameter(0, $uri->getIdentifier())
+                ->setParameter(1, "{$uri->getIdentifier()}%");
+            $files        = $queryBuilder->executeQuery()->fetchAllNumeric();
+            $fileCount    = count($files);
+
+            if (0 === $fileCount) {
+                throw new FileNotFoundException();
+            }
+            $file = new File();
+            foreach ($files as $row) {
+                $id        = $row[0];
+                $name      = $row[1];
+                $path      = $row[2];
+                $mimeType  = $row[3];
+                $hash      = $row[4];
+                $extension = $row[5];
+                $size      = $row[6];
+                $userId    = $row[7];
+                $createTs  = $row[8];
+                $directory = $row[9];
+
+                $user = $this->userRepository->getUserById((string) $userId);
+
+                $file->setId((int) $id);
+                $file->setName($name);
+                $file->setDirectory($directory);
+                $file->setMimeType($mimeType);
+                $file->setHash($hash);
+                $file->setExtension($extension);
+                $file->setSize((int) $size);
+                $file->setOwner($user);
+                $file->setCreateTs(
+                    $this->dateTimeService->fromFormat($createTs)
+                );
+
+            }
+
+            return $file;
+        } catch (Exception|UserNotFoundException $exception) {
+            $this->logger->error('error retrieving file', ['exception' => $exception]);
+            throw new FileNotFoundException();
+        }
+    }
+
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws FileNotDeletedException
+     */
+    public function removeForUser(IUser $user): void {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('file')
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())
-                ->execute() > 0;
+                ->executeStatement();
+        } catch (Exception $exception) {
+            $this->logger->error('error removing for user', ['exception' => $exception]);
+            throw new FileNotDeletedException();
+        }
     }
 
     /**
      * @param IFile $file
-     *
      * @return IFile
-     * @throws PasswordManagerException
+     * @throws FileNotUpdatedException
      */
     public function update(IFile $file): IFile {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->update('file')
-            ->set('name', '?')
-            ->set('directory', '?')
-            ->set('path', '?')
-            ->set('mime_type', '?')
-            ->set('hash', '?')
-            ->set('extension', '?')
-            ->set('size', '?')
-            ->set('user_id', '?')
-            ->where('id = ?')
-            ->setParameter(0, $file->getName())
-            ->setParameter(1, $file->getDirectory())
-            ->setParameter(2, $file->getFullPath())
-            ->setParameter(3, $file->getMimeType())
-            ->setParameter(4, $file->getHash())
-            ->setParameter(5, $file->getExtension())
-            ->setParameter(6, $file->getSize())
-            ->setParameter(7, $file->getOwner()->getId())
-            ->setParameter(8, $file->getId());
-        $rowCount = $queryBuilder->execute();
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->update('file')
+                ->set('name', '?')
+                ->set('directory', '?')
+                ->set('path', '?')
+                ->set('mime_type', '?')
+                ->set('hash', '?')
+                ->set('extension', '?')
+                ->set('size', '?')
+                ->set('user_id', '?')
+                ->where('id = ?')
+                ->setParameter(0, $file->getName())
+                ->setParameter(1, $file->getDirectory())
+                ->setParameter(2, $file->getFullPath())
+                ->setParameter(3, $file->getMimeType())
+                ->setParameter(4, $file->getHash())
+                ->setParameter(5, $file->getExtension())
+                ->setParameter(6, $file->getSize())
+                ->setParameter(7, $file->getOwner()->getId())
+                ->setParameter(8, $file->getId());
+            $rowCount = $queryBuilder->executeStatement();
 
-        if (0 === $rowCount) {
-            throw new PasswordManagerException('no rows updated');
+            if (0 === $rowCount) {
+                throw new FileNotUpdatedException('no rows updated');
+            }
+            return $file;
+        } catch (Exception $exception) {
+            $this->logger->error('error updating file', ['exception' => $exception]);
+            throw new FileNotUpdatedException();
         }
-        return $file;
     }
 
 }

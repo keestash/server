@@ -21,13 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\Install\Factory\Command;
 
-use Keestash\App\Config\Diff;
+use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSA\Install\Command\Install;
-use KSP\App\ILoader;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -42,7 +42,7 @@ class InstallFactory implements FactoryInterface {
             $container->get(InstallerService::class)
             , $container->get(LockHandler::class)
             , $container->get(ILogger::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
             , $container->get(IAppRepository::class)
             , $container->get(Diff::class)
         );

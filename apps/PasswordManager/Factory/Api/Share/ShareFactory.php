@@ -25,7 +25,7 @@ use KSA\PasswordManager\Api\Share\Share;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class ShareFactory {

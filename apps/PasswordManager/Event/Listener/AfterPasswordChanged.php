@@ -27,11 +27,11 @@ use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSA\PasswordManager\Exception\KeyNotUpdatedException;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\Logger\ILogger;
 
 /**
  * Class AfterPasswordChanged

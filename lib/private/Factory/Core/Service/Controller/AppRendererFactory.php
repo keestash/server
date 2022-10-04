@@ -25,15 +25,15 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Legacy\Legacy;
-use KSP\App\ILoader;
 use KSP\Core\Manager\FileManager\IFileManager;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\HTTP\IHTTPService;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\Router\IRouterService;
-use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
@@ -47,13 +47,12 @@ class AppRendererFactory {
             , $container->get(Config::class)
             , $container->get(TemplateRendererInterface::class)
             , $container->get(Legacy::class)
-            , $container->get(HTTPService::class)
+            , $container->get(IHTTPService::class)
             , $container->get(LockHandler::class)
             , $container->get(FileService::class)
             , $container->get(RawFileService::class)
-            , $container->get(IFileManager::class)
             , $container->get(ILocaleService::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
             , $container->get(RouterInterface::class)
             , $container->get(IL10N::class)
             , $container->get(FileRepository::class)

@@ -23,10 +23,10 @@ namespace KSA\PasswordManager\Service\Node\BreadCrumb;
 
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\Cache\ICacheService;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\Cache\ICacheService;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 
 class BreadCrumbService {
 

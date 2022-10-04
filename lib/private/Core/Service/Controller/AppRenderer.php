@@ -26,20 +26,22 @@ use Keestash\ConfigProvider;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
+use Keestash\Exception\File\FileNotFoundException;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\User\UserNotFoundException;
 use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
 use KSA\Login\Controller\Login;
-use KSP\App\ILoader;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Manager\FileManager\IFileManager;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\HTTP\IHTTPService;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\Router\IRouterService;
-use KSP\L10N\IL10N;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;
 use Mezzio\Template\TemplateRendererInterface;
@@ -50,14 +52,13 @@ class AppRenderer implements IAppRenderer {
     private LockHandler               $lockHandler;
     private FileService               $fileService;
     private RawFileService            $rawFileService;
-    private IFileManager              $fileManager;
     private TemplateRendererInterface $templateRenderer;
-    private HTTPService               $httpService;
+    private IHTTPService              $httpService;
     private Legacy                    $legacy;
     private Config                    $config;
     private ILocaleService            $localeService;
     private IRouterService            $routerService;
-    private ILoader                   $loader;
+    private ILoaderService            $loader;
     private RouterInterface           $router;
     private IL10N                     $translator;
     private FileRepository            $fileRepository;
@@ -67,13 +68,12 @@ class AppRenderer implements IAppRenderer {
         , Config                    $config
         , TemplateRendererInterface $templateRenderer
         , Legacy                    $legacy
-        , HTTPService               $httpService
+        , IHTTPService              $httpService
         , LockHandler               $lockHandler
         , FileService               $fileService
         , RawFileService            $rawFileService
-        , IFileManager              $fileManager
         , ILocaleService            $localeService
-        , ILoader                   $loader
+        , ILoaderService            $loader
         , RouterInterface           $router
         , IL10N                     $translator
         , FileRepository            $fileRepository
@@ -81,7 +81,6 @@ class AppRenderer implements IAppRenderer {
         $this->lockHandler      = $lockHandler;
         $this->fileService      = $fileService;
         $this->rawFileService   = $rawFileService;
-        $this->fileManager      = $fileManager;
         $this->templateRenderer = $templateRenderer;
         $this->httpService      = $httpService;
         $this->legacy           = $legacy;
@@ -190,13 +189,14 @@ class AppRenderer implements IAppRenderer {
         ) {
             return '';
         }
-        $file = $this->fileRepository->getByName($this->fileService->getProfileImageName($user));
-        if (null === $file) {
+        try {
+            $file = $this->fileRepository->getByName($this->fileService->getProfileImageName($user));
+        } catch (UserNotFoundException|FileNotFoundException $exception) {
             $file = $this->fileService->getDefaultImage();
             $file->setOwner($user);
         }
 
-        $file = $this->fileManager->read(
+        $file = $this->fileService->read(
             $this->rawFileService->stringToUri(
                 $file->getFullPath()
             )

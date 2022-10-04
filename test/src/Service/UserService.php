@@ -65,7 +65,6 @@ class UserService {
         [
             'id'         => UserService::TEST_USER_ID_2
             , 'name'     => UserService::TEST_USER_ID_2_NAME
-            , 'hash'     => UserService::TEST_USER_ID_2
             , 'password' => UserService::TEST_USER_ID_2_PASSWORD
             , 'email'    => UserService::TEST_USER_ID_2_EMAIL
             , 'locked'   => false
@@ -73,7 +72,6 @@ class UserService {
         [
             'id'         => UserService::TEST_USER_ID_3
             , 'name'     => UserService::TEST_USER_ID_3_NAME
-            , 'hash'     => UserService::TEST_USER_ID_3
             , 'password' => UserService::TEST_USER_ID_3_PASSWORD
             , 'email'    => UserService::TEST_USER_ID_3_EMAIL
             , 'locked'   => false
@@ -81,7 +79,6 @@ class UserService {
         [
             'id'         => UserService::TEST_LOCKED_USER_ID_4
             , 'name'     => UserService::TEST_LOCKED_USER_ID_4_NAME
-            , 'hash'     => UserService::TEST_LOCKED_USER_ID_4
             , 'password' => UserService::TEST_LOCKED_USER_ID_4_PASSWORD
             , 'email'    => UserService::TEST_LOCKED_USER_ID_4_EMAIL
             , 'locked'   => true
@@ -89,7 +86,6 @@ class UserService {
         [
             'id'         => UserService::TEST_PASSWORD_RESET_USER_ID_5
             , 'name'     => UserService::TEST_PASSWORD_RESET_USER_ID_5_NAME
-            , 'hash'     => UserService::TEST_PASSWORD_RESET_USER_ID_5
             , 'password' => UserService::TEST_PASSWORD_RESET_USER_ID_5_PASSWORD
             , 'email'    => UserService::TEST_PASSWORD_RESET_USER_ID_5_EMAIL
             , 'locked'   => false
@@ -97,7 +93,6 @@ class UserService {
         [
             'id'         => UserService::TEST_PASSWORD_FORGOT_USER_ID_6
             , 'name'     => UserService::TEST_PASSWORD_FORGOT_USER_ID_6_NAME
-            , 'hash'     => UserService::TEST_PASSWORD_FORGOT_USER_ID_6
             , 'password' => UserService::TEST_PASSWORD_FORGOT_USER_ID_6_PASSWORD
             , 'email'    => UserService::TEST_PASSWORD_FORGOT_USER_ID_6_EMAIL
             , 'locked'   => false
@@ -105,7 +100,6 @@ class UserService {
         [
             'id'         => UserService::TEST_RESET_PASSWORD_USER_ID_7
             , 'name'     => UserService::TEST_RESET_PASSWORD_USER_ID_7_NAME
-            , 'hash'     => UserService::TEST_RESET_PASSWORD_USER_ID_7
             , 'password' => UserService::TEST_PASSWORD_FORGOT_USER_ID_7_PASSWORD
             , 'email'    => UserService::TEST_PASSWORD_FORGOT_USER_ID_7_EMAIL
             , 'locked'   => false

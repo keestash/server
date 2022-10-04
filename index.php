@@ -23,9 +23,9 @@ declare(strict_types=1);
 // Therefore, we call our framework within an
 // anonymous function.
 use Keestash\ConfigProvider;
-use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
-use KSP\Core\Manager\EventManager\IEventManager;
+use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Event\IEventService;
 use Laminas\Config\Config;
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
@@ -49,8 +49,8 @@ use Psr\Container\ContainerInterface;
     /** @var Config $router */
     $router = $config->get(ConfigProvider::WEB_ROUTER);
 
-    /** @var IEventManager $eventManager */
-    $eventManager = $container->get(IEventManager::class);
+    /** @var IEventService $eventManager */
+    $eventManager = $container->get(IEventService::class);
     $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
     $eventManager->execute(new ApplicationStartedEvent(new DateTime()));
 

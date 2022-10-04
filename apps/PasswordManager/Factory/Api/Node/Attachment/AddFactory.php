@@ -24,10 +24,10 @@ namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 

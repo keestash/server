@@ -25,8 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

@@ -23,12 +23,12 @@ namespace Keestash\Queue\Handler;
 
 use Exception;
 use Keestash\Core\DTO\Queue\Result;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Queue\IEventMessage;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\Serializer\Adapter\PhpSerialize;
 use Psr\Container\ContainerInterface;

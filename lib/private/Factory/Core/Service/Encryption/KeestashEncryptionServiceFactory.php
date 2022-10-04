@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\Encryption;
 
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class KeestashEncryptionServiceFactory {

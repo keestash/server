@@ -24,8 +24,8 @@ namespace Keestash\Factory\Core\Repository\EncryptionKey\Organization;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class OrganizationKeyRepositoryFactory {

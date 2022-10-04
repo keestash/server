@@ -25,7 +25,7 @@ use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;

@@ -23,8 +23,8 @@ namespace KSA\Settings\Factory\Api\Organization;
 
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Repository\IOrganizationRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Organization\IOrganizationService;
 use Psr\Container\ContainerInterface;
 
@@ -35,7 +35,7 @@ class UpdateFactory {
             $container->get(IOrganizationService::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(ILogger::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

@@ -88,4 +88,16 @@ class TestCase extends FrameworkTestCase {
         );
     }
 
+    public function assertInvalidResponse(ResponseInterface $response): void {
+        $this->assertTrue(false === $this->responseService->isValidResponse($response));
+    }
+
+    public function assertValidResponse(ResponseInterface $response): void {
+        $this->assertTrue(true === $this->responseService->isValidResponse($response));
+    }
+
+    public function assertStatusCode(int $statusCode, ResponseInterface $response): void {
+        $this->assertTrue($statusCode === $response->getStatusCode());
+    }
+
 }

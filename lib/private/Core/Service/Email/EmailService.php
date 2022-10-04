@@ -26,8 +26,8 @@ use Exception;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Legacy\Legacy;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Logger\ILogger;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 

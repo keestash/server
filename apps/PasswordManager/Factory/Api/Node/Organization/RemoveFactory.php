@@ -25,8 +25,7 @@ use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Api\Node\Organization\Remove;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RemoveFactory implements FactoryInterface {
@@ -39,7 +38,7 @@ class RemoveFactory implements FactoryInterface {
         return new Remove(
             $container->get(NodeRepository::class)
             , $container->get(OrganizationRepository::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

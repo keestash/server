@@ -23,10 +23,12 @@ namespace KST\config;
 
 use Doctrine\DBAL\Connection;
 use Keestash\Core\Service\File\Upload\FileService;
-use KST\Service\Core\Manager\EventManager\EventManager;
+use KST\Service\Core\Cache\RedisService;
+use KST\Service\Core\Manager\EventManager\EventService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
+use KST\Service\Factory\Core\Cache\RedisServiceFactory;
 use KST\Service\Factory\Core\Manager\EventManager\EventManagerFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
@@ -42,6 +44,7 @@ return [
     , HTTPService::class   => HTTPServiceFactory::class
     , UserService::class   => UserServiceFactory::class
     , FileService::class   => FileServiceFactory::class
-    , EventManager::class  => EventManagerFactory::class
+    , EventService::class  => EventManagerFactory::class
     , LocaleService::class => InvokableFactory::class
+    , RedisService::class  => RedisServiceFactory::class
 ];

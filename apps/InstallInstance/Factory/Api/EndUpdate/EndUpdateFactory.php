@@ -27,10 +27,10 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
-use KSP\App\ILoader;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class EndUpdateFactory {
@@ -44,7 +44,7 @@ class EndUpdateFactory {
             , $container->get(FileService::class)
             , $container->get(UserService::class)
             , $container->get(HTTPService::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
             , $container->get(IUserRepositoryService::class)
         );
     }

@@ -23,13 +23,15 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\State\UserStateException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,16 +40,19 @@ class UserLock implements RequestHandlerInterface {
 
     private IUserRepository      $userRepository;
     private IUserStateRepository $userStateRepository;
-    private IEventManager        $eventManager;
+    private IEventService        $eventManager;
+    private ILogger              $logger;
 
     public function __construct(
         IUserRepository        $userRepository
         , IUserStateRepository $userStateRepository
-        , IEventManager        $eventManager
+        , IEventService        $eventManager
+        , ILogger              $logger
     ) {
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;
         $this->eventManager        = $eventManager;
+        $this->logger              = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -69,22 +74,21 @@ class UserLock implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        $locked = $this->userStateRepository->lock($user);
-
-        $this->eventManager
-            ->execute(
-                new UserStateLockEvent(
-                    IUserState::USER_STATE_LOCK
-                    , $user
-                    , $locked
-                )
-            );
-
-        if (false === $locked) {
+        try {
+            $this->userStateRepository->lock($user);
+            $this->eventManager
+                ->execute(
+                    new UserStateLockEvent(
+                        IUserState::USER_STATE_LOCK
+                        , $user
+                    )
+                );
+            return new JsonResponse([], IResponse::OK);
+        } catch (UserStateException $exception) {
+            $this->logger->error('error locking user', ['exception' => $exception]);
             return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
-        return new JsonResponse([], IResponse::OK);
     }
 
 }

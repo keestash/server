@@ -22,11 +22,11 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Factory\Api;
 
 use KSA\ForgotPassword\Api\ResetPassword;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class ResetPasswordFactory {
@@ -37,7 +37,7 @@ class ResetPasswordFactory {
             , $container->get(IUserStateRepository::class)
             , $container->get(IUserService::class)
             , $container->get(IUserRepositoryService::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

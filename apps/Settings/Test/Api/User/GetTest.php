@@ -26,6 +26,7 @@ use KSA\Settings\Test\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
 
@@ -58,8 +59,8 @@ class GetTest extends TestCase {
 
         $user = $userService->toNewUser(
             [
-                'user_name'    => md5((string) time())
-                , 'email'      => md5((string) time()) . '@keestash.com'
+                'user_name'    => Uuid::uuid4()->toString()
+                , 'email'      => Uuid::uuid4() . '@keestash.com'
                 , 'last_name'  => GetTest::class
                 , 'first_name' => GetTest::class
                 , 'password'   => md5((string) time())

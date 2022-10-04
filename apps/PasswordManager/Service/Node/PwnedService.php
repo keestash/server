@@ -28,9 +28,9 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use JsonException;
 use KSA\PasswordManager\Entity\Node\Pwned\Api\Passwords;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
+use KSP\Core\Service\Logger\ILogger;
 
 class PwnedService {
 

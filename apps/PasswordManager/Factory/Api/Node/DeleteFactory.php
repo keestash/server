@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class DeleteFactory {
