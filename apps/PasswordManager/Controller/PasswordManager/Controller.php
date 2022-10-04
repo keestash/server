@@ -25,9 +25,9 @@ use Keestash\View\ActionBar\ActionBarBuilder;
 use KSA\PasswordManager\Controller\PasswordManager\Segment\Helper as SegmentHelper;
 use KSP\Core\Controller\AppController;
 use KSP\Core\Service\Controller\IAppRenderer;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\View\ActionBar\IActionBar;
 use KSP\Core\View\ActionBar\IElement;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

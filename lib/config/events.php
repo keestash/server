@@ -20,8 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
-use Keestash\Event\Listener\RolesAndPermissionsListener;
 
 return [
     UserCreatedEvent::class => [

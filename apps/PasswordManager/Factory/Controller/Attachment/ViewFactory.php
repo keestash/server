@@ -25,7 +25,7 @@ use KSA\PasswordManager\Controller\Attachment\View;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 

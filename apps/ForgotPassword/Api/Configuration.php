@@ -23,7 +23,7 @@ namespace KSA\ForgotPassword\Api;
 
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -31,12 +31,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private IHTTPService $httpService;
-    private ILoader      $loader;
+    private IHTTPService   $httpService;
+    private ILoaderService $loader;
 
     public function __construct(
-        IHTTPService $httpService
-        , ILoader    $loader
+        IHTTPService     $httpService
+        , ILoaderService $loader
     ) {
         $this->httpService = $httpService;
         $this->loader      = $loader;

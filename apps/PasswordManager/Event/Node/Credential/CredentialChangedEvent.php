@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Event\Node\Credential;
 
 use DateTimeImmutable;
 use DateTimeInterface;
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSA\PasswordManager\Entity\Node\Pwned\Passwords;

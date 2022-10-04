@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Api;
 
-use Laminas\Diactoros\Response\JsonResponse;
+use Keestash\Api\Response\OkResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -29,7 +29,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class PingHandler implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse(
+        return new OkResponse(
             [time()]
         );
     }

@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSA\Install\Command;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\App\Config\Diff;
 use Keestash\Command\KeestashCommand;
+use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\System\Installation\App\LockHandler;
-use KSP\App\ILoader;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\Logger\ILogger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,16 +36,16 @@ class Install extends KeestashCommand {
 
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
-    private ILogger          $logger;
-    private ILoader          $loader;
-    private IAppRepository   $appRepository;
+    private ILogger        $logger;
+    private ILoaderService $loader;
+    private IAppRepository $appRepository;
     private Diff             $diff;
 
     public function __construct(
         InstallerService $installer
         , LockHandler    $lockHandler
         , ILogger        $logger
-        , ILoader        $loader
+        , ILoaderService $loader
         , IAppRepository $appRepository
         , Diff           $diff
     ) {

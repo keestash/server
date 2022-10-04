@@ -21,14 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Controller;
 
-use DateTime;
-use Keestash\Core\Service\HTTP\HTTPService;
 use KSA\ForgotPassword\Application\Application;
 use KSP\Core\Controller\StaticAppController;
-use KSP\Core\DTO\User\IUserState;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

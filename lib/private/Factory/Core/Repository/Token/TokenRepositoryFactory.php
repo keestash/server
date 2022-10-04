@@ -26,15 +26,17 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class TokenRepositoryFactory {
 
     public function __invoke(ContainerInterface $container): ITokenRepository {
         return new TokenRepository(
-            $container->get(IBackend::class),
-            $container->get(IUserRepository::class),
-            $container->get(IDateTimeService::class)
+            $container->get(IBackend::class)
+            , $container->get(IUserRepository::class)
+            , $container->get(IDateTimeService::class)
+            , $container->get(ILogger::class)
         );
     }
 

@@ -27,6 +27,7 @@ use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -109,7 +110,7 @@ class CreateCredential extends KeestashCommand {
             return 1;
         }
         $this->writeInfo("$name created", $output);
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
 
     }
 

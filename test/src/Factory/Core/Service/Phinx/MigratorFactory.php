@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\Core\Service\Phinx;
 
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;

@@ -25,6 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\Job\JobRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Job\IJobRepository;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class JobRepositoryFactory {
@@ -33,6 +34,7 @@ class JobRepositoryFactory {
         return new JobRepository(
             $container->get(IBackend::class)
             , $container->get(IDateTimeService::class)
+            , $container->get(ILogger::class)
         );
     }
 

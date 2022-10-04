@@ -24,7 +24,8 @@ namespace KSA\GeneralApi\Command\Stylesheet;
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
-use KSP\Core\ILogger\ILogger;
+use KSP\Command\IKeestashCommand;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -61,7 +62,7 @@ class Compiler extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $this->compileApps();
         $this->writeInfo("compiled all", $output);
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
     private function compileApps(): void {

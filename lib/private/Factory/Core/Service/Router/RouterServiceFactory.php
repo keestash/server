@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\Router;
 
 use Keestash\Core\Service\Router\RouterService;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;

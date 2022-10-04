@@ -27,8 +27,8 @@ use Keestash\Exception\OrganizationNotUpdatedException;
 use KSA\Settings\Event\Organization\OrganizationUpdatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Organization\IOrganizationService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,14 +38,14 @@ class Update implements RequestHandlerInterface {
 
     private IOrganizationService    $organizationService;
     private IOrganizationRepository $organizationRepository;
-    private ILogger                 $logger;
-    private IEventManager           $eventManager;
+    private ILogger       $logger;
+    private IEventService $eventManager;
 
     public function __construct(
         IOrganizationService      $organizationService
         , IOrganizationRepository $organizationRepository
         , ILogger                 $logger
-        , IEventManager           $eventManager
+        , IEventService           $eventManager
     ) {
         $this->organizationService    = $organizationService;
         $this->logger                 = $logger;

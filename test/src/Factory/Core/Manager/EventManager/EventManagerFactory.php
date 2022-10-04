@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\Core\Manager\EventManager;
 
-use KSP\Core\Manager\EventManager\IEventManager;
-use KST\Service\Core\Manager\EventManager\EventManager;
+use KSP\Core\Service\Event\IEventService;
+use KST\Service\Core\Manager\EventManager\EventService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -32,8 +32,8 @@ class EventManagerFactory implements FactoryInterface {
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): IEventManager {
-        return new EventManager($container);
+    ): IEventService {
+        return new EventService($container);
     }
 
 }

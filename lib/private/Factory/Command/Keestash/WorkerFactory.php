@@ -23,8 +23,8 @@ namespace Keestash\Factory\Command\Keestash;
 
 use Keestash\Command\Keestash\Worker;
 use Keestash\Command\KeestashCommand;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEmailHandler;
 use KSP\Queue\Handler\IEventHandler;

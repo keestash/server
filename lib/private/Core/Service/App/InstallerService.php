@@ -23,10 +23,10 @@ namespace Keestash\Core\Service\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
-use Keestash\App\AppFactory;
-use KSP\App\Config\IApp;
+use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\Job\IJobRepository;
+use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\Phinx\IMigrator;
 
 class InstallerService {
@@ -34,6 +34,7 @@ class InstallerService {
     private IMigrator      $migrator;
     private IAppRepository $appRepository;
     private IJobRepository $jobRepository;
+    private IAppService    $appService;
 
     public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
@@ -41,10 +42,12 @@ class InstallerService {
         IMigrator        $migrator
         , IAppRepository $appRepository
         , IJobRepository $jobRepository
+        , IAppService    $appService
     ) {
         $this->migrator      = $migrator;
         $this->appRepository = $appRepository;
         $this->jobRepository = $jobRepository;
+        $this->appService    = $appService;
     }
 
     public function runMigrations(): bool {
@@ -56,7 +59,7 @@ class InstallerService {
 
         foreach ($apps->keySet() as $key) {
             $app          = $apps->get($key);
-            $configApp    = AppFactory::toConfigApp($app);
+            $configApp    = $this->appService->toConfigApp($app);
             $appInstalled = $this->install($configApp);
             $installed    = $installed && $appInstalled;
         }
@@ -67,7 +70,8 @@ class InstallerService {
     public function install(IApp $app): bool {
         $apps = $this->appRepository->replace($app);
         if (false === $apps) return false;
-        return $this->jobRepository->replaceJobs($app->getBackgroundJobs());
+        $this->jobRepository->replaceJobs($app->getBackgroundJobs());
+        return true;
     }
 
 }

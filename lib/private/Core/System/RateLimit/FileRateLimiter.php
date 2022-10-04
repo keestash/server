@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\System\RateLimit;
 
 use Exception;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 use RateLimit\ConfigurableRateLimiter;
 use RateLimit\Exception\LimitExceeded;
 use RateLimit\Rate;

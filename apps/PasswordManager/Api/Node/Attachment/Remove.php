@@ -23,14 +23,15 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
-use Keestash\Exception\FileNotFoundException;
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\File\FileNotFoundException;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -98,12 +99,15 @@ class Remove implements RequestHandlerInterface {
             ], IResponse::NOT_MODIFIED);
         }
 
-        $removed = $this->fileRepository->remove($file);
-
-        if (false === $removed) {
-            return new JsonResponse([
-                "message" => $this->translator->translate("could not remove")
-            ], IResponse::NOT_MODIFIED);
+        try {
+            $this->fileRepository->remove($file);
+        } catch (FileNotDeletedException $exception) {
+            return new JsonResponse(
+                [
+                    "message" => $this->translator->translate("could not remove")
+                ]
+                , IResponse::NOT_MODIFIED
+            );
         }
 
         return new JsonResponse(

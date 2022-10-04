@@ -22,18 +22,21 @@ declare(strict_types=1);
 
 use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login;
+use KSA\Login\Api\Logout;
 use KSA\Login\Factory\Api\ConfigurationFactory;
 use KSA\Login\Factory\Api\LoginFactory;
+use KSA\Login\Factory\Api\LogoutFactory;
 use KSA\Login\Service\TokenService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'factories' => [
         // api
-        Login::class             => LoginFactory::class
-        , Configuration::class   => ConfigurationFactory::class
+        Login::class           => LoginFactory::class
+        , Configuration::class => ConfigurationFactory::class
+        , Logout::class        => LogoutFactory::class
 
         // service
-        , TokenService::class    => InvokableFactory::class
+        , TokenService::class  => InvokableFactory::class
     ]
 ];

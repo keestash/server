@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Command;
 
 use Keestash\Command\KeestashCommand;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputArgument;
@@ -101,9 +101,9 @@ class DeleteUser extends KeestashCommand {
             $this->writeError('no user found for ' . $userId, $output);
             return 1;
         }
-        $result = $this->userRepositoryService->removeUser($user);
+        $this->userRepositoryService->removeUser($user);
 
-        $this->writeInfo("{$user->getName()} delete result: " . json_encode($result), $output);
+        $this->writeInfo("{$user->getName()} delete result: ", $output);
         return 0;
     }
 

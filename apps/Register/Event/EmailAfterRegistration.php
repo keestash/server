@@ -27,13 +27,13 @@ use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Legacy\Legacy;
 use KSA\Register\Exception\RegisterException;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use Mezzio\Template\TemplateRendererInterface;
 
 class EmailAfterRegistration implements IListener {

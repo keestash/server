@@ -23,7 +23,8 @@ namespace KSA\GeneralApi\Command\QualityTool;
 
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
-use KSP\Core\ILogger\ILogger;
+use KSP\Command\IKeestashCommand;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -55,7 +56,7 @@ class ClearBundleJS extends KeestashCommand {
 
         if (false === $files) {
             $this->logger->debug('no js to clear, files array is empty');
-            return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+            return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
         }
 
         $this->writeInfo(
@@ -81,7 +82,7 @@ class ClearBundleJS extends KeestashCommand {
         }
 
         $this->writeInfo("removed $fileCount files", $output);
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
 
     }
 

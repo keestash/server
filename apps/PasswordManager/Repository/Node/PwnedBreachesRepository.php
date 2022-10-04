@@ -31,7 +31,7 @@ use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 
 class PwnedBreachesRepository {
 

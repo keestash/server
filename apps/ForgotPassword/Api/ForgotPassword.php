@@ -24,16 +24,16 @@ namespace KSA\ForgotPassword\Api;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSA\ForgotPassword\Event\ForgotPasswordEvent;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\IUserService;
-use KSP\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -45,7 +45,7 @@ class ForgotPassword implements RequestHandlerInterface {
     private IL10N                $translator;
     private IUserRepository      $userRepository;
     private ILogger              $logger;
-    private IEventManager        $eventManager;
+    private IEventService        $eventManager;
 
     public function __construct(
         IUserService           $userService
@@ -53,7 +53,7 @@ class ForgotPassword implements RequestHandlerInterface {
         , IL10N                $translator
         , IUserRepository      $userRepository
         , ILogger              $logger
-        , IEventManager        $eventManager
+        , IEventService        $eventManager
     ) {
         $this->userService         = $userService;
         $this->userStateRepository = $userStateRepository;
@@ -109,9 +109,9 @@ class ForgotPassword implements RequestHandlerInterface {
         $userStates       = $this->userStateRepository->getUsersWithPasswordResetRequest();
         $alreadyRequested = false;
 
-        foreach ($userStates->keySet() as $userStateId) {
-            /** @var IUserState $userState */
-            $userState = $userStates->get($userStateId);
+
+        /** @var IUserState $userState */
+        foreach ($userStates->toArray() as $userState) {
             if ($user->getId() === $userState->getUser()->getId()) {
                 $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
                 $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes

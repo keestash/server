@@ -23,10 +23,10 @@ namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\App\Config\Diff;
+use Keestash\Core\Service\App\Diff;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\ILoaderService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -39,12 +39,12 @@ class InstallConfiguration implements RequestHandlerInterface {
     public const INSTALL_TYPE_INSTALL_AND_UPGRADE_APPS = 3;
     public const INSTALL_TYPE_ERROR                    = 4;
 
-    private ILoader        $loader;
+    private ILoaderService $loader;
     private IAppRepository $appRepository;
     private Diff           $diff;
 
     public function __construct(
-        ILoader          $loader
+        ILoaderService $loader
         , IAppRepository $appRepository
         , Diff           $diff
     ) {

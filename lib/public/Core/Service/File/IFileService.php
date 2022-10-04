@@ -21,10 +21,13 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\File;
 
+use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
 
 interface IFileService {
 
     public function getProfileImagePath(?IUser $user): string;
 
+    public function read(?IUniformResourceIdentifier $uri): ?IFile;
 }

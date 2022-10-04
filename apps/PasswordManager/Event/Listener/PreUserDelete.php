@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener;
 
 use KSA\PasswordManager\Repository\Node\FileRepository;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\Event\Listener\IListener;
 
 class PreUserDelete implements IListener {
 

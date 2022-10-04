@@ -23,6 +23,7 @@ namespace KSA\Settings\Command;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Command\KeestashCommand;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Helper\Table;
@@ -80,7 +81,7 @@ class Get extends KeestashCommand {
             ->setRows($tableRows);
         $table->render();
 
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

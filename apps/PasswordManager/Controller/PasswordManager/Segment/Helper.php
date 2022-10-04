@@ -25,7 +25,7 @@ use Keestash\View\Navigation\App\NavigationList;
 use Keestash\View\Navigation\App\Segment;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Navigation\DefaultSegment;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\View\Navigation\App\IEntry;
 
 class Helper {

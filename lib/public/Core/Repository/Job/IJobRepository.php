@@ -21,20 +21,15 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Job;
 
-use doganoo\Backgrounder\BackgroundJob\Job;
-use doganoo\Backgrounder\BackgroundJob\JobList;
+use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\IRepository;
 
 interface IJobRepository extends IRepository {
 
-    public function getJobList(): JobList;
+    public function getJobList(): IJobList;
 
-    public function replaceJobs(JobList $jobList): bool;
+    public function replaceJobs(IJobList $jobList): IJobList;
 
-    public function replaceJob(Job $jobList): bool;
-
-    public function updateJobs(JobList $jobList): bool;
-
-    public function updateJob(Job $job): bool;
+    public function removeAll(): void;
 
 }

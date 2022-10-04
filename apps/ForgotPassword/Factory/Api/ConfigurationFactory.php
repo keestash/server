@@ -22,7 +22,7 @@ namespace KSA\ForgotPassword\Factory\Api;
 
 use Interop\Container\ContainerInterface;
 use KSA\ForgotPassword\Api\Configuration;
-use KSP\App\ILoader;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
@@ -35,7 +35,7 @@ class ConfigurationFactory implements FactoryInterface {
     ): Configuration {
         return new Configuration(
             $container->get(IHTTPService::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
         );
     }
 

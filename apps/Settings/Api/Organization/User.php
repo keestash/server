@@ -22,14 +22,14 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSA\Settings\Event\Organization\UserChangedEvent;
 use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSP\Api\IResponse;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Event\IEventService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -41,14 +41,14 @@ class User implements RequestHandlerInterface {
 
     private IOrganizationRepository     $organizationRepository;
     private IOrganizationUserRepository $organizationUserRepository;
-    private IUserRepository             $userRepository;
-    private IEventManager               $eventManager;
+    private IUserRepository $userRepository;
+    private IEventService   $eventManager;
 
     public function __construct(
         IOrganizationRepository       $organizationRepository
         , IOrganizationUserRepository $organizationUserRepository
         , IUserRepository             $userRepository
-        , IEventManager               $eventManager
+        , IEventService               $eventManager
     ) {
         $this->organizationUserRepository = $organizationUserRepository;
         $this->organizationRepository     = $organizationRepository;

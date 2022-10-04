@@ -30,8 +30,8 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -41,15 +41,15 @@ class Add implements RequestHandlerInterface {
     private OrganizationNodeRepository $organizationNodeRepository;
     private IOrganizationRepository    $organizationRepository;
     private NodeRepository             $nodeRepository;
-    private ILogger                    $logger;
-    private IEventManager              $eventManager;
+    private ILogger       $logger;
+    private IEventService $eventManager;
 
     public function __construct(
         OrganizationNodeRepository $organizationNodeRepository
         , IOrganizationRepository  $organizationRepository
         , NodeRepository           $nodeRepository
         , ILogger                  $logger
-        , IEventManager            $eventManager
+        , IEventService            $eventManager
     ) {
         $this->organizationNodeRepository = $organizationNodeRepository;
         $this->organizationRepository     = $organizationRepository;

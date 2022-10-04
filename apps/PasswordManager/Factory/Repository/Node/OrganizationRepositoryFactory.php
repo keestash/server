@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Factory\Repository\Node;
 
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class OrganizationRepositoryFactory {

@@ -150,8 +150,8 @@ class Update implements RequestHandlerInterface {
             $newAvatarFile->setNode($node);
             $newAvatarFile->setType(NodeFile::FILE_TYPE_AVATAR);
 
-            $id = $this->fileRepository->add($newAvatarFile->getFile());
-            $newAvatarFile->getFile()->setId($id);
+            $f = $this->fileRepository->add($newAvatarFile->getFile());
+            $newAvatarFile->getFile()->setId($f->getId());
 
             $connected = $this->nodeFileRepository->connectFileToNode($newAvatarFile);
 

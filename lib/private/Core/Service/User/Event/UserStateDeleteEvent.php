@@ -21,19 +21,17 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSP\Core\DTO\User\IUser;
 
 class UserStateDeleteEvent extends Event {
 
     private string $stateType;
     private IUser  $user;
-    private bool   $deleted;
 
-    public function __construct(string $stateType, IUser $user, bool $deleted) {
+    public function __construct(string $stateType, IUser $user) {
         $this->stateType = $stateType;
         $this->user      = $user;
-        $this->deleted   = $deleted;
     }
 
     /**
@@ -50,18 +48,10 @@ class UserStateDeleteEvent extends Event {
         return $this->user;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeleted(): bool {
-        return $this->deleted;
-    }
-
     public function jsonSerialize(): array {
         return [
             'stateType' => $this->getStateType()
             , 'user'    => $this->getUser()
-            , 'deleted' => $this->isDeleted()
         ];
     }
 

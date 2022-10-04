@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Event\Organization;
 
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSP\Core\DTO\Organization\IOrganization;
 
 class OrganizationUpdatedEvent extends Event {

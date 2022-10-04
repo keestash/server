@@ -21,12 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\BackgroundJob;
 
-use Keestash\Core\Service\User\UserService;
 use KSA\Settings\BackgroundJob\UserDeleteTask;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
@@ -38,7 +37,7 @@ class UserDeleteTaskFactory {
             , $container->get(IConfigService::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(ILogger::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

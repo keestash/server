@@ -29,8 +29,8 @@ use Keestash\Core\DTO\Organization\Organization;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,13 +38,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Add implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
-    private IEventManager           $eventManager;
+    private IEventService           $eventManager;
     private ILogger                 $logger;
     private IUserService            $userService;
 
     public function __construct(
         IOrganizationRepository $organizationRepository
-        , IEventManager         $eventManager
+        , IEventService         $eventManager
         , ILogger               $logger
         , IUserService          $userService
     ) {

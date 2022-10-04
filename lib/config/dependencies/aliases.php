@@ -28,14 +28,8 @@ use doganoo\DIP\Object\String\StringService;
 use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use Keestash\App\Cors\ProjectConfiguration;
-use Keestash\App\Loader\Loader;
 use Keestash\Core\Backend\MySQLBackend;
-use Keestash\Core\Cache\NullService;
-use Keestash\Core\Manager\EventManager\EventManager;
-use Keestash\Core\Manager\FileManager\FileManager;
 use Keestash\Core\Manager\LoggerManager\LoggerManager;
-use Keestash\Core\Manager\SettingManager\SettingManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
@@ -44,11 +38,12 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use Keestash\Core\Repository\RBAC\RBACRepository;
-use Keestash\Core\Repository\Session\SessionRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\App\AppService;
+use Keestash\Core\Service\App\LoaderServiceService;
+use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Access\IAccessService;
@@ -61,12 +56,15 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
+use Keestash\Core\Service\Event\EventService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\Mime\MimeTypeService;
+use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\Instance\InstallerService;
+use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
@@ -75,16 +73,10 @@ use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
-use Keestash\L10N\GetText;
 use Keestash\Queue\Handler\EventHandler;
-use KSP\App\ILoader;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
-use KSP\Core\Cache\ICacheService;
-use KSP\Core\Manager\EventManager\IEventManager;
-use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
-use KSP\Core\Manager\SettingManager\ISettingManager;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
@@ -92,11 +84,12 @@ use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Repository\Session\ISessionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\App\IAppService;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Access\AccessService;
@@ -109,12 +102,14 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Mime\IMimeTypeService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\Instance\IInstallerService;
+use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KSP\Core\Service\Queue\IQueueService;
@@ -122,7 +117,6 @@ use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use KSP\Queue\Handler\IEventHandler;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
 use RateLimit\RateLimiter;
@@ -139,7 +133,6 @@ return [
     ITokenRepository::class                           => TokenRepository::class,
     IAppRepository::class                             => AppRepository::class,
     IJobRepository::class                             => JobRepository::class,
-    ISessionRepository::class                         => SessionRepository::class,
     IQueueRepository::class                           => QueueRepository::class,
     IUserStateRepository::class                       => UserStateRepository::class,
     RBACRepositoryInterface::class                    => RBACRepository::class,
@@ -177,12 +170,10 @@ return [
 
     // manager
     ILoggerManager::class                             => LoggerManager::class,
-    IEventManager::class                              => EventManager::class,
-    IFileManager::class                               => FileManager::class,
-    ISettingManager::class                            => SettingManager::class,
+    IEventService::class                              => EventService::class,
 
     IL10N::class                   => GetText::class,
-    ILoader::class                 => Loader::class,
+    ILoaderService::class          => LoaderServiceService::class,
     SessionHandlerInterface::class => SessionHandler::class,
     IAppRenderer::class            => AppRenderer::class,
     IMigrator::class               => Migrator::class,

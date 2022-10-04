@@ -23,7 +23,11 @@ namespace KSP\Core\Repository\File;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
-use Keestash\Exception\FileNotFoundException;
+use Keestash\Exception\File\FileNotCreatedException;
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\File\FileNotFoundException;
+use Keestash\Exception\File\FileNotUpdatedException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
@@ -31,17 +35,47 @@ use KSP\Core\Repository\IRepository;
 
 interface IFileRepository extends IRepository {
 
-    public function add(IFile $file): ?int;
+    /**
+     * @param IFile $file
+     * @return IFile
+     * @throws FileNotCreatedException
+     */
+    public function add(IFile $file): IFile;
 
+    /**
+     * @param IFile $file
+     * @return IFile
+     * @throws FileNotUpdatedException
+     */
     public function update(IFile $file): IFile;
 
-    public function addAll(FileList &$files): bool;
+    /**
+     * @param FileList $files
+     * @return FileList
+     * @throws FileNotCreatedException
+     */
+    public function addAll(FileList $files): FileList;
 
-    public function remove(IFile $file): bool;
+    /**
+     * @param IFile $file
+     * @return IFile
+     * @throws FileNotDeletedException
+     */
+    public function remove(IFile $file): IFile;
 
-    public function removeForUser(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws FileNotDeletedException
+     */
+    public function removeForUser(IUser $user): void;
 
-    public function removeAll(FileList $files): bool;
+    /**
+     * @param FileList $files
+     * @return FileList
+     * @throws FileNotDeletedException
+     */
+    public function removeAll(FileList $files): FileList;
 
     /**
      * @param int $id
@@ -50,10 +84,19 @@ interface IFileRepository extends IRepository {
      */
     public function get(int $id): IFile;
 
-    public function getByUri(IUniformResourceIdentifier $uri): ?IFile;
+    /**
+     * @param IUniformResourceIdentifier $uri
+     * @return IFile
+     * @throws FileNotFoundException
+     */
+    public function getByUri(IUniformResourceIdentifier $uri): IFile;
 
-    public function getByName(string $name): ?IFile;
-
-    public function getAll(ArrayList $fileIds): FileList;
+    /**
+     * @param string $name
+     * @return IFile
+     * @throws FileNotFoundException
+     * @throws UserNotFoundException
+     */
+    public function getByName(string $name): IFile;
 
 }

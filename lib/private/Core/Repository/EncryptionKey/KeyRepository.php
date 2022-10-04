@@ -27,7 +27,7 @@ use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 
 abstract class KeyRepository {
 
@@ -36,9 +36,9 @@ abstract class KeyRepository {
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger $logger
+        , ILogger          $logger
     ) {
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
@@ -90,12 +90,17 @@ abstract class KeyRepository {
         return true;
     }
 
+    /**
+     * @param IKey $key
+     * @return bool
+     * @throws Exception
+     */
     protected function _remove(IKey $key): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return 0 !== $queryBuilder->delete('`key`')
                 ->where('id = ?')
                 ->setParameter(0, $key->getId())
-                ->execute();
+                ->executeStatement();
     }
 
 }

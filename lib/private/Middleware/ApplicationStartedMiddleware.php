@@ -23,9 +23,9 @@ namespace Keestash\Middleware;
 
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
