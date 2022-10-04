@@ -24,8 +24,8 @@ namespace KSA\Register\Factory\Api;
 use doganoo\DIP\Object\String\StringService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Api\User\Add;
-use KSP\App\ILoader;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
@@ -34,7 +34,7 @@ class AddFactory {
     public function __invoke(ContainerInterface $container): Add {
         return new Add(
             $container->get(UserService::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
             , $container->get(ILogger::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(StringService::class)

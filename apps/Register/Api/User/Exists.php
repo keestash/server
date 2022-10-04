@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KSA\Register\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

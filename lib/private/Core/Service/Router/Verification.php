@@ -21,7 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Router;
 
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\Token\TokenNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -52,9 +53,13 @@ class Verification {
             if (null === $tokenString) return null;
 
             $this->userRepository->getUserByHash($userHash);
-            $token = $this->tokenRepository->getByHash((string) $tokenString);
 
-            if (null === $token) return null;
+            try {
+                $token = $this->tokenRepository->getByValue((string) $tokenString);
+            } catch (TokenNotFoundException $exception) {
+                return null;
+            }
+
             if ($token->getValue() !== $tokenString) return null;
             if (true === $token->expired()) return null;
 

@@ -42,8 +42,8 @@ class DataManager implements IDataManager {
     private Config  $config;
 
     public function __construct(
-        string $appId
-        , Config $config
+        string    $appId
+        , Config  $config
         , ?string $context = null
     ) {
         $this->appId   = $appId;
@@ -54,7 +54,7 @@ class DataManager implements IDataManager {
     }
 
     private function buildPath(): void {
-        $path = (string) $this->config->get(Keestash\ConfigProvider::DATA_PATH) . "/" . $this->appId;
+        $path = $this->config->get(Keestash\ConfigProvider::DATA_PATH) . "/" . $this->appId;
 
         if (null !== $this->context) {
             $path = $path . "/" . $this->context;

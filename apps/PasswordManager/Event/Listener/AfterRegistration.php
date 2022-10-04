@@ -29,10 +29,10 @@ use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Exception\DefaultPropertiesNotSetException;
 use KSA\PasswordManager\Exception\KeyNotCreatedException;
 use KSA\PasswordManager\Exception\KeyNotStoredException;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
+use KSP\Core\Service\Event\Listener\IListener;
 
 /**
  * Class AfterRegistration

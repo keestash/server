@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Command\Migration;
 
 use Keestash\Command\KeestashCommand;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\Service\Phinx\IMigrator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,7 +68,7 @@ class MigrateApps extends KeestashCommand {
                 'given mode is ' . $mode . '. You need to pass either app or instance as an argument'
                 , $output
             );
-            return KeestashCommand::RETURN_CODE_INVALID_ARGUMENT;
+            return IKeestashCommand::RETURN_CODE_INVALID_ARGUMENT;
         }
         if ($mode === MigrateApps::MODE_INSTANCE) {
             $ran = $this->migrator->runCore();
@@ -82,7 +83,7 @@ class MigrateApps extends KeestashCommand {
                 'migration did not ran. Please check the error logs for further information'
                 , $output
             );
-            return KeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
         $this->writeInfo(
@@ -90,7 +91,7 @@ class MigrateApps extends KeestashCommand {
             , $output
         );
 
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

@@ -26,7 +26,7 @@ use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,12 +36,12 @@ class Remove implements RequestHandlerInterface {
 
     private NodeRepository             $nodeRepository;
     private OrganizationNodeRepository $organizationNodeRepository;
-    private IEventManager              $eventManager;
+    private IEventService              $eventManager;
 
     public function __construct(
         NodeRepository               $nodeRepository
         , OrganizationNodeRepository $organizationNodeRepository
-        , IEventManager              $eventManager
+        , IEventService              $eventManager
     ) {
         $this->nodeRepository             = $nodeRepository;
         $this->organizationNodeRepository = $organizationNodeRepository;

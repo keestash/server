@@ -22,8 +22,11 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Exception\UserNotCreatedException;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserException;
+use Keestash\Exception\User\UserNotCreatedException;
+use Keestash\Exception\User\UserNotDeletedException;
+use Keestash\Exception\User\UserNotFoundException;
+use Keestash\Exception\User\UserNotUpdatedException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
@@ -65,6 +68,12 @@ interface IUserRepository extends IRepository {
      */
     public function getUserById(string $id): IUser;
 
+    /**
+     * Returns a list of users, registered for the app
+     *
+     * @return ArrayList
+     * @throws UserException
+     */
     public function getAll(): ArrayList;
 
     /**
@@ -74,10 +83,30 @@ interface IUserRepository extends IRepository {
      */
     public function insert(IUser $user): IUser;
 
+    /**
+     * @param IUser $user
+     * @return IUser
+     * @throws UserNotUpdatedException
+     *
+     * TODO update roles and permissions
+     */
     public function update(IUser $user): IUser;
 
+    /**
+     * Removes an instance of IUser
+     *
+     * @param IUser $user
+     *
+     * @return IUser
+     * @throws UserNotDeletedException
+     */
     public function remove(IUser $user): IUser;
 
+    /**
+     * @param string $name
+     * @return ArrayList
+     * @throws UserException
+     */
     public function searchUsers(string $name): ArrayList;
 
 }

@@ -24,8 +24,8 @@ namespace KST\Service\Factory\Service\File\Upload;
 use Keestash\Core\DTO\File\Validation\Result;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\File\Upload\IFileService;
+use KSP\Core\Service\Logger\ILogger;
 use Mockery;
 use Psr\Container\ContainerInterface;
 

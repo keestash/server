@@ -23,14 +23,16 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\State\UserStateException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,20 +42,22 @@ class UserRemove implements RequestHandlerInterface {
     private IUserRepository      $userRepository;
     private IUserStateRepository $userStateRepository;
     private IL10N                $translator;
-    private IEventManager        $eventManager;
+    private IEventService        $eventManager;
+    private ILogger              $logger;
 
     public function __construct(
         IL10N                  $l10n
         , IUserRepository      $userRepository
         , IUserStateRepository $userStateRepository
-        , IEventManager        $eventManager
+        , IEventService        $eventManager
+        , ILogger              $logger
     ) {
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;
         $this->translator          = $l10n;
         $this->eventManager        = $eventManager;
+        $this->logger              = $logger;
     }
-
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
@@ -84,18 +88,23 @@ class UserRemove implements RequestHandlerInterface {
             );
         }
 
-        $deleted = $this->userStateRepository->delete($user);
-
-        $this->eventManager
-            ->execute(
-                new UserStateDeleteEvent(
-                    IUserState::USER_STATE_DELETE
-                    , $user
-                    , $deleted
-                )
+        try {
+            $this->userStateRepository->delete($user);
+            return new JsonResponse(
+                [
+                    "message" => $this->translator->translate("user remove")
+                ]
+                , IResponse::OK
             );
-
-        if (false === $deleted) {
+        } catch (UserStateException $exception) {
+            $this->logger->error('error deleting user', ['exception' => $exception]);
+            $this->eventManager
+                ->execute(
+                    new UserStateDeleteEvent(
+                        IUserState::USER_STATE_DELETE
+                        , $user
+                    )
+                );
             return new JsonResponse(
                 [
                     "message" => $this->translator->translate("could not delete user")
@@ -104,12 +113,6 @@ class UserRemove implements RequestHandlerInterface {
             );
         }
 
-        return new JsonResponse(
-            [
-                "message" => $this->translator->translate("user remove")
-            ]
-            , IResponse::OK
-        );
     }
 
 }

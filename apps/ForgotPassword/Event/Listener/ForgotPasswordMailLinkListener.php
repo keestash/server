@@ -24,11 +24,11 @@ namespace KSA\ForgotPassword\Event\Listener;
 use Keestash\Legacy\Legacy;
 use KSA\ForgotPassword\Event\ForgotPasswordEvent;
 use KSA\ForgotPassword\Exception\ForgotPasswordException;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\HTTP\IHTTPService;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Ramsey\Uuid\Uuid;
 

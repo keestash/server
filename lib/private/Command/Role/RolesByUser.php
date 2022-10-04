@@ -24,7 +24,7 @@ namespace Keestash\Command\Role;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\SimpleRBAC\Entity\RoleInterface;
 use Keestash\Command\KeestashCommand;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;

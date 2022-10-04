@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Api\User;
 
 use KSA\Settings\Api\User\Get;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

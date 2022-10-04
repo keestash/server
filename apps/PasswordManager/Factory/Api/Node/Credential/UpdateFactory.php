@@ -24,10 +24,9 @@ namespace KSA\PasswordManager\Factory\Api\Node\Credential;
 use doganoo\DI\Object\String\IStringService;
 use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class UpdateFactory {

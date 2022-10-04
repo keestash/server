@@ -25,19 +25,24 @@ use Exception;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
-use Keestash\Exception\UserNotCreatedException;
-use Keestash\Exception\UserNotDeletedException;
-use Keestash\Exception\UserNotFoundException;
-use Keestash\Exception\UserNotLockedException;
+use Keestash\Exception\File\FileNotCreatedException;
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\User\State\UserStateException;
+use Keestash\Exception\User\State\UserStateNotInsertedException;
+use Keestash\Exception\User\State\UserStateNotRemovedException;
+use Keestash\Exception\User\UserException;
+use Keestash\Exception\User\UserNotCreatedException;
+use Keestash\Exception\User\UserNotDeletedException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 class UserRepositoryService implements IUserRepositoryService {
@@ -49,7 +54,7 @@ class UserRepositoryService implements IUserRepositoryService {
     private IUserStateRepository $userStateRepository;
     private FileService          $fileService;
     private ILogger              $logger;
-    private IEventManager        $eventManager;
+    private IEventService        $eventManager;
 
     public function __construct(
         IApiLogRepository      $apiLogRepository
@@ -59,7 +64,7 @@ class UserRepositoryService implements IUserRepositoryService {
         , IUserStateRepository $userStateRepository
         , FileService          $fileService
         , ILogger              $logger
-        , IEventManager        $eventManager
+        , IEventService        $eventManager
     ) {
         $this->apiLogRepository    = $apiLogRepository;
         $this->fileRepository      = $fileRepository;
@@ -71,31 +76,29 @@ class UserRepositoryService implements IUserRepositoryService {
         $this->eventManager        = $eventManager;
     }
 
+    /**
+     * @param IUser $user
+     * @return array
+     * @throws UserException
+     */
     public function removeUser(IUser $user): array {
-
-        $logsRemoved  = $this->apiLogRepository->removeForUser($user);
-        $filesRemoved = $this->fileRepository->removeForUser($user);
-        $keysRemoved  = $this->keyRepository->remove($user);
-        $userRemoved  = false;
-
         try {
+            $this->apiLogRepository->removeForUser($user);
+            $this->fileRepository->removeForUser($user);
+            $this->keyRepository->remove($user);
+            $this->userStateRepository->removeAll($user);
             $this->userRepository->remove($user);
-            $userRemoved = true;
-        } catch (UserNotDeletedException $exception) {
+        } catch (UserNotDeletedException|UserStateNotRemovedException|FileNotDeletedException $exception) {
             $this->logger->error('error while deleting', ['exception' => $exception]);
-            $userRemoved = false;
+            throw new UserException();
         }
 
         return [
-            "logs_removed"    => $logsRemoved
-            , "files_removed" => $filesRemoved
-            , "keys_removed"  => $keysRemoved
+            "logs_removed"    => true
+            , "files_removed" => true
+            , "keys_removed"  => true
             , "user_removed"  => $user
-            , "success"       =>
-                true === $logsRemoved
-                && true === $filesRemoved
-                && true === $keysRemoved
-                && true === $userRemoved
+            , "success"       => true
         ];
     }
 
@@ -116,28 +119,21 @@ class UserRepositoryService implements IUserRepositoryService {
      * @param IUser      $user
      * @param IFile|null $file
      * @return IUser
-     * @throws UserNotDeletedException
-     * @throws UserNotLockedException
      * @throws UserNotCreatedException
+     * @throws FileNotCreatedException
+     * @throws UserStateException
+     * @throws UserStateNotInsertedException
      */
     public function createUser(IUser $user, ?IFile $file = null): IUser {
         $user = $this->userRepository->insert($user);
         $this->eventManager->execute(new UserCreatedEvent($user));
 
-        if (false === $user->isLocked()) return $user;
-
-        $locked = $this->userStateRepository->lock($user);
-
-        if (false === $locked) {
-            throw new UserNotLockedException();
+        if (true === $user->isLocked()) {
+            $this->userStateRepository->lock($user);
         }
 
-        if (false === $user->isDeleted()) return $user;
-
-        $deleted = $this->userStateRepository->delete($user);
-
-        if (false === $deleted) {
-            throw new UserNotDeletedException();
+        if (true === $user->isDeleted()) {
+            $this->userStateRepository->delete($user);
         }
 
         if (null === $file) return $user;

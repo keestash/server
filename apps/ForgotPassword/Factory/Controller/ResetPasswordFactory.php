@@ -21,11 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Factory\Controller;
 
-use Keestash\Core\Service\HTTP\HTTPService;
 use KSA\ForgotPassword\Controller\ResetPassword;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 

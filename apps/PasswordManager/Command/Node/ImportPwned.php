@@ -37,7 +37,8 @@ use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
+use KSP\Command\IKeestashCommand;
+use KSP\Core\Service\Logger\ILogger;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -91,7 +92,7 @@ class ImportPwned extends KeestashCommand {
         } else {
             throw new PasswordManagerException();
         }
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
     private function handleBreaches(OutputInterface $output): void {

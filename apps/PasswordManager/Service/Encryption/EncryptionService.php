@@ -26,8 +26,8 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\AESService;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Logger\ILogger;
 
 /**
  * Wrapper class for the core encryption service.

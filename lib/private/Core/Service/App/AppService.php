@@ -21,9 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\App;
 
-use Keestash\App\App;
+use DateTimeImmutable;
+use doganoo\Backgrounder\BackgroundJob\JobList;
 use Keestash\ConfigProvider;
-use KSP\App\IApp;
+use Keestash\Core\DTO\App\App;
+use KSP\Core\DTO\App\IApp;
 use KSP\Core\Service\App\IAppService;
 
 class AppService implements IAppService {
@@ -36,6 +38,18 @@ class AppService implements IAppService {
         $app->setVersion((int) $data[ConfigProvider::APP_VERSION]);
         $app->setBaseRoute((string) $data[ConfigProvider::APP_BASE_ROUTE]);
         return $app;
+    }
+
+    public function toConfigApp(IApp $app): \KSP\Core\DTO\App\Config\IApp {
+        $configApp = new \Keestash\Core\DTO\App\Config\App();
+        $configApp->setId($app->getId());
+        $configApp->setEnabled(true);
+        $configApp->setCreateTs(new DateTimeImmutable());
+        $configApp->setVersion($app->getVersion());
+        $configApp->setBackgroundJobs(
+            new JobList() // TODO implement me
+        );
+        return $configApp;
     }
 
 }

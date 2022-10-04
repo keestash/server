@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Factory\Api\Share;
 
 use KSA\PasswordManager\Api\Share\Remove;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class RemoveFactory {

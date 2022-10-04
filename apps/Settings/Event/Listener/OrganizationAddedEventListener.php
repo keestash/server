@@ -23,9 +23,9 @@ namespace KSA\Settings\Event\Listener;
 
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Exception\SettingsException;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Encryption\Key\IKeyService;
+use KSP\Core\Service\Event\Listener\IListener;
 
 class OrganizationAddedEventListener implements IListener {
 

@@ -22,6 +22,9 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash\Exception\User\State\UserStateException;
+use Keestash\Exception\User\State\UserStateNotInsertedException;
+use Keestash\Exception\User\State\UserStateNotRemovedException;
 use KSP\Core\DTO\User\IUser;
 
 /**
@@ -35,40 +38,81 @@ use KSP\Core\DTO\User\IUser;
  */
 interface IUserStateRepository {
 
-    // for locking users
-    public function lock(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws UserStateException
+     * @throws UserStateNotInsertedException
+     */
+    public function lock(IUser $user): void;
 
-    public function unlock(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws UserStateException
+     * @throws UserStateNotRemovedException
+     */
+    public function unlock(IUser $user): void;
 
-    public function isLocked(IUser $user): bool;
 
+    /**
+     * @return HashTable
+     * @throws UserStateException
+     */
     public function getLockedUsers(): HashTable;
 
-    // for marking users as deleted in the app
-    public function delete(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws UserStateException
+     * @throws UserStateNotInsertedException
+     * TODO check whether already exists
+     */
+    public function delete(IUser $user): void;
 
-    public function revertDelete(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws UserStateException
+     * @throws UserStateNotRemovedException
+     */
+    public function revertDelete(IUser $user): void;
 
-    public function isDeleted(IUser $user): bool;
-
+    /**
+     * @return HashTable
+     * @throws UserStateException
+     */
     public function getDeletedUsers(): HashTable;
 
-    // for password change requests
-    public function requestPasswordReset(IUser $user, string $hash): bool;
+    /**
+     * @param IUser  $user
+     * @param string $hash
+     * @return void
+     * @throws UserStateException
+     * @throws UserStateNotInsertedException
+     */
+    public function requestPasswordReset(IUser $user, string $hash): void;
 
-    public function revertPasswordChangeRequest(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws UserStateException
+     * @throws UserStateNotRemovedException
+     */
+    public function revertPasswordChangeRequest(IUser $user): void;
 
-    public function hasPasswordResetRequested(IUser $user): bool;
-
+    /**
+     * @return HashTable
+     * @throws UserStateException
+     */
     public function getUsersWithPasswordResetRequest(): HashTable;
 
-    // public
-    public function getAll(): HashTable;
-
-    // for removing from the system
-    public function remove(IUser $user, string $state): bool;
-
-    public function removeAll(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws UserStateNotRemovedException
+     */
+    public function removeAll(IUser $user): void;
 
 
 }

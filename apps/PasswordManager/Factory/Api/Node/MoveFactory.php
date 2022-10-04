@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class MoveFactory {

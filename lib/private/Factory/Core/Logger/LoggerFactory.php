@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Logger;
 
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class LoggerFactory {

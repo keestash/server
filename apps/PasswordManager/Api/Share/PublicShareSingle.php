@@ -30,8 +30,8 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
-use KSP\Core\Manager\EventManager\IEventManager;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -41,15 +41,15 @@ class PublicShareSingle implements RequestHandlerInterface {
     private PublicShareRepository $shareRepository;
     private NodeRepository        $nodeRepository;
     private CredentialService     $credentialService;
-    private IL10N                 $translator;
-    private IEventManager         $eventManager;
+    private IL10N         $translator;
+    private IEventService $eventManager;
 
     public function __construct(
         IL10N                   $l10n
         , PublicShareRepository $shareRepository
         , NodeRepository        $nodeRepository
         , CredentialService     $credentialService
-        , IEventManager         $eventManager
+        , IEventService         $eventManager
     ) {
         $this->translator        = $l10n;
         $this->shareRepository   = $shareRepository;

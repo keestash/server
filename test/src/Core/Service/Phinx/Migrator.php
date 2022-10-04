@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace KST\Service\Core\Service\Phinx;
 
 use Keestash\ConfigProvider;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
 
 class Migrator extends \Keestash\Core\Service\Phinx\Migrator {

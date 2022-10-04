@@ -25,6 +25,7 @@ use DateTime;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Manager\DataManager\DataManager;
+use Keestash\Exception\File\FileNotCreatedException;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -36,10 +37,10 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -181,19 +182,19 @@ class Add implements RequestHandlerInterface {
             );
             $nodeFile->setType(NodeFile::FILE_TYPE_ATTACHMENT);
 
-            $id = $this->fileRepository->add($nodeFile->getFile());
-
-            if (null === $id) {
+            try {
+                $file = $this->fileRepository->add($nodeFile->getFile());
+            } catch (FileNotCreatedException $exception) {
+                $this->logger->error('error with file creation', ['exception' => $exception, 'name' => $coreFile->getName()]);
                 $this->removeFile(
                     Add::ERROR_NOT_INSERTED_IN_DB
                     , $coreFile
                 );
-                $this->logger->error("could not insert {$coreFile->getName()}");
                 $errorFiles[] = $file;
                 continue;
             }
 
-            $nodeFile->getFile()->setId($id);
+            $nodeFile->getFile()->setId($file->getId());
 
             $connected = $this->nodeFileRepository->connectFileToNode($nodeFile);
 

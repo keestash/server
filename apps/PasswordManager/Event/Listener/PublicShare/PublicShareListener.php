@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener\PublicShare;
 
 use KSA\PasswordManager\Event\PublicShare\PublicShareEvent;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
+use KSP\Core\Service\Event\Listener\IListener;
 
 class PublicShareListener implements IListener {
 

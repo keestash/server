@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Controller\Common;
 
 use KSA\GeneralApi\Exception\GeneralApiException;
-use KSP\App\ILoader;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Mezzio\Router\RouterInterface;
@@ -33,12 +33,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 class DefaultRouteController implements RequestHandlerInterface {
 
     private IRouterService  $routerService;
-    private ILoader         $loader;
+    private ILoaderService  $loader;
     private RouterInterface $router;
 
     public function __construct(
-        IRouterService $routerService
-        , ILoader $loader
+        IRouterService    $routerService
+        , ILoaderService  $loader
         , RouterInterface $router
     ) {
         $this->routerService = $routerService;

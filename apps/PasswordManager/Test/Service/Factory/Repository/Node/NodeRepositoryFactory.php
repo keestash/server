@@ -26,10 +26,10 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\Logger\ILogger;
 use Mockery;
 use Psr\Container\ContainerInterface;
 

@@ -29,8 +29,8 @@ use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 class OrganizationKeyRepository extends KeyRepository implements IOrganizationKeyRepository {
 
@@ -66,7 +66,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             ->setParameter(1, $key->getId())
             ->setParameter(2, $this->dateTimeService->toYMDHIS($key->getCreateTs()));
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
 
         return true === is_numeric($this->backend->getConnection()->lastInsertId());
     }
@@ -121,7 +121,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         $queryBuilder->delete('organization_key')
             ->where('key_id = ?')
             ->setParameter(0, $key->getId())
-            ->execute();
+            ->executeStatement();
         return $this->_remove($key);
     }
 

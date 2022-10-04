@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Manager\EventManager;
 
-use Keestash\Core\Manager\EventManager\EventManager;
-use KSP\Core\Manager\EventManager\IEventManager;
+use Keestash\Core\Service\Event\EventService;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Event\IEventService;
 use Psr\Container\ContainerInterface;
 
 class EventManagerFactory {
 
-    public function __invoke(ContainerInterface $container): IEventManager {
-        return new EventManager(
+    public function __invoke(ContainerInterface $container): IEventService {
+        return new EventService(
             $container->get(IQueueRepository::class)
         );
     }

@@ -21,20 +21,41 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Token;
 
+use Keestash\Exception\Token\TokenNotCreatedException;
+use Keestash\Exception\Token\TokenNotDeletedException;
+use Keestash\Exception\Token\TokenNotFoundException;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface ITokenRepository extends IRepository {
 
-    public function get(int $id): ?IToken;
+    /**
+     * @param IToken $token
+     * @return IToken
+     * @throws TokenNotCreatedException
+     */
+    public function add(IToken $token): IToken;
 
-    public function getByHash(string $hash): ?IToken;
+    /**
+     * @param string $hash
+     * @return IToken
+     * @throws TokenNotFoundException
+     */
+    public function getByValue(string $hash): IToken;
 
-    public function add(IToken $token): ?int;
+    /**
+     * @param IToken $token
+     * @return IToken
+     * @throws TokenNotDeletedException
+     */
+    public function remove(IToken $token): IToken;
 
-    public function remove(IToken $token): bool;
-
-    public function removeForUser(IUser $user): bool;
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws TokenNotDeletedException
+     */
+    public function removeForUser(IUser $user): void;
 
 }

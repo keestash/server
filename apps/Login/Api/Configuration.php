@@ -26,7 +26,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Legacy\Legacy;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,15 +35,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Configuration implements RequestHandlerInterface {
 
     private Legacy       $legacy;
-    private IHTTPService $httpService;
-    private ILoader      $loader;
-    private InstanceDB   $instanceDB;
+    private IHTTPService   $httpService;
+    private ILoaderService $loader;
+    private InstanceDB     $instanceDB;
 
     public function __construct(
-        Legacy         $legacy
-        , IHTTPService $httpService
-        , ILoader      $loader
-        , InstanceDB   $instanceDB
+        Legacy           $legacy
+        , IHTTPService   $httpService
+        , ILoaderService $loader
+        , InstanceDB     $instanceDB
     ) {
         $this->legacy      = $legacy;
         $this->httpService = $httpService;

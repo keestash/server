@@ -21,10 +21,10 @@
 namespace KSA\Install\Factory\Api;
 
 use Interop\Container\ContainerInterface;
-use Keestash\App\Config\Diff;
+use Keestash\Core\Service\App\Diff;
 use KSA\Install\Api\InstallConfiguration;
-use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\ILoaderService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class InstallConfigurationFactory implements FactoryInterface {
@@ -35,7 +35,7 @@ class InstallConfigurationFactory implements FactoryInterface {
         , ?array           $options = null
     ): InstallConfiguration {
         return new InstallConfiguration(
-            $container->get(ILoader::class)
+            $container->get(ILoaderService::class)
             , $container->get(IAppRepository::class)
             , $container->get(Diff::class)
         );

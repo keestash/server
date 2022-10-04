@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KSA\Settings\Event\Listener;
 
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
+use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\Logger\ILogger;
 
 class PostStateChange implements IListener {
 
@@ -50,18 +50,12 @@ class PostStateChange implements IListener {
      */
     public function execute(IEvent $event): void {
 
-        if (false === $event->isDeleted()) {
-            $this->logger->info("user is not removed. Not making any actions");
-            return;
-        }
-
-        $success = false;
         switch ($event->getStateType()) {
             case IUserState::USER_STATE_LOCK:
-                $success = $this->handleLock();
+                $this->handleLock();
                 break;
             case IUserState::USER_STATE_DELETE:
-                $success = $this->handleDelete();
+                $this->handleDelete();
                 break;
             default:
                 $this->logger->warning("do not know what to do with {$event->getStateType()}");

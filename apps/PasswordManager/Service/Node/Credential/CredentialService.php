@@ -37,23 +37,23 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
+use KSP\Core\Service\Event\IEventService;
 
 class CredentialService {
 
     private EdgeService           $edgeService;
     private NodeRepository        $nodeRepository;
     private NodeEncryptionService $nodeEncryptionService;
-    private IPasswordService      $passwordService;
-    private IEventManager         $eventManager;
+    private IPasswordService $passwordService;
+    private IEventService    $eventManager;
 
     public function __construct(
         EdgeService             $edgeService
         , NodeRepository        $nodeRepository
         , NodeEncryptionService $nodeEncryptionService
         , IPasswordService      $passwordService
-        , IEventManager         $eventManager
+        , IEventService         $eventManager
     ) {
         $this->edgeService           = $edgeService;
         $this->nodeRepository        = $nodeRepository;

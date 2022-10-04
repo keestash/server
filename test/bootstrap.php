@@ -21,9 +21,9 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
-use KSP\Core\Manager\EventManager\IEventManager;
+use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Service\UserService;
 use KST\Service\ThirdParty\Phinx\Adapter\SQLiteAdapter;
@@ -54,8 +54,8 @@ $migrator = $container->get(IMigrator::class);
 $migrator->runCore();
 $migrator->runApps();
 
-/** @var IEventManager $eventManager */
-$eventManager = $container->get(IEventManager::class);
+/** @var IEventService $eventManager */
+$eventManager = $container->get(IEventService::class);
 $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
 $eventManager->execute(new ApplicationStartedEvent(new DateTime()));
 

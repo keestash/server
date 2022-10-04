@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Factory\Controller\PasswordManager;
 
 use KSA\PasswordManager\Controller\PasswordManager\Controller;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 

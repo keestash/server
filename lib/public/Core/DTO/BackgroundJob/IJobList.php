@@ -23,4 +23,6 @@ namespace KSP\Core\DTO\BackgroundJob;
 
 interface IJobList {
 
+    public function length(): int;
+
 }

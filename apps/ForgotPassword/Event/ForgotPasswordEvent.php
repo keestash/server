@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Event;
 
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSP\Core\DTO\User\IUser;
 
 class ForgotPasswordEvent extends Event {

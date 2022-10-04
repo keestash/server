@@ -21,26 +21,17 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\User\Event;
 
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSP\Core\DTO\User\IUser;
 
 class UserStateLockEvent extends Event {
 
     private string $stateType;
     private IUser  $user;
-    private bool   $locked;
 
-    public function __construct(string $stateType, IUser $user, bool $locked) {
+    public function __construct(string $stateType, IUser $user) {
         $this->stateType = $stateType;
         $this->user      = $user;
-        $this->locked    = $locked;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLocked(): bool {
-        return $this->locked;
     }
 
     /**
@@ -61,7 +52,6 @@ class UserStateLockEvent extends Event {
         return [
             'stateType' => $this->getStateType()
             , 'user'    => $this->getUser()
-            , 'locked'  => $this->isLocked()
         ];
     }
 

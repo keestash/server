@@ -23,11 +23,11 @@ namespace KSA\Settings\Factory\Api\User;
 
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserEdit;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KSP\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class UserEditFactory {

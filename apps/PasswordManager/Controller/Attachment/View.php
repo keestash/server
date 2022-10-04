@@ -22,14 +22,14 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Controller\Attachment;
 
 
-use Keestash\Exception\FileNotFoundException;
+use Keestash\Exception\File\FileNotFoundException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Controller\AppController;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

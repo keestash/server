@@ -21,39 +21,36 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Job;
 
-use doganoo\Backgrounder\BackgroundJob\Job;
-use doganoo\Backgrounder\BackgroundJob\JobList;
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Exception\KeestashException;
+use Keestash\Core\DTO\BackgroundJob\Job;
+use Keestash\Core\DTO\BackgroundJob\JobList;
+use Keestash\Exception\Job\JobNotCreatedException;
+use Keestash\Exception\Job\JobNotDeletedException;
+use Keestash\Exception\Job\JobNotUpdatedException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\BackgroundJob\IJob;
+use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\Job\IJobRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 class JobRepository implements IJobRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
+    private ILogger          $logger;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
+        , ILogger          $logger
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
+        $this->logger          = $logger;
     }
 
-    public function updateJobs(JobList $jobList): bool {
-        $updated = false;
-
-        /** @var Job $job */
-        foreach ($jobList as $job) {
-            $updated = $this->updateJob($job);
-        }
-
-        return $updated;
-    }
-
-    public function updateJob(Job $job): bool {
+    private function updateJob(IJob $job): IJob {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $lastRun = null === $job->getLastRun()
@@ -76,34 +73,31 @@ class JobRepository implements IJobRepository {
             ->setParameter(2, $job->getType())
             ->setParameter(3, $lastRun)
             ->setParameter(4, $info);
-        $rowCount     = $queryBuilder->execute();
+        $rowCount     = $queryBuilder->executeStatement();
 
         if (0 === $rowCount) {
-            throw new KeestashException('no rows updated');
+            throw new JobNotUpdatedException('no rows updated');
         }
 
-        return true;
+        return $job;
     }
 
-    public function replaceJobs(JobList $jobList): bool {
-        $inserted = true;
-
+    public function replaceJobs(IJobList $jobList): IJobList {
         /** @var Job $job */
         foreach ($jobList as $job) {
-            $inserted = $this->replaceJob($job);
+            $this->replaceJob($job);
         }
-
-        return $inserted;
+        return $jobList;
     }
 
-    public function replaceJob(Job $job): bool {
+    private function replaceJob(IJob $job): IJob {
         if (true === $this->hasJob($job)) {
             return $this->updateJob($job);
         }
         return $this->insert($job);
     }
 
-    private function hasJob(Job $job): bool {
+    private function hasJob(IJob $job): bool {
 
         /** @var IJob $listJob */
         foreach ($this->getJobList() as $listJob) {
@@ -114,7 +108,7 @@ class JobRepository implements IJobRepository {
 
     }
 
-    public function getJobList(): JobList {
+    public function getJobList(): IJobList {
         $list = new JobList();
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -131,8 +125,7 @@ class JobRepository implements IJobRepository {
         )
             ->from('background_job', 'b');
         $result         = $queryBuilder->executeQuery();
-        $backgroundJobs = $result->fetchAllAssociative();
-
+        $backgroundJobs = $result->fetchAllNumeric();
         foreach ($backgroundJobs as $row) {
 
             $id       = (int) $row[0];
@@ -160,7 +153,7 @@ class JobRepository implements IJobRepository {
         return $list;
     }
 
-    private function insert(Job $job): bool {
+    private function insert(IJob $job): IJob {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
 
         $lastRun = $job->getLastRun();
@@ -190,14 +183,37 @@ class JobRepository implements IJobRepository {
             ->setParameter(3, $info)
             ->setParameter(4, $this->dateTimeService->toYMDHIS($job->getCreateTs()))
             ->setParameter(5, $job->getInterval())
-            ->execute();
+            ->executeStatement();
 
         $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
-        if (0 === $lastInsertId) return false;
+        if (0 === $lastInsertId) {
+            throw new JobNotCreatedException();
+        }
 
-        return true;
+        $job->setId($lastInsertId);
+        return $job;
 
     }
 
+    public function removeAll(): void {
+        /** @var IJob $job */
+        foreach ($this->getJobList() as $job) {
+            $this->remove($job);
+        }
+    }
+
+    private function remove(IJob $job): IJob {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('`background_job`')
+                ->where('id = ?')
+                ->setParameter(0, $job->getId())
+                ->executeStatement();
+        } catch (Exception $exception) {
+            $this->logger->error('error while deleting', ['exception' => $exception]);
+            throw new JobNotDeletedException();
+        }
+        return $job;
+    }
 
 }

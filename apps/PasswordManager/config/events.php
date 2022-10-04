@@ -20,7 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
+use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;

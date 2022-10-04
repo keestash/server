@@ -24,8 +24,8 @@ namespace KSA\Settings\Factory\Api\Organization;
 use KSA\Settings\Api\Organization\User;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Event\IEventService;
 use Psr\Container\ContainerInterface;
 
 class UserFactory {
@@ -35,7 +35,7 @@ class UserFactory {
             $container->get(IOrganizationRepository::class)
             , $container->get(IOrganizationUserRepository::class)
             , $container->get(IUserRepository::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

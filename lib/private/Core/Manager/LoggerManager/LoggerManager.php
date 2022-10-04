@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace Keestash\Core\Manager\LoggerManager;
 
 use Keestash;
-use Keestash\Core\Logger\Logger;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\Logger\Logger;
 use Keestash\Legacy\Legacy;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Logger\ILogger;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Formatter\JsonFormatter;

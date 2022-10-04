@@ -33,8 +33,8 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\Logger\ILogger;
 
 class FileRepository {
 

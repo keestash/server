@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Command\QualityTool;
 
 use Keestash\Command\KeestashCommand;
+use KSP\Command\IKeestashCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -50,7 +51,7 @@ class PHPStan extends KeestashCommand {
         $result = shell_exec($command);
 
         $this->writeComment((string) $result, $output);
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
 
     }
 

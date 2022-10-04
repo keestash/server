@@ -28,7 +28,7 @@ use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

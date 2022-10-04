@@ -23,8 +23,8 @@ namespace Keestash\Core\Service\Router;
 
 use Keestash\ConfigProvider;
 use Keestash\Exception\KeestashException;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\Route;

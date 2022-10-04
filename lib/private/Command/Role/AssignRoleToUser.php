@@ -25,7 +25,7 @@ use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\RBAC\NullRole;
 use Keestash\Exception\KeestashException;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

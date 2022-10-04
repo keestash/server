@@ -26,6 +26,7 @@ use KSA\Register\Test\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Ramsey\Uuid\Uuid;
 
 class AddTest extends TestCase {
 
@@ -50,8 +51,8 @@ class AddTest extends TestCase {
                 [
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
-                    , 'user_name'            => AddTest::class
-                    , 'email'                => AddTest::class . '@keestash.com'
+                    , 'user_name'            => Uuid::uuid4()->toString()
+                    , 'email'                => Uuid::uuid4() . '@keestash.com'
                     , 'password'             => ''
                     , 'phone'                => '0049691234566'
                     , 'terms_and_conditions' => true
@@ -97,7 +98,7 @@ class AddTest extends TestCase {
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
                     , 'user_name'            => AddTest::class
-                    , 'email'                => 'dev@null.com'
+                    , 'email'                => Uuid::uuid4() . '@keestash.com'
                     , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
                     , 'phone'                => '1e9691234566'
                     , 'terms_and_conditions' => true
@@ -129,7 +130,7 @@ class AddTest extends TestCase {
                     'first_name'             => $firstName
                     , 'last_name'            => $lastName
                     , 'user_name'            => $userName
-                    , 'email'                => 'dev1@null.com'
+                    , 'email'                => Uuid::uuid4() . '@keestash.com'
                     , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
                     , 'phone'                => '004930123456'
                     , 'terms_and_conditions' => true

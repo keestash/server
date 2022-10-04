@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Command\Node\Folder;
 
 use DateTime;
 use Keestash\Command\KeestashCommand;
-use Keestash\Exception\UserNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Node;

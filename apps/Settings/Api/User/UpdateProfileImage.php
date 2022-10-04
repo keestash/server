@@ -24,6 +24,7 @@ namespace KSA\Settings\Api\User;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\File\FileService;
+use Keestash\Exception\File\FileNotCreatedException;
 use KSA\Settings\ConfigProvider;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Api\IResponse;
@@ -136,14 +137,14 @@ class UpdateProfileImage implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
-        $id = $this->fileRepository->add($coreFile);
-
-        if (null === $id) {
+        try {
+            $f = $this->fileRepository->add($coreFile);
+        } catch (FileNotCreatedException $exception) {
             $this->removeFile($coreFile);
             return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 
-        $coreFile->setId($id);
+        $coreFile->setId($f->getId());
 
         return new JsonResponse(
             [

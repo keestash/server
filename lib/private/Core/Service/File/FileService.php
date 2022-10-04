@@ -27,7 +27,9 @@ use Keestash\Core\DTO\File\File;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
+use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
 use Laminas\Config\Config;
 
@@ -39,15 +41,18 @@ class FileService implements IFileService {
     public const DEFAULT_PROFILE_PICTURE = "profile-picture";
 
     // TODO include default ?!
-    private RawFileService $rawFileService;
-    private Config         $config;
+    private RawFileService  $rawFileService;
+    private Config          $config;
+    private IFileRepository $fileRepository;
 
     public function __construct(
-        RawFileService $rawFileService
-        , Config       $config
+        RawFileService    $rawFileService
+        , Config          $config
+        , IFileRepository $fileRepository
     ) {
         $this->rawFileService = $rawFileService;
         $this->config         = $config;
+        $this->fileRepository = $fileRepository;
     }
 
     public function getProfileImagePath(?IUser $user): string {
@@ -100,6 +105,13 @@ class FileService implements IFileService {
 
     public function getAvatarName(int $nodeId): string {
         return "node_avatar_$nodeId";
+    }
+
+    public function read(?IUniformResourceIdentifier $uri): ?IFile {
+        if (null === $uri) return null;
+        $path = $uri->getIdentifier();
+        if (false === is_file($path)) return null;
+        return $this->fileRepository->getByUri($uri);
     }
 
 }

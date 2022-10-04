@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event;
 
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\Organization\IOrganization;
 

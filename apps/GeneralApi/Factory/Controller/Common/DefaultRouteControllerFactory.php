@@ -24,7 +24,7 @@ namespace KSA\GeneralApi\Factory\Controller\Common;
 
 
 use KSA\GeneralApi\Controller\Common\DefaultRouteController;
-use KSP\App\ILoader;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Router\IRouterService;
 use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
@@ -34,7 +34,7 @@ class DefaultRouteControllerFactory {
     public function __invoke(ContainerInterface $container): DefaultRouteController {
         return new DefaultRouteController(
             $container->get(IRouterService::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
             , $container->get(RouterInterface::class)
         );
     }

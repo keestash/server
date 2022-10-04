@@ -23,9 +23,9 @@ namespace KSA\PasswordManager\Factory\Service\Node;
 
 use GuzzleHttp\ClientInterface;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

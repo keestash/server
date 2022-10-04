@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\LoggerManager;
 
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 
 /**
  * Class ILoggerManager

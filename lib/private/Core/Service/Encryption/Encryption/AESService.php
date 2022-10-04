@@ -23,8 +23,8 @@ namespace Keestash\Core\Service\Encryption\Encryption;
 
 use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Logger\ILogger;
 
 /**
  * AES Encryption service

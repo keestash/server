@@ -27,7 +27,7 @@ use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

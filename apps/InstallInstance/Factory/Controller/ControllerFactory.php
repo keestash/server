@@ -22,11 +22,8 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Factory\Controller;
 
 use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Legacy\Legacy;
 use KSA\InstallInstance\Controller\Controller;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 

@@ -26,7 +26,7 @@ use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -49,8 +49,8 @@ use Psr\Container\ContainerInterface;
     /** @var Config $config */
     $config = $container->get(Config::class);
 
-    /** @var IEventManager $eventManager */
-    $eventManager = $container->get(IEventManager::class);
+    /** @var IEventService $eventManager */
+    $eventManager = $container->get(IEventService::class);
     $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
 
     $userAmount = 5;

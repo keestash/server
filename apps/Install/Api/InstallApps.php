@@ -23,14 +23,14 @@ namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\App\Config\Diff;
+use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Api\IResponse;
-use KSP\App\ILoader;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\ILoaderService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,9 +40,9 @@ class InstallApps implements RequestHandlerInterface {
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
     private HTTPService      $httpService;
-    private ILogger          $logger;
-    private ILoader          $loader;
-    private IAppRepository   $appRepository;
+    private ILogger        $logger;
+    private ILoaderService $loader;
+    private IAppRepository $appRepository;
     private Diff             $diff;
 
     public function __construct(
@@ -50,7 +50,7 @@ class InstallApps implements RequestHandlerInterface {
         , LockHandler    $lockHandler
         , HTTPService    $httpService
         , ILogger        $logger
-        , ILoader        $loader
+        , ILoaderService $loader
         , IAppRepository $appRepository
         , Diff           $diff
     ) {

@@ -25,8 +25,8 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
+use KSP\Core\Service\Event\IEventService;
 use Psr\Container\ContainerInterface;
 
 class CredentialServiceFactory {
@@ -37,7 +37,7 @@ class CredentialServiceFactory {
             , $container->get(NodeRepository::class)
             , $container->get(NodeEncryptionService::class)
             , $container->get(IPasswordService::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

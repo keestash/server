@@ -24,8 +24,8 @@ namespace KSA\PasswordManager\Event\Listener;
 use KSA\PasswordManager\Event\Node\Credential\CredentialChangedEvent;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
-use KSP\Core\Manager\EventManager\IEvent;
-use KSP\Core\Manager\EventManager\IListener;
+use KSP\Core\DTO\Event\IEvent;
+use KSP\Core\Service\Event\Listener\IListener;
 
 class CredentialChangedListener implements IListener {
 

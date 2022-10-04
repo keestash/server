@@ -21,24 +21,31 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\AppRepository;
 
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash\App\Config\App;
-use KSP\App\Config\IApp;
+use Keestash\Core\DTO\App\Config\App;
+use Keestash\Exception\App\AppNotFoundException;
+use Keestash\Exception\TooManyRowsException;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 class AppRepository implements IAppRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
+    private ILogger          $logger;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
+        , ILogger          $logger
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;
+        $this->logger          = $logger;
     }
 
     public function getAllApps(): HashTable {
@@ -76,39 +83,52 @@ class AppRepository implements IAppRepository {
         return $map;
     }
 
-    public function getApp(string $id): ?IApp {
-        $app          = null;
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->select(
-            [
-                'app_id'
-                , 'enabled'
-                , 'create_ts'
-                , 'version'
-            ]
-        )
-            ->from('app_config')
-            ->where('app_id = ?')
-            ->setParameter(0, $id);
-        $result = $queryBuilder->executeQuery();
-        $users  = $result->fetchAllNumeric();
+    public function getApp(string $id): IApp {
+        try {
+            $app          = null;
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->select(
+                [
+                    'app_id'
+                    , 'enabled'
+                    , 'create_ts'
+                    , 'version'
+                ]
+            )
+                ->from('app_config')
+                ->where('app_id = ?')
+                ->setParameter(0, $id);
+            $result    = $queryBuilder->executeQuery();
+            $users     = $result->fetchAllNumeric();
+            $userCount = count($users);
 
-        foreach ($users as $row) {
+            if (0 === $userCount) {
+                throw new AppNotFoundException();
+            }
 
-            $appId    = $row[0];
-            $enabled  = $row[1];
-            $createTs = $row[2];
-            $version  = $row[3];
+            if ($userCount > 1) {
+                throw new TooManyRowsException();
+            }
 
-            $app = new App();
-            $app->setId($appId);
-            $app->setEnabled($enabled === IApp::ENABLED_TRUE);
-            $app->setVersion((int) $version);
-            $app->setCreateTs($this->dateTimeService->fromFormat($createTs));
+            foreach ($users as $row) {
 
+                $appId    = $row[0];
+                $enabled  = $row[1];
+                $createTs = $row[2];
+                $version  = $row[3];
+
+                $app = new App();
+                $app->setId($appId);
+                $app->setEnabled($enabled === IApp::ENABLED_TRUE);
+                $app->setVersion((int) $version);
+                $app->setCreateTs($this->dateTimeService->fromFormat($createTs));
+
+            }
+            return $app;
+        } catch (Exception|TooManyRowsException $exception) {
+            $this->logger->error('error while getting app', ['exception' => $exception, 'id' => $id]);
+            throw new AppNotFoundException();
         }
-
-        return $app;
     }
 
     public function replace(IApp $app): bool {
@@ -127,7 +147,7 @@ class AppRepository implements IAppRepository {
                         '" . $app->getVersion() . "'
                 );
         ";
-        $this->backend->getConnection()->prepare($sql)->execute();
+        $this->backend->getConnection()->prepare($sql)->executeStatement();
         // There is otherwise an exception thrown.
         // Do not know how to handle this better for now
         return true;

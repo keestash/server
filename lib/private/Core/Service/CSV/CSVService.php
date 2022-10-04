@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\CSV;
 
-use Keestash\Exception\FileNotFoundException;
+use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\Service\CSV\ICSVService;
 use League\Csv\Reader;
 

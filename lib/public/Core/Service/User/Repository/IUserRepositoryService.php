@@ -21,14 +21,20 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\User\Repository;
 
-use Keestash\Exception\UserNotCreatedException;
-use Keestash\Exception\UserNotDeletedException;
-use Keestash\Exception\UserNotLockedException;
+use Keestash\Exception\User\State\UserNotLockedException;
+use Keestash\Exception\User\UserException;
+use Keestash\Exception\User\UserNotCreatedException;
+use Keestash\Exception\User\UserNotDeletedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 
 interface IUserRepositoryService {
 
+    /**
+     * @param IUser $user
+     * @return array
+     * @throws UserException
+     */
     public function removeUser(IUser $user): array;
 
     public function createSystemUser(IUser $user): bool;

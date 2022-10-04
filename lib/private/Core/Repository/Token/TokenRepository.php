@@ -21,30 +21,39 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Token;
 
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash;
 use Keestash\Core\DTO\Token\Token;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\Token\TokenNotCreatedException;
+use Keestash\Exception\Token\TokenNotDeletedException;
+use Keestash\Exception\Token\TokenNotFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Logger\ILogger;
 
 class TokenRepository implements ITokenRepository {
 
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
+    private ILogger          $logger;
 
     public function __construct(
         IBackend           $backend
         , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
+        , ILogger          $logger
     ) {
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
         $this->backend         = $backend;
+        $this->logger          = $logger;
     }
 
     public function get(int $id): ?IToken {
@@ -96,88 +105,132 @@ class TokenRepository implements ITokenRepository {
         return $token;
     }
 
-    public function getByHash(string $hash): ?IToken {
-        $token        = null;
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $result       = $queryBuilder->select(
-            [
-                'id'
-                , 'name'
-                , 'value'
-                , 'user_id'
-                , 'create_ts'
-            ]
-        )
-            ->from('token')
-            ->where('value = ?')
-            ->setParameter(0, $hash)
-            ->executeQuery();
-
-        foreach ($result->fetchAllNumeric() as $row) {
-            $id       = $row[0];
-            $name     = $row[1];
-            $value    = $row[2];
-            $userId   = $row[3];
-            $createTs = $row[4];
-
-            $user = $this->userRepository->getUserById((string) $userId);
-
-            if (null == $user) {
-                throw new KeestashException();
-            }
-
-            $token = new Token();
-            $token->setId((int) $id);
-            $token->setName($name);
-            $token->setValue($value);
-            $token->setUser($user);
-            $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
-        }
-
-        return $token;
-    }
-
-    public function add(IToken $token): ?int {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->insert("`token`")
-            ->values(
+    /**
+     * @param string $hash
+     * @return IToken
+     * @throws TokenNotFoundException
+     */
+    public function getByValue(string $hash): IToken {
+        try {
+            $token        = new Token();
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $result       = $queryBuilder->select(
                 [
-                    "`name`"        => '?'
-                    , "`value`"     => '?'
-                    , "`user_id`"   => '?'
-                    , "`create_ts`" => '?'
+                    'id'
+                    , 'name'
+                    , 'value'
+                    , 'user_id'
+                    , 'create_ts'
                 ]
             )
-            ->setParameter(0, $token->getName())
-            ->setParameter(1, $token->getValue())
-            ->setParameter(2, $token->getUser()->getId())
-            ->setParameter(3, $this->dateTimeService->toYMDHIS($token->getCreateTs()))
-            ->executeStatement();
+                ->from('token')
+                ->where('value = ?')
+                ->setParameter(0, $hash)
+                ->executeQuery();
 
-        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
+            foreach ($result->fetchAllNumeric() as $row) {
+                $id       = $row[0];
+                $name     = $row[1];
+                $value    = $row[2];
+                $userId   = $row[3];
+                $createTs = $row[4];
 
-        if (0 === $lastInsertId) return null;
-        return $lastInsertId;
+                $user = $this->userRepository->getUserById((string) $userId);
+
+                $token->setId((int) $id);
+                $token->setName($name);
+                $token->setValue($value);
+                $token->setUser($user);
+                $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
+            }
+
+            return $token;
+        } catch (Exception $exception) {
+            $this->logger->warning('error retrieving token', ['exception' => $exception]);
+            throw new TokenNotFoundException();
+        } catch (UserNotFoundException $exception) {
+            $this->logger->error('error retrieving user for token', ['exception' => $exception]);
+            throw new TokenNotFoundException();
+        }
     }
 
-    public function remove(IToken $token): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete(
+    /**
+     * @param IToken $token
+     * @return IToken
+     * @throws TokenNotCreatedException
+     */
+    public function add(IToken $token): IToken {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->insert("`token`")
+                ->values(
+                    [
+                        "`name`"        => '?'
+                        , "`value`"     => '?'
+                        , "`user_id`"   => '?'
+                        , "`create_ts`" => '?'
+                    ]
+                )
+                ->setParameter(0, $token->getName())
+                ->setParameter(1, $token->getValue())
+                ->setParameter(2, $token->getUser()->getId())
+                ->setParameter(3, $this->dateTimeService->toYMDHIS($token->getCreateTs()))
+                ->executeStatement();
+
+            $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
+
+            if (0 === $lastInsertId) {
+                throw new TokenNotCreatedException();
+            }
+
+            $token->setId($lastInsertId);
+            return $token;
+        } catch (Exception $exception) {
+            $this->logger->error('error inserting token', ['exception' => $exception]);
+            throw new TokenNotCreatedException();
+        }
+    }
+
+    /**
+     * @param IToken $token
+     * @return IToken
+     * @throws TokenNotDeletedException
+     */
+    public function remove(IToken $token): IToken {
+        try {
+
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete(
                 'token'
             )
                 ->where('id = ?')
                 ->setParameter(0, $token->getId())
-                ->executeStatement() !== 0;
+                ->executeStatement();
+            return $token;
+        } catch (Exception $exception) {
+            $this->logger->error('error removing token', ['exception' => $exception]);
+            throw new TokenNotDeletedException();
+        }
     }
 
-    public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete(
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws TokenNotDeletedException
+     */
+    public function removeForUser(IUser $user): void {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete(
                 'token'
             )
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())
-                ->executeStatement() !== 0;
+                ->executeStatement();
+        } catch (Exception $exception) {
+            $this->logger->error('error removing token', ['exception' => $exception]);
+            throw new TokenNotDeletedException();
+        }
     }
 
 }

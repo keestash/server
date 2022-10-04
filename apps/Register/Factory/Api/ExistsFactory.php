@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace KSA\Register\Factory\Api;
 
 use KSA\Register\Api\User\Exists;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class ExistsFactory {

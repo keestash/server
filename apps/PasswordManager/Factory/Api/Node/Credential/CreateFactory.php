@@ -21,14 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential;
 
-use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\ILogger\ILogger;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class CreateFactory {

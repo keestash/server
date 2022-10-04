@@ -803,16 +803,6 @@ parameters:
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
-			path: ../../lib/private/App/Loader/Loader.php
-
-		-
-			message: "#^Method Keestash\\\\App\\\\Loader\\\\Loader\\:\\:getDefaultApp\\(\\) should return KSP\\\\App\\\\IApp\\|null but returns mixed\\.$#"
-			count: 1
-			path: ../../lib/private/App/Loader/Loader.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
-			count: 1
 			path: ../../lib/private/Command/Keestash/Events.php
 
 		-
@@ -871,24 +861,9 @@ parameters:
 			path: ../../lib/private/Core/Backend/MySQLBackend.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Cache/NullService.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\Cache\\\\RedisService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Cache/RedisService.php
-
-		-
-			message: "#^Parameter \\#1 \\$host of method Redis\\:\\:connect\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Cache/RedisService.php
-
-		-
-			message: "#^Parameter \\#2 \\$port of method Redis\\:\\:connect\\(\\) expects int, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Cache/RedisService.php
+			message: "#^Property Keestash\\\\Core\\\\DTO\\\\App\\\\Config\\\\App\\:\\:\\$jobs \\(KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList\\) does not accept doganoo\\\\Backgrounder\\\\BackgroundJob\\\\JobList\\.$#"
+			count: 2
+			path: ../../lib/private/Core/DTO/App/Config/App.php
 
 		-
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no type specified\\.$#"
@@ -916,12 +891,7 @@ parameters:
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\Manager\\\\ActionBarManager\\\\ActionBarManager\\:\\:get\\(\\) should return KSP\\\\Core\\\\View\\\\ActionBar\\\\IBag\\|null but returns mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/ActionBarManager/ActionBarManager.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\ILogger\\\\ILogger\\:\\:pushHandler\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Logger\\\\ILogger\\:\\:pushHandler\\(\\)\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
@@ -941,27 +911,12 @@ parameters:
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
 		-
-			message: "#^Call to method addPart\\(\\) on an unknown class Keestash\\\\View\\\\Navigation\\\\Navigation\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/NavigationManager/NavigationManager.php
-
-		-
-			message: "#^Instantiated class Keestash\\\\View\\\\Navigation\\\\Navigation not found\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/NavigationManager/NavigationManager.php
-
-		-
-			message: "#^Cannot access an offset on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/SettingManager/SettingManager.php
-
-		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Repository/AppRepository/AppRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$id of method Keestash\\\\App\\\\Config\\\\App\\:\\:setId\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method Keestash\\\\Core\\\\DTO\\\\App\\\\Config\\\\App\\:\\:setId\\(\\) expects string, mixed given\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Repository/AppRepository/AppRepository.php
 
@@ -1036,38 +991,18 @@ parameters:
 			path: ../../lib/private/Core/Repository/Instance/InstanceDB.php
 
 		-
-			message: "#^Offset 0 does not exist on array\\<string, mixed\\>\\.$#"
+			message: "#^Argument of an invalid type KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList supplied for foreach, only iterables are supported\\.$#"
+			count: 3
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJob\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
-			message: "#^Offset 1 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Offset 2 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Offset 3 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Offset 4 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Offset 5 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Offset 6 does not exist on array\\<string, mixed\\>\\.$#"
-			count: 1
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			count: 2
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
@@ -1076,9 +1011,29 @@ parameters:
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setName\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$type of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setType\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Job/JobRepository.php
+
+		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 8
 			path: ../../lib/private/Core/Repository/RBAC/RBACRepository.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Token\\\\IToken\\:\\:setId\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
 		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
@@ -1157,7 +1112,7 @@ parameters:
 
 		-
 			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 3
+			count: 2
 			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
 
 		-
@@ -1176,9 +1131,34 @@ parameters:
 			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$app of static method Keestash\\\\App\\\\AppFactory\\:\\:toConfigApp\\(\\) expects KSP\\\\App\\\\IApp, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$app of method KSP\\\\Core\\\\Service\\\\App\\\\IAppService\\:\\:toConfigApp\\(\\) expects KSP\\\\Core\\\\DTO\\\\App\\\\IApp, mixed given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/App/InstallerService.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/App/LoaderServiceService.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Service\\\\App\\\\LoaderServiceService\\:\\:getDefaultApp\\(\\) should return KSP\\\\Core\\\\DTO\\\\App\\\\IApp\\|null but returns mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/App/LoaderServiceService.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Service\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Cache/NullService.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Service\\\\Cache\\\\RedisService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Cache/RedisService.php
+
+		-
+			message: "#^Parameter \\#2 \\$port of method Redis\\:\\:connect\\(\\) expects int, string given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Cache/RedisService.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"

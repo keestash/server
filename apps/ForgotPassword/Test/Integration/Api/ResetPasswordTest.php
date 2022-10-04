@@ -79,7 +79,6 @@ class ResetPasswordTest extends TestCase {
         $user                = $userRepository->getUserById((string) UserService::TEST_RESET_PASSWORD_USER_ID_7);
         $this->assertInstanceOf(IUser::class, $user);
         $userStateRepository->revertPasswordChangeRequest($user);
-        $userStateRepository->unlock($user);
         $userStateRepository->requestPasswordReset($user, (string) $hash);
 
         /** @var ResetPassword $resetPassword */

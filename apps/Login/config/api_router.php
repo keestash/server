@@ -23,22 +23,30 @@ declare(strict_types=1);
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login;
+use KSA\Login\Api\Logout;
 use KSA\Login\ConfigProvider;
+use KSP\Api\IRoute;
 use KSP\Api\IVerb;
 
 return [
     CoreConfigProvider::ROUTES        => [
         [
-            'path'         => ConfigProvider::LOGIN_SUBMIT
-            , 'middleware' => Login::class
-            , 'method'     => IVerb::POST
-            , 'name'       => Login::class
+            IRoute::PATH         => ConfigProvider::LOGIN_SUBMIT
+            , IRoute::MIDDLEWARE => Login::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Login::class
         ],
         [
-            'path'         => ConfigProvider::APP_CONFIGURATION
-            , 'middleware' => Configuration::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Configuration::class
+            IRoute::PATH         => ConfigProvider::LOGOUT_SUBMIT
+            , IRoute::MIDDLEWARE => Logout::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Logout::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::APP_CONFIGURATION
+            , IRoute::MIDDLEWARE => Configuration::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Configuration::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [

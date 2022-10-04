@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\PublicShare;
 
 use DateTimeInterface;
-use Keestash\Core\Manager\EventManager\Event;
+use Keestash\Core\DTO\Event\Event;
 
 class PublicShareEvent extends Event {
 

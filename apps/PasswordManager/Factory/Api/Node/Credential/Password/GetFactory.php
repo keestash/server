@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Factory\Api\Node\Credential\Password;
 use KSA\PasswordManager\Api\Node\Credential\Password\Get;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class GetFactory {

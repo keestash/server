@@ -24,10 +24,9 @@ namespace KSA\PasswordManager\Factory\Api\Node\Organization;
 use KSA\PasswordManager\Api\Node\Organization\Add;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Repository\IOrganizationRepository;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class AddFactory {
@@ -38,7 +37,7 @@ class AddFactory {
             , $container->get(IOrganizationRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(ILogger::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
         );
     }
 

@@ -23,6 +23,7 @@ namespace Keestash\Factory\Core\Service\File;
 
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
+use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -33,6 +34,7 @@ class FileServiceFactory {
         return new FileService(
             $container->get(RawFileService::class)
             , $container->get(Config::class)
+            , $container->get(IFileRepository::class)
         );
     }
 

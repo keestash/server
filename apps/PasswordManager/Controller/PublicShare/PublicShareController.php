@@ -21,8 +21,8 @@ use KSA\PasswordManager\Event\PublicShare\ControllerOpened;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\Controller\ContextLessAppController;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Controller\IAppRenderer;
+use KSP\Core\Service\Event\IEventService;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -31,14 +31,14 @@ class PublicShareController extends ContextLessAppController {
     private TemplateRendererInterface $templateRenderer;
     private PublicShareRepository     $publicShareRepository;
     private NodeRepository            $nodeRepository;
-    private IEventManager             $eventManager;
+    private IEventService             $eventManager;
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
         , IAppRenderer            $appRenderer
         , PublicShareRepository   $publicShareRepository
         , NodeRepository          $nodeRepository
-        , IEventManager           $eventManager
+        , IEventService           $eventManager
     ) {
         parent::deactivateGlobalSearch();
         parent::__construct($appRenderer);

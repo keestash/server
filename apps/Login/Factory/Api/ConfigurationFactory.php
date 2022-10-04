@@ -25,7 +25,7 @@ use Interop\Container\ContainerInterface;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Legacy\Legacy;
 use KSA\Login\Api\Configuration;
-use KSP\App\ILoader;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
@@ -35,7 +35,7 @@ class ConfigurationFactory implements FactoryInterface {
         return new Configuration(
             $container->get(Legacy::class)
             , $container->get(IHTTPService::class)
-            , $container->get(ILoader::class)
+            , $container->get(ILoaderService::class)
             , $container->get(InstanceDB::class)
         );
     }

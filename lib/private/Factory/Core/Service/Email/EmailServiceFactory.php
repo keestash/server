@@ -26,9 +26,9 @@ namespace Keestash\Factory\Core\Service\Email;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Legacy\Legacy;
-use KSP\Core\ILogger\ILogger;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class EmailServiceFactory {

@@ -22,9 +22,10 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Api\User;
 
 use KSA\Settings\Api\User\UserLock;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class UserLockFactory {
@@ -33,7 +34,8 @@ class UserLockFactory {
         return new UserLock(
             $container->get(IUserRepository::class)
             , $container->get(IUserStateRepository::class)
-            , $container->get(IEventManager::class)
+            , $container->get(IEventService::class)
+            , $container->get(ILogger::class)
         );
     }
 

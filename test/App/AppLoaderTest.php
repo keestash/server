@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KST\App;
 
-use Keestash\App\App;
-use KSP\App\IApp;
+use Keestash\Core\DTO\App\App;
+use KSP\Core\DTO\App\IApp;
 use KST\TestCase;
 
 class AppLoaderTest extends TestCase {

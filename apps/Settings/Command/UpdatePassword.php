@@ -23,6 +23,7 @@ namespace KSA\Settings\Command;
 
 use Keestash\Command\KeestashCommand;
 use KSA\Settings\Exception\SettingsException;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
@@ -106,7 +107,7 @@ class UpdatePassword extends KeestashCommand {
 
         $this->writeInfo('Password Updated', $output);
 
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

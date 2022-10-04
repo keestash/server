@@ -23,10 +23,10 @@ namespace KSA\GeneralApi\Command\Info;
 
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
+use KSP\Command\IKeestashCommand;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
-use Symfony\Component\Console\Helper\TableStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -77,7 +77,7 @@ class Routes extends KeestashCommand {
 
         if (0 === count($routes)) {
             $this->writeInfo('no routes found. Maybe you excluded everyhting? Please check your options', $output);
-            return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+            return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
         }
 
         $table = new Table($output);
@@ -97,7 +97,7 @@ class Routes extends KeestashCommand {
         }
 
         $table->render();
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

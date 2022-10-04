@@ -26,10 +26,11 @@ use doganoo\Backgrounder\Task\Task;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\User\Event\UserPreRemovedEvent;
 use Keestash\Core\Service\User\Event\UserRemovedEvent;
+use Keestash\Exception\User\UserException;
 use KSP\Core\DTO\User\IUserState;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 /**
@@ -42,14 +43,14 @@ class UserDeleteTask extends Task {
     private ConfigService          $configService;
     private IUserStateRepository   $userStateRepository;
     private ILogger                $logger;
-    private IEventManager          $eventManager;
+    private IEventService          $eventManager;
 
     public function __construct(
         IUserRepositoryService $userService
-        , ConfigService $configService
+        , ConfigService        $configService
         , IUserStateRepository $userStateRepository
-        , ILogger $logger
-        , IEventManager $eventManager
+        , ILogger              $logger
+        , IEventService        $eventManager
     ) {
         $this->userService         = $userService;
         $this->configService       = $configService;
@@ -81,18 +82,15 @@ class UserDeleteTask extends Task {
                     new UserPreRemovedEvent($userState->getUser())
                 );
 
-            $response = $this->userService->removeUser($userState->getUser());
-            $removed  = true === $response["success"];
-
-            if (true === $removed) {
-                $removedAll = $this->userStateRepository->removeAll($userState->getUser());
-                $this->logger->info("userstate removed: " . $removedAll);
+            try {
+                $this->userService->removeUser($userState->getUser());
+                $this->eventManager
+                    ->execute(
+                        new UserRemovedEvent($userState->getUser())
+                    );
+            } catch (UserException $exception) {
+                $this->logger->error('error deleting user');
             }
-
-            $this->eventManager
-                ->execute(
-                    new UserRemovedEvent($userState->getUser(), $removed)
-                );
 
         }
 

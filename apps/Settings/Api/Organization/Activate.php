@@ -26,8 +26,8 @@ use Exception;
 use KSA\Settings\Event\Organization\OrganizationActivatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
-use KSP\Core\ILogger\ILogger;
-use KSP\Core\Manager\EventManager\IEventManager;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Logger\ILogger;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,13 +36,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 class Activate implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
-    private ILogger                 $logger;
-    private IEventManager           $eventManager;
+    private ILogger       $logger;
+    private IEventService $eventManager;
 
     public function __construct(
         IOrganizationRepository $organizationRepository
         , ILogger               $logger
-        , IEventManager         $eventManager
+        , IEventService         $eventManager
     ) {
         $this->organizationRepository = $organizationRepository;
         $this->logger                 = $logger;

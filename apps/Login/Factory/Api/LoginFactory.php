@@ -30,7 +30,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\L10N\IL10N;
+use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class LoginFactory {

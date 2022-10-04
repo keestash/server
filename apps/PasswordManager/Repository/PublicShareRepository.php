@@ -18,7 +18,7 @@ use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 
 class PublicShareRepository {
 

@@ -21,10 +21,10 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use Keestash\Core\Service\Core\Event\ApplicationStartedEvent;
+use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use KSP\Api\IVerb;
-use KSP\Core\Manager\EventManager\IEventManager;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Event\IEventService;
 use Laminas\Config\Config;
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
@@ -49,8 +49,8 @@ use Psr\Container\ContainerInterface;
 
     $router = $config->get(ConfigProvider::API_ROUTER);
 
-    /** @var IEventManager $eventManager */
-    $eventManager = $container->get(IEventManager::class);
+    /** @var IEventService $eventManager */
+    $eventManager = $container->get(IEventService::class);
     $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
     $eventManager->execute(new ApplicationStartedEvent(new DateTime()));
 

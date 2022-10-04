@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Factory\Repository;
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\ILogger\ILogger;
+use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
 
 class PublicShareRepositoryFactory {

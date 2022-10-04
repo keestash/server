@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
-use Keestash\App\Config\Diff;
+use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use KSP\Api\IRequest;
-use KSP\App\ILoader;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\ILoaderService;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,13 +37,13 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
 
     private HTTPService    $httpService;
     private AppLockHandler $appLockHandler;
-    private ILoader        $loader;
+    private ILoaderService $loader;
     private IAppRepository $appRepository;
     private Diff           $diff;
 
     public function __construct(
         HTTPService      $httpService
-        , ILoader        $loader
+        , ILoaderService $loader
         , IAppRepository $appRepository
         , Diff           $diff
         , AppLockHandler $appLockHandler
