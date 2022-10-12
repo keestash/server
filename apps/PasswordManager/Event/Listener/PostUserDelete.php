@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Event\Listener;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Service\Event\Listener\IListener;
 
 class PostUserDelete implements IListener {

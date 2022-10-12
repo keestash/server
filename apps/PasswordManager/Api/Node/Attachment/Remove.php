@@ -28,7 +28,7 @@ use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;

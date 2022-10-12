@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Builder\DataManager;
 
 use KSP\Core\Builder\IBuilder;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 
 interface IDataManagerBuilder extends IBuilder {
 
