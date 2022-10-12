@@ -34,7 +34,7 @@ use Laminas\Config\Config;
  * Class Loader
  * @package Keestash\App
  */
-class LoaderServiceService implements ILoaderService {
+class LoaderService implements ILoaderService {
 
     private HashTable   $apps;
     private LRUCache    $lruAppCache;

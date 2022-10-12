@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\Install\Factory\Api;
 
-use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSA\Install\Api\InstallApps;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Logger\ILogger;
 use Psr\Container\ContainerInterface;
@@ -41,7 +41,7 @@ class InstallAppsFactory {
             , $container->get(ILogger::class)
             , $container->get(ILoaderService::class)
             , $container->get(IAppRepository::class)
-            , $container->get(Diff::class)
+            , $container->get(IAppService::class)
         );
     }
 

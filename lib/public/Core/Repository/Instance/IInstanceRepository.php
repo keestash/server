@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Instance;
+namespace KSP\Core\Repository\Instance;
 
-/**
- * Class MaintenanceService
- * @package Keestash\Core\Service
- *
- * TODO implement
- */
-class MaintenanceService {
+interface IInstanceRepository {
 
-    public function isMaintenance(): bool {
-        return false;
-    }
+    public function dropSchema(bool $includeSchema = false): bool;
+
+    public function execute(string $query): void;
 
 }
