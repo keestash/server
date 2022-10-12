@@ -39,26 +39,10 @@ class PasswordService implements IPasswordService {
         $this->initCharTable();
     }
 
-    private function initCharTable(): void {
-        $this->characterTable->put(
-            IPasswordService::KEY_UPPER_CASE
-            , IPasswordService::UPPER_CASE_CHARACTERS
-        );
-        $this->characterTable->put(
-            IPasswordService::KEY_LOWER_CASE
-            , IPasswordService::LOWER_CASE_CHARACTERS
-        );
-        $this->characterTable->put(
-            IPasswordService::KEY_DIGIT
-            , IPasswordService::DIGITS
-        );
-        $this->characterTable->put(
-            IPasswordService::KEY_SPECIAL_CHARACTERS
-            , IPasswordService::SPECIAL_CHARACTERS
-        );
-
-    }
-
+    /**
+     * @param string $password
+     * @return array
+     */
     public function findCharacterSet(string $password): array {
         $characterSet = [];
         if (strlen($this->stringService->intersect($password, IPasswordService::DIGITS)) > 0) {
@@ -74,13 +58,6 @@ class PasswordService implements IPasswordService {
             $characterSet[] = IPasswordService::UPPER_CASE_CHARACTERS;
         }
         return $characterSet;
-    }
-
-    public function getCharacterSet(string $key): string {
-        if (false === $this->characterTable->containsKey($key)) {
-            throw new KeestashException("no character set found for $key");
-        }
-        return (string) $this->characterTable->get($key);
     }
 
     /**
@@ -148,17 +125,31 @@ class PasswordService implements IPasswordService {
 
     }
 
+    public function measureQuality(IPassword $password): IPassword {
+        $entropy = $this->getPasswordEntropy($password);
+        $password->setEntropy($entropy);
+        $password->setQuality(
+            $this->getQuality($entropy)
+        );
+        return $password;
+    }
+
+    private function getCharacterSet(string $key): string {
+        if (false === $this->characterTable->containsKey($key)) {
+            throw new KeestashException("no character set found for $key");
+        }
+        return (string) $this->characterTable->get($key);
+    }
+
     private function getQuality(float $entropy): int {
         $entropy = floor($entropy);
         if ($entropy < 100) {
-            return -1;
+            return IPassword::QUALITY_BAD;
         }
-
         if ($entropy < 250) {
-            return 0;
+            return IPassword::QUALITY_NORMAL;
         }
-
-        return 1;
+        return IPassword::QUALITY_GOOD;
     }
 
     private function getPasswordEntropy(IPassword $password): float {
@@ -171,13 +162,24 @@ class PasswordService implements IPasswordService {
         return log($possiblePasswords) / log(2);
     }
 
-    public function measureQuality(IPassword $password): IPassword {
-        $entropy = $this->getPasswordEntropy($password);
-        $password->setEntropy($entropy);
-        $password->setQuality(
-            $this->getQuality($entropy)
+    private function initCharTable(): void {
+        $this->characterTable->put(
+            IPasswordService::KEY_UPPER_CASE
+            , IPasswordService::UPPER_CASE_CHARACTERS
         );
-        return $password;
+        $this->characterTable->put(
+            IPasswordService::KEY_LOWER_CASE
+            , IPasswordService::LOWER_CASE_CHARACTERS
+        );
+        $this->characterTable->put(
+            IPasswordService::KEY_DIGIT
+            , IPasswordService::DIGITS
+        );
+        $this->characterTable->put(
+            IPasswordService::KEY_SPECIAL_CHARACTERS
+            , IPasswordService::SPECIAL_CHARACTERS
+        );
+
     }
 
 }

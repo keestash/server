@@ -27,7 +27,14 @@ use KSP\Core\DTO\User\IUser;
 
 interface IFileService {
 
-    public function getProfileImagePath(?IUser $user): string;
+    public function getProfileImagePath(IUser $user): IUniformResourceIdentifier;
 
-    public function read(?IUniformResourceIdentifier $uri): ?IFile;
+    public function getDefaultImage(): IFile;
+
+    public function getProfileImage(IUser $user): IUniformResourceIdentifier;
+
+    public function getProfileImageName(IUser $user): string;
+
+    public function read(IUniformResourceIdentifier $uri): IFile;
+
 }

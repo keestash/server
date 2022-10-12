@@ -46,7 +46,7 @@ use Keestash\Core\Service\App\LoaderServiceService;
 use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
-use Keestash\Core\Service\Core\Access\IAccessService;
+use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
@@ -60,9 +60,12 @@ use Keestash\Core\Service\Event\EventService;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\Icon\IconService;
 use Keestash\Core\Service\File\Mime\MimeTypeService;
+use Keestash\Core\Service\File\RawFile\RawFileService;
 use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Keestash\Core\Service\HTTP\HTTPService;
+use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
+use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\Organization\OrganizationService;
@@ -70,6 +73,7 @@ use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
+use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
@@ -92,7 +96,7 @@ use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Controller\IAppRenderer;
-use KSP\Core\Service\Core\Access\AccessService;
+use KSP\Core\Service\Core\Access\IAccessService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
@@ -106,8 +110,11 @@ use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\File\Icon\IIconService;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\Mime\IMimeTypeService;
+use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
+use KSP\Core\Service\HTTP\Input\ISanitizerService;
+use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\Organization\IOrganizationService;
@@ -115,6 +122,7 @@ use KSP\Core\Service\Phinx\IMigrator;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
+use KSP\Core\Service\Router\IVerificationService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\Queue\Handler\IEventHandler;
@@ -123,54 +131,59 @@ use RateLimit\RateLimiter;
 
 return [
     // repository
-    IApiLogRepository::class                          => ApiLogRepository::class,
-    ISQLBackend::class                                => MySQLBackend::class,
-    IBackend::class                                   => ISQLBackend::class,
-    IFileRepository::class                            => FileRepository::class,
-    IUserRepository::class                            => UserRepository::class,
-    IUserKeyRepository::class                         => UserKeyRepository::class,
-    IOrganizationKeyRepository::class                 => OrganizationKeyRepository::class,
-    ITokenRepository::class                           => TokenRepository::class,
-    IAppRepository::class                             => AppRepository::class,
-    IJobRepository::class                             => JobRepository::class,
-    IQueueRepository::class                           => QueueRepository::class,
-    IUserStateRepository::class                       => UserStateRepository::class,
-    RBACRepositoryInterface::class                    => RBACRepository::class,
+    IApiLogRepository::class                               => ApiLogRepository::class,
+    ISQLBackend::class                                     => MySQLBackend::class,
+    IBackend::class                                        => ISQLBackend::class,
+    IFileRepository::class                                 => FileRepository::class,
+    IUserRepository::class                                 => UserRepository::class,
+    IUserKeyRepository::class                              => UserKeyRepository::class,
+    IOrganizationKeyRepository::class                      => OrganizationKeyRepository::class,
+    ITokenRepository::class                                => TokenRepository::class,
+    IAppRepository::class                                  => AppRepository::class,
+    IJobRepository::class                                  => JobRepository::class,
+    IQueueRepository::class                                => QueueRepository::class,
+    IUserStateRepository::class                            => UserStateRepository::class,
+    RBACRepositoryInterface::class                         => RBACRepository::class,
 
     // service
-    IUserService::class                               => UserService::class,
-    IConfigService::class                             => ConfigService::class,
-    IDateTimeService::class                           => DateTimeService::class,
-    IKeyService::class                                => KeyService::class,
-    IEncryptionService::class                         => KeestashEncryptionService::class,
-    IFileService::class                               => FileService::class,
-    ICredentialService::class                         => CredentialService::class,
-    ICacheService::class                              => NullService::class,
-    IEmailService::class                              => EmailService::class,
-    IOrganizationService::class                       => OrganizationService::class,
-    ILocaleService::class                             => LocaleService::class,
-    ILanguageService::class                           => LanguageService::class,
-    IEnvironmentService::class                        => EnvironmentService::class,
-    IRouterService::class                             => RouterService::class,
-    IAppService::class                                => AppService::class,
-    IUserRepositoryService::class                     => UserRepositoryService::class,
-    IIconService::class                               => IconService::class,
-    \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class,
-    IStringService::class                             => StringService::class,
-    IJWTService::class                                => JWTService::class,
-    IHTTPService::class                               => HTTPService::class,
-    IInstallerService::class                          => InstallerService::class,
-    IApiRequestService::class                         => ApiRequestService::class,
-    IAccessService::class                             => AccessService::class,
-    \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class,
-    IPasswordService::class                           => PasswordService::class,
-    ICSVService::class                                => CSVService::class,
-    IMimeTypeService::class                           => MimeTypeService::class,
-    IQueueService::class                              => QueueService::class,
+    IUserService::class                                    => UserService::class,
+    IConfigService::class                                  => ConfigService::class,
+    IDateTimeService::class                                => DateTimeService::class,
+    IKeyService::class                                     => KeyService::class,
+    IEncryptionService::class                              => KeestashEncryptionService::class,
+    IFileService::class                                    => FileService::class,
+    ICredentialService::class                              => CredentialService::class,
+    ICacheService::class                                   => NullService::class,
+    IEmailService::class                                   => EmailService::class,
+    IOrganizationService::class                            => OrganizationService::class,
+    ILocaleService::class                                  => LocaleService::class,
+    ILanguageService::class                                => LanguageService::class,
+    IEnvironmentService::class                             => EnvironmentService::class,
+    IRouterService::class                                  => RouterService::class,
+    IAppService::class                                     => AppService::class,
+    IUserRepositoryService::class                          => UserRepositoryService::class,
+    IIconService::class                                    => IconService::class,
+    \KSP\Core\Service\File\Upload\IFileService::class      => \Keestash\Core\Service\File\Upload\FileService::class,
+    IStringService::class                                  => StringService::class,
+    IJWTService::class                                     => JWTService::class,
+    IHTTPService::class                                    => HTTPService::class,
+    IInstallerService::class                               => InstallerService::class,
+    IApiRequestService::class                              => ApiRequestService::class,
+    IAccessService::class                                  => AccessService::class,
+    \doganoo\DI\HTTP\IHTTPService::class                   => \doganoo\DIP\HTTP\HTTPService::class,
+    IPasswordService::class                                => PasswordService::class,
+    ICSVService::class                                     => CSVService::class,
+    IMimeTypeService::class                                => MimeTypeService::class,
+    IQueueService::class                                   => QueueService::class,
+    IRawFileService::class                                 => RawFileService::class,
+    ISanitizerService::class                               => SanitizerService::class,
+    \KSP\Core\Service\HTTP\Output\ISanitizerService::class => \Keestash\Core\Service\HTTP\Output\SanitizerService::class,
+    IRouteService::class                                   => RouteService::class,
+    IVerificationService::class                            => VerificationService::class,
 
     // manager
-    ILoggerManager::class                             => LoggerManager::class,
-    IEventService::class                              => EventService::class,
+    ILoggerManager::class                                  => LoggerManager::class,
+    IEventService::class                                   => EventService::class,
 
     IL10N::class                   => GetText::class,
     ILoaderService::class          => LoaderServiceService::class,

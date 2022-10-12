@@ -41,6 +41,8 @@ class FileServiceFactory {
 
         $fileService->shouldReceive('moveUploadedFile')
             ->andReturn(true);
+        $fileService->shouldReceive('removeUploadedFile')
+            ->andReturn(true);
         $fileService->shouldReceive('validateUploadedFile')
             ->andReturn(new Result());
 

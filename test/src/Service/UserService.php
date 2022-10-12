@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Service\Service;
 
 use DateTimeImmutable;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
@@ -106,14 +106,14 @@ class UserService {
         ]
     ];
 
-    private Legacy                 $legacy;
+    private Application                 $legacy;
     private IUserRepositoryService $userRepositoryService;
     private IUserService           $userService;
     private ILocaleService         $localeService;
     private ILanguageService       $languageService;
 
     public function __construct(
-        Legacy                   $legacy
+        Application $legacy
         , IUserRepositoryService $userRepositoryService
         , IUserService           $userService
         , ILocaleService         $localeService
@@ -137,11 +137,11 @@ class UserService {
             );
             $data['deleted']    = false;
             $data['user_name']  = $data['name'];
-            $data['first_name'] = (string) $this->legacy->getApplication()->get("name");
-            $data['last_name']  = (string) $this->legacy->getApplication()->get("name");
+            $data['first_name'] = (string) $this->legacy->getMetaData()->get("name");
+            $data['last_name']  = (string) $this->legacy->getMetaData()->get("name");
             $data['hash']       = Uuid::uuid4()->toString();
-            $data['phone']      = (string) $this->legacy->getApplication()->get("phone");
-            $data['website']    = (string) $this->legacy->getApplication()->get("web");
+            $data['phone']      = (string) $this->legacy->getMetaData()->get("phone");
+            $data['website']    = (string) $this->legacy->getMetaData()->get("web");
             $data['language']   = $this->languageService->getLanguage();
             $data['locale']     = $this->localeService->getLocale();
             $user               = $this->userService->toNewUser($data);

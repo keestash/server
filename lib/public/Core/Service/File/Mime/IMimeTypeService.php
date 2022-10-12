@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\File\Mime;
 
+use Keestash\Exception\IndexOutOfBoundsException;
+use Keestash\Exception\UnknownExtensionException;
+
 interface IMimeTypeService {
 
     // https://github.com/xobotyi/php-mime-type
@@ -2722,6 +2725,12 @@ interface IMimeTypeService {
         ],
     ];
 
+    /**
+     * @param string $mimeType
+     * @return array
+     * @throws IndexOutOfBoundsException
+     * @throws UnknownExtensionException
+     */
     public function getExtension(string $mimeType): array;
 
 }

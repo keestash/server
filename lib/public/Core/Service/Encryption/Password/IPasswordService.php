@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Service\Encryption\Password;
 
 use Keestash\Core\DTO\Encryption\Password\Password;
+use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Encryption\Password\IPassword;
 use KSP\Core\Service\IService;
 
@@ -37,10 +38,25 @@ interface IPasswordService extends IService {
     public const UPPER_CASE_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public const DIGITS                = "0123456789";
 
+    /**
+     * @param string $password
+     * @return array
+     */
+    public function findCharacterSet(string $password): array;
 
+    /**
+     * @param int  $length
+     * @param bool $hasUpperCase
+     * @param bool $hasLowerCase
+     * @param bool $hasDigits
+     * @param bool $hasSpecialChars
+     * @return Password
+     * @throws KeestashException
+     *
+     * TODO pay credit to https://stackoverflow.com/questions/1837432/how-to-generate-random-password-with-php
+     */
     public function generatePassword(int $length, bool $hasUpperCase, bool $hasLowerCase, bool $hasDigits, bool $hasSpecialChars): Password;
 
     public function measureQuality(IPassword $password): IPassword;
 
-    public function findCharacterSet(string $password):array;
 }

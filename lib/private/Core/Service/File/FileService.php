@@ -24,13 +24,15 @@ namespace Keestash\Core\Service\File;
 use DateTime;
 use Keestash;
 use Keestash\Core\DTO\File\File;
-use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Core\DTO\URI\URL\URL;
+use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
+use KSP\Core\Service\File\RawFile\IRawFileService;
 use Laminas\Config\Config;
 
 class FileService implements IFileService {
@@ -41,12 +43,12 @@ class FileService implements IFileService {
     public const DEFAULT_PROFILE_PICTURE = "profile-picture";
 
     // TODO include default ?!
-    private RawFileService  $rawFileService;
+    private IRawFileService $rawFileService;
     private Config          $config;
     private IFileRepository $fileRepository;
 
     public function __construct(
-        RawFileService    $rawFileService
+        IRawFileService   $rawFileService
         , Config          $config
         , IFileRepository $fileRepository
     ) {
@@ -55,20 +57,17 @@ class FileService implements IFileService {
         $this->fileRepository = $fileRepository;
     }
 
-    public function getProfileImagePath(?IUser $user): string {
-
-        if (null === $user) {
-            return $this->getDefaultImage()->getFullPath();
-        }
-
+    public function getProfileImagePath(IUser $user): IUniformResourceIdentifier {
         $imagePath = $this->getProfileImage($user);
-        $imagePath = realpath($imagePath);
+        $imagePath = realpath($imagePath->getIdentifier());
 
         if (false === $imagePath) {
-            return $this->getDefaultImage()->getFullPath();
+            $imagePath = $this->getDefaultImage()->getFullPath();
         }
 
-        return $imagePath;
+        $url = new URL();
+        $url->setIdentifier($imagePath);
+        return $url;
     }
 
     public function getDefaultImage(): IFile {
@@ -86,31 +85,30 @@ class FileService implements IFileService {
         $file->setDirectory($dir);
         $file->setExtension(IExtension::PNG);
         $file->setHash((string) md5_file($path));
-        $file->setMimeType((string) $this->rawFileService->getMimeType($path));
+        $file->setMimeType($this->rawFileService->getMimeType($path));
         $file->setName($name);
         $file->setSize((int) filesize($path));
         return $file;
     }
 
-    public function getProfileImage(IUser $user): string {
+    public function getProfileImage(IUser $user): IUniformResourceIdentifier {
+        $url       = new URL();
         $name      = $this->getProfileImageName($user);
         $imagePath = $this->config->get(Keestash\ConfigProvider::IMAGE_PATH);
         $path      = $imagePath . "/" . $name;
-        return str_replace("//", "/", $path);
+        $url->setIdentifier(str_replace("//", "/", $path));
+        return $url;
     }
 
     public function getProfileImageName(IUser $user): string {
         return "profile_image_{$user->getId()}";
     }
 
-    public function getAvatarName(int $nodeId): string {
-        return "node_avatar_$nodeId";
-    }
-
-    public function read(?IUniformResourceIdentifier $uri): ?IFile {
-        if (null === $uri) return null;
+    public function read(IUniformResourceIdentifier $uri): IFile {
         $path = $uri->getIdentifier();
-        if (false === is_file($path)) return null;
+        if (false === is_file($path)) {
+            throw new FileNotFoundException();
+        }
         return $this->fileRepository->getByUri($uri);
     }
 

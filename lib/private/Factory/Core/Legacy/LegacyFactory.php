@@ -21,13 +21,13 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Legacy;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use Psr\Container\ContainerInterface;
 
 class LegacyFactory {
 
-    public function __invoke(ContainerInterface $container): Legacy {
-        return new Legacy();
+    public function __invoke(ContainerInterface $container): Application {
+        return new Application();
     }
 
 }

@@ -49,8 +49,8 @@ class UserKeyRepositoryTest extends TestCase {
             $userService->hashPassword(md5((string) time()))
         );
 
-        $stored = $userKeyRepository->storeKey($user, $key);
-        $this->assertTrue(true === $stored);
+        $key = $userKeyRepository->storeKey($user, $key);
+        $this->assertInstanceOf(IKey::class, $key);
         $this->assertTrue(true === $userKeyRepository->remove($user));
     }
 
@@ -71,10 +71,10 @@ class UserKeyRepositoryTest extends TestCase {
             $userService->hashPassword(md5((string) time()))
         );
 
-        $stored       = $userKeyRepository->storeKey($user, $key);
+        $key          = $userKeyRepository->storeKey($user, $key);
         $retrievedKey = $userKeyRepository->getKey($user);
         $this->assertTrue($retrievedKey instanceof IKey);
-        $this->assertTrue(true === $stored);
+        $this->assertInstanceOf(IKey::class, $key);
         $this->assertTrue(true === $userKeyRepository->remove($user));
     }
 
@@ -96,7 +96,7 @@ class UserKeyRepositoryTest extends TestCase {
         );
 
         $stored = $userKeyRepository->storeKey($user, $key);
-        $this->assertTrue(true === $stored);
+        $this->assertInstanceOf(IKey::class, $stored);
         $retrievedKey = $userKeyRepository->getKey($user);
         $this->assertTrue($retrievedKey instanceof IKey);
         $retrievedKey->setSecret(

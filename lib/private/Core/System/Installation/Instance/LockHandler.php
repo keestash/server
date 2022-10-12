@@ -25,7 +25,7 @@ use Keestash\Core\System\Installation\LockHandler as BaseLockHandler;
 
 class LockHandler extends BaseLockHandler {
 
-    private const DOMAIN_NAME = "instance.lock";
+    public const DOMAIN_NAME = "instance.lock";
 
     public function getDomain(): string {
         return LockHandler::DOMAIN_NAME;

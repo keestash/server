@@ -521,6 +521,11 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
 
 		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
+
+		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\|null\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/MoveTest.php
@@ -782,7 +787,7 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
-			count: 1
+			count: 2
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
 
 		-
@@ -861,11 +866,6 @@ parameters:
 			path: ../../lib/private/Core/Backend/MySQLBackend.php
 
 		-
-			message: "#^Property Keestash\\\\Core\\\\DTO\\\\App\\\\Config\\\\App\\:\\:\\$jobs \\(KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList\\) does not accept doganoo\\\\Backgrounder\\\\BackgroundJob\\\\JobList\\.$#"
-			count: 2
-			path: ../../lib/private/Core/DTO/App/Config/App.php
-
-		-
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/File/FileList.php
@@ -907,7 +907,7 @@ parameters:
 
 		-
 			message: "#^Part \\$name \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
+			count: 2
 			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
 		-
@@ -1136,6 +1136,11 @@ parameters:
 			path: ../../lib/private/Core/Service/App/InstallerService.php
 
 		-
+			message: "#^Parameter \\#1 \\$jobList of method KSP\\\\Core\\\\Repository\\\\Job\\\\IJobRepository\\:\\:replaceJobs\\(\\) expects KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList, doganoo\\\\Backgrounder\\\\BackgroundJob\\\\JobList given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/App/InstallerService.php
+
+		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/App/LoaderServiceService.php
@@ -1159,6 +1164,16 @@ parameters:
 			message: "#^Parameter \\#2 \\$port of method Redis\\:\\:connect\\(\\) expects int, string given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Cache/RedisService.php
+
+		-
+			message: "#^Binary operation \"\\*\\=\" between float\\|int\\|string and 1024 results in an error\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Config/IniConfigService.php
+
+		-
+			message: "#^Binary operation \"\\*\\=\" between string and 1024 results in an error\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Config/IniConfigService.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
@@ -1204,6 +1219,11 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getTmpName\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$aud\\.$#"
+			count: 2
+			path: ../../lib/private/Core/Service/HTTP/JWTService.php
 
 		-
 			message: "#^Parameter \\#1 \\$token of method Keestash\\\\Core\\\\DTO\\\\Instance\\\\Request\\\\APIRequest\\:\\:setToken\\(\\) expects KSP\\\\Core\\\\DTO\\\\Token\\\\IToken, mixed given\\.$#"

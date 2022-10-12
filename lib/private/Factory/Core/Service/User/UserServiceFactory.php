@@ -24,7 +24,7 @@ namespace Keestash\Factory\Core\Service\User;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
@@ -39,7 +39,7 @@ class UserServiceFactory {
 
     public function __invoke(ContainerInterface $container): IUserService {
         return new UserService(
-            $container->get(Legacy::class)
+            $container->get(Application::class)
             , $container->get(IDateTimeService::class)
             , $container->get(IStringService::class)
             , $container->get(IUserRepositoryService::class)

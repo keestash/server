@@ -21,14 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware\Api;
 
-use Keestash\ConfigProvider;
-use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Router\VerificationService;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
+use KSP\Core\Service\Router\IVerificationService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,9 +34,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class KeestashHeaderMiddleware implements MiddlewareInterface {
 
-    private Verification $verification;
+    private IVerificationService $verification;
 
-    public function __construct(Verification $verification) {
+    public function __construct(IVerificationService $verification) {
         $this->verification = $verification;
     }
 
@@ -51,8 +48,8 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
 
         $token = $this->verification->verifyToken(
             [
-                Verification::FIELD_NAME_TOKEN       => $request->getHeader(Verification::FIELD_NAME_TOKEN)[0] ?? ''
-                , Verification::FIELD_NAME_USER_HASH => $request->getHeader(Verification::FIELD_NAME_USER_HASH)[0] ?? ''
+                VerificationService::FIELD_NAME_TOKEN       => $request->getHeader(VerificationService::FIELD_NAME_TOKEN)[0] ?? ''
+                , VerificationService::FIELD_NAME_USER_HASH => $request->getHeader(VerificationService::FIELD_NAME_USER_HASH)[0] ?? ''
             ]
         );
 

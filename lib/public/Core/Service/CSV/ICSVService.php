@@ -21,12 +21,39 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\CSV;
 
+use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\Service\IService;
+use League\Csv\Exception;
+use League\Csv\InvalidArgument;
 
 interface ICSVService extends IService {
 
-    public function readFile(string $path, bool $hasOffset = true): array;
+    /**
+     * @param string $path
+     * @param bool   $hasOffset
+     * @param string $delimiter
+     * @return array
+     * @throws FileNotFoundException
+     * @throws Exception
+     * @throws InvalidArgument
+     */
+    public function readFile(
+        string   $path
+        , bool   $hasOffset = true
+        , string $delimiter = ','
+    ): array;
 
-    public function readString(string $content, bool $hasOffset = true): array;
+    /**
+     * @param string $content
+     * @param bool   $hasOffset
+     * @param string $delimiter
+     * @return array
+     * @throws Exception
+     */
+    public function readString(
+        string   $content
+        , bool   $hasOffset = true
+        , string $delimiter = ','
+    ): array;
 
 }

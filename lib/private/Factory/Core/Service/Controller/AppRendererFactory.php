@@ -24,13 +24,13 @@ namespace Keestash\Factory\Core\Service\Controller;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\Instance\LockHandler;
-use Keestash\Legacy\Legacy;
 use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\Router\IRouterService;
@@ -46,11 +46,11 @@ class AppRendererFactory {
             $container->get(IRouterService::class)
             , $container->get(Config::class)
             , $container->get(TemplateRendererInterface::class)
-            , $container->get(Legacy::class)
+            , $container->get(Application::class)
             , $container->get(IHTTPService::class)
             , $container->get(LockHandler::class)
             , $container->get(FileService::class)
-            , $container->get(RawFileService::class)
+            , $container->get(IRawFileService::class)
             , $container->get(ILocaleService::class)
             , $container->get(ILoaderService::class)
             , $container->get(RouterInterface::class)

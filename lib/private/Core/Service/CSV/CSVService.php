@@ -23,12 +23,27 @@ namespace Keestash\Core\Service\CSV;
 
 use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\Service\CSV\ICSVService;
+use League\Csv\Exception;
+use League\Csv\InvalidArgument;
 use League\Csv\Reader;
 
 class CSVService implements ICSVService {
 
-    public function readFile(string $path, bool $hasOffset = true): array {
-        if (false === file_exists($path)) {
+    /**
+     * @param string $path
+     * @param bool   $hasOffset
+     * @param string $delimiter
+     * @return array
+     * @throws FileNotFoundException
+     * @throws Exception
+     * @throws InvalidArgument
+     */
+    public function readFile(
+        string   $path
+        , bool   $hasOffset = true
+        , string $delimiter = ','
+    ): array {
+        if (false === file_exists($path) || false === is_file($path)) {
             throw new FileNotFoundException();
         }
         $csv = Reader::createFromPath($path);
@@ -37,10 +52,22 @@ class CSVService implements ICSVService {
             $csv->setHeaderOffset(0);
         }
 
+        $csv->setDelimiter($delimiter);
         return iterator_to_array($csv->getRecords());
     }
 
-    public function readString(string $content, bool $hasOffset = true): array {
+    /**
+     * @param string $content
+     * @param bool   $hasOffset
+     * @param string $delimiter
+     * @return array
+     * @throws Exception
+     */
+    public function readString(
+        string   $content
+        , bool   $hasOffset = true
+        , string $delimiter = ','
+    ): array {
         $csv = Reader::createFromString($content);
 
         if (true === $hasOffset) {

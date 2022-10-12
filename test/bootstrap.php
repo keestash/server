@@ -22,6 +22,10 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\NodeEncryptionService;
+use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Phinx\IMigrator;
@@ -35,6 +39,7 @@ const __PHPUNIT_MODE__ = true;
 
 /** @var ContainerInterface $container */
 $container = require __DIR__ . '/config/service_manager.php';
+
 $config    = $container->get(Config::class);
 $fileName  = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
 

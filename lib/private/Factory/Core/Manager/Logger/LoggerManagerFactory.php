@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Manager\Logger;
 
 use Keestash\Core\Manager\LoggerManager\LoggerManager;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
@@ -33,7 +33,7 @@ class LoggerManagerFactory {
     public function __invoke(ContainerInterface $container): ILoggerManager {
         return new LoggerManager(
             $container->get(IConfigService::class)
-            , $container->get(Legacy::class)
+            , $container->get(Application::class)
             , $container->get(IEnvironmentService::class)
         );
     }

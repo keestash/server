@@ -80,12 +80,12 @@ class ForgotPassword implements RequestHandlerInterface {
         try {
             $userByMail = $this->userRepository->getUserByEmail($input);
         } catch (UserNotFoundException $exception) {
-            $this->logger->error('no users found', ['exception' => $exception]);
+            $this->logger->warning('no users found', ['exception' => $exception]);
         }
         try {
             $userByName = $this->userRepository->getUser($input);
         } catch (UserNotFoundException $exception) {
-            $this->logger->error('no users found', ['exception' => $exception]);
+            $this->logger->warning('no users found', ['exception' => $exception]);
         }
 
         $user = null === $userByMail

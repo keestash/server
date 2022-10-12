@@ -22,12 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\HTTP\Input;
 
 use HTMLPurifier;
+use KSP\Core\Service\HTTP\Input\ISanitizerService;
 
 /**
  * Class SanitizerService
  * @package Keestash\Core\Service\HTTP\Input
  */
-class SanitizerService {
+class SanitizerService implements ISanitizerService {
 
     private HTMLPurifier $purifier;
 

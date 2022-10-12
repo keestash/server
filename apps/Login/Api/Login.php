@@ -23,7 +23,7 @@ namespace KSA\Login\Api;
 
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Service\TokenService;
@@ -132,8 +132,8 @@ class Login implements RequestHandlerInterface {
             ],
             IResponse::OK
             , [
-                Verification::FIELD_NAME_TOKEN       => $token->getValue()
-                , Verification::FIELD_NAME_USER_HASH => $user->getHash()
+                VerificationService::FIELD_NAME_TOKEN       => $token->getValue()
+                , VerificationService::FIELD_NAME_USER_HASH => $user->getHash()
             ]
         );
 

@@ -27,7 +27,7 @@ use KSP\Core\Repository\IRepository;
 
 interface IUserKeyRepository extends IRepository {
 
-    public function storeKey(IUser $user, IKey $key): bool;
+    public function storeKey(IUser $user, IKey $key): IKey;
 
     public function updateKey(IKey $key): bool;
 

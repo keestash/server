@@ -25,7 +25,7 @@ namespace Keestash\Factory\Core\Service\Email;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Email\EmailService;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Logger\ILogger;
@@ -35,7 +35,7 @@ class EmailServiceFactory {
 
     public function __invoke(ContainerInterface $container): IEmailService {
         return new EmailService(
-            $container->get(Legacy::class),
+            $container->get(Application::class),
             $container->get(IConfigService::class),
             $container->get(ILogger::class),
             $container->get(InstanceDB::class)

@@ -28,14 +28,34 @@ use Psr\Http\Message\UploadedFileInterface;
 
 interface IFileService {
 
-    public function validateUploadedFile(IFile $file): IResult;
-
+    /**
+     * @param UploadedFileInterface $file
+     * @return IFile
+     */
     public function toFile(UploadedFileInterface $file): IFile;
 
+    /**
+     * @param IFile $file
+     * @return IResult
+     */
+    public function validateUploadedFile(IFile $file): IResult;
+
+    /**
+     * @param IFile $file
+     * @return ICoreFile
+     */
     public function toCoreFile(IFile $file): ICoreFile;
 
+    /**
+     * @param ICoreFile $file
+     * @return bool
+     */
     public function moveUploadedFile(ICoreFile $file): bool;
 
+    /**
+     * @param ICoreFile $file
+     * @return bool
+     */
     public function removeUploadedFile(ICoreFile $file): bool;
 
 }

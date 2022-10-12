@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential\Password;
 
+use Keestash\Exception\EncryptionFailedException;
 use KSA\PasswordManager\Api\Node\Credential\Password\Update;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -58,7 +59,7 @@ class UpdateTest extends TestCase {
     }
 
     public function testUpdateOnNonCredential(): void {
-        $this->expectException(PasswordManagerException::class);
+        $this->expectException(EncryptionFailedException::class);
         $root = $this->getRootForUser();
         /** @var Update $update */
         $update   = $this->getServiceManager()->get(Update::class);
@@ -77,7 +78,7 @@ class UpdateTest extends TestCase {
     public function testUpdateCredential(): void {
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        $credential     = $this->createCredential(
+        $credential        = $this->createCredential(
             "updateTestPassword"
             , "keestash.test"
             , "updateTest"

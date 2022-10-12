@@ -54,7 +54,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         $this->logger          = $logger;
     }
 
-    public function storeKey(IUser $user, IKey $key): bool {
+    public function storeKey(IUser $user, IKey $key): IKey {
         $key = $this->_storeKey($key);
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -73,7 +73,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
         $queryBuilder->executeStatement();
 
-        return null !== $this->backend->getConnection()->lastInsertId();
+        return $key;
     }
 
     public function updateKey(IKey $key): bool {

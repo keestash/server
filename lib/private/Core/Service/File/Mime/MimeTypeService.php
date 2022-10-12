@@ -27,6 +27,12 @@ use KSP\Core\Service\File\Mime\IMimeTypeService;
 
 class MimeTypeService implements IMimeTypeService {
 
+    /**
+     * @param string $mimeType
+     * @return array
+     * @throws IndexOutOfBoundsException
+     * @throws UnknownExtensionException
+     */
     public function getExtension(string $mimeType): array {
         $position = strpos($mimeType, "/");
 

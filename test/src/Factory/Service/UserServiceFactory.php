@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\Service;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
@@ -33,7 +33,7 @@ class UserServiceFactory {
 
     public function __invoke(ContainerInterface $container): UserService {
         return new UserService(
-            $container->get(Legacy::class)
+            $container->get(Application::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(IUserService::class)
             , $container->get(ILocaleService::class)

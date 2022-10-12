@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Login\Test\Api;
 
-use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Router\VerificationService;
 use KSA\Login\Api\Login;
 use KSA\Login\Test\TestCase;
 use KSP\Api\IResponse;
@@ -118,9 +118,9 @@ class LoginTest extends TestCase {
         $this->assertTrue(isset($responseBody['settings']['language']));
         $this->assertTrue(isset($responseBody['user']));
         $this->assertTrue($responseBody['user']['name'] === $userName);
-        $this->assertTrue(isset($headers[Verification::FIELD_NAME_TOKEN]));
-        $this->assertTrue(isset($headers[Verification::FIELD_NAME_USER_HASH]));
-        $this->assertTrue($headers[Verification::FIELD_NAME_USER_HASH] === $user->getHash());
+        $this->assertTrue(isset($headers[VerificationService::FIELD_NAME_TOKEN]));
+        $this->assertTrue(isset($headers[VerificationService::FIELD_NAME_USER_HASH]));
+        $this->assertTrue($headers[VerificationService::FIELD_NAME_USER_HASH] === $user->getHash());
     }
 
 }

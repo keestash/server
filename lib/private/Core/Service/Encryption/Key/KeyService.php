@@ -24,7 +24,8 @@ namespace Keestash\Core\Service\Encryption\Key;
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
-use KSA\PasswordManager\Exception\PasswordManagerException;
+use Keestash\Exception\Key\KeyNotCreatedException;
+use Keestash\Exception\Key\UnsupportedKeyException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
@@ -62,9 +63,10 @@ class KeyService implements IKeyService {
      * @param ICredential $credential
      * @param IKeyHolder  $keyHolder
      *
-     * @return IKey|null
+     * @return IKey
+     * @throws KeyNotCreatedException
      */
-    public function createKey(ICredential $credential, IKeyHolder $keyHolder): ?IKey {
+    public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey {
         // Step 1: we create a random secret
         //      This secret consists of a unique id (uuid)
         //      and a hash created out of the user object
@@ -73,7 +75,9 @@ class KeyService implements IKeyService {
         $secret = $this->encryptionService->encrypt($credential, $secret);
         // Step 3: we add the data to the database
 
-        if ("" === $secret) return null;
+        if ("" === $secret) {
+            throw new KeyNotCreatedException();
+        }
 
         $key = new Key();
         $key->setSecret($secret);
@@ -88,16 +92,16 @@ class KeyService implements IKeyService {
      *
      * @param IKeyHolder $keyHolder
      * @param IKey       $key
-     * @return bool
-     * @throws PasswordManagerException
+     * @return IKey
+     * @throws UnsupportedKeyException
      */
-    public function storeKey(IKeyHolder $keyHolder, IKey $key): bool {
+    public function storeKey(IKeyHolder $keyHolder, IKey $key): IKey {
         if ($keyHolder instanceof IUser) {
             return $this->userKeyRepository->storeKey($keyHolder, $key);
         } else if ($keyHolder instanceof IOrganization) {
             return $this->organizationKeyRepository->storeKey($keyHolder, $key);
         }
-        throw new PasswordManagerException('unsupported keyholder');
+        throw new UnsupportedKeyException();
     }
 
     /**
@@ -116,22 +120,24 @@ class KeyService implements IKeyService {
         throw new KeestashException('unsupported keyholder');
     }
 
-    public function createAndStoreKey(IKeyHolder $keyHolder): void {
+    /**
+     *
+     * runs the createKey() and storeKey() methods of this class
+     *
+     * @param IKeyHolder $keyHolder
+     * @return IKey
+     * @throws KeyNotCreatedException
+     * @throws UnsupportedKeyException
+     * @see IKeyService::storeKey()
+     * @see IKeyService::createKey()
+     */
+    public function createAndStoreKey(IKeyHolder $keyHolder): IKey {
         // 1. create a key for the user
         $key = $this->createKey(
             $this->credentialService->createCredential($keyHolder)
             , $keyHolder
         );
-
-        if (null === $key) {
-            throw new KeestashException();
-        }
-
-        $stored = $this->storeKey($keyHolder, $key);
-
-        if (false === $stored) {
-            throw new KeestashException();
-        }
+        return $this->storeKey($keyHolder, $key);
     }
 
 }

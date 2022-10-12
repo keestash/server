@@ -34,6 +34,7 @@ use Keestash\Exception\User\UserException;
 use Keestash\Exception\User\UserNotCreatedException;
 use Keestash\Exception\User\UserNotDeletedException;
 use Keestash\Exception\User\UserNotFoundException;
+use Keestash\Exception\User\UserNotUpdatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
@@ -77,45 +78,6 @@ class UserRepositoryService implements IUserRepositoryService {
     }
 
     /**
-     * @param IUser $user
-     * @return array
-     * @throws UserException
-     */
-    public function removeUser(IUser $user): array {
-        try {
-            $this->apiLogRepository->removeForUser($user);
-            $this->fileRepository->removeForUser($user);
-            $this->keyRepository->remove($user);
-            $this->userStateRepository->removeAll($user);
-            $this->userRepository->remove($user);
-        } catch (UserNotDeletedException|UserStateNotRemovedException|FileNotDeletedException $exception) {
-            $this->logger->error('error while deleting', ['exception' => $exception]);
-            throw new UserException();
-        }
-
-        return [
-            "logs_removed"    => true
-            , "files_removed" => true
-            , "keys_removed"  => true
-            , "user_removed"  => $user
-            , "success"       => true
-        ];
-    }
-
-    public function createSystemUser(IUser $user): bool {
-        $user->setLocked(true);
-        $file = $this->fileService->getDefaultImage();
-        $file->setOwner($user);
-        try {
-            $this->createUser($user, $file);
-            return true;
-        } catch (Exception $exception) {
-            $this->logger->error((string) json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
-            return false;
-        }
-    }
-
-    /**
      * @param IUser      $user
      * @param IFile|null $file
      * @return IUser
@@ -143,6 +105,53 @@ class UserRepositoryService implements IUserRepositoryService {
         return $user;
     }
 
+    /**
+     * @param IUser $user
+     * @return array
+     * @throws UserException
+     */
+    public function removeUser(IUser $user): array {
+        try {
+            $this->apiLogRepository->removeForUser($user);
+            $this->fileRepository->removeForUser($user);
+            $this->keyRepository->remove($user);
+            $this->userStateRepository->removeAll($user);
+            $this->userRepository->remove($user);
+        } catch (UserNotDeletedException|UserStateNotRemovedException|FileNotDeletedException $exception) {
+            $this->logger->error('error while deleting', ['exception' => $exception]);
+            throw new UserException();
+        }
+
+        return [
+            "logs_removed"    => true
+            , "files_removed" => true
+            , "keys_removed"  => true
+            , "user_removed"  => $user
+            , "success"       => true
+        ];
+    }
+
+    /**
+     * @param IUser $user
+     * @return bool
+     */
+    public function createSystemUser(IUser $user): bool {
+        $user->setLocked(true);
+        $file = $this->fileService->getDefaultImage();
+        $file->setOwner($user);
+        try {
+            $this->createUser($user, $file);
+            return true;
+        } catch (Exception $exception) {
+            $this->logger->error((string) json_encode([$exception->getMessage(), $exception->getTraceAsString()]));
+            return false;
+        }
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function userExistsByName(string $name): bool {
         try {
             $this->userRepository->getUser($name);
@@ -152,6 +161,10 @@ class UserRepositoryService implements IUserRepositoryService {
         }
     }
 
+    /**
+     * @param string $email
+     * @return bool
+     */
     public function userExistsByEmail(string $email): bool {
         try {
             $this->userRepository->getUserByEmail($email);
@@ -161,6 +174,12 @@ class UserRepositoryService implements IUserRepositoryService {
         }
     }
 
+    /**
+     * @param IUser $updatedUser
+     * @param IUser $oldUser
+     * @return IUser
+     * @throws UserNotUpdatedException
+     */
     public function updateUser(IUser $updatedUser, IUser $oldUser): IUser {
         $updatedUser = $this->userRepository->update($updatedUser);
         $this->eventManager->execute(

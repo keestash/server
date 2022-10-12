@@ -20,15 +20,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Router\VerificationService;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 return
     [
         'allowed_origins'     => [ConfigurationInterface::ANY_ORIGIN], // Allow any origin
         'exposed_headers'     => [
-            Verification::FIELD_NAME_TOKEN
-            , Verification::FIELD_NAME_USER_HASH
+            VerificationService::FIELD_NAME_TOKEN
+            , VerificationService::FIELD_NAME_USER_HASH
         ],
         'allowed_methods'     => ["GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS"],
         'allowed_max_age'     => '600', // 10 minutes
@@ -44,8 +44,8 @@ return
             , 'DNT'
             , 'Referer'
             , 'User-Agent'
-            , Verification::FIELD_NAME_TOKEN
-            , Verification::FIELD_NAME_USER_HASH
+            , VerificationService::FIELD_NAME_TOKEN
+            , VerificationService::FIELD_NAME_USER_HASH
             , 'Authorization'
         ], // Tell client that the API will always return this header
     ];

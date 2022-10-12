@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Config;
 
-class IniConfigService implements \KSP\Core\Service\Config\IniConfigService {
+use KSP\Core\Service\Config\IIniConfigService;
+
+class IniConfigService implements IIniConfigService {
 
     public function getValue(string $key, $default = null) {
         $ini = ini_get($key);
@@ -33,6 +35,8 @@ class IniConfigService implements \KSP\Core\Service\Config\IniConfigService {
     public function toBytes(string $value): int {
         $value = trim($value);
         $last  = strtolower($value[strlen($value) - 1]);
+        $value = substr($value, 0, -1); // necessary since PHP 7.1; otherwise optional
+
         switch ($last) {
             case 'g':
                 $value *= 1024;
@@ -42,6 +46,10 @@ class IniConfigService implements \KSP\Core\Service\Config\IniConfigService {
                 $value *= 1024;
         }
         return (int) $value;
+    }
+
+    public function getAll(): array {
+        return (array) ini_get_all();
     }
 
 }

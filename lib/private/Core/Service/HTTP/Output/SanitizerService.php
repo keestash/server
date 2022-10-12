@@ -21,12 +21,13 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\HTTP\Output;
 
+use KSP\Core\Service\HTTP\Output\ISanitizerService;
 
 /**
  * Class SanitizerService
  * @package Keestash\Core\Service\HTTP\Input
  */
-class SanitizerService {
+class SanitizerService implements ISanitizerService {
 
     /**
      * sanitizes output (usually strips JavaScript and other potentially risky code)

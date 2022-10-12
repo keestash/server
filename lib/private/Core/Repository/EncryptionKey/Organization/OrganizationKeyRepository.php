@@ -49,7 +49,14 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         $this->backend         = $backend;
     }
 
-    public function storeKey(IOrganization $organization, IKey $key): bool {
+    /**
+     * @param IOrganization $organization
+     * @param IKey          $key
+     * @return IKey
+     * @throws Exception
+     * @throws KeestashException
+     */
+    public function storeKey(IOrganization $organization, IKey $key): IKey {
         $key = $this->_storeKey($key);
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -68,7 +75,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
 
         $queryBuilder->executeStatement();
 
-        return true === is_numeric($this->backend->getConnection()->lastInsertId());
+        return $key;
     }
 
     public function updateKey(IKey $key): bool {

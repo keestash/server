@@ -98,6 +98,7 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
             throw new SettingsException();
         }
 
+        $organization->addUser($user);
         return $organization;
     }
 
