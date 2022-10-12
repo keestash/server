@@ -24,10 +24,15 @@ namespace KSP\Core\Service\Config;
 interface IConfigService {
 
     /**
-     * @param string $key
-     * @param mixed|null   $default
+     * @param string     $key
+     * @param mixed|null $default
      * @return mixed
      */
     public function getValue(string $key, $default = null);
+
+    /**
+     * @return array
+     */
+    public function getAll(): array;
 
 }

@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Router;
 
-use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Router\VerificationService;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Container\ContainerInterface;
 
 class VerificationFactory {
 
-    public function __invoke(ContainerInterface $container): Verification {
-        return new Verification(
+    public function __invoke(ContainerInterface $container): VerificationService {
+        return new VerificationService(
             $container->get(ITokenRepository::class),
             $container->get(IUserRepository::class)
         );

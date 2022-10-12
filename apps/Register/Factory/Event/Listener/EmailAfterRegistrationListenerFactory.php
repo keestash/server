@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Register\Factory\Event\Listener;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\Register\Event\EmailAfterRegistration;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\HTTP\IHTTPService;
@@ -35,7 +35,7 @@ class EmailAfterRegistrationListenerFactory {
     public function __invoke(ContainerInterface $container): EmailAfterRegistration {
         return new EmailAfterRegistration(
             $container->get(TemplateRendererInterface::class)
-            , $container->get(Legacy::class)
+            , $container->get(Application::class)
             , $container->get(IL10N::class)
             , $container->get(ILogger::class)
             , $container->get(IHTTPService::class)

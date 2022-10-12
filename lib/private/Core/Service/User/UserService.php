@@ -29,8 +29,8 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\Core\DTO\RBAC\Role;
 use Keestash\Core\DTO\User\User;
+use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
-use Keestash\Legacy\Legacy;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
@@ -44,8 +44,8 @@ use TypeError;
 
 class UserService implements IUserService {
 
-    private Legacy                 $legacy;
-    private IDateTimeService       $dateTimeService;
+    private Application      $legacy;
+    private IDateTimeService $dateTimeService;
     private IStringService         $stringService;
     private IUserRepositoryService $userRepositoryService;
     private EmailValidator         $emailValidator;
@@ -56,7 +56,7 @@ class UserService implements IUserService {
     private Config                 $config;
 
     public function __construct(
-        Legacy                   $legacy
+        Application $legacy
         , IDateTimeService       $dateTimeService
         , IStringService         $stringService
         , IUserRepositoryService $userRepositoryService
@@ -115,7 +115,7 @@ class UserService implements IUserService {
     }
 
     public function validWebsite(string $email): bool {
-        return false !== filter_var($email, FILTER_VALIDATE_URL);
+        return false !== filter_var($email, FILTER_VALIDATE_URL );
     }
 
     /**
@@ -123,17 +123,17 @@ class UserService implements IUserService {
      */
     public function getSystemUser(): IUser {
         $user = new User();
-        $user->setName((string) $this->legacy->getApplication()->get("name"));
+        $user->setName((string) $this->legacy->getMetaData()->get("name"));
         $user->setId(IUser::SYSTEM_USER_ID);
         $user->setHash(
             $this->getRandomHash()
         );
         $user->setCreateTs(new DateTime());
-        $user->setEmail((string) $this->legacy->getApplication()->get("email"));
-        $user->setFirstName((string) $this->legacy->getApplication()->get("name"));
-        $user->setLastName((string) $this->legacy->getApplication()->get("name"));
-        $user->setPhone((string) $this->legacy->getApplication()->get("phone"));
-        $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
+        $user->setEmail((string) $this->legacy->getMetaData()->get("email"));
+        $user->setFirstName((string) $this->legacy->getMetaData()->get("name"));
+        $user->setLastName((string) $this->legacy->getMetaData()->get("name"));
+        $user->setPhone((string) $this->legacy->getMetaData()->get("phone"));
+        $user->setWebsite((string) $this->legacy->getMetaData()->get("web"));
         $user->setLocale(
             $this->localeService->getLocale()
         );
@@ -158,11 +158,11 @@ class UserService implements IUserService {
             $this->getRandomHash()
         );
         $user->setCreateTs(new DateTime());
-        $user->setEmail((string) $this->legacy->getApplication()->get("email"));
-        $user->setFirstName((string) $this->legacy->getApplication()->get("name"));
-        $user->setLastName((string) $this->legacy->getApplication()->get("name"));
-        $user->setPhone((string) $this->legacy->getApplication()->get("phone"));
-        $user->setWebsite((string) $this->legacy->getApplication()->get("web"));
+        $user->setEmail((string) $this->legacy->getMetaData()->get("email"));
+        $user->setFirstName((string) $this->legacy->getMetaData()->get("name"));
+        $user->setLastName((string) $this->legacy->getMetaData()->get("name"));
+        $user->setPhone((string) $this->legacy->getMetaData()->get("phone"));
+        $user->setWebsite((string) $this->legacy->getMetaData()->get("web"));
         $user->setLocale(
             $this->localeService->getLocale()
         );
@@ -254,9 +254,9 @@ class UserService implements IUserService {
         $roles = new HashTable();
         foreach (($userArray['roles'] ?? []) as $key => $role) {
             $roles->put(
-                $key
+                $role['id']
                 , new Role(
-                    $key
+                    $role['id']
                     , $role['name']
                     , new HashTable()
                     , new DateTimeImmutable()

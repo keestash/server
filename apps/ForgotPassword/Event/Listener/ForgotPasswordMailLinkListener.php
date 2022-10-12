@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Event\Listener;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\ForgotPassword\Event\ForgotPasswordEvent;
 use KSA\ForgotPassword\Exception\ForgotPasswordException;
 use KSP\Core\DTO\Event\IEvent;
@@ -34,14 +34,14 @@ use Ramsey\Uuid\Uuid;
 
 class ForgotPasswordMailLinkListener implements IListener {
 
-    private Legacy                    $legacy;
+    private Application                    $legacy;
     private IHTTPService              $httpService;
     private TemplateRendererInterface $templateRenderer;
     private IL10N                     $translator;
     private IEmailService             $emailService;
 
     public function __construct(
-        Legacy                      $legacy
+        Application $legacy
         , IHTTPService              $httpService
         , TemplateRendererInterface $templateRenderer
         , IL10N                     $translator
@@ -62,8 +62,8 @@ class ForgotPasswordMailLinkListener implements IListener {
 
         $baseUrl   = $this->httpService->getBaseURL(true, true);
         $uuid      = Uuid::uuid4();
-        $appName   = $this->legacy->getApplication()->get("name");
-        $appSlogan = $this->legacy->getApplication()->get("slogan");
+        $appName   = $this->legacy->getMetaData()->get("name");
+        $appSlogan = $this->legacy->getMetaData()->get("slogan");
         $ctaLink   = $baseUrl . "/reset_password/" . $uuid;
 
         $rendered = $this->templateRenderer->render(

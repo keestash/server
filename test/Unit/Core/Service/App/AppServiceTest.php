@@ -30,6 +30,11 @@ class AppServiceTest extends TestCase {
 
     private IAppService $appService;
 
+    protected function setUp(): void {
+        parent::setUp();
+        $this->appService = $this->getServiceManager()->get(IAppService::class);
+    }
+
     public function testToApp(): void {
         $id   = "AppServiceTest";
         $name = $id;
@@ -52,9 +57,25 @@ class AppServiceTest extends TestCase {
         );
     }
 
-    protected function setUp(): void {
-        parent::setUp();
-        $this->appService = $this->getServiceManager()->get(IAppService::class);
+    public function testToConfigApp(): void {
+        $id   = "AppServiceTest";
+        $name = $id;
+        $app  = $this->appService->toApp(
+            $id
+            , [
+                ConfigProvider::APP_NAME         => $name
+                , ConfigProvider::APP_ORDER      => 1
+                , ConfigProvider::APP_VERSION    => 1
+                , ConfigProvider::APP_BASE_ROUTE => "index.php/my-awesome-route"
+            ]
+        );
+
+        $configApp = $this->appService->toConfigApp($app);
+
+        $this->assertInstanceOf(\KSP\Core\DTO\App\Config\IApp::class, $configApp);
+        $this->assertEquals($configApp->getId(), $id);
+        $this->assertEquals($configApp->isEnabled(), true);
+        $this->assertEquals($configApp->getVersion(), 1);
     }
 
 }

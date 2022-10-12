@@ -98,7 +98,7 @@ abstract class AESService implements IEncryptionService {
             , true
         );
 
-        if ($newHash !== $hash) {
+        if (!hash_equals($newHash,$hash)) {
             $this->logger->error("hashes do not match. There was an error. Aborting encryption");
             throw new EncryptionFailedException("hashes do not match. There was an error. Aborting encryption");
         }

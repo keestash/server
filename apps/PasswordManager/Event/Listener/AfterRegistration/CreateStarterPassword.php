@@ -23,8 +23,8 @@ namespace KSA\PasswordManager\Event\Listener\AfterRegistration;
 
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
+use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
-use Keestash\Legacy\Legacy;
 use KSA\PasswordManager\Exception\DefaultPropertiesNotSetException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
@@ -37,14 +37,14 @@ class CreateStarterPassword {
     public const FIRST_CREDENTIAL_ID = 1;
     public const ROOT_ID             = 1;
 
-    private Legacy            $legacy;
+    private Application            $legacy;
     private NodeRepository    $nodeRepository;
     private NodeService       $nodeService;
     private CredentialService $credentialService;
     private IL10N             $translator;
 
     public function __construct(
-        Legacy $legacy
+        Application $legacy
         , NodeRepository $nodeRepository
         , NodeService $nodeService
         , CredentialService $credentialService
@@ -78,10 +78,10 @@ class CreateStarterPassword {
         }
 
         $credential = $this->credentialService->createCredential(
-            $this->legacy->getApplication()->get('name')
-            , (string) $this->legacy->getApplication()->get("web")
+            $this->legacy->getMetaData()->get('name')
+            , (string) $this->legacy->getMetaData()->get("web")
             , $user->getName()
-            , (string) $this->legacy->getApplication()->get("name")
+            , (string) $this->legacy->getMetaData()->get("name")
             , $user
         );
         $credential->setId(CreateStarterPassword::FIRST_CREDENTIAL_ID);

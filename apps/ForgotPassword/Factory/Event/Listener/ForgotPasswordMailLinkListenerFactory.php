@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\ForgotPassword\Factory\Event\Listener;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\HTTP\IHTTPService;
@@ -38,7 +38,7 @@ class ForgotPasswordMailLinkListenerFactory implements FactoryInterface {
         , ?array           $options = null
     ): ForgotPasswordMailLinkListener {
         return new ForgotPasswordMailLinkListener(
-            $container->get(Legacy::class)
+            $container->get(Application::class)
             , $container->get(IHTTPService::class)
             , $container->get(TemplateRendererInterface::class)
             , $container->get(IL10N::class)

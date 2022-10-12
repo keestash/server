@@ -47,6 +47,10 @@ class FileService implements IFileService {
         $this->logger           = $logger;
     }
 
+    /**
+     * @param UploadedFileInterface $file
+     * @return IFile
+     */
     public function toFile(UploadedFileInterface $file): IFile {
         $uri = (string) $file->getStream()->getMetadata('uri');
 
@@ -59,6 +63,10 @@ class FileService implements IFileService {
         return $file;
     }
 
+    /**
+     * @param IFile $file
+     * @return IResult
+     */
     public function validateUploadedFile(IFile $file): IResult {
         $result = new Result();
         /** @var UploadedFile|IFile $file */
@@ -105,6 +113,10 @@ class FileService implements IFileService {
         return $result;
     }
 
+    /**
+     * @param IFile $file
+     * @return ICoreFile
+     */
     public function toCoreFile(IFile $file): ICoreFile {
         $mimeTypes  = new MimeTypes();
         $extensions = $mimeTypes->getExtensions($file->getType());
@@ -121,12 +133,20 @@ class FileService implements IFileService {
         return $coreFile;
     }
 
+    /**
+     * @param ICoreFile $file
+     * @return bool
+     */
     public function moveUploadedFile(ICoreFile $file): bool {
         $temporaryPath = $file->getTemporaryPath();
         if (null === $temporaryPath) return false;
         return move_uploaded_file($temporaryPath, $file->getFullPath());
     }
 
+    /**
+     * @param ICoreFile $file
+     * @return bool
+     */
     public function removeUploadedFile(ICoreFile $file): bool {
         return unlink($file->getFullPath());
     }

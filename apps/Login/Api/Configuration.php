@@ -23,7 +23,7 @@ namespace KSA\Login\Api;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\Core\Service\App\ILoaderService;
@@ -34,13 +34,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private Legacy       $legacy;
+    private Application       $legacy;
     private IHTTPService   $httpService;
     private ILoaderService $loader;
     private InstanceDB     $instanceDB;
 
     public function __construct(
-        Legacy           $legacy
+        Application $legacy
         , IHTTPService   $httpService
         , ILoaderService $loader
         , InstanceDB     $instanceDB
@@ -59,7 +59,7 @@ class Configuration implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "appName"                 => $this->legacy->getApplication()->get('name')
+                "appName"                 => $this->legacy->getMetaData()->get('name')
                 , "newAccountLink"        => $this->httpService->getBaseURL(true, true) . "/register"
                 , "forgotPasswordLink"    => $this->httpService->getBaseURL(true, true) . "/forgot_password"
                 , "registeringEnabled"    => $this->loader->hasApp(ConfigProvider::APP_ID)

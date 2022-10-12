@@ -21,18 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Middleware\Api;
 
-use Keestash\Core\Service\Router\Verification;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
+use KSP\Core\Service\Router\IVerificationService;
 use Psr\Container\ContainerInterface;
 
 class KeestashHeaderMiddlewareFactory {
 
     public function __invoke(ContainerInterface $container): KeestashHeaderMiddleware {
         return new KeestashHeaderMiddleware(
-            $container->get(Verification::class)
+            $container->get(IVerificationService::class)
         );
     }
 

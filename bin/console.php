@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
-use Keestash\Legacy\Legacy;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
 use Laminas\Config\Config;
@@ -44,15 +43,15 @@ use Symfony\Component\Console\Application;
     $container = require_once __DIR__ . '/../lib/start.php';
     /** @var Config $config */
     $config = $container->get(Config::class);
-    /** @var Legacy $legacy */
-    $legacy = $container->get(Legacy::class);
+    /** @var Application $legacy */
+    $legacy = $container->get(Application::class);
 
     /** @var IEnvironmentService $environmentService */
     $environmentService = $container->get(IEnvironmentService::class);
     $environmentService->setEnv(ConfigProvider::ENVIRONMENT_CONSOLE);
     $cliVersion  = "1.0.0";
     $application = new Application(
-            $legacy->getApplication()->get("name") . " CLI Tools"
+            $legacy->getMetaData()->get("name") . " CLI Tools"
             , $cliVersion
     );
 

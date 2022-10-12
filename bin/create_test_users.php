@@ -24,7 +24,7 @@ declare(strict_types=1);
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\User\User;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Event\IEventService;
 use Laminas\Config\Config;
@@ -57,24 +57,24 @@ use Psr\Container\ContainerInterface;
 
     for ($i = 0; $i < $userAmount; $i++) {
         $user = createUser(
-                $container->get(Legacy::class)
+                $container->get(Application::class)
         );
         $userRepositoryService->createUser($user);
     }
 })();
 
-function createUser(Legacy $legacy): IUser {
+function createUser(Application $legacy): IUser {
     $user = new User();
     $user->setName(hash("md5", uniqid("", true)));
     $user->setHash(
             hash("md5", uniqid("", true))
     );
     $user->setCreateTs(new DateTime());
-    $user->setEmail((string) $legacy->getApplication()->get("email"));
-    $user->setFirstName((string) $legacy->getApplication()->get("name"));
-    $user->setLastName((string) $legacy->getApplication()->get("name"));
-    $user->setPhone((string) $legacy->getApplication()->get("phone"));
-    $user->setWebsite((string) $legacy->getApplication()->get("web"));
+    $user->setEmail((string) $legacy->getMetaData()->get("email"));
+    $user->setFirstName((string) $legacy->getMetaData()->get("name"));
+    $user->setLastName((string) $legacy->getMetaData()->get("name"));
+    $user->setPhone((string) $legacy->getMetaData()->get("phone"));
+    $user->setWebsite((string) $legacy->getMetaData()->get("web"));
     $user->setPassword(
             hash("md5", uniqid())
     );

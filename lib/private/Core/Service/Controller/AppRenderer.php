@@ -25,12 +25,11 @@ use DateTime;
 use Keestash\ConfigProvider;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
+use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Exception\File\FileNotFoundException;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\User\UserNotFoundException;
-use Keestash\Legacy\Legacy;
 use Keestash\View\Navigation\App\NavigationList;
 use KSA\Login\Controller\Login;
 use KSP\Core\DTO\Token\IToken;
@@ -39,6 +38,7 @@ use KSP\Core\Manager\FileManager\IFileManager;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\Router\IRouterService;
@@ -51,10 +51,10 @@ class AppRenderer implements IAppRenderer {
 
     private LockHandler               $lockHandler;
     private FileService               $fileService;
-    private RawFileService            $rawFileService;
+    private IRawFileService           $rawFileService;
     private TemplateRendererInterface $templateRenderer;
     private IHTTPService              $httpService;
-    private Legacy                    $legacy;
+    private Application               $legacy;
     private Config                    $config;
     private ILocaleService            $localeService;
     private IRouterService            $routerService;
@@ -67,11 +67,11 @@ class AppRenderer implements IAppRenderer {
         IRouterService              $routerService
         , Config                    $config
         , TemplateRendererInterface $templateRenderer
-        , Legacy                    $legacy
+        , Application               $legacy
         , IHTTPService              $httpService
         , LockHandler               $lockHandler
         , FileService               $fileService
-        , RawFileService            $rawFileService
+        , IRawFileService           $rawFileService
         , ILocaleService            $localeService
         , ILoaderService            $loader
         , RouterInterface           $router
@@ -106,7 +106,7 @@ class AppRenderer implements IAppRenderer {
             ->render(
                 'root::head'
                 , [
-                    "title"            => $this->legacy->getApplication()->get("name")
+                    "title"            => $this->legacy->getMetaData()->get("name")
                     , "stylecss"       => $this->httpService->getBaseURL(false) . "/lib/scss/dist/style.css"
                     , "faviconPath"    => $this->httpService->getBaseURL(false) . "/asset/img/favicon.png"
                     , "fontAwesomeCss" => "https://use.fontawesome.com/releases/v5.5.0/css/all.css"
@@ -166,7 +166,7 @@ class AppRenderer implements IAppRenderer {
                     , 'contextless'            => $contextLess
 
                     // TODO these are added only when not public route
-                    , "vendorName"             => $this->legacy->getApplication()->get("name")
+                    , "vendorName"             => $this->legacy->getMetaData()->get("name")
                     , "settings"               => $settings
                     , "baseURL"                => $this->httpService->getBaseURL()
                     , "searchInputPlaceholder" => $this->translator->translate("Search Everything")
@@ -196,18 +196,18 @@ class AppRenderer implements IAppRenderer {
             $file->setOwner($user);
         }
 
-        $file = $this->fileService->read(
-            $this->rawFileService->stringToUri(
-                $file->getFullPath()
-            )
-        );
-
-        if (null === $file) {
+        try {
+            $file = $this->fileService->read(
+                $this->rawFileService->stringToUri(
+                    $file->getFullPath()
+                )
+            );
+        } catch (FileNotFoundException $exception) {
             $file = $this->fileService->getDefaultImage();
             $file->setOwner($user);
         }
 
-        return (string) $this->rawFileService->stringToBase64($file->getFullPath());
+        return $this->rawFileService->stringToBase64($file->getFullPath());
     }
 
     public function renderBody(
@@ -252,9 +252,9 @@ class AppRenderer implements IAppRenderer {
             ->render(
                 'root::footer'
                 , [
-                    "start_year"     => $this->legacy->getApplication()->get("start_date")->format("Y")
+                    "start_year"     => $this->legacy->getMetaData()->get("start_date")->format("Y")
                     , "current_year" => (new DateTime())->format("Y")
-                    , "appName"      => $this->legacy->getApplication()->get("name")
+                    , "appName"      => $this->legacy->getMetaData()->get("name")
                     , "vendor_name"  => $this->legacy->getVendor()->get("name")
                     , "vendor_url"   => $this->legacy->getVendor()->get("web")
                 ]

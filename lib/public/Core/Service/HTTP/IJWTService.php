@@ -27,4 +27,6 @@ interface IJWTService {
 
     public function getJWT(IAudience $audience): string;
 
+    public function decodeJwt(string $jwt): IAudience;
+
 }
