@@ -28,8 +28,8 @@ use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,7 +40,7 @@ class Remove implements RequestHandlerInterface {
     public const CONTEXT = "node_attachments";
 
     private IFileRepository $fileRepository;
-    private IDataManager    $dataManager;
+    private IDataService    $dataManager;
     private FileRepository  $nodeFileRepository;
     private IL10N           $translator;
     private AccessService   $accessService;
@@ -50,7 +50,7 @@ class Remove implements RequestHandlerInterface {
         , IL10N          $l10n
         , FileRepository $nodeFileRepository
         , AccessService  $accessService
-        , IDataManager   $dataManager
+        , IDataService   $dataManager
     ) {
         $this->translator         = $l10n;
         $this->nodeFileRepository = $nodeFileRepository;

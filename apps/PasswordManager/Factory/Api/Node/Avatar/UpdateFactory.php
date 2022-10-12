@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Avatar;
 
-use Keestash\Core\Builder\DataManager\DataManagerBuilder;
+use Keestash\Core\Builder\Data\DataServiceBuilder;
 use Keestash\Core\Service\File\FileService;
 use KSA\PasswordManager\Api\Node\Attachment\Remove;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
@@ -38,7 +38,7 @@ use Psr\Container\ContainerInterface;
 class UpdateFactory {
 
     public function __invoke(ContainerInterface $container): Update {
-        $dataManager = (new DataManagerBuilder())
+        $dataManager = (new DataServiceBuilder())
             ->withAppId(ConfigProvider::APP_ID)
             ->withContext(Update::CONTEXT)
             ->withConfig($container->get(Config::class))

@@ -24,19 +24,19 @@ namespace KSA\PasswordManager\Event\Listener;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\Manager\Data\IDataManager;
+use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\Event\Listener\IListener;
 
 class PostUserDelete implements IListener {
 
     private CommentRepository $commentRepository;
-    private NodeRepository    $nodeRepository;
-    private IDataManager      $dataManager;
+    private NodeRepository $nodeRepository;
+    private IDataService   $dataManager;
 
     public function __construct(
         CommentRepository $commentRepository
         , NodeRepository  $nodeRepository
-        , IDataManager    $dataManager
+        , IDataService    $dataManager
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
