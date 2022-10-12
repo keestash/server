@@ -22,9 +22,10 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Instance;
 
 use KSP\Core\Backend\IBackend;
+use KSP\Core\Repository\Instance\IInstanceRepository;
 use KSP\Core\Service\Logger\ILogger;
 
-class InstanceRepository {
+class InstanceRepository implements IInstanceRepository {
 
     private ILogger  $logger;
     private IBackend $backend;
