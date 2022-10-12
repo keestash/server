@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
+use Keestash\Core\Builder\DataManager\DataManagerBuilder;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\File\IFileRepository;
@@ -34,6 +36,13 @@ use Psr\Container\ContainerInterface;
 class AddFactory {
 
     public function __invoke(ContainerInterface $container): Add {
+
+        $dataManager = (new DataManagerBuilder())
+            ->withAppId(ConfigProvider::APP_ID)
+            ->withContext(Add::CONTEXT)
+            ->withConfig($container->get(Config::class))
+            ->build();
+
         return new Add(
             $container->get(IFileRepository::class)
             , $container->get(NodeRepository::class)
@@ -42,6 +51,7 @@ class AddFactory {
             , $container->get(ILogger::class)
             , $container->get(Config::class)
             , $container->get(IJWTService::class)
+            , $dataManager
         );
     }
 

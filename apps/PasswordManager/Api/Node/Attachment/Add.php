@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 use DateTime;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\Manager\DataManager\DataManager;
 use Keestash\Exception\File\FileNotCreatedException;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
@@ -37,6 +36,7 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
@@ -62,13 +62,13 @@ class Add implements RequestHandlerInterface {
         , 3 => Add::FIELD_NAME_ERROR
         , 4 => Add::FIELD_NAME_SIZE
     ];
-    private const CONTEXT                  = "node_attachments";
+    public const  CONTEXT                  = "node_attachments";
     private const ERROR_NOT_INSERTED_IN_DB = 0;
     private const ERROR_NOT_CONNECTED      = 1;
 
     private IFileRepository $fileRepository;
     private NodeRepository  $nodeRepository;
-    private DataManager     $dataManager;
+    private IDataManager    $dataManager;
     private FileRepository  $nodeFileRepository;
     private IFileService    $uploadFileService;
     private ILogger         $logger;
@@ -83,6 +83,7 @@ class Add implements RequestHandlerInterface {
         , ILogger        $logger
         , Config         $config
         , IJWTService    $jwtService
+        , IDataManager   $dataManager
     ) {
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
@@ -91,11 +92,7 @@ class Add implements RequestHandlerInterface {
         $this->logger             = $logger;
         $this->jwtService         = $jwtService;
         $this->config             = $config;
-        $this->dataManager        = new DataManager(
-            ConfigProvider::APP_ID
-            , $config
-            , Add::CONTEXT
-        );
+        $this->dataManager        = $dataManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
