@@ -22,9 +22,6 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Avatar;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\Manager\DataManager\DataManager;
-use Keestash\Core\Service\File\FileService as CoreFileService;
-use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Exception\Node\Credential\FileNotMovedException;
@@ -40,7 +37,6 @@ use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
-use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -55,7 +51,6 @@ class Update implements RequestHandlerInterface {
     private FileRepository     $nodeFileRepository;
     private NodeRepository     $nodeRepository;
     private IRawFileService    $rawFileService;
-    private CoreFileService    $coreFileService;
     private AccessService      $accessService;
 
     public function __construct(
@@ -64,22 +59,16 @@ class Update implements RequestHandlerInterface {
         , FileRepository   $nodeFileRepository
         , NodeRepository   $nodeRepository
         , IRawFileService  $rawFileService
-        , CoreFileService  $coreFileService
-        , Config           $config
         , AccessService    $accessService
+        , IDataManager     $dataManager
     ) {
         $this->uploadFileService  = $uploadFileService;
         $this->fileRepository     = $fileRepository;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->nodeRepository     = $nodeRepository;
         $this->rawFileService     = $rawFileService;
-        $this->coreFileService    = $coreFileService;
         $this->accessService      = $accessService;
-        $this->dataManager        = new DataManager(
-            ConfigProvider::APP_ID
-            , $config
-            , Update::CONTEXT
-        );
+        $this->dataManager        = $dataManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

@@ -376,6 +376,21 @@ parameters:
 			path: ../../apps/PasswordManager/Event/Listener/AfterRegistration/CreateStarterPassword.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/AddFactory.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/RemoveFactory.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Factory/Api/Node/Avatar/UpdateFactory.php
+
+		-
 			message: "#^Parameter \\#1 \\$bag of method KSA\\\\PasswordManager\\\\Middleware\\\\NodeAccessMiddleware\\:\\:extractNodeIds\\(\\) expects array, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Middleware/NodeAccessMiddleware.php
@@ -1269,6 +1284,11 @@ parameters:
 			message: "#^Variable \\$CONFIG on left side of \\?\\? is never defined\\.$#"
 			count: 1
 			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Core/System/RateLimit/FileRateLimiterFactory.php
 
 		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"

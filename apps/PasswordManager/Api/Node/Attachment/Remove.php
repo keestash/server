@@ -22,27 +22,25 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\Manager\DataManager\DataManager;
 use Keestash\Exception\File\FileNotDeletedException;
 use Keestash\Exception\File\FileNotFoundException;
-use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\L10N\IL10N;
-use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class Remove implements RequestHandlerInterface {
 
-    private const CONTEXT = "node_attachments";
+    public const CONTEXT = "node_attachments";
 
     private IFileRepository $fileRepository;
-    private DataManager     $dataManager;
+    private IDataManager    $dataManager;
     private FileRepository  $nodeFileRepository;
     private IL10N           $translator;
     private AccessService   $accessService;
@@ -51,19 +49,14 @@ class Remove implements RequestHandlerInterface {
         IFileRepository  $fileRepository
         , IL10N          $l10n
         , FileRepository $nodeFileRepository
-        , Config         $config
         , AccessService  $accessService
+        , IDataManager   $dataManager
     ) {
         $this->translator         = $l10n;
         $this->nodeFileRepository = $nodeFileRepository;
         $this->fileRepository     = $fileRepository;
         $this->accessService      = $accessService;
-
-        $this->dataManager = new DataManager(
-            ConfigProvider::APP_ID
-            , $config
-            , Remove::CONTEXT
-        );
+        $this->dataManager        = $dataManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

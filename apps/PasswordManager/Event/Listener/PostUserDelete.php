@@ -21,14 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event\Listener;
 
-use Keestash\Core\Manager\DataManager\DataManager;
-use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Service\Event\Listener\IListener;
-use Laminas\Config\Config;
 
 class PostUserDelete implements IListener {
 
@@ -39,14 +36,11 @@ class PostUserDelete implements IListener {
     public function __construct(
         CommentRepository $commentRepository
         , NodeRepository  $nodeRepository
-        , Config          $config
+        , IDataManager    $dataManager
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
-        $this->dataManager       = new DataManager(
-            ConfigProvider::APP_ID
-            , $config
-        );
+        $this->dataManager       = $dataManager;
     }
 
     public function execute(IEvent $event): void {

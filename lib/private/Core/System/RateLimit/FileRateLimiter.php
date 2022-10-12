@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\System\RateLimit;
 
 use Exception;
-use Keestash\Core\Manager\DataManager\DataManager;
 use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
@@ -40,17 +39,13 @@ class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
     private IDataManager $dataManager;
 
     public function __construct(
-        Rate      $rate
-        , ILogger $logger
-        , Config  $config
+        Rate           $rate
+        , ILogger      $logger
+        , IDataManager $dataManager
     ) {
         parent::__construct($rate);
         $this->logger      = $logger;
-        $this->dataManager = new DataManager(
-            'core/system'
-            , $config
-            , 'ratelimiter'
-        );
+        $this->dataManager = $dataManager;
     }
 
     private function loadStore(): void {
