@@ -36,7 +36,7 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;

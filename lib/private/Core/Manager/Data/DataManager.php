@@ -19,13 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\DataManager;
+namespace Keestash\Core\Manager\Data;
 
 use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use Laminas\Config\Config;
 
 /**
