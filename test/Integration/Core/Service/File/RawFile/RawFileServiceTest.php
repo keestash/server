@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Integration\Core\Service\File\RawFile;
 
+use Keestash\Exception\File\FileNotExistsException;
 use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Service\File\RawFile\IRawFileService;
@@ -66,7 +67,7 @@ class RawFileServiceTest extends TestCase {
     public function provideStringToUri(): array {
         return [
             [__DIR__, __DIR__, true, null]
-            , [__DIR__ . '/dev/null', __DIR__, true, FileNotFoundException::class]
+            , [__DIR__ . '/dev/null', __DIR__, true, FileNotExistsException::class]
             , [__DIR__ . '/dev/null', __DIR__ . '/dev/null', false, null]
         ];
     }

@@ -42,7 +42,7 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\App\AppService;
-use Keestash\Core\Service\App\LoaderServiceService;
+use Keestash\Core\Service\App\LoaderService;
 use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
@@ -186,7 +186,7 @@ return [
     IEventService::class                                   => EventService::class,
 
     IL10N::class                   => GetText::class,
-    ILoaderService::class          => LoaderServiceService::class,
+    ILoaderService::class          => LoaderService::class,
     SessionHandlerInterface::class => SessionHandler::class,
     IAppRenderer::class            => AppRenderer::class,
     IMigrator::class               => Migrator::class,

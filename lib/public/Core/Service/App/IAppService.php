@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\App;
 
+use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\App\IApp;
 
 interface IAppService {
@@ -28,5 +29,11 @@ interface IAppService {
     public function toApp(string $id, array $data): IApp;
 
     public function toConfigApp(IApp $app): \KSP\Core\DTO\App\Config\IApp;
+
+    public function getAppsThatNeedAUpgrade(HashTable $loadedApps, HashTable $installedApps): HashTable;
+
+    public function getNewlyAddedApps(HashTable $loadedApps, HashTable $installedApps): HashTable;
+
+    public function removeDisabledApps(HashTable $loadedApps, HashTable $installedApps): HashTable;
 
 }

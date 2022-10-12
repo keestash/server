@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,14 +19,21 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Setting;
+namespace Keestash\Factory\Core\Service\App;
 
-use KSP\Core\DTO\Entity\IObject;
+use Keestash\Core\Service\App\AppService;
+use KSP\Core\Service\App\IAppService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-interface ISetting extends IObject {
+class AppServiceFactory implements FactoryInterface {
 
-    public function getName(): string;
-
-    public function getId(): string;
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): IAppService {
+        return new AppService();
+    }
 
 }

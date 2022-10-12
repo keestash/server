@@ -48,9 +48,8 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Core\Service\App\AppService;
-use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\App\InstallerService;
-use Keestash\Core\Service\App\LoaderServiceService;
+use Keestash\Core\Service\App\LoaderService;
 use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Config\IniConfigService;
@@ -120,7 +119,7 @@ use Keestash\Factory\Core\Repository\RBAC\PermissionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Token\TokenRepositoryFactory;
 use Keestash\Factory\Core\Repository\User\UserRepositoryFactory;
 use Keestash\Factory\Core\Repository\User\UserStateRepositoryFactory;
-use Keestash\Factory\Core\Service\App\DiffFactory;
+use Keestash\Factory\Core\Service\App\AppServiceFactory;
 use Keestash\Factory\Core\Service\App\InstallerServiceFactory;
 use Keestash\Factory\Core\Service\App\LoaderServiceFactory;
 use Keestash\Factory\Core\Service\Config\ConfigServiceFactory;
@@ -209,7 +208,7 @@ return [
     ILogger::class                                                 => LoggerFactory::class,
     Application::class                                             => LegacyFactory::class,
     EventService::class                                            => EventManagerFactory::class,
-    LoaderServiceService::class                                    => LoaderServiceFactory::class,
+    LoaderService::class                                           => LoaderServiceFactory::class,
     VerificationService::class                                     => VerificationFactory::class,
     InstanceDB::class                                              => InstanceDBFactory::class,
     Migrator::class                                                => MigratorFactory::class,
@@ -218,7 +217,6 @@ return [
     \Keestash\Core\System\Installation\Instance\LockHandler::class => InstanceLockHandlerFactory::class,
     LoggedInMiddleware::class                                      => LoggedInMiddlewareFactory::class,
     AppRenderer::class                                             => AppRendererFactory::class,
-    Diff::class                                                    => DiffFactory::class,
     Compiler::class                                                => CompilerFactory::class,
     JWTService::class                                              => JWTServiceFactory::class,
 
@@ -272,7 +270,7 @@ return [
     ReflectionService::class                                       => InvokableFactory::class,
     LocaleService::class                                           => InvokableFactory::class,
     EnvironmentService::class                                      => InvokableFactory::class,
-    AppService::class                                              => InvokableFactory::class,
+    AppService::class                                              => AppServiceFactory::class,
     EdgeService::class                                             => InvokableFactory::class,
     IconService::class                                             => InvokableFactory::class,
     PasswordService::class                                         => PasswordServiceFactory::class,

@@ -23,12 +23,12 @@ namespace KSA\Install\Api;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\App\InstallerService;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Logger\ILogger;
 use Psr\Http\Message\ResponseInterface;
@@ -40,10 +40,10 @@ class InstallApps implements RequestHandlerInterface {
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
     private HTTPService      $httpService;
-    private ILogger        $logger;
-    private ILoaderService $loader;
-    private IAppRepository $appRepository;
-    private Diff             $diff;
+    private ILogger          $logger;
+    private ILoaderService   $loader;
+    private IAppRepository   $appRepository;
+    private IAppService      $appService;
 
     public function __construct(
         InstallerService $installer
@@ -52,7 +52,7 @@ class InstallApps implements RequestHandlerInterface {
         , ILogger        $logger
         , ILoaderService $loader
         , IAppRepository $appRepository
-        , Diff           $diff
+        , IAppService    $appService
     ) {
         $this->installerService = $installer;
         $this->lockHandler      = $lockHandler;
@@ -60,7 +60,7 @@ class InstallApps implements RequestHandlerInterface {
         $this->logger           = $logger;
         $this->loader           = $loader;
         $this->appRepository    = $appRepository;
-        $this->diff             = $diff;
+        $this->appService       = $appService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -70,10 +70,10 @@ class InstallApps implements RequestHandlerInterface {
         $installedApps = $this->appRepository->getAllApps();
 
         // Step 1: we remove all apps that are disabled in our db
-        $loadedApps = $this->diff->removeDisabledApps($loadedApps, $installedApps);
+        $loadedApps = $this->appService->removeDisabledApps($loadedApps, $installedApps);
 
         // Step 2: we determine all apps that needs to be installed
-        $appsToInstall = $this->diff->getNewlyAddedApps($loadedApps, $installedApps);
+        $appsToInstall = $this->appService->getNewlyAddedApps($loadedApps, $installedApps);
 
         // Step 3: Install them!
         $installed = $this->install($appsToInstall);
@@ -81,7 +81,7 @@ class InstallApps implements RequestHandlerInterface {
         // Step 4: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
-        $appsToUpgrade = $this->diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
+        $appsToUpgrade = $this->appService->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
 
         $updated = $this->install($appsToUpgrade);
 

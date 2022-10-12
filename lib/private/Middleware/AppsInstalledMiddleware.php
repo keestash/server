@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
-use Keestash\Core\Service\App\Diff;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\App\LockHandler as AppLockHandler;
 use KSP\Api\IRequest;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -39,20 +39,20 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
     private AppLockHandler $appLockHandler;
     private ILoaderService $loader;
     private IAppRepository $appRepository;
-    private Diff           $diff;
+    private IAppService    $appService;
 
     public function __construct(
         HTTPService      $httpService
         , ILoaderService $loader
         , IAppRepository $appRepository
-        , Diff           $diff
         , AppLockHandler $appLockHandler
+        , IAppService    $appService
     ) {
         $this->httpService    = $httpService;
         $this->loader         = $loader;
         $this->appRepository  = $appRepository;
-        $this->diff           = $diff;
         $this->appLockHandler = $appLockHandler;
+        $this->appService     = $appService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -78,7 +78,7 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         $loadedApps    = $this->loader->getApps();
         $installedApps = $this->appRepository->getAllApps();
 
-        $appsToInstall = $this->diff->getNewlyAddedApps($loadedApps, $installedApps);
+        $appsToInstall = $this->appService->getNewlyAddedApps($loadedApps, $installedApps);
 
         // Step 1: we check if we have new apps to Install
         if ($appsToInstall->size() > 0) {
@@ -86,12 +86,12 @@ class AppsInstalledMiddleware implements MiddlewareInterface {
         }
 
         // Step 2: we remove all apps that are disabled in our db
-        $loadedApps = $this->diff->removeDisabledApps($loadedApps, $installedApps);
+        $loadedApps = $this->appService->removeDisabledApps($loadedApps, $installedApps);
 
         // Step 3: we check if one of our loaded apps has a new version
         // at this point, we can be sure that both maps contain the same
         // apps
-        $appsToUpgrade = $this->diff->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
+        $appsToUpgrade = $this->appService->getAppsThatNeedAUpgrade($loadedApps, $installedApps);
 
         if ($appsToUpgrade->size() > 0) {
             return $this->handleInstall();

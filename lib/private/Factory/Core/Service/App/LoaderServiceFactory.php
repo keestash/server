@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\App;
 
-use Keestash\Core\Service\App\LoaderServiceService;
+use Keestash\Core\Service\App\LoaderService;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
 use Laminas\Config\Config;
@@ -30,7 +30,7 @@ use Psr\Container\ContainerInterface;
 class LoaderServiceFactory {
 
     public function __invoke(ContainerInterface $container): ILoaderService {
-        return new LoaderServiceService(
+        return new LoaderService(
             $container->get(Config::class)
             , $container->get(IAppService::class)
         );
