@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
+use Keestash\Core\Builder\DataManager\DataManagerBuilder;
 use KSA\PasswordManager\Api\Node\Attachment\Remove;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\Repository\File\IFileRepository;
@@ -32,12 +34,19 @@ use Psr\Container\ContainerInterface;
 class RemoveFactory {
 
     public function __invoke(ContainerInterface $container): Remove {
+        $dataManager = (new DataManagerBuilder())
+            ->withAppId(ConfigProvider::APP_ID)
+            ->withContext(Remove::CONTEXT)
+            ->withConfig($container->get(Config::class))
+            ->build();
+
         return new Remove(
             $container->get(IFileRepository::class)
             , $container->get(IL10N::class)
             , $container->get(FileRepository::class)
-            , $container->get(Config::class)
             , $container->get(AccessService::class)
+            , $dataManager
+
         );
     }
 

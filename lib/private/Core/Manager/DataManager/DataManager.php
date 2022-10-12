@@ -23,7 +23,6 @@ namespace Keestash\Core\Manager\DataManager;
 
 use Keestash;
 use Keestash\Core\DTO\File\File;
-use Keestash\Core\DTO\File\FileList;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Manager\DataManager\IDataManager;
@@ -53,44 +52,8 @@ class DataManager implements IDataManager {
         $this->createDir($this->path);
     }
 
-    private function buildPath(): void {
-        $path = $this->config->get(Keestash\ConfigProvider::DATA_PATH) . "/" . $this->appId;
-
-        if (null !== $this->context) {
-            $path = $path . "/" . $this->context;
-        }
-        $this->path = $path;
-    }
-
-    private function createDir(string $path): bool {
-        $realPath = realpath($path);
-        $isDir    = false !== $realPath && true === is_dir($realPath);
-
-        if (false === $isDir) {
-            $dirCreated = mkdir($path, 0777, true);
-
-            if (false === $dirCreated) {
-                throw new FolderNotCreatedException();
-            }
-        }
-
-        return true;
-    }
-
     public function getPath(): string {
         return $this->path;
-    }
-
-    public function storeAll(FileList $fileList): bool {
-        $storedAll = false;
-        /** @var IFile $file */
-        foreach ($fileList as $file) {
-            $stored    = $this->store($file);
-            $storedAll = $storedAll || $stored;
-        }
-
-        return $storedAll;
-
     }
 
     public function store(IFile $file): bool {
@@ -127,17 +90,6 @@ class DataManager implements IDataManager {
         return $removed;
     }
 
-    public function getAll(FileList $fileList): FileList {
-
-        /** @var IFile $file */
-        foreach ($fileList as $index => $file) {
-            $file = $this->get($file);
-            $fileList->addToIndex($index, $file);
-        }
-
-        return $fileList;
-    }
-
     public function get(IFile $file): IFile {
         $file   = new File();
         $isFile = is_file($file->getFullPath());
@@ -146,16 +98,28 @@ class DataManager implements IDataManager {
         return $file;
     }
 
-    public function removeAll(FileList $fileList): bool {
-        $removed = false;
-        /** @var IFile $file */
-        foreach ($fileList as $file) {
+    private function buildPath(): void {
+        $path = $this->config->get(Keestash\ConfigProvider::DATA_PATH) . "/" . $this->appId;
 
-            $removed = $this->remove($file);
+        if (null !== $this->context) {
+            $path = $path . "/" . $this->context;
+        }
+        $this->path = $path;
+    }
 
+    private function createDir(string $path): bool {
+        $realPath = realpath($path);
+        $isDir    = false !== $realPath && true === is_dir($realPath);
+
+        if (false === $isDir) {
+            $dirCreated = mkdir($path, 0777, true);
+
+            if (false === $dirCreated) {
+                throw new FolderNotCreatedException();
+            }
         }
 
-        return $removed;
+        return true;
     }
 
 }
