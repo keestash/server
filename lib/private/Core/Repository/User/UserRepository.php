@@ -274,7 +274,7 @@ class UserRepository implements IUserRepository {
             return $user;
 
         } catch (Exception $exception) {
-            $this->logger->error('error while creating user', ['exception' => $exception]);
+            $this->logger->error('error while creating user', ['exception' => $exception, 'user' => $user]);
             throw new UserNotCreatedException();
         }
     }
@@ -366,7 +366,7 @@ class UserRepository implements IUserRepository {
             $userCount = count($users);
 
             if (0 === $userCount) {
-                $this->logger->error('user not foundzzzzz', ['usercount' => $userCount, 'sql' => $queryBuilder->getSQL(), 'id' => $id]);
+                $this->logger->warning('user not found', ['usercount' => $userCount, 'sql' => $queryBuilder->getSQL(), 'id' => $id]);
                 throw new UserNotFoundException();
             }
 

@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption\Key;
 
+use Keestash\Exception\Key\KeyNotCreatedException;
+use Keestash\Exception\Key\UnsupportedKeyException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
@@ -33,18 +35,20 @@ interface IKeyService {
      * @param ICredential $credential
      * @param IKeyHolder  $keyHolder
      *
-     * @return IKey|null
+     * @return IKey
+     * @throws KeyNotCreatedException
      */
-    public function createKey(ICredential $credential, IKeyHolder $keyHolder): ?IKey;
+    public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey;
 
     /**
      * Stores a given key
      *
      * @param IKeyHolder $keyHolder
      * @param IKey       $key
-     * @return bool
+     * @return IKey
+     * @throws UnsupportedKeyException
      */
-    public function storeKey(IKeyHolder $keyHolder, IKey $key): bool;
+    public function storeKey(IKeyHolder $keyHolder, IKey $key): IKey;
 
     /**
      * retrieves a given key
@@ -55,12 +59,16 @@ interface IKeyService {
     public function getKey(IKeyHolder $keyHolder): IKey;
 
     /**
+     *
      * runs the createKey() and storeKey() methods of this class
      *
      * @param IKeyHolder $keyHolder
+     * @return IKey
+     * @throws KeyNotCreatedException
+     * @throws UnsupportedKeyException
      * @see IKeyService::storeKey()
      * @see IKeyService::createKey()
      */
-    public function createAndStoreKey(IKeyHolder $keyHolder): void;
+    public function createAndStoreKey(IKeyHolder $keyHolder): IKey;
 
 }

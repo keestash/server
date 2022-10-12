@@ -30,6 +30,10 @@ use KSP\Core\DTO\Entity\IJsonObject;
  */
 interface IPassword extends IJsonObject {
 
+    public const QUALITY_BAD    = -1;
+    public const QUALITY_NORMAL = 0;
+    public const QUALITY_GOOD   = 1;
+
     public function getLength(): int;
 
     public function getValue(): string;

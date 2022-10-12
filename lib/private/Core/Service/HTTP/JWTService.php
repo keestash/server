@@ -23,6 +23,8 @@ namespace Keestash\Core\Service\HTTP;
 
 use DateTime;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Service\HTTP\IHTTPService;
@@ -31,7 +33,7 @@ use KSP\Core\Service\HTTP\IJWTService;
 class JWTService implements IJWTService {
 
     private IHTTPService $httpService;
-    private InstanceDB  $instanceDB;
+    private InstanceDB   $instanceDB;
 
     public function __construct(
         IHTTPService $httpService
@@ -57,6 +59,20 @@ class JWTService implements IJWTService {
             , (string) $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
         );
 
+    }
+
+    public function decodeJwt(string $jwt): IAudience {
+        $object = JWT::decode(
+            $jwt
+            , new Key(
+                (string) $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+                , 'HS256'
+            )
+        );
+        return new Audience(
+            (string) $object->aud->type
+            , (string) $object->aud->value
+        );
     }
 
 }

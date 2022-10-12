@@ -55,6 +55,7 @@ use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\Controller\AppRenderer;
+use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
@@ -74,6 +75,8 @@ use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
+use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizerService;
+use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Phinx\Migrator;
@@ -81,10 +84,11 @@ use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
-use Keestash\Core\Service\Router\Verification;
+use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\Stylesheet\Compiler;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\Command\Keestash\EventsFactory;
@@ -103,19 +107,19 @@ use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
 use Keestash\Factory\Core\Manager\EventManager\EventManagerFactory;
 use Keestash\Factory\Core\Manager\Logger\LoggerManagerFactory;
-use Keestash\Factory\Core\Repository\ApiLogRepositoryFactory;
+use Keestash\Factory\Core\Repository\ApiLogRepository\ApiLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\AppRepository\AppRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\User\UserKeyRepositoryFactory;
-use Keestash\Factory\Core\Repository\FileRepositoryFactory;
+use Keestash\Factory\Core\Repository\File\FileRepositoryFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceDBFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceRepositoryFactory;
 use Keestash\Factory\Core\Repository\Job\JobRepositoryFactory;
 use Keestash\Factory\Core\Repository\Queue\QueueRepositoryFactory;
 use Keestash\Factory\Core\Repository\RBAC\PermissionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Token\TokenRepositoryFactory;
+use Keestash\Factory\Core\Repository\User\UserRepositoryFactory;
 use Keestash\Factory\Core\Repository\User\UserStateRepositoryFactory;
-use Keestash\Factory\Core\Repository\UserRepositoryFactory;
 use Keestash\Factory\Core\Service\App\DiffFactory;
 use Keestash\Factory\Core\Service\App\InstallerServiceFactory;
 use Keestash\Factory\Core\Service\App\LoaderServiceFactory;
@@ -161,7 +165,6 @@ use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
-use Keestash\Legacy\Legacy;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
 use Keestash\Middleware\Api\PermissionMiddleware;
@@ -175,7 +178,6 @@ use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMid
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use Keestash\Queue\Handler\EventHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KSP\Core\Service\Core\Access\AccessService;
 use KSP\Core\Service\Logger\ILogger;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -205,10 +207,10 @@ return [
 
     LoggerManager::class                                           => LoggerManagerFactory::class,
     ILogger::class                                                 => LoggerFactory::class,
-    Legacy::class                                                  => LegacyFactory::class,
+    Application::class                                             => LegacyFactory::class,
     EventService::class                                            => EventManagerFactory::class,
     LoaderServiceService::class                                    => LoaderServiceFactory::class,
-    Verification::class                                            => VerificationFactory::class,
+    VerificationService::class                                     => VerificationFactory::class,
     InstanceDB::class                                              => InstanceDBFactory::class,
     Migrator::class                                                => MigratorFactory::class,
     JobRepository::class                                           => JobRepositoryFactory::class,
@@ -280,6 +282,8 @@ return [
     CSVService::class                                              => CSVServiceFactory::class,
     MimeTypeService::class                                         => InvokableFactory::class,
     QueueService::class                                            => QueueServiceFactory::class,
+    OutputSanitizerService::class                                  => InvokableFactory::class,
+    RouteService::class                                            => InvokableFactory::class,
 
     GetText::class                           => InvokableFactory::class,
     \doganoo\PHPUtil\HTTP\Session::class     => InvokableFactory::class,

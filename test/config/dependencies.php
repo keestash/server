@@ -22,16 +22,24 @@ declare(strict_types=1);
 namespace KST\config;
 
 use Doctrine\DBAL\Connection;
+use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Cache\RedisService;
 use KST\Service\Core\Manager\EventManager\EventService;
+use KST\Service\Core\Service\Config\IniConfigService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
+use KST\Service\Core\System\Installation\App\LockHandler as CoreAppLockHandler;
+use KST\Service\Core\System\Installation\Instance\LockHandler as CoreInstanceLockHandler;
 use KST\Service\Factory\Core\Cache\RedisServiceFactory;
 use KST\Service\Factory\Core\Manager\EventManager\EventManagerFactory;
+use KST\Service\Factory\Core\Service\Config\ConfigServiceFactory;
+use KST\Service\Factory\Core\Service\Config\IniConfigServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
+use KST\Service\Factory\Core\System\Installation\App\LockHandlerFactory as TestAppLockHandler;
+use KST\Service\Factory\Core\System\Installation\Instance\LockHandlerFactory as TestInstanceLockHandler;
 use KST\Service\Factory\Service\File\Upload\FileServiceFactory;
 use KST\Service\Factory\Service\UserServiceFactory;
 use KST\Service\Factory\ThirdParty\Doctrine\ConnectionFactory;
@@ -39,12 +47,16 @@ use KST\Service\Service\UserService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    Connection::class      => ConnectionFactory::class
-    , Migrator::class      => MigratorFactory::class
-    , HTTPService::class   => HTTPServiceFactory::class
-    , UserService::class   => UserServiceFactory::class
-    , FileService::class   => FileServiceFactory::class
-    , EventService::class  => EventManagerFactory::class
-    , LocaleService::class => InvokableFactory::class
-    , RedisService::class  => RedisServiceFactory::class
+    Connection::class                => ConnectionFactory::class
+    , Migrator::class                => MigratorFactory::class
+    , HTTPService::class             => HTTPServiceFactory::class
+    , UserService::class             => UserServiceFactory::class
+    , FileService::class             => FileServiceFactory::class
+    , EventService::class            => EventManagerFactory::class
+    , LocaleService::class           => InvokableFactory::class
+    , RedisService::class            => RedisServiceFactory::class
+    , CoreAppLockHandler::class      => TestAppLockHandler::class
+    , CoreInstanceLockHandler::class => TestInstanceLockHandler::class
+    , ConfigService::class           => ConfigServiceFactory::class
+    , IniConfigService::class        => IniConfigServiceFactory::class
 ];

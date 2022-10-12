@@ -25,19 +25,11 @@ use Keestash\Exception\User\State\UserNotLockedException;
 use Keestash\Exception\User\UserException;
 use Keestash\Exception\User\UserNotCreatedException;
 use Keestash\Exception\User\UserNotDeletedException;
+use Keestash\Exception\User\UserNotUpdatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\User\IUser;
 
 interface IUserRepositoryService {
-
-    /**
-     * @param IUser $user
-     * @return array
-     * @throws UserException
-     */
-    public function removeUser(IUser $user): array;
-
-    public function createSystemUser(IUser $user): bool;
 
     /**
      * @param IUser      $user
@@ -49,10 +41,37 @@ interface IUserRepositoryService {
      */
     public function createUser(IUser $user, ?IFile $file = null): IUser;
 
+    /**
+     * @param IUser $user
+     * @return array
+     * @throws UserException
+     */
+    public function removeUser(IUser $user): array;
+
+    /**
+     * @param IUser $user
+     * @return bool
+     */
+    public function createSystemUser(IUser $user): bool;
+
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function userExistsByName(string $name): bool;
 
+    /**
+     * @param string $email
+     * @return bool
+     */
     public function userExistsByEmail(string $email): bool;
 
+    /**
+     * @param IUser $updatedUser
+     * @param IUser $oldUser
+     * @return IUser
+     * @throws UserNotUpdatedException
+     */
     public function updateUser(IUser $updatedUser, IUser $oldUser): IUser;
 
 }

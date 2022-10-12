@@ -50,6 +50,11 @@ class ApiRequestService implements IApiRequestService {
         $this->routerService      = $routerService;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param float                  $end
+     * @return void
+     */
     public function log(ServerRequestInterface $request, float $end): void {
         if (false === $this->environmentService->isApi()) {
             return;

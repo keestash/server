@@ -24,7 +24,7 @@ namespace Keestash\Core\Manager\LoggerManager;
 use Keestash;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Logger\Logger;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Logger\ILogger;
@@ -43,12 +43,12 @@ use function Sentry\init;
 class LoggerManager implements ILoggerManager {
 
     private ConfigService       $configService;
-    private Legacy              $legacy;
+    private Application              $legacy;
     private IEnvironmentService $environmentService;
 
     public function __construct(
         ConfigService         $configService
-        , Legacy              $legacy
+        , Application         $legacy
         , IEnvironmentService $environmentService
     ) {
         $this->configService      = $configService;
@@ -57,7 +57,10 @@ class LoggerManager implements ILoggerManager {
     }
 
     private function getLogfilePath(): string {
-        $name = $this->legacy->getApplication()->get("name_internal");
+        $name = $this->legacy->getMetaData()->get("name_internal");
+        if (true === $this->environmentService->isUnitTest()) {
+            return realpath(__DIR__ . '/../../../../../data/') . "/{$name}_test.log";
+        }
         return realpath(__DIR__ . '/../../../../../data/') . "/$name.log";
     }
 

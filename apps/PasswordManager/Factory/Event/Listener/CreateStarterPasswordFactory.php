@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
@@ -33,7 +33,7 @@ class CreateStarterPasswordFactory {
 
     public function __invoke(ContainerInterface $container): CreateStarterPassword {
         return new CreateStarterPassword(
-            $container->get(Legacy::class)
+            $container->get(Application::class)
             , $container->get(NodeRepository::class)
             , $container->get(NodeService::class)
             , $container->get(CredentialService::class)

@@ -25,7 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Exception;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Logger\ILogger;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -43,10 +43,10 @@ class EmailService implements IEmailService {
     private HashTable     $recipients;
     private HashTable     $carbonCopy;
     private HashTable     $blindCarbonCopy;
-    private Legacy        $legacy;
+    private Application        $legacy;
 
     public function __construct(
-        Legacy          $legacy
+        Application $legacy
         , ConfigService $configService
         , ILogger       $logger
         , InstanceDB    $instanceDB
@@ -75,12 +75,12 @@ class EmailService implements IEmailService {
         $this->mailer->Port       = (int) $this->configService->getValue("email_port");
 
         $this->mailer->setFrom(
-            (string) $this->legacy->getApplication()->get("email")
-            , (string) $this->legacy->getApplication()->get("name")
+            (string) $this->legacy->getMetaData()->get("email")
+            , (string) $this->legacy->getMetaData()->get("name")
         );
         $this->mailer->addReplyTo(
-            (string) $this->legacy->getApplication()->get("email")
-            , (string) $this->legacy->getApplication()->get("name")
+            (string) $this->legacy->getMetaData()->get("email")
+            , (string) $this->legacy->getMetaData()->get("name")
         );
         $this->mailer->Debugoutput = function ($message) {
             $this->logger->debug($message);

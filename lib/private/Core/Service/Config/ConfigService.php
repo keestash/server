@@ -51,4 +51,11 @@ class ConfigService implements IConfigService {
         return $default;
     }
 
+    /**
+     * @return array
+     */
+    public function getAll(): array {
+        return $this->config->toArray();
+    }
+
 }

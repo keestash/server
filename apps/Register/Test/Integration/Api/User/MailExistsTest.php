@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Register\Test\Integration\Api\User;
 
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\Register\Api\User\MailExists;
 use KSA\Register\Test\TestCase;
 use KST\Service\Service\UserService;
@@ -46,8 +46,8 @@ class MailExistsTest extends TestCase {
     }
 
     public function testWithExistingUser(): void {
-        /** @var Legacy $legacy */
-        $legacy = $this->getService(Legacy::class);
+        /** @var Application $legacy */
+        $legacy = $this->getService(Application::class);
         /** @var MailExists $exists */
         $exists       = $this->getService(MailExists::class);
         $response     = $exists->handle(

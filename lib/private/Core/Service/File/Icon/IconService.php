@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\Icon;
 
 use Keestash;
+use KSP\Core\DTO\File\Icon\IICon;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Service\File\Icon\IIconService;
 
@@ -38,23 +39,23 @@ class IconService implements IIconService {
         switch ($extension) {
             case IExtension::JPEG:
             case IExtension::JPG:
-                $icon = "jpg-svgrepo-com.svg";
+                $icon = IICon::JPEG;
                 break;
             case IExtension::PNG:
-                $icon = "png-svgrepo-com.svg";
+                $icon = IICon::PNG;
                 break;
             case IExtension::PDF:
-                $icon = "pdf-svgrepo-com.svg";
+                $icon = IICon::PDF;
                 break;
             case IExtension::DOCX:
             case IExtension::DOC:
-                $icon = "ms-word-svgrepo-com.svg";
+                $icon = IICon::DOC;
                 break;
             case IExtension::TEXT:
-                $icon = "text-svgrepo-com.svg";
+                $icon = IICon::TXT;
                 break;
             default:
-                $icon = "pdf-svgrepo-com.svg";
+                $icon = IICon::PDF;
                 break;
         }
 

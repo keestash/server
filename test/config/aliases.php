@@ -21,20 +21,29 @@ declare(strict_types=1);
  */
 
 use Keestash\Core\Service\Cache\RedisService as RealRedisService;
+use Keestash\Core\System\Installation\App\LockHandler as CoreAppLockHandler;
+use Keestash\Core\System\Installation\Instance\LockHandler as CoreInstanceLockHandler;
+use KSP\Core\Service\Config\IIniConfigService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Core\Cache\RedisService;
 use KST\Service\Core\Manager\EventManager\EventService;
+use KST\Service\Core\Service\Config\IniConfigService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
+use KST\Service\Core\System\Installation\App\LockHandler as TestAppLockHandler;
+use KST\Service\Core\System\Installation\Instance\LockHandler as TestInstanceLockHandler;
 
 return [
-    IMigrator::class          => Migrator::class
-    , IHTTPService::class     => HTTPService::class
-    , IEventService::class    => EventService::class
-    , ILocaleService::class   => LocaleService::class
-    , RealRedisService::class => RedisService::class
+    IMigrator::class                 => Migrator::class
+    , IHTTPService::class            => HTTPService::class
+    , IEventService::class           => EventService::class
+    , ILocaleService::class          => LocaleService::class
+    , RealRedisService::class        => RedisService::class
+    , CoreAppLockHandler::class      => TestAppLockHandler::class
+    , CoreInstanceLockHandler::class => TestInstanceLockHandler::class
+    , IIniConfigService::class       => IniConfigService::class
 ];

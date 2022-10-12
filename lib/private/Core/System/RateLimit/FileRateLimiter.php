@@ -22,7 +22,10 @@ declare(strict_types=1);
 namespace Keestash\Core\System\RateLimit;
 
 use Exception;
+use Keestash\Core\Manager\DataManager\DataManager;
+use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Service\Logger\ILogger;
+use Laminas\Config\Config;
 use RateLimit\ConfigurableRateLimiter;
 use RateLimit\Exception\LimitExceeded;
 use RateLimit\Rate;
@@ -30,19 +33,28 @@ use RateLimit\RateLimiter;
 
 class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
 
-    private array   $store = [];
-    private ILogger $logger;
+    public const FILE_NAME = 'limiter.rate.json';
+
+    private array        $store = [];
+    private ILogger      $logger;
+    private IDataManager $dataManager;
 
     public function __construct(
         Rate      $rate
         , ILogger $logger
+        , Config  $config
     ) {
         parent::__construct($rate);
-        $this->logger = $logger;
+        $this->logger      = $logger;
+        $this->dataManager = new DataManager(
+            'core/system'
+            , $config
+            , 'ratelimiter'
+        );
     }
 
     private function loadStore(): void {
-        $fileName   = __DIR__ . '/tmp.json';
+        $fileName   = $this->dataManager->getPath() . '/' . FileRateLimiter::FILE_NAME;
         $fileExists = file_exists($fileName);
         $decoded    = [];
 
@@ -71,10 +83,10 @@ class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
 
     private function writeStore(): void {
         file_put_contents(
-            __DIR__ . '/tmp.json'
+            $this->dataManager->getPath() . '/' . FileRateLimiter::FILE_NAME
             , json_encode(
                 $this->store
-                , JSON_THROW_ON_ERROR
+                , JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT
             )
         );
     }

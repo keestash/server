@@ -56,8 +56,8 @@ class OrganizationKeyRepositoryTest extends TestCase {
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
         );
-        $stored = $organizationKeyRepository->storeKey($organization, $key);
-        $this->assertTrue(true === $stored);
+        $key = $organizationKeyRepository->storeKey($organization, $key);
+        $this->assertInstanceOf(IKey::class, $key);
         $organization = $organizationRepository->remove($organization);
         $this->assertTrue($organization instanceof IOrganization);
         $this->assertTrue(
@@ -88,8 +88,8 @@ class OrganizationKeyRepositoryTest extends TestCase {
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
         );
-        $stored = $organizationKeyRepository->storeKey($organization, $key);
-        $this->assertTrue(true === $stored);
+        $key = $organizationKeyRepository->storeKey($organization, $key);
+        $this->assertInstanceOf(IKey::class, $key);
         $retrievedKey = $organizationKeyRepository->getKey($organization);
         $this->assertTrue($retrievedKey instanceof IKey);
         $organization = $organizationRepository->remove($organization);
@@ -122,8 +122,8 @@ class OrganizationKeyRepositoryTest extends TestCase {
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
         );
-        $stored = $organizationKeyRepository->storeKey($organization, $key);
-        $this->assertTrue(true === $stored);
+        $key = $organizationKeyRepository->storeKey($organization, $key);
+        $this->assertInstanceOf(IKey::class, $key);
         $retrievedKey = $organizationKeyRepository->getKey($organization);
         $this->assertTrue($retrievedKey instanceof IKey);
         $retrievedKey->setCreateTs(new DateTimeImmutable());

@@ -62,6 +62,7 @@ class NodeEncryptionService {
                 $this->decryptNode($childNode, $childNode->getOrganization());
                 continue;
             }
+
             $this->decryptCredential($childNode, $parentKeyHolder);
         }
 

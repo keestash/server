@@ -25,7 +25,7 @@ use DateTime;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
-use Keestash\Legacy\Legacy;
+use Keestash\Core\System\Application;
 use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
@@ -41,7 +41,7 @@ class EmailAfterRegistration implements IListener {
     public const TEMPLATE_NAME = "mail.twig";
 
     private TemplateRendererInterface $templateRenderer;
-    private Legacy                    $legacy;
+    private Application                    $legacy;
     private IL10N                     $translator;
     private ILogger                   $logger;
     private IHTTPService              $httpService;
@@ -49,7 +49,7 @@ class EmailAfterRegistration implements IListener {
 
     public function __construct(
         TemplateRendererInterface $templateRenderer
-        , Legacy                  $legacy
+        , Application             $legacy
         , IL10N                   $l10n
         , ILogger                 $logger
         , IHTTPService            $httpService
@@ -83,7 +83,7 @@ class EmailAfterRegistration implements IListener {
             return;
         }
 
-        $appName  = $this->legacy->getApplication()->get("name");
+        $appName  = $this->legacy->getMetaData()->get("name");
         $rendered = $this->templateRenderer->render(
             EmailAfterRegistration::TEMPLATE_NAME,
             [

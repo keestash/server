@@ -22,11 +22,17 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\File\RawFile;
 
 use Keestash\Core\DTO\URI\URI;
+use Keestash\Exception\File\FileNotCreatedException;
+use Keestash\Exception\File\FileNotExistsException;
+use Keestash\Exception\File\FileNotFoundException;
+use Keestash\Exception\IndexOutOfBoundsException;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\UnknownExtensionException;
 use KSP\Core\DTO\URI\IUniformResourceIdentifier;
 use KSP\Core\Service\File\Mime\IMimeTypeService;
+use KSP\Core\Service\File\RawFile\IRawFileService;
 
-class RawFileService {
+class RawFileService implements IRawFileService {
 
     private IMimeTypeService $mimeTypeService;
 
@@ -34,9 +40,16 @@ class RawFileService {
         $this->mimeTypeService = $mimeTypeService;
     }
 
-    public function getMimeType(string $path): ?string {
+    /**
+     * @param string $path
+     * @return string
+     * @throws KeestashException
+     */
+    public function getMimeType(string $path): string {
         $path = realpath($path);
-        if (false === $path) return null;
+        if (false === $path) {
+            throw new KeestashException();
+        }
 
         $f = finfo_open();
 
@@ -49,22 +62,39 @@ class RawFileService {
         $buffer = finfo_buffer($f, (string) file_get_contents($path), FILEINFO_MIME_TYPE);
 
         if (false === $buffer) {
-            return null;
+            throw new KeestashException();
         }
         return $buffer;
     }
 
+    /**
+     * @param string $path
+     * @return array
+     * @throws IndexOutOfBoundsException
+     * @throws UnknownExtensionException
+     */
     public function getFileExtensions(string $path): array {
-        $mimeType = $this->getMimeType($path);
-        if (null === $mimeType) return [];
+        try {
+            $mimeType = $this->getMimeType($path);
+        } catch (KeestashException $exception) {
+            return [];
+        }
         return $this->mimeTypeService->getExtension($mimeType);
     }
 
-    public function stringToUri(string $path, bool $strict = true): ?IUniformResourceIdentifier {
+    /**
+     * @param string $path
+     * @param bool   $strict
+     * @return IUniformResourceIdentifier
+     * @throws FileNotExistsException
+     */
+    public function stringToUri(string $path, bool $strict = true): IUniformResourceIdentifier {
 
         if (true === $strict) {
             $path = realpath($path);
-            if (false === $path) return null;
+            if (false === $path) {
+                throw new FileNotExistsException();
+            }
         }
 
         $uri = new URI();
@@ -72,19 +102,31 @@ class RawFileService {
         return $uri;
     }
 
-    public function stringToBase64(string $path, bool $rawBase64 = false): ?string {
+    /**
+     * @param string $path
+     * @param bool   $rawBase64
+     * @return string
+     * @throws FileNotCreatedException
+     * @throws FileNotFoundException
+     */
+    public function stringToBase64(string $path, bool $rawBase64 = false): string {
 
         $content = @file_get_contents($path);
 
-        if (false === $content) return null;
+        if (false === $content) {
+            throw new FileNotFoundException();
+        }
+
         $tempName = (string) tempnam(sys_get_temp_dir(), "pp_");
 
         if (false === is_file($tempName)) {
-            throw new KeestashException();
+            throw new FileNotFoundException();
         }
 
         $put = file_put_contents($tempName, $content);
-        if (false === $put) return null;
+        if (false === $put) {
+            throw new FileNotCreatedException();
+        }
 
         $base64 = $imgData = base64_encode($content);
 

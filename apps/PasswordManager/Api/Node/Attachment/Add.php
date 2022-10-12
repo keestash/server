@@ -155,7 +155,7 @@ class Add implements RequestHandlerInterface {
             );
 
             if (false === in_array($coreFile->getExtension(), $allowedExtensions, true)) {
-                $this->logger->error('file with extension ' . $coreFile->getExtension() . ' not allowed');
+                $this->logger->warning('file with extension not allowed', ['extension' => $coreFile->getExtension()]);
                 $errorFiles[] = $file;
                 continue;
             }

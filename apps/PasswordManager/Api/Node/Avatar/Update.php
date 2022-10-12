@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Api\Node\Avatar;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Manager\DataManager\DataManager;
 use Keestash\Core\Service\File\FileService as CoreFileService;
-use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
@@ -39,6 +38,7 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Manager\DataManager\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
@@ -54,7 +54,7 @@ class Update implements RequestHandlerInterface {
     private IDataManager       $dataManager;
     private FileRepository     $nodeFileRepository;
     private NodeRepository     $nodeRepository;
-    private RawFileService     $rawFileService;
+    private IRawFileService    $rawFileService;
     private CoreFileService    $coreFileService;
     private AccessService      $accessService;
 
@@ -63,7 +63,7 @@ class Update implements RequestHandlerInterface {
         , IFileRepository  $fileRepository
         , FileRepository   $nodeFileRepository
         , NodeRepository   $nodeRepository
-        , RawFileService   $rawFileService
+        , IRawFileService  $rawFileService
         , CoreFileService  $coreFileService
         , Config           $config
         , AccessService    $accessService
@@ -129,7 +129,7 @@ class Update implements RequestHandlerInterface {
 
         $file = $this->uploadFileService->toCoreFile($nodeAvatar);
         $file->setName(
-            $this->coreFileService->getAvatarName($node->getId())
+            "node_avatar_{$node->getId()}"
         );
         $file->setDirectory(
             $this->dataManager->getPath()

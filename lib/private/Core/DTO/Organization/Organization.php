@@ -107,6 +107,10 @@ class Organization implements IOrganization {
         return $this->users;
     }
 
+    public function getUserz(): HashTable {
+        return $this->hashTable;
+    }
+
     /**
      * @return string
      */
@@ -122,7 +126,7 @@ class Organization implements IOrganization {
     }
 
     public function hasUser(IUser $user): bool {
-        return $this->hashTable->containsKey($user->getId());
+         return $this->hashTable->containsKey($user->getId());
     }
 
     public function jsonSerialize(): array {

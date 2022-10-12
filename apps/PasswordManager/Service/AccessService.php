@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Service;
 
-use Keestash\Core\Service\Core\Access\IAccessService;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Core\Access\IAccessService;
 
 class AccessService {
 
