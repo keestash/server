@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\DataManager;
+namespace KSP\Core\Manager\Data;
 
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Manager\IManager;

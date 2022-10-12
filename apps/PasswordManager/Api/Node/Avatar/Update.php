@@ -33,7 +33,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;

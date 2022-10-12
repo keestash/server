@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Builder\DataManager;
 
-use Keestash\Core\Manager\DataManager\DataManager;
+use Keestash\Core\Manager\Data\DataManager;
 use KSP\Core\Builder\DataManager\IDataManagerBuilder;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use Laminas\Config\Config;
 
 class DataManagerBuilder implements IDataManagerBuilder {

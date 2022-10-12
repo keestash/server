@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\System\RateLimit;
 
 use Exception;
-use KSP\Core\Manager\DataManager\IDataManager;
+use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
 use RateLimit\ConfigurableRateLimiter;
