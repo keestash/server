@@ -376,17 +376,17 @@ parameters:
 			path: ../../apps/PasswordManager/Event/Listener/AfterRegistration/CreateStarterPassword.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/AddFactory.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/RemoveFactory.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Factory/Api/Node/Avatar/UpdateFactory.php
 
@@ -1286,7 +1286,7 @@ parameters:
 			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\DataManager\\\\IDataManagerBuilder\\:\\:withContext\\(\\)\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/Core/System/RateLimit/FileRateLimiterFactory.php
 

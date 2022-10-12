@@ -33,8 +33,8 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\File\Upload\IFileService as IUploadFileService;
 use Psr\Http\Message\ResponseInterface;
@@ -46,9 +46,9 @@ class Update implements RequestHandlerInterface {
     public const CONTEXT = "nodeAvatar";
 
     private IUploadFileService $uploadFileService;
-    private IFileRepository    $fileRepository;
-    private IDataManager       $dataManager;
-    private FileRepository     $nodeFileRepository;
+    private IFileRepository $fileRepository;
+    private IDataService    $dataManager;
+    private FileRepository  $nodeFileRepository;
     private NodeRepository     $nodeRepository;
     private IRawFileService    $rawFileService;
     private AccessService      $accessService;
@@ -60,7 +60,7 @@ class Update implements RequestHandlerInterface {
         , NodeRepository   $nodeRepository
         , IRawFileService  $rawFileService
         , AccessService    $accessService
-        , IDataManager     $dataManager
+        , IDataService     $dataManager
     ) {
         $this->uploadFileService  = $uploadFileService;
         $this->fileRepository     = $fileRepository;

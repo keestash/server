@@ -36,8 +36,8 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Manager\Data\IDataManager;
 use KSP\Core\Repository\File\IFileRepository;
+use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\Logger\ILogger;
@@ -67,9 +67,9 @@ class Add implements RequestHandlerInterface {
     private const ERROR_NOT_CONNECTED      = 1;
 
     private IFileRepository $fileRepository;
-    private NodeRepository  $nodeRepository;
-    private IDataManager    $dataManager;
-    private FileRepository  $nodeFileRepository;
+    private NodeRepository $nodeRepository;
+    private IDataService   $dataManager;
+    private FileRepository $nodeFileRepository;
     private IFileService    $uploadFileService;
     private ILogger         $logger;
     private IJWTService     $jwtService;
@@ -83,7 +83,7 @@ class Add implements RequestHandlerInterface {
         , ILogger        $logger
         , Config         $config
         , IJWTService    $jwtService
-        , IDataManager   $dataManager
+        , IDataService   $dataManager
     ) {
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;

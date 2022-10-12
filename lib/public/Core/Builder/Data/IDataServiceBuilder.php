@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,19 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Manager\Data;
+namespace KSP\Core\Builder\Data;
 
-use KSP\Core\DTO\File\IFile;
-use KSP\Core\Manager\IManager;
+use KSP\Core\Builder\IBuilder;
+use KSP\Core\Service\Core\Data\IDataService;
 
-interface IDataManager extends IManager {
+interface IDataServiceBuilder extends IBuilder {
 
-    public function store(IFile $file): bool;
-
-    public function get(IFile $file): IFile;
-
-    public function remove(IFile $file): bool;
-
-    public function getPath(): string;
+    public function build(): IDataService;
 
 }
