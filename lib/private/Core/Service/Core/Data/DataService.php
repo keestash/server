@@ -19,13 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\Data;
+namespace Keestash\Core\Service\Core\Data;
 
 use Keestash;
 use Keestash\Core\DTO\File\File;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
-use KSP\Core\Manager\Data\IDataManager;
+use KSP\Core\Service\Core\Data\IDataService;
 use Laminas\Config\Config;
 
 /**
@@ -33,7 +33,7 @@ use Laminas\Config\Config;
  *
  * @package Keestash\Core\Manager\DataManager
  */
-class DataManager implements IDataManager {
+class DataService implements IDataService {
 
     private string  $appId;
     private ?string $context;

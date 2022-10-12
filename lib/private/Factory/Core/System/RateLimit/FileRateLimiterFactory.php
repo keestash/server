@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\System\RateLimit;
 
-use Keestash\Core\Builder\DataManager\DataManagerBuilder;
+use Keestash\Core\Builder\Data\DataServiceBuilder;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use KSP\Core\Service\Logger\ILogger;
 use Laminas\Config\Config;
@@ -37,7 +37,7 @@ class FileRateLimiterFactory implements FactoryInterface {
         ,                  $requestedName
         , ?array           $options = null
     ): RateLimiter {
-        $dataManager = (new DataManagerBuilder())
+        $dataManager = (new DataServiceBuilder())
             ->withAppId('core/system')
             ->withContext('ratelimiter')
             ->withConfig($container->get(Config::class))

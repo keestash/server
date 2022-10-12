@@ -19,40 +19,40 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Builder\DataManager;
+namespace Keestash\Core\Builder\Data;
 
-use Keestash\Core\Manager\Data\DataManager;
-use KSP\Core\Builder\DataManager\IDataManagerBuilder;
-use KSP\Core\Manager\Data\IDataManager;
+use Keestash\Core\Service\Core\Data\DataService;
+use KSP\Core\Builder\Data\IDataServiceBuilder;
+use KSP\Core\Service\Core\Data\IDataService;
 use Laminas\Config\Config;
 
-class DataManagerBuilder implements IDataManagerBuilder {
+class DataServiceBuilder implements IDataServiceBuilder {
 
     private string  $appId;
     private ?string $context = null;
     private Config  $config;
 
-    public function withAppId(string $appId): IDataManagerBuilder {
+    public function withAppId(string $appId): IDataServiceBuilder {
         $instance        = clone $this;
         $instance->appId = $appId;
         return $instance;
     }
 
-    public function withContext(?string $context): IDataManagerBuilder {
+    public function withContext(?string $context): IDataServiceBuilder {
         $instance          = clone $this;
         $instance->context = $context;
         return $instance;
     }
 
-    public function withConfig(Config $config): IDataManagerBuilder {
+    public function withConfig(Config $config): IDataServiceBuilder {
         $instance         = clone $this;
         $instance->config = $config;
         return $instance;
 
     }
 
-    public function build(): IDataManager {
-        return new DataManager(
+    public function build(): IDataService {
+        return new DataService(
             $this->appId
             , $this->config
             , $this->context
