@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Event\Listener;
 
 use KSA\Settings\Event\Listener\PostStateChange;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class PostStateChangeFactory {

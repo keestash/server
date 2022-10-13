@@ -30,7 +30,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class OrganizationKeyRepository extends KeyRepository implements IOrganizationKeyRepository {
 

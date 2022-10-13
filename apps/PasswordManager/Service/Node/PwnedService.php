@@ -30,7 +30,7 @@ use JsonException;
 use KSA\PasswordManager\Entity\Node\Pwned\Api\Passwords;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class PwnedService {
 

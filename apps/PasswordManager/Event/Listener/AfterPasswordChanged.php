@@ -31,7 +31,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Event\Listener\IListener;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 /**
  * Class AfterPasswordChanged

@@ -33,7 +33,6 @@ use Keestash\Command\Permission\PermissionsByRole;
 use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 use Keestash\Core\Backend\MySQLBackend;
-use Keestash\Core\Manager\LoggerManager\LoggerManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
@@ -104,8 +103,6 @@ use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\UriValidatorFactory;
 use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
-use Keestash\Factory\Core\Manager\EventManager\EventManagerFactory;
-use Keestash\Factory\Core\Manager\Logger\LoggerManagerFactory;
 use Keestash\Factory\Core\Repository\ApiLogRepository\ApiLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\AppRepository\AppRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositoryFactory;
@@ -131,6 +128,7 @@ use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Password\PasswordServiceFactory;
+use Keestash\Factory\Core\Service\Event\EventServiceFactory;
 use Keestash\Factory\Core\Service\Event\Listener\RolesAndPermissionsListenerFactory;
 use Keestash\Factory\Core\Service\File\FileServiceFactory;
 use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
@@ -177,11 +175,11 @@ use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMid
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use Keestash\Queue\Handler\EventHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KSP\Core\Service\Logger\ILogger;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Validator\EmailAddress as EmailValidator;
 use Laminas\Validator\Uri as UriValidator;
+use Psr\Log\LoggerInterface as ILogger;
 
 return [
     // Api
@@ -204,10 +202,9 @@ return [
     QueueRepository::class           => QueueRepositoryFactory::class,
     RBACRepository::class            => PermissionRepositoryFactory::class,
 
-    LoggerManager::class                                           => LoggerManagerFactory::class,
     ILogger::class                                                 => LoggerFactory::class,
     Application::class                                             => LegacyFactory::class,
-    EventService::class                                            => EventManagerFactory::class,
+    EventService::class                                            => EventServiceFactory::class,
     LoaderService::class                                           => LoaderServiceFactory::class,
     VerificationService::class                                     => VerificationFactory::class,
     InstanceDB::class                                              => InstanceDBFactory::class,

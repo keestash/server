@@ -26,7 +26,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\Core\Service\File\Icon\IIconService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

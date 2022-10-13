@@ -29,7 +29,7 @@ use KSP\Core\DTO\File\IFile as ICoreFile;
 use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\DTO\File\Validation\IResult;
 use KSP\Core\Service\File\Upload\IFileService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Diactoros\UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\Mime\MimeTypes;

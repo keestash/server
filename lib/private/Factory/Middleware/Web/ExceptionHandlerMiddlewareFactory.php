@@ -23,7 +23,7 @@ namespace Keestash\Factory\Middleware\Web;
 use Interop\Container\ContainerInterface;
 use Keestash\Middleware\Web\ExceptionHandlerMiddleware;
 use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ExceptionHandlerMiddlewareFactory implements FactoryInterface {

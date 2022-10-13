@@ -26,7 +26,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\L10N\IL10N;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class BreadCrumbService {
 

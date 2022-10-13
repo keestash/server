@@ -27,7 +27,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class RemoveExpired implements IListener {
 

@@ -146,6 +146,16 @@ parameters:
 			path: ../../apps/InstallInstance/Command/Install.php
 
 		-
+			message: "#^Parameter \\#1 \\$message of method Keestash\\\\Command\\\\KeestashCommand\\:\\:writeInfo\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Ping.php
+
+		-
+			message: "#^Parameter \\#1 \\$message of method Psr\\\\Log\\\\LoggerInterface\\:\\:error\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Ping.php
+
+		-
 			message: "#^Parameter \\#1 \\$filename of function unlink expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/InstallInstance/Command/Uninstall.php
@@ -881,6 +891,26 @@ parameters:
 			path: ../../lib/private/Core/Backend/MySQLBackend.php
 
 		-
+			message: "#^Call to an undefined method Monolog\\\\Handler\\\\HandlerInterface\\:\\:setFormatter\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
+
+		-
+			message: "#^Call to an undefined method Monolog\\\\Handler\\\\HandlerInterface\\:\\:setLevel\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
+
+		-
+			message: "#^Parameter \\#2 \\$level of class Monolog\\\\Handler\\\\StreamHandler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
+
+		-
+			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
+
+		-
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/File/FileList.php
@@ -904,26 +934,6 @@ parameters:
 			message: "#^Property Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:\\$value has no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Service\\\\Logger\\\\ILogger\\:\\:pushHandler\\(\\)\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
-
-		-
-			message: "#^Parameter \\#1 \\$level of method Monolog\\\\Handler\\\\AbstractHandler\\:\\:setLevel\\(\\) expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
-
-		-
-			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
-
-		-
-			message: "#^Part \\$name \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Manager/LoggerManager/LoggerManager.php
 
 		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
@@ -1284,6 +1294,11 @@ parameters:
 			message: "#^Variable \\$CONFIG on left side of \\?\\? is never defined\\.$#"
 			count: 1
 			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Logger\\\\ILoggerBuilder\\:\\:withPath\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Core/Logger/LoggerFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"

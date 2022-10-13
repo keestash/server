@@ -25,7 +25,7 @@ use doganoo\DIP\Object\String\StringService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Register\Api\User\Add;
 use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 

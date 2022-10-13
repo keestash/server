@@ -24,7 +24,7 @@ namespace KSA\PasswordManager\Factory\Command;
 use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

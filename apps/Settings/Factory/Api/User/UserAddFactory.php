@@ -23,7 +23,7 @@ namespace KSA\Settings\Factory\Api\User;
 
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserAdd;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 

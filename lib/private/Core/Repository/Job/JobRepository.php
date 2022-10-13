@@ -32,7 +32,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\BackgroundJob\IJob;
 use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\Job\IJobRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class JobRepository implements IJobRepository {
 

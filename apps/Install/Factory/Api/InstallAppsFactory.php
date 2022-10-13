@@ -28,7 +28,7 @@ use KSA\Install\Api\InstallApps;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class InstallAppsFactory {

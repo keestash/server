@@ -22,10 +22,12 @@ declare(strict_types=1);
 
 use KSA\InstallInstance\Command\DemoMode;
 use KSA\InstallInstance\Command\Install;
+use KSA\InstallInstance\Command\Ping;
 use KSA\InstallInstance\Command\Uninstall;
 
 return [
     Uninstall::class
     , DemoMode::class
     , Install::class
+    , Ping::class
 ];

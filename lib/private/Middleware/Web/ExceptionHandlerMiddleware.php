@@ -22,7 +22,7 @@ namespace Keestash\Middleware\Web;
 
 use Composer\InstalledVersions;
 use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

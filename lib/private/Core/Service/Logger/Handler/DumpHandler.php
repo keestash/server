@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,19 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Manager\EventManager;
+namespace Keestash\Core\Service\Logger\Handler;
 
-use Keestash\Core\Service\Event\EventService;
-use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Service\Event\IEventService;
-use Psr\Container\ContainerInterface;
+use Monolog\Handler\AbstractProcessingHandler;
 
-class EventManagerFactory {
+class DumpHandler extends AbstractProcessingHandler {
 
-    public function __invoke(ContainerInterface $container): IEventService {
-        return new EventService(
-            $container->get(IQueueRepository::class)
-        );
+    protected function write(array $record): void {
+        dump($record);
     }
 
 }

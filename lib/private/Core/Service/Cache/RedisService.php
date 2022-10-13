@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\Cache;
 use Exception;
 use Keestash\Core\Service\Config\ConfigService;
 use KSP\Core\Service\Cache\ICacheService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Redis;
 
 /**

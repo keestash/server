@@ -25,7 +25,7 @@ use KSA\Settings\BackgroundJob\UserDeleteTask;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 

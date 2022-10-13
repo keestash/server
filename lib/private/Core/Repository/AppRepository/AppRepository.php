@@ -30,7 +30,7 @@ use Keestash\Exception\TooManyRowsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class AppRepository implements IAppRepository {
 

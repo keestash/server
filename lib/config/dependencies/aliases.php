@@ -29,7 +29,6 @@ use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Keestash\Core\Backend\MySQLBackend;
-use Keestash\Core\Manager\LoggerManager\LoggerManager;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
@@ -80,7 +79,6 @@ use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Queue\Handler\EventHandler;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
-use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
@@ -180,9 +178,6 @@ return [
     \KSP\Core\Service\HTTP\Output\ISanitizerService::class => \Keestash\Core\Service\HTTP\Output\SanitizerService::class,
     IRouteService::class                                   => RouteService::class,
     IVerificationService::class                            => VerificationService::class,
-
-    // manager
-    ILoggerManager::class                                  => LoggerManager::class,
     IEventService::class                                   => EventService::class,
 
     IL10N::class                   => GetText::class,

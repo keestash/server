@@ -27,7 +27,7 @@ use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
 use Symfony\Component\Console\Input\InputInterface;

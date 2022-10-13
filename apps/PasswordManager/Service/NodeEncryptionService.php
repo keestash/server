@@ -28,7 +28,7 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class NodeEncryptionService {
 

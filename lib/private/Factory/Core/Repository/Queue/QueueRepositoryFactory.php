@@ -25,7 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

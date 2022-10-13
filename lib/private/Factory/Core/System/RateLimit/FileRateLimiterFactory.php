@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\System\RateLimit;
 
 use Keestash\Core\Builder\Data\DataServiceBuilder;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

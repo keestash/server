@@ -26,7 +26,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class AppRepositoryFactory {

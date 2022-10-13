@@ -28,7 +28,7 @@ use KSP\Core\DTO\Queue\IEventMessage;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Service\Event\Listener\IListener;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\Serializer\Adapter\PhpSerialize;
 use Psr\Container\ContainerInterface;
