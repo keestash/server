@@ -25,7 +25,7 @@ use KSA\PasswordManager\Api\Node\Folder\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\Service\L10N\IL10N;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class CreateFactory {

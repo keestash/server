@@ -27,7 +27,7 @@ use Keestash\Core\Service\File\FileService;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\File\Icon\IIconService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 

@@ -25,7 +25,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;

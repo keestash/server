@@ -31,7 +31,7 @@ use Keestash\Exception\Queue\QueueNotUpdatedException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class QueueRepository implements IQueueRepository {
 

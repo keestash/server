@@ -19,22 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Manager\Logger;
+namespace Keestash\Factory\Core\Service\Event;
 
-use Keestash\Core\Manager\LoggerManager\LoggerManager;
-use Keestash\Core\System\Application;
-use KSP\Core\Manager\LoggerManager\ILoggerManager;
-use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use Keestash\Core\Service\Event\EventService;
+use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Event\IEventService;
 use Psr\Container\ContainerInterface;
 
-class LoggerManagerFactory {
+class EventServiceFactory {
 
-    public function __invoke(ContainerInterface $container): ILoggerManager {
-        return new LoggerManager(
-            $container->get(IConfigService::class)
-            , $container->get(Application::class)
-            , $container->get(IEnvironmentService::class)
+    public function __invoke(ContainerInterface $container): IEventService {
+        return new EventService(
+            $container->get(IQueueRepository::class)
         );
     }
 

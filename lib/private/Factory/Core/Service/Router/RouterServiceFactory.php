@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Service\Router;
 
 use Keestash\Core\Service\Router\RouterService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\RouterInterface;

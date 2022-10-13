@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Factory\Command;
 
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 

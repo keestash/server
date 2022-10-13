@@ -40,7 +40,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Service\Phinx;
 
 use Keestash\Core\Service\Phinx\Migrator;
 use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;

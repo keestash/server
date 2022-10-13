@@ -23,7 +23,7 @@ namespace Keestash\Core\Repository\Instance;
 
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Instance\IInstanceRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class InstanceRepository implements IInstanceRepository {
 

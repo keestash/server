@@ -26,7 +26,7 @@ use Keestash\Core\Repository\File\FileRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class FileRepositoryFactory {

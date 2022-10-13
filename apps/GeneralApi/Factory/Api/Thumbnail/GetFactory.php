@@ -23,7 +23,7 @@ namespace KSA\GeneralApi\Factory\Api\Thumbnail;
 
 use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSP\Core\Service\File\Icon\IIconService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 

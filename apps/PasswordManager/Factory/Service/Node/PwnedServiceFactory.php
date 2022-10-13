@@ -25,7 +25,7 @@ use GuzzleHttp\ClientInterface;
 use KSA\PasswordManager\Service\Node\PwnedService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

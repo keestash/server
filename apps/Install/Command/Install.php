@@ -28,7 +28,7 @@ use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

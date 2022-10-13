@@ -23,7 +23,7 @@ namespace Keestash\Core\System\RateLimit;
 
 use Exception;
 use KSP\Core\Service\Core\Data\IDataService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use RateLimit\ConfigurableRateLimiter;
 use RateLimit\Exception\LimitExceeded;
 use RateLimit\Rate;

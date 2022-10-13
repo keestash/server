@@ -35,7 +35,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class TokenRepository implements ITokenRepository {
 

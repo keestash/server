@@ -29,7 +29,7 @@ use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

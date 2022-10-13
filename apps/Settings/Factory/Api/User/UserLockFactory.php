@@ -25,7 +25,7 @@ use KSA\Settings\Api\User\UserLock;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class UserLockFactory {

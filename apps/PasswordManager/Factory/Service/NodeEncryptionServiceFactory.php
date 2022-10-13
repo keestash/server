@@ -7,7 +7,7 @@ use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class NodeEncryptionServiceFactory implements FactoryInterface {

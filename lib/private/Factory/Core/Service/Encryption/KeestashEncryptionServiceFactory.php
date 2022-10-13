@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Service\Encryption;
 
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class KeestashEncryptionServiceFactory {

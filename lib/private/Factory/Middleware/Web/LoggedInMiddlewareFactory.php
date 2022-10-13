@@ -24,7 +24,7 @@ namespace Keestash\Factory\Middleware\Web;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class LoggedInMiddlewareFactory {

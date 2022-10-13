@@ -27,7 +27,7 @@ use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 abstract class KeyRepository {
 
