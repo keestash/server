@@ -25,7 +25,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Middleware\InstanceInstalledMiddleware;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 

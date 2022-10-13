@@ -24,7 +24,7 @@ namespace KSA\GeneralApi\Command\QualityTool;
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

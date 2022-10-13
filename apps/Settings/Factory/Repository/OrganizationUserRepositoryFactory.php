@@ -26,7 +26,7 @@ use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationUserRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Psr\Container\ContainerInterface;
 
 class OrganizationUserRepositoryFactory {

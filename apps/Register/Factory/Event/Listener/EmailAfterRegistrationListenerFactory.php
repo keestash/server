@@ -26,7 +26,7 @@ use KSA\Register\Event\EmailAfterRegistration;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\L10N\IL10N;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 

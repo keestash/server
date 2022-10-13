@@ -19,15 +19,13 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Manager\LoggerManager\Handler;
+namespace KSP\Core\Builder\Logger;
 
-use Monolog\Handler\AbstractProcessingHandler;
+use KSP\Core\Builder\IBuilder;
+use Psr\Log\LoggerInterface;
 
-class DumpHandler extends AbstractProcessingHandler {
+interface ILoggerBuilder extends IBuilder {
 
-    protected function write(array $record): void {
-//        dump($record);
-//        var_dump($record);
-    }
+    public function build(): LoggerInterface;
 
 }

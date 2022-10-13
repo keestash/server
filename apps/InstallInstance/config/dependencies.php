@@ -25,6 +25,7 @@ use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
 use KSA\InstallInstance\Command\DemoMode;
 use KSA\InstallInstance\Command\Install;
+use KSA\InstallInstance\Command\Ping;
 use KSA\InstallInstance\Command\Uninstall;
 use KSA\InstallInstance\Controller\Controller;
 use KSA\InstallInstance\Factory\Api\Config\GetFactory;
@@ -32,6 +33,7 @@ use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
 use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\DemoModeFactory;
 use KSA\InstallInstance\Factory\Command\InstallFactory;
+use KSA\InstallInstance\Factory\Command\PingFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
 use KSA\InstallInstance\Factory\Controller\ControllerFactory;
 
@@ -46,6 +48,7 @@ return [
         , DemoMode::class   => DemoModeFactory::class
         , Uninstall::class  => UninstallFactory::class
         , Install::class    => InstallFactory::class
+        , Ping::class       => PingFactory::class
 
         // controller
         , Controller::class => ControllerFactory::class

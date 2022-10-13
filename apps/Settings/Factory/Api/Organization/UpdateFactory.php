@@ -24,7 +24,7 @@ namespace KSA\Settings\Factory\Api\Organization;
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\Organization\IOrganizationService;
 use Psr\Container\ContainerInterface;
 

@@ -21,16 +21,53 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Logger;
 
-use KSP\Core\Manager\LoggerManager\ILoggerManager;
-use KSP\Core\Service\Logger\ILogger;
+use Keestash\ConfigProvider;
+use Keestash\Core\Builder\Logger\LoggerBuilder;
+use Keestash\Core\System\Application;
+use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use Laminas\Config\Config;
+use Monolog\Formatter\JsonFormatter;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class LoggerFactory {
 
-    public function __invoke(ContainerInterface $container): ILogger {
-        /** @var ILoggerManager $loggerManager */
-        $loggerManager = $container->get(ILoggerManager::class);
-        return $loggerManager->getLogger();
+    public function __invoke(ContainerInterface $container): LoggerInterface {
+        /** @var IConfigService $configService */
+        $configService = $container->get(IConfigService::class);
+        /** @var IEnvironmentService $environmentService */
+        $environmentService = $container->get(IEnvironmentService::class);
+        /** @var Application $application */
+        $application = $container->get(Application::class);
+        /** @var Config $config */
+        $config = $container->get(Config::class);
+
+        $isUnitTest   = $environmentService->isUnitTest();
+        $nameInternal = $application->getMetaData()->get('name_internal');
+        $logFileName  = true === $isUnitTest
+            ? $nameInternal . '_test.log'
+            : $nameInternal . '.log';
+
+        $dataRoot = (string) $config->get(ConfigProvider::DATA_PATH);
+        return (new LoggerBuilder())
+            ->withLogLevel(
+                (int) $configService->getValue("log_level", \Monolog\Logger::ERROR)
+            )
+            ->withPath(
+                $dataRoot . '/' . $logFileName
+            )
+            ->withFormatter(new JsonFormatter())
+            ->withStreamHandler()
+            ->withDevHandler(
+                $configService->getValue('sentry_dsn', '')
+            )
+            ->withConsoleHandler(
+                $environmentService->isConsole()
+            )
+            ->build();
+
     }
+
 
 }

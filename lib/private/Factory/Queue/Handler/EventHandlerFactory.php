@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Queue\Handler;
 
 use Keestash\Queue\Handler\EventHandler;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

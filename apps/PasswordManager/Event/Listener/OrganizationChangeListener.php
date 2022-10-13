@@ -38,7 +38,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Event\Listener\IListener;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 /**
  * Class OrganizationChangeListener

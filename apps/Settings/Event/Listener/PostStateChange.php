@@ -25,7 +25,7 @@ use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Service\Event\Listener\IListener;
-use KSP\Core\Service\Logger\ILogger;
+use Psr\Log\LoggerInterface as ILogger;
 
 class PostStateChange implements IListener {
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,15 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Service\Logger;
+namespace KSA\InstallInstance\Factory\Command;
 
-use KSP\Core\Service\Logger\ILogger;
-use Monolog\Logger as MonologLogger;
+use KSA\InstallInstance\Command\Ping;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-/**
- * Class Logger
- * @package Keestash\Core\Logger
- */
-class Logger extends MonologLogger implements ILogger {
+class PingFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Ping {
+        return new Ping(
+            $container->get(LoggerInterface::class)
+        );
+    }
 
 }
