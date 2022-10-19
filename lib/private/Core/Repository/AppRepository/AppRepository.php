@@ -72,10 +72,10 @@ class AppRepository implements IAppRepository {
             $version  = $row[3];
 
             $app = new App();
-            $app->setId($appId);
+            $app->setId((string) $appId);
             $app->setEnabled($enabled === IApp::ENABLED_TRUE);
             $app->setVersion((int) $version);
-            $app->setCreateTs($this->dateTimeService->fromFormat($createTs));
+            $app->setCreateTs($this->dateTimeService->fromFormat((string) $createTs));
 
             $map->put($app->getId(), $app);
         }
@@ -118,10 +118,10 @@ class AppRepository implements IAppRepository {
                 $version  = $row[3];
 
                 $app = new App();
-                $app->setId($appId);
+                $app->setId((string) $appId);
                 $app->setEnabled($enabled === IApp::ENABLED_TRUE);
                 $app->setVersion((int) $version);
-                $app->setCreateTs($this->dateTimeService->fromFormat($createTs));
+                $app->setCreateTs($this->dateTimeService->fromFormat((string) $createTs));
 
             }
             return $app;

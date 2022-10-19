@@ -69,11 +69,14 @@ class ApiRequestService implements IApiRequestService {
             return;
         }
 
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
+
         $apiRequest = new APIRequest();
         $apiRequest->setStart((float) $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START));
         $apiRequest->setEnd($end);
         $apiRequest->setRoute($this->routerService->getMatchedPath($request));
-        $apiRequest->setToken($request->getAttribute(IToken::class));
+        $apiRequest->setToken($token);
         $this->apiLogRepository->log($apiRequest);
     }
 

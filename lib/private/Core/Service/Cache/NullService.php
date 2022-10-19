@@ -33,6 +33,11 @@ class NullService implements ICacheService {
 
     }
 
+    /**
+     * @param string $key
+     * @param mixed  $value
+     * @return bool
+     */
     public function set(string $key, $value): bool {
         return true;
     }

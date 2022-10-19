@@ -44,8 +44,8 @@ use TypeError;
 
 class UserService implements IUserService {
 
-    private Application      $legacy;
-    private IDateTimeService $dateTimeService;
+    private Application            $legacy;
+    private IDateTimeService       $dateTimeService;
     private IStringService         $stringService;
     private IUserRepositoryService $userRepositoryService;
     private EmailValidator         $emailValidator;
@@ -56,7 +56,7 @@ class UserService implements IUserService {
     private Config                 $config;
 
     public function __construct(
-        Application $legacy
+        Application              $legacy
         , IDateTimeService       $dateTimeService
         , IStringService         $stringService
         , IUserRepositoryService $userRepositoryService
@@ -115,7 +115,7 @@ class UserService implements IUserService {
     }
 
     public function validWebsite(string $email): bool {
-        return false !== filter_var($email, FILTER_VALIDATE_URL );
+        return false !== filter_var($email, FILTER_VALIDATE_URL);
     }
 
     /**
@@ -181,6 +181,7 @@ class UserService implements IUserService {
     }
 
     public function hashPassword(string $plain): string {
+        /** @var string|false|null $hashed */
         $hashed = password_hash($plain, PASSWORD_BCRYPT);
         if (false === is_string($hashed)) {
             throw new KeestashException();

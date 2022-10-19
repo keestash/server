@@ -80,6 +80,13 @@ abstract class KeestashCommand extends Command implements IKeestashCommand {
         return $arguments;
     }
 
+    /**
+     * @param string          $question
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @param mixed           $default
+     * @return bool
+     */
     protected function askQuestion(
         string            $question
         , InputInterface  $input

@@ -31,11 +31,11 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface as ILogger;
 use TypeError;
 
 class UserEdit implements RequestHandlerInterface {
@@ -66,7 +66,9 @@ class UserEdit implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters   = (array) $request->getParsedBody();
         $userIdToEdit = (int) ($parameters['id'] ?? -1);
-        $user         = $request->getAttribute(IToken::class)->getUser();
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
+        $user  = $token->getUser();
 
         try {
             $repoUser = $this->userRepository->getUserById((string) $userIdToEdit);

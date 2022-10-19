@@ -59,7 +59,7 @@ class MySQLBackend implements ISQLBackend {
     }
 
     public function getSchemaName(): string {
-        return $this->configService->getValue("db_name");
+        return (string) $this->configService->getValue("db_name");
     }
 
     /**

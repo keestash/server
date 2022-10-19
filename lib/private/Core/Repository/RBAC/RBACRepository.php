@@ -70,7 +70,7 @@ class RBACRepository implements RBACRepositoryInterface {
                 (int) $row[0]
                 , (string) $row[1]
                 , $this->getPermissionsByRoleId((int) $row[0])
-                , $this->dateTimeService->fromFormat($row[2])
+                , $this->dateTimeService->fromFormat((string) $row[2])
             );
             $roles->put((int) $row[0], $role);
         }
@@ -99,7 +99,7 @@ class RBACRepository implements RBACRepositoryInterface {
             $permission = new Permission(
                 (int) $row[0]
                 , (string) $row[1]
-                , $this->dateTimeService->fromFormat($row[2])
+                , $this->dateTimeService->fromFormat((string) $row[2])
             );
             $permissions->put($permission->getId(), $permission);
         }
@@ -124,7 +124,7 @@ class RBACRepository implements RBACRepositoryInterface {
             $permission = new Permission(
                 (int) $row[0]
                 , (string) $row[1]
-                , $this->dateTimeService->fromFormat($row[2])
+                , $this->dateTimeService->fromFormat((string) $row[2])
             );
             $permissions->add($permission);
         }
@@ -150,7 +150,7 @@ class RBACRepository implements RBACRepositoryInterface {
                 (int) $row[0]
                 , (string) $row[1]
                 , $this->getPermissionsByRoleId((int) $row[0])
-                , $this->dateTimeService->fromFormat($row[2])
+                , $this->dateTimeService->fromFormat((string) $row[2])
             );
             $roles->add($permission);
         }
@@ -182,7 +182,7 @@ class RBACRepository implements RBACRepositoryInterface {
             (int) $rows[0][0]
             , (string) $rows[0][1]
             , $this->getPermissionsByRoleId((int) $rows[0][0])
-            , $this->dateTimeService->fromFormat($rows[0][2])
+            , $this->dateTimeService->fromFormat((string) $rows[0][2])
         );
     }
 
@@ -210,7 +210,7 @@ class RBACRepository implements RBACRepositoryInterface {
         return new Permission(
             (int) $rows[0][0]
             , (string) $rows[0][1]
-            , $this->dateTimeService->fromFormat($rows[0][2])
+            , $this->dateTimeService->fromFormat((string) $rows[0][2])
         );
     }
 
@@ -238,7 +238,7 @@ class RBACRepository implements RBACRepositoryInterface {
         return new Permission(
             (int) $rows[0][0]
             , (string) $rows[0][1]
-            , $this->dateTimeService->fromFormat($rows[0][2])
+            , $this->dateTimeService->fromFormat((string) $rows[0][2])
         );
     }
 
@@ -266,7 +266,7 @@ class RBACRepository implements RBACRepositoryInterface {
             (int) $rows[0][0]
             , (string) $rows[0][1]
             , new HashTable()
-            , $this->dateTimeService->fromFormat($rows[0][2])
+            , $this->dateTimeService->fromFormat((string) $rows[0][2])
         );
     }
 

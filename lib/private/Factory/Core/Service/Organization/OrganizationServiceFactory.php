@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Organization;
 
-use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use Psr\Container\ContainerInterface;
@@ -29,9 +28,7 @@ use Psr\Container\ContainerInterface;
 class OrganizationServiceFactory {
 
     public function __invoke(ContainerInterface $container): IOrganizationService {
-        return new OrganizationService(
-            $container->get(IDateTimeService::class)
-        );
+        return new OrganizationService();
     }
 
 }

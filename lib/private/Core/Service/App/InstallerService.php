@@ -58,6 +58,7 @@ class InstallerService {
         $installed = true;
 
         foreach ($apps->keySet() as $key) {
+            /** @var \KSP\Core\DTO\App\IApp $app */
             $app          = $apps->get($key);
             $configApp    = $this->appService->toConfigApp($app);
             $appInstalled = $this->install($configApp);
