@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KST\config;
 
 use Doctrine\DBAL\Connection;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Cache\RedisService;
@@ -34,6 +35,7 @@ use KST\Service\Core\System\Installation\App\LockHandler as CoreAppLockHandler;
 use KST\Service\Core\System\Installation\Instance\LockHandler as CoreInstanceLockHandler;
 use KST\Service\Factory\Core\Cache\RedisServiceFactory;
 use KST\Service\Factory\Core\Manager\EventManager\EventManagerFactory;
+use KST\Service\Factory\Core\Repository\InstanceDBFactory;
 use KST\Service\Factory\Core\Service\Config\ConfigServiceFactory;
 use KST\Service\Factory\Core\Service\Config\IniConfigServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
@@ -59,4 +61,5 @@ return [
     , CoreInstanceLockHandler::class => TestInstanceLockHandler::class
     , ConfigService::class           => ConfigServiceFactory::class
     , IniConfigService::class        => IniConfigServiceFactory::class
+    , InstanceDB::class              => InstanceDBFactory::class
 ];
