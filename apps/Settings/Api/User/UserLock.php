@@ -58,7 +58,9 @@ class UserLock implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $userId     = (int) ($parameters['user_id'] ?? -1);
-        $user       = $request->getAttribute(IToken::class)->getUser();
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
+        $user  = $token->getUser();
 
         if ($userId < 1) {
             return new JsonResponse([], IResponse::BAD_REQUEST);

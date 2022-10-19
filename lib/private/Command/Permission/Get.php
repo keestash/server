@@ -57,7 +57,7 @@ class Get extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $permissionIdentifier = $input->getArgument(Get::ARGUMENT_NAME_PERMISSION_IDENTIFIER);
+        $permissionIdentifier = (array) $input->getArgument(Get::ARGUMENT_NAME_PERMISSION_IDENTIFIER);
         $allPermissions       = $this->rbacRepository->getAllPermissions();
         $list                 = [];
         $listLength           = 0;

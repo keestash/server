@@ -209,15 +209,15 @@ class FileRepository implements IFileRepository {
 
             $file = new File();
             $file->setId((int) $id);
-            $file->setName($name);
-            $file->setDirectory($directory);
-            $file->setMimeType($mimeType);
-            $file->setHash($hash);
-            $file->setExtension($extension);
+            $file->setName((string) $name);
+            $file->setDirectory((string) $directory);
+            $file->setMimeType((string) $mimeType);
+            $file->setHash((string) $hash);
+            $file->setExtension((string) $extension);
             $file->setSize((int) $size);
             $file->setOwner($user);
             $file->setCreateTs(
-                $this->dateTimeService->fromFormat($createTs)
+                $this->dateTimeService->fromFormat((string) $createTs)
             );
 
             return $file;
@@ -278,15 +278,15 @@ class FileRepository implements IFileRepository {
                 $user = $this->userRepository->getUserById((string) $userId);
 
                 $file->setId((int) $id);
-                $file->setName($name);
-                $file->setDirectory($directory);
-                $file->setMimeType($mimeType);
-                $file->setHash($hash);
-                $file->setExtension($extension);
+                $file->setName((string) $name);
+                $file->setDirectory((string) $directory);
+                $file->setMimeType((string) $mimeType);
+                $file->setHash((string) $hash);
+                $file->setExtension((string) $extension);
                 $file->setSize((int) $size);
                 $file->setOwner($user);
                 $file->setCreateTs(
-                    $this->dateTimeService->fromFormat($createTs)
+                    $this->dateTimeService->fromFormat((string) $createTs)
                 );
 
             }
@@ -347,15 +347,15 @@ class FileRepository implements IFileRepository {
                 $user = $this->userRepository->getUserById((string) $userId);
 
                 $file->setId((int) $id);
-                $file->setName($name);
-                $file->setDirectory($directory);
-                $file->setMimeType($mimeType);
-                $file->setHash($hash);
-                $file->setExtension($extension);
+                $file->setName((string) $name);
+                $file->setDirectory((string) $directory);
+                $file->setMimeType((string) $mimeType);
+                $file->setHash((string) $hash);
+                $file->setExtension((string) $extension);
                 $file->setSize((int) $size);
                 $file->setOwner($user);
                 $file->setCreateTs(
-                    $this->dateTimeService->fromFormat($createTs)
+                    $this->dateTimeService->fromFormat((string) $createTs)
                 );
 
             }

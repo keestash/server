@@ -110,19 +110,19 @@ class UserRepository implements IUserRepository {
             $row  = $users[0];
             $user = new User();
             $user->setId((int) $row[0]);
-            $user->setName($row[1]);
-            $user->setPassword($row[2]);
+            $user->setName((string) $row[1]);
+            $user->setPassword((string) $row[2]);
             $user->setCreateTs(
-                $this->dateTimeService->fromString($row[3])
+                $this->dateTimeService->fromString((string) $row[3])
             );
-            $user->setFirstName($row[4]);
-            $user->setLastName($row[5]);
-            $user->setEmail($row[6]);
-            $user->setPhone($row[7]);
-            $user->setWebsite($row[8]);
-            $user->setHash($row[9]);
-            $user->setLocale($row[10]);
-            $user->setLanguage($row[11]);
+            $user->setFirstName((string) $row[4]);
+            $user->setLastName((string) $row[5]);
+            $user->setEmail((string) $row[6]);
+            $user->setPhone((string) $row[7]);
+            $user->setWebsite((string) $row[8]);
+            $user->setHash((string) $row[9]);
+            $user->setLocale((string) $row[10]);
+            $user->setLanguage((string) $row[11]);
             $user->setLocked(
                 1 === (int) $row[12]
             );
@@ -191,25 +191,25 @@ class UserRepository implements IUserRepository {
 
                 $user = new User();
                 $user->setId((int) $row['id']);
-                $user->setName($row['name']);
-                $user->setPassword($row['password']);
+                $user->setName((string) $row['name']);
+                $user->setPassword((string) $row['password']);
                 $user->setCreateTs(
-                    $this->dateTimeService->fromString($row['create_ts'])
+                    $this->dateTimeService->fromString((string) $row['create_ts'])
                 );
-                $user->setFirstName($row['first_name']);
-                $user->setLastName($row['last_name']);
-                $user->setEmail($row['email']);
-                $user->setPhone($row['phone']);
-                $user->setWebsite($row['website']);
-                $user->setHash($row['hash']);
+                $user->setFirstName((string) $row['first_name']);
+                $user->setLastName((string) $row['last_name']);
+                $user->setEmail((string) $row['email']);
+                $user->setPhone((string) $row['phone']);
+                $user->setWebsite((string) $row['website']);
+                $user->setHash((string) $row['hash']);
                 $user->setDeleted(
                     1 === (int) $row['deleted']
                 );
                 $user->setLocked(
                     1 === (int) $row['locked']
                 );
-                $user->setLocale($row['locale']);
-                $user->setLanguage($row['language']);
+                $user->setLocale((string) $row['locale']);
+                $user->setLanguage((string) $row['language']);
                 $user->setRoles(
                     $this->rbacRepository->getRolesByUser($user)
                 );
@@ -377,19 +377,19 @@ class UserRepository implements IUserRepository {
             $row  = $users[0];
             $user = new User();
             $user->setId((int) $row['id']);
-            $user->setName($row['name']);
-            $user->setPassword($row['password']);
+            $user->setName((string) $row['name']);
+            $user->setPassword((string) $row['password']);
             $user->setCreateTs(
-                $this->dateTimeService->fromString($row['create_ts'])
+                $this->dateTimeService->fromString((string) $row['create_ts'])
             );
-            $user->setFirstName($row['first_name']);
-            $user->setLastName($row['last_name']);
-            $user->setEmail($row['email']);
-            $user->setPhone($row['phone']);
-            $user->setWebsite($row['website']);
-            $user->setHash($row['hash']);
-            $user->setLocale($row['locale']);
-            $user->setLanguage($row['language']);
+            $user->setFirstName((string) $row['first_name']);
+            $user->setLastName((string) $row['last_name']);
+            $user->setEmail((string) $row['email']);
+            $user->setPhone((string) $row['phone']);
+            $user->setWebsite((string) $row['website']);
+            $user->setHash((string) $row['hash']);
+            $user->setLocale((string) $row['locale']);
+            $user->setLanguage((string) $row['language']);
             $user->setDeleted(
                 1 === (int) $row['deleted']
             );
@@ -450,19 +450,19 @@ class UserRepository implements IUserRepository {
             $row  = $users[0];
             $user = new User();
             $user->setId((int) $row['id']);
-            $user->setName($row['name']);
-            $user->setPassword($row['password']);
+            $user->setName((string) $row['name']);
+            $user->setPassword((string) $row['password']);
             $user->setCreateTs(
-                $this->dateTimeService->fromString($row['create_ts'])
+                $this->dateTimeService->fromString((string) $row['create_ts'])
             );
-            $user->setFirstName($row['first_name']);
-            $user->setLastName($row['last_name']);
-            $user->setEmail($row['email']);
-            $user->setPhone($row['phone']);
-            $user->setWebsite($row['website']);
-            $user->setHash($row['hash']);
-            $user->setLocale($row['locale']);
-            $user->setLanguage($row['language']);
+            $user->setFirstName((string) $row['first_name']);
+            $user->setLastName((string) $row['last_name']);
+            $user->setEmail((string) $row['email']);
+            $user->setPhone((string) $row['phone']);
+            $user->setWebsite((string) $row['website']);
+            $user->setHash((string) $row['hash']);
+            $user->setLocale((string) $row['locale']);
+            $user->setLanguage((string) $row['language']);
             $user->setDeleted(
                 1 === (int) $row['deleted']
             );
@@ -540,19 +540,19 @@ class UserRepository implements IUserRepository {
             $row  = $users[0];
             $user = new User();
             $user->setId((int) $row['id']);
-            $user->setName($row['name']);
-            $user->setPassword($row['password']);
+            $user->setName((string) $row['name']);
+            $user->setPassword((string) $row['password']);
             $user->setCreateTs(
-                $this->dateTimeService->fromString($row['create_ts'])
+                $this->dateTimeService->fromString((string) $row['create_ts'])
             );
-            $user->setFirstName($row['first_name']);
-            $user->setLastName($row['last_name']);
-            $user->setEmail($row['email']);
-            $user->setPhone($row['phone']);
-            $user->setWebsite($row['website']);
-            $user->setHash($row['hash']);
-            $user->setLocale($row['locale']);
-            $user->setLanguage($row['language']);
+            $user->setFirstName((string) $row['first_name']);
+            $user->setLastName((string) $row['last_name']);
+            $user->setEmail((string) $row['email']);
+            $user->setPhone((string) $row['phone']);
+            $user->setWebsite((string) $row['website']);
+            $user->setHash((string) $row['hash']);
+            $user->setLocale((string) $row['locale']);
+            $user->setLanguage((string) $row['language']);
             $user->setDeleted(
                 1 === (int) $row['deleted']
             );
@@ -649,19 +649,19 @@ class UserRepository implements IUserRepository {
 
                 $user = new User();
                 $user->setId((int) $row['id']);
-                $user->setName($row['name']);
-                $user->setPassword($row['password']);
+                $user->setName((string) $row['name']);
+                $user->setPassword((string) $row['password']);
                 $user->setCreateTs(
-                    $this->dateTimeService->fromString($row['create_ts'])
+                    $this->dateTimeService->fromString((string) $row['create_ts'])
                 );
-                $user->setFirstName($row['first_name']);
-                $user->setLastName($row['last_name']);
-                $user->setEmail($row['email']);
-                $user->setPhone($row['phone']);
-                $user->setWebsite($row['website']);
-                $user->setHash($row['hash']);
-                $user->setLanguage($row['language']);
-                $user->setLocale($row['locale']);
+                $user->setFirstName((string) $row['first_name']);
+                $user->setLastName((string) $row['last_name']);
+                $user->setEmail((string) $row['email']);
+                $user->setPhone((string) $row['phone']);
+                $user->setWebsite((string) $row['website']);
+                $user->setHash((string) $row['hash']);
+                $user->setLanguage((string) $row['language']);
+                $user->setLocale((string) $row['locale']);
                 $user->setDeleted(
                     1 === (int) $row['deleted']
                 );

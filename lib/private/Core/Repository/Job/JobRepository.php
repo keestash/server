@@ -138,16 +138,16 @@ class JobRepository implements IJobRepository {
 
             $info = null === $info
                 ? null
-                : json_decode($info, true);
+                : json_decode((string)$info, true);
 
             $job = new Job();
             $job->setId($id);
-            $job->setName($name);
+            $job->setName((string)$name);
             $job->setInterval($interval);
-            $job->setType($type);
-            $job->setLastRun($this->dateTimeService->fromFormat($lastRun));
+            $job->setType((string)$type);
+            $job->setLastRun($this->dateTimeService->fromFormat((string) $lastRun));
             $job->setInfo($info);
-            $job->setCreateTs($this->dateTimeService->fromFormat($createTs));
+            $job->setCreateTs($this->dateTimeService->fromFormat((string) $createTs));
             $list->add($job);
         }
         return $list;

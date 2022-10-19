@@ -107,8 +107,8 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         foreach ($users as $row) {
             $key = new Key();
             $key->setId((int) $row[0]);
-            $key->setSecret($row[1]);
-            $key->setCreateTs($this->dateTimeService->fromFormat($row[2]));
+            $key->setSecret((string) $row[1]);
+            $key->setCreateTs($this->dateTimeService->fromFormat((string) $row[2]));
             $key->setKeyHolder($user);
         }
 

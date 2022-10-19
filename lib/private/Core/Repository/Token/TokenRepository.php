@@ -138,10 +138,12 @@ class TokenRepository implements ITokenRepository {
                 $user = $this->userRepository->getUserById((string) $userId);
 
                 $token->setId((int) $id);
-                $token->setName($name);
-                $token->setValue($value);
+                $token->setName((string) $name);
+                $token->setValue((string) $value);
                 $token->setUser($user);
-                $token->setCreateTs($this->dateTimeService->fromFormat($createTs));
+                $token->setCreateTs(
+                    $this->dateTimeService->fromFormat((string) $createTs)
+                );
             }
 
             return $token;

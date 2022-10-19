@@ -38,7 +38,7 @@ class InstanceDB {
     private PDO    $database;
 
     public function __construct(Config $config) {
-        $this->path     = $config->get(ConfigProvider::INSTANCE_DB_PATH);
+        $this->path     = (string) $config->get(ConfigProvider::INSTANCE_DB_PATH);
         $this->database = new PDO("sqlite:{$this->path}");
         $this->createTable();
     }
@@ -127,8 +127,13 @@ class InstanceDB {
         $statement->execute();
         $array = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (false === $array) return null;
-        return $array['value'] ?? null;
+        if (false === $array || false === is_array($array)) return null;
+        $value = $array['value'] ?? null;
+
+        if (null === $value) {
+            return null;
+        }
+        return (string) $value;
     }
 
     public function removeOption(string $name): bool {

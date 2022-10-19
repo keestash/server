@@ -571,16 +571,6 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Service/Factory/Repository/Node/NodeRepositoryFactory.php
 
 		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\ResponseService\\:\\:getFailedResponseData\\(\\) should return array but returns mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\ResponseService\\:\\:getResponseData\\(\\) should return array but returns mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/ResponseService.php
-
-		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Credential\\\\CredentialServiceTest\\:\\:\\$credentialService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Credential/CredentialServiceTest.php
@@ -661,18 +651,8 @@ parameters:
 			path: ../../apps/Register/Api/User/Add.php
 
 		-
-			message: "#^Parameter \\#1 \\$password of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:validatePasswords\\(\\) expects string, mixed given\\.$#"
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
-			path: ../../apps/Register/Command/CreateUser.php
-
-		-
-			message: "#^Parameter \\#2 \\$passwordRepeat of method Keestash\\\\Core\\\\Service\\\\User\\\\UserService\\:\\:validatePasswords\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/Register/Command/CreateUser.php
-
-		-
-			message: "#^Part \\$name \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
 			path: ../../apps/Register/Command/CreateUser.php
 
 		-
@@ -781,21 +761,6 @@ parameters:
 			path: ../../apps/Settings/Api/User/UserEdit.php
 
 		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserEdit.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserLock.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/Settings/Api/User/UserRemove.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Settings/Command/UpdatePassword.php
@@ -806,18 +771,8 @@ parameters:
 			path: ../../apps/Settings/Repository/OrganizationRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 8
-			path: ../../apps/Settings/Repository/OrganizationRepository.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:addUser\\(\\)\\.$#"
 			count: 2
-			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUserById\\(\\) expects string, mixed given\\.$#"
-			count: 1
 			path: ../../apps/Settings/Repository/OrganizationUserRepository.php
 
 		-
@@ -861,36 +816,6 @@ parameters:
 			path: ../../lib/private/Command/KeestashCommand.php
 
 		-
-			message: "#^Method Keestash\\\\Command\\\\KeestashCommand\\:\\:askQuestion\\(\\) has parameter \\$default with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Command/KeestashCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:getPermissionByName\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Permission/Add.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Permission/Get.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:getRoleByName\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Role/Add.php
-
-		-
-			message: "#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Role/Get.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\Backend\\\\MySQLBackend\\:\\:getSchemaName\\(\\) should return string but returns mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Backend/MySQLBackend.php
-
-		-
 			message: "#^Call to an undefined method Monolog\\\\Handler\\\\HandlerInterface\\:\\:setFormatter\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
@@ -916,19 +841,9 @@ parameters:
 			path: ../../lib/private/Core/DTO/File/FileList.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:addToIndex\\(\\) has parameter \\$item with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/DTO/File/FileList.php
-
-		-
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\Queue\\\\Message\\:\\:getStamp\\(\\) should return KSP\\\\Core\\\\DTO\\\\Queue\\\\IStamp\\|null but returns mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/Queue/Message.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:getValue\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/DTO/Queue/Stamp.php
 
 		-
 			message: "#^Property Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:\\$value has no type specified\\.$#"
@@ -936,84 +851,14 @@ parameters:
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/AppRepository/AppRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method Keestash\\\\Core\\\\DTO\\\\App\\\\Config\\\\App\\:\\:setId\\(\\) expects string, mixed given\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/AppRepository/AppRepository.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/EncryptionKey/KeyRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/User/UserKeyRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$secret of method Keestash\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Credential\\:\\:setSecret\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/EncryptionKey/User/UserKeyRepository.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$directory of method Keestash\\\\Core\\\\DTO\\\\File\\\\File\\:\\:setDirectory\\(\\) expects string, mixed given\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$extension of method Keestash\\\\Core\\\\DTO\\\\File\\\\File\\:\\:setExtension\\(\\) expects string, mixed given\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$hash of method Keestash\\\\Core\\\\DTO\\\\File\\\\File\\:\\:setHash\\(\\) expects string, mixed given\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$mimeType of method Keestash\\\\Core\\\\DTO\\\\File\\\\File\\:\\:setMimeType\\(\\) expects string, mixed given\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\DTO\\\\File\\\\File\\:\\:setName\\(\\) expects string, mixed given\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Cannot access offset 'value' on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Instance/InstanceDB.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:getOption\\(\\) should return string\\|null but returns mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Instance/InstanceDB.php
-
-		-
-			message: "#^Part \\$this\\-\\>path \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Instance/InstanceDB.php
-
-		-
-			message: "#^Property Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:\\$path \\(string\\) does not accept mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Instance/InstanceDB.php
 
 		-
 			message: "#^Argument of an invalid type KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList supplied for foreach, only iterables are supported\\.$#"
@@ -1026,34 +871,9 @@ parameters:
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
 			message: "#^Parameter \\#1 \\$info of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setInfo\\(\\) expects array\\|null, mixed given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setName\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$type of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setType\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 8
-			path: ../../lib/private/Core/Repository/RBAC/RBACRepository.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Token\\\\IToken\\:\\:setId\\(\\)\\.$#"
@@ -1062,108 +882,23 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 2
+			count: 1
 			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
 		-
 			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\DTO\\\\Token\\\\Token\\:\\:setName\\(\\) expects string, mixed given\\.$#"
-			count: 2
+			count: 1
 			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
 		-
 			message: "#^Parameter \\#1 \\$value of method Keestash\\\\Core\\\\DTO\\\\Token\\\\Token\\:\\:setValue\\(\\) expects string, mixed given\\.$#"
-			count: 2
+			count: 1
 			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$dateTime of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromString\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$email of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setEmail\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$firstName of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setFirstName\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$hash of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setHash\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$language of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setLanguage\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$lastName of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setLastName\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$locale of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setLocale\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setName\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$password of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setPassword\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$phone of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setPhone\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$website of method Keestash\\\\Core\\\\DTO\\\\User\\\\User\\:\\:setWebsite\\(\\) expects string, mixed given\\.$#"
-			count: 6
-			path: ../../lib/private/Core/Repository/User/UserRepository.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$dateTime of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromString\\(\\) expects string, mixed given\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$state of method Keestash\\\\Core\\\\DTO\\\\User\\\\UserState\\:\\:setState\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$stateHash of method Keestash\\\\Core\\\\DTO\\\\User\\\\UserState\\:\\:setStateHash\\(\\) expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/User/UserStateRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$app of method KSP\\\\Core\\\\Service\\\\App\\\\IAppService\\:\\:toConfigApp\\(\\) expects KSP\\\\Core\\\\DTO\\\\App\\\\IApp, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/App/InstallerService.php
-
-		-
-			message: "#^Parameter \\#1 \\$jobList of method KSP\\\\Core\\\\Repository\\\\Job\\\\IJobRepository\\:\\:replaceJobs\\(\\) expects KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList, doganoo\\\\Backgrounder\\\\BackgroundJob\\\\JobList given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/App/InstallerService.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
@@ -1174,21 +909,6 @@ parameters:
 			message: "#^Method Keestash\\\\Core\\\\Service\\\\App\\\\LoaderService\\:\\:getDefaultApp\\(\\) should return KSP\\\\Core\\\\DTO\\\\App\\\\IApp\\|null but returns mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/App/LoaderService.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\Service\\\\Cache\\\\NullService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Cache/NullService.php
-
-		-
-			message: "#^Method Keestash\\\\Core\\\\Service\\\\Cache\\\\RedisService\\:\\:set\\(\\) has parameter \\$value with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Cache/RedisService.php
-
-		-
-			message: "#^Parameter \\#2 \\$port of method Redis\\:\\:connect\\(\\) expects int, string given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Cache/RedisService.php
 
 		-
 			message: "#^Binary operation \"\\*\\=\" between float\\|int\\|string and 1024 results in an error\\.$#"
@@ -1216,12 +936,7 @@ parameters:
 			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
 
 		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
-
-		-
-			message: "#^Parameter \\#1 \\$user of method Keestash\\\\Core\\\\Service\\\\Controller\\\\AppRenderer\\:\\:getProfileImage\\(\\) expects KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\|null, mixed given\\.$#"
+			message: "#^Strict comparison using \\=\\=\\= between null and KSP\\\\Core\\\\DTO\\\\Token\\\\IToken will always evaluate to false\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
 
@@ -1251,11 +966,6 @@ parameters:
 			path: ../../lib/private/Core/Service/HTTP/JWTService.php
 
 		-
-			message: "#^Parameter \\#1 \\$token of method Keestash\\\\Core\\\\DTO\\\\Instance\\\\Request\\\\APIRequest\\:\\:setToken\\(\\) expects KSP\\\\Core\\\\DTO\\\\Token\\\\IToken, mixed given\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Router/ApiRequestService.php
-
-		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Service/Router/RouterService.php
@@ -1277,11 +987,6 @@ parameters:
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/User/UserService.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/User/UserService.php
 
@@ -1309,14 +1014,4 @@ parameters:
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
-
-		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
-
-		-
-			message: "#^Method KSP\\\\Core\\\\DTO\\\\Queue\\\\IStamp\\:\\:getValue\\(\\) has no return type specified\\.$#"
-			count: 1
-			path: ../../lib/public/Core/DTO/Queue/IStamp.php
 

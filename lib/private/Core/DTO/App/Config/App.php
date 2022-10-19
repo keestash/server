@@ -13,8 +13,9 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\App\Config;
 
 use DateTimeInterface;
-use doganoo\Backgrounder\BackgroundJob\JobList;
+use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\App\Config\IApp;
+use KSP\Core\DTO\BackgroundJob\IJobList;
 
 class App implements IApp {
 
@@ -22,7 +23,7 @@ class App implements IApp {
     private bool              $enabled;
     private int               $version;
     private DateTimeInterface $createTs;
-    private JobList           $jobs;
+    private IJobList          $jobs;
 
     public function __construct() {
         $this->jobs = new JobList();
@@ -60,11 +61,11 @@ class App implements IApp {
         $this->createTs = $createTs;
     }
 
-    public function getBackgroundJobs(): JobList {
+    public function getBackgroundJobs(): IJobList {
         return $this->jobs;
     }
 
-    public function setBackgroundJobs(JobList $jobs): void {
+    public function setBackgroundJobs(IJobList $jobs): void {
         $this->jobs = $jobs;
     }
 

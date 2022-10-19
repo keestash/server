@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * Keestash
  *
@@ -51,6 +52,8 @@ class PermissionMiddleware implements MiddlewareInterface {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
         if (true === $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC)) {
             return $handler->handle($request);
         }
@@ -81,7 +84,7 @@ class PermissionMiddleware implements MiddlewareInterface {
 
         foreach ($permissionIds as $id) {
             $permission = $this->rbacService->getPermission($id);
-            if (true === $this->rbacService->hasPermission($request->getAttribute(IToken::class)->getUser(), $permission)) {
+            if (true === $this->rbacService->hasPermission($token->getUser(), $permission)) {
                 return $handler->handle($request);
             }
         }
