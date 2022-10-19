@@ -58,7 +58,7 @@ class Get extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $roleIdentifier = $input->getArgument(Get::ARGUMENT_NAME_ROLE_IDENTIFIER);
+        $roleIdentifier = (array) $input->getArgument(Get::ARGUMENT_NAME_ROLE_IDENTIFIER);
         $allRoles       = $this->rbacRepository->getAllRoles();
         $listLength     = 0;
         $list           = [];

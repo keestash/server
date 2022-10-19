@@ -23,6 +23,7 @@ namespace KSP\Core\DTO\App\Config;
 
 use DateTimeInterface;
 use doganoo\Backgrounder\BackgroundJob\JobList;
+use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IApp extends IJsonObject {
@@ -38,6 +39,6 @@ interface IApp extends IJsonObject {
 
     public function getCreateTs(): DateTimeInterface;
 
-    public function getBackgroundJobs(): JobList;
+    public function getBackgroundJobs(): IJobList;
 
 }

@@ -54,7 +54,7 @@ class RedisService implements ICacheService {
             $this->instance = new Redis();
             $this->instance->connect(
                 (string) $this->config->getValue('redis_server', '')
-                , (string) $this->config->getValue('redis_port', 0)
+                , (int) $this->config->getValue('redis_port', 0)
             );
             $this->connected = true;
         } catch (Exception $e) {
@@ -62,6 +62,12 @@ class RedisService implements ICacheService {
         }
     }
 
+    /**
+     * @param string $key
+     * @param mixed  $value
+     * @return bool
+     * @throws \RedisException
+     */
     public function set(string $key, $value): bool {
         if (false === $this->connected) return false;
         return $this->instance->set($key, $value);

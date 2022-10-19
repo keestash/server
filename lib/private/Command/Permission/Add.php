@@ -57,7 +57,7 @@ class Add extends KeestashCommand {
         $style->title("Please provide the data required to create a permission");
         $name = $style->ask("Name") ?? "";
 
-        $permission = $this->rbacRepository->getPermissionByName($name);
+        $permission = $this->rbacRepository->getPermissionByName((string) $name);
 
         if (false === ($permission instanceof NullPermission)) {
             $this->writeError('permission with this name already exists', $output);

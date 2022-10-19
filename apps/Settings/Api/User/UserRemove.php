@@ -32,10 +32,10 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface as ILogger;
 
 class UserRemove implements RequestHandlerInterface {
 
@@ -62,7 +62,9 @@ class UserRemove implements RequestHandlerInterface {
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $userId     = (int) ($parameters['user_id'] ?? -1);
-        $user       = $request->getAttribute(IToken::class)->getUser();
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
+        $user  = $token->getUser();
 
         if ($userId < 1) {
             return new JsonResponse([], IResponse::BAD_REQUEST);

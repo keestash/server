@@ -55,7 +55,7 @@ class FileServiceTest extends TestCase {
             $this->getUser()
         );
         $this->assertInstanceOf(URL::class, $profileImage);
-        $this->assertStringContainsString('/data/image/profile_image_2', $profileImage->getIdentifier());
+        $this->assertStringContainsString('profile_image_2', $profileImage->getIdentifier());
     }
 
     public function testGetProfileImageName(): void {

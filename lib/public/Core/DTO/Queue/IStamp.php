@@ -26,6 +26,9 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IStamp extends IJsonObject {
 
+    /**
+     * @return mixed
+     */
     public function getValue();
 
     public function getName(): string;

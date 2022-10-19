@@ -126,8 +126,10 @@ class AppRenderer implements IAppRenderer {
     ): string {
         if (true === $static) return '';
 
+        /** @var IToken $token */
+        $token        = $request->getAttribute(IToken::class);
         $profileImage = $this->getProfileImage(
-            $request->getAttribute(IUser::class)
+            $token->getUser()
             , $static
             , $contextLess
         );
@@ -329,7 +331,7 @@ class AppRenderer implements IAppRenderer {
         , string               $caller
         , bool                 $hasGlobalSearch
     ): string {
-
+        /** @var IToken $token */
         $token    = $request->getAttribute(IToken::class);
         $language = null === $token
             ? $this->localeService->getLocale()

@@ -32,12 +32,12 @@ class ResponseService {
 
     public function getResponseData(ResponseInterface $response): array {
         if (false === $this->isValidResponse($response)) return [];
-        return json_decode((string) $response->getBody(), true, JSON_THROW_ON_ERROR);
+        return (array) json_decode((string) $response->getBody(), true, JSON_THROW_ON_ERROR);
     }
 
     public function getFailedResponseData(ResponseInterface $response): array {
         if (true === $this->isValidResponse($response)) return [];
-        return json_decode((string) $response->getBody(), true, JSON_THROW_ON_ERROR);
+        return (array) json_decode((string) $response->getBody(), true, JSON_THROW_ON_ERROR);
     }
 
 }

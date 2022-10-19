@@ -69,7 +69,7 @@ class CreateUser extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a user");
-        $name           = $style->ask("Username") ?? "";
+        $name           = (string) $style->ask("Username") ?? "";
         $password       = $style->askHidden("Password") ?? "";
         $passwordRepeat = $style->askHidden("Password Repeat") ?? "";
         $firstName      = $style->ask("First Name") ?? "";
@@ -80,7 +80,7 @@ class CreateUser extends KeestashCommand {
         $locked         = $input->getOption('locked') ?? false;
         $deleted        = $input->getOption('deleted') ?? false;
 
-        $this->userService->validatePasswords($password, $passwordRepeat);
+        $this->userService->validatePasswords((string) $password, (string) $passwordRepeat);
 
         $user = $this->userService->toNewUser(
             [

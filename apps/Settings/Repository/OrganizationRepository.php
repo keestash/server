@@ -80,10 +80,10 @@ class OrganizationRepository implements IOrganizationRepository {
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null
-                    : $this->dateTimeService->fromFormat($row['active_ts'])
+                    : $this->dateTimeService->fromFormat((string) $row['active_ts'])
             );
             $organization->setCreateTs(
-                $this->dateTimeService->fromFormat($row['create_ts'])
+                $this->dateTimeService->fromFormat((string) $row['create_ts'])
             );
             $organization = $this->organizationUserRepository->getByOrganization($organization);
             $list->add($organization);
@@ -122,10 +122,10 @@ class OrganizationRepository implements IOrganizationRepository {
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null
-                    : $this->dateTimeService->fromFormat($row['active_ts'])
+                    : $this->dateTimeService->fromFormat((string) $row['active_ts'])
             );
             $organization->setCreateTs(
-                $this->dateTimeService->fromFormat($row['create_ts'])
+                $this->dateTimeService->fromFormat((string) $row['create_ts'])
             );
             $organization = $this->organizationUserRepository->getByOrganization($organization);
             $list->add($organization);
@@ -236,10 +236,10 @@ class OrganizationRepository implements IOrganizationRepository {
         $organization->setActiveTs(
             null === $rows[0]['active_ts']
                 ? null
-                : $this->dateTimeService->fromFormat($rows[0]['active_ts'])
+                : $this->dateTimeService->fromFormat((string) $rows[0]['active_ts'])
         );
         $organization->setCreateTs(
-            $this->dateTimeService->fromFormat($rows[0]['create_ts'])
+            $this->dateTimeService->fromFormat((string) $rows[0]['create_ts'])
         );
         return $this->organizationUserRepository->getByOrganization($organization);
     }
@@ -270,10 +270,10 @@ class OrganizationRepository implements IOrganizationRepository {
             $organization->setActiveTs(
                 null === $row['active_ts']
                     ? null
-                    : $this->dateTimeService->fromFormat($row['active_ts'])
+                    : $this->dateTimeService->fromFormat((string) $row['active_ts'])
             );
             $organization->setCreateTs(
-                $this->dateTimeService->fromFormat($row['create_ts'])
+                $this->dateTimeService->fromFormat((string) $row['create_ts'])
             );
             $organization = $this->organizationUserRepository->getByOrganization($organization);
         }

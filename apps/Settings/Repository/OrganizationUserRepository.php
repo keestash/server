@@ -66,7 +66,7 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
         $result = $queryBuilder->executeQuery();
 
         foreach ($result->fetchAllAssociative() as $row) {
-            $user = $this->userRepository->getUserById($row['user_id']);
+            $user = $this->userRepository->getUserById((string) $row['user_id']);
             $organization->addUser($user);
         }
 

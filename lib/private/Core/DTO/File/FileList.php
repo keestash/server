@@ -26,12 +26,14 @@ use KSP\Core\DTO\File\IFile;
 
 class FileList extends ArrayList {
 
+    /**
+     * @param $item
+     * @return bool
+     */
     public function add($item): bool {
-
         if ($item instanceof IFile) {
             return parent::add($item);
         }
-
         return false;
     }
 
@@ -46,6 +48,11 @@ class FileList extends ArrayList {
         return false;
     }
 
+    /**
+     * @param int   $index
+     * @param mixed $item
+     * @return bool
+     */
     public function addToIndex(int $index, $item): bool {
         if ($item instanceof IFile) {
             return parent::addToIndex($index, $item);

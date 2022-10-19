@@ -141,13 +141,13 @@ class UserStateRepository implements IUserStateRepository {
                 $userState->setId((int) $id);
                 $userState->setUser($user);
                 $userState->setValidFrom(
-                    $this->dateTimeService->fromString($validFrom)
+                    $this->dateTimeService->fromString((string) $validFrom)
                 );
                 $userState->setCreateTs(
-                    $this->dateTimeService->fromString($createTs)
+                    $this->dateTimeService->fromString((string) $createTs)
                 );
-                $userState->setState($state);
-                $userState->setStateHash($userStateHash);
+                $userState->setState((string) $state);
+                $userState->setStateHash((string) $userStateHash);
 
                 $table->put($userState->getId(), $userState);
             }
@@ -275,6 +275,7 @@ class UserStateRepository implements IUserStateRepository {
         $deletedUsers = $this->getDeletedUsers();
 
         foreach ($deletedUsers->keySet() as $key) {
+            /** @var IUserState $userState */
             $userState = $deletedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) return true;
         }
@@ -351,6 +352,7 @@ class UserStateRepository implements IUserStateRepository {
         $lockedUsers = $this->getUsersWithPasswordResetRequest();
 
         foreach ($lockedUsers->keySet() as $key) {
+            /** @var IUserState $userState */
             $userState = $lockedUsers->get($key);
             if ($user->getId() === $userState->getUser()->getId()) {
                 return true;

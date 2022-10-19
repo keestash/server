@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Repository\AppRepository;
 
 use DateTimeImmutable;
-use doganoo\Backgrounder\BackgroundJob\JobList;
 use Keestash\Core\DTO\App\Config\App;
+use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KST\TestCase;

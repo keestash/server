@@ -58,7 +58,7 @@ class Add extends KeestashCommand {
         $style->title("Please provide the data required to create a role");
         $name = $style->ask("Name") ?? "";
 
-        $role = $this->rbacRepository->getRoleByName($name);
+        $role = $this->rbacRepository->getRoleByName((string) $name);
 
         if (false === ($role instanceof NullRole)) {
             $this->writeError('role with this name already exists', $output);

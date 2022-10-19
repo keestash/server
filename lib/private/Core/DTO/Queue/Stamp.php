@@ -58,14 +58,23 @@ class Stamp implements IStamp {
         $this->createTs = $createTs;
     }
 
+    /**
+     * @return mixed
+     */
     public function getValue() {
         return $this->value;
     }
 
+    /**
+     * @return DateTimeInterface
+     */
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
+    /**
+     * @return array
+     */
     public function jsonSerialize(): array {
         return [
             'value'       => $this->getValue()
