@@ -59,11 +59,12 @@ class OrganizationServiceTest extends TestCase {
 
     public function testToOrganizationWithIndexNotFoundException(): void {
         $this->expectException(IndexNotFoundException::class);
-        $id           = 1;
-        $activeTs     = new DateTimeImmutable();
-        $createTs     = new DateTimeImmutable();
-        $name         = OrganizationServiceTest::class;
-        $organization = $this->organizationService->toOrganization(
+        $id       = 1;
+        $activeTs = new DateTimeImmutable();
+        $createTs = new DateTimeImmutable();
+        $name     = OrganizationServiceTest::class;
+
+        $this->organizationService->toOrganization(
             [
                 'id'          => $id
                 , 'active_tz' => $activeTs
@@ -71,12 +72,6 @@ class OrganizationServiceTest extends TestCase {
                 , 'name'      => $name
             ]
         );
-
-        $this->assertInstanceOf(IOrganization::class, $organization);
-        $this->assertTrue($organization->getId() === $id);
-        $this->assertTrue($organization->getActiveTs()->getTimestamp() === $activeTs->getTimestamp());
-        $this->assertTrue($organization->getCreateTs()->getTimestamp() === $createTs->getTimestamp());
-        $this->assertTrue($organization->getName() === $name);
     }
 
 }
