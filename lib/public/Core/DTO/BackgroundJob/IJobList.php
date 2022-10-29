@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\BackgroundJob;
 
-interface IJobList {
+use IteratorAggregate;
+
+interface IJobList extends IteratorAggregate {
 
     public function length(): int;
 
