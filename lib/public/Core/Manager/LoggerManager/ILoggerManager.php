@@ -27,7 +27,7 @@ use Psr\Log\LoggerInterface;
  * Class LoggerInterfaceManager
  * @package KSP\Core\Manager\LoggerManager
  */
-interface LoggerInterfaceManager {
+interface ILoggerManager {
 
     public const FILE_LOGGER = "logger.file";
 
