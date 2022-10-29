@@ -25,7 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -39,7 +39,7 @@ class QueueRepositoryFactory implements FactoryInterface {
         return new QueueRepository(
             $container->get(IBackend::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

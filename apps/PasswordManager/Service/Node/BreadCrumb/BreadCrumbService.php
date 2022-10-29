@@ -26,7 +26,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class BreadCrumbService {
 
@@ -35,13 +35,13 @@ class BreadCrumbService {
     private ICacheService  $cacheService;
     private NodeRepository $nodeRepository;
     private IL10N          $translator;
-    private ILogger        $logger;
+    private LoggerInterface        $logger;
 
     public function __construct(
         ICacheService    $cacheService
         , NodeRepository $nodeRepository
         , IL10N          $translator
-        , ILogger        $logger
+        , LoggerInterface        $logger
     ) {
         $this->cacheService   = $cacheService;
         $this->nodeRepository = $nodeRepository;

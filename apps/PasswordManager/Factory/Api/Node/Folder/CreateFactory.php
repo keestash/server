@@ -25,7 +25,7 @@ use KSA\PasswordManager\Api\Node\Folder\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class CreateFactory {
@@ -35,7 +35,7 @@ class CreateFactory {
             $container->get(IL10N::class)
             , $container->get(NodeRepository::class)
             , $container->get(NodeService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -26,7 +26,7 @@ use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class UpdateFactory {
@@ -37,7 +37,7 @@ class UpdateFactory {
             , $container->get(NodeRepository::class)
             , $container->get(IStringService::class)
             , $container->get(CredentialService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

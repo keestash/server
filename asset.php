@@ -27,7 +27,7 @@ use Keestash\Core\Service\File\FileService;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\File\Icon\IIconService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -44,8 +44,8 @@ use Psr\Container\ContainerInterface;
     $iconService = $container->get(IIconService::class);
     /** @var IConfigService $configService */
     $configService = $container->get(IConfigService::class);
-    /** @var ILogger $logger */
-    $logger = $container->get(ILogger::class);
+    /** @var LoggerInterface $logger */
+    $logger = $container->get(LoggerInterface::class);
 
     $lifeTime = $configService->getValue(
         'user_lifetime'

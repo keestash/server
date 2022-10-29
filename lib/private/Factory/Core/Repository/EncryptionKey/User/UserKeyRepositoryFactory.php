@@ -25,7 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class UserKeyRepositoryFactory {
@@ -34,7 +34,7 @@ class UserKeyRepositoryFactory {
         return new UserKeyRepository(
             $container->get(IBackend::class),
             $container->get(IDateTimeService::class),
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
         );
     }
 

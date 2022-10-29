@@ -25,7 +25,7 @@ use KSA\Settings\Api\User\UserLock;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class UserLockFactory {
@@ -35,7 +35,7 @@ class UserLockFactory {
             $container->get(IUserRepository::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(IEventService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

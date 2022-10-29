@@ -26,7 +26,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class UserRemoveFactory {
@@ -37,7 +37,7 @@ class UserRemoveFactory {
             , $container->get(IUserRepository::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(IEventService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

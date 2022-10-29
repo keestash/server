@@ -35,20 +35,20 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class TokenRepository implements ITokenRepository {
 
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
         , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;

@@ -23,7 +23,7 @@ namespace KSA\GeneralApi\Factory\Api\Thumbnail;
 
 use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSP\Core\Service\File\Icon\IIconService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -33,7 +33,7 @@ class GetFactory {
         return new Get(
             $container->get(IIconService::class)
             , $container->get(Config::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -24,7 +24,7 @@ namespace KSA\Settings\Factory\Api\Organization;
 use KSA\Settings\Api\Organization\Activate;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class ActivateFactory {
@@ -32,7 +32,7 @@ class ActivateFactory {
     public function __invoke(ContainerInterface $container): Activate {
         return new Activate(
             $container->get(IOrganizationRepository::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
         );
     }

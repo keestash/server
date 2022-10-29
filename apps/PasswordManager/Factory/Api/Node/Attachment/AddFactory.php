@@ -29,7 +29,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -48,7 +48,7 @@ class AddFactory {
             , $container->get(NodeRepository::class)
             , $container->get(FileRepository::class)
             , $container->get(IFileService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(Config::class)
             , $container->get(IJWTService::class)
             , $dataManager

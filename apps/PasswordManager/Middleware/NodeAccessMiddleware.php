@@ -28,7 +28,7 @@ use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -39,12 +39,12 @@ class NodeAccessMiddleware implements MiddlewareInterface {
 
     private AccessService  $accessService;
     private NodeRepository $nodeRepository;
-    private ILogger        $logger;
+    private LoggerInterface        $logger;
 
     public function __construct(
         AccessService    $accessService
         , NodeRepository $nodeRepository
-        , ILogger        $logger
+        , LoggerInterface        $logger
     ) {
         $this->accessService  = $accessService;
         $this->nodeRepository = $nodeRepository;

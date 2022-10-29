@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Service\Phinx;
 
 use Keestash\Core\Service\Phinx\Migrator;
 use KSP\Core\Service\Config\IConfigService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -32,7 +32,7 @@ class MigratorFactory {
 
     public function __invoke(ContainerInterface $container): IMigrator {
         return new Migrator(
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
             , $container->get(Config::class)
             , $container->get(IConfigService::class)
         );

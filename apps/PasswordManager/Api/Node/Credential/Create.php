@@ -33,7 +33,7 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -49,14 +49,14 @@ class Create implements RequestHandlerInterface {
 
     private NodeRepository        $nodeRepository;
     private CredentialService     $credentialService;
-    private ILogger               $logger;
+    private LoggerInterface               $logger;
     private NodeEncryptionService $nodeEncryptionService;
     private AccessService         $accessService;
 
     public function __construct(
         NodeRepository          $nodeRepository
         , CredentialService     $credentialService
-        , ILogger               $logger
+        , LoggerInterface               $logger
         , NodeEncryptionService $nodeEncryptionService
         , AccessService         $accessService
     ) {

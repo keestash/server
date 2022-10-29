@@ -40,7 +40,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -71,7 +71,7 @@ class Add implements RequestHandlerInterface {
     private IDataService   $dataManager;
     private FileRepository $nodeFileRepository;
     private IFileService    $uploadFileService;
-    private ILogger         $logger;
+    private LoggerInterface         $logger;
     private IJWTService     $jwtService;
     private Config          $config;
 
@@ -80,7 +80,7 @@ class Add implements RequestHandlerInterface {
         , NodeRepository $nodeRepository
         , FileRepository $nodeFileRepository
         , IFileService   $uploadFileService
-        , ILogger        $logger
+        , LoggerInterface        $logger
         , Config         $config
         , IJWTService    $jwtService
         , IDataService   $dataManager

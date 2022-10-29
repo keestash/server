@@ -24,7 +24,7 @@ namespace Keestash\Factory\Command\Keestash;
 use Keestash\Command\Keestash\Worker;
 use Keestash\Command\KeestashCommand;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEmailHandler;
 use KSP\Queue\Handler\IEventHandler;
@@ -40,7 +40,7 @@ class WorkerFactory implements FactoryInterface {
     ): KeestashCommand {
         return new Worker(
             $container->get(IQueueService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IQueueRepository::class)
             , $container->get(IEventHandler::class)
         );

@@ -179,7 +179,7 @@ use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Validator\EmailAddress as EmailValidator;
 use Laminas\Validator\Uri as UriValidator;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 return [
     // Api
@@ -202,7 +202,7 @@ return [
     QueueRepository::class           => QueueRepositoryFactory::class,
     RBACRepository::class            => PermissionRepositoryFactory::class,
 
-    ILogger::class                                                 => LoggerFactory::class,
+    LoggerInterface::class                                                 => LoggerFactory::class,
     Application::class                                             => LegacyFactory::class,
     EventService::class                                            => EventServiceFactory::class,
     LoaderService::class                                           => LoaderServiceFactory::class,

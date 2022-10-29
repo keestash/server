@@ -30,7 +30,7 @@ use Keestash\Exception\User\UserException;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 /**
@@ -42,14 +42,14 @@ class UserDeleteTask extends Task {
     private IUserRepositoryService $userService;
     private ConfigService          $configService;
     private IUserStateRepository   $userStateRepository;
-    private ILogger                $logger;
+    private LoggerInterface                $logger;
     private IEventService          $eventManager;
 
     public function __construct(
         IUserRepositoryService $userService
         , ConfigService        $configService
         , IUserStateRepository $userStateRepository
-        , ILogger              $logger
+        , LoggerInterface              $logger
         , IEventService        $eventManager
     ) {
         $this->userService         = $userService;

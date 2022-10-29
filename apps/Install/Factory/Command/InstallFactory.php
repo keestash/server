@@ -27,7 +27,7 @@ use KSA\Install\Command\Install;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -41,7 +41,7 @@ class InstallFactory implements FactoryInterface {
         return new Install(
             $container->get(InstallerService::class)
             , $container->get(LockHandler::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(ILoaderService::class)
             , $container->get(IAppRepository::class)
             , $container->get(IAppService::class)

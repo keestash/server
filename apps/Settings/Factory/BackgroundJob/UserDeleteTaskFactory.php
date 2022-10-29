@@ -25,7 +25,7 @@ use KSA\Settings\BackgroundJob\UserDeleteTask;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
@@ -36,7 +36,7 @@ class UserDeleteTaskFactory {
             $container->get(IUserRepositoryService::class)
             , $container->get(IConfigService::class)
             , $container->get(IUserStateRepository::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
         );
     }

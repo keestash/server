@@ -31,7 +31,7 @@ use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -47,13 +47,13 @@ class Create implements RequestHandlerInterface {
     private IL10N          $translator;
     private NodeRepository $nodeRepository;
     private NodeService    $nodeService;
-    private ILogger        $logger;
+    private LoggerInterface        $logger;
 
     public function __construct(
         IL10N            $l10n
         , NodeRepository $nodeRepository
         , NodeService    $nodeService
-        , ILogger        $logger
+        , LoggerInterface        $logger
     ) {
         $this->translator     = $l10n;
         $this->nodeRepository = $nodeRepository;

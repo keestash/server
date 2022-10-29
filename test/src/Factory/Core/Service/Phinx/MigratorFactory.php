@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Service\Factory\Core\Service\Phinx;
 
 use KSP\Core\Service\Config\IConfigService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
@@ -31,7 +31,7 @@ class MigratorFactory {
 
     public function __invoke(ContainerInterface $container): IMigrator {
         return new \KST\Service\Core\Service\Phinx\Migrator(
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
             , $container->get(Config::class)
             , $container->get(IConfigService::class)
         );
