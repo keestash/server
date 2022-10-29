@@ -31,7 +31,7 @@ use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -41,13 +41,13 @@ class UserLock implements RequestHandlerInterface {
     private IUserRepository      $userRepository;
     private IUserStateRepository $userStateRepository;
     private IEventService        $eventManager;
-    private ILogger              $logger;
+    private LoggerInterface              $logger;
 
     public function __construct(
         IUserRepository        $userRepository
         , IUserStateRepository $userStateRepository
         , IEventService        $eventManager
-        , ILogger              $logger
+        , LoggerInterface              $logger
     ) {
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;

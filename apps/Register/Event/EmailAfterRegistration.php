@@ -33,7 +33,7 @@ use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Mezzio\Template\TemplateRendererInterface;
 
 class EmailAfterRegistration implements IListener {
@@ -43,7 +43,7 @@ class EmailAfterRegistration implements IListener {
     private TemplateRendererInterface $templateRenderer;
     private Application                    $legacy;
     private IL10N                     $translator;
-    private ILogger                   $logger;
+    private LoggerInterface                   $logger;
     private IHTTPService              $httpService;
     private IEmailService             $emailService;
 
@@ -51,7 +51,7 @@ class EmailAfterRegistration implements IListener {
         TemplateRendererInterface $templateRenderer
         , Application             $legacy
         , IL10N                   $l10n
-        , ILogger                 $logger
+        , LoggerInterface                 $logger
         , IHTTPService            $httpService
         , IEmailService           $emailService
     ) {

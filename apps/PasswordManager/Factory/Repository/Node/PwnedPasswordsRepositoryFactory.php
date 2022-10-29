@@ -25,7 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSP\Core\Backend\IBackend;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -38,7 +38,7 @@ class PwnedPasswordsRepositoryFactory implements FactoryInterface {
     ): PwnedPasswordsRepository {
         return new PwnedPasswordsRepository(
             $container->get(IBackend::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IDateTimeService::class)
             , $container->get(NodeRepository::class)
         );

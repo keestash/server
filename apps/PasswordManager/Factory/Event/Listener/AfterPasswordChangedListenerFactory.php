@@ -25,7 +25,7 @@ use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class AfterPasswordChangedListenerFactory {
@@ -35,7 +35,7 @@ class AfterPasswordChangedListenerFactory {
             $container->get(IUserKeyRepository::class)
             , $container->get(IEncryptionService::class)
             , $container->get(CredentialService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

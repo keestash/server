@@ -25,7 +25,7 @@ use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Stylesheet\Compiler as StylesheetCompiler;
 use KSP\Command\IKeestashCommand;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,12 +40,12 @@ class Compiler extends KeestashCommand {
 
     private StylesheetCompiler $stylesheetCompiler;
     private Config             $config;
-    private ILogger            $logger;
+    private LoggerInterface            $logger;
 
     public function __construct(
         StylesheetCompiler $compiler
         , Config $config
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         parent::__construct("general-api:compile-scss");
 

@@ -29,7 +29,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
@@ -43,7 +43,7 @@ class UserRepositoryServiceFactory {
             , $container->get(IUserRepository::class)
             , $container->get(IUserStateRepository::class)
             , $container->get(FileService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
         );
     }

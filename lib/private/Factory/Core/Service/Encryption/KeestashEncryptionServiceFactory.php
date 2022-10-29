@@ -23,14 +23,14 @@ namespace Keestash\Factory\Core\Service\Encryption;
 
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class KeestashEncryptionServiceFactory {
 
     public function __invoke(ContainerInterface $container): IEncryptionService {
         return new KeestashEncryptionService(
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
         );
     }
 

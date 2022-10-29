@@ -28,18 +28,18 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class NodeEncryptionService {
 
     private EncryptionService $encryptionService;
     private IKeyService       $keyService;
-    private ILogger           $logger;
+    private LoggerInterface           $logger;
 
     public function __construct(
         EncryptionService $encryptionService
         , IKeyService     $keyService
-        , ILogger         $logger
+        , LoggerInterface         $logger
     ) {
         $this->encryptionService = $encryptionService;
         $this->keyService        = $keyService;

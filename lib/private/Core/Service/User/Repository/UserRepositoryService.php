@@ -43,7 +43,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 
 class UserRepositoryService implements IUserRepositoryService {
@@ -54,7 +54,7 @@ class UserRepositoryService implements IUserRepositoryService {
     private IUserRepository      $userRepository;
     private IUserStateRepository $userStateRepository;
     private FileService          $fileService;
-    private ILogger              $logger;
+    private LoggerInterface              $logger;
     private IEventService        $eventManager;
 
     public function __construct(
@@ -64,7 +64,7 @@ class UserRepositoryService implements IUserRepositoryService {
         , IUserRepository      $userRepository
         , IUserStateRepository $userStateRepository
         , FileService          $fileService
-        , ILogger              $logger
+        , LoggerInterface              $logger
         , IEventService        $eventManager
     ) {
         $this->apiLogRepository    = $apiLogRepository;

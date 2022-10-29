@@ -25,7 +25,7 @@ use Keestash\Core\DTO\File\Validation\Result;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
 use KSP\Core\Service\File\Upload\IFileService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Mockery;
 use Psr\Container\ContainerInterface;
 
@@ -34,7 +34,7 @@ class FileServiceFactory {
     public function __invoke(ContainerInterface $container): IFileService {
         $fileService = new FileService(
             $container->get(IniConfigService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
 
         $fileService = Mockery::mock($fileService);

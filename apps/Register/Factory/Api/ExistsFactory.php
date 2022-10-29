@@ -23,7 +23,7 @@ namespace KSA\Register\Factory\Api;
 
 use KSA\Register\Api\User\Exists;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class ExistsFactory {
@@ -31,7 +31,7 @@ class ExistsFactory {
     public function __invoke(ContainerInterface $container): Exists {
         return new Exists(
             $container->get(IUserRepository::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Queue\Handler;
 
 use Keestash\Queue\Handler\EventHandler;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -36,7 +36,7 @@ class EventHandlerFactory implements FactoryInterface {
     ): IEventHandler {
         return new EventHandler(
             $container
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

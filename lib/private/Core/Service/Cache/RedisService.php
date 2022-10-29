@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\Cache;
 use Exception;
 use Keestash\Core\Service\Config\ConfigService;
 use KSP\Core\Service\Cache\ICacheService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Redis;
 
 /**
@@ -35,11 +35,11 @@ class RedisService implements ICacheService {
 
     private bool          $connected = false;
     private Redis         $instance;
-    private ILogger       $logger;
+    private LoggerInterface       $logger;
     private ConfigService $config;
 
     public function __construct(
-        ILogger         $logger
+        LoggerInterface         $logger
         , ConfigService $config
     ) {
         $this->logger = $logger;

@@ -30,7 +30,7 @@ use KSP\Api\IResponse;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,7 +40,7 @@ class InstallApps implements RequestHandlerInterface {
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
     private HTTPService      $httpService;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private ILoaderService   $loader;
     private IAppRepository   $appRepository;
     private IAppService      $appService;
@@ -49,7 +49,7 @@ class InstallApps implements RequestHandlerInterface {
         InstallerService $installer
         , LockHandler    $lockHandler
         , HTTPService    $httpService
-        , ILogger        $logger
+        , LoggerInterface        $logger
         , ILoaderService $loader
         , IAppRepository $appRepository
         , IAppService    $appService

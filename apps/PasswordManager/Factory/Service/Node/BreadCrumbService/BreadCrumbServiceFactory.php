@@ -25,7 +25,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class BreadCrumbServiceFactory {
@@ -35,7 +35,7 @@ class BreadCrumbServiceFactory {
             $container->get(ICacheService::class)
             , $container->get(NodeRepository::class)
             , $container->get(IL10N::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 
