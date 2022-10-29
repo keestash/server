@@ -22,7 +22,7 @@ namespace Keestash\Middleware\Web;
 
 use Composer\InstalledVersions;
 use KSP\Core\Service\Config\IConfigService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -34,11 +34,11 @@ use Whoops\Run;
 class ExceptionHandlerMiddleware implements MiddlewareInterface {
 
     private IConfigService $configService;
-    private ILogger        $logger;
+    private LoggerInterface        $logger;
 
     public function __construct(
         IConfigService $configService
-        , ILogger      $logger
+        , LoggerInterface      $logger
     ) {
         $this->configService = $configService;
         $this->logger        = $logger;

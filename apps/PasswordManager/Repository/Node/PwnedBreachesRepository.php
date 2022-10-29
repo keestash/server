@@ -31,18 +31,18 @@ use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSP\Core\Backend\IBackend;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class PwnedBreachesRepository {
 
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private IDateTimeService $dateTimeService;
     private NodeRepository   $nodeRepository;
 
     public function __construct(
         IBackend           $backend
-        , ILogger          $logger
+        , LoggerInterface          $logger
         , IDateTimeService $dateTimeService
         , NodeRepository   $nodeRepository
     ) {

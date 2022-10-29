@@ -22,7 +22,7 @@ namespace Keestash\Factory\Middleware\Api;
 
 use Interop\Container\ContainerInterface;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ExceptionHandlerMiddlewareFactory implements FactoryInterface {
@@ -33,7 +33,7 @@ class ExceptionHandlerMiddlewareFactory implements FactoryInterface {
         , ?array           $options = null
     ): ExceptionHandlerMiddleware {
         return new ExceptionHandlerMiddleware(
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
         );
     }
 

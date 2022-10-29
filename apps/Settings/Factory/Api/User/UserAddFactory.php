@@ -23,7 +23,7 @@ namespace KSA\Settings\Factory\Api\User;
 
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserAdd;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 
@@ -33,7 +33,7 @@ class UserAddFactory {
         return new UserAdd(
             $container->get(UserService::class)
             , $container->get(IUserRepositoryService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

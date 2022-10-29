@@ -27,7 +27,7 @@ use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,12 +40,12 @@ class Dump extends KeestashCommand {
     public const OPTION_NAME_SHOW_PASSWORD = 'show-password';
 
     private NodeRepository        $nodeRepository;
-    private ILogger               $logger;
+    private LoggerInterface               $logger;
     private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
         NodeRepository          $nodeRepository
-        , ILogger               $logger
+        , LoggerInterface               $logger
         , NodeEncryptionService $nodeEncryptionService
     ) {
         parent::__construct();

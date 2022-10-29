@@ -27,18 +27,18 @@ use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 abstract class KeyRepository {
 
     private IDateTimeService $dateTimeService;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private IBackend         $backend;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;

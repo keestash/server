@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\Encryption\Encryption;
 use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * AES Encryption service
@@ -37,9 +37,9 @@ abstract class AESService implements IEncryptionService {
     public const HASH_ALGORITHM = "sha256";
     public const IV_LENGTH      = 16;
 
-    private ILogger $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(ILogger $logger) {
+    public function __construct(LoggerInterface $logger) {
         $this->logger = $logger;
     }
 

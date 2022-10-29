@@ -28,7 +28,7 @@ use KSA\Install\Api\InstallApps;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class InstallAppsFactory {
@@ -38,7 +38,7 @@ class InstallAppsFactory {
             $container->get(InstallerService::class)
             , $container->get(LockHandler::class)
             , $container->get(HTTPService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(ILoaderService::class)
             , $container->get(IAppRepository::class)
             , $container->get(IAppService::class)

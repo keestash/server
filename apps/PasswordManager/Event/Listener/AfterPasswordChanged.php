@@ -31,7 +31,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Event\Listener\IListener;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class AfterPasswordChanged
@@ -44,13 +44,13 @@ class AfterPasswordChanged implements IListener {
     private IUserKeyRepository $encryptionRepository;
     private IEncryptionService $encryptionService;
     private CredentialService        $credentialService;
-    private ILogger                  $logger;
+    private LoggerInterface                  $logger;
 
     public function __construct(
         IUserKeyRepository $encryptionKeyRepository
         , IEncryptionService $encryptionService
         , CredentialService $credentialService
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         $this->encryptionRepository = $encryptionKeyRepository;
         $this->encryptionService    = $encryptionService;

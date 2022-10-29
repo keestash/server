@@ -25,13 +25,13 @@ use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Service\Event\Listener\IListener;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class PostStateChange implements IListener {
 
-    private ILogger $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(ILogger $logger) {
+    public function __construct(LoggerInterface $logger) {
         $this->logger = $logger;
     }
 

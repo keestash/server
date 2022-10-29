@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\System\RateLimit;
 
 use Keestash\Core\Builder\Data\DataServiceBuilder;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -45,7 +45,7 @@ class FileRateLimiterFactory implements FactoryInterface {
 
         return new FileRateLimiter(
             Rate::perSecond(2)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $dataManager
         );
     }

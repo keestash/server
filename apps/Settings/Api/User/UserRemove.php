@@ -35,7 +35,7 @@ use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class UserRemove implements RequestHandlerInterface {
 
@@ -43,14 +43,14 @@ class UserRemove implements RequestHandlerInterface {
     private IUserStateRepository $userStateRepository;
     private IL10N                $translator;
     private IEventService        $eventManager;
-    private ILogger              $logger;
+    private LoggerInterface              $logger;
 
     public function __construct(
         IL10N                  $l10n
         , IUserRepository      $userRepository
         , IUserStateRepository $userStateRepository
         , IEventService        $eventManager
-        , ILogger              $logger
+        , LoggerInterface              $logger
     ) {
         $this->userRepository      = $userRepository;
         $this->userStateRepository = $userStateRepository;

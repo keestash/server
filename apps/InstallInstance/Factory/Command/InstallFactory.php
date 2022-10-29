@@ -26,7 +26,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSA\InstallInstance\Command\Install;
 use KSP\Core\Repository\File\IFileRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\Config\Config;
@@ -42,7 +42,7 @@ class InstallFactory implements FactoryInterface {
     ): Install {
         return new Install(
             $container->get(Config::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(InstallerService::class)
             , $container->get(LockHandler::class)
             , $container->get(IUserRepositoryService::class)

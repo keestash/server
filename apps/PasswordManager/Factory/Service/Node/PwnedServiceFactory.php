@@ -25,7 +25,7 @@ use GuzzleHttp\ClientInterface;
 use KSA\PasswordManager\Service\Node\PwnedService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -40,7 +40,7 @@ class PwnedServiceFactory implements FactoryInterface {
             $container->get(ICSVService::class)
             , $container->get(ClientInterface::class)
             , $container->get(IConfigService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

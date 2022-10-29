@@ -32,18 +32,18 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\BackgroundJob\IJob;
 use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\Job\IJobRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class JobRepository implements IJobRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;

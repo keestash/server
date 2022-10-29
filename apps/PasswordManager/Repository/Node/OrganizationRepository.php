@@ -25,16 +25,16 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class OrganizationRepository {
 
     private IBackend $backend;
-    private ILogger  $logger;
+    private LoggerInterface  $logger;
 
     public function __construct(
         IBackend  $backend
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         $this->backend = $backend;
         $this->logger  = $logger;
