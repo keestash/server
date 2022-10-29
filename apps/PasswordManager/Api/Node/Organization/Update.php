@@ -30,7 +30,7 @@ use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNo
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,14 +40,14 @@ class Update implements RequestHandlerInterface {
 
     private NodeRepository             $nodeRepository;
     private IOrganizationRepository    $organizationRepository;
-    private ILogger                    $logger;
+    private LoggerInterface                    $logger;
     private OrganizationNodeRepository $organizationNodeRepository;
     private IEventService              $eventManager;
 
     public function __construct(
         NodeRepository               $nodeRepository
         , IOrganizationRepository    $organizationRepository
-        , ILogger                    $logger
+        , LoggerInterface                    $logger
         , OrganizationNodeRepository $organizationNodeRepository
         , IEventService              $eventManager
     ) {

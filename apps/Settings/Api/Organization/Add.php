@@ -30,7 +30,7 @@ use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -39,13 +39,13 @@ class Add implements RequestHandlerInterface {
 
     private IOrganizationRepository $organizationRepository;
     private IEventService           $eventManager;
-    private ILogger                 $logger;
+    private LoggerInterface                 $logger;
     private IUserService            $userService;
 
     public function __construct(
         IOrganizationRepository $organizationRepository
         , IEventService         $eventManager
-        , ILogger               $logger
+        , LoggerInterface               $logger
         , IUserService          $userService
     ) {
         $this->organizationRepository = $organizationRepository;

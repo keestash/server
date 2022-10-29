@@ -26,7 +26,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use KSP\Api\IResponse;
 use KSP\Core\Service\File\Icon\IIconService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -36,12 +36,12 @@ class Get implements RequestHandlerInterface {
 
     private IIconService $iconService;
     private Config       $config;
-    private ILogger      $logger;
+    private LoggerInterface      $logger;
 
     public function __construct(
         IIconService $iconService
         , Config     $config
-        , ILogger    $logger
+        , LoggerInterface    $logger
     ) {
         $this->iconService = $iconService;
         $this->config      = $config;

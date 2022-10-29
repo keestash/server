@@ -25,7 +25,7 @@ use doganoo\DI\Encryption\User\IUserService;
 use KSA\Settings\Api\Organization\Add;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class AddFactory {
@@ -34,7 +34,7 @@ class AddFactory {
         return new Add(
             $container->get(IOrganizationRepository::class)
             , $container->get(IEventService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IUserService::class)
         );
     }

@@ -24,7 +24,7 @@ namespace KSA\GeneralApi\Command\QualityTool;
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use KSP\Command\IKeestashCommand;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,11 +34,11 @@ class ClearBundleJS extends KeestashCommand {
     protected static $defaultName = "general-api:clear-js";
 
     private Config  $config;
-    private ILogger $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
         Config $config
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         parent::__construct(ClearBundleJS::$defaultName);
         $this->config = $config;

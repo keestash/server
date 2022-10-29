@@ -25,7 +25,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Middleware\InstanceInstalledMiddleware;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -36,7 +36,7 @@ class InstanceInstalledMiddlewareFactory {
             $container->get(HTTPService::class)
             , $container->get(InstanceDB::class)
             , $container->get(LockHandler::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(Config::class)
         );
     }

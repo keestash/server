@@ -26,7 +26,7 @@ use KSA\Register\Event\EmailAfterRegistration;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
@@ -37,7 +37,7 @@ class EmailAfterRegistrationListenerFactory {
             $container->get(TemplateRendererInterface::class)
             , $container->get(Application::class)
             , $container->get(IL10N::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IHTTPService::class)
             , $container->get(IEmailService::class)
         );

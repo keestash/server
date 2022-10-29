@@ -26,7 +26,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
 
@@ -38,7 +38,7 @@ class ForgotPasswordFactory {
             , $container->get(IUserStateRepository::class)
             , $container->get(IL10N::class)
             , $container->get(IUserRepository::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
         );
     }

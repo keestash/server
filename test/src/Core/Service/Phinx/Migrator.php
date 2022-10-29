@@ -23,7 +23,7 @@ namespace KST\Service\Core\Service\Phinx;
 
 use Keestash\ConfigProvider;
 use KSP\Core\Service\Config\IConfigService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 
 class Migrator extends \Keestash\Core\Service\Phinx\Migrator {
@@ -31,7 +31,7 @@ class Migrator extends \Keestash\Core\Service\Phinx\Migrator {
     private Config $config;
 
     public function __construct(
-        ILogger $logger
+        LoggerInterface $logger
         , Config $config
         , IConfigService $configService
     ) {

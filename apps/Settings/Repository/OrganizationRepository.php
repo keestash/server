@@ -32,20 +32,20 @@ use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class OrganizationRepository implements IOrganizationRepository {
 
     private IDateTimeService            $dateTimeService;
     private IOrganizationUserRepository $organizationUserRepository;
     private IBackend                    $backend;
-    private ILogger                     $logger;
+    private LoggerInterface                     $logger;
 
     public function __construct(
         IOrganizationUserRepository $organizationUserRepository
         , IDateTimeService          $dateTimeService
         , IBackend                  $backend
-        , ILogger                   $logger
+        , LoggerInterface                   $logger
     ) {
         $this->dateTimeService            = $dateTimeService;
         $this->organizationUserRepository = $organizationUserRepository;

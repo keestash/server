@@ -35,7 +35,7 @@ use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use TypeError;
 
 class UserEdit implements RequestHandlerInterface {
@@ -45,7 +45,7 @@ class UserEdit implements RequestHandlerInterface {
     private IL10N                  $translator;
     private IUserRepositoryService $userRepositoryService;
     private IJWTService            $jwtService;
-    private ILogger                $logger;
+    private LoggerInterface                $logger;
 
     public function __construct(
         IL10N                    $l10n
@@ -53,7 +53,7 @@ class UserEdit implements RequestHandlerInterface {
         , UserService            $userService
         , IUserRepositoryService $userRepositoryService
         , IJWTService            $jwtService
-        , ILogger                $logger
+        , LoggerInterface                $logger
     ) {
         $this->userRepository        = $userRepository;
         $this->userService           = $userService;

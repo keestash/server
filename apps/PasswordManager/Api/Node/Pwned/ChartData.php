@@ -30,7 +30,7 @@ use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -40,14 +40,14 @@ class ChartData implements RequestHandlerInterface {
     private PwnedBreachesRepository  $pwnedBreachesRepository;
     private PwnedPasswordsRepository $pwnedPasswordsRepository;
     private NodeRepository           $nodeRepository;
-    private ILogger                  $logger;
+    private LoggerInterface                  $logger;
     private AccessService            $accessService;
 
     public function __construct(
         PwnedBreachesRepository    $pwnedBreachesRepository
         , PwnedPasswordsRepository $pwnedPasswordsRepository
         , NodeRepository           $nodeRepository
-        , ILogger                  $logger
+        , LoggerInterface                  $logger
         , AccessService            $accessService
     ) {
         $this->pwnedBreachesRepository  = $pwnedBreachesRepository;

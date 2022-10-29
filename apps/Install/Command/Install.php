@@ -28,7 +28,7 @@ use Keestash\Core\System\Installation\App\LockHandler;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -36,7 +36,7 @@ class Install extends KeestashCommand {
 
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private ILoaderService   $loader;
     private IAppRepository   $appRepository;
     private IAppService      $appService;
@@ -44,7 +44,7 @@ class Install extends KeestashCommand {
     public function __construct(
         InstallerService $installer
         , LockHandler    $lockHandler
-        , ILogger        $logger
+        , LoggerInterface        $logger
         , ILoaderService $loader
         , IAppRepository $appRepository
         , IAppService    $appService

@@ -23,7 +23,7 @@ namespace Keestash\Core\System\RateLimit;
 
 use Exception;
 use KSP\Core\Service\Core\Data\IDataService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use RateLimit\ConfigurableRateLimiter;
 use RateLimit\Exception\LimitExceeded;
 use RateLimit\Rate;
@@ -34,12 +34,12 @@ class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
     public const FILE_NAME = 'limiter.rate.json';
 
     private array        $store = [];
-    private ILogger      $logger;
+    private LoggerInterface      $logger;
     private IDataService $dataManager;
 
     public function __construct(
         Rate           $rate
-        , ILogger      $logger
+        , LoggerInterface      $logger
         , IDataService $dataManager
     ) {
         parent::__construct($rate);

@@ -38,7 +38,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Event\Listener\IListener;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class OrganizationChangeListener
@@ -50,13 +50,13 @@ class OrganizationChangeListener implements IListener {
 
     private NodeRepository        $nodeRepository;
     private NodeEncryptionService $nodeEncryptionService;
-    private ILogger               $logger;
+    private LoggerInterface               $logger;
     private EdgeService           $edgeService;
 
     public function __construct(
         NodeRepository          $nodeRepository
         , NodeEncryptionService $nodeEncryptionService
-        , ILogger               $logger
+        , LoggerInterface               $logger
         , EdgeService           $edgeService
     ) {
         $this->nodeRepository        = $nodeRepository;

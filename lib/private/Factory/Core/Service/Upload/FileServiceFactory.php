@@ -24,7 +24,7 @@ namespace Keestash\Factory\Core\Service\Upload;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\File\Upload\FileService;
 use KSP\Core\Service\File\Upload\IFileService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class FileServiceFactory {
@@ -32,7 +32,7 @@ class FileServiceFactory {
     public function __invoke(ContainerInterface $container): IFileService {
         return new FileService(
             $container->get(IniConfigService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

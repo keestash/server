@@ -38,7 +38,7 @@ use KSA\PasswordManager\Service\Node\PwnedService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Command\IKeestashCommand;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +52,7 @@ class ImportPwned extends KeestashCommand {
     private PwnedBreachesRepository  $pwnedBreachesRepository;
     private NodeRepository           $nodeRepository;
     private NodeEncryptionService    $nodeEncryptionService;
-    private ILogger                  $logger;
+    private LoggerInterface                  $logger;
 
     public function __construct(
         PwnedService               $pwnedService
@@ -60,7 +60,7 @@ class ImportPwned extends KeestashCommand {
         , PwnedBreachesRepository  $pwnedBreachesRepository
         , NodeRepository           $nodeRepository
         , NodeEncryptionService    $nodeEncryptionService
-        , ILogger                  $logger
+        , LoggerInterface                  $logger
     ) {
         parent::__construct();
 

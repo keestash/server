@@ -31,18 +31,18 @@ use Keestash\Exception\Queue\QueueNotUpdatedException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class QueueRepository implements IQueueRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         $this->dateTimeService = $dateTimeService;
         $this->backend         = $backend;
