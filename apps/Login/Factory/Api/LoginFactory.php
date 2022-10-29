@@ -32,6 +32,7 @@ use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class LoginFactory {
 
@@ -46,6 +47,7 @@ class LoginFactory {
             , $container->get(ILanguageService::class)
             , $container->get(InstanceDB::class)
             , $container->get(IJWTService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 
