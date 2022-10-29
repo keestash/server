@@ -39,6 +39,7 @@ use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Login implements RequestHandlerInterface {
 
@@ -51,6 +52,7 @@ class Login implements RequestHandlerInterface {
     private ILanguageService $languageService;
     private InstanceDB       $instanceDB;
     private IJWTService      $jwtService;
+    private LoggerInterface  $logger;
 
     public function __construct(
         IUserRepository    $userRepository
@@ -62,6 +64,7 @@ class Login implements RequestHandlerInterface {
         , ILanguageService $languageService
         , InstanceDB       $instanceDB
         , IJWTService      $jwtService
+        , LoggerInterface  $logger
     ) {
         $this->userRepository  = $userRepository;
         $this->translator      = $translator;
@@ -72,6 +75,7 @@ class Login implements RequestHandlerInterface {
         $this->languageService = $languageService;
         $this->instanceDB      = $instanceDB;
         $this->jwtService      = $jwtService;
+        $this->logger          = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -84,6 +88,7 @@ class Login implements RequestHandlerInterface {
             $user     = $this->userRepository->getUser($userName);
             $demoUser = $this->userService->getDemoUser();
         } catch (UserNotFoundException $exception) {
+            $this->logger->error('error retrieving user', ['exception' => $exception, 'userName' => $userName]);
             return new JsonResponse(
                 'no user found'
                 , IResponse::NOT_FOUND
