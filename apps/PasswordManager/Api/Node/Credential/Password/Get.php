@@ -28,10 +28,10 @@ use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use Psr\Log\LoggerInterface as ILogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Credential
@@ -43,12 +43,12 @@ class Get implements RequestHandlerInterface {
 
     private NodeRepository    $nodeRepository;
     private CredentialService $credentialService;
-    private ILogger           $logger;
+    private LoggerInterface   $logger;
 
     public function __construct(
         CredentialService $credentialService
         , NodeRepository  $nodeRepository
-        , ILogger         $logger
+        , LoggerInterface $logger
     ) {
         $this->credentialService = $credentialService;
         $this->nodeRepository    = $nodeRepository;
