@@ -36,7 +36,7 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -45,13 +45,13 @@ class Add implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private NodeRepository    $nodeRepository;
-    private ILogger           $logger;
+    private LoggerInterface           $logger;
     private IJWTService       $jwtService;
 
     public function __construct(
         CommentRepository $commentRepository
         , NodeRepository  $nodeRepository
-        , ILogger         $logger
+        , LoggerInterface         $logger
         , IJWTService     $jwtService
     ) {
         $this->commentRepository = $commentRepository;

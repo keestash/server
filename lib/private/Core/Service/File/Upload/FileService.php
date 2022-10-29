@@ -29,7 +29,7 @@ use KSP\Core\DTO\File\IFile as ICoreFile;
 use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\DTO\File\Validation\IResult;
 use KSP\Core\Service\File\Upload\IFileService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
 use Symfony\Component\Mime\MimeTypes;
@@ -37,11 +37,11 @@ use Symfony\Component\Mime\MimeTypes;
 class FileService implements IFileService {
 
     private IniConfigService $iniConfigService;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IniConfigService $iniConfigService
-        , ILogger        $logger
+        , LoggerInterface        $logger
     ) {
         $this->iniConfigService = $iniConfigService;
         $this->logger           = $logger;

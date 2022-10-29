@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\Router;
 use Keestash\ConfigProvider;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\Route;
@@ -35,13 +35,13 @@ class RouterService implements IRouterService {
 
     private RouterInterface     $router;
     private Config              $config;
-    private ILogger             $logger;
+    private LoggerInterface             $logger;
     private IEnvironmentService $environmentService;
 
     public function __construct(
         RouterInterface       $router
         , Config              $config
-        , ILogger             $logger
+        , LoggerInterface             $logger
         , IEnvironmentService $environmentService
     ) {
         $this->router             = $router;

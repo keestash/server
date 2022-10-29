@@ -25,7 +25,7 @@ use Keestash;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Service\Config\IConfigService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Phinx\IMigrator;
 use Laminas\Config\Config;
 use Phinx\Console\PhinxApplication;
@@ -33,12 +33,12 @@ use Phinx\Wrapper\TextWrapper;
 
 class Migrator implements IMigrator {
 
-    private ILogger        $logger;
+    private LoggerInterface        $logger;
     private Config         $config;
     private IConfigService $configService;
 
     public function __construct(
-        ILogger          $logger
+        LoggerInterface          $logger
         , Config         $config
         , IConfigService $configService
     ) {

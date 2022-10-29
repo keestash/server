@@ -28,7 +28,7 @@ use KSA\Settings\Event\Organization\OrganizationUpdatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Organization\IOrganizationService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,13 +38,13 @@ class Update implements RequestHandlerInterface {
 
     private IOrganizationService    $organizationService;
     private IOrganizationRepository $organizationRepository;
-    private ILogger       $logger;
+    private LoggerInterface       $logger;
     private IEventService $eventManager;
 
     public function __construct(
         IOrganizationService      $organizationService
         , IOrganizationRepository $organizationRepository
-        , ILogger                 $logger
+        , LoggerInterface                 $logger
         , IEventService           $eventManager
     ) {
         $this->organizationService    = $organizationService;

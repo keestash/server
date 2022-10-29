@@ -26,7 +26,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class CreateFactory {
@@ -35,7 +35,7 @@ class CreateFactory {
         return new Create(
             $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(NodeEncryptionService::class)
             , $container->get(AccessService::class)
         );

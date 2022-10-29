@@ -30,18 +30,18 @@ use Keestash\Exception\TooManyRowsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class AppRepository implements IAppRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         $this->backend         = $backend;
         $this->dateTimeService = $dateTimeService;

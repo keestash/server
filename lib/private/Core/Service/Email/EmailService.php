@@ -27,7 +27,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Email\IEmailService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -38,7 +38,7 @@ class EmailService implements IEmailService {
 
     private PHPMailer     $mailer;
     private ConfigService $configService;
-    private ILogger       $logger;
+    private LoggerInterface       $logger;
     private InstanceDB    $instanceDb;
     private HashTable     $recipients;
     private HashTable     $carbonCopy;
@@ -48,7 +48,7 @@ class EmailService implements IEmailService {
     public function __construct(
         Application $legacy
         , ConfigService $configService
-        , ILogger       $logger
+        , LoggerInterface       $logger
         , InstanceDB    $instanceDB
     ) {
         $this->logger          = $logger;

@@ -28,7 +28,7 @@ use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class EmailServiceFactory {
@@ -37,7 +37,7 @@ class EmailServiceFactory {
         return new EmailService(
             $container->get(Application::class),
             $container->get(IConfigService::class),
-            $container->get(ILogger::class),
+            $container->get(LoggerInterface::class),
             $container->get(InstanceDB::class)
         );
     }

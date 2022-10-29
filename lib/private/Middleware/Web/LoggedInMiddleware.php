@@ -27,7 +27,7 @@ use KSP\Api\IRequest;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IPersistenceService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -35,12 +35,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class LoggedInMiddleware implements MiddlewareInterface {
 
-    private ILogger         $logger;
+    private LoggerInterface         $logger;
     private HTTPService     $httpService;
     private IUserRepository $userRepository;
 
     public function __construct(
-        ILogger           $logger
+        LoggerInterface           $logger
         , HTTPService     $httpService
         , IUserRepository $userRepository
     ) {

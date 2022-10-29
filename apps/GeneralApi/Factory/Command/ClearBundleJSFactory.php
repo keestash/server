@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\GeneralApi\Factory\Command;
 
 use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
@@ -31,7 +31,7 @@ class ClearBundleJSFactory {
     public function __invoke(ContainerInterface $container): ClearBundleJS {
         return new ClearBundleJS(
             $container->get(Config::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

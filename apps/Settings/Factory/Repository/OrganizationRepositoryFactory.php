@@ -26,7 +26,7 @@ use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
 use KSP\Core\Backend\IBackend;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class OrganizationRepositoryFactory {
@@ -36,7 +36,7 @@ class OrganizationRepositoryFactory {
             $container->get(IOrganizationUserRepository::class)
             , $container->get(IDateTimeService::class)
             , $container->get(IBackend::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

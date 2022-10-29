@@ -30,18 +30,18 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class OrganizationKeyRepository extends KeyRepository implements IOrganizationKeyRepository {
 
     private IDateTimeService $dateTimeService;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private IBackend         $backend;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
         $this->dateTimeService = $dateTimeService;

@@ -24,14 +24,14 @@ namespace Keestash\Factory\Middleware\Web;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Middleware\Web\LoggedInMiddleware;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class LoggedInMiddlewareFactory {
 
     public function __invoke(ContainerInterface $container): LoggedInMiddleware {
         return new LoggedInMiddleware(
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
             , $container->get(HTTPService::class)
             , $container->get(IUserRepository::class)
         );

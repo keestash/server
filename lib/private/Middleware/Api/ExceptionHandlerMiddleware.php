@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware\Api;
 
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -30,9 +30,9 @@ use Throwable;
 
 class ExceptionHandlerMiddleware implements MiddlewareInterface {
 
-    private ILogger $logger;
+    private LoggerInterface $logger;
 
-    public function __construct(ILogger $logger) {
+    public function __construct(LoggerInterface $logger) {
         $this->logger = $logger;
     }
 

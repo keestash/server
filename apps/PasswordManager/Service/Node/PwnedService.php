@@ -30,20 +30,20 @@ use JsonException;
 use KSA\PasswordManager\Entity\Node\Pwned\Api\Passwords;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class PwnedService {
 
     private ICSVService     $csvService;
     private ClientInterface $client;
     private IConfigService  $configService;
-    private ILogger         $logger;
+    private LoggerInterface         $logger;
 
     public function __construct(
         ICSVService       $csvService
         , ClientInterface $client
         , IConfigService  $configService
-        , ILogger         $logger
+        , LoggerInterface         $logger
     ) {
         $this->csvService    = $csvService;
         $this->client        = $client;

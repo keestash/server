@@ -34,14 +34,14 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class FileRepository {
 
     private NodeRepository     $nodeRepository;
     private IDateTimeService   $dateTimeService;
     private CoreFileRepository $fileRepository;
-    private ILogger            $logger;
+    private LoggerInterface            $logger;
     private IJWTService        $jwtService;
     private IBackend           $backend;
 
@@ -50,7 +50,7 @@ class FileRepository {
         , NodeRepository     $nodeRepository
         , IDateTimeService   $dateTimeService
         , CoreFileRepository $fileRepository
-        , ILogger            $logger
+        , LoggerInterface            $logger
         , IJWTService        $jwtService
     ) {
         $this->nodeRepository  = $nodeRepository;

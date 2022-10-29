@@ -47,14 +47,14 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class NodeRepository {
 
     private IUserRepository         $userRepository;
     private PublicShareRepository   $publicShareRepository;
     private DateTimeService         $dateTimeService;
-    private ILogger                 $logger;
+    private LoggerInterface                 $logger;
     private IOrganizationRepository $organizationRepository;
     private IJWTService             $jwtService;
     private IBackend                $backend;
@@ -65,7 +65,7 @@ class NodeRepository {
         , IUserRepository         $userRepository
         , PublicShareRepository   $shareRepository
         , DateTimeService         $dateTimeService
-        , ILogger                 $logger
+        , LoggerInterface                 $logger
         , IOrganizationRepository $organizationRepository
         , IJWTService             $jwtService
         , IEnvironmentService     $environmentService

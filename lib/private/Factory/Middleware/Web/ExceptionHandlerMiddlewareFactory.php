@@ -23,7 +23,7 @@ namespace Keestash\Factory\Middleware\Web;
 use Interop\Container\ContainerInterface;
 use Keestash\Middleware\Web\ExceptionHandlerMiddleware;
 use KSP\Core\Service\Config\IConfigService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ExceptionHandlerMiddlewareFactory implements FactoryInterface {
@@ -35,7 +35,7 @@ class ExceptionHandlerMiddlewareFactory implements FactoryInterface {
     ): ExceptionHandlerMiddleware {
         return new ExceptionHandlerMiddleware(
             $container->get(IConfigService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 
