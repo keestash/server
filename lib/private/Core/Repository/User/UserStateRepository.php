@@ -36,20 +36,20 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class UserStateRepository implements IUserStateRepository {
 
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
         , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         $this->backend         = $backend;
         $this->userRepository  = $userRepository;

@@ -27,18 +27,18 @@ use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class RemoveExpired implements IListener {
 
     private PublicShareRepository $publicShareRepository;
     private InstallerService      $installerService;
-    private ILogger               $logger;
+    private LoggerInterface               $logger;
 
     public function __construct(
         PublicShareRepository $publicShareRepository
         , InstallerService $installerService
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         $this->publicShareRepository = $publicShareRepository;
         $this->installerService      = $installerService;

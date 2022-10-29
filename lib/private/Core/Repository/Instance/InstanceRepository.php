@@ -23,16 +23,16 @@ namespace Keestash\Core\Repository\Instance;
 
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Instance\IInstanceRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class InstanceRepository implements IInstanceRepository {
 
-    private ILogger  $logger;
+    private LoggerInterface  $logger;
     private IBackend $backend;
 
     public function __construct(
         IBackend  $backend
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         $this->logger  = $logger;
         $this->backend = $backend;

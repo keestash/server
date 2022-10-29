@@ -26,7 +26,7 @@ use Keestash\Core\Repository\User\UserStateRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class UserStateRepositoryFactory {
@@ -36,7 +36,7 @@ class UserStateRepositoryFactory {
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

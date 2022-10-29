@@ -27,7 +27,7 @@ use Keestash\Core\Service\Encryption\Encryption\AESService;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Wrapper class for the core encryption service.
@@ -44,7 +44,7 @@ class EncryptionService extends AESService {
     public function __construct(
         IEncryptionService $encryptionService
         , CredentialService $credentialService
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         $this->encryptionService = $encryptionService;
         $this->credentialService = $credentialService;

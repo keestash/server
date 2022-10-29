@@ -21,16 +21,16 @@ declare(strict_types=1);
 
 namespace KSP\Core\Manager\LoggerManager;
 
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
- * Class ILoggerManager
+ * Class LoggerInterfaceManager
  * @package KSP\Core\Manager\LoggerManager
  */
 interface ILoggerManager {
 
     public const FILE_LOGGER = "logger.file";
 
-    public function getLogger(): ILogger;
+    public function getLogger(): LoggerInterface;
 
 }

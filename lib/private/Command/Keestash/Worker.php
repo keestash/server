@@ -27,7 +27,7 @@ use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,13 +37,13 @@ use Throwable;
 class Worker extends KeestashCommand {
 
     private IQueueService    $queueService;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private IQueueRepository $queueRepository;
     private IEventHandler    $eventHandler;
 
     public function __construct(
         IQueueService      $queueService
-        , ILogger          $logger
+        , LoggerInterface          $logger
         , IQueueRepository $queueRepository
         , IEventHandler    $eventHandler
     ) {

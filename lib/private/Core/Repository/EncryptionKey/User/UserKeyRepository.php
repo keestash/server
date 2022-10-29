@@ -30,7 +30,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class UserKeyRepository
@@ -41,12 +41,12 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , ILogger          $logger
+        , LoggerInterface          $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
         $this->dateTimeService = $dateTimeService;

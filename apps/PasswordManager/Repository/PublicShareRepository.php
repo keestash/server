@@ -18,18 +18,18 @@ use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class PublicShareRepository {
 
     private IDateTimeService $dateTimeService;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private IBackend         $backend;
 
     public function __construct(
         IBackend $backend
         , IDateTimeService $dateTimeService
-        , ILogger $logger
+        , LoggerInterface $logger
     ) {
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;

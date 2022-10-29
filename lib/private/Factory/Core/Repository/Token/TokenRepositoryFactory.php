@@ -26,7 +26,7 @@ use Keestash\Core\Repository\Token\TokenRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class TokenRepositoryFactory {
@@ -36,7 +36,7 @@ class TokenRepositoryFactory {
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -28,7 +28,7 @@ use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class GetFactory {
@@ -37,7 +37,7 @@ class GetFactory {
         return new Get(
             $container->get(NodeRepository::class)
             , $container->get(BreadCrumbService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(NodeEncryptionService::class)
             , $container->get(CommentRepository::class)
             , $container->get(PwnedPasswordsRepository::class)

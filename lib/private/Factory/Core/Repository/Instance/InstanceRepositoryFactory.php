@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Repository\Instance;
 
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use KSP\Core\Backend\IBackend;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class InstanceRepositoryFactory {
@@ -31,7 +31,7 @@ class InstanceRepositoryFactory {
     public function __invoke(ContainerInterface $container): InstanceRepository {
         return new InstanceRepository(
             $container->get(IBackend::class),
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
         );
     }
 

@@ -22,14 +22,14 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Event\Listener;
 
 use KSA\Settings\Event\Listener\PostStateChange;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class PostStateChangeFactory {
 
     public function __invoke(ContainerInterface $container): PostStateChange {
         return new PostStateChange(
-            $container->get(ILogger::class)
+            $container->get(LoggerInterface::class)
         );
     }
 

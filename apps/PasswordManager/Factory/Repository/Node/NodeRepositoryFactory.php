@@ -29,7 +29,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class NodeRepositoryFactory {
@@ -40,7 +40,7 @@ class NodeRepositoryFactory {
             , $container->get(IUserRepository::class)
             , $container->get(PublicShareRepository::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(IJWTService::class)
             , $container->get(IEnvironmentService::class)

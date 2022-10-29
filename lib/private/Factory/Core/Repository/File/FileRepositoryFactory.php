@@ -26,7 +26,7 @@ use Keestash\Core\Repository\File\FileRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
 
 class FileRepositoryFactory {
@@ -36,7 +36,7 @@ class FileRepositoryFactory {
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
             , $container->get(IDateTimeService::class)
-            , $container->get(ILogger::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

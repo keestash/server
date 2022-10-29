@@ -28,19 +28,19 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 
 class OrganizationUserRepository implements IOrganizationUserRepository {
 
     private IUserRepository  $userRepository;
-    private ILogger          $logger;
+    private LoggerInterface          $logger;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
 
     public function __construct(
         IUserRepository    $userRepository
         , IBackend         $backend
-        , ILogger          $logger
+        , LoggerInterface          $logger
         , IDateTimeService $dateTimeService
     ) {
         $this->userRepository  = $userRepository;

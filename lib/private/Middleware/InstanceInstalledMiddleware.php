@@ -26,7 +26,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IRequest;
-use Psr\Log\LoggerInterface as ILogger;
+use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Laminas\Diactoros\Response\RedirectResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -39,14 +39,14 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
     private HTTPService    $httpService;
     private InstanceDB     $instanceDB;
     private LockHandler    $lockHandler;
-    private ILogger        $logger;
+    private LoggerInterface        $logger;
     private Config         $config;
 
     public function __construct(
         HTTPService      $httpService
         , InstanceDB     $instanceDB
         , LockHandler    $lockHandler
-        , ILogger        $logger
+        , LoggerInterface        $logger
         , Config         $config
     ) {
         $this->httpService   = $httpService;
