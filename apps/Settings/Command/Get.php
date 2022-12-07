@@ -33,7 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Get extends KeestashCommand {
 
-    public const ARGUMENT_NAME_WITH_EVENTS = 'user-id';
+    public const ARGUMENT_NAME_USER_ID = 'user-id';
 
     private IUserRepository $userRepository;
 
@@ -46,14 +46,14 @@ class Get extends KeestashCommand {
         $this->setName("users:get")
             ->setDescription("lists one or all users")
             ->addArgument(
-                Get::ARGUMENT_NAME_WITH_EVENTS
+                Get::ARGUMENT_NAME_USER_ID
                 , InputArgument::OPTIONAL | InputArgument::IS_ARRAY
                 , 'the user id(s) or none to list all'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $userIds   = (array) $input->getArgument(Get::ARGUMENT_NAME_WITH_EVENTS);
+        $userIds   = (array) $input->getArgument(Get::ARGUMENT_NAME_USER_ID);
         $userList  = new ArrayList();
         $tableRows = [];
 
@@ -73,11 +73,13 @@ class Get extends KeestashCommand {
                 $user->getId()
                 , $user->getName()
                 , $user->getHash()
+                , $user->isDeleted()
+                , $user->isLocked()
             ];
         }
         $table = new Table($output);
         $table
-            ->setHeaders(['ID', 'Name', 'Hash'])
+            ->setHeaders(['ID', 'Name', 'Hash', 'Deleted', 'Locked'])
             ->setRows($tableRows);
         $table->render();
 

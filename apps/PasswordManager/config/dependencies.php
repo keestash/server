@@ -47,7 +47,6 @@ use KSA\PasswordManager\Controller\Attachment\View;
 use KSA\PasswordManager\Controller\PublicShare\PublicShareController;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
-use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
@@ -78,7 +77,6 @@ use KSA\PasswordManager\Factory\Controller\Attachment\ViewFactory;
 use KSA\PasswordManager\Factory\Controller\PasswordManager\ControllerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
-use KSA\PasswordManager\Factory\Event\Listener\CreateStarterPasswordFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CredentialChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
@@ -187,7 +185,6 @@ return [
 
         // event
         // ---- listener
-        CreateStarterPassword::class                                      => CreateStarterPasswordFactory::class,
         AfterRegistration::class                                          => AfterRegistrationFactory::class,
         AfterPasswordChanged::class                                       => AfterPasswordChangedListenerFactory::class,
         RemoveExpired::class                                              => RemoveExpiredFactory::class,

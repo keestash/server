@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\User;
 
-use DateTime;
 use DateTimeInterface;
 use KSP\Core\DTO\Entity\IObject;
 

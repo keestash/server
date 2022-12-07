@@ -43,6 +43,11 @@ abstract class AESService implements IEncryptionService {
         $this->logger = $logger;
     }
 
+    /**
+     * @param ICredential $credential
+     * @param string      $raw
+     * @return string
+     */
     public function encrypt(ICredential $credential, string $raw): string {
         $key = hash(
             AESService::HASH_ALGORITHM
@@ -70,6 +75,12 @@ abstract class AESService implements IEncryptionService {
         return $iv . $hash . $cipherText;
     }
 
+    /**
+     * @param ICredential $credential
+     * @param string      $encrypted
+     * @return string
+     * @throws EncryptionFailedException
+     */
     public function decrypt(ICredential $credential, string $encrypted): string {
         $iv = substr(
             $encrypted
@@ -98,7 +109,7 @@ abstract class AESService implements IEncryptionService {
             , true
         );
 
-        if (!hash_equals($newHash,$hash)) {
+        if (!hash_equals($newHash, $hash)) {
             $this->logger->error("hashes do not match. There was an error. Aborting encryption");
             throw new EncryptionFailedException("hashes do not match. There was an error. Aborting encryption");
         }

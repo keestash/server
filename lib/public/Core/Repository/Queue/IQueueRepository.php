@@ -63,4 +63,22 @@ interface IQueueRepository extends IRepository {
      */
     public function update(IMessage $message): IMessage;
 
+    /**
+     * @param string $uuid
+     * @param int    $attempts
+     * @return void
+     * @throws QueueNotUpdatedException
+     */
+    public function updateAttempts(string $uuid, int $attempts): void;
+
+    /**
+     * @param string $uuid
+     * @return void
+     * @throws QueueNotDeletedException
+     */
+    public function deleteByUuid(string $uuid): void;
+
+
+    public function getByUuid(string $uuid): array;
+
 }

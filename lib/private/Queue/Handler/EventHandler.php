@@ -28,19 +28,19 @@ use KSP\Core\DTO\Queue\IEventMessage;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Service\Event\Listener\IListener;
-use Psr\Log\LoggerInterface;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\Serializer\Adapter\PhpSerialize;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class EventHandler implements IEventHandler {
 
     private ContainerInterface $container;
-    private LoggerInterface            $logger;
+    private LoggerInterface    $logger;
 
     public function __construct(
         ContainerInterface $container
-        , LoggerInterface          $logger
+        , LoggerInterface  $logger
     ) {
         $this->container = $container;
         $this->logger    = $logger;
@@ -74,8 +74,11 @@ class EventHandler implements IEventHandler {
                     $this->logger->error(
                         'error while handling event'
                         , [
-                            'message'     => $message
-                            , 'exception' => $exception
+                            'message'         => $message
+                            , 'listener'      => $listener
+                            , 'event'         => get_class($event)
+                            , 'traceAsString' => $exception->getTraceAsString()
+                            , 'exception'     => $exception
                         ]
                     );
                 }

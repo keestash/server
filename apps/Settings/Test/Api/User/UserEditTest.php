@@ -58,9 +58,7 @@ class UserEditTest extends TestCase {
     }
 
     public function testWithMissingData(): void {
-        if (PHP_VERSION_ID > 70429) {
-            $this->expectWarning();
-        }
+        $this->expectWarning();
         /** @var UserEdit $userEdit */
         $userEdit = $this->getService(UserEdit::class);
 

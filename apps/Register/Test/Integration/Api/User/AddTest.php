@@ -122,8 +122,8 @@ class AddTest extends TestCase {
         $userName  = md5((string) (time() + 2));
 
         /** @var Add $add */
-        $add = $this->getService(Add::class);
-
+        $add      = $this->getService(Add::class);
+        $password = '1E]U_t"0Xh&}gtTPA`|?';
         $response = $add->handle(
             $this->getDefaultRequest(
                 [
@@ -131,7 +131,8 @@ class AddTest extends TestCase {
                     , 'last_name'            => $lastName
                     , 'user_name'            => $userName
                     , 'email'                => Uuid::uuid4() . '@keestash.com'
-                    , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
+                    , 'password'             => $password
+                    , 'password_repeat'      => $password
                     , 'phone'                => '004930123456'
                     , 'terms_and_conditions' => true
                     , 'website'              => 'keestash.com'

@@ -72,7 +72,6 @@ class Create implements RequestHandlerInterface {
             $parent = (string) $parent;
         }
 
-        $this->logger->debug('input', ['parsedbody' => $request->getParsedBody()]);
         if (false === $this->isValid($name) || false === $this->isValid($parent)) {
             return new JsonResponse(['invalid name or parent'], IResponse::BAD_REQUEST);
         }

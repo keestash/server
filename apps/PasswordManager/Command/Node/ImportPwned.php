@@ -52,7 +52,7 @@ class ImportPwned extends KeestashCommand {
     private PwnedBreachesRepository  $pwnedBreachesRepository;
     private NodeRepository           $nodeRepository;
     private NodeEncryptionService    $nodeEncryptionService;
-    private LoggerInterface                  $logger;
+    private LoggerInterface          $logger;
 
     public function __construct(
         PwnedService               $pwnedService
@@ -60,7 +60,7 @@ class ImportPwned extends KeestashCommand {
         , PwnedBreachesRepository  $pwnedBreachesRepository
         , NodeRepository           $nodeRepository
         , NodeEncryptionService    $nodeEncryptionService
-        , LoggerInterface                  $logger
+        , LoggerInterface          $logger
     ) {
         parent::__construct();
 
@@ -163,10 +163,10 @@ class ImportPwned extends KeestashCommand {
             (new DateTimeImmutable())->modify('-30 min')
         );
 
-        /** @var \KSA\PasswordManager\Entity\Node\Pwned\Passwords $passwords */
+        /** @var \KSA\PasswordManager\Entity\Node\Pwned\Passwords $candidate */
         foreach ($candidates as $candidate) {
-            $this->writeInfo(sprintf('processing %s', $candidate->getNodeId()), $output);
-            $credential = $this->nodeRepository->getNode($candidate->getNodeId());
+            $this->writeInfo(sprintf('processing %s', $candidate->getNode()->getId()), $output);
+            $credential = $this->nodeRepository->getNode($candidate->getNode()->getId());
 
             if (false === ($credential instanceof Credential)) {
                 continue;
@@ -198,12 +198,11 @@ class ImportPwned extends KeestashCommand {
 
             if (null !== $passwordsNode) {
                 $this->writeInfo('password leak found', $output);
-                dump($passwordsNode->getValue());
             }
 
             $this->pwnedPasswordsRepository->replace(
                 new \KSA\PasswordManager\Entity\Node\Pwned\Passwords(
-                    $this->nodeRepository->getNode($candidate->getNodeId(), 0, 0)
+                    $this->nodeRepository->getNode($candidate->getNode()->getId(), 0, 0)
                     , null !== $passwordsNode
                     ? (int) floor($passwordsNode->getValue()->getCount() % 10)
                     : 0

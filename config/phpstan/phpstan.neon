@@ -1,5 +1,5 @@
 includes:
-#    - %rootDir%/../../../config/phpstan/baseline.neon
+    - %rootDir%/../../../config/phpstan/baseline.neon
 parameters:
 	excludePaths:
 	    - %rootDir%/../../

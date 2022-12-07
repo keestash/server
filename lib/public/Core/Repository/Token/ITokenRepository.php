@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Token;
 
+use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Exception\Token\TokenNotCreatedException;
 use Keestash\Exception\Token\TokenNotDeletedException;
 use Keestash\Exception\Token\TokenNotFoundException;
@@ -57,5 +59,11 @@ interface ITokenRepository extends IRepository {
      * @throws TokenNotDeletedException
      */
     public function removeForUser(IUser $user): void;
+
+    /**
+     * @param DateTimeInterface $reference
+     * @return ArrayList
+     */
+    public function getOlderThan(DateTimeInterface $reference): ArrayList;
 
 }

@@ -17,12 +17,13 @@
     "source": "https://github.com/keestash/server"
   },
   "require": {
-    "php": "7.4.*",
+    "php": "8.1.*",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-fileinfo": "*",
     "ext-intl": "*",
     "ext-json": "*",
+    "ext-ldap": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
     "ext-pdo": "*",
@@ -61,8 +62,10 @@
     "robmorgan/phinx": "^0.12",
     "scssphp/scssphp": "^1.2",
     "sentry/sdk": "^3.2",
+    "stripe/stripe-php": "^10.0",
     "symfony/console": "^5.2",
     "symfony/event-dispatcher": "^5.2",
+    "symfony/ldap": "^5.4",
     "symfony/mime": "^4.4",
     "symfony/string": "^5.4",
     "twig/twig": "3.4.3",
@@ -78,7 +81,7 @@
     "roave/security-advisories": "dev-latest",
     "squizlabs/php_codesniffer": "^3.5",
     "symfony/var-dumper": "^5.2",
-    "vimeo/psalm": "^4.27.0"
+    "vimeo/psalm": "^4"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
@@ -103,6 +106,6 @@
     "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",
     "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G",
     "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
-    "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose"
+    "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1"
   }
 }

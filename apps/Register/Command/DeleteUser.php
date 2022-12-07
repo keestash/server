@@ -27,6 +27,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -38,6 +39,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DeleteUser extends KeestashCommand {
 
     public const ARGUMENT_NAME_USER_ID = 'user_id';
+    public const OPTION_NAME_FORCE     = 'force';
 
     private IUserRepositoryService $userRepositoryService;
     private IUserRepository        $userRepository;
@@ -58,6 +60,12 @@ class DeleteUser extends KeestashCommand {
                 DeleteUser::ARGUMENT_NAME_USER_ID
                 , InputArgument::REQUIRED
                 , 'the user id to delete'
+            )
+            ->addOption(
+                DeleteUser::OPTION_NAME_FORCE
+                , 'f'
+                , InputOption::VALUE_NONE
+                , 'whether questions should be asked'
             );
     }
 
@@ -69,27 +77,33 @@ class DeleteUser extends KeestashCommand {
      */
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
-        $userId = (string) $input->getArgument(DeleteUser::ARGUMENT_NAME_USER_ID);
+        $userId    = (string) $input->getArgument(DeleteUser::ARGUMENT_NAME_USER_ID);
+        $yes       = $input->getOption(DeleteUser::OPTION_NAME_FORCE);
+        $confirmed = $yes;
 
-        $confirmed = $this->askQuestion(
-            'do you really want to delete this user permanently?'
-            , $input
-            , $output
-            , false
-        );
+        if (false === $yes) {
+            $confirmed = $this->askQuestion(
+                'do you really want to delete this user permanently?'
+                , $input
+                , $output
+                , false
+            );
+        }
 
         if (false === $confirmed) {
             $this->writeInfo('aborting', $output);
             return 0;
         }
 
-        $confirmed = $this->askQuestion(
-            'do you really want to delete this user permanently?'
-            , $input
-            , $output
-            , false
-        );
+        if (false === $yes) {
+            $confirmed = $this->askQuestion(
+                'do you really want to delete this user permanently?'
+                , $input
+                , $output
+                , false
+            );
 
+        }
         if (false === $confirmed) {
             $this->writeInfo('aborting', $output);
             return 0;

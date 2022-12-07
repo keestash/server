@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\User;
 
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\IService;
 
@@ -52,6 +53,6 @@ interface IUserService extends IService {
 
     public function validatePasswords(string $password, string $passwordRepeat): void;
 
-    public function validateNewUser(IUser $user): IUser;
+    public function validateNewUser(IUser $user): ArrayList;
 
 }

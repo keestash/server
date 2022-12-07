@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Service;
 
+use Keestash\Exception\EncryptionFailedException;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -34,19 +35,24 @@ class NodeEncryptionService {
 
     private EncryptionService $encryptionService;
     private IKeyService       $keyService;
-    private LoggerInterface           $logger;
+    private LoggerInterface   $logger;
 
     public function __construct(
         EncryptionService $encryptionService
         , IKeyService     $keyService
-        , LoggerInterface         $logger
+        , LoggerInterface $logger
     ) {
         $this->encryptionService = $encryptionService;
         $this->keyService        = $keyService;
         $this->logger            = $logger;
     }
 
-
+    /**
+     * @param Node            $node
+     * @param IKeyHolder|null $parentKeyHolder
+     * @return void
+     * @throws EncryptionFailedException
+     */
     public function decryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
 
         if ($node instanceof Credential) {
@@ -68,6 +74,12 @@ class NodeEncryptionService {
 
     }
 
+    /**
+     * @param Credential      $credential
+     * @param IKeyHolder|null $parentKeyHolder
+     * @return void
+     * @throws EncryptionFailedException
+     */
     private function decryptCredential(Credential &$credential, ?IKeyHolder $parentKeyHolder = null): void {
 
         $keyHolder = $credential->getUser();
@@ -114,6 +126,11 @@ class NodeEncryptionService {
 
     }
 
+    /**
+     * @param Node            $node
+     * @param IKeyHolder|null $parentKeyHolder
+     * @return void
+     */
     public function encryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
 
         if ($node instanceof Credential) {
@@ -134,6 +151,11 @@ class NodeEncryptionService {
 
     }
 
+    /**
+     * @param Credential      $credential
+     * @param IKeyHolder|null $parentKeyHolder
+     * @return void
+     */
     private function encryptCredential(Credential &$credential, ?IKeyHolder $parentKeyHolder = null): void {
 
         $keyHolder = $credential->getUser();

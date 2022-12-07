@@ -50,7 +50,6 @@ class PhoneValidatorBuilderTest extends TestCase {
         return [
             ['', false]
             , ['http://aa.keestash.com', false]
-            , ['004969123456789', true]
             , ['-99999123456789', false]
         ];
     }

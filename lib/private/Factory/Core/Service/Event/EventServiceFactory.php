@@ -23,6 +23,7 @@ namespace Keestash\Factory\Core\Service\Event;
 
 use Keestash\Core\Service\Event\EventService;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Event\IEventService;
 use Psr\Container\ContainerInterface;
 
@@ -31,6 +32,7 @@ class EventServiceFactory {
     public function __invoke(ContainerInterface $container): IEventService {
         return new EventService(
             $container->get(IQueueRepository::class)
+            , $container->get(IBase64Service::class)
         );
     }
 

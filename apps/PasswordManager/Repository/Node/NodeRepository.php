@@ -54,7 +54,7 @@ class NodeRepository {
     private IUserRepository         $userRepository;
     private PublicShareRepository   $publicShareRepository;
     private DateTimeService         $dateTimeService;
-    private LoggerInterface                 $logger;
+    private LoggerInterface         $logger;
     private IOrganizationRepository $organizationRepository;
     private IJWTService             $jwtService;
     private IBackend                $backend;
@@ -65,7 +65,7 @@ class NodeRepository {
         , IUserRepository         $userRepository
         , PublicShareRepository   $shareRepository
         , DateTimeService         $dateTimeService
-        , LoggerInterface                 $logger
+        , LoggerInterface         $logger
         , IOrganizationRepository $organizationRepository
         , IJWTService             $jwtService
         , IEnvironmentService     $environmentService
@@ -815,24 +815,34 @@ ORDER BY d.`level`;
         return $edge;
     }
 
-    public function removeForUser(IUser $user): bool {
+    public function removeForUser(IUser $user): void {
 
         $removed = $this->publicShareRepository->removeByUser($user);
-        if (false === $removed) return false;
+        if (false === $removed) {
+            throw new PasswordManagerException();
+        }
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete(
-                'pwm_edge', 'pe'
-            )
-                ->where('pe.`node_id` IN (
+        $queryBuilder->delete(
+            'pwm_edge', 'pe'
+        )
+            ->where('pe.`node_id` IN (
                                     SELECT DISTINCT n.`id` FROM `pwm_node` n WHERE n.`user_id` = ?
                                 )')
-                ->orWhere('pe.`parent_id` IN (
+            ->orWhere('pe.`parent_id` IN (
                                     SELECT DISTINCT n.`id` FROM `pwm_node` n WHERE n.`user_id` = ?
                                 )')
-                ->setParameter(0, $user->getId())
-                ->setParameter(1, $user->getId())
-                ->executeStatement() !== 0;
+            ->setParameter(0, $user->getId())
+            ->setParameter(1, $user->getId())
+            ->executeStatement();
+
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->delete(
+            'pwm_node', 'pn'
+        )
+            ->where('pn.`user_id` = ?')
+            ->setParameter(0, $user->getId())
+            ->executeStatement();
     }
 
 }

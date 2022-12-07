@@ -29,19 +29,19 @@ use KSP\Core\DTO\File\IFile as ICoreFile;
 use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\DTO\File\Validation\IResult;
 use KSP\Core\Service\File\Upload\IFileService;
-use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\UploadedFile;
 use Psr\Http\Message\UploadedFileInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mime\MimeTypes;
 
 class FileService implements IFileService {
 
     private IniConfigService $iniConfigService;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
 
     public function __construct(
-        IniConfigService $iniConfigService
-        , LoggerInterface        $logger
+        IniConfigService  $iniConfigService
+        , LoggerInterface $logger
     ) {
         $this->iniConfigService = $iniConfigService;
         $this->logger           = $logger;
@@ -70,11 +70,12 @@ class FileService implements IFileService {
     public function validateUploadedFile(IFile $file): IResult {
         $result = new Result();
         /** @var UploadedFile|IFile $file */
-        $error          = $file->getError();
-        $tmpName        = $file->getTmpName();
-        $size           = $file->getSize();
-        $isUploadedFile = is_uploaded_file($tmpName);
-        $maxSize        = (int) $this->iniConfigService->getValue("upload_max_filesize", -1);
+        $error             = $file->getError();
+        $tmpName           = $file->getTmpName();
+        $size              = $file->getSize();
+        $isUploadedFile    = is_uploaded_file($tmpName);
+        $uploadMaxFileSize = $this->iniConfigService->getValue("upload_max_filesize", -1);
+        $maxSize           = $this->iniConfigService->toBytes((string) $uploadMaxFileSize);
 
         if (0 !== $error) {
             $result->add(

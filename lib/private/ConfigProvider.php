@@ -37,6 +37,7 @@ final class ConfigProvider {
     public const ENVIRONMENT_WEB         = 'web.environment';
     public const ENVIRONMENT_CONSOLE     = 'console.environment';
     public const ENVIRONMENT_UNIT_TEST   = 'test.unit.environment';
+    public const ENVIRONMENT_SAAS        = 'saas.environment';
     public const INSTALL_INSTANCE_ROUTE  = 'install_instance';
     public const INSTALL_LOGIN_ROUTE     = 'login';
     public const INSTALL_INSTANCE_ROUTES = 'routes.instance.install';
@@ -54,6 +55,7 @@ final class ConfigProvider {
     public const API_ROUTER              = 'router.api';
     public const DEPENDENCIES            = 'dependencies';
     public const FACTORIES               = 'factories';
+    public const ALIASES                 = 'aliases';
     public const TEMPLATES               = 'templates';
     public const PATHS                   = 'paths';
     public const COUNTRY_CODES           = 'codes.country';

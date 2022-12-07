@@ -30,24 +30,24 @@ use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class ChartData implements RequestHandlerInterface {
 
     private PwnedBreachesRepository  $pwnedBreachesRepository;
     private PwnedPasswordsRepository $pwnedPasswordsRepository;
     private NodeRepository           $nodeRepository;
-    private LoggerInterface                  $logger;
+    private LoggerInterface          $logger;
     private AccessService            $accessService;
 
     public function __construct(
         PwnedBreachesRepository    $pwnedBreachesRepository
         , PwnedPasswordsRepository $pwnedPasswordsRepository
         , NodeRepository           $nodeRepository
-        , LoggerInterface                  $logger
+        , LoggerInterface          $logger
         , AccessService            $accessService
     ) {
         $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
@@ -86,10 +86,12 @@ class ChartData implements RequestHandlerInterface {
         return new JsonResponse(
             [
                 'passwords'   => [
-                    'amount' => $passwords->size()
+                    'amount'   => $passwords->size()
+                    , 'length' => $passwords->size()
                 ]
                 , 'breaches'  => [
-                'amount' => $breaches->size()
+                'amount'   => $breaches->size()
+                , 'length' => $breaches->size()
             ],
                 'totalAmount' => $breaches->size() + $passwords->size()
             ]

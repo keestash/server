@@ -34,13 +34,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private Application       $legacy;
+    private Application    $legacy;
     private IHTTPService   $httpService;
     private ILoaderService $loader;
     private InstanceDB     $instanceDB;
 
     public function __construct(
-        Application $legacy
+        Application      $legacy
         , IHTTPService   $httpService
         , ILoaderService $loader
         , InstanceDB     $instanceDB
@@ -59,10 +59,7 @@ class Configuration implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "appName"                 => $this->legacy->getMetaData()->get('name')
-                , "newAccountLink"        => $this->httpService->getBaseURL(true, true) . "/register"
-                , "forgotPasswordLink"    => $this->httpService->getBaseURL(true, true) . "/forgot_password"
-                , "registeringEnabled"    => $this->loader->hasApp(ConfigProvider::APP_ID)
+                "registeringEnabled"      => $this->loader->hasApp(ConfigProvider::APP_ID)
 
                 // values
                 , "backgroundPath"        => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"

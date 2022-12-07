@@ -25,9 +25,9 @@ use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Command\Node\ImportPwned;
 
-return array(
+return [
     CreateFolder::class
     , CreateCredential::class
     , Dump::class
     , ImportPwned::class
-);
+];

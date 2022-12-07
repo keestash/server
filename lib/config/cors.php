@@ -20,15 +20,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Core\Service\Router\VerificationService;
+use KSP\Api\IResponse;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 return
     [
         'allowed_origins'     => [ConfigurationInterface::ANY_ORIGIN], // Allow any origin
         'exposed_headers'     => [
-            VerificationService::FIELD_NAME_TOKEN
-            , VerificationService::FIELD_NAME_USER_HASH
+            IResponse::HEADER_X_KEESTASH_TOKEN
+            , IResponse::HEADER_X_KEESTASH_USER
+            , IResponse::HEADER_X_KEESTASH_AUTHENTICATION
         ],
         'allowed_methods'     => ["GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS"],
         'allowed_max_age'     => '600', // 10 minutes
@@ -44,8 +45,8 @@ return
             , 'DNT'
             , 'Referer'
             , 'User-Agent'
-            , VerificationService::FIELD_NAME_TOKEN
-            , VerificationService::FIELD_NAME_USER_HASH
+            , IResponse::HEADER_X_KEESTASH_TOKEN
+            , IResponse::HEADER_X_KEESTASH_USER
             , 'Authorization'
         ], // Tell client that the API will always return this header
     ];

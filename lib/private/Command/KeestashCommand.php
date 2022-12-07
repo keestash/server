@@ -84,14 +84,14 @@ abstract class KeestashCommand extends Command implements IKeestashCommand {
      * @param string          $question
      * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param mixed           $default
+     * @param bool            $default
      * @return bool
      */
     protected function askQuestion(
         string            $question
         , InputInterface  $input
         , OutputInterface $output
-        ,                 $default = null
+        , bool            $default = false
     ): bool {
         $helper   = $this->getHelper('question');
         $question = new ConfirmationQuestion($question, $default);

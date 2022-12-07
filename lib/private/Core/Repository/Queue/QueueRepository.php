@@ -37,12 +37,12 @@ class QueueRepository implements IQueueRepository {
 
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
 
     public function __construct(
         IBackend           $backend
         , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
+        , LoggerInterface  $logger
     ) {
         $this->dateTimeService = $dateTimeService;
         $this->backend         = $backend;
@@ -83,9 +83,9 @@ class QueueRepository implements IQueueRepository {
      */
     public function getSchedulableMessages(): array {
         try {
-            $queryBuilder     = $this->backend->getConnection()->createQueryBuilder();
-            $thirtyMinutesAgo = new DateTime();
-            $thirtyMinutesAgo = $thirtyMinutesAgo->modify('-30 minute');
+            $queryBuilder   = $this->backend->getConnection()->createQueryBuilder();
+            $fiveSecondsAgo = new DateTime();
+            $fiveSecondsAgo = $fiveSecondsAgo->modify('-5 second');
             $queryBuilder->select(
                 [
                     'q.id'
@@ -101,10 +101,36 @@ class QueueRepository implements IQueueRepository {
                 ->where('q.attempts < ?')
                 ->andWhere('q.reserved_ts < ?')
                 ->setParameter(0, 3)
-                ->setParameter(1, $this->dateTimeService->toYMDHIS($thirtyMinutesAgo));
+                ->setParameter(1, $this->dateTimeService->toYMDHIS($fiveSecondsAgo));
 
             $result = $queryBuilder->executeQuery();
             return $result->fetchAllAssociative();
+        } catch (Exception $exception) {
+            $this->logger->error('error getting schedulable queue', ['exception' => $exception]);
+            throw new QueueException();
+        }
+    }
+
+    public function getByUuid(string $uuid): array {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->select(
+                [
+                    'q.id'
+                    , 'q.create_ts'
+                    , 'q.priority'
+                    , 'q.attempts'
+                    , 'q.reserved_ts'
+                    , 'q.payload'
+                    , 'q.stamps'
+                ]
+            )
+                ->from('queue', 'q')
+                ->where('q.id = ?')
+                ->setParameter(0, $uuid);
+
+            $result = $queryBuilder->executeQuery();
+            return $result->fetchAllAssociative()[0] ?? [];
         } catch (Exception $exception) {
             $this->logger->error('error getting schedulable queue', ['exception' => $exception]);
             throw new QueueException();
@@ -117,13 +143,22 @@ class QueueRepository implements IQueueRepository {
      * @throws QueueNotDeletedException
      */
     public function delete(IMessage $message): void {
+        $this->deleteByUuid($message->getId());
+    }
+
+    /**
+     * @param string $uuid
+     * @return void
+     * @throws QueueNotDeletedException
+     */
+    public function deleteByUuid(string $uuid): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->delete(
                 'queue'
             )
                 ->where('id = ?')
-                ->setParameter(0, $message->getId())
+                ->setParameter(0, $uuid)
                 ->executeStatement();
         } catch (Exception $exception) {
             $this->logger->error('message not deleted', ['exception' => $exception]);
@@ -154,10 +189,20 @@ class QueueRepository implements IQueueRepository {
                 ->setParameter(0, $message->getId())
                 ->setParameter(1, $message->getPriority())
                 ->setParameter(2, $message->getAttempts())
-                ->setParameter(3, json_encode($message->getPayload()))
+                ->setParameter(3,
+                    json_encode(
+                        $message->getPayload()
+                        , JSON_THROW_ON_ERROR
+                    )
+                )
                 ->setParameter(4, $this->dateTimeService->toYMDHIS($message->getReservedTs()))
                 ->setParameter(5, $this->dateTimeService->toYMDHIS($message->getCreateTs()))
-                ->setParameter(6, json_encode($message->getStamps()->toArray()))
+                ->setParameter(6,
+                    json_encode(
+                        $message->getStamps()->toArray()
+                        , JSON_THROW_ON_ERROR
+                    )
+                )
                 ->executeStatement();
             return $message;
         } catch (Exception $exception) {
@@ -197,6 +242,33 @@ class QueueRepository implements IQueueRepository {
             }
 
             return $message;
+        } catch (Exception $exception) {
+            $this->logger->error('error updating queue', ['exception' => $exception]);
+            throw new QueueNotUpdatedException();
+        }
+    }
+
+    /**
+     * @param string $uuid
+     * @param int    $attempts
+     * @return void
+     * @throws QueueNotUpdatedException
+     */
+    public function updateAttempts(string $uuid, int $attempts): void {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->update('`queue`')
+                ->set('`attempts`', '?')
+                ->where('`id` = ?')
+                ->setParameter(0, $attempts)
+                ->setParameter(1, $uuid);
+
+            $rowCount = $queryBuilder->executeStatement();
+
+            if (0 === $rowCount) {
+                throw new QueueNotUpdatedException();
+            }
+
         } catch (Exception $exception) {
             $this->logger->error('error updating queue', ['exception' => $exception]);
             throw new QueueNotUpdatedException();

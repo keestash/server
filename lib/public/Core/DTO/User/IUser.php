@@ -73,4 +73,6 @@ interface IUser extends
 
     public function isDeleted(): bool;
 
+    public function isLdapUser(): bool;
+
 }

@@ -27,11 +27,15 @@ use KSP\Core\Service\Core\Locale\ILocaleService;
 class LocaleService implements ILocaleService {
 
     public function getLocaleForUser(IUser $user): string {
-        return 'DE';
+        return 'US';
     }
 
     public function getLocale(): string {
-        return 'DE';
+        return 'US';
+    }
+
+    public function getPrimaryLanguageForUser(IUser $user): string {
+        return 'en';
     }
 
 }

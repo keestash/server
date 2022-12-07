@@ -25,6 +25,7 @@ use Keestash\Core\Service\Router\VerificationService;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Router\IVerificationService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -35,9 +36,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 class KeestashHeaderMiddleware implements MiddlewareInterface {
 
     private IVerificationService $verification;
+    private IHTTPService         $httpService;
 
-    public function __construct(IVerificationService $verification) {
+    public function __construct(
+        IVerificationService $verification
+        , IHTTPService       $httpService
+    ) {
         $this->verification = $verification;
+        $this->httpService  = $httpService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -54,7 +60,13 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
         );
 
         if (null === $token) {
-            return new JsonResponse(['session expired'], IResponse::UNAUTHORIZED);
+            return new JsonResponse(
+                ['session expired']
+                , IResponse::UNAUTHORIZED
+                , [
+                    'x-keestash-authentication' => "true"
+                ]
+            );
         }
 
         return $handler->handle(

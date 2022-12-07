@@ -110,7 +110,6 @@ class LoginTest extends TestCase {
         $user    = $userRepository->getUser($userName);
         $headers = $response->getHeaders();
 
-        dump((string) $response->getBody());
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
         $this->assertTrue(isset($responseBody['settings']));

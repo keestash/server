@@ -23,6 +23,7 @@ namespace Keestash\Core\Service\Router;
 
 use Keestash\Exception\Token\TokenNotFoundException;
 use Keestash\Exception\User\UserNotFoundException;
+use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -30,8 +31,8 @@ use KSP\Core\Service\Router\IVerificationService;
 
 class VerificationService implements IVerificationService {
 
-    public const FIELD_NAME_USER_HASH = "x-keestash-user";
-    public const FIELD_NAME_TOKEN     = "x-keestash-token";
+    public const FIELD_NAME_USER_HASH = IResponse::HEADER_X_KEESTASH_USER;
+    public const FIELD_NAME_TOKEN     = IResponse::HEADER_X_KEESTASH_TOKEN;
 
     private ITokenRepository $tokenRepository;
     private IUserRepository  $userRepository;

@@ -25,4 +25,5 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IEvent extends IJsonObject {
 
+
 }

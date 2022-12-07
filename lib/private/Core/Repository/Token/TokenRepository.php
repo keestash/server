@@ -21,8 +21,10 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Token;
 
+use DateTimeInterface;
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Core\DTO\Token\Token;
 use Keestash\Exception\KeestashException;
@@ -42,13 +44,13 @@ class TokenRepository implements ITokenRepository {
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
 
     public function __construct(
         IBackend           $backend
         , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
+        , LoggerInterface  $logger
     ) {
         $this->userRepository  = $userRepository;
         $this->dateTimeService = $dateTimeService;
@@ -233,6 +235,45 @@ class TokenRepository implements ITokenRepository {
             $this->logger->error('error removing token', ['exception' => $exception]);
             throw new TokenNotDeletedException();
         }
+    }
+
+    public function getOlderThan(DateTimeInterface $reference): ArrayList {
+        $list         = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $tokens       = $queryBuilder
+            ->select(
+                [
+                    '`id`'
+                    , '`name`'
+                    , '`value`'
+                    , '`user_id`'
+                    , '`create_ts`'
+                ]
+            )
+            ->from('`token`')
+            ->andWhere('create_ts < ?')
+            ->orWhere('create_ts IS NULL')
+            ->setParameter(
+                0
+                , $this->dateTimeService->toYMDHIS($reference)
+            );
+
+        $tokens = $tokens->executeQuery()
+            ->fetchAllNumeric();
+        foreach ($tokens as $row) {
+            $token = new Token();
+            $token->setId((int) $row[0]);
+            $token->setValue((string) $row[2]);
+            $token->setName((string) $row[1]);
+            $token->setUser(
+                $this->userRepository->getUserById((string) $row[3])
+            );
+            $token->setCreateTs(
+                $this->dateTimeService->fromString((string) $row[4])
+            );
+            $list->add($token);
+        }
+        return $list;
     }
 
 }

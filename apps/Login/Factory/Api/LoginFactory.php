@@ -21,16 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\Login\Factory\Api;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Api\Login;
 use KSA\Login\Service\TokenService;
+use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\LDAP\ILDAPService;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -45,9 +46,10 @@ class LoginFactory {
             , $container->get(TokenService::class)
             , $container->get(ILocaleService::class)
             , $container->get(ILanguageService::class)
-            , $container->get(InstanceDB::class)
             , $container->get(IJWTService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(ILDAPService::class)
+            , $container->get(IConnectionRepository::class)
         );
     }
 

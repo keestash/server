@@ -21,16 +21,25 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
+use Keestash\Core\System\Application;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class AfterRegistrationFactory {
 
     public function __invoke(ContainerInterface $container): AfterRegistration {
         return new AfterRegistration(
             $container->get(IKeyService::class)
-            , $container->get(AfterRegistration\CreateStarterPassword::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(NodeService::class)
+            , $container->get(NodeRepository::class)
+            , $container->get(CredentialService::class)
+            , $container->get(Application::class)
         );
     }
 
