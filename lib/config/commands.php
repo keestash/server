@@ -21,6 +21,9 @@ declare(strict_types=1);
  */
 
 use Keestash\Command\Keestash\Events;
+use Keestash\Command\Keestash\QueueDelete;
+use Keestash\Command\Keestash\QueueList;
+use Keestash\Command\Keestash\Reset;
 use Keestash\Command\Permission\Add;
 use Keestash\Command\Permission\AssignPermissionToRole;
 use Keestash\Command\Permission\Get;
@@ -39,4 +42,7 @@ return [
     , AssignRoleToUser::class
     , AssignPermissionToRole::class
     , Events::class
+    , QueueList::class
+    , QueueDelete::class
+    , Reset::class
 ];

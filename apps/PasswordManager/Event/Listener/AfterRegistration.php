@@ -21,18 +21,21 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event\Listener;
 
-use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
-use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
-use Keestash\Exception\KeestashException;
+use Keestash\Core\System\Application;
+use Keestash\Exception\FolderNotCreatedException;
+use Keestash\Exception\Key\KeyNotCreatedException;
+use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
-use KSA\PasswordManager\Exception\DefaultPropertiesNotSetException;
-use KSA\PasswordManager\Exception\KeyNotCreatedException;
-use KSA\PasswordManager\Exception\KeyNotStoredException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\Listener\IListener;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class AfterRegistration
@@ -43,25 +46,34 @@ use KSP\Core\Service\Event\Listener\IListener;
  */
 class AfterRegistration implements IListener {
 
-    private IKeyService           $keyService;
-    private CreateStarterPassword $createStarterPassword;
+    public const FIRST_CREDENTIAL_ID = 1;
+    public const ROOT_ID             = 1;
+
+    private IKeyService       $keyService;
+    private LoggerInterface   $logger;
+    private NodeService       $nodeService;
+    private NodeRepository    $nodeRepository;
+    private CredentialService $credentialService;
+    private Application       $application;
 
     public function __construct(
-        IKeyService             $keyService
-        , CreateStarterPassword $createStarterPassword
+        IKeyService         $keyService
+        , LoggerInterface   $logger
+        , NodeService       $nodeService
+        , NodeRepository    $nodeRepository
+        , CredentialService $credentialService
+        , Application       $application
     ) {
-        $this->keyService            = $keyService;
-        $this->createStarterPassword = $createStarterPassword;
+        $this->keyService        = $keyService;
+        $this->logger            = $logger;
+        $this->nodeService       = $nodeService;
+        $this->nodeRepository    = $nodeRepository;
+        $this->credentialService = $credentialService;
+        $this->application       = $application;
     }
 
     /**
      * @param UserCreatedEvent $event
-     * @throws DefaultPropertiesNotSetException
-     * @throws KeyNotCreatedException
-     * @throws KeyNotStoredException
-     * @throws KeestashException
-     * @throws InvalidKeyTypeException
-     * @throws UnsupportedKeyTypeException
      */
     public function execute(IEvent $event): void {
 
@@ -70,9 +82,60 @@ class AfterRegistration implements IListener {
             return;
         }
 
-        $this->keyService->createAndStoreKey($event->getUser());
-        $this->createStarterPassword->run($event->getUser());
+        try {
+            $this->keyService->createAndStoreKey($event->getUser());
+            $this->logger->info('key created');
+            $root = $this->createRootFolder($event);
+            $this->logger->info('folder created');
+            $this->createStarterPassword($event, $root);
+            $this->logger->info('password created');
+        } catch (KeyNotCreatedException $e) {
+            $this->logger->error('key not created', ['exception' => $e]);
+            $this->keyService->remove($event->getUser());
+            $this->nodeRepository->removeForUser($event->getUser());
+        } catch (PasswordManagerException|FolderNotCreatedException $exception) {
+            $this->logger->error('password/folder not created', ['exception' => $exception]);
+            $this->keyService->remove($event->getUser());
+            $this->nodeRepository->removeForUser($event->getUser());
+        }
 
+    }
+
+    /**
+     * @param IEvent $event
+     * @return Root
+     * @throws FolderNotCreatedException
+     */
+    private function createRootFolder(IEvent $event): Root {
+        $root = $this->nodeService->createRootFolder(
+            AfterRegistration::ROOT_ID
+            , $event->getUser()
+        );
+
+        $rootId = $this->nodeRepository->addRoot($root);
+
+        if (null === $rootId) {
+            throw new FolderNotCreatedException("could not create root folder");
+        }
+        return $root;
+    }
+
+    /**
+     * @param IEvent $event
+     * @param Root   $root
+     * @return void
+     * @throws PasswordManagerException
+     */
+    private function createStarterPassword(IEvent $event, Root $root): void {
+        $credential = $this->credentialService->createCredential(
+            (string) $this->application->getMetaData()->get('name')
+            , (string) $this->application->getMetaData()->get("web")
+            , $event->getUser()->getName()
+            , (string) $this->application->getMetaData()->get("name")
+            , $event->getUser()
+        );
+        $credential->setId(AfterRegistration::FIRST_CREDENTIAL_ID);
+        $this->credentialService->insertCredential($credential, $root);
     }
 
 }

@@ -140,4 +140,18 @@ class KeyService implements IKeyService {
         return $this->storeKey($keyHolder, $key);
     }
 
+    /**
+     * @param IKeyHolder $keyHolder
+     * @return void
+     * @throws KeestashException
+     */
+    public function remove(IKeyHolder $keyHolder): void {
+        if ($keyHolder instanceof IUser) {
+            $this->userKeyRepository->remove($keyHolder);
+        } else if ($keyHolder instanceof IOrganization) {
+            $this->organizationKeyRepository->remove($keyHolder);
+        }
+        throw new UnsupportedKeyException();
+    }
+
 }

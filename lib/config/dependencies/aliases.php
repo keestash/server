@@ -35,6 +35,9 @@ use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositor
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Job\JobRepository;
+use Keestash\Core\Repository\LDAP\DefaultConnectionRepository;
+use Keestash\Core\Repository\LDAP\DefaultLDAPRepository;
+use Keestash\Core\Repository\Payment\DefaultPaymentLogRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use Keestash\Core\Repository\RBAC\RBACRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
@@ -51,6 +54,7 @@ use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
@@ -67,7 +71,9 @@ use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\L10N\GetText;
+use Keestash\Core\Service\LDAP\LDAPService;
 use Keestash\Core\Service\Organization\OrganizationService;
+use Keestash\Core\Service\Payment\DefaultPaymentService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\Router\ApiRequestService;
@@ -85,6 +91,9 @@ use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Job\IJobRepository;
+use KSP\Core\Repository\LDAP\IConnectionRepository;
+use KSP\Core\Repository\LDAP\ILDAPUserRepository;
+use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -101,6 +110,7 @@ use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\CSV\ICSVService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
+use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
@@ -115,7 +125,9 @@ use KSP\Core\Service\HTTP\Input\ISanitizerService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\LDAP\ILDAPService;
 use KSP\Core\Service\Organization\IOrganizationService;
+use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Core\Service\Router\IApiRequestService;
@@ -142,6 +154,9 @@ return [
     IQueueRepository::class                                => QueueRepository::class,
     IUserStateRepository::class                            => UserStateRepository::class,
     RBACRepositoryInterface::class                         => RBACRepository::class,
+    ILDAPUserRepository::class                             => DefaultLDAPRepository::class,
+    IConnectionRepository::class                           => DefaultConnectionRepository::class,
+    IPaymentLogRepository::class                           => DefaultPaymentLogRepository::class,
 
     // service
     IUserService::class                                    => UserService::class,
@@ -179,6 +194,9 @@ return [
     IRouteService::class                                   => RouteService::class,
     IVerificationService::class                            => VerificationService::class,
     IEventService::class                                   => EventService::class,
+    ILDAPService::class                                    => LDAPService::class,
+    IBase64Service::class                                  => Base64Service::class,
+    IPaymentService::class                                 => DefaultPaymentService::class,
 
     IL10N::class                   => GetText::class,
     ILoaderService::class          => LoaderService::class,

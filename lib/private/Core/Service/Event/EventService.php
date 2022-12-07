@@ -22,10 +22,11 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Event;
 
 use DateTimeImmutable;
+use Keestash\Core\DTO\Event\ReservedEvent;
 use Keestash\Core\DTO\Queue\EventMessage;
-use Keestash\Core\DTO\Queue\Stamp;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Event\IEventService;
 use Laminas\Serializer\Adapter\PhpSerialize;
 use Ramsey\Uuid\Uuid;
@@ -33,14 +34,19 @@ use Ramsey\Uuid\Uuid;
 class EventService implements IEventService {
 
     private IQueueRepository $queueRepository;
+    private IBase64Service   $base64Service;
     private array            $listeners;
 
-    public function __construct(IQueueRepository $queueRepository) {
+    public function __construct(
+        IQueueRepository $queueRepository
+        , IBase64Service $base64Service
+    ) {
         $this->queueRepository = $queueRepository;
+        $this->base64Service   = $base64Service;
     }
 
     public function execute(IEvent $event): void {
-        $listeners  = $this->listeners[get_class($event)];
+        $listeners  = $this->listeners[get_class($event)] ?? [];
         $serializer = new PhpSerialize();
 
         foreach ($listeners as $listener) {
@@ -52,25 +58,24 @@ class EventService implements IEventService {
             $message = new EventMessage();
             $message->setId((string) Uuid::uuid4());
             $message->setPayload(
-                [
-                    'listener' => $listener
-                    , 'event'  => [
-                    'serialized' => $serializer->serialize($event)
-                    , 'name'     => get_class($event)
-                ]
-                ]
+                $this->base64Service->encryptArrayRecursive(
+                    [
+                        'listener' => $listener
+                        , 'event'  => [
+                        'serialized' => $serializer->serialize($event)
+                        , 'name'     => get_class($event)
+                    ]
+                    ]
+                )
             );
-            $message->setReservedTs(new DateTimeImmutable());
+            $message->setReservedTs(
+                $event instanceof ReservedEvent
+                    ? $event->getReservedTs()
+                    : new DateTimeImmutable()
+            );
             $message->setAttempts(0);
             $message->setPriority(1);
             $message->setCreateTs(new DateTimeImmutable());
-
-            $stamp = new Stamp();
-            $stamp->setCreateTs(new DateTimeImmutable());
-            $stamp->setName($listener);
-            $stamp->setValue((string) Uuid::uuid4());
-            $message->addStamp($stamp);
-
             $this->queueRepository->insert($message);
 
         }

@@ -26,6 +26,10 @@ use KSP\Core\Service\IService;
 
 interface IQueueService extends IService {
 
-    public function prepareQueue(bool $forceAll = false): ArrayList;
+    public function getQueue(bool $forceAll = false): ArrayList;
+
+    public function remove(string $uuid): void;
+
+    public function updateAttempts(string $uuid, int $attempts): void;
 
 }

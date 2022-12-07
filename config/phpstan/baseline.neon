@@ -171,6 +171,71 @@ parameters:
 			path: ../../apps/InstallInstance/Command/Uninstall.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getConnection\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Event/Listener/SyncUsersListener.php
+
+		-
+			message: "#^Offset 0 does not exist on array\\|null\\.$#"
+			count: 2
+			path: ../../apps/LDAP/Event/Listener/SyncUsersListener.php
+
+		-
+			message: "#^Cannot access offset 'active_ts' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'base_dn' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'connection' on mixed\\.$#"
+			count: 7
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'create_ts' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'date' on mixed\\.$#"
+			count: 2
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'host' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'password' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'port' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'user_dn' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Cannot call method getTimestamp\\(\\) on DateTimeInterface\\|null\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Api/GetTest.php
+
+		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
 			path: ../../apps/Login/Api/Configuration.php
@@ -316,11 +381,6 @@ parameters:
 			path: ../../apps/PasswordManager/Command/Node/Credential/CreateCredential.php
 
 		-
-			message: "#^Parameter \\#1 \\$password of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\:\\:createCredential\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Command/Node/Credential/CreateCredential.php
-
-		-
 			message: "#^Parameter \\#2 \\$url of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\:\\:createCredential\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Command/Node/Credential/CreateCredential.php
@@ -351,11 +411,6 @@ parameters:
 			path: ../../apps/PasswordManager/Command/Node/ImportPwned.php
 
 		-
-			message: "#^Variable \\$passwords in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$candidates, \\$candidate$#"
-			count: 1
-			path: ../../apps/PasswordManager/Command/Node/ImportPwned.php
-
-		-
 			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Controller\\\\PasswordManager\\\\Controller\\:\\:setActionBar\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Controller/PasswordManager/Controller.php
@@ -381,9 +436,9 @@ parameters:
 			path: ../../apps/PasswordManager/Event/Listener/AfterPasswordChanged.php
 
 		-
-			message: "#^Parameter \\#1 \\$password of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\:\\:createCredential\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Event/Listener/AfterRegistration/CreateStarterPassword.php
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getUser\\(\\)\\.$#"
+			count: 3
+			path: ../../apps/PasswordManager/Event/Listener/AfterRegistration.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
@@ -606,11 +661,6 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Edge/EdgeServiceTest.php
 
 		-
-			message: "#^Cannot call method format\\(\\) on DateTimeInterface\\|null\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
-
-		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\NodeServiceTest\\:\\:\\$credentialService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
@@ -641,14 +691,39 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Share/ShareServiceTest.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Payment/Api/Stripe/Cancel.php
+
+		-
+			message: "#^Dead catch \\- KSA\\\\Payment\\\\Exception\\\\PaymentException is never thrown in the try block\\.$#"
+			count: 1
+			path: ../../apps/Payment/Api/Stripe/Cancel.php
+
+		-
+			message: "#^Dead catch \\- KSA\\\\Payment\\\\Exception\\\\PaymentException is never thrown in the try block\\.$#"
+			count: 1
+			path: ../../apps/Payment/Api/Stripe/Subscribed.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getUser\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Payment/Event/Listener/DebugListener.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getEvent\\(\\)\\.$#"
+			count: 7
+			path: ../../apps/Payment/Event/Listener/WebhookListener.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
+			count: 4
+			path: ../../apps/Payment/Event/Listener/WebhookListener.php
+
+		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/Configuration/Configuration.php
-
-		-
-			message: "#^Cannot access offset string on array\\|object\\.$#"
-			count: 1
-			path: ../../apps/Register/Api/User/Add.php
 
 		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
@@ -791,11 +866,6 @@ parameters:
 			path: ../../lib/private/Command/Keestash/Events.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Queue\\\\IMessage\\:\\:setAttempts\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Keestash/Worker.php
-
-		-
 			message: "#^Left side of \\|\\| is always true\\.$#"
 			count: 1
 			path: ../../lib/private/Command/Keestash/Worker.php
@@ -836,6 +906,11 @@ parameters:
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getDateTime\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/DTO/Event/Listener/RemoveOutdatedTokens.php
+
+		-
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/File/FileList.php
@@ -859,11 +934,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/File/FileRepository.php
-
-		-
-			message: "#^Argument of an invalid type KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList supplied for foreach, only iterables are supported\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJob\\:\\:setId\\(\\)\\.$#"
@@ -933,11 +1003,6 @@ parameters:
 		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 3
-			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between null and KSP\\\\Core\\\\DTO\\\\Token\\\\IToken will always evaluate to false\\.$#"
-			count: 1
 			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
 
 		-
@@ -1011,7 +1076,7 @@ parameters:
 			path: ../../lib/private/Factory/Core/System/RateLimit/FileRateLimiterFactory.php
 
 		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 2
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
 			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
 

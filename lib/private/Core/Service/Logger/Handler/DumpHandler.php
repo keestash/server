@@ -26,7 +26,11 @@ use Monolog\Handler\AbstractProcessingHandler;
 class DumpHandler extends AbstractProcessingHandler {
 
     protected function write(array $record): void {
-        dump($record);
+        if (!function_exists('dump')) {
+            var_dump($record);
+            return;
+        }
+        dump($record['message']);
     }
 
 }

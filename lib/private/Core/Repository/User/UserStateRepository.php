@@ -43,13 +43,13 @@ class UserStateRepository implements IUserStateRepository {
     private IUserRepository  $userRepository;
     private IDateTimeService $dateTimeService;
     private IBackend         $backend;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
 
     public function __construct(
         IBackend           $backend
         , IUserRepository  $userRepository
         , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
+        , LoggerInterface  $logger
     ) {
         $this->backend         = $backend;
         $this->userRepository  = $userRepository;

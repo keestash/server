@@ -55,4 +55,8 @@ class EnvironmentService implements IEnvironmentService {
         return putenv(ConfigProvider::ENVIRONMENT_KEY . "=" . $env);
     }
 
+    public function isSaas(): bool {
+        return $this->getEnv() === ConfigProvider::ENVIRONMENT_SAAS;
+    }
+
 }

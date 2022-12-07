@@ -26,6 +26,7 @@ use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Interop\Container\ContainerInterface;
 use Keestash\Core\Repository\User\UserRepository;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\Repository\LDAP\ILDAPUserRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Log\LoggerInterface;
 
@@ -37,6 +38,7 @@ class UserRepositoryFactory {
             , $container->get(IDateTimeService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(RBACRepositoryInterface::class)
+            , $container->get(ILDAPUserRepository::class)
         );
     }
 

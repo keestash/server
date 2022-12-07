@@ -23,26 +23,33 @@ namespace Keestash\Core\Service\Queue;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use JsonException;
 use Keestash\Core\DTO\Queue\EventMessage;
-use Keestash\Core\DTO\Queue\Stamp;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Queue\IQueueService;
+use Psr\Log\LoggerInterface;
 
 class QueueService implements IQueueService {
 
     private IQueueRepository $queueRepository;
     private IDateTimeService $dateTimeService;
+    private IBase64Service   $base64Service;
+    private LoggerInterface  $logger;
 
     public function __construct(
         IQueueRepository   $queueRepository
         , IDateTimeService $dateTimeService
+        , IBase64Service   $base64Service
+        , LoggerInterface  $logger
     ) {
         $this->queueRepository = $queueRepository;
         $this->dateTimeService = $dateTimeService;
+        $this->base64Service   = $base64Service;
+        $this->logger          = $logger;
     }
 
-    public function prepareQueue(bool $forceAll = false): ArrayList {
+    public function getQueue(bool $forceAll = false): ArrayList {
 
         $messageList = new ArrayList();
         if (true === $forceAll) {
@@ -53,49 +60,71 @@ class QueueService implements IQueueService {
 
         /** @var array $messageArray */
         foreach ($messages as $messageArray) {
-
-            $message = new EventMessage();
-            $message->setId((string) $messageArray["id"]);
-            $message->setCreateTs(
-                $this->dateTimeService->fromFormat((string) $messageArray["create_ts"])
-            );
-            $message->setPriority((int) $messageArray["priority"]);
-            $message->setAttempts((int) $messageArray["attempts"]);
-            $message->setReservedTs(
-                $this->dateTimeService->fromFormat((string) $messageArray["reserved_ts"])
-            );
-            $message->setPayload(
-                (array) json_decode(
-                    (string) $messageArray["payload"]
-                    , true
-                    , 512
-                    , JSON_THROW_ON_ERROR
-                )
-            );
-
-            $stamps       = (array) json_decode($messageArray['stamps'], true);
-            $stampObjects = [];
-            /**
-             * @var int    $key
-             * @var  array $stamp
-             */
-            foreach ($stamps as $key => $stamp) {
-                $stampObject = new Stamp();
-                $stampObject->setName($stamp['name']);
-                $stampObject->setValue($stamp['value']);
-                $stampObject->setCreateTs(
-                    $this->dateTimeService->fromFormat((string) $stamp['create_ts']['date'])
+            try {
+                $message = new EventMessage();
+                $message->setId((string) $messageArray["id"]);
+                $message->setCreateTs(
+                    $this->dateTimeService->fromFormat((string) $messageArray["create_ts"])
                 );
-                $stampObjects[$key] = $stampObject;
-            }
-            $message->setStamps(
-                HashTable::fromIterable($stampObjects)
-            );
+                $message->setPriority((int) $messageArray["priority"]);
+                $message->setAttempts((int) $messageArray["attempts"]);
+                $message->setReservedTs(
+                    $this->dateTimeService->fromFormat((string) $messageArray["reserved_ts"])
+                );
+                $message->setPayload(
+                    $this->base64Service->decryptArrayRecursive(
+                        (array) json_decode(
+                            (string) $messageArray["payload"]
+                            , true
+                            , 512
+                            , JSON_THROW_ON_ERROR
+                        )
+                    )
+                );
 
-            $messageList->add($message);
+//                $stamps       = (array) json_decode(
+//                    $messageArray['stamps']
+//                    , true
+//                    , 512
+//                    , JSON_THROW_ON_ERROR
+//                );
+//                $stampObjects = [];
+//                /**
+//                 * @var int    $key
+//                 * @var  array $stamp
+//                 */
+//                foreach ($stamps as $key => $stamp) {
+//                    $stampObject = new Stamp();
+//                    $stampObject->setName($stamp['name']);
+//                    $stampObject->setValue($stamp['value']);
+//                    $stampObject->setCreateTs(
+//                        $this->dateTimeService->fromFormat((string) $stamp['create_ts']['date'])
+//                    );
+//                    $stampObjects[$key] = $stampObject;
+//                }
+//                $message->setStamps(
+//                    HashTable::fromIterable($stampObjects)
+//                );
+                $messageList->add($message);
+            } catch (JsonException $exception) {
+                $this->logger->error(
+                    'error parsing payload or stamps'
+                    , [
+                        'exception' => $exception
+                        , 'message' => $messageArray
+                    ]
+                );
+            }
         }
         return $messageList;
     }
 
+    public function remove(string $uuid): void {
+        $this->queueRepository->deleteByUuid($uuid);
+    }
+
+    public function updateAttempts(string $uuid, int $attempts): void {
+        $this->queueRepository->updateAttempts($uuid, $attempts);
+    }
 
 }

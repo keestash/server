@@ -35,11 +35,14 @@ class UserState implements IUserState {
     private ?string           $stateHash;
 
     public static function isValidState(string $state): bool {
-        return in_array($state, [
-            IUserState::USER_STATE_DELETE
-            , IUserState::USER_STATE_LOCK
-            , IUserState::USER_STATE_REQUEST_PW_CHANGE
-        ]);
+        return in_array(
+            $state, [
+                IUserState::USER_STATE_DELETE
+                , IUserState::USER_STATE_LOCK
+                , IUserState::USER_STATE_REQUEST_PW_CHANGE
+            ]
+            , true
+        );
     }
 
     /**

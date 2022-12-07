@@ -35,6 +35,7 @@ use Keestash\Exception\User\UserNotFoundException;
 use Keestash\Exception\User\UserNotUpdatedException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\LDAP\ILDAPUserRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Log\LoggerInterface;
 
@@ -50,17 +51,20 @@ class UserRepository implements IUserRepository {
     private LoggerInterface         $logger;
     private IBackend                $backend;
     private RBACRepositoryInterface $rbacRepository;
+    private ILDAPUserRepository     $ldapUserRepository;
 
     public function __construct(
         IBackend                  $backend
         , IDateTimeService        $dateTimeService
         , LoggerInterface         $logger
         , RBACRepositoryInterface $rbacRepository
+        , ILDAPUserRepository     $ldapUserRepository
     ) {
-        $this->backend         = $backend;
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
-        $this->rbacRepository  = $rbacRepository;
+        $this->backend            = $backend;
+        $this->dateTimeService    = $dateTimeService;
+        $this->logger             = $logger;
+        $this->rbacRepository     = $rbacRepository;
+        $this->ldapUserRepository = $ldapUserRepository;
     }
 
     /**
@@ -131,6 +135,9 @@ class UserRepository implements IUserRepository {
             );
             $user->setRoles(
                 $this->rbacRepository->getRolesByUser($user)
+            );
+            $user->setLdapUser(
+                $this->ldapUserRepository->isLDAPUser($user)
             );
         } catch (Exception $exception) {
             $message = 'error while getting user';
@@ -213,6 +220,9 @@ class UserRepository implements IUserRepository {
                 $user->setRoles(
                     $this->rbacRepository->getRolesByUser($user)
                 );
+                $user->setLdapUser(
+                    $this->ldapUserRepository->isLDAPUser($user)
+                );
 
                 $list->add($user);
             }
@@ -234,7 +244,6 @@ class UserRepository implements IUserRepository {
      */
     public function insert(IUser $user): IUser {
         try {
-
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->insert('user')
                 ->values(
@@ -274,7 +283,7 @@ class UserRepository implements IUserRepository {
             return $user;
 
         } catch (Exception $exception) {
-            $this->logger->error('error while creating user', ['exception' => $exception, 'user' => $user]);
+            $this->logger->error('error while creating user', ['exception' => $exception]);
             throw new UserNotCreatedException();
         }
     }
@@ -399,6 +408,9 @@ class UserRepository implements IUserRepository {
             $user->setRoles(
                 $this->rbacRepository->getRolesByUser($user)
             );
+            $user->setLdapUser(
+                $this->ldapUserRepository->isLDAPUser($user)
+            );
 
             return $user;
         } catch (Exception|TooManyRowsException $exception) {
@@ -471,6 +483,9 @@ class UserRepository implements IUserRepository {
             );
             $user->setRoles(
                 $this->rbacRepository->getRolesByUser($user)
+            );
+            $user->setLdapUser(
+                $this->ldapUserRepository->isLDAPUser($user)
             );
 
             return $user;
@@ -562,6 +577,9 @@ class UserRepository implements IUserRepository {
             $user->setRoles(
                 $this->rbacRepository->getRolesByUser($user)
             );
+            $user->setLdapUser(
+                $this->ldapUserRepository->isLDAPUser($user)
+            );
 
             return $user;
         } catch (Exception $exception) {
@@ -636,7 +654,8 @@ class UserRepository implements IUserRepository {
                     , 'u.language'
                     , 'u.locale'
                     , 'CASE WHEN (SELECT 1 FROM user_state us WHERE us.user_id = u.id AND us.state = \'delete.state.user\') THEN true ELSE false END AS deleted'
-                    , 'CASE WHEN (SELECT 1 FROM user_state us WHERE us.user_id = u.id AND us.state = \'lock.state.user\') THEN true ELSE false END AS locked']
+                    , 'CASE WHEN (SELECT 1 FROM user_state us WHERE us.user_id = u.id AND us.state = \'lock.state.user\') THEN true ELSE false END AS locked'
+                ]
             )
                 ->from('user', 'u')
                 ->where('u.name like ?')
@@ -668,9 +687,11 @@ class UserRepository implements IUserRepository {
                 $user->setLocked(
                     1 === (int) $row['locked']
                 );
-
                 $user->setRoles(
                     $this->rbacRepository->getRolesByUser($user)
+                );
+                $user->setLdapUser(
+                    $this->ldapUserRepository->isLDAPUser($user)
                 );
 
                 $list->add($user);

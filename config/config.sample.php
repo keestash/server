@@ -24,105 +24,128 @@ $CONFIG =
         /*
          * Whether errors should be shown on the UI or not
          */
-        "show_errors"       => false
+        "show_errors"             => false
 
         /*
          * If the application should behave in debug
          */
-        , "debug"           => false
+        , "debug"                 => false
 
         /*
          * The database host
          */
-        , "db_host"         => ""
+        , "db_host"               => ""
 
         /*
          * The database user
          */
-        , "db_user"         => ""
+        , "db_user"               => ""
 
         /*
          * The database password
          */
-        , "db_password"     => ""
+        , "db_password"           => ""
 
         /*
          * The database password
          */
-        , "db_name"         => ""
+        , "db_name"               => ""
 
         /*
          * The database password
          */
-        , "db_port"         => ""
+        , "db_port"               => ""
 
         /*
          * The database password
          */
-        , "db_charset"      => ""
+        , "db_charset"            => ""
 
         /*
          * Whether the api requests should
          * be logged
          */
-        , "log_requests"    => false
+        , "log_requests"          => false
 
         /*
          * How long a user should be logged in
          */
-        , "user_lifetime"   => 0
+        , "user_lifetime"         => 0
 
         /*
          * The SMTP host to send emails
          */
-        , "email_smtp_host" => ""
+        , "email_smtp_host"       => ""
 
         /*
          * The email address from which mails are sent
          */
-        , "email_user"      => ""
+        , "email_user"            => ""
 
         /*
         * The mail clients protocol (tls, ssl)
         */
-        , 'email_protocol'  => 'ssl'
+        , 'email_protocol'        => 'ssl'
 
         /*
         * The mail clients port
         */
-        , 'email_port'      => 0
+        , 'email_port'            => 0
 
         /*
          * The password belonging to email_user
          */
-        , "email_password"  => ""
+        , "email_password"        => ""
 
         /*
          * The redis server host used to cache data
          */
-        , 'redis_server'    => '127.0.0.1'
+        , 'redis_server'          => '127.0.0.1'
 
         /*
          * The redis server port used to cache data
          */
-        , 'redis_port'      => 6379
+        , 'redis_port'            => 6379
 
         /*
          * The verbosity of the logger.
          * Uses Monolog Log levels
          */
-        , 'log_level'       => 100
+        , 'log_level'             => 100
 
         /*
          * The api key for HIBP
          * Used for Password Health Check
          */
-        , 'hibp_api_key'    => 'your-api-key-goes-here'
+        , 'hibp_api_key'          => 'your-api-key-goes-here'
 
         /*
          * The dsn for Sentry
          * Used for Monitoring
          */
-        , 'sentry_dsn'    => 'your-sentry-api-key-goes-here'
+        , 'sentry_dsn'            => 'your-sentry-api-key-goes-here'
+
+        /*
+         * The api key for stripe
+         * Used for Payment
+         */
+        , 'stripe_api_key'        => 'your-stripe-api-key-goes-here'
+
+        /*
+         * The secret for stripe webhook request
+         * Used for Payment
+         */
+        , 'stripe_webhook_secret' => 'your-stripe-wh-secret-goes-here'
+
+        /*
+         * The price id charged for keestash
+         */
+        , 'stripe_price_id'          => 'your-stripe-price-id-goes-here'
+
+        /*
+         * The frontend url
+         */
+        , 'frontend_url'          => 'https://app.keestash.com'
+
 
     ];

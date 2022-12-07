@@ -58,7 +58,7 @@ class CreateCredential extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("password-manager:create-credential")
+        $this->setName("password-manager:credential:create")
             ->setDescription("creates a new credential");
     }
 
@@ -87,7 +87,7 @@ class CreateCredential extends KeestashCommand {
         }
 
         $credential = $this->credentialService->createCredential(
-            $password
+            (string) $password
             , $url
             , $username
             , $name

@@ -33,6 +33,8 @@ use KSA\PasswordManager\Entity\Node\Credential\Password\Username;
 use KSA\PasswordManager\Entity\Node\Node as NodeObject;
 use KSA\PasswordManager\Event\Node\Credential\CredentialCreatedEvent;
 use KSA\PasswordManager\Event\Node\Credential\CredentialUpdatedEvent;
+use KSA\PasswordManager\Exception\Node\NodeException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
@@ -45,8 +47,8 @@ class CredentialService {
     private EdgeService           $edgeService;
     private NodeRepository        $nodeRepository;
     private NodeEncryptionService $nodeEncryptionService;
-    private IPasswordService $passwordService;
-    private IEventService    $eventManager;
+    private IPasswordService      $passwordService;
+    private IEventService         $eventManager;
 
     public function __construct(
         EdgeService             $edgeService
@@ -101,6 +103,13 @@ class CredentialService {
         return $credential;
     }
 
+    /**
+     * @param Credential $credential
+     * @param Folder     $parent
+     * @return Edge
+     * @throws PasswordManagerException
+     * @throws NodeException
+     */
     public function insertCredential(Credential $credential, Folder $parent): Edge {
         $this->nodeEncryptionService->encryptNode($credential);
         $credential = $this->nodeRepository->addCredential($credential);

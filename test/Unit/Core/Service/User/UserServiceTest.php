@@ -236,8 +236,7 @@ class UserServiceTest extends TestCase {
         $this->assertTrue(1 === 1);
     }
 
-    public function testValidateNewUser():void {
-        $this->expectException(KeestashException::class);
+    public function testValidateNewUser(): void {
         $email         = Uuid::uuid4() . '@keestash.com';
         $firstName     = Uuid::uuid4()->toString();
         $lastName      = Uuid::uuid4()->toString();
@@ -248,7 +247,7 @@ class UserServiceTest extends TestCase {
         $roleNameTwo   = Uuid::uuid4()->toString();
         $roleNameThree = Uuid::uuid4()->toString();
 
-        $user = $this->userService->toNewUser(
+        $user   = $this->userService->toNewUser(
             [
                 'user_name'    => UserServiceTest::class
                 , 'email'      => $email
@@ -275,7 +274,8 @@ class UserServiceTest extends TestCase {
             ]
             ]
         );
-        $this->userService->validateNewUser($user);
+        $result = $this->userService->validateNewUser($user);
+        $this->assertTrue($result->length() > 0);
     }
 
     public function provideValidatePassword(): array {

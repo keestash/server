@@ -25,6 +25,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\File\FileService;
 use Keestash\Exception\File\FileNotCreatedException;
+use Keestash\Exception\File\FileNotFoundException;
 use KSA\Settings\ConfigProvider;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Api\IResponse;
@@ -124,11 +125,12 @@ class UpdateProfileImage implements RequestHandlerInterface {
         $coreFile->setOwner($token->getUser());
 
         // if there is a profile image already set, we need to remove it
-        $oldImage = $this->fileRepository->getByName($coreFile->getName());
-
-        if (null !== $oldImage) {
+        try {
+            $oldImage = $this->fileRepository->getByName($coreFile->getName());
             $this->fileRepository->remove($oldImage);
             $this->uploadFileService->removeUploadedFile($oldImage);
+        } catch (FileNotFoundException $exception) {
+            // TODO maybe log
         }
 
         $moved = $this->uploadFileService->moveUploadedFile($coreFile);

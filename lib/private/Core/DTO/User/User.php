@@ -49,6 +49,7 @@ class User implements IUser {
     private string            $locale;
     private string            $language;
     private HashTable         $roles;
+    private bool              $ldapUser;
 
     /**
      * @return string
@@ -262,6 +263,20 @@ class User implements IUser {
     }
 
     /**
+     * @return bool
+     */
+    public function isLdapUser(): bool {
+        return $this->ldapUser;
+    }
+
+    /**
+     * @param bool $ldapUser
+     */
+    public function setLdapUser(bool $ldapUser): void {
+        $this->ldapUser = $ldapUser;
+    }
+
+    /**
      * Specify data which should be serialized to JSON
      *
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -287,6 +302,7 @@ class User implements IUser {
                 , 'language'   => $this->getLanguage()
                 , 'locale'     => $this->getLocale()
                 , 'roles'      => $this->getRoles()->toArray()
+                , 'ldap_user'  => $this->isLdapUser()
             ];
     }
 

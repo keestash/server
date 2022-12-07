@@ -23,11 +23,15 @@ namespace KSA\Register\Factory\Api;
 
 use doganoo\DIP\Object\String\StringService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\System\Application;
 use KSA\Register\Api\User\Add;
+use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class AddFactory {
 
@@ -38,6 +42,10 @@ class AddFactory {
             , $container->get(LoggerInterface::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(StringService::class)
+            , $container->get(IPaymentService::class)
+            , $container->get(IPaymentLogRepository::class)
+            , $container->get(Application::class)
+            , $container->get(IConfigService::class)
         );
     }
 

@@ -36,7 +36,6 @@ use Psr\Container\ContainerInterface;
 
     /** @var ContainerInterface $container */
     $container = require_once __DIR__ . '/lib/start.php';
-
     /** @var Config $config */
     $config = $container->get(Config::class);
     /** @var Application $app */

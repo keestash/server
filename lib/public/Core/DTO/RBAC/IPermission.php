@@ -63,5 +63,9 @@ interface IPermission extends PermissionInterface, IJsonObject {
     public const PERMISSION_PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE   = 36;
     public const PERMISSION_PASSWORD_MANAGER_NODE_PWNED_CHART_ALL       = 37;
     public const PERMISSION_PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL    = 38;
+    public const PERMISSION_LDAP_CONFIG_ACTIVE_GET                      = 39;
+    public const PERMISSION_LDAP_CONFIG_DEACTIVATE                      = 40;
+    public const PERMISSION_LDAP_CONFIG_REMOVE                          = 41;
+    public const PERMISSION_PAYMENT_CANCEL                              = 42;
 
 }
