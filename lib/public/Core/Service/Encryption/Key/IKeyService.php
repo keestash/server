@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption\Key;
 
+use Keestash\Exception\KeestashException;
 use Keestash\Exception\Key\KeyNotCreatedException;
 use Keestash\Exception\Key\UnsupportedKeyException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
@@ -70,5 +71,15 @@ interface IKeyService {
      * @see IKeyService::createKey()
      */
     public function createAndStoreKey(IKeyHolder $keyHolder): IKey;
+
+    /**
+     *
+     * removes a key for a keyholder
+     *
+     * @param IKeyHolder $keyHolder
+     * @return void
+     * @throws KeestashException
+     */
+    public function remove(IKeyHolder $keyHolder): void;
 
 }

@@ -21,34 +21,49 @@ declare(strict_types=1);
 
 namespace KSA\Register\Api\User;
 
+use DateTimeImmutable;
 use doganoo\DI\Object\String\IStringService;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\ConfigProvider as CoreConfigProvider;
+use Keestash\Core\DTO\Payment\Log;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
+use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private UserService    $userService;
-    private ILoaderService $loader;
+    private UserService            $userService;
+    private ILoaderService         $loader;
     private LoggerInterface        $logger;
     private IUserRepositoryService $userRepositoryService;
     private IStringService         $stringService;
+    private IPaymentService        $paymentService;
+    private IPaymentLogRepository  $paymentLogRepository;
+    private Application            $application;
+    private IConfigService         $configService;
 
     public function __construct(
         UserService              $userService
         , ILoaderService         $loader
-        , LoggerInterface                $logger
+        , LoggerInterface        $logger
         , IUserRepositoryService $userRepositoryService
         , IStringService         $stringService
+        , IPaymentService        $paymentService
+        , IPaymentLogRepository  $paymentLogRepository
+        , Application            $application
+        , IConfigService         $configService
     ) {
 
         $this->userService           = $userService;
@@ -56,6 +71,10 @@ class Add implements RequestHandlerInterface {
         $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
         $this->stringService         = $stringService;
+        $this->paymentService        = $paymentService;
+        $this->paymentLogRepository  = $paymentLogRepository;
+        $this->application           = $application;
+        $this->configService         = $configService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -64,6 +83,7 @@ class Add implements RequestHandlerInterface {
         // even if someone has found a hacky way
         // to enable this controller!
         $registerEnabled = $this->loader->hasApp(ConfigProvider::APP_ID);
+        $isSaas          = $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS);
 
         if (false === $registerEnabled) {
 
@@ -81,16 +101,20 @@ class Add implements RequestHandlerInterface {
         $userName           = $this->getParameter("user_name", $request);
         $email              = $this->getParameter("email", $request);
         $password           = $this->getParameter("password", $request);
-        $passwordRepeat     = $password;
+        $passwordRepeat     = $this->getParameter("password_repeat", $request);
         $phone              = $this->getParameter("phone", $request);
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
         $website            = $this->getParameter("website", $request);
+
+        if (true === $isSaas) {
+            $phone   = '00000000000';
+            $website = $this->application->getMetaData()->get('web');
+        }
 
         if (true === $this->stringService->isEmpty($termsAndConditions)) {
             return new JsonResponse(
                 [
                     "status"    => 'error'
-                    , "data"    => []
                     , "message" => 'terms and conditions are not checked'
                 ]
                 , IResponse::BAD_REQUEST
@@ -119,18 +143,20 @@ class Add implements RequestHandlerInterface {
                 , 'password'   => $password
                 , 'phone'      => $phone
                 , 'website'    => $website
+                , 'locked'     => true === $isSaas
             ]
         );
 
-        try {
-            $this->userService->validateNewUser($user);
-        } catch (KeestashException $exception) {
-            $this->logger->error('error validating new user', ['exception' => $exception]);
+        $result = $this->userService->validateNewUser($user);
+        if ($result->length() > 0) {
+
+            $this->logger->error('error validating new user', ['exception' => $result->toArray()]);
+
             return new JsonResponse(
                 [
                     "status"    => 'error'
-                    , "data"    => []
                     , "message" => 'invalid new user'
+                    , 'data'    => $result->toArray()
                 ]
 
                 , IResponse::BAD_REQUEST
@@ -138,7 +164,7 @@ class Add implements RequestHandlerInterface {
         }
 
         try {
-            $this->userRepositoryService->createUser($user);
+            $user = $this->userRepositoryService->createUser($user);
         } catch (Exception $exception) {
             $this->logger->error($exception->getTraceAsString());
             return new JsonResponse(
@@ -151,7 +177,30 @@ class Add implements RequestHandlerInterface {
             );
         }
 
-        return new JsonResponse([], IResponse::OK);
+        if (true === $isSaas) {
+            $session = $this->paymentService->createSubscription(
+                (string) $this->configService->getValue('stripe_price_id')
+            );
+            $log     = new Log();
+            $log->setKey($session->id);
+            $log->setLog([
+                'session' => $session->toArray(),
+                'user'    => $user
+            ]);
+            $log->setCreateTs(new DateTimeImmutable());
+            $this->paymentLogRepository->insert($log);
+            return new JsonResponse(
+                [
+                    'session' => $session
+                ]
+                , IResponse::OK
+            );
+        }
+
+        return new JsonResponse(
+            []
+            , IResponse::OK
+        );
     }
 
     private function getParameter(string $name, ServerRequestInterface $request): string {

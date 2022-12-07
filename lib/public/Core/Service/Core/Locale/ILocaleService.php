@@ -47,4 +47,12 @@ interface ILocaleService {
      */
     public function getLocale(): string;
 
+    /**
+     * Returns the primary language for the given user
+     *
+     * @param IUser $user
+     * @return string
+     */
+    public function getPrimaryLanguageForUser(IUser $user): string;
+
 }

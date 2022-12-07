@@ -30,9 +30,7 @@ use Ramsey\Uuid\Uuid;
 class UserAddTest extends TestCase {
 
     public function testWithEmptyRequest(): void {
-        if (PHP_VERSION_ID > 70429) {
-            $this->expectWarning();
-        }
+        $this->expectWarning();
         /** @var UserAdd $userAdd */
         $userAdd = $this->getService(UserAdd::class);
 

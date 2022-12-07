@@ -24,9 +24,11 @@ namespace Keestash\Factory\Core\Service\Queue;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Service\Queue\QueueService;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Queue\IQueueService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class QueueServiceFactory implements FactoryInterface {
 
@@ -38,6 +40,8 @@ class QueueServiceFactory implements FactoryInterface {
         return new QueueService(
             $container->get(IQueueRepository::class)
             , $container->get(IDateTimeService::class)
+            , $container->get(IBase64Service::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

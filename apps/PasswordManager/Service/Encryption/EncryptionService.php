@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Service\Encryption;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\AESService;
+use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Encryption\IEncryptionService;
@@ -40,18 +41,25 @@ class EncryptionService extends AESService {
 
     private IEncryptionService $encryptionService;
     private CredentialService  $credentialService;
+    private LoggerInterface    $logger;
 
     public function __construct(
-        IEncryptionService $encryptionService
+        IEncryptionService  $encryptionService
         , CredentialService $credentialService
-        , LoggerInterface $logger
+        , LoggerInterface   $logger
     ) {
         $this->encryptionService = $encryptionService;
         $this->credentialService = $credentialService;
+        $this->logger            = $logger;
 
         parent::__construct($logger);
     }
 
+    /**
+     * @param ICredential $credential
+     * @param string      $raw
+     * @return string
+     */
     public function encrypt(ICredential $credential, string $raw): string {
         return parent::encrypt(
             $this->prepareKey($credential)
@@ -59,6 +67,10 @@ class EncryptionService extends AESService {
         );
     }
 
+    /**
+     * @param ICredential $credential
+     * @return IKey
+     */
     private function prepareKey(ICredential $credential): IKey {
         $tempKey = new Key();
         $tempKey->setId(
@@ -70,6 +82,7 @@ class EncryptionService extends AESService {
 
         $keyHolderCredential = $this->credentialService->createCredential($credential->getKeyHolder());
 
+        $this->logger->info('decrypting ' . $credential->getKeyHolder()->getId() . ' with ' . $keyHolderCredential->getId());
         $tempKey->setSecret(
             $this->encryptionService->decrypt(
                 $keyHolderCredential
@@ -79,6 +92,12 @@ class EncryptionService extends AESService {
         return $tempKey;
     }
 
+    /**
+     * @param ICredential $credential
+     * @param string      $encrypted
+     * @return string
+     * @throws EncryptionFailedException
+     */
     public function decrypt(ICredential $credential, string $encrypted): string {
         return parent::decrypt(
             $this->prepareKey($credential)

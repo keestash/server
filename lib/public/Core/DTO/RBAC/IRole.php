@@ -29,5 +29,6 @@ interface IRole extends RoleInterface, IJsonObject {
     public const ROLE_USER_ADMIN         = 2;
     public const ROLE_ORGANIZATION_ADMIN = 3;
     public const ROLE_APP_ADMIN          = 4;
+    public const ROLE_LDAP_ADMIN         = 6;
 
 }

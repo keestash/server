@@ -37,4 +37,6 @@ interface IEnvironmentService extends IService {
 
     public function setEnv(string $env): bool;
 
+    public function isSaas(): bool;
+
 }

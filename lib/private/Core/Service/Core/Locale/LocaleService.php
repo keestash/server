@@ -53,4 +53,14 @@ class LocaleService implements ILocaleService {
         return Locale::getRegion(Locale::getDefault());
     }
 
+    /**
+     * Returns the primary language for the given user
+     *
+     * @param IUser $user
+     * @return string
+     */
+    public function getPrimaryLanguageForUser(IUser $user): string {
+        return Locale::getPrimaryLanguage($user->getLocale());
+    }
+
 }

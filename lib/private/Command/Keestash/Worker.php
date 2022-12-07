@@ -27,9 +27,9 @@ use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -37,13 +37,13 @@ use Throwable;
 class Worker extends KeestashCommand {
 
     private IQueueService    $queueService;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
     private IQueueRepository $queueRepository;
     private IEventHandler    $eventHandler;
 
     public function __construct(
         IQueueService      $queueService
-        , LoggerInterface          $logger
+        , LoggerInterface  $logger
         , IQueueRepository $queueRepository
         , IEventHandler    $eventHandler
     ) {
@@ -63,10 +63,7 @@ class Worker extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $execute = true;
         while (true || $execute) {
-            $queue = $this->queueService->prepareQueue(
-//                (bool) $this->config->get("debug", false)
-                true
-            );
+            $queue = $this->queueService->getQueue();
 
             if (0 === $queue->length()) {
                 usleep(500000);
@@ -75,7 +72,7 @@ class Worker extends KeestashCommand {
 
             /** @var IMessage $message */
             foreach ($queue as $message) {
-
+                $this->writeInfo('processing ' . $message->getId(), $output);
                 if ($message->getAttempts() > 3) {
                     continue;
                 }
@@ -87,6 +84,7 @@ class Worker extends KeestashCommand {
                     $result = $this->eventHandler->handle($message);
                 } catch (Throwable $exception) {
                     $this->logger->error('error processing message', ['exception' => $exception]);
+                    $this->writeError('error while processing ' . $message->getId(), $output);
                 }
 
                 switch ($result->getCode()) {
@@ -99,6 +97,7 @@ class Worker extends KeestashCommand {
                     default:
                         throw new KeestashException();
                 }
+                $this->writeInfo('ended successfully', $output);
 
             }
         }
@@ -106,10 +105,10 @@ class Worker extends KeestashCommand {
     }
 
     private function updateAttempts(IMessage $message): void {
-        $message->setAttempts(
-            $message->getAttempts() + 1
+        $this->queueRepository->updateAttempts(
+            $message->getId()
+            , $message->getAttempts() + 1
         );
-        $this->queueRepository->update($message);
     }
 
 }

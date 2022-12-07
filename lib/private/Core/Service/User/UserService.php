@@ -25,6 +25,7 @@ use DateTime;
 use DateTimeImmutable;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\DI\Object\String\IStringService;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
 use Keestash\Core\DTO\RBAC\Role;
@@ -252,6 +253,7 @@ class UserService implements IUserService {
         $user->setHash(
             $this->getRandomHash()
         );
+        $user->setLdapUser($userArray['ldapUser'] ?? false);
         $roles = new HashTable();
         foreach (($userArray['roles'] ?? []) as $key => $role) {
             $roles->put(
@@ -294,45 +296,44 @@ class UserService implements IUserService {
 
     /**
      * @param IUser $user
-     * @return IUser
-     * @throws KeestashException
+     * @return ArrayList
      */
-    public function validateNewUser(IUser $user): IUser {
-
+    public function validateNewUser(IUser $user): ArrayList {
+        $result = new ArrayList();
         if (true === $this->stringService->isEmpty($user->getFirstName())) {
-            throw new KeestashException('invalid first name');
+            $result->add('invalid first name');
         }
 
         if (true === $this->stringService->isEmpty($user->getLastName())) {
-            throw new KeestashException('invalid last name');
+            $result->add('invalid last name');
         }
 
         if (true === $this->stringService->isEmpty($user->getName())) {
-            throw new KeestashException('invalid name name');
+            $result->add('invalid user name');
         }
 
         if (true === $this->userRepositoryService->userExistsByName($user->getName())) {
-            throw new KeestashException('name exists');
+            $result->add('user name exists');
         }
 
         if (true === $this->userRepositoryService->userExistsByEmail($user->getEmail())) {
-            throw new KeestashException('mail exists');
+            $result->add('mail exists');
         }
 
         if (false === $this->emailValidator->isValid($user->getEmail())) {
-            throw new KeestashException('invalid email address');
+            $result->add('email address is invalid');
         }
 
         $this->phoneValidator->setOptions(['country' => $user->getLocale()]);
         if (false === $this->validateWithAllCountries($user->getPhone())) {
-            throw new KeestashException('invalid phone');
+            $result->add('invalid phone');
         }
 
         if (false === $this->uriValidator->isValid($user->getWebsite())) {
-            throw new KeestashException('invalid website');
+            $result->add('invalid website');
         }
 
-        return $user;
+        return $result;
     }
 
     public function validateWithAllCountries(string $phone): bool {

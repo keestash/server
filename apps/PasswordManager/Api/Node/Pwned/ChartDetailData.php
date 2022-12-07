@@ -56,8 +56,10 @@ class ChartDetailData implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken|null $token */
-        $token  = $request->getAttribute(IToken::class);
-        $result = [];
+        $token               = $request->getAttribute(IToken::class);
+        $result              = [];
+        $result['passwords'] = [];
+        $result['breaches']  = [];
 
         if (null === $token) {
             return new JsonResponse(['user not found'], IResponse::NOT_FOUND);

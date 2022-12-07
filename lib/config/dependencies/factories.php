@@ -26,6 +26,9 @@ use doganoo\DIP\Object\String\StringService;
 use GuzzleHttp\Client;
 use Keestash\Api\PingHandler;
 use Keestash\Command\Keestash\Events;
+use Keestash\Command\Keestash\QueueDelete;
+use Keestash\Command\Keestash\QueueList;
+use Keestash\Command\Keestash\Reset;
 use Keestash\Command\Permission\Add;
 use Keestash\Command\Permission\AssignPermissionToRole;
 use Keestash\Command\Permission\Get;
@@ -33,6 +36,7 @@ use Keestash\Command\Permission\PermissionsByRole;
 use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
@@ -41,6 +45,9 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Repository\Job\JobRepository;
+use Keestash\Core\Repository\LDAP\DefaultConnectionRepository;
+use Keestash\Core\Repository\LDAP\DefaultLDAPRepository;
+use Keestash\Core\Repository\Payment\DefaultPaymentLogRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use Keestash\Core\Repository\RBAC\RBACRepository;
 use Keestash\Core\Repository\Token\TokenRepository;
@@ -59,6 +66,7 @@ use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Email\EmailService;
+use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
@@ -76,7 +84,9 @@ use Keestash\Core\Service\HTTP\JWTService;
 use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizerService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\L10N\GetText;
+use Keestash\Core\Service\LDAP\LDAPService;
 use Keestash\Core\Service\Organization\OrganizationService;
+use Keestash\Core\Service\Payment\DefaultPaymentService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
@@ -90,6 +100,9 @@ use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\Command\Keestash\EventsFactory;
+use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
+use Keestash\Factory\Command\Keestash\QueueListFactory;
+use Keestash\Factory\Command\Keestash\ResetFactory;
 use Keestash\Factory\Command\Keestash\WorkerFactory;
 use Keestash\Factory\Command\Permission\AddFactory;
 use Keestash\Factory\Command\Permission\AssignPermissionToRoleFactory;
@@ -101,6 +114,7 @@ use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\UriValidatorFactory;
+use Keestash\Factory\Core\Event\Listener\RemoveOutdatedTokensFactory;
 use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
 use Keestash\Factory\Core\Repository\ApiLogRepository\ApiLogRepositoryFactory;
@@ -136,6 +150,7 @@ use Keestash\Factory\Core\Service\HTTP\CORS\ProjectConfigurationFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
+use Keestash\Factory\Core\Service\LDAP\LDAPServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
 use Keestash\Factory\Core\Service\Queue\QueueServiceFactory;
@@ -148,6 +163,7 @@ use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
 use Keestash\Factory\Core\System\RateLimit\FileRateLimiterFactory;
+use Keestash\Factory\Middleware\Api\EnvironmentMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\PermissionMiddlewareFactory;
@@ -162,6 +178,7 @@ use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
+use Keestash\Middleware\Api\EnvironmentMiddleware;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
 use Keestash\Middleware\Api\PermissionMiddleware;
@@ -183,26 +200,29 @@ use Psr\Log\LoggerInterface;
 
 return [
     // Api
-    PingHandler::class               => InvokableFactory::class,
+    PingHandler::class                 => InvokableFactory::class,
 
     // App
-    ProjectConfiguration::class      => ProjectConfigurationFactory::class,
+    ProjectConfiguration::class        => ProjectConfigurationFactory::class,
 
     // repository
-    ApiLogRepository::class          => ApiLogRepositoryFactory::class,
-    MySQLBackend::class              => MySQLBackendFactory::class,
-    FileRepository::class            => FileRepositoryFactory::class,
-    UserRepository::class            => UserRepositoryFactory::class,
-    UserKeyRepository::class         => UserKeyRepositoryFactory::class,
-    OrganizationKeyRepository::class => OrganizationKeyRepositoryFactory::class,
-    UserStateRepository::class       => UserStateRepositoryFactory::class,
-    InstanceRepository::class        => InstanceRepositoryFactory::class,
-    TokenRepository::class           => TokenRepositoryFactory::class,
-    AppRepository::class             => AppRepositoryFactory::class,
-    QueueRepository::class           => QueueRepositoryFactory::class,
-    RBACRepository::class            => PermissionRepositoryFactory::class,
+    ApiLogRepository::class            => ApiLogRepositoryFactory::class,
+    MySQLBackend::class                => MySQLBackendFactory::class,
+    FileRepository::class              => FileRepositoryFactory::class,
+    UserRepository::class              => UserRepositoryFactory::class,
+    UserKeyRepository::class           => UserKeyRepositoryFactory::class,
+    OrganizationKeyRepository::class   => OrganizationKeyRepositoryFactory::class,
+    UserStateRepository::class         => UserStateRepositoryFactory::class,
+    InstanceRepository::class          => InstanceRepositoryFactory::class,
+    TokenRepository::class             => TokenRepositoryFactory::class,
+    AppRepository::class               => AppRepositoryFactory::class,
+    QueueRepository::class             => QueueRepositoryFactory::class,
+    RBACRepository::class              => PermissionRepositoryFactory::class,
+    DefaultLDAPRepository::class       => InvokableFactory::class,
+    DefaultConnectionRepository::class => InvokableFactory::class,
+    DefaultPaymentLogRepository::class => InvokableFactory::class,
 
-    LoggerInterface::class                                                 => LoggerFactory::class,
+    LoggerInterface::class                                         => LoggerFactory::class,
     Application::class                                             => LegacyFactory::class,
     EventService::class                                            => EventServiceFactory::class,
     LoaderService::class                                           => LoaderServiceFactory::class,
@@ -229,6 +249,7 @@ return [
     ApplicationStartedMiddleware::class                            => ApplicationStartedMiddlewareFactory::class,
     RateLimiterMiddleware::class                                   => RateLimiterMiddlewareFactory::class,
     PermissionMiddleware::class                                    => PermissionMiddlewareFactory::class,
+    EnvironmentMiddleware::class                                   => EnvironmentMiddlewareFactory::class,
 
     // api
     KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
@@ -279,6 +300,9 @@ return [
     QueueService::class                                            => QueueServiceFactory::class,
     OutputSanitizerService::class                                  => InvokableFactory::class,
     RouteService::class                                            => InvokableFactory::class,
+    LDAPService::class                                             => LDAPServiceFactory::class,
+    Base64Service::class                                           => InvokableFactory::class,
+    DefaultPaymentService::class                                   => InvokableFactory::class,
 
     GetText::class                           => InvokableFactory::class,
     \doganoo\PHPUtil\HTTP\Session::class     => InvokableFactory::class,
@@ -287,6 +311,9 @@ return [
     // command
     \Keestash\Command\Keestash\Worker::class => WorkerFactory::class
     , Events::class                          => EventsFactory::class
+    , QueueList::class                       => QueueListFactory::class
+    , QueueDelete::class                     => QueueDeleteFactory::class
+    , Reset::class                           => ResetFactory::class
 
     // command
     // --- listener
@@ -306,4 +333,7 @@ return [
 
     // handler
     EventHandler::class                      => EventHandlerFactory::class
+
+    // events
+    , RemoveOutdatedTokens::class            => RemoveOutdatedTokensFactory::class
 ];

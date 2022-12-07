@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Exception;
+namespace Keestash\Core\DTO\Event;
 
-class DefaultPropertiesNotSetException extends PasswordManagerException {
+use DateTimeInterface;
+
+abstract class ReservedEvent extends Event {
+
+    public abstract function getReservedTs(): DateTimeInterface;
 
 }

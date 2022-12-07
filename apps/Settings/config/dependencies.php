@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use doganoo\DI\Encryption\User\IUserService;
 use doganoo\DIP\Encryption\User\UserService;
+use Keestash\ConfigProvider;
 use KSA\GeneralApi\Factory\Repository\DemoUsersRepositoryFactory;
 use KSA\Settings\Api\Organization\Activate;
 use KSA\Settings\Api\Organization\Add;
@@ -35,6 +36,7 @@ use KSA\Settings\Api\User\UserEdit;
 use KSA\Settings\Api\User\UserLock;
 use KSA\Settings\Api\User\UserRemove;
 use KSA\Settings\BackgroundJob\UserDeleteTask;
+use KSA\Settings\Command\Lock;
 use KSA\Settings\Command\UpdatePassword;
 use KSA\Settings\Controller\Controller;
 use KSA\Settings\Controller\Organization\Detail;
@@ -53,6 +55,7 @@ use KSA\Settings\Factory\Api\User\UserEditFactory;
 use KSA\Settings\Factory\Api\User\UserLockFactory;
 use KSA\Settings\Factory\Api\User\UserRemoveFactory;
 use KSA\Settings\Factory\BackgroundJob\UserDeleteTaskFactory;
+use KSA\Settings\Factory\Command\LockFactory;
 use KSA\Settings\Factory\Command\UpdatePasswordFactory;
 use KSA\Settings\Factory\Controller\Organization\DetailFactory;
 use KSA\Settings\Factory\Controller\SettingsControllerFactory;
@@ -68,7 +71,7 @@ use KSA\Settings\Repository\OrganizationUserRepository;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'factories' => [
+    ConfigProvider::FACTORIES => [
         // service
         UserService::class                           => InvokableFactory::class
 
@@ -107,8 +110,9 @@ return [
         // command
         , UpdatePassword::class                      => UpdatePasswordFactory::class
         , \KSA\Settings\Command\Get::class           => \KSA\Settings\Factory\Command\GetFactory::class
+        , Lock::class                                => LockFactory::class
     ]
-    , 'aliases' => [
+    , ConfigProvider::ALIASES => [
         IOrganizationRepository::class       => OrganizationRepository::class
         , IOrganizationUserRepository::class => OrganizationUserRepository::class
         , IUserService::class                => UserService::class

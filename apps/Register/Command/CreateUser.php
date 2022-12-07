@@ -24,6 +24,7 @@ namespace KSA\Register\Command;
 use Exception;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\KeestashException;
 use KSA\Register\Exception\CreateUserException;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -64,7 +65,7 @@ class CreateUser extends KeestashCommand {
      * @param OutputInterface $output
      *
      * @return int|void
-     * @throws CreateUserException
+     * @throws CreateUserException|KeestashException
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $style = new SymfonyStyle($input, $output);
@@ -82,7 +83,7 @@ class CreateUser extends KeestashCommand {
 
         $this->userService->validatePasswords((string) $password, (string) $passwordRepeat);
 
-        $user = $this->userService->toNewUser(
+        $user   = $this->userService->toNewUser(
             [
                 'user_name'    => $name
                 , 'email'      => $email
@@ -95,7 +96,11 @@ class CreateUser extends KeestashCommand {
                 , 'deleted'    => $deleted !== false
             ]
         );
-        $this->userService->validateNewUser($user);
+        $result = $this->userService->validateNewUser($user);
+
+        if ($result->length() > 0) {
+            throw new KeestashException();
+        }
 
         try {
             $this->userRepositoryService->createUser($user);

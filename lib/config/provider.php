@@ -26,8 +26,10 @@ use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
 use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
 use KSA\Install\ConfigProvider as InstallConfigProvider;
 use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
+use KSA\LDAP\ConfigProvider as LDAPConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
+use KSA\Payment\ConfigProvider as PaymentConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
 use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
@@ -61,9 +63,20 @@ return [
     , InstallConfigProvider::class
     , InstallInstanceConfigProvider::class
     , LoginConfigProvider::class
+    , class_exists(LDAPConfigProvider::class)
+        ? LDAPConfigProvider::class
+        : function (): array {
+            return [];
+        }
+
     , PasswordManagerConfigProvider::class
     , RegisterConfigProvider::class
     , SettingsConfigProvider::class
+    , class_exists(PaymentConfigProvider::class)
+        ? PaymentConfigProvider::class
+        : function (): array {
+            return [];
+        }
 
     // Third Party libs
     , SimpleRBACConfigProvider::class
