@@ -33,16 +33,11 @@ class InstanceDBFactory implements FactoryInterface {
         ,                  $requestedName
         , ?array           $options = null
     ): InstanceDB {
-        /** @var Config $config */
-        $config = $container->get(Config::class);
-
-        return new InstanceDB(
-            new Config(
-                $config->toArray() + [
-                    InstanceDB::OPTION_NAME_INSTANCE_HASH => md5((string) time())
-                ]
-            )
+        $instanceDb = new InstanceDB(
+            $container->get(Config::class)
         );
+        $instanceDb->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, md5((string) time()));
+        return $instanceDb;
     }
 
 }
