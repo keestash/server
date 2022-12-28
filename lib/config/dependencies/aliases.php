@@ -37,6 +37,7 @@ use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\LDAP\DefaultConnectionRepository;
 use Keestash\Core\Repository\LDAP\DefaultLDAPRepository;
+use Keestash\Core\Repository\MailLog\MailLogRepository;
 use Keestash\Core\Repository\Payment\DefaultPaymentLogRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use Keestash\Core\Repository\RBAC\RBACRepository;
@@ -93,6 +94,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\LDAP\ILDAPUserRepository;
+use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
@@ -157,6 +159,7 @@ return [
     ILDAPUserRepository::class                             => DefaultLDAPRepository::class,
     IConnectionRepository::class                           => DefaultConnectionRepository::class,
     IPaymentLogRepository::class                           => DefaultPaymentLogRepository::class,
+    IMailLogRepository::class                              => MailLogRepository::class,
 
     // service
     IUserService::class                                    => UserService::class,

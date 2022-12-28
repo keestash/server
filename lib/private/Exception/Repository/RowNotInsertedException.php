@@ -19,8 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Exception;
+namespace Keestash\Exception\Repository;
 
-class TooManyRowsException extends KeestashException {
+use Keestash\Exception\KeestashException;
+
+class RowNotInsertedException extends KeestashException {
 
 }

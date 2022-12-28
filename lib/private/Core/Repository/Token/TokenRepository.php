@@ -28,6 +28,7 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Core\DTO\Token\Token;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\Repository\TooManyRowsException;
 use Keestash\Exception\Token\TokenNotCreatedException;
 use Keestash\Exception\Token\TokenNotDeletedException;
 use Keestash\Exception\Token\TokenNotFoundException;
@@ -114,7 +115,6 @@ class TokenRepository implements ITokenRepository {
      */
     public function getByValue(string $hash): IToken {
         try {
-            $token        = new Token();
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $result       = $queryBuilder->select(
                 [
@@ -129,8 +129,19 @@ class TokenRepository implements ITokenRepository {
                 ->where('value = ?')
                 ->setParameter(0, $hash)
                 ->executeQuery();
+            $all          = $result->fetchAllNumeric();
+            $rowCount     = count($all);
 
-            foreach ($result->fetchAllNumeric() as $row) {
+            if (0 === $rowCount) {
+                throw new TokenNotFoundException();
+            }
+
+            if ($rowCount > 1) {
+                throw new TooManyRowsException();
+            }
+
+            $token = new Token();
+            foreach ($all as $row) {
                 $id       = $row[0];
                 $name     = $row[1];
                 $value    = $row[2];
