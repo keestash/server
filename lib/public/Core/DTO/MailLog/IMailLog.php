@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * server
+ * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Exception;
+namespace KSP\Core\DTO\MailLog;
 
-final class UnknownIconException extends KeestashException {
+use DateTimeInterface;
+use KSP\Core\DTO\Entity\IObject;
+
+interface IMailLog extends IObject {
+
+    public function getId(): string;
+
+    public function getSubject(): string;
+
+    public function getCreateTs(): DateTimeInterface;
 
 }

@@ -37,6 +37,7 @@ use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
+use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
@@ -47,6 +48,7 @@ use Keestash\Core\Repository\Instance\InstanceRepository;
 use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\LDAP\DefaultConnectionRepository;
 use Keestash\Core\Repository\LDAP\DefaultLDAPRepository;
+use Keestash\Core\Repository\MailLog\MailLogRepository;
 use Keestash\Core\Repository\Payment\DefaultPaymentLogRepository;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use Keestash\Core\Repository\RBAC\RBACRepository;
@@ -115,6 +117,7 @@ use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\UriValidatorFactory;
 use Keestash\Factory\Core\Event\Listener\RemoveOutdatedTokensFactory;
+use Keestash\Factory\Core\Event\Listener\SendSummaryMailListenerFactory;
 use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
 use Keestash\Factory\Core\Repository\ApiLogRepository\ApiLogRepositoryFactory;
@@ -125,6 +128,7 @@ use Keestash\Factory\Core\Repository\File\FileRepositoryFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceDBFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceRepositoryFactory;
 use Keestash\Factory\Core\Repository\Job\JobRepositoryFactory;
+use Keestash\Factory\Core\Repository\MailLog\MailLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\Queue\QueueRepositoryFactory;
 use Keestash\Factory\Core\Repository\RBAC\PermissionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Token\TokenRepositoryFactory;
@@ -221,6 +225,7 @@ return [
     DefaultLDAPRepository::class       => InvokableFactory::class,
     DefaultConnectionRepository::class => InvokableFactory::class,
     DefaultPaymentLogRepository::class => InvokableFactory::class,
+    MailLogRepository::class           => MailLogRepositoryFactory::class,
 
     LoggerInterface::class                                         => LoggerFactory::class,
     Application::class                                             => LegacyFactory::class,
@@ -335,5 +340,7 @@ return [
     EventHandler::class                      => EventHandlerFactory::class
 
     // events
+    // ---- listener
     , RemoveOutdatedTokens::class            => RemoveOutdatedTokensFactory::class
+    , SendSummaryMail::class                 => SendSummaryMailListenerFactory::class
 ];

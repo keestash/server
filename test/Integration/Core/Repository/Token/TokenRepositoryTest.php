@@ -55,9 +55,7 @@ class TokenRepositoryTest extends TestCase {
         $token->setName((string) Uuid::uuid4());
         $token->setValue((string) Uuid::uuid4());
         $token->setUser($this->getUser());
-        $token = $tokenRepository->add($token);
-
-        $this->assertTrue($token instanceof IToken);
+        $token    = $tokenRepository->add($token);
         $newToken = $tokenRepository->getByValue($token->getValue());
         $this->assertTrue($newToken instanceof IToken);
         $this->assertTrue($newToken->getId() === $token->getId());

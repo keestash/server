@@ -171,71 +171,6 @@ parameters:
 			path: ../../apps/InstallInstance/Command/Uninstall.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getConnection\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Event/Listener/SyncUsersListener.php
-
-		-
-			message: "#^Offset 0 does not exist on array\\|null\\.$#"
-			count: 2
-			path: ../../apps/LDAP/Event/Listener/SyncUsersListener.php
-
-		-
-			message: "#^Cannot access offset 'active_ts' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'base_dn' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'connection' on mixed\\.$#"
-			count: 7
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'create_ts' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'date' on mixed\\.$#"
-			count: 2
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'host' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'password' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'port' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'user_dn' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Cannot call method getTimestamp\\(\\) on DateTimeInterface\\|null\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Api/GetTest.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
 			path: ../../apps/Login/Api/Configuration.php
@@ -689,36 +624,6 @@ parameters:
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Share\\\\ShareServiceTest\\:\\:\\$shareService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Share\\\\ShareService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Share/ShareServiceTest.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Payment/Api/Stripe/Cancel.php
-
-		-
-			message: "#^Dead catch \\- KSA\\\\Payment\\\\Exception\\\\PaymentException is never thrown in the try block\\.$#"
-			count: 1
-			path: ../../apps/Payment/Api/Stripe/Cancel.php
-
-		-
-			message: "#^Dead catch \\- KSA\\\\Payment\\\\Exception\\\\PaymentException is never thrown in the try block\\.$#"
-			count: 1
-			path: ../../apps/Payment/Api/Stripe/Subscribed.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getUser\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/Listener/DebugListener.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getEvent\\(\\)\\.$#"
-			count: 7
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
-			count: 4
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"

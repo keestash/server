@@ -26,7 +26,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\App\Config\App;
 use Keestash\Exception\App\AppNotFoundException;
-use Keestash\Exception\TooManyRowsException;
+use Keestash\Exception\Repository\TooManyRowsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;

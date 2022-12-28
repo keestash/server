@@ -27,7 +27,7 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use Keestash;
 use Keestash\Core\DTO\User\User;
-use Keestash\Exception\TooManyRowsException;
+use Keestash\Exception\Repository\TooManyRowsException;
 use Keestash\Exception\User\UserException;
 use Keestash\Exception\User\UserNotCreatedException;
 use Keestash\Exception\User\UserNotDeletedException;
