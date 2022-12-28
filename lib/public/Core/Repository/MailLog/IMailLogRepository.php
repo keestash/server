@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 /**
- * server
+ * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Exception;
+namespace KSP\Core\Repository\MailLog;
 
-final class ActionBarNotFoundException extends KeestashException {
+use Keestash\Exception\KeestashException;
+use Keestash\Exception\Repository\NoRowsFoundException;
+use KSP\Core\DTO\MailLog\IMailLog;
+
+interface IMailLogRepository {
+
+    /**
+     * @param IMailLog $mailLog
+     * @return IMailLog
+     * @throws KeestashException
+     */
+    public function insert(IMailLog $mailLog): IMailLog;
+
+    /**
+     * @param string $subject
+     * @return IMailLog
+     * @throws KeestashException
+     * @throws NoRowsFoundException
+     */
+    public function getLatestBySubject(string $subject): IMailLog;
 
 }

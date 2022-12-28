@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
+use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
 use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 
@@ -31,5 +32,6 @@ return [
     ],
     ApplicationStartedEvent::class => [
         RemoveOutdatedTokens::class
+        , SendSummaryMail::class
     ]
 ];
