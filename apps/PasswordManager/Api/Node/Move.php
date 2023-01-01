@@ -24,6 +24,8 @@ namespace KSA\PasswordManager\Api\Node;
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Folder\Folder;
+use KSA\PasswordManager\Exception\Edge\EdgeException;
+use KSA\PasswordManager\Exception\Node\NodeNotFoundException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
@@ -33,6 +35,7 @@ use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Move
@@ -47,9 +50,10 @@ class Move implements RequestHandlerInterface {
     private AccessService  $accessService;
 
     public function __construct(
-        IL10N            $l10n
-        , NodeRepository $nodeRepository
-        , AccessService  $accessService
+        IL10N                              $l10n
+        , NodeRepository                   $nodeRepository
+        , AccessService                    $accessService
+        , private readonly LoggerInterface $logger
     ) {
         $this->translator     = $l10n;
         $this->nodeRepository = $nodeRepository;
@@ -58,38 +62,19 @@ class Move implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters   = (array) $request->getParsedBody();
-        $nodeId       = $parameters["id"] ?? null;
+        $nodeId       = $parameters["node_id"] ?? null;
         $targetNodeId = $parameters["target_node_id"] ?? null;
-        $parentNodeId = $parameters["parent_node_id"] ?? null;
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
 
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId);
-        } catch (PasswordManagerException $exception) {
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("node does not exist")
-                ],
-                IResponse::NOT_FOUND
-            );
-        }
-
-        if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-            return new JsonResponse([
-                    "message" => $this->translator->translate("node does not exist")
-                ]
-                , IResponse::FORBIDDEN);
-        }
-
-        try {
             /** @var Folder $targetNode */
             $targetNode = $this->nodeRepository->getNode((int) $targetNodeId);
         } catch (PasswordManagerException $exception) {
+            $this->logger->info('unknown node id', ['exception' => $exception, 'parameters' => $parameters]);
             return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("target does not exist")
-                ]
+                []
                 , IResponse::NOT_FOUND
             );
         }
@@ -102,44 +87,42 @@ class Move implements RequestHandlerInterface {
                 , IResponse::FORBIDDEN);
         }
 
-        try {
-            /** @var Folder $parentNode */
-            $parentNode = $this->nodeRepository->getNode((int) $parentNodeId);
-        } catch (PasswordManagerException $exception) {
+        if (false === ($targetNode instanceof Folder)) {
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("parent does not exist")
+                    'message' => 'target or parent is not a node'
                 ]
-                , IResponse::NOT_FOUND
-            );
-
-        }
-
-        if (false === $this->accessService->hasAccess($targetNode, $token->getUser())) {
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("parent does not exist")
-                ]
-                , IResponse::FORBIDDEN
+                , IResponse::BAD_REQUEST
             );
         }
 
         // we consider moving nodes around as an update
         $node->setUpdateTs(new DateTimeImmutable());
 
-        $moved = $this->nodeRepository->move(
-            $node
-            , $parentNode
-            , $targetNode
-        );
-
-        if (false === $moved) {
-            return new JsonResponse([
-                "message" => "could not move node"
-            ], IResponse::NOT_MODIFIED);
+        try {
+            $this->nodeRepository->move(
+                $node
+                , $targetNode
+            );
+        } catch (EdgeException|NodeNotFoundException $exception) {
+            $this->logger->error(
+                'edge not moved'
+                , [
+                    'exception' => $exception
+                    , 'node'    => $node
+                    , 'target'  => $targetNode
+                ]
+            );
+            return new JsonResponse(
+                [
+                    "message" => "could not move node"
+                ]
+                , IResponse::NOT_MODIFIED
+            );
         }
 
-        return new JsonResponse([
+        return new JsonResponse(
+            [
                 "message" => "moved node"
             ]
             , IResponse::OK
