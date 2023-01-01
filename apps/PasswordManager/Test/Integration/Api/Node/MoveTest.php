@@ -75,12 +75,10 @@ class MoveTest extends TestCase {
         $node    = $currentEdge->getNode();
         $request = $this->getDefaultRequest(
             [
-                'id'               => $node->getId()
-                , 'parent_node_id' => $currentEdge->getParent()->getId()
+                'node_id'          => $node->getId()
                 , 'target_node_id' => $newFolderEdge->getNode()->getId()
             ]
         );
-
 
         $response = $move->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));

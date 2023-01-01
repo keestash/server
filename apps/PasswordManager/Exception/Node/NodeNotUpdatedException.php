@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\PasswordManager\Exception\Node;
 
-use KSA\PasswordManager\Api\Node\Move;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
-use KSP\Core\Service\L10N\IL10N;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
-
-class MoveFactory {
-
-    public function __invoke(ContainerInterface $container): Move {
-        return new Move(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(AccessService::class)
-            , $container->get(LoggerInterface::class)
-        );
-    }
+class NodeNotUpdatedException extends NodeException {
 
 }

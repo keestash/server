@@ -28,23 +28,23 @@ use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class NodeAccessMiddleware implements MiddlewareInterface {
 
-    private AccessService  $accessService;
-    private NodeRepository $nodeRepository;
-    private LoggerInterface        $logger;
+    private AccessService   $accessService;
+    private NodeRepository  $nodeRepository;
+    private LoggerInterface $logger;
 
     public function __construct(
-        AccessService    $accessService
-        , NodeRepository $nodeRepository
-        , LoggerInterface        $logger
+        AccessService     $accessService
+        , NodeRepository  $nodeRepository
+        , LoggerInterface $logger
     ) {
         $this->accessService  = $accessService;
         $this->nodeRepository = $nodeRepository;
@@ -79,7 +79,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
             try {
                 $node = $this->nodeRepository->getNode((int) $nodeId, 0, 0);
             } catch (PasswordManagerException $exception) {
-                $this->logger->info('no node found', ['nodeId' => $nodeId]);
+                $this->logger->info('no node found', ['nodeId' => $nodeId, 'exception' => $exception]);
             }
 
             if (null === $node) {

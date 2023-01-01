@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Repository\Node;
 
+use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
@@ -36,8 +37,12 @@ use KSA\PasswordManager\Entity\Node\Credential\Password\URL;
 use KSA\PasswordManager\Entity\Node\Credential\Password\Username;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\Share;
+use KSA\PasswordManager\Exception\Edge\EdgeNotCreatedException;
+use KSA\PasswordManager\Exception\Edge\EdgeNotDeletedException;
+use KSA\PasswordManager\Exception\Edge\EdgeNotFoundException;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\Node\NodeException;
+use KSA\PasswordManager\Exception\Node\NodeNotFoundException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -735,24 +740,35 @@ ORDER BY d.`level`;
         return $credential;
     }
 
-    public function move(Node $node, Folder $parent, Folder $newParent): bool {
+    /**
+     * @param Node   $node
+     * @param Folder $newParent
+     * @return void
+     * @throws EdgeNotCreatedException
+     * @throws EdgeNotDeletedException
+     * @throws Exception
+     * @throws NodeNotFoundException
+     * @throws PasswordManagerException
+     */
+    public function move(Node $node, Folder $newParent): void {
 
-        $this->getEdges($parent);
-        if (0 === $parent->getEdges()->size()) {
-            return false;
+        $parent = $this->getParentNode($node->getId(), 0, 0);
+        if (false === ($parent instanceof Folder)) {
+            throw new NodeNotFoundException();
         }
 
-        $targetEdge = null;
-        /** @var Edge $edge */
-        foreach ($parent->getEdges() as $edge) {
-            if ($edge->getNode()->getId() === $node->getId()) {
-                $targetEdge = $edge;
+        $this->getEdges($parent);
+        $edge = null;
+        /** @var Edge $e */
+        foreach ($parent->getEdges() as $e) {
+            if ($e->getNode()->getId() === $node->getId()) {
+                $edge = $e;
                 break;
             }
         }
 
-        if (null === $targetEdge) {
-            return false;
+        if (null === $edge) {
+            throw new EdgeNotFoundException();
         }
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -764,14 +780,20 @@ ORDER BY d.`level`;
                 ->andWhere('type = ?')
                 ->setParameter(0, $node->getId())
                 ->setParameter(1, $parent->getId())
-                ->setParameter(2, $targetEdge->getType())
+                ->setParameter(2, $edge->getType())
                 ->executeStatement() > 0;
 
-        if (false === $executed) return false;
+        if (false === $executed) {
+            throw new EdgeNotDeletedException();
+        }
 
-        $targetEdge->setParent($newParent);
-        $edge = $this->addEdge($targetEdge);
-        return 0 !== $edge->getId();
+        $newEdge = new Edge();
+        $newEdge->setNode($node);
+        $newEdge->setParent($newParent);
+        $newEdge->setOwner($edge->getOwner());
+        $newEdge->setCreateTs(new DateTimeImmutable());
+        $newEdge->setType($edge->getType());
+        $this->addEdge($newEdge);
     }
 
     public function updateEdgeTypeByNodeId(Node $node, string $type): void {
