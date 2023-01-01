@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Entity\Edge;
 
-use DateTime;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
 use doganoo\PHPAlgorithms\Common\Util\Comparator;
@@ -24,24 +23,24 @@ use KSP\Core\DTO\User\IUser;
 
 class Edge implements IJsonObject, IComparable {
 
-    public const TYPE_REGULAR = "regular";
-    public const TYPE_SHARE   = "share";
-    public const TYPE_ORGANIZATION   = "organization";
+    public const TYPE_REGULAR      = "regular";
+    public const TYPE_SHARE        = "share";
+    public const TYPE_ORGANIZATION = "organization";
 
     private int                $id;
     private Node               $node;
     private ?Node              $parent   = null;
     private string             $type;
     private ?DateTimeInterface $expireTs = null;
-    private ?DateTime          $createTs = null;
+    private ?DateTimeInterface $createTs = null;
     private IUser              $owner;
     private ?IUser             $sharee   = null;
 
-    public function getCreateTs(): ?DateTime {
+    public function getCreateTs(): ?DateTimeInterface {
         return $this->createTs;
     }
 
-    public function setCreateTs(?DateTime $createTs): void {
+    public function setCreateTs(?DateTimeInterface $createTs): void {
         $this->createTs = $createTs;
     }
 
