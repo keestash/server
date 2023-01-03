@@ -24,7 +24,6 @@ namespace KSA\Register\Api\Configuration;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use KSP\Api\IResponse;
-use KSP\Core\Service\HTTP\IHTTPService;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,23 +31,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private Config       $config;
-    private IHTTPService $httpService;
+    private Config $config;
 
     public function __construct(
-        Config         $config
-        , IHTTPService $httpService
+        Config $config
     ) {
-        $this->config      = $config;
-        $this->httpService = $httpService;
+        $this->config = $config;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         return new JsonResponse(
             [
-                'phoneConfig' => $this->config->get(ConfigProvider::COUNTRY_PREFIXES)->toArray()
-                , 'tncLink'   => $this->httpService->getBaseURL(true, true) . '/login/'
-                , 'loginLink' => $this->httpService->getBaseURL(true, true) . '/login/'
+                'phoneConfig'       => $this->config->get(ConfigProvider::COUNTRY_PREFIXES)->toArray()
+                , 'registerEnabled' => true === $request->getAttribute(ConfigProvider::REGISTER_ENABLED, false)
             ]
             , IResponse::OK
         );

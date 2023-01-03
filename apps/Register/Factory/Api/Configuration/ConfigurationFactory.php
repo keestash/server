@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Register\Factory\Api\Configuration;
 
 use KSA\Register\Api\Configuration\Configuration;
-use KSP\Core\Service\HTTP\IHTTPService;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -36,7 +35,6 @@ class ConfigurationFactory implements FactoryInterface {
     ): Configuration {
         return new Configuration(
             $container->get(Config::class)
-            , $container->get(IHTTPService::class)
         );
     }
 

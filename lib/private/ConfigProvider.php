@@ -64,12 +64,13 @@ final class ConfigProvider {
     public const PERMISSION_MAPPING      = 'mapping.permissions';
     public const PERMISSION_FREE         = 'free.permissions';
 
-    public const APP_LIST       = 'list.app';
-    public const APP_ID         = 'id.app';
-    public const APP_ORDER      = 'order.app';
-    public const APP_NAME       = 'name.app';
-    public const APP_BASE_ROUTE = 'route.base.app';
-    public const APP_VERSION    = 'version.app';
+    public const APP_LIST         = 'list.app';
+    public const APP_ID           = 'id.app';
+    public const APP_ORDER        = 'order.app';
+    public const APP_NAME         = 'name.app';
+    public const APP_BASE_ROUTE   = 'route.base.app';
+    public const APP_VERSION      = 'version.app';
+    public const REGISTER_ENABLED = 'enabled.register';
 
     public const LOG_REQUESTS_ENABLED  = "enabled";
     public const LOG_REQUESTS_DISABLED = "disabled";

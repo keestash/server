@@ -24,6 +24,7 @@ namespace Keestash\Factory\Core\Event\Listener;
 use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -41,6 +42,7 @@ class SendSummaryMailListenerFactory implements FactoryInterface {
             , $container->get(IEmailService::class)
             , $container->get(IUserRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IConfigService::class)
         );
     }
 

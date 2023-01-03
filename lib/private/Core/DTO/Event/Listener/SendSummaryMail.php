@@ -30,6 +30,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
@@ -44,6 +45,7 @@ class SendSummaryMail implements IListener {
         , private readonly IEmailService    $emailService
         , private readonly IUserRepository  $userRepository
         , private readonly LoggerInterface  $logger
+        , private readonly IConfigService   $configService
     ) {
     }
 
@@ -61,6 +63,7 @@ class SendSummaryMail implements IListener {
             );
             $referenceDate = $mailLog->getCreateTs();
         } catch (NoRowsFoundException $e) {
+            $this->logger->debug('no rows found', ['exception' => $e, 'event' => $event]);
         }
 
         $now  = new DateTimeImmutable();
@@ -92,9 +95,14 @@ class SendSummaryMail implements IListener {
         $this->emailService->setSubject(
             sprintf('Summary Mail [%s]', $now->format(IDateTimeService::FORMAT_DMY_HIS))
         );
+
         $this->emailService->setBody($body);
-        $this->emailService->addRecipient('Dogan Ucar', 'dogan@dogan-ucar.de');
-        $this->emailService->send();
+        $this->emailService->addRecipient(
+            (string) $this->configService->getValue("email_user")
+            , (string) $this->configService->getValue("email_user")
+        );
+        $sent = $this->emailService->send();
+        $this->logger->info('send summary mail', ['sent' => $sent]);
         $mailLog = new MailLog();
         $mailLog->setId((string) Uuid::uuid4());
         $mailLog->setSubject(SendSummaryMail::SUBJECT_SUMMARY_EMAIL);

@@ -37,14 +37,19 @@ class EnvironmentMiddleware implements MiddlewareInterface {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $isSaas = $this->environmentService->isSaas();
-        $isSaas = true;
-        return $handler->handle(
-            $request->withAttribute(
-                ConfigProvider::ENVIRONMENT_SAAS,
-                $isSaas
-            )
+        $isSaas          = $this->environmentService->isSaas();
+        $isSaas          = true;
+        $registerEnabled = true;
+
+        $request = $request->withAttribute(
+            ConfigProvider::ENVIRONMENT_SAAS,
+            $isSaas
         );
+        $request = $request->withAttribute(
+            ConfigProvider::REGISTER_ENABLED
+            , $registerEnabled
+        );
+        return $handler->handle($request);
     }
 
 }

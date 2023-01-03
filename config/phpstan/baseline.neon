@@ -291,11 +291,6 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/GetByName.php
 
 		-
-			message: "#^Strict comparison using \\=\\=\\= between false and true will always evaluate to false\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Move.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php

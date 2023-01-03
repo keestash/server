@@ -27,29 +27,29 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Email\IEmailService;
-use Psr\Log\LoggerInterface;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
+use Psr\Log\LoggerInterface;
 
 class EmailService implements IEmailService {
 
     public const HAS_EXCEPTIONS = true;
     public const IS_HTML        = true;
 
-    private PHPMailer     $mailer;
-    private ConfigService $configService;
-    private LoggerInterface       $logger;
-    private InstanceDB    $instanceDb;
-    private HashTable     $recipients;
-    private HashTable     $carbonCopy;
-    private HashTable     $blindCarbonCopy;
-    private Application        $legacy;
+    private PHPMailer       $mailer;
+    private ConfigService   $configService;
+    private LoggerInterface $logger;
+    private InstanceDB      $instanceDb;
+    private HashTable       $recipients;
+    private HashTable       $carbonCopy;
+    private HashTable       $blindCarbonCopy;
+    private Application     $legacy;
 
     public function __construct(
-        Application $legacy
-        , ConfigService $configService
-        , LoggerInterface       $logger
-        , InstanceDB    $instanceDB
+        Application       $legacy
+        , ConfigService   $configService
+        , LoggerInterface $logger
+        , InstanceDB      $instanceDB
     ) {
         $this->logger          = $logger;
         $this->instanceDb      = $instanceDB;
@@ -127,7 +127,7 @@ class EmailService implements IEmailService {
             $this->mailer->send();
             return true;
         } catch (Exception $e) {
-            $this->logger->debug('error with mail sending',['e'=>$e]);
+            $this->logger->debug('error with mail sending', ['e' => $e]);
             return false;
         } finally {
             $this->clearAll();
