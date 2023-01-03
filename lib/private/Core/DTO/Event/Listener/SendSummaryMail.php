@@ -23,9 +23,10 @@ namespace Keestash\Core\DTO\Event\Listener;
 
 use DateTimeImmutable;
 use doganoo\DI\DateTime\IDateTimeService;
-use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use Keestash\Core\DTO\MailLog\MailLog;
+use Keestash\Exception\KeestashException;
 use Keestash\Exception\Repository\NoRowsFoundException;
+use Keestash\Exception\User\UserException;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
@@ -54,8 +55,10 @@ class SendSummaryMail implements IListener {
     }
 
     /**
-     * @param IEvent|ApplicationStartedEvent $event
+     * @param IEvent $event
      * @return void
+     * @throws KeestashException
+     * @throws UserException
      */
     public function execute(IEvent $event): void {
         $referenceDate = new DateTimeImmutable();
