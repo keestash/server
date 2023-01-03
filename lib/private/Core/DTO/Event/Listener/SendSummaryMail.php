@@ -33,6 +33,8 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -41,11 +43,13 @@ class SendSummaryMail implements IListener {
     public const SUBJECT_SUMMARY_EMAIL = 'email.summary.subject';
 
     public function __construct(
-        private readonly IMailLogRepository $mailLogRepository
-        , private readonly IEmailService    $emailService
-        , private readonly IUserRepository  $userRepository
-        , private readonly LoggerInterface  $logger
-        , private readonly IConfigService   $configService
+        private readonly IMailLogRepository          $mailLogRepository
+        , private readonly IEmailService             $emailService
+        , private readonly IUserRepository           $userRepository
+        , private readonly LoggerInterface           $logger
+        , private readonly IConfigService            $configService
+        , private readonly TemplateRendererInterface $templateRenderer
+        , private readonly IL10N                     $translator
     ) {
     }
 
@@ -90,13 +94,27 @@ class SendSummaryMail implements IListener {
         }
 
         if ($body === '') {
-            $body = 'no new users detected :(';
+            $body = $this->translator->translate("Unfortunately there are no new users :(");
         }
+
         $this->emailService->setSubject(
             sprintf('Summary Mail [%s]', $now->format(IDateTimeService::FORMAT_DMY_HIS))
         );
 
-        $this->emailService->setBody($body);
+        $this->emailService->setBody(
+            $this->templateRenderer->render(
+                'email::batch_mail', [
+                    'hello'       => $this->translator->translate("Hello Admin,"),
+                    'topic'       => $this->translator->translate("New users since yesterday"),
+                    'content'     => $body,
+                    'questions1'  => $this->translator->translate("In case of any questions,"),
+                    'questions2'  => $this->translator->translate(" contact us here."),
+                    'thankYou'    => $this->translator->translate("Thank you,"),
+                    'teamName'    => $this->translator->translate("The Keestash Team"),
+                    'currentYear' => (new DateTimeImmutable())->format('Y'),
+                ]
+            )
+        );
         $this->emailService->addRecipient(
             (string) $this->configService->getValue("email_user")
             , (string) $this->configService->getValue("email_user")
