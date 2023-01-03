@@ -26,7 +26,9 @@ use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\L10N\IL10N;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -43,6 +45,8 @@ class SendSummaryMailListenerFactory implements FactoryInterface {
             , $container->get(IUserRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IConfigService::class)
+            , $container->get(TemplateRendererInterface::class)
+            , $container->get(IL10N::class)
         );
     }
 
