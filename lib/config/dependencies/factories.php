@@ -25,6 +25,7 @@ use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
 use GuzzleHttp\Client;
 use Keestash\Api\PingHandler;
+use Keestash\Command\App\ListAll;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
 use Keestash\Command\Keestash\QueueList;
@@ -101,6 +102,7 @@ use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
+use Keestash\Factory\Command\App\ListAllFactory;
 use Keestash\Factory\Command\Keestash\EventsFactory;
 use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
 use Keestash\Factory\Command\Keestash\QueueListFactory;
@@ -319,6 +321,7 @@ return [
     , QueueList::class                       => QueueListFactory::class
     , QueueDelete::class                     => QueueDeleteFactory::class
     , Reset::class                           => ResetFactory::class
+    , ListAll::class                         => ListAllFactory::class
 
     // command
     // --- listener

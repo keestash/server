@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Command\App\ListAll;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
 use Keestash\Command\Keestash\QueueList;
@@ -45,4 +46,5 @@ return [
     , QueueList::class
     , QueueDelete::class
     , Reset::class
+    , ListAll::class
 ];

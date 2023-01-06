@@ -93,7 +93,7 @@ class MailLogRepository implements IMailLogRepository {
                 ->from('mail_log', 'ml')
                 ->where('ml.subject = ?')
                 ->setParameter(0, $subject)
-                ->orderBy('`subject`', 'desc')
+                ->orderBy('`create_ts`', 'desc')
                 ->setMaxResults(1);
 
             $result   = $queryBuilder->executeQuery();
