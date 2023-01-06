@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,19 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\App;
+namespace Keestash\Factory\Command\App;
 
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use KSP\Core\DTO\App\IApp;
+use Keestash\Command\App\ListAll;
+use KSP\Core\Service\App\ILoaderService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-interface ILoaderService {
+class ListAllFactory implements FactoryInterface {
 
-    public function getApps(): HashTable;
-
-    public function hasApp(string $name): bool;
-
-    public function getDefaultApp(): ?IApp;
-
-    public function unloadApp(string $key): bool;
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ListAll {
+        return new ListAll(
+            $container->get(ILoaderService::class)
+        );
+    }
 
 }
