@@ -23,7 +23,7 @@ declare(strict_types=1);
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
-use KSA\InstallInstance\Command\DemoMode;
+use KSA\InstallInstance\Command\Environment;
 use KSA\InstallInstance\Command\Install;
 use KSA\InstallInstance\Command\Ping;
 use KSA\InstallInstance\Command\Uninstall;
@@ -32,6 +32,7 @@ use KSA\InstallInstance\Factory\Api\Config\GetFactory;
 use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
 use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\DemoModeFactory;
+use KSA\InstallInstance\Factory\Command\EnvironmentFactory;
 use KSA\InstallInstance\Factory\Command\InstallFactory;
 use KSA\InstallInstance\Factory\Command\PingFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
@@ -40,17 +41,17 @@ use KSA\InstallInstance\Factory\Controller\ControllerFactory;
 return [
     'factories' => [
         // api
-        Get::class          => GetFactory::class
-        , Update::class     => UpdateFactory::class
-        , EndUpdate::class  => EndUpdateFactory::class
+        Get::class           => GetFactory::class
+        , Update::class      => UpdateFactory::class
+        , EndUpdate::class   => EndUpdateFactory::class
 
         // command
-        , DemoMode::class   => DemoModeFactory::class
-        , Uninstall::class  => UninstallFactory::class
-        , Install::class    => InstallFactory::class
-        , Ping::class       => PingFactory::class
+        , Uninstall::class   => UninstallFactory::class
+        , Install::class     => InstallFactory::class
+        , Ping::class        => PingFactory::class
+        , Environment::class => EnvironmentFactory::class
 
         // controller
-        , Controller::class => ControllerFactory::class
+        , Controller::class  => ControllerFactory::class
     ]
 ];

@@ -21,21 +21,27 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event\Listener;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\MailLog\MailLog;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\System\Application;
 use Keestash\Exception\FolderNotCreatedException;
 use Keestash\Exception\Key\KeyNotCreatedException;
 use KSA\PasswordManager\Entity\Folder\Root;
-use KSA\PasswordManager\Event\Listener\AfterRegistration\CreateStarterPassword;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\MailLog\IMailLogRepository;
+use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class AfterRegistration
@@ -45,6 +51,8 @@ use Psr\Log\LoggerInterface;
  *
  */
 class AfterRegistration implements IListener {
+
+    public const MAIL_LOG_TYPE_STARTER_EMAIL = 'email.starter.type.log.mail';
 
     public const FIRST_CREDENTIAL_ID = 1;
     public const ROOT_ID             = 1;
@@ -57,12 +65,16 @@ class AfterRegistration implements IListener {
     private Application       $application;
 
     public function __construct(
-        IKeyService         $keyService
-        , LoggerInterface   $logger
-        , NodeService       $nodeService
-        , NodeRepository    $nodeRepository
-        , CredentialService $credentialService
-        , Application       $application
+        IKeyService                                  $keyService
+        , LoggerInterface                            $logger
+        , NodeService                                $nodeService
+        , NodeRepository                             $nodeRepository
+        , CredentialService                          $credentialService
+        , Application                                $application
+        , private readonly IEmailService             $emailService
+        , private readonly TemplateRendererInterface $templateRenderer
+        , private readonly IL10N                     $translator
+        , private readonly IMailLogRepository        $mailLogRepository
     ) {
         $this->keyService        = $keyService;
         $this->logger            = $logger;
@@ -89,6 +101,8 @@ class AfterRegistration implements IListener {
             $this->logger->info('folder created');
             $this->createStarterPassword($event, $root);
             $this->logger->info('password created');
+            $this->writeEmail($event->getUser());
+            $this->logger->info('email sent');
         } catch (KeyNotCreatedException $e) {
             $this->logger->error('key not created', ['exception' => $e]);
             $this->keyService->remove($event->getUser());
@@ -136,6 +150,42 @@ class AfterRegistration implements IListener {
         );
         $credential->setId(AfterRegistration::FIRST_CREDENTIAL_ID);
         $this->credentialService->insertCredential($credential, $root);
+    }
+
+    public function writeEmail(IUser $user): void {
+        $this->emailService->setSubject(
+            'Your Account is Created'
+        );
+
+        $this->emailService->setBody(
+            $this->templateRenderer->render(
+                'passwordManagerEmail::welcome_mail', [
+                    'hello'       => $this->translator->translate(
+                        sprintf("Hey %s,", $user->getName())
+                    ),
+                    'topic'       => $this->translator->translate("Your Keestash account"),
+                    'content'     => $this->translator->translate("Your Keestash account is ready."),
+                    'questions1'  => $this->translator->translate("In case of any questions,"),
+                    'questions2'  => $this->translator->translate(" contact us here."),
+                    'buttonText'  => $this->translator->translate("Start Using"),
+                    'thankYou'    => $this->translator->translate("Thank you,"),
+                    'teamName'    => $this->translator->translate("The Keestash Team"),
+                    'currentYear' => (new DateTimeImmutable())->format('Y'),
+                ]
+            )
+        );
+
+        $this->emailService->addRecipient(
+            sprintf("%s %s", $user->getFirstName(), $user->getLastName())
+            , $user->getEmail()
+        );
+        $sent = $this->emailService->send();
+        $this->logger->info('send register email', ['sent' => $sent]);
+        $mailLog = new MailLog();
+        $mailLog->setId((string) Uuid::uuid4());
+        $mailLog->setSubject(AfterRegistration::MAIL_LOG_TYPE_STARTER_EMAIL);
+        $mailLog->setCreateTs(new DateTimeImmutable());
+        $this->mailLogRepository->insert($mailLog);
     }
 
 }

@@ -110,7 +110,7 @@ class InstallerService implements IInstallerService {
     }
 
     public function writeProductionMode(): bool {
-        return $this->instanceDB->addOption(InstanceDB::OPTION_NAME_PRODUCTION_MODE, (new DateTime())->format(DateTimeInterface::ATOM));
+        return $this->instanceDB->addOption(InstanceDB::OPTION_NAME_ENVIRONMENT, (new DateTime())->format(DateTimeInterface::ATOM));
     }
 
     private function verifyField(string $name, bool $force = false): array {

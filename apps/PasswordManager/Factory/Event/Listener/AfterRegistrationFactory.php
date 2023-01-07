@@ -26,7 +26,11 @@ use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSP\Core\Repository\MailLog\IMailLogRepository;
+use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
+use KSP\Core\Service\L10N\IL10N;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -40,6 +44,10 @@ class AfterRegistrationFactory {
             , $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)
             , $container->get(Application::class)
+            , $container->get(IEmailService::class)
+            , $container->get(TemplateRendererInterface::class)
+            , $container->get(IL10N::class)
+            , $container->get(IMailLogRepository::class)
         );
     }
 

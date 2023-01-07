@@ -32,8 +32,7 @@ return [
     \KSA\PasswordManager\ConfigProvider::FILE_UPLOAD_ALLOWED_EXTENSIONS => require __DIR__ . '/allowed_extensions.php',
     ConfigProvider::TEMPLATES                                           => [
         'paths' => [
-            'passwordManager' => [__DIR__ . '/../template/password_manager']
-            , 'publicShare'   => [__DIR__ . '/../template/public_share']
+            'passwordManagerEmail' => [__DIR__ . '/../template/email']
         ]
     ],
     ConfigProvider::APP_LIST                                            => [

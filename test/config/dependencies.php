@@ -29,6 +29,7 @@ use KST\Service\Core\Cache\RedisService;
 use KST\Service\Core\Manager\EventManager\EventService;
 use KST\Service\Core\Service\Config\IniConfigService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
+use KST\Service\Core\Service\Email\EmailService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Core\System\Installation\App\LockHandler as CoreAppLockHandler;
@@ -38,6 +39,7 @@ use KST\Service\Factory\Core\Manager\EventManager\EventManagerFactory;
 use KST\Service\Factory\Core\Repository\InstanceDBFactory;
 use KST\Service\Factory\Core\Service\Config\ConfigServiceFactory;
 use KST\Service\Factory\Core\Service\Config\IniConfigServiceFactory;
+use KST\Service\Factory\Core\Service\Email\EmailServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
 use KST\Service\Factory\Core\System\Installation\App\LockHandlerFactory as TestAppLockHandler;
@@ -57,6 +59,7 @@ return [
     , EventService::class            => EventManagerFactory::class
     , LocaleService::class           => InvokableFactory::class
     , RedisService::class            => RedisServiceFactory::class
+    , EmailService::class            => EmailServiceFactory::class
     , CoreAppLockHandler::class      => TestAppLockHandler::class
     , CoreInstanceLockHandler::class => TestInstanceLockHandler::class
     , ConfigService::class           => ConfigServiceFactory::class

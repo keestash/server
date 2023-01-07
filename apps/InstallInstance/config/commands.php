@@ -20,14 +20,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\InstallInstance\Command\DemoMode;
+use KSA\InstallInstance\Command\Environment;
 use KSA\InstallInstance\Command\Install;
 use KSA\InstallInstance\Command\Ping;
 use KSA\InstallInstance\Command\Uninstall;
 
 return [
     Uninstall::class
-    , DemoMode::class
     , Install::class
     , Ping::class
+    , Environment::class
 ];
