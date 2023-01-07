@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,25 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Factory\Command;
+namespace KST\Service\Factory\Core\Service\Email;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\User\UserService;
-use KSA\InstallInstance\Command\DemoMode;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use Laminas\Config\Config;
+use KSP\Core\Service\Email\IEmailService;
+use KST\Service\Core\Service\Email\EmailService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class DemoModeFactory {
+class EmailServiceFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): DemoMode {
-        return new DemoMode(
-            $container->get(InstanceDB::class)
-            , $container->get(UserService::class)
-            , $container->get(IUserRepository::class)
-            , $container->get(Config::class)
-            , $container->get(IUserRepositoryService::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): IEmailService {
+        return new EmailService(
+            $container->get(LoggerInterface::class)
         );
     }
 

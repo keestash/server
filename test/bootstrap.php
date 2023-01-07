@@ -22,10 +22,7 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
-use KSA\PasswordManager\Entity\Node\Credential\Credential;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Core\Repository\User\IUserRepository;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Phinx\IMigrator;
@@ -40,8 +37,8 @@ const __PHPUNIT_MODE__ = true;
 /** @var ContainerInterface $container */
 $container = require __DIR__ . '/config/service_manager.php';
 
-$config    = $container->get(Config::class);
-$fileName  = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
+$config   = $container->get(Config::class);
+$fileName = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
 
 if (is_file($fileName)) {
     unlink($fileName);
@@ -53,6 +50,13 @@ AdapterFactory::instance()
 /** @var IEnvironmentService $environmentService */
 $environmentService = $container->get(IEnvironmentService::class);
 $environmentService->setEnv(ConfigProvider::ENVIRONMENT_UNIT_TEST);
+
+/** @var InstanceDB $instanceDb */
+$instanceDb = $container->get(InstanceDB::class);
+$instanceDb->addOption(
+    InstanceDB::OPTION_NAME_ENVIRONMENT
+    , 'dev'
+);
 
 /** @var IMigrator $migrator */
 $migrator = $container->get(IMigrator::class);

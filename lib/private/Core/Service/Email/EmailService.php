@@ -136,8 +136,8 @@ class EmailService implements IEmailService {
     }
 
     private function putAllReceivers(): void {
-        $productionModeDate = $this->instanceDb->getOption(InstanceDB::OPTION_NAME_PRODUCTION_MODE);
-        if (null === $productionModeDate || "" === $productionModeDate) {
+        $environment = $this->instanceDb->getOption(InstanceDB::OPTION_NAME_ENVIRONMENT);
+        if ('production' !== $environment) {
             $this->mailer->clearAllRecipients();
             $this->mailer->addAddress(
                 (string) $this->configService->getValue("email_user")
