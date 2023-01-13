@@ -57,6 +57,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_NODE_GET_BY_ID     = '/password_manager/node/get/:node_id[/]';
     public const PASSWORD_MANAGER_NODE_GET_BY_NAME   = '/password_manager/node/name/:name[/]';
     public const PASSWORD_MANAGER_NODE_MOVE          = '/password_manager/node/move[/]';
+    public const PASSWORD_MANAGER_NODE_UPDATE        = '/password_manager/node/update';
     public const PASSWORD_MANAGER_NODE_UPDATE_AVATAR = '/password_manager/node/update/avatar[/]';
 
     public const PASSWORD_MANAGER_USERS_SHAREABLE = '/password_manager/users/shareable/:nodeId/:query/';

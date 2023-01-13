@@ -43,6 +43,7 @@ use KSA\PasswordManager\Exception\Edge\EdgeNotFoundException;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\Node\NodeException;
 use KSA\PasswordManager\Exception\Node\NodeNotFoundException;
+use KSA\PasswordManager\Exception\Node\NodeNotUpdatedException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -689,24 +690,33 @@ ORDER BY d.`level`;
                 ->executeStatement() !== 0;
     }
 
+    /**
+     * @param Node $node
+     * @return Node
+     * @throws NodeNotUpdatedException
+     */
     public function updateNode(Node $node): Node {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-
-        $queryBuilder = $queryBuilder->update('pwm_node')
-            ->set('name', '?')
-            ->set('update_ts', '?')
-            ->where('id = ?')
-            ->setParameter(0, $node->getName())
-            ->setParameter(1,
-                null !== $node->getUpdateTs()
-                    ? $this->dateTimeService->toYMDHIS(
-                    $node->getUpdateTs()
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->update('pwm_node')
+                ->set('name', '?')
+                ->set('update_ts', '?')
+                ->where('id = ?')
+                ->setParameter(0, $node->getName())
+                ->setParameter(1,
+                    null !== $node->getUpdateTs()
+                        ? $this->dateTimeService->toYMDHIS(
+                        $node->getUpdateTs()
+                    )
+                        : null
                 )
-                    : null
-            )
-            ->setParameter(2, $node->getId());
-        $queryBuilder->executeStatement();
-        return $node;
+                ->setParameter(2, $node->getId());
+            $queryBuilder->executeStatement();
+            return $node;
+        } catch (Exception $e) {
+            $this->logger->error('can not update node', ['exception' => $e, 'node' => $node]);
+            throw new NodeNotUpdatedException();
+        }
     }
 
     public function updateCredential(Credential $credential): Credential {

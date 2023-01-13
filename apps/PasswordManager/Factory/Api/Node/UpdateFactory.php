@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -20,16 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\InstallInstance\Command\Environment;
-use KSA\InstallInstance\Command\Install;
-use KSA\InstallInstance\Command\ListEnvironment;
-use KSA\InstallInstance\Command\Ping;
-use KSA\InstallInstance\Command\Uninstall;
+namespace KSA\PasswordManager\Factory\Api\Node;
 
-return [
-    Uninstall::class
-    , Install::class
-    , Ping::class
-    , Environment::class
-    , ListEnvironment::class
-];
+use KSA\PasswordManager\Api\Node\Update;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+
+class UpdateFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Update {
+        return new Update(
+            $container->get(NodeRepository::class)
+            , $container->get(LoggerInterface::class)
+        );
+    }
+
+}
