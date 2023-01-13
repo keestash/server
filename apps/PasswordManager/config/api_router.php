@@ -168,6 +168,12 @@ return [
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
         ],
         [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Update::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Update::class
+        ],
+        [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE_AVATAR
             , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Update::class]
             , IRoute::METHOD     => IVerb::POST

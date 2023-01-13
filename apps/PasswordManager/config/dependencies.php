@@ -114,7 +114,7 @@ use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'factories' => [
+    \Keestash\ConfigProvider::FACTORIES => [
         // api
         // ---- comment
         AddComment::class                                                 => AddCommentFactory::class,
@@ -137,6 +137,7 @@ return [
         Move::class                                                       => MoveFactory::class,
         ShareableUsers::class                                             => ShareableUsersFactory::class,
         Delete::class                                                     => DeleteFactory::class,
+        \KSA\PasswordManager\Api\Node\Update::class                       => \KSA\PasswordManager\Factory\Api\Node\UpdateFactory::class,
 
         // ---- Node
         // ---- ---- Pwned
@@ -213,5 +214,6 @@ return [
         PublicShareRepository::class                                      => PublicShareRepositoryFactory::class,
         PwnedPasswordsRepository::class                                   => PwnedPasswordsRepositoryFactory::class,
         PwnedBreachesRepository::class                                    => PwnedBreachesRepositoryFactory::class
-    ]
+    ],
+
 ];
