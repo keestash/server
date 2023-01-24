@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\PasswordManager\Api\Comment\Add as AddComment;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;
@@ -114,7 +115,7 @@ use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    \Keestash\ConfigProvider::FACTORIES => [
+    ConfigProvider::FACTORIES => [
         // api
         // ---- comment
         AddComment::class                                                 => AddCommentFactory::class,

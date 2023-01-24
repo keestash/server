@@ -126,6 +126,31 @@ parameters:
 			path: ../../apps/InstallInstance/Api/EndUpdate/EndUpdate.php
 
 		-
+			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Environment.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:getOption\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Environment.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Environment.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Environment.php
+
+		-
+			message: "#^Parameter \\#4 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Environment.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/InstallInstance/Command/Install.php

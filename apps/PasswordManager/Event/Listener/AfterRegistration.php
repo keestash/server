@@ -154,7 +154,7 @@ class AfterRegistration implements IListener {
 
     public function writeEmail(IUser $user): void {
         $this->emailService->setSubject(
-            'Your Account is Created'
+            $this->translator->translate('Your Account is Created')
         );
 
         $this->emailService->setBody(

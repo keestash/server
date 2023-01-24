@@ -19,13 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Entity;
+namespace KSA\Settings\Factory\Event\Listener;
 
-enum Environment: string {
+use KSA\Settings\Event\Listener\UpdateSettingsListener;
+use KSA\Settings\Repository\SettingsRepository;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-    case PRODUCTION = 'production';
-    case TEST = 'test';
-    case DEMO = 'demo';
-    case DEV = 'dev';
+class UpdateSettingsListenerFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): UpdateSettingsListener {
+        return new UpdateSettingsListener(
+            $container->get(SettingsRepository::class)
+            , $container->get(LoggerInterface::class)
+        );
+    }
 
 }

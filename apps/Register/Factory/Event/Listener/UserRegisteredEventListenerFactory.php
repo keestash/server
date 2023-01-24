@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,32 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Api;
+namespace KSA\Register\Factory\Event\Listener;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Middleware\Api\EnvironmentMiddleware;
-use KSA\Settings\Repository\SettingsRepository;
+use KSA\Register\Event\Listener\UserRegisteredEventListener;
+use KSP\Core\Repository\MailLog\IMailLogRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\L10N\IL10N;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class EnvironmentMiddlewareFactory implements FactoryInterface {
+class UserRegisteredEventListenerFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): EnvironmentMiddleware {
-        return new EnvironmentMiddleware(
-            $container->get(SettingsRepository::class)
-            , $container->get(InstanceDB::class)
+    ): UserRegisteredEventListener {
+        return new UserRegisteredEventListener(
+            $container->get(IEmailService::class)
+            , $container->get(TemplateRendererInterface::class)
+            , $container->get(IL10N::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(IMailLogRepository::class)
+            , $container->get(IUserStateRepository::class)
         );
     }
 

@@ -27,13 +27,14 @@ use KSP\Core\Service\Encryption\Password\IPasswordService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Generate implements RequestHandlerInterface {
 
-    private IPasswordService $passwordService;
-
-    public function __construct(IPasswordService $passwordService) {
-        $this->passwordService = $passwordService;
+    public function __construct(
+        private readonly IPasswordService  $passwordService
+        , private readonly LoggerInterface $logger
+    ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -43,6 +44,15 @@ class Generate implements RequestHandlerInterface {
         $digit        = (string) $request->getAttribute("digit");
         $specialChars = (string) $request->getAttribute("specialChars");
 
+        $this->logger->debug('generate password attributes',
+            [
+                'length'       => $length,
+                'upperCase'    => $upperCase,
+                'lowerCase'    => $lowerCase,
+                'digit'        => $digit,
+                'specialChars' => $specialChars
+            ]
+        );
         $valid = $this->validParameters(
             $length
             , $upperCase

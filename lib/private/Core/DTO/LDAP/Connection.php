@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\LDAP;
 
-
 use DateTimeInterface;
 use KSP\Core\DTO\LDAP\IConnection;
 

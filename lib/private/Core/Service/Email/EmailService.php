@@ -143,6 +143,8 @@ class EmailService implements IEmailService {
                 (string) $this->configService->getValue("email_user")
                 , (string) $this->configService->getValue("email_user")
             );
+
+            $this->mailer->Body = "######## DEV ########<br><br>". $this->mailer->Body;
             return;
         }
 

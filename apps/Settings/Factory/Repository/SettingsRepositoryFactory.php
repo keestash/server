@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Api;
+namespace KSA\Settings\Factory\Repository;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Middleware\Api\EnvironmentMiddleware;
+use doganoo\DI\DateTime\IDateTimeService;
 use KSA\Settings\Repository\SettingsRepository;
+use KSP\Core\Backend\IBackend;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class EnvironmentMiddlewareFactory implements FactoryInterface {
+class SettingsRepositoryFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): EnvironmentMiddleware {
-        return new EnvironmentMiddleware(
-            $container->get(SettingsRepository::class)
-            , $container->get(InstanceDB::class)
+    ): SettingsRepository {
+        return new SettingsRepository(
+            $container->get(IBackend::class)
+            , $container->get(IDateTimeService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Api;
+namespace KSA\Register\Factory\Api;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Middleware\Api\EnvironmentMiddleware;
-use KSA\Settings\Repository\SettingsRepository;
+use KSA\Register\Api\User\Confirm;
+use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Event\IEventService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class EnvironmentMiddlewareFactory implements FactoryInterface {
+class ConfirmFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): EnvironmentMiddleware {
-        return new EnvironmentMiddleware(
-            $container->get(SettingsRepository::class)
-            , $container->get(InstanceDB::class)
+    ): Confirm {
+        return new Confirm(
+            $container->get(IUserStateRepository::class)
+            , $container->get(IEventService::class)
         );
     }
 

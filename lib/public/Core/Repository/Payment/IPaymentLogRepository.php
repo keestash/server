@@ -23,7 +23,9 @@ namespace KSP\Core\Repository\Payment;
 
 use Doctrine\DBAL\Exception;
 use JsonException;
-use Keestash\Exception\Payment\PaymentException;
+use Keestash\Core\DTO\Payment\Log;
+use Keestash\Exception\LDAP\LDAPException;
+use KSA\Payment\Exception\PaymentException;
 use KSP\Core\DTO\Payment\ILog;
 use KSP\Core\DTO\User\IUser;
 
@@ -44,7 +46,7 @@ interface IPaymentLogRepository {
 
     /**
      * @param IUser $user
-     * @return ILog
+     * @return Log
      * @throws Exception
      * @throws JsonException
      * @throws PaymentException

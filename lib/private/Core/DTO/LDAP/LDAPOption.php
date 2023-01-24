@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -20,14 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\Settings\Command\Get;
-use KSA\Settings\Command\ListSettings;
-use KSA\Settings\Command\Lock;
-use KSA\Settings\Command\UpdatePassword;
+namespace Keestash\Core\DTO\LDAP;
 
-return [
-    UpdatePassword::class
-    , Get::class
-    , Lock::class
-    , ListSettings::class
-];
+enum LDAPOption: string {
+    case RESTRICT_LOCAL_ACCOUNTS = 'restrict-local-accounts';
+
+}

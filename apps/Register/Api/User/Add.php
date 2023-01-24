@@ -31,10 +31,12 @@ use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
+use KSA\Register\Event\UserRegisteredEvent;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
@@ -55,15 +57,16 @@ class Add implements RequestHandlerInterface {
     private IConfigService         $configService;
 
     public function __construct(
-        UserService              $userService
-        , ILoaderService         $loader
-        , LoggerInterface        $logger
-        , IUserRepositoryService $userRepositoryService
-        , IStringService         $stringService
-        , IPaymentService        $paymentService
-        , IPaymentLogRepository  $paymentLogRepository
-        , Application            $application
-        , IConfigService         $configService
+        UserService                      $userService
+        , ILoaderService                 $loader
+        , LoggerInterface                $logger
+        , IUserRepositoryService         $userRepositoryService
+        , IStringService                 $stringService
+        , IPaymentService                $paymentService
+        , IPaymentLogRepository          $paymentLogRepository
+        , Application                    $application
+        , IConfigService                 $configService
+        , private readonly IEventService $eventService
     ) {
 
         $this->userService           = $userService;
@@ -143,7 +146,7 @@ class Add implements RequestHandlerInterface {
                 , 'password'   => $password
                 , 'phone'      => $phone
                 , 'website'    => $website
-                , 'locked'     => true === $isSaas
+                , 'locked'     => true
             ]
         );
 
@@ -196,6 +199,10 @@ class Add implements RequestHandlerInterface {
                 , IResponse::OK
             );
         }
+
+        $this->eventService->execute(
+            new UserRegisteredEvent($user)
+        );
 
         return new JsonResponse(
             []
