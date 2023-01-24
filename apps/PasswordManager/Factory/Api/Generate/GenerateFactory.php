@@ -24,12 +24,14 @@ namespace KSA\PasswordManager\Factory\Api\Generate;
 use KSA\PasswordManager\Api\Generate\Generate;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class GenerateFactory {
 
     public function __invoke(ContainerInterface $container): Generate {
         return new Generate(
             $container->get(IPasswordService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

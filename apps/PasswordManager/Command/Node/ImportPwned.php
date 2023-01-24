@@ -152,7 +152,7 @@ class ImportPwned extends KeestashCommand {
                 )
             );
 
-            sleep(2);
+            sleep(10);
 
         }
 
@@ -211,7 +211,7 @@ class ImportPwned extends KeestashCommand {
                 )
             );
 
-            sleep(2);
+            sleep(10);
         }
     }
 

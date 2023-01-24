@@ -39,7 +39,6 @@ final class ConfigProvider {
     public const ENVIRONMENT_UNIT_TEST   = 'test.unit.environment';
     public const ENVIRONMENT_SAAS        = 'saas.environment';
     public const INSTALL_INSTANCE_ROUTE  = 'install_instance';
-    public const INSTALL_LOGIN_ROUTE     = 'login';
     public const INSTALL_INSTANCE_ROUTES = 'routes.instance.install';
     public const INSTALL_APPS_ROUTES     = 'routes.instance.install';
     public const ROUTES                  = 'routes';

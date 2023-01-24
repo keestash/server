@@ -23,7 +23,9 @@ declare(strict_types=1);
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
+use KSA\Settings\Event\Listener\UpdateSettingsListener;
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
+use KSA\Settings\Event\SettingsChangedEvent;
 
 return [
     OrganizationAddedEvent::class => [
@@ -31,5 +33,8 @@ return [
     ]
     , UserStateDeleteEvent::class => [
         PostStateChange::class
+    ]
+    , SettingsChangedEvent::class => [
+        UpdateSettingsListener::class
     ]
 ];

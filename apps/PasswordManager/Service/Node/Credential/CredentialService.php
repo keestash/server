@@ -41,6 +41,7 @@ use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\Core\Service\Event\IEventService;
+use Psr\Log\LoggerInterface;
 
 class CredentialService {
 
@@ -51,11 +52,12 @@ class CredentialService {
     private IEventService         $eventManager;
 
     public function __construct(
-        EdgeService             $edgeService
-        , NodeRepository        $nodeRepository
-        , NodeEncryptionService $nodeEncryptionService
-        , IPasswordService      $passwordService
-        , IEventService         $eventManager
+        EdgeService                        $edgeService
+        , NodeRepository                   $nodeRepository
+        , NodeEncryptionService            $nodeEncryptionService
+        , IPasswordService                 $passwordService
+        , IEventService                    $eventManager
+        , private readonly LoggerInterface $logger
     ) {
         $this->edgeService           = $edgeService;
         $this->nodeRepository        = $nodeRepository;
@@ -180,6 +182,7 @@ class CredentialService {
                 , new DateTimeImmutable()
             )
         );
+        $this->logger->debug('updated password');
         return $credential;
     }
 

@@ -33,6 +33,7 @@ abstract class KeestashMigration extends AbstractMigration {
     public const ENUM     = AdapterInterface::PHINX_TYPE_ENUM;
     public const DATETIME = AdapterInterface::PHINX_TYPE_DATETIME;
     public const JSON     = AdapterInterface::PHINX_TYPE_JSON;
+    public const TEXT     = AdapterInterface::PHINX_TYPE_TEXT;
 
     // MySQL Option Fields
     public const OPTION_NAME_VALUES = "values";

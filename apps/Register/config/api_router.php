@@ -23,6 +23,7 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Register\Api\Configuration\Configuration;
 use KSA\Register\Api\MinimumCredential;
 use KSA\Register\Api\User\Add;
+use KSA\Register\Api\User\Confirm;
 use KSA\Register\Api\User\Exists;
 use KSA\Register\Api\User\MailExists;
 use KSA\Register\ConfigProvider;
@@ -34,6 +35,7 @@ return [
         ConfigProvider::REGISTER_ADD
         , ConfigProvider::PASSWORD_REQUIREMENTS
         , ConfigProvider::REGISTER_CONFIGURATION
+        , ConfigProvider::REGISTER_CONFIRM
     ],
     CoreConfigProvider::ROUTES        => [
         [
@@ -41,6 +43,12 @@ return [
             , IRoute::MIDDLEWARE => Add::class
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Add::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::REGISTER_CONFIRM
+            , IRoute::MIDDLEWARE => Confirm::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Confirm::class
         ],
         [
             IRoute::PATH         => ConfigProvider::USER_EXISTS_BY_MAIL

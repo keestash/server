@@ -37,6 +37,7 @@ use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 class UserStateRepository implements IUserStateRepository {
 
@@ -198,6 +199,7 @@ class UserStateRepository implements IUserStateRepository {
         $this->insert(
             $user
             , IUserState::USER_STATE_LOCK
+            , Uuid::uuid4()->toString()
         );
     }
 

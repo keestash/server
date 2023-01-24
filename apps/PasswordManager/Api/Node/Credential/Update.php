@@ -31,10 +31,10 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Update
@@ -51,14 +51,14 @@ class Update implements RequestHandlerInterface {
     private IStringService    $stringService;
     private CredentialService $credentialService;
     private IL10N             $translator;
-    private LoggerInterface           $logger;
+    private LoggerInterface   $logger;
 
     public function __construct(
         IL10N               $l10n
         , NodeRepository    $nodeRepository
         , IStringService    $stringService
         , CredentialService $credentialService
-        , LoggerInterface           $logger
+        , LoggerInterface   $logger
     ) {
         $this->translator        = $l10n;
         $this->nodeRepository    = $nodeRepository;
@@ -108,6 +108,7 @@ class Update implements RequestHandlerInterface {
             , $name
         );
 
+        $this->logger->info('update password', ['update' => $savePassword]);
         if (true === $savePassword) {
             $this->credentialService->updatePassword($node, $password);
         }

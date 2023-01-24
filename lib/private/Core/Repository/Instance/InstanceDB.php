@@ -33,6 +33,7 @@ class InstanceDB {
     public const OPTION_NAME_INSTANCE_HASH = "instance_hash";
     public const OPTION_NAME_INSTANCE_ID   = "instance_id";
     public const OPTION_NAME_ENVIRONMENT   = "environment";
+    public const OPTION_NAME_SAAS          = "saas";
 
     private string $path;
     private PDO    $database;

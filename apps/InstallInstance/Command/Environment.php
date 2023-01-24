@@ -23,14 +23,17 @@ namespace KSA\InstallInstance\Command;
 
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use KSA\InstallInstance\Entity\Environment as EnvironmentEntity;
+use KSP\Command\IKeestashCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Environment extends KeestashCommand {
 
-    public const OPTION_NAME_ENVIRONMENT = 'environment';
+    public const OPTION_NAME_FORCE   = 'force';
+    public const ARGUMENT_NAME_NAME  = 'name';
+    public const ARGUMENT_NAME_VALUE = 'value';
 
     public function __construct(
         private readonly InstanceDB $instanceDB
@@ -42,28 +45,53 @@ class Environment extends KeestashCommand {
         $this->setName("instance:environment")
             ->setDescription("sets the app environment")
             ->addOption(
-                Environment::OPTION_NAME_ENVIRONMENT
-                , 'e'
-                , InputOption::VALUE_REQUIRED
+                Environment::OPTION_NAME_FORCE
+                , 'f'
+                , InputOption::VALUE_NONE
+            )
+            ->addArgument(
+                Environment::ARGUMENT_NAME_NAME
+                , InputArgument::REQUIRED
+                , 'the environment name'
+            )
+            ->addArgument(
+                Environment::ARGUMENT_NAME_VALUE
+                , InputArgument::REQUIRED
+                , 'the environment value'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $val         = $input->getOption(Environment::OPTION_NAME_ENVIRONMENT);
-        $environment = EnvironmentEntity::from((string) $val);
+        $force = true === $input->getOption(Environment::OPTION_NAME_FORCE);
+        $name  = $input->getArgument(Environment::ARGUMENT_NAME_NAME);
+        $value = $input->getArgument(Environment::ARGUMENT_NAME_VALUE);
+
+        $oldOption    = $this->instanceDB->getOption($name);
+        $optionExists = null !== $oldOption;
+
+        if (false === $force) {
+            if (true === $optionExists) {
+                $this->writeError('option already exists', $output);
+                return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
+            }
+        }
 
         $this->instanceDB->addOption(
-            InstanceDB::OPTION_NAME_ENVIRONMENT
-            , $environment->value
+            $name
+            , $value
         );
 
         $output->writeln(
             sprintf(
-                "mode switched to %s",
-                $environment->value
+                "updated value for %s from %s to %s",
+                $name
+                , null !== $oldOption
+                ? $oldOption
+                : 'null'
+                , $value
             )
         );
-        return 0;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

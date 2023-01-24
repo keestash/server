@@ -45,6 +45,7 @@ class ApiLogRepositoryTest extends TestCase {
             $userRepository->getUserById((string)UserService::TEST_USER_ID_2)
         );
 
+        /** @var IApiLogRepository $apiLogRepository */
         $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);
         $request          = new APIRequest();
         $request->setRoute("my/awesome/route");

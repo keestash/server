@@ -21,7 +21,6 @@ declare(strict_types=1);
  */
 
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
-use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
@@ -33,9 +32,10 @@ use KSA\PasswordManager\Event\Node\Credential\CredentialUpdatedEvent;
 use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
 use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
+use KSA\Register\Event\UserRegistrationConfirmedEvent;
 
 return [
-    UserCreatedEvent::class                   => [
+    UserRegistrationConfirmedEvent::class     => [
         AfterRegistration::class
     ]
     , UserUpdatedEvent::class                 => [

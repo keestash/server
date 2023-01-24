@@ -94,7 +94,6 @@ class Login implements RequestHandlerInterface {
         $parameters = (array) $request->getParsedBody();
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
-        // TODO make this better
         $isSaas = $request->getAttribute(ConfigProvider::ENVIRONMENT_SAAS);
 
         try {

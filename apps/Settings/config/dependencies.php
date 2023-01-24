@@ -36,12 +36,14 @@ use KSA\Settings\Api\User\UserEdit;
 use KSA\Settings\Api\User\UserLock;
 use KSA\Settings\Api\User\UserRemove;
 use KSA\Settings\BackgroundJob\UserDeleteTask;
+use KSA\Settings\Command\ListSettings;
 use KSA\Settings\Command\Lock;
 use KSA\Settings\Command\UpdatePassword;
 use KSA\Settings\Controller\Controller;
 use KSA\Settings\Controller\Organization\Detail;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
+use KSA\Settings\Event\Listener\UpdateSettingsListener;
 use KSA\Settings\Factory\Api\Organization\ActivateFactory;
 use KSA\Settings\Factory\Api\Organization\AddFactory;
 use KSA\Settings\Factory\Api\Organization\GetFactory;
@@ -55,19 +57,23 @@ use KSA\Settings\Factory\Api\User\UserEditFactory;
 use KSA\Settings\Factory\Api\User\UserLockFactory;
 use KSA\Settings\Factory\Api\User\UserRemoveFactory;
 use KSA\Settings\Factory\BackgroundJob\UserDeleteTaskFactory;
+use KSA\Settings\Factory\Command\ListSettingsFactory;
 use KSA\Settings\Factory\Command\LockFactory;
 use KSA\Settings\Factory\Command\UpdatePasswordFactory;
 use KSA\Settings\Factory\Controller\Organization\DetailFactory;
 use KSA\Settings\Factory\Controller\SettingsControllerFactory;
 use KSA\Settings\Factory\Event\Listener\OrganizationAddedEventListenerFactory;
 use KSA\Settings\Factory\Event\Listener\PostStateChangeFactory;
+use KSA\Settings\Factory\Event\Listener\UpdateSettingsListenerFactory;
 use KSA\Settings\Factory\Repository\OrganizationRepositoryFactory;
 use KSA\Settings\Factory\Repository\OrganizationUserRepositoryFactory;
+use KSA\Settings\Factory\Repository\SettingsRepositoryFactory;
 use KSA\Settings\Repository\DemoUsersRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
 use KSA\Settings\Repository\OrganizationUserRepository;
+use KSA\Settings\Repository\SettingsRepository;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -101,16 +107,19 @@ return [
         , OrganizationRepository::class              => OrganizationRepositoryFactory::class
         , OrganizationUserRepository::class          => OrganizationUserRepositoryFactory::class
         , DemoUsersRepository::class                 => DemoUsersRepositoryFactory::class
+        , SettingsRepository::class                  => SettingsRepositoryFactory::class
 
         // event
         // ----- listener
         , OrganizationAddedEventListener::class      => OrganizationAddedEventListenerFactory::class
         , PostStateChange::class                     => PostStateChangeFactory::class
+        , UpdateSettingsListener::class              => UpdateSettingsListenerFactory::class
 
         // command
         , UpdatePassword::class                      => UpdatePasswordFactory::class
         , \KSA\Settings\Command\Get::class           => \KSA\Settings\Factory\Command\GetFactory::class
         , Lock::class                                => LockFactory::class
+        , ListSettings::class                        => ListSettingsFactory::class
     ]
     , ConfigProvider::ALIASES => [
         IOrganizationRepository::class       => OrganizationRepository::class
