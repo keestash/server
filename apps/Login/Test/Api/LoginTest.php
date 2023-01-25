@@ -81,6 +81,7 @@ class LoginTest extends TestCase {
                 ]
             )
         );
+        $this->logResponse($response);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::UNAUTHORIZED === $response->getStatusCode());
     }

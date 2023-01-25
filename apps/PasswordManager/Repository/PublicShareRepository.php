@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Repository;
 
+use DateTimeImmutable;
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\PublicShare;
@@ -23,13 +25,13 @@ use Psr\Log\LoggerInterface;
 class PublicShareRepository {
 
     private IDateTimeService $dateTimeService;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
     private IBackend         $backend;
 
     public function __construct(
-        IBackend $backend
+        IBackend           $backend
         , IDateTimeService $dateTimeService
-        , LoggerInterface $logger
+        , LoggerInterface  $logger
     ) {
         $this->dateTimeService = $dateTimeService;
         $this->logger          = $logger;
@@ -55,7 +57,7 @@ class PublicShareRepository {
             ->setParameter(0, $node->getId())
             ->setParameter(1, $share->getHash())
             ->setParameter(2, $this->dateTimeService->toYMDHIS($share->getExpireTs()))
-            ->execute();
+            ->executeStatement();
 
         $shareId = (int) $this->backend->getConnection()->lastInsertId();
 
@@ -141,59 +143,75 @@ class PublicShareRepository {
     }
 
     public function addShareInfo(Node $node): Node {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->select(
-            [
-                's.id'
-                , 's.hash'
-                , 's.expire_ts'
-                , 's.node_id'
-            ]
-        )
-            ->from('pwm_public_share', 's')
-            ->where('s.`node_id` = ?')
-            ->setParameter(0, $node->getId());
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->select(
+                [
+                    's.id'
+                    , 's.hash'
+                    , 's.expire_ts'
+                    , 's.node_id'
+                ]
+            )
+                ->from('pwm_public_share', 's')
+                ->where('s.`node_id` = ?')
+                ->setParameter(0, $node->getId());
 
-        $result = $queryBuilder->executeQuery();
-        $rows   = $result->fetchAllNumeric();
+            $result = $queryBuilder->executeQuery();
+            $rows   = $result->fetchAllNumeric();
 
-        if (0 === count($rows)) {
-            $node->setPublicShare(null);
+            if (0 === count($rows)) {
+                $node->setPublicShare(null);
+                return $node;
+            }
+
+            $row       = $rows[0];
+            $shareId   = $row[0];
+            $shareHash = $row[1];
+            $expireTs  = $row[2];
+            $nodeId    = $row[3];
+
+            $publicShare = new PublicShare();
+            $publicShare->setId((int) $shareId);
+            $publicShare->setHash((string) $shareHash);
+            $publicShare->setExpireTs($this->dateTimeService->fromFormat($expireTs));
+            $publicShare->setNodeId((int) $nodeId);
+
+            $node->setPublicShare($publicShare);
             return $node;
+        } catch (Exception $e) {
+            $this->logger->warning('can not request share info', ['node' => $node, 'exception' => $e]);
+            throw new PasswordManagerException();
         }
-
-        $row       = $rows[0];
-        $shareId   = $row[0];
-        $shareHash = $row[1];
-        $expireTs  = $row[2];
-        $nodeId    = $row[3];
-
-        $publicShare = new PublicShare();
-        $publicShare->setId((int) $shareId);
-        $publicShare->setHash((string) $shareHash);
-        $publicShare->setExpireTs($this->dateTimeService->fromFormat($expireTs));
-        $publicShare->setNodeId((int) $nodeId);
-
-        $node->setPublicShare($publicShare);
-        return $node;
     }
 
     public function removeByUser(IUser $user): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete('pwm_public_share', 'pps')
-                ->where('pps.`node_id` IN (
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            return $queryBuilder->delete('pwm_public_share', 'pps')
+                    ->where('pps.`node_id` IN (
                                 SELECT DISTINCT n.`id` FROM `pwm_node` n WHERE n.`user_id` = ?
                         )')
-                ->setParameter(0, $user->getId())
-                ->execute() !== 0;
+                    ->setParameter(0, $user->getId())
+                    ->executeStatement() !== 0;
+        } catch (Exception $e) {
+            $this->logger->warning('can not remove users public share', ['user' => $user, 'exception' => $e]);
+            return false;
+        }
     }
 
     public function removeOutdated(): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-
-        return $queryBuilder->delete('pwm_public_share', 'pps')
-                ->where('pps.`expire_ts` < NOW()')
-                ->execute() !== 0;
+        $now = $this->dateTimeService->toYMDHIS(new DateTimeImmutable());
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            return $queryBuilder->delete('pwm_public_share')
+                    ->where('`expire_ts` < ?')
+                    ->setParameter(0, $now)
+                    ->executeStatement() !== 0;
+        } catch (Exception $e) {
+            $this->logger->warning('can not remove outdated', ['exception' => $e]);
+            return false;
+        }
     }
 
 }
