@@ -24,8 +24,7 @@ namespace KSP\Core\Repository\Payment;
 use Doctrine\DBAL\Exception;
 use JsonException;
 use Keestash\Core\DTO\Payment\Log;
-use Keestash\Exception\LDAP\LDAPException;
-use KSA\Payment\Exception\PaymentException;
+use Keestash\Exception\Payment\PaymentException;
 use KSP\Core\DTO\Payment\ILog;
 use KSP\Core\DTO\User\IUser;
 

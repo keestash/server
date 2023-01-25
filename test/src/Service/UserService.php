@@ -23,8 +23,11 @@ namespace KST\Service\Service;
 
 use DateTimeImmutable;
 use Keestash\Core\System\Application;
+use KSA\Register\Event\UserRegistrationConfirmedEvent;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Ramsey\Uuid\Uuid;
@@ -106,18 +109,20 @@ class UserService {
         ]
     ];
 
-    private Application                 $legacy;
+    private Application            $legacy;
     private IUserRepositoryService $userRepositoryService;
     private IUserService           $userService;
     private ILocaleService         $localeService;
     private ILanguageService       $languageService;
 
     public function __construct(
-        Application $legacy
-        , IUserRepositoryService $userRepositoryService
-        , IUserService           $userService
-        , ILocaleService         $localeService
-        , ILanguageService       $languageService
+        Application                             $legacy
+        , IUserRepositoryService                $userRepositoryService
+        , IUserService                          $userService
+        , ILocaleService                        $localeService
+        , ILanguageService                      $languageService
+        , private readonly IEventService        $eventService
+        , private readonly IUserStateRepository $userStateRepository
     ) {
         $this->legacy                = $legacy;
         $this->userRepositoryService = $userRepositoryService;
@@ -145,7 +150,15 @@ class UserService {
             $data['language']   = $this->languageService->getLanguage();
             $data['locale']     = $this->localeService->getLocale();
             $user               = $this->userService->toNewUser($data);
-            $this->userRepositoryService->createUser($user);
+            $user               = $this->userRepositoryService->createUser($user);
+            $this->eventService->execute(
+                new UserRegistrationConfirmedEvent(
+                    $user
+                )
+            );
+            if (false === $data['locked'] && $user->isLocked()) {
+                $this->userStateRepository->unlock($user);
+            }
         }
     }
 

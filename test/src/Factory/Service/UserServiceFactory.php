@@ -22,8 +22,10 @@ declare(strict_types=1);
 namespace KST\Service\Factory\Service;
 
 use Keestash\Core\System\Application;
+use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Service\Service\UserService;
@@ -38,6 +40,8 @@ class UserServiceFactory {
             , $container->get(IUserService::class)
             , $container->get(ILocaleService::class)
             , $container->get(ILanguageService::class)
+            , $container->get(IEventService::class)
+            , $container->get(IUserStateRepository::class)
         );
     }
 

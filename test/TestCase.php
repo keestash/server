@@ -30,6 +30,7 @@ use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 class TestCase extends FrameworkTestCase {
 
@@ -43,6 +44,16 @@ class TestCase extends FrameworkTestCase {
 
     protected function getService(string $name) {
         return $this->getServiceManager()->get($name);
+    }
+
+    protected function logResponse(ResponseInterface $response): void {
+        /** @var LoggerInterface $logger */
+        $logger = $this->getService(LoggerInterface::class);
+        $logger->debug('response', [
+            'status'    => $response->getStatusCode()
+            , 'body'    => (string) $response->getBody()
+            , 'headers' => $response->getHeaders()
+        ]);
     }
 
     protected function setUp(): void {
