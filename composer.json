@@ -38,7 +38,7 @@
     "doganoo/php-util": "^0.5",
     "doganoo/simple-rbac": "dev-master",
     "ezyang/htmlpurifier": "^4.13",
-    "firebase/php-jwt": "^5.2",
+    "firebase/php-jwt": "^6.0",
     "guzzlehttp/guzzle": "^7.0",
     "laminas/laminas-config": "^3.5",
     "laminas/laminas-config-aggregator": "^1.5",
