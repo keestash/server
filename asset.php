@@ -21,15 +21,16 @@ declare(strict_types=1);
  */
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\File\FileService;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\File\Icon\IIconService;
-use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 (function () {
 
@@ -63,12 +64,14 @@ use Psr\Container\ContainerInterface;
     try {
         $decoded = JWT::decode(
             $token
-            , $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-            , ['HS256']
+            ,new Key(
+                $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+                ,'HS256'
+            )
         );
     } catch (Throwable $exception) {
-        $logger->error($exception->getMessage() . " token: " . $token);
-        header("HTTP/1.0 500 Internal Server Error");
+        $logger->error("error while decoding token", ['exception' => $exception->getMessage(), 'token' => $token]);
+        header("HTTP/1.0 404 Not Found");
         die();
     }
 

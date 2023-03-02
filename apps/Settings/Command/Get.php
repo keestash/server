@@ -23,9 +23,12 @@ namespace KSA\Settings\Command;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Command\KeestashCommand;
+use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,15 +38,16 @@ class Get extends KeestashCommand {
 
     public const ARGUMENT_NAME_USER_ID = 'user-id';
 
-    private IUserRepository $userRepository;
-
-    public function __construct(IUserRepository $userRepository) {
+    public function __construct(
+        private readonly IUserRepository      $userRepository
+        , private readonly IUserKeyRepository $userKeyRepository
+        , private readonly LoggerInterface    $logger
+    ) {
         parent::__construct();
-        $this->userRepository = $userRepository;
     }
 
     protected function configure(): void {
-        $this->setName("users:get")
+        $this->setName("users:list")
             ->setDescription("lists one or all users")
             ->addArgument(
                 Get::ARGUMENT_NAME_USER_ID
@@ -69,17 +73,24 @@ class Get extends KeestashCommand {
 
         /** @var IUser $user */
         foreach ($userList as $user) {
+            try {
+                $key = $this->userKeyRepository->getKey($user);
+            } catch (KeyNotFoundException $exception) {
+                $this->logger->info('no key found for user', ['exception' => $exception, 'user' => $user]);
+                $key = null;
+            }
             $tableRows[] = [
                 $user->getId()
                 , $user->getName()
                 , $user->getHash()
                 , $user->isDeleted()
                 , $user->isLocked()
+                , null !== $key
             ];
         }
         $table = new Table($output);
         $table
-            ->setHeaders(['ID', 'Name', 'Hash', 'Deleted', 'Locked'])
+            ->setHeaders(['ID', 'Name', 'Hash', 'Deleted', 'Locked', 'Key Exists'])
             ->setRows($tableRows);
         $table->render();
 

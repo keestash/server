@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\EncryptionKey\User;
 
+use Doctrine\DBAL\Exception;
+use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
@@ -31,6 +33,12 @@ interface IUserKeyRepository extends IRepository {
 
     public function updateKey(IKey $key): bool;
 
+    /**
+     * @param IUser $user
+     * @return IKey
+     * @throws Exception
+     * @throws KeyNotFoundException
+     */
     public function getKey(IUser $user): IKey;
 
     public function remove(IUser $user): bool;

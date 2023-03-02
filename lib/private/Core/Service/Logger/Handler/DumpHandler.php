@@ -27,7 +27,6 @@ class DumpHandler extends AbstractProcessingHandler {
 
     protected function write(array $record): void {
         if (!function_exists('dump')) {
-            var_dump($record);
             return;
         }
         dump($record['message']);

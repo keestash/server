@@ -22,9 +22,11 @@ declare(strict_types=1);
 namespace KSA\Settings\Factory\Command;
 
 use KSA\Settings\Command\Get;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class GetFactory implements FactoryInterface {
 
@@ -35,6 +37,8 @@ class GetFactory implements FactoryInterface {
     ): Get {
         return new Get(
             $container->get(IUserRepository::class)
+            , $container->get(IUserKeyRepository::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

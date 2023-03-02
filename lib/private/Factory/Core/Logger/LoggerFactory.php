@@ -28,6 +28,7 @@ use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Laminas\Config\Config;
 use Monolog\Formatter\JsonFormatter;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -52,7 +53,7 @@ class LoggerFactory {
         $dataRoot = (string) $config->get(ConfigProvider::DATA_PATH);
         return (new LoggerBuilder())
             ->withLogLevel(
-                (int) $configService->getValue("log_level", \Monolog\Logger::ERROR)
+                (int) $configService->getValue("log_level", Logger::ERROR)
             )
             ->withPath(
                 $dataRoot . '/' . $logFileName

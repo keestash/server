@@ -946,11 +946,6 @@ parameters:
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
 
 		-
-			message: "#^Access to an undefined property object\\:\\:\\$aud\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Service/HTTP/JWTService.php
-
-		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Service/Router/RouterService.php
@@ -999,4 +994,9 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
+
+		-
+			message: "#^Class Keestash\\\\Middleware\\\\DispatchMiddleware extends @final class Mezzio\\\\Router\\\\Middleware\\\\DispatchMiddleware\\.$#"
+			count: 1
+			path: ../../lib/private/Middleware/DispatchMiddleware.php
 

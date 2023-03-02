@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\LDAP;
 
+use Keestash\Exception\LDAP\LDAPException;
 use KSP\Core\DTO\LDAP\IConnection;
 use KSP\Core\DTO\User\IUser;
 
@@ -34,6 +35,11 @@ interface IConnectionRepository {
 
     public function getConnectionByUser(IUser $user): IConnection;
 
+    /**
+     * @param IConnection $connection
+     * @return void
+     * @throws LDAPException
+     */
     public function remove(IConnection $connection): void;
 
     public function deactivate(IConnection $connection): void;
