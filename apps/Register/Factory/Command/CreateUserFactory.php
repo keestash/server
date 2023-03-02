@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Factory\Command;
 
 use KSA\Register\Command\CreateUser;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
@@ -32,6 +33,7 @@ class CreateUserFactory {
         return new CreateUser(
             $container->get(IUserService::class)
             , $container->get(IUserRepositoryService::class)
+            , $container->get(IEventService::class)
         );
     }
 

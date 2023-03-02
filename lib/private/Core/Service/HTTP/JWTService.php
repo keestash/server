@@ -57,6 +57,7 @@ class JWTService implements IJWTService {
         return JWT::encode(
             $payLoad
             , (string) $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+            , 'HS256'
         );
 
     }

@@ -25,7 +25,9 @@ use Exception;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
+use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSA\Register\Exception\CreateUserException;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,17 +42,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CreateUser extends KeestashCommand {
 
-    private UserService            $userService;
-    private IUserRepositoryService $userRepositoryService;
-
     public function __construct(
-        UserService              $userService
-        , IUserRepositoryService $userRepositoryService
+        private readonly UserService              $userService
+        , private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IEventService          $eventService
     ) {
         parent::__construct();
-
-        $this->userService           = $userService;
-        $this->userRepositoryService = $userRepositoryService;
     }
 
     protected function configure(): void {
@@ -99,7 +96,9 @@ class CreateUser extends KeestashCommand {
         $result = $this->userService->validateNewUser($user);
 
         if ($result->length() > 0) {
-            throw new KeestashException();
+            throw new KeestashException(
+                (string) json_encode($result->toArray(), JSON_THROW_ON_ERROR)
+            );
         }
 
         try {
@@ -109,6 +108,13 @@ class CreateUser extends KeestashCommand {
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);
             return 1;
         }
+
+        $this->eventService->execute(
+            new UserRegistrationConfirmedEvent(
+                $user
+            )
+        );
+
         $this->writeInfo("$name created", $output);
         return 0;
     }

@@ -83,7 +83,6 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
                         ]
                     )
                 );
-
             });
     }
 

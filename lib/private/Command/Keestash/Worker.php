@@ -80,7 +80,7 @@ class Worker extends KeestashCommand {
                 $result = Result::getNotOk();
 
                 try {
-                    $this->logger->debug('handling an event message');
+                    $this->logger->debug('handling an event message', ['message' => $message]);
                     $result = $this->eventHandler->handle($message);
                 } catch (Throwable $exception) {
                     $this->logger->error('error processing message', ['exception' => $exception]);
