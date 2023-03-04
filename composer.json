@@ -77,7 +77,7 @@
     "mockery/mockery": "^1.4",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpstan/phpstan": "^1.0",
-    "phpunit/phpunit": "^9.3",
+    "phpunit/phpunit": "9.6.4",
     "squizlabs/php_codesniffer": "^3.5",
     "symfony/var-dumper": "^5.2",
     "vimeo/psalm": "^4"
