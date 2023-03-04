@@ -111,7 +111,6 @@ class ConfigFileReadable extends AbstractVerification {
         /** @phpstan-ignore-next-line */
         include $config->getPath();
 
-        /** @phpstan-ignore-next-line */
         if (false === is_array($CONFIG)) {
             $CONFIG = [];
         }

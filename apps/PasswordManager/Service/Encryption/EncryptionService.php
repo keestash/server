@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Service\Encryption;
 
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use Keestash\Core\Service\Encryption\Encryption\AESService;
 use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
@@ -37,22 +36,13 @@ use Psr\Log\LoggerInterface;
  *
  * @package KSA\PasswordManager\Service\Encryption
  */
-class EncryptionService extends AESService {
-
-    private IEncryptionService $encryptionService;
-    private CredentialService  $credentialService;
-    private LoggerInterface    $logger;
+class EncryptionService {
 
     public function __construct(
-        IEncryptionService  $encryptionService
-        , CredentialService $credentialService
-        , LoggerInterface   $logger
+        private readonly IEncryptionService  $encryptionService
+        , private readonly CredentialService $credentialService
+        , private readonly LoggerInterface   $logger
     ) {
-        $this->encryptionService = $encryptionService;
-        $this->credentialService = $credentialService;
-        $this->logger            = $logger;
-
-        parent::__construct($logger);
     }
 
     /**
@@ -61,7 +51,7 @@ class EncryptionService extends AESService {
      * @return string
      */
     public function encrypt(ICredential $credential, string $raw): string {
-        return parent::encrypt(
+        return $this->encryptionService->encrypt(
             $this->prepareKey($credential)
             , $raw
         );
@@ -96,10 +86,9 @@ class EncryptionService extends AESService {
      * @param ICredential $credential
      * @param string      $encrypted
      * @return string
-     * @throws EncryptionFailedException
      */
     public function decrypt(ICredential $credential, string $encrypted): string {
-        return parent::decrypt(
+        return $this->encryptionService->decrypt(
             $this->prepareKey($credential)
             , $encrypted
         );
