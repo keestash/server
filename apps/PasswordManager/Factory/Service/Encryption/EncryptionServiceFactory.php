@@ -24,8 +24,8 @@ namespace KSA\PasswordManager\Factory\Service\Encryption;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class EncryptionServiceFactory {
 
