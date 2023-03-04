@@ -23,6 +23,7 @@ namespace Keestash\Core\Service\Encryption\Key;
 
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\Key\KeyNotCreatedException;
 use Keestash\Exception\Key\UnsupportedKeyException;
@@ -36,25 +37,15 @@ use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
-use Ramsey\Uuid\Uuid;
 
 class KeyService implements IKeyService {
 
-    private IUserKeyRepository         $userKeyRepository;
-    private IOrganizationKeyRepository $organizationKeyRepository;
-    private IEncryptionService         $encryptionService;
-    private ICredentialService         $credentialService;
-
     public function __construct(
-        IUserKeyRepository           $userKeyRepository
-        , IEncryptionService         $encryptionService
-        , IOrganizationKeyRepository $organizationKeyRepository
-        , ICredentialService         $credentialService
+        private readonly IUserKeyRepository           $userKeyRepository
+        , private readonly IEncryptionService         $encryptionService
+        , private readonly IOrganizationKeyRepository $organizationKeyRepository
+        , private readonly ICredentialService         $credentialService
     ) {
-        $this->userKeyRepository         = $userKeyRepository;
-        $this->encryptionService         = $encryptionService;
-        $this->organizationKeyRepository = $organizationKeyRepository;
-        $this->credentialService         = $credentialService;
     }
 
     /**
@@ -68,9 +59,8 @@ class KeyService implements IKeyService {
      */
     public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey {
         // Step 1: we create a random secret
-        //      This secret consists of a unique id (uuid)
-        //      and a hash created out of the user object
-        $secret = Uuid::uuid4() . json_encode($keyHolder);
+        $secret = openssl_random_pseudo_bytes(4096);
+
         // Step 2: we encrypt the data with our base encryption
         $secret = $this->encryptionService->encrypt($credential, $secret);
         // Step 3: we add the data to the database
