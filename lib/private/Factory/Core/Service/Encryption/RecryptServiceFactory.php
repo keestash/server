@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,32 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Event\Listener;
+namespace Keestash\Factory\Core\Service\Encryption;
 
-use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
-use KSP\Core\Repository\Token\ITokenRepository;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
+use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
+use Keestash\Core\Service\Encryption\RecryptService;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Encryption\IEncryptionService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class RemoveOutdatedTokensFactory implements FactoryInterface {
+class RecryptServiceFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): RemoveOutdatedTokens {
-        return new RemoveOutdatedTokens(
-            $container->get(ITokenRepository::class)
-            , $container->get(IDerivationRepository::class)
+    ): RecryptService {
+        return new RecryptService(
+            $container->get(DerivedCredentialService::class)
+            , $container->get(CredentialService::class)
+            , $container->get(IUserRepository::class)
+            , $container->get(IUserKeyRepository::class)
+            , $container->get(IEncryptionService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Api;
+namespace KSP\Core\DTO\Derivation;
 
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use KSP\Core\Service\Router\IVerificationService;
-use Psr\Container\ContainerInterface;
+use DateTimeInterface;
+use KSP\Core\DTO\User\IUser;
 
-class KeestashHeaderMiddlewareFactory {
+interface IDerivation {
 
-    public function __invoke(ContainerInterface $container): KeestashHeaderMiddleware {
-        return new KeestashHeaderMiddleware(
-            $container->get(IVerificationService::class)
-        );
-    }
+    public function getId(): string;
+
+    public function getUser(): IUser;
+
+    public function getDerived(): string;
+
+    public function getCreateTs(): DateTimeInterface;
 
 }

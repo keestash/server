@@ -31,6 +31,7 @@ use GuzzleHttp\ClientInterface;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
+use Keestash\Core\Repository\Derivation\DerivationRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
@@ -54,9 +55,9 @@ use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
+use Keestash\Core\Service\Derivation\DerivationService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
@@ -88,6 +89,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
@@ -110,6 +112,7 @@ use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\CSV\ICSVService;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IBase64Service;
@@ -160,6 +163,7 @@ return [
     IConnectionRepository::class                           => DefaultConnectionRepository::class,
     IPaymentLogRepository::class                           => DefaultPaymentLogRepository::class,
     IMailLogRepository::class                              => MailLogRepository::class,
+    IDerivationRepository::class                           => DerivationRepository::class,
 
     // service
     IUserService::class                                    => UserService::class,
@@ -168,7 +172,7 @@ return [
     IKeyService::class                                     => KeyService::class,
     IEncryptionService::class                              => KeestashEncryptionService::class,
     IFileService::class                                    => FileService::class,
-    ICredentialService::class                              => CredentialService::class,
+    ICredentialService::class                              => \Keestash\Core\Service\Encryption\Credential\DerivedCredentialService::class,
     ICacheService::class                                   => NullService::class,
     IEmailService::class                                   => EmailService::class,
     IOrganizationService::class                            => OrganizationService::class,
@@ -200,6 +204,7 @@ return [
     ILDAPService::class                                    => LDAPService::class,
     IBase64Service::class                                  => Base64Service::class,
     IPaymentService::class                                 => DefaultPaymentService::class,
+    IDerivationService::class                              => DerivationService::class,
 
     IL10N::class                   => GetText::class,
     ILoaderService::class          => LoaderService::class,

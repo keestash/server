@@ -24,15 +24,17 @@ namespace Keestash\Core\DTO\Event\Listener;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Event\Listener\IListener;
 
 class RemoveOutdatedTokens implements IListener {
 
-    private ITokenRepository $tokenRepository;
+    public function __construct(
+        private readonly ITokenRepository        $tokenRepository
+        , private readonly IDerivationRepository $derivationRepository
+    ) {
 
-    public function __construct(ITokenRepository $tokenRepository) {
-        $this->tokenRepository = $tokenRepository;
     }
 
     /**
@@ -47,6 +49,11 @@ class RemoveOutdatedTokens implements IListener {
         /** @var IToken $token */
         foreach ($tokens as $token) {
             $this->tokenRepository->remove($token);
+            $this->derivationRepository->remove(
+                $this->derivationRepository->get(
+                    $token->getUser()
+                )
+            );
         }
     }
 

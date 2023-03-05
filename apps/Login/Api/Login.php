@@ -21,8 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api;
 
+use DateTimeImmutable;
 use Keestash\ConfigProvider;
+use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use Keestash\Core\Service\Encryption\RecryptService;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\Token\TokenNotCreatedException;
@@ -30,11 +33,13 @@ use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\LDAP\ILDAPService;
@@ -43,33 +48,37 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 class Login implements RequestHandlerInterface {
 
-    private IUserRepository      $userRepository;
-    private IL10N                $translator;
-    private UserService          $userService;
-    private ITokenRepository     $tokenRepository;
-    private TokenService         $tokenService;
-    private ILocaleService       $localeService;
-    private ILanguageService     $languageService;
-    private IJWTService          $jwtService;
-    private LoggerInterface      $logger;
-    private ILDAPService         $ldapService;
+    private IUserRepository       $userRepository;
+    private IL10N                 $translator;
+    private UserService           $userService;
+    private ITokenRepository      $tokenRepository;
+    private TokenService          $tokenService;
+    private ILocaleService        $localeService;
+    private ILanguageService      $languageService;
+    private IJWTService           $jwtService;
+    private LoggerInterface       $logger;
+    private ILDAPService          $ldapService;
     private IConnectionRepository $connectionRepository;
 
     public function __construct(
-        IUserRepository        $userRepository
-        , IL10N                $translator
-        , UserService          $userService
-        , ITokenRepository     $tokenManager
-        , TokenService         $tokenService
-        , ILocaleService       $localeService
-        , ILanguageService     $languageService
-        , IJWTService          $jwtService
-        , LoggerInterface      $logger
-        , ILDAPService         $ldapService
-        , IConnectionRepository $connectionRepository
+        IUserRepository                          $userRepository
+        , IL10N                                  $translator
+        , UserService                            $userService
+        , ITokenRepository                       $tokenManager
+        , TokenService                           $tokenService
+        , ILocaleService                         $localeService
+        , ILanguageService                       $languageService
+        , IJWTService                            $jwtService
+        , LoggerInterface                        $logger
+        , ILDAPService                           $ldapService
+        , IConnectionRepository                  $connectionRepository
+        , private readonly IDerivationRepository $derivationRepository
+        , private readonly IDerivationService    $derivationService
+        , private readonly RecryptService $recryptService
     ) {
         $this->userRepository       = $userRepository;
         $this->translator           = $translator;
@@ -94,7 +103,7 @@ class Login implements RequestHandlerInterface {
         $parameters = (array) $request->getParsedBody();
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
-        $isSaas = $request->getAttribute(ConfigProvider::ENVIRONMENT_SAAS);
+        $isSaas     = $request->getAttribute(ConfigProvider::ENVIRONMENT_SAAS);
 
         try {
             $user = $this->userRepository->getUser($userName);
@@ -138,6 +147,18 @@ class Login implements RequestHandlerInterface {
         $token = $this->tokenService->generate("login", $user);
 
         $this->tokenRepository->add($token);
+
+        $this->derivationRepository->clear($user);
+        $this->derivationRepository->add(
+            new Derivation(
+                Uuid::uuid4()->toString()
+                , $user
+                , $this->derivationService->derive($password)
+                , new DateTimeImmutable()
+            )
+        );
+
+        $this->recryptService->recrypt($user);
 
         $user->setJWT(
             $this->jwtService->getJWT(
