@@ -35,7 +35,7 @@ class DerivationService implements IDerivationService {
     public function derive(string $raw): string {
         return Scrypt::calc(
             $raw
-            , $this->instanceDb->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
+            , (string) $this->instanceDb->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
             , 2048
             , 2
             , 1

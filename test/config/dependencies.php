@@ -30,6 +30,7 @@ use KST\Service\Core\Manager\EventManager\EventService;
 use KST\Service\Core\Service\Config\IniConfigService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\Email\EmailService;
+use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Core\System\Installation\App\LockHandler as CoreAppLockHandler;
@@ -65,4 +66,5 @@ return [
     , ConfigService::class           => ConfigServiceFactory::class
     , IniConfigService::class        => IniConfigServiceFactory::class
     , InstanceDB::class              => InstanceDBFactory::class
+    , CredentialService::class       => InvokableFactory::class
 ];
