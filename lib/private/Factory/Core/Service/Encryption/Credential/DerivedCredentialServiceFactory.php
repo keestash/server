@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Api;
+namespace Keestash\Factory\Core\Service\Encryption\Credential;
 
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use KSP\Core\Service\Router\IVerificationService;
+use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class KeestashHeaderMiddlewareFactory {
+class DerivedCredentialServiceFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): KeestashHeaderMiddleware {
-        return new KeestashHeaderMiddleware(
-            $container->get(IVerificationService::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ICredentialService {
+        return new DerivedCredentialService(
+            $container->get(IDerivationRepository::class)
         );
     }
 

@@ -34,18 +34,11 @@ use Psr\Log\LoggerInterface;
 
 class AppRepository implements IAppRepository {
 
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface          $logger;
-
     public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
+        private readonly IBackend           $backend
+        , private readonly IDateTimeService $dateTimeService
+        , private readonly LoggerInterface  $logger
     ) {
-        $this->backend         = $backend;
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
     }
 
     public function getAllApps(): HashTable {

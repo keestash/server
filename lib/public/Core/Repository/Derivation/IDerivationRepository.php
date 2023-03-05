@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware\Api;
+namespace KSP\Core\Repository\Derivation;
 
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use KSP\Core\Service\Router\IVerificationService;
-use Psr\Container\ContainerInterface;
+use Keestash\Exception\Repository\NoRowsFoundException;
+use KSA\PasswordManager\Exception\PasswordManagerException;
+use KSP\Core\DTO\Derivation\IDerivation;
+use KSP\Core\DTO\User\IUser;
 
-class KeestashHeaderMiddlewareFactory {
+interface IDerivationRepository {
 
-    public function __invoke(ContainerInterface $container): KeestashHeaderMiddleware {
-        return new KeestashHeaderMiddleware(
-            $container->get(IVerificationService::class)
-        );
-    }
+    public function clear(IUser $user): void;
+    public function add(IDerivation $derivation): void;
+
+    /**
+     * @param IUser $user
+     * @return IDerivation
+     * @throws NoRowsFoundException
+     * @throws PasswordManagerException
+     */
+    public function get(IUser $user): IDerivation;
+
+    public function remove(IDerivation $derivation): void;
 
 }

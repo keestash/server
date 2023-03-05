@@ -41,6 +41,7 @@ use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
 use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
+use Keestash\Core\Repository\Derivation\DerivationRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
@@ -68,12 +69,15 @@ use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
+use Keestash\Core\Service\Derivation\DerivationService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
+use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
+use Keestash\Core\Service\Encryption\RecryptService;
 use Keestash\Core\Service\Event\EventService;
 use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
 use Keestash\Core\Service\File\FileService;
@@ -124,6 +128,7 @@ use Keestash\Factory\Core\Legacy\LegacyFactory;
 use Keestash\Factory\Core\Logger\LoggerFactory;
 use Keestash\Factory\Core\Repository\ApiLogRepository\ApiLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\AppRepository\AppRepositoryFactory;
+use Keestash\Factory\Core\Repository\DerivationRepository\DerivationRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\User\UserKeyRepositoryFactory;
 use Keestash\Factory\Core\Repository\File\FileRepositoryFactory;
@@ -143,11 +148,14 @@ use Keestash\Factory\Core\Service\Config\ConfigServiceFactory;
 use Keestash\Factory\Core\Service\Controller\AppRendererFactory;
 use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
 use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
+use Keestash\Factory\Core\Service\Derivation\DerivationServiceFactory;
 use Keestash\Factory\Core\Service\Email\EmailServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory;
+use Keestash\Factory\Core\Service\Encryption\Credential\DerivedCredentialServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Password\PasswordServiceFactory;
+use Keestash\Factory\Core\Service\Encryption\RecryptServiceFactory;
 use Keestash\Factory\Core\Service\Event\EventServiceFactory;
 use Keestash\Factory\Core\Service\Event\Listener\RolesAndPermissionsListenerFactory;
 use Keestash\Factory\Core\Service\File\FileServiceFactory;
@@ -228,6 +236,7 @@ return [
     DefaultConnectionRepository::class => InvokableFactory::class,
     DefaultPaymentLogRepository::class => InvokableFactory::class,
     MailLogRepository::class           => MailLogRepositoryFactory::class,
+    DerivationRepository::class        => DerivationRepositoryFactory::class,
 
     LoggerInterface::class                                         => LoggerFactory::class,
     Application::class                                             => LegacyFactory::class,
@@ -280,6 +289,7 @@ return [
     FileService::class                                             => FileServiceFactory::class,
     RawFileService::class                                          => RawFileServiceFactory::class,
     CredentialService::class                                       => CredentialServiceFactory::class,
+    DerivedCredentialService::class                                => DerivedCredentialServiceFactory::class,
     EmailService::class                                            => EmailServiceFactory::class,
     OrganizationService::class                                     => OrganizationServiceFactory::class,
     InstallerService::class                                        => InstallerServiceFactory::class,
@@ -310,6 +320,8 @@ return [
     LDAPService::class                                             => LDAPServiceFactory::class,
     Base64Service::class                                           => InvokableFactory::class,
     DefaultPaymentService::class                                   => InvokableFactory::class,
+    DerivationService::class                                       => DerivationServiceFactory::class,
+    RecryptService::class                                          => RecryptServiceFactory::class,
 
     GetText::class                           => InvokableFactory::class,
     \doganoo\PHPUtil\HTTP\Session::class     => InvokableFactory::class,

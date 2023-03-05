@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Service\Encryption;
 
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -32,7 +32,7 @@ class EncryptionServiceFactory {
     public function __invoke(ContainerInterface $container): EncryptionService {
         return new EncryptionService(
             $container->get(IEncryptionService::class)
-            , $container->get(CredentialService::class)
+            , $container->get(ICredentialService::class)
             , $container->get(LoggerInterface::class)
         );
     }

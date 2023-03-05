@@ -22,10 +22,9 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service\Encryption;
 
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use Psr\Log\LoggerInterface;
 
@@ -40,7 +39,7 @@ class EncryptionService {
 
     public function __construct(
         private readonly IEncryptionService  $encryptionService
-        , private readonly CredentialService $credentialService
+        , private readonly ICredentialService $credentialService
         , private readonly LoggerInterface   $logger
     ) {
     }

@@ -25,7 +25,6 @@ use Keestash\Core\Service\Router\VerificationService;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Router\IVerificationService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -35,15 +34,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class KeestashHeaderMiddleware implements MiddlewareInterface {
 
-    private IVerificationService $verification;
-    private IHTTPService         $httpService;
-
     public function __construct(
-        IVerificationService $verification
-        , IHTTPService       $httpService
+        private readonly IVerificationService $verificationService
     ) {
-        $this->verification = $verification;
-        $this->httpService  = $httpService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -52,7 +45,7 @@ class KeestashHeaderMiddleware implements MiddlewareInterface {
             return $handler->handle($request);
         }
 
-        $token = $this->verification->verifyToken(
+        $token = $this->verificationService->verifyToken(
             [
                 VerificationService::FIELD_NAME_TOKEN       => $request->getHeader(VerificationService::FIELD_NAME_TOKEN)[0] ?? ''
                 , VerificationService::FIELD_NAME_USER_HASH => $request->getHeader(VerificationService::FIELD_NAME_USER_HASH)[0] ?? ''

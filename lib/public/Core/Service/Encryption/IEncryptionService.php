@@ -21,12 +21,19 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption;
 
+use Keestash\Exception\EncryptionFailedException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 
 interface IEncryptionService {
 
     public function encrypt(ICredential $credential, string $raw): string;
 
+    /**
+     * @param ICredential $credential
+     * @param string      $encrypted
+     * @return string
+     * @throws EncryptionFailedException
+     */
     public function decrypt(ICredential $credential, string $encrypted): string;
 
 }
