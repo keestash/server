@@ -26,6 +26,7 @@ use Keestash\Core\System\Installation\Instance\LockHandler as CoreInstanceLockHa
 use KSP\Core\Service\Config\IIniConfigService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Phinx\IMigrator;
@@ -34,6 +35,7 @@ use KST\Service\Core\Manager\EventManager\EventService;
 use KST\Service\Core\Service\Config\IniConfigService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\Email\EmailService;
+use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Core\System\Installation\App\LockHandler as TestAppLockHandler;
@@ -49,4 +51,5 @@ return [
     , CoreInstanceLockHandler::class => TestInstanceLockHandler::class
     , IIniConfigService::class       => IniConfigService::class
     , IEmailService::class           => EmailService::class
+    , ICredentialService::class      => CredentialService::class
 ];

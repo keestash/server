@@ -29,15 +29,16 @@ jobs:
           dev: yes
           args: --profile --ignore-platform-reqs
           php_extensions: intl
-          php_version: 8.1.12
+          php_version: 8.1.13
 
       - name: PHPUnit Tests
         uses: php-actions/phpunit@v3
         with:
           configuration: test/phpunit.xml
           php_extensions: intl
-          php_version: 8.1.12
+          php_version: 8.1.13
           memory_limit: 256M
+          version: 9.6.4
 
       # end tests
       - name: end tests

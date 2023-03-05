@@ -106,8 +106,8 @@ class DerivationRepository implements IDerivationRepository {
                 , $derivations[0][1]
                 , $this->dateTimeService->fromFormat((string) $derivations[0][3])
             );
-        } catch (Exception|TooManyRowsException $exception) {
-            $this->logger->error('error while getting app', ['exception' => $exception, 'id' => $id]);
+        } catch (Exception $exception) {
+            $this->logger->error('error while getting app', ['exception' => $exception, 'user' => $user]);
             throw new PasswordManagerException();
         }
     }
