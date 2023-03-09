@@ -21,14 +21,19 @@ declare(strict_types=1);
 
 namespace KSA\Register\Command;
 
+use DateTimeImmutable;
 use Exception;
 use Keestash\Command\KeestashCommand;
+use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSA\Register\Exception\CreateUserException;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -46,6 +51,8 @@ class CreateUser extends KeestashCommand {
         private readonly UserService              $userService
         , private readonly IUserRepositoryService $userRepositoryService
         , private readonly IEventService          $eventService
+        , private readonly IDerivationRepository  $derivationRepository
+        , private readonly IDerivationService     $derivationService
     ) {
         parent::__construct();
     }
@@ -108,6 +115,16 @@ class CreateUser extends KeestashCommand {
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);
             return 1;
         }
+
+        $this->derivationRepository->clear($user);
+        $this->derivationRepository->add(
+            new Derivation(
+                Uuid::uuid4()->toString()
+                , $user
+                , $this->derivationService->derive((string) $password)
+                , new DateTimeImmutable()
+            )
+        );
 
         $this->eventService->execute(
             new UserRegistrationConfirmedEvent(

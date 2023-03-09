@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener;
 
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSA\PasswordManager\Exception\KeyNotUpdatedException;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
@@ -43,14 +43,14 @@ class AfterPasswordChanged implements IListener {
 
     private IUserKeyRepository $encryptionRepository;
     private IEncryptionService $encryptionService;
-    private CredentialService        $credentialService;
-    private LoggerInterface                  $logger;
+    private ICredentialService $credentialService;
+    private LoggerInterface    $logger;
 
     public function __construct(
-        IUserKeyRepository $encryptionKeyRepository
+        IUserKeyRepository   $encryptionKeyRepository
         , IEncryptionService $encryptionService
-        , CredentialService $credentialService
-        , LoggerInterface $logger
+        , ICredentialService $credentialService
+        , LoggerInterface    $logger
     ) {
         $this->encryptionRepository = $encryptionKeyRepository;
         $this->encryptionService    = $encryptionService;
