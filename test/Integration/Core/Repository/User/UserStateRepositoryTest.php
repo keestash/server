@@ -149,11 +149,9 @@ class UserStateRepositoryTest extends TestCase {
 
         $userStateRepository->delete($retrievedUser);
         $userStateRepository->revertDelete($retrievedUser);
-
         $userRepositoryService->removeUser($retrievedUser);
     }
 
-//
     public function testDeletedUsers(): void {
         /** @var IUserService $userService */
         $userService = $this->getService(IUserService::class);
