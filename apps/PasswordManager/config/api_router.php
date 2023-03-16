@@ -33,6 +33,7 @@ use KSA\PasswordManager\Api\Node\Get as NodeGet;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;
+use KSA\PasswordManager\Api\Node\Pwned\Activate;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
 use KSA\PasswordManager\Api\Node\ShareableUsers;
@@ -220,6 +221,12 @@ return [
             , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Update::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_ACTIVATE
+            , IRoute::MIDDLEWARE => Activate::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => Activate::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [

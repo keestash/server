@@ -53,6 +53,12 @@ class ListAll extends KeestashCommand {
             ];
         }
 
+        usort(
+            $tableRows
+            , static function (array $firstApp, array $secondApp): int {
+                return $firstApp['order'] - $secondApp['order'];
+            }
+        );
         $table = new Table($output);
         $table
             ->setHeaders(['ID', 'Name', 'Version', 'Order'])
