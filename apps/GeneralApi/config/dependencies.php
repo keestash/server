@@ -24,16 +24,12 @@ use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\Command\Info\Routes;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
-use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
-use KSA\GeneralApi\Command\Stylesheet\Compiler;
 use KSA\GeneralApi\Controller\Common\DefaultRouteController;
 use KSA\GeneralApi\Controller\File\View;
 use KSA\GeneralApi\Controller\Route\RouteList;
 use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
 use KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory;
-use KSA\GeneralApi\Factory\Command\ClearBundleJSFactory;
-use KSA\GeneralApi\Factory\Command\CompilerFactory;
 use KSA\GeneralApi\Factory\Command\Info\RoutesFactory;
 use KSA\GeneralApi\Factory\Command\MigrateAppsFactory;
 use KSA\GeneralApi\Factory\Command\PHPStanFactory;
@@ -44,8 +40,6 @@ use KSA\GeneralApi\Factory\Controller\Route\RouteListFactory;
 return [
     'factories' => [
         // command
-        ClearBundleJS::class   => ClearBundleJSFactory::class,
-        Compiler::class        => CompilerFactory::class,
         MigrateApps::class     => MigrateAppsFactory::class,
         PHPStan::class         => PHPStanFactory::class,
         Routes::class          => RoutesFactory::class,

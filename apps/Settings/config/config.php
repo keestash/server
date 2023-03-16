@@ -42,7 +42,7 @@ return [
     , CoreConfigProvider::COMMANDS                     => require __DIR__ . '/commands.php'
     , CoreConfigProvider::APP_LIST                     => [
         ConfigProvider::APP_ID => [
-            CoreConfigProvider::APP_ORDER      => 2,
+            CoreConfigProvider::APP_ORDER      => 1,
             CoreConfigProvider::APP_NAME       => 'Settings',
             CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::SETTINGS,
             CoreConfigProvider::APP_VERSION    => 1,

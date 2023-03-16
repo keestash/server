@@ -22,14 +22,10 @@ declare(strict_types=1);
 
 use KSA\GeneralApi\Command\Info\Routes;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
-use KSA\GeneralApi\Command\QualityTool\ClearBundleJS;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
-use KSA\GeneralApi\Command\Stylesheet\Compiler;
 
 return [
     MigrateApps::class
     , PHPStan::class
-    , ClearBundleJS::class
-    , Compiler::class
     , Routes::class
 ];

@@ -40,6 +40,7 @@ final class ConfigProvider {
 
     public const PASSWORD_MANAGER_NODE_PWNED_CHART_ALL    = '/password_manager/node/pwned/chart/all';
     public const PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL = '/password_manager/node/pwned/chart/detail';
+    public const PASSWORD_MANAGER_NODE_PWNED_ACTIVATE = '/password_manager/node/pwned/activate';
 
     public const PASSWORD_MANAGER_ATTACHMENTS_VIEW           = "/password_manager/attachments/view/:fileId[/]";
     public const PASSWORD_MANAGER_ATTACHMENTS_ADD            = '/password_manager/attachments/add[/]';
