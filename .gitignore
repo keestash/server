@@ -286,3 +286,8 @@ smtp.php
 /lib/private/Core/System/RateLimit/tmp.json
 
 .ignored
+
+apps/LDAP
+apps/LDAP/*
+apps/Payment
+apps/Payment/*
