@@ -85,7 +85,7 @@ class UpdatePassword extends KeestashCommand {
             throw new SettingsException('passwords do not match');
         }
 
-        $newUser = $user;
+        $newUser = clone $user;
         if (true === $withEvents) {
             $newUser = clone $user;
         }

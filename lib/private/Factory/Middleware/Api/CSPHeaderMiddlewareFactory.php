@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login\Factory\Api;
+namespace Keestash\Factory\Middleware\Api;
 
-use KSA\Login\Api\Logout;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
-use KSP\Core\Repository\Token\ITokenRepository;
+use Keestash\Middleware\Api\CSPHeaderMiddleware;
+use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\HTTP\IHTTPService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class LogoutFactory implements FactoryInterface {
+class CSPHeaderMiddlewareFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): Logout {
-        return new Logout(
-            $container->get(ITokenRepository::class)
-            , $container->get(IDerivationRepository::class)
+    ): CSPHeaderMiddleware {
+        return new CSPHeaderMiddleware(
+            $container->get(IConfigService::class)
+            ,$container->get(IHTTPService::class)
         );
     }
 

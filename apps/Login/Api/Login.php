@@ -78,7 +78,7 @@ class Login implements RequestHandlerInterface {
         , IConnectionRepository                  $connectionRepository
         , private readonly IDerivationRepository $derivationRepository
         , private readonly IDerivationService    $derivationService
-        , private readonly RecryptService $recryptService
+        , private readonly RecryptService        $recryptService
     ) {
         $this->userRepository       = $userRepository;
         $this->translator           = $translator;
@@ -145,7 +145,6 @@ class Login implements RequestHandlerInterface {
             );
         }
         $token = $this->tokenService->generate("login", $user);
-
         $this->tokenRepository->add($token);
 
         $this->derivationRepository->clear($user);
@@ -153,7 +152,7 @@ class Login implements RequestHandlerInterface {
             new Derivation(
                 Uuid::uuid4()->toString()
                 , $user
-                , $this->derivationService->derive($password)
+                , $this->derivationService->derive($user->getPassword())
                 , new DateTimeImmutable()
             )
         );

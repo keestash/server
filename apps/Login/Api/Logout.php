@@ -23,6 +23,7 @@ namespace KSA\Login\Api;
 
 use Keestash\Api\Response\OkResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -30,16 +31,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Logout implements RequestHandlerInterface {
 
-    private ITokenRepository $tokenRepository;
-
-    public function __construct(ITokenRepository $tokenRepository) {
-        $this->tokenRepository = $tokenRepository;
+    public function __construct(
+        private readonly ITokenRepository        $tokenRepository
+        , private readonly IDerivationRepository $derivationRepository
+    ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
         $this->tokenRepository->remove($token);
+        $this->derivationRepository->clear($token->getUser());
         return new OkResponse([]);
     }
 

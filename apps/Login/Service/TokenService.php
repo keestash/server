@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Login\Service;
 
-use DateTime;
+use DateTimeImmutable;
 use Keestash\Core\DTO\Token\Token;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
@@ -30,7 +30,7 @@ class TokenService {
 
     public function generate(string $name, IUser $user): IToken {
         $token = new Token();
-        $token->setCreateTs(new DateTime());
+        $token->setCreateTs(new DateTimeImmutable());
         $token->setUser($user);
         $token->setValue(bin2hex(random_bytes(16)));
         $token->setName($name);

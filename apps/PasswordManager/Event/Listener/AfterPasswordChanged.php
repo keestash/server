@@ -21,17 +21,26 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event\Listener;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\Derivation\Derivation;
+use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSA\PasswordManager\Exception\KeyNotUpdatedException;
+use KSP\Core\DTO\Derivation\IDerivation;
+use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Event\IEvent;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class AfterPasswordChanged
@@ -41,21 +50,14 @@ use Psr\Log\LoggerInterface;
  */
 class AfterPasswordChanged implements IListener {
 
-    private IUserKeyRepository $encryptionRepository;
-    private IEncryptionService $encryptionService;
-    private ICredentialService $credentialService;
-    private LoggerInterface    $logger;
-
     public function __construct(
-        IUserKeyRepository   $encryptionKeyRepository
-        , IEncryptionService $encryptionService
-        , ICredentialService $credentialService
-        , LoggerInterface    $logger
+        private readonly IUserKeyRepository      $encryptionKeyRepository
+        , private readonly IEncryptionService    $encryptionService
+        , private readonly ICredentialService    $credentialService
+        , private readonly LoggerInterface       $logger
+        , private readonly IDerivationRepository $derivationRepository
+        , private readonly IDerivationService    $derivationService
     ) {
-        $this->encryptionRepository = $encryptionKeyRepository;
-        $this->encryptionService    = $encryptionService;
-        $this->credentialService    = $credentialService;
-        $this->logger               = $logger;
     }
 
     /**
@@ -64,24 +66,57 @@ class AfterPasswordChanged implements IListener {
      * @throws KeyNotUpdatedException
      */
     public function execute(IEvent $event): void {
+        $this->logger->debug('start AfterPasswordChange');
+        if ($event->getUpdatedUser()->getPassword() === $event->getOldUser()->getPassword()) {
+            $this->logger->debug('the passwords are the same - not updating!!');
+            return;
+        }
 
-        if ($event->getUpdatedUser()->getPassword() === $event->getOldUser()->getPassword()) return;
+        $updatedDerivation = new Derivation(
+            Uuid::uuid4()->toString()
+            , $event->getUpdatedUser()
+            , $this->derivationService->derive($event->getUpdatedUser()->getPassword())
+            , new DateTimeImmutable()
+        );
 
-        $currentCredential = $this->credentialService->createCredential($event->getUpdatedUser());
-        $oldCredential     = $this->credentialService->createCredential($event->getOldUser());
+        $oldDerivation = new Derivation(
+            Uuid::uuid4()->toString()
+            , $event->getUpdatedUser()
+            , $this->derivationService->derive($event->getOldUser()->getPassword())
+            , new DateTimeImmutable()
+        );
 
+        $updatedCredential = $this->createCredential($event->getUpdatedUser(), $updatedDerivation);
+        $oldCredential     = $this->createCredential($event->getOldUser(), $oldDerivation);
+
+        $this->logger->debug('retrieved both, old and new credential');
         /** @var IKey|Key $key */
-        $key = $this->encryptionRepository->getKey($event->getUpdatedUser());
+        $key = $this->encryptionKeyRepository->getKey($event->getUpdatedUser());
+        $this->logger->debug('retrieved key');
 
         $oldSecretPlain = $this->encryptionService->decrypt($oldCredential, $key->getSecret());
-        $newSecret      = $this->encryptionService->encrypt($currentCredential, $oldSecretPlain);
+        $newSecret      = $this->encryptionService->encrypt($updatedCredential, $oldSecretPlain);
+        $this->logger->debug('recrypted :)');
 
+        $this->derivationRepository->clear($event->getUpdatedUser());
+        $this->derivationRepository->add($updatedDerivation);
         $key->setSecret($newSecret);
-        $added = $this->encryptionRepository->updateKey($key);
+        $added = $this->encryptionKeyRepository->updateKey($key);
+        $this->logger->debug('updated :)');
 
         if (false === $added) {
             throw new KeyNotUpdatedException("key file is not updated!!");
         }
+        $this->logger->debug('end AfterPasswordChange');
+    }
+
+    public function createCredential(IUser $keyHolder, IDerivation $derivation): ICredential {
+        $credential = new Credential();
+        $credential->setKeyHolder($keyHolder);
+        $credential->setSecret($derivation->getDerived());
+        $credential->setCreateTs($keyHolder->getCreateTs());
+        $credential->setId($keyHolder->getId());
+        return $credential;
     }
 
 }

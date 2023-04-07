@@ -23,10 +23,12 @@ namespace KSP\Api;
 
 interface IResponse {
 
-    public const HEADER_CONTENT_TYPE              = "Content-Type";
-    public const HEADER_X_KEESTASH_AUTHENTICATION = "x-keestash-authentication";
-    public const HEADER_X_KEESTASH_USER           = "x-keestash-user";
-    public const HEADER_X_KEESTASH_TOKEN          = "x-keestash-token";
+    public const HEADER_CONTENT_TYPE                        = "Content-Type";
+    public const HEADER_X_KEESTASH_AUTHENTICATION           = "x-keestash-authentication";
+    public const HEADER_X_KEESTASH_USER                     = "x-keestash-user";
+    public const HEADER_X_KEESTASH_TOKEN                    = "x-keestash-token";
+    public const HEADER_CONTENT_SECURITY_POLICY             = "Content-Seurity-Policy";
+    public const HEADER_CONTENT_SECURITY_POLICY_REPORT_ONLY = "Content-Seurity-Policy-Report-Only";
 
     public const OK                    = 200;
     public const NOT_MODIFIED          = 304;

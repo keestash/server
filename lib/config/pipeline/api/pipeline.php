@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Middleware\Api\CSPHeaderMiddleware;
 use Keestash\Middleware\Api\EnvironmentMiddleware;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
@@ -52,6 +53,7 @@ return function (Application $app) {
     $app->pipe(InstanceInstalledMiddleware::class);
     $app->pipe(AppsInstalledMiddleware::class);
     $app->pipe(KeestashHeaderMiddleware::class);
+    $app->pipe(CSPHeaderMiddleware::class);
     $app->pipe(PermissionMiddleware::class);
     $app->pipe(UserActiveMiddleware::class);
     $app->pipe(EnvironmentMiddleware::class);

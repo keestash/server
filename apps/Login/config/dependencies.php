@@ -32,11 +32,15 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     'factories' => [
         // api
-        Login::class           => LoginFactory::class
-        , Configuration::class => ConfigurationFactory::class
-        , Logout::class        => LogoutFactory::class
+        Login::class                       => LoginFactory::class
+        , Configuration::class             => ConfigurationFactory::class
+        , Logout::class                    => LogoutFactory::class
 
         // service
-        , TokenService::class  => InvokableFactory::class
+        , TokenService::class              => InvokableFactory::class
+
+        // command
+        , \KSA\Login\Command\Login::class  => \KSA\Login\Factory\Command\LoginFactory::class
+        , \KSA\Login\Command\Logout::class => \KSA\Login\Factory\Command\LogoutFactory::class
     ]
 ];

@@ -121,7 +121,7 @@ class CreateUser extends KeestashCommand {
             new Derivation(
                 Uuid::uuid4()->toString()
                 , $user
-                , $this->derivationService->derive((string) $password)
+                , $this->derivationService->derive($user->getPassword())
                 , new DateTimeImmutable()
             )
         );

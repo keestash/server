@@ -71,7 +71,9 @@ class EmailService implements IEmailService {
         $this->mailer->Username   = (string) $this->configService->getValue("email_user");
         $this->mailer->Password   = (string) $this->configService->getValue("email_password");
         $this->mailer->Host       = (string) $this->configService->getValue("email_smtp_host");
-        $this->mailer->SMTPSecure = (string) $this->configService->getValue("email_protocol");
+        $this->mailer->SMTPSecure = strtolower(
+            (string) $this->configService->getValue("email_protocol")
+        );
         $this->mailer->Port       = (int) $this->configService->getValue("email_port");
 
         $this->mailer->setFrom(
@@ -144,7 +146,7 @@ class EmailService implements IEmailService {
                 , (string) $this->configService->getValue("email_user")
             );
 
-            $this->mailer->Body = "######## DEV ########<br><br>". $this->mailer->Body;
+            $this->mailer->Body = "######## DEV ########<br><br>" . $this->mailer->Body;
             return;
         }
 

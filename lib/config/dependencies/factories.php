@@ -107,6 +107,7 @@ use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\Command\App\ListAllFactory;
+use Keestash\Factory\Command\DerivationFactory;
 use Keestash\Factory\Command\Keestash\EventsFactory;
 use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
 use Keestash\Factory\Command\Keestash\QueueListFactory;
@@ -177,6 +178,7 @@ use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
 use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
 use Keestash\Factory\Core\System\RateLimit\FileRateLimiterFactory;
+use Keestash\Factory\Middleware\Api\CSPHeaderMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\EnvironmentMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
@@ -192,6 +194,7 @@ use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
+use Keestash\Middleware\Api\CSPHeaderMiddleware;
 use Keestash\Middleware\Api\EnvironmentMiddleware;
 use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
 use Keestash\Middleware\Api\KeestashHeaderMiddleware;
@@ -266,6 +269,7 @@ return [
     RateLimiterMiddleware::class                                   => RateLimiterMiddlewareFactory::class,
     PermissionMiddleware::class                                    => PermissionMiddlewareFactory::class,
     EnvironmentMiddleware::class                                   => EnvironmentMiddlewareFactory::class,
+    CSPHeaderMiddleware::class                                     => CSPHeaderMiddlewareFactory::class,
 
     // api
     KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
@@ -334,6 +338,7 @@ return [
     , QueueDelete::class                     => QueueDeleteFactory::class
     , Reset::class                           => ResetFactory::class
     , ListAll::class                         => ListAllFactory::class
+    , \Keestash\Command\Derivation::class    => DerivationFactory::class
 
     // command
     // --- listener

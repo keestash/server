@@ -47,4 +47,5 @@ return [
     , QueueDelete::class
     , Reset::class
     , ListAll::class
+    , \Keestash\Command\Derivation::class
 ];
