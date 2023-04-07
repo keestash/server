@@ -38,14 +38,15 @@ class Dump extends KeestashCommand {
 
     public const ARGUMENT_NAME_NODE_ID     = 'nodeId';
     public const OPTION_NAME_SHOW_PASSWORD = 'show-password';
+    public const OPTION_NAME_FORCE         = 'force';
 
     private NodeRepository        $nodeRepository;
-    private LoggerInterface               $logger;
+    private LoggerInterface       $logger;
     private NodeEncryptionService $nodeEncryptionService;
 
     public function __construct(
         NodeRepository          $nodeRepository
-        , LoggerInterface               $logger
+        , LoggerInterface       $logger
         , NodeEncryptionService $nodeEncryptionService
     ) {
         parent::__construct();
@@ -68,12 +69,20 @@ class Dump extends KeestashCommand {
                 , 's'
                 , InputOption::VALUE_NONE
                 , 'whether the password should be shown for a credential node'
+            )
+            ->
+            addOption(
+                Dump::OPTION_NAME_FORCE
+                , 'f'
+                , InputOption::VALUE_NONE
+                , 'bypass question'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $nodeId       = $input->getArgument(Dump::ARGUMENT_NAME_NODE_ID);
         $showPassword = (bool) $input->getOption(Dump::OPTION_NAME_SHOW_PASSWORD);
+        $force        = (bool) $input->getOption(Dump::OPTION_NAME_FORCE);
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
         } catch (PasswordManagerException $exception) {
@@ -89,7 +98,7 @@ class Dump extends KeestashCommand {
         }
 
         if ($node instanceof Credential) {
-            $this->dumpCredential($node, $input, $output, $showPassword);
+            $this->dumpCredential($node, $input, $output, $showPassword, $force);
         } else if ($node instanceof Folder) {
             $this->dumpFolder($node, $output);
         } else {
@@ -103,9 +112,10 @@ class Dump extends KeestashCommand {
         , InputInterface  $input
         , OutputInterface $output
         , bool            $showPassword = false
+        , bool            $force = false
     ): void {
 
-        if (true === $showPassword) {
+        if (true === $showPassword && false === $force) {
             $helper   = $this->getHelper('question');
             $question = new ConfirmationQuestion('!! Warning !! Do you want to show this sensitive data?', false);
 
@@ -114,7 +124,7 @@ class Dump extends KeestashCommand {
             }
         }
 
-        if (true === $showPassword) {
+        if (true === $showPassword || true === $force) {
             $this->nodeEncryptionService->decryptNode($credential);
         }
 

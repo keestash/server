@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Command\App;
 
 use Keestash\Command\KeestashCommand;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\App\IApp;
 use KSP\Core\Service\App\ILoaderService;
 use Symfony\Component\Console\Helper\Table;
@@ -56,15 +57,15 @@ class ListAll extends KeestashCommand {
         usort(
             $tableRows
             , static function (array $firstApp, array $secondApp): int {
-                return $firstApp['order'] - $secondApp['order'];
-            }
+            return $firstApp['order'] - $secondApp['order'];
+        }
         );
         $table = new Table($output);
         $table
             ->setHeaders(['ID', 'Name', 'Version', 'Order'])
             ->setRows($tableRows);
         $table->render();
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

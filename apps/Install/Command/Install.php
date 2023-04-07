@@ -36,18 +36,18 @@ class Install extends KeestashCommand {
 
     private InstallerService $installerService;
     private LockHandler      $lockHandler;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
     private ILoaderService   $loader;
     private IAppRepository   $appRepository;
     private IAppService      $appService;
 
     public function __construct(
-        InstallerService $installer
-        , LockHandler    $lockHandler
-        , LoggerInterface        $logger
-        , ILoaderService $loader
-        , IAppRepository $appRepository
-        , IAppService    $appService
+        InstallerService  $installer
+        , LockHandler     $lockHandler
+        , LoggerInterface $logger
+        , ILoaderService  $loader
+        , IAppRepository  $appRepository
+        , IAppService     $appService
     ) {
         parent::__construct();
         $this->installerService = $installer;

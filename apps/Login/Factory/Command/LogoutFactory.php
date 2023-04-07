@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,13 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login\Factory\Api;
+namespace KSA\Login\Factory\Command;
 
-use KSA\Login\Api\Logout;
+use KSA\Login\Command\Logout;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
+use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class LogoutFactory implements FactoryInterface {
 
@@ -35,7 +37,9 @@ class LogoutFactory implements FactoryInterface {
         , ?array           $options = null
     ): Logout {
         return new Logout(
-            $container->get(ITokenRepository::class)
+            $container->get(IUserRepository::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(ITokenRepository::class)
             , $container->get(IDerivationRepository::class)
         );
     }

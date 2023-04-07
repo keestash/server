@@ -37,10 +37,10 @@ use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Node
@@ -52,7 +52,7 @@ class Get implements RequestHandlerInterface {
 
     private NodeRepository           $nodeRepository;
     private BreadCrumbService        $breadCrumbService;
-    private LoggerInterface                  $logger;
+    private LoggerInterface          $logger;
     private NodeEncryptionService    $nodeEncryptionService;
     private CommentRepository        $commentRepository;
     private PwnedPasswordsRepository $pwnedPasswordsRepository;
@@ -61,7 +61,7 @@ class Get implements RequestHandlerInterface {
     public function __construct(
         NodeRepository             $nodeRepository
         , BreadCrumbService        $breadCrumbService
-        , LoggerInterface                  $logger
+        , LoggerInterface          $logger
         , NodeEncryptionService    $nodeEncryptionService
         , CommentRepository        $commentRepository
         , PwnedPasswordsRepository $pwnedPasswordsRepository
