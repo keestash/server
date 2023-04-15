@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\Stylesheet;
+namespace Keestash\Factory\Command\Keestash;
 
-use Keestash\Core\Service\Stylesheet\Compiler;
-use Laminas\Config\Config;
+use doganoo\DI\DateTime\IDateTimeService;
+use Keestash\Command\Keestash\Cors;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class CompilerFactory {
+class CorsFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Compiler {
-        return new Compiler(
-            $container->get(Config::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Cors {
+        return new Cors(
+            $container->get(IDateTimeService::class)
         );
     }
 

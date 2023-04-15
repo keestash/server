@@ -26,7 +26,7 @@ use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 return [
     ConfigAggregator::CACHE_FILEMODE                   => 777
-    , ConfigurationInterface::CONFIGURATION_IDENTIFIER => require __DIR__ . '/cors.php'
+    , ConfigurationInterface::CONFIGURATION_IDENTIFIER => require __DIR__ . '/cors/cors.php'
     , ConfigProvider::COUNTRY_CODES                    => require __DIR__ . '/country_codes.php'
     , ConfigProvider::COUNTRY_PREFIXES                 => require __DIR__ . '/country_prefixes.php'
     , ConfigAggregator::ENABLE_CACHE                   => false

@@ -21,11 +21,10 @@ declare(strict_types=1);
  */
 
 use KSP\Api\IResponse;
-use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 return
     [
-        'allowed_origins'     => [ConfigurationInterface::ANY_ORIGIN], // Allow any origin
+        'allowed_origins'     => require_once __DIR__ . '/allowed_origins.php',
         'exposed_headers'     => [
             IResponse::HEADER_X_KEESTASH_TOKEN
             , IResponse::HEADER_X_KEESTASH_USER

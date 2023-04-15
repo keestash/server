@@ -25,12 +25,12 @@ use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class ApplicationStartedMiddleware implements MiddlewareInterface {
 
@@ -38,14 +38,14 @@ class ApplicationStartedMiddleware implements MiddlewareInterface {
     private IEnvironmentService $environmentService;
     private InstallerService    $installerService;
     private IConfigService      $configService;
-    private LoggerInterface             $logger;
+    private LoggerInterface     $logger;
 
     public function __construct(
         IRouterService        $routerService
         , IEnvironmentService $environmentService
         , InstallerService    $installerService
         , IConfigService      $configService
-        , LoggerInterface             $logger
+        , LoggerInterface     $logger
     ) {
         $this->routerService      = $routerService;
         $this->environmentService = $environmentService;

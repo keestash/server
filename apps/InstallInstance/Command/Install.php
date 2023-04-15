@@ -29,11 +29,11 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Core\Repository\File\IFileRepository;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\Config\Config;
 use PDO;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -43,7 +43,7 @@ class Install extends KeestashCommand {
     private const DEFAULT_USER_LIFETIME = 15 * 24 * 60 * 60;
 
     private Config                 $config;
-    private LoggerInterface                $logger;
+    private LoggerInterface        $logger;
     private InstallerService       $installerService;
     private LockHandler            $lockHandler;
     private IUserRepositoryService $userRepositoryService;
@@ -53,7 +53,7 @@ class Install extends KeestashCommand {
 
     public function __construct(
         Config                   $config
-        , LoggerInterface                $logger
+        , LoggerInterface        $logger
         , InstallerService       $installerService
         , LockHandler            $lockHandler
         , IUserRepositoryService $userRepositoryService
@@ -104,7 +104,6 @@ class Install extends KeestashCommand {
             $this->userService->getSystemUser()
         );
         $this->fileRepository->add($defaultImage);
-
     }
 
     private function writeConfig(InputInterface $input, OutputInterface $output): void {

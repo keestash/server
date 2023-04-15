@@ -60,7 +60,6 @@
     "psr/log": "^1.1",
     "ramsey/uuid": "^4.1",
     "robmorgan/phinx": "^0.12",
-    "scssphp/scssphp": "^1.2",
     "sentry/sdk": "^3.2",
     "stripe/stripe-php": "^10.0",
     "symfony/console": "^5.2",
