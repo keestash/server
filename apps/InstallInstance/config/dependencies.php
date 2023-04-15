@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\InstallInstance\Api\Config\Get;
 use KSA\InstallInstance\Api\Config\Update;
 use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
@@ -40,7 +41,7 @@ use KSA\InstallInstance\Factory\Command\UninstallFactory;
 use KSA\InstallInstance\Factory\Controller\ControllerFactory;
 
 return [
-    'factories' => [
+    ConfigProvider::FACTORIES => [
         // api
         Get::class               => GetFactory::class
         , Update::class          => UpdateFactory::class

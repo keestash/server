@@ -92,7 +92,7 @@ class CSPHeaderMiddleware implements MiddlewareInterface {
             );
 
         return $handler->handle($request)->withHeader(
-            IResponse::HEADER_CONTENT_SECURITY_POLICY_REPORT_ONLY
+            IResponse::HEADER_CONTENT_SECURITY_POLICY
             , $value
         );
     }

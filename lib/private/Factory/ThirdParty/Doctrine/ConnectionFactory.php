@@ -24,11 +24,16 @@ namespace Keestash\Factory\ThirdParty\Doctrine;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use KSP\Core\Service\Config\IConfigService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class ConnectionFactory {
+class ConnectionFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Connection {
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Connection {
         /** @var IConfigService $config */
         $config = $container->get(IConfigService::class);
         return DriverManager::getConnection(

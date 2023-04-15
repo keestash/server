@@ -39,7 +39,6 @@ class LoggerBuilder implements ILoggerBuilder {
     private FormatterInterface $formatter;
     private array              $handlers;
     private string             $path;
-    private bool               $dev      = false;
 
     public function withLogLevel(int $logLevel): ILoggerBuilder {
         $instance           = clone $this;
@@ -70,8 +69,7 @@ class LoggerBuilder implements ILoggerBuilder {
 
     public function withDevHandler(string $sentryDsn): ILoggerBuilder {
         $instance = clone $this;
-
-        if (false === $this->dev || '' === $sentryDsn) {
+        if ('' === $sentryDsn) {
             return $instance;
         }
 

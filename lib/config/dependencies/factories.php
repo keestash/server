@@ -26,6 +26,7 @@ use doganoo\DIP\Object\String\StringService;
 use GuzzleHttp\Client;
 use Keestash\Api\PingHandler;
 use Keestash\Command\App\ListAll;
+use Keestash\Command\Keestash\Cors;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
 use Keestash\Command\Keestash\QueueList;
@@ -108,6 +109,7 @@ use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\Command\App\ListAllFactory;
 use Keestash\Factory\Command\DerivationFactory;
+use Keestash\Factory\Command\Keestash\CorsFactory;
 use Keestash\Factory\Command\Keestash\EventsFactory;
 use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
 use Keestash\Factory\Command\Keestash\QueueListFactory;
@@ -253,7 +255,6 @@ return [
     \Keestash\Core\System\Installation\Instance\LockHandler::class => InstanceLockHandlerFactory::class,
     LoggedInMiddleware::class                                      => LoggedInMiddlewareFactory::class,
     AppRenderer::class                                             => AppRendererFactory::class,
-    Compiler::class                                                => CompilerFactory::class,
     JWTService::class                                              => JWTServiceFactory::class,
 
     // builder
@@ -339,6 +340,7 @@ return [
     , Reset::class                           => ResetFactory::class
     , ListAll::class                         => ListAllFactory::class
     , \Keestash\Command\Derivation::class    => DerivationFactory::class
+    , Cors::class                            => CorsFactory::class
 
     // command
     // --- listener

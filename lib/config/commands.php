@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\Command\App\ListAll;
+use Keestash\Command\Keestash\Cors;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
 use Keestash\Command\Keestash\QueueList;
@@ -48,4 +49,5 @@ return [
     , Reset::class
     , ListAll::class
     , \Keestash\Command\Derivation::class
+    , Cors::class
 ];
