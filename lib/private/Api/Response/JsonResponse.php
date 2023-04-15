@@ -30,8 +30,6 @@ class JsonResponse extends \Laminas\Diactoros\Response\JsonResponse {
         parent::__construct(
             $data
             , $statusCode
-            , []
-            , \Laminas\Diactoros\Response\JsonResponse::DEFAULT_JSON_FLAGS
         );
     }
 

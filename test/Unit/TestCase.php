@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,20 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Controller\Organization;
+namespace KST\Unit;
 
-use KSA\Settings\Controller\Organization\Detail;
-use KSP\Core\Service\Controller\IAppRenderer;
-use Mezzio\Template\TemplateRendererInterface;
-use Psr\Container\ContainerInterface;
-
-class DetailFactory {
-
-    public function __invoke(ContainerInterface $container): Detail {
-        return new Detail(
-            $container->get(IAppRenderer::class)
-            , $container->get(TemplateRendererInterface::class)
-        );
-    }
+class TestCase extends \KST\TestCase {
 
 }

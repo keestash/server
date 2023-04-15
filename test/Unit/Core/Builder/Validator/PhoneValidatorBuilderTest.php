@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Unit\Core\Builder\Validator;
 
-use KST\TestCase;
+use KST\Unit\TestCase;
 use Laminas\I18n\Validator\PhoneNumber;
 
 class PhoneValidatorBuilderTest extends TestCase {

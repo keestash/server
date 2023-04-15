@@ -24,7 +24,7 @@ namespace KST\Integration\Core\Service\HTTP;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Service\HTTP\IJWTService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class JWTServiceTest extends TestCase {
 

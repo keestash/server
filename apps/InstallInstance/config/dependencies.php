@@ -29,7 +29,6 @@ use KSA\InstallInstance\Command\Install;
 use KSA\InstallInstance\Command\ListEnvironment;
 use KSA\InstallInstance\Command\Ping;
 use KSA\InstallInstance\Command\Uninstall;
-use KSA\InstallInstance\Controller\Controller;
 use KSA\InstallInstance\Factory\Api\Config\GetFactory;
 use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
 use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
@@ -38,7 +37,6 @@ use KSA\InstallInstance\Factory\Command\InstallFactory;
 use KSA\InstallInstance\Factory\Command\ListEnvironmentFactory;
 use KSA\InstallInstance\Factory\Command\PingFactory;
 use KSA\InstallInstance\Factory\Command\UninstallFactory;
-use KSA\InstallInstance\Factory\Controller\ControllerFactory;
 
 return [
     ConfigProvider::FACTORIES => [
@@ -53,8 +51,5 @@ return [
         , Ping::class            => PingFactory::class
         , Environment::class     => EnvironmentFactory::class
         , ListEnvironment::class => ListEnvironmentFactory::class
-
-        // controller
-        , Controller::class      => ControllerFactory::class
     ]
 ];

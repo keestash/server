@@ -24,7 +24,7 @@ namespace KST\Unit\Core\Service\App;
 use Keestash\ConfigProvider;
 use KSP\Core\DTO\App\IApp;
 use KSP\Core\Service\App\IAppService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class AppServiceTest extends TestCase {
 

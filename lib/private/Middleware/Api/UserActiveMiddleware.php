@@ -65,7 +65,7 @@ class UserActiveMiddleware implements MiddlewareInterface {
 
         if (null === $token || true === $this->userService->isDisabled($token->getUser())) {
             return new JsonResponse(
-                'user not given, error 54678'
+                []
                 , IResponse::NOT_FOUND
             );
         }

@@ -23,7 +23,7 @@ namespace KST\Integration\Core\Service\CSV;
 
 use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\Service\CSV\ICSVService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class CSVServiceTest extends TestCase {
 

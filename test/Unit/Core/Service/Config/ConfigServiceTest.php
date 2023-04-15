@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\Config;
 
 use KSP\Core\Service\Config\IConfigService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class ConfigServiceTest extends TestCase {
 

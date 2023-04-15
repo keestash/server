@@ -101,7 +101,6 @@ use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\VerificationService;
-use Keestash\Core\Service\Stylesheet\Compiler;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
@@ -148,7 +147,6 @@ use Keestash\Factory\Core\Service\App\AppServiceFactory;
 use Keestash\Factory\Core\Service\App\InstallerServiceFactory;
 use Keestash\Factory\Core\Service\App\LoaderServiceFactory;
 use Keestash\Factory\Core\Service\Config\ConfigServiceFactory;
-use Keestash\Factory\Core\Service\Controller\AppRendererFactory;
 use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
 use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
 use Keestash\Factory\Core\Service\Derivation\DerivationServiceFactory;
@@ -174,7 +172,6 @@ use Keestash\Factory\Core\Service\Queue\QueueServiceFactory;
 use Keestash\Factory\Core\Service\Router\ApiRequestServiceFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
-use Keestash\Factory\Core\Service\Stylesheet\CompilerFactory;
 use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
@@ -186,13 +183,11 @@ use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExce
 use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\PermissionMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\RateLimiterMiddlewareFactory;
+use Keestash\Factory\Middleware\Api\UserActiveMiddlewareFactory;
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
 use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
-use Keestash\Factory\Middleware\Web\ExceptionHandlerMiddlewareFactory as WebExceptionHandlerMiddlewareFactory;
-use Keestash\Factory\Middleware\Web\LoggedInMiddlewareFactory;
-use Keestash\Factory\Middleware\Web\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
@@ -207,8 +202,6 @@ use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\AppsInstalledMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
-use Keestash\Middleware\Web\ExceptionHandlerMiddleware as WebExceptionHandlerMiddleware;
-use Keestash\Middleware\Web\LoggedInMiddleware;
 use Keestash\Queue\Handler\EventHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
@@ -253,8 +246,6 @@ return [
     JobRepository::class                                           => JobRepositoryFactory::class,
     LockHandler::class                                             => AppLockHandlerFactory::class,
     \Keestash\Core\System\Installation\Instance\LockHandler::class => InstanceLockHandlerFactory::class,
-    LoggedInMiddleware::class                                      => LoggedInMiddlewareFactory::class,
-    AppRenderer::class                                             => AppRendererFactory::class,
     JWTService::class                                              => JWTServiceFactory::class,
 
     // builder
@@ -278,7 +269,6 @@ return [
 
     // web
     UserActiveMiddleware::class                                    => UserActiveMiddlewareFactory::class,
-    WebExceptionHandlerMiddleware::class                           => WebExceptionHandlerMiddlewareFactory::class,
 
     // ThirdParty
     DateTimeService::class                                         => DateTimeServiceFactory::class,

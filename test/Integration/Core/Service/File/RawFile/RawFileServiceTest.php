@@ -25,7 +25,7 @@ use Keestash\Exception\File\FileNotExistsException;
 use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Service\File\RawFile\IRawFileService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class RawFileServiceTest extends TestCase {
 

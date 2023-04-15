@@ -27,7 +27,7 @@ use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\DTO\URI\URI;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Repository\File\IFileRepository;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class FileRepositoryTest extends TestCase {
 

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\HTTP\Route;
 
 use KSP\Core\Service\HTTP\Route\IRouteService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class RouteServiceTest extends TestCase {
 

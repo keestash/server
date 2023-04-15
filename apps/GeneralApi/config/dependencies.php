@@ -20,25 +20,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\Command\Info\Routes;
 use KSA\GeneralApi\Command\Migration\MigrateApps;
 use KSA\GeneralApi\Command\QualityTool\PHPStan;
-use KSA\GeneralApi\Controller\Common\DefaultRouteController;
-use KSA\GeneralApi\Controller\File\View;
-use KSA\GeneralApi\Controller\Route\RouteList;
 use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
 use KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory;
 use KSA\GeneralApi\Factory\Command\Info\RoutesFactory;
 use KSA\GeneralApi\Factory\Command\MigrateAppsFactory;
 use KSA\GeneralApi\Factory\Command\PHPStanFactory;
-use KSA\GeneralApi\Factory\Controller\Common\DefaultRouteControllerFactory;
-use KSA\GeneralApi\Factory\Controller\File\ViewFactory;
-use KSA\GeneralApi\Factory\Controller\Route\RouteListFactory;
 
 return [
-    'factories' => [
+    ConfigProvider::FACTORIES => [
         // command
         MigrateApps::class     => MigrateAppsFactory::class,
         PHPStan::class         => PHPStanFactory::class,
@@ -46,13 +41,6 @@ return [
 
         // api
         AddEmailAddress::class => AddEmailAddressFactory::class,
-
-        Get::class  => GetFactory::class,
-
-        // controller
-        View::class => ViewFactory::class,
-
-        RouteList::class              => RouteListFactory::class,
-        DefaultRouteController::class => DefaultRouteControllerFactory::class,
+        Get::class             => GetFactory::class,
     ],
 ];

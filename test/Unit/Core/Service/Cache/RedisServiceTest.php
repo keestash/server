@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\Cache;
 
 use Keestash\Core\Service\Cache\RedisService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class RedisServiceTest extends TestCase {
 

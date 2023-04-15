@@ -51,10 +51,10 @@ class Delete implements RequestHandlerInterface {
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
-        $id         = $parameters["node_id"] ?? null;
+        $id         = (int) ($parameters["node_id"] ?? -1);
 
         try {
-            $node = $this->nodeRepository->getNode((int) $id);
+            $node = $this->nodeRepository->getNode($id);
         } catch (PasswordManagerException $exception) {
             return new JsonResponse(
                 [

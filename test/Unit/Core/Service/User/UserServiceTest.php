@@ -25,7 +25,7 @@ use DateTimeImmutable;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\IUserService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class UserServiceTest extends TestCase {
