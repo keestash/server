@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware\Api;
 
+use KSP\Api\IResponse;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,7 +57,7 @@ class RateLimiterMiddleware implements MiddlewareInterface {
         try {
             $this->rateLimiter->limit($ipAddress);
         } catch (LimitExceeded $exception) {
-            return new JsonResponse(['error' => 'Too many requests'], 429);
+            return new JsonResponse(['error' => 'Too many requests'], IResponse::TOO_MANY_REQUESTS);
         }
 
         return $handler->handle($request);

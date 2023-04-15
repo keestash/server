@@ -49,7 +49,6 @@ use Keestash\Core\Service\App\AppService;
 use Keestash\Core\Service\App\LoaderService;
 use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
@@ -106,7 +105,6 @@ use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Controller\IAppRenderer;
 use KSP\Core\Service\Core\Access\IAccessService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Language\ILanguageService;
@@ -209,7 +207,6 @@ return [
     IL10N::class                   => GetText::class,
     ILoaderService::class          => LoaderService::class,
     SessionHandlerInterface::class => SessionHandler::class,
-    IAppRenderer::class            => AppRenderer::class,
     IMigrator::class               => Migrator::class,
     ConfigurationInterface::class  => ProjectConfiguration::class,
 

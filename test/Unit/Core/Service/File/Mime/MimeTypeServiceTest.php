@@ -25,7 +25,7 @@ use Keestash\Exception\IndexOutOfBoundsException;
 use Keestash\Exception\UnknownExtensionException;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Service\File\Mime\IMimeTypeService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class MimeTypeServiceTest extends TestCase {
 

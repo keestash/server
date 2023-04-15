@@ -27,7 +27,7 @@ use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Integration\Core\Repository\User\UserRepositoryTest;
-use KST\TestCase;
+use KST\Unit\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class KeyServiceTest extends TestCase {

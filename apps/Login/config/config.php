@@ -25,7 +25,6 @@ use KSA\Login\ConfigProvider as LoginConfigProvider;
 
 return [
     ConfigProvider::DEPENDENCIES  => require __DIR__ . '/dependencies.php'
-    , ConfigProvider::WEB_ROUTER  => require __DIR__ . '/web_router.php'
     , ConfigProvider::API_ROUTER  => require __DIR__ . '/api_router.php'
     , ConfigProvider::PERMISSIONS => require __DIR__ . '/permissions.php'
     , ConfigProvider::COMMANDS    => require __DIR__ . '/commands.php'

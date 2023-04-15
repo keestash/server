@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\HTTP\Input;
 
 use KSP\Core\Service\HTTP\Input\ISanitizerService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class SanitizerServiceTest extends TestCase {
 

@@ -24,7 +24,7 @@ namespace KST\Integration\Core\Service\User\Repository;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class UserRepositoryServiceTest extends TestCase {

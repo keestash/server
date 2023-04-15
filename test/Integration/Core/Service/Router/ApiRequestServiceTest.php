@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Service\Router;
 
 use KSP\Core\Service\Router\IApiRequestService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class ApiRequestServiceTest extends TestCase {
 

@@ -26,7 +26,7 @@ use Keestash\Core\DTO\BackgroundJob\Job;
 use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\Repository\Job\IJobRepository;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class JobRepositoryTest extends TestCase {
 

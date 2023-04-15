@@ -35,17 +35,13 @@ use KSA\ForgotPassword\Factory\Event\Listener\ForgotPasswordMailLinkListenerFact
 return [
     CoreConfigProvider::FACTORIES => [
         // api
-        ForgotPassword::class                                  => ForgotPasswordFactory::class
-        , ResetPassword::class                                 => ResetPasswordFactory::class
-        , Configuration::class                                 => ConfigurationFactory::class
-        , AccountDetails::class                                => AccountDetailsFactory::class
-
-        // controller
-        , \KSA\ForgotPassword\Controller\ForgotPassword::class => \KSA\ForgotPassword\Factory\Controller\ForgotPasswordFactory::class
-        , \KSA\ForgotPassword\Controller\ResetPassword::class  => \KSA\ForgotPassword\Factory\Controller\ResetPasswordFactory::class
+        ForgotPassword::class                   => ForgotPasswordFactory::class
+        , ResetPassword::class                  => ResetPasswordFactory::class
+        , Configuration::class                  => ConfigurationFactory::class
+        , AccountDetails::class                 => AccountDetailsFactory::class
 
         // event
-        // listener
-        , ForgotPasswordMailLinkListener::class                => ForgotPasswordMailLinkListenerFactory::class
+        // -- listener
+        , ForgotPasswordMailLinkListener::class => ForgotPasswordMailLinkListenerFactory::class
     ]
 ];

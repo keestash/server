@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Service\Core;
 
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class EnvironmentServiceTest extends TestCase {
 

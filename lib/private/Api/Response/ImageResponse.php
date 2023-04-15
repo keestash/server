@@ -29,10 +29,10 @@ class ImageResponse extends TextResponse {
     public function __construct(string $path, string $mimeType) {
 
         $content    = null;
-        $statusCode = 404;
+        $statusCode = IResponse::NOT_FOUND;
         if (is_file($path)) {
             $content    = file_get_contents($path);
-            $statusCode = 200;
+            $statusCode = IResponse::OK;
         }
         parent::__construct(
             base64_encode((string) $content)

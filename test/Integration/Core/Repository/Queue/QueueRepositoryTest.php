@@ -26,7 +26,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\Queue\EventMessage;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
-use KST\TestCase;
+use KST\Integration\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class QueueRepositoryTest extends TestCase {

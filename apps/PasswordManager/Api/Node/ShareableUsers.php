@@ -57,6 +57,7 @@ class ShareableUsers implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new JsonResponse([]);
         $start  = microtime(true);
         $nodeId = $request->getAttribute("nodeId");
         $query  = $request->getAttribute("query");

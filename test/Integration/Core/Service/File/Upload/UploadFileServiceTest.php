@@ -24,7 +24,7 @@ namespace KST\Integration\Core\Service\File\Upload;
 use GuzzleHttp\Psr7\UploadedFile;
 use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\Service\File\Upload\IFileService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class UploadFileServiceTest extends TestCase {
 

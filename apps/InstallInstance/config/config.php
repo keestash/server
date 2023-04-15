@@ -24,8 +24,7 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\InstallInstance\ConfigProvider;
 
 return [
-    CoreConfigProvider::WEB_ROUTER      => require __DIR__ . '/web_router.php'
-    , CoreConfigProvider::DEPENDENCIES  => require __DIR__ . '/dependencies.php'
+    CoreConfigProvider::DEPENDENCIES    => require __DIR__ . '/dependencies.php'
     , CoreConfigProvider::API_ROUTER    => require __DIR__ . '/api_router.php'
     , CoreConfigProvider::COMMANDS      => require __DIR__ . '/commands.php'
     , CoreConfigProvider::PERMISSIONS   => require __DIR__ . '/permissions.php'

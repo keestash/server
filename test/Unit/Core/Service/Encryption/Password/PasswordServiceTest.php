@@ -25,7 +25,7 @@ use Keestash\Core\DTO\Encryption\Password\Password;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Encryption\Password\IPassword;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class PasswordServiceTest extends TestCase {
 

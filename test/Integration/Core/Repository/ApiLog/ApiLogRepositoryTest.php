@@ -27,7 +27,7 @@ use Keestash\Core\DTO\Token\Token;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class ApiLogRepositoryTest extends TestCase {
 

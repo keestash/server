@@ -23,7 +23,7 @@ namespace KST\Unit\Core\Service\Encryption\Credential;
 
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class CredentialServiceTest extends TestCase {
 

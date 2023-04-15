@@ -28,7 +28,7 @@ use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class UserKeyRepositoryTest extends TestCase {
 

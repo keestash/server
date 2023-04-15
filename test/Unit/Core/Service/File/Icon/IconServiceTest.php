@@ -24,7 +24,7 @@ namespace KST\Unit\Core\Service\File\Icon;
 use KSP\Core\DTO\File\Icon\IICon;
 use KSP\Core\DTO\File\IExtension;
 use KSP\Core\Service\File\Icon\IIconService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class IconServiceTest extends TestCase {
 

@@ -32,7 +32,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Access\IAccessService;
 use KSP\Core\Service\User\IUserService;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class AccessServiceTest extends TestCase {
 

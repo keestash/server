@@ -27,7 +27,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\NotFoundResponse;
 use Keestash\Api\Response\OkResponse;
 use KSP\Api\IResponse;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class TestAll extends TestCase {
 

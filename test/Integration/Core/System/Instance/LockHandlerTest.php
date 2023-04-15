@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Integration\Core\System\Instance;
 
 use Keestash\Core\System\Installation\Instance\LockHandler;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class LockHandlerTest extends TestCase {
 

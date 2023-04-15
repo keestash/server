@@ -25,7 +25,7 @@ use DateTimeImmutable;
 use Keestash\Exception\IndexNotFoundException;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\Service\Organization\IOrganizationService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class OrganizationServiceTest extends TestCase {
 

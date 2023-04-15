@@ -25,7 +25,7 @@ use DateTimeImmutable;
 use Keestash\Core\DTO\Token\Token;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
-use KST\TestCase;
+use KST\Integration\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class TokenRepositoryTest extends TestCase {

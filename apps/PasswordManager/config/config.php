@@ -25,7 +25,6 @@ use Keestash\ConfigProvider;
 return [
     ConfigProvider::DEPENDENCIES                                        => require __DIR__ . '/dependencies.php',
     ConfigProvider::API_ROUTER                                          => require __DIR__ . '/api_router.php',
-    ConfigProvider::WEB_ROUTER                                          => require __DIR__ . '/web_router.php',
     ConfigProvider::EVENTS                                              => require __DIR__ . '/events.php',
     ConfigProvider::COMMANDS                                            => require __DIR__ . '/commands.php',
     ConfigProvider::PERMISSIONS                                         => require __DIR__ . '/permissions.php',

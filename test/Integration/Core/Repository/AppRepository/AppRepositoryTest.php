@@ -26,7 +26,7 @@ use Keestash\Core\DTO\App\Config\App;
 use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class AppRepositoryTest extends TestCase {
 

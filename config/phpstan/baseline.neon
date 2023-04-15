@@ -31,11 +31,6 @@ parameters:
 			path: ../../apps/GeneralApi/Command/Info/Routes.php
 
 		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../apps/GeneralApi/Controller/Route/RouteList.php
-
-		-
 			message: "#^Cannot access offset 'charset' on mixed\\.$#"
 			count: 1
 			path: ../../apps/InstallInstance/Api/Config/Update.php
@@ -364,26 +359,6 @@ parameters:
 			message: "#^Cannot call method getCount\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Command/Node/ImportPwned.php
-
-		-
-			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Controller\\\\PasswordManager\\\\Controller\\:\\:setActionBar\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Controller/PasswordManager/Controller.php
-
-		-
-			message: "#^Call to method withElement\\(\\) on an unknown class Keestash\\\\View\\\\ActionBar\\\\ActionBarBuilder\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Controller/PasswordManager/Controller.php
-
-		-
-			message: "#^Instantiated class Keestash\\\\View\\\\ActionBar\\\\ActionBarBuilder not found\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Controller/PasswordManager/Controller.php
-
-		-
-			message: "#^Parameter \\#1 \\$hash of method KSA\\\\PasswordManager\\\\Repository\\\\PublicShareRepository\\:\\:getShare\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Controller/PublicShare/PublicShareController.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
@@ -909,21 +884,6 @@ parameters:
 			message: "#^Binary operation \"\\*\\=\" between string and 1024 results in an error\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Config/IniConfigService.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
-
-		-
-			message: "#^Cannot call method format\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
-
-		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 3
-			path: ../../lib/private/Core/Service/Controller/AppRenderer.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"

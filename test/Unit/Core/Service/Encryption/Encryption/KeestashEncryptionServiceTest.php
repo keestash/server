@@ -25,7 +25,7 @@ use DateTimeImmutable;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class KeestashEncryptionServiceTest extends TestCase {
 

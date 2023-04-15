@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Service\L10N;
 
 use KSP\Core\Service\L10N\IL10N;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class GetTextTest extends TestCase {
 

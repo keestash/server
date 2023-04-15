@@ -27,7 +27,7 @@ use Keestash\Core\DTO\Queue\Stamp;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
-use KST\TestCase;
+use KST\Unit\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class QueueServiceTest extends TestCase {

@@ -27,7 +27,7 @@ use Keestash\Core\Service\Router\VerificationService;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Router\IVerificationService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class VerificationTest extends TestCase {
 

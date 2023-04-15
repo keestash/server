@@ -23,7 +23,7 @@ namespace KST\Unit\Core\Service\Encryption;
 
 use Keestash\Core\Service\Encryption\Base64Service;
 use KSP\Core\Service\Encryption\IBase64Service;
-use KST\TestCase;
+use KST\Unit\TestCase;
 
 class Base64ServiceTest extends TestCase {
 

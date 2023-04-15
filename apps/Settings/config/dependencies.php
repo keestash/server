@@ -39,8 +39,6 @@ use KSA\Settings\BackgroundJob\UserDeleteTask;
 use KSA\Settings\Command\ListSettings;
 use KSA\Settings\Command\Lock;
 use KSA\Settings\Command\UpdatePassword;
-use KSA\Settings\Controller\Controller;
-use KSA\Settings\Controller\Organization\Detail;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
 use KSA\Settings\Event\Listener\UpdateSettingsListener;
@@ -80,10 +78,6 @@ return [
     ConfigProvider::FACTORIES => [
         // service
         UserService::class                           => InvokableFactory::class
-
-        // controller
-        , Controller::class                          => SettingsControllerFactory::class
-        , Detail::class                              => DetailFactory::class
 
         // background job
         , UserDeleteTask::class                      => UserDeleteTaskFactory::class

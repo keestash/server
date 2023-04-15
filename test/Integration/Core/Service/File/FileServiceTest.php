@@ -27,7 +27,7 @@ use Keestash\Core\DTO\URI\URL\URL;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class FileServiceTest extends TestCase {
 

@@ -23,7 +23,7 @@ namespace KST\Integration\Api;
 
 use Keestash\Api\PingHandler;
 use KSP\Api\IResponse;
-use KST\TestCase;
+use KST\Integration\TestCase;
 
 class PingHandlerTest extends TestCase {
 

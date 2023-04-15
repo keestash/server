@@ -36,7 +36,6 @@ use KSP\Core\DTO\File\IExtension;
 return [
     CoreConfigProvider::DEPENDENCIES                   => require __DIR__ . '/dependencies.php'
     , CoreConfigProvider::API_ROUTER                   => require __DIR__ . '/api_router.php'
-    , CoreConfigProvider::WEB_ROUTER                   => require __DIR__ . '/web_router.php'
     , CoreConfigProvider::PERMISSIONS                  => require __DIR__ . '/permissions.php'
     , CoreConfigProvider::EVENTS                       => require __DIR__ . '/events.php'
     , CoreConfigProvider::COMMANDS                     => require __DIR__ . '/commands.php'
