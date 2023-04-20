@@ -23,32 +23,17 @@ namespace KSA\Login\Api;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\System\Application;
-use KSA\Register\ConfigProvider;
 use KSP\Api\IResponse;
-use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\HTTP\IHTTPService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private Application    $legacy;
-    private IHTTPService   $httpService;
-    private ILoaderService $loader;
-    private InstanceDB     $instanceDB;
+    private InstanceDB $instanceDB;
 
-    public function __construct(
-        Application      $legacy
-        , IHTTPService   $httpService
-        , ILoaderService $loader
-        , InstanceDB     $instanceDB
-    ) {
-        $this->legacy      = $legacy;
-        $this->httpService = $httpService;
-        $this->loader      = $loader;
-        $this->instanceDB  = $instanceDB;
+    public function __construct(InstanceDB $instanceDB) {
+        $this->instanceDB = $instanceDB;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -59,13 +44,7 @@ class Configuration implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "registeringEnabled"      => $this->loader->hasApp(ConfigProvider::APP_ID)
-
-                // values
-                , "backgroundPath"        => $this->httpService->getBaseURL(false) . "/asset/img/login-background.jpg"
-                , "logoPath"              => $this->httpService->getBaseURL(false) . "/asset/img/logo_inverted_no_background.png"
-                , "demo"                  => $demo
-                , "tncLink"               => $this->httpService->getBaseURL(true) . "/tnc/"
+                "demo"                    => $demo
                 , "demoMode"              => $isDemoMode
                 // TODO check here for being enabled once apps page works!
                 , "registerEnabled"       => true && !$isDemoMode

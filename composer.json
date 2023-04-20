@@ -103,6 +103,7 @@
     "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",
     "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G",
     "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
-    "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1"
+    "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1",
+    "test-coverage": "php -d xdebug.mode=coverage ./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1 --coverage-html test/result/"
   }
 }

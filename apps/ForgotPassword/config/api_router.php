@@ -28,6 +28,7 @@ use KSA\ForgotPassword\Api\ResetPassword;
 use KSA\ForgotPassword\ConfigProvider;
 use KSP\Api\IVerb;
 
+return [];
 return [
     CoreConfigProvider::ROUTES        => [
         [

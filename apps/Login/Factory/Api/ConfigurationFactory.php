@@ -23,20 +23,14 @@ namespace KSA\Login\Factory\Api;
 
 use Interop\Container\ContainerInterface;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\System\Application;
 use KSA\Login\Api\Configuration;
-use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\HTTP\IHTTPService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class ConfigurationFactory implements FactoryInterface {
 
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) {
         return new Configuration(
-            $container->get(Application::class)
-            , $container->get(IHTTPService::class)
-            , $container->get(ILoaderService::class)
-            , $container->get(InstanceDB::class)
+            $container->get(InstanceDB::class)
         );
     }
 

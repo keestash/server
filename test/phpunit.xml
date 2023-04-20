@@ -14,4 +14,10 @@
             <directory>../apps/*/Test</directory>
         </testsuite>
     </testsuites>
+    <coverage>
+        <include>
+            <directory>../test</directory>
+            <directory>../apps/*/Test</directory>
+        </include>
+    </coverage>
 </phpunit>

@@ -64,6 +64,7 @@ class InstallApps implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new JsonResponse([],IResponse::NOT_FOUND);
         // We only check loadedApps if the system is
         // installed
         $loadedApps    = $this->loader->getApps();

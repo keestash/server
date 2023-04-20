@@ -20,6 +20,7 @@ use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\User\UserRepository;
 use KSA\PasswordManager\Entity\Comment\Comment;
 use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Exception\Node\Comment\CommentRepositoryException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Backend\IBackend;
@@ -144,6 +145,58 @@ class CommentRepository implements IRepository {
         }
 
         return $list;
+    }
+
+    public function getCommentById(int $id): Comment {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $comments     = $queryBuilder
+            ->select(
+                [
+                    'id'
+                    , 'comment'
+                    , 'node_id'
+                    , 'user_id'
+                    , 'create_ts'
+                ]
+            )
+            ->from('pwm_comment')
+            ->where('id = ?')
+            ->setParameter(0, $id)
+            ->executeQuery()
+            ->fetchAllAssociative();
+
+        $commentCount = count($comments);
+        if ($commentCount !== 1) {
+            throw new CommentException();
+        }
+        $row           = $comments[0];
+        $id            = $row["id"];
+        $commentString = $row["comment"];
+        $nodeId        = $row["node_id"];
+        $userId        = $row["user_id"];
+        $createTs      = $row["create_ts"];
+
+        $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
+        $user = $this->userRepository->getUserById((string) $userId);
+
+        $comment = new Comment();
+        $comment->setId((int) $id);
+        $comment->setComment((string) $commentString);
+        $comment->setNode($node);
+        $comment->setUser($user);
+        $comment->setJWT(
+            $this->jwtService->getJWT(
+                new Audience(
+                    IAudience::TYPE_USER
+                    , (string) $user->getId()
+                )
+            )
+        );
+        $comment->setCreateTs(
+            $this->dateTimeService->fromFormat((string) $createTs)
+        );
+
+        return $comment;
     }
 
     public function getNodeByCommentId(int $commentId): Node {

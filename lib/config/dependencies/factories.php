@@ -64,7 +64,6 @@ use Keestash\Core\Service\App\LoaderService;
 use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Config\IniConfigService;
-use Keestash\Core\Service\Controller\AppRenderer;
 use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Language\LanguageService;
@@ -346,10 +345,10 @@ return [
     , AssignPermissionToRole::class          => AssignPermissionToRoleFactory::class
 
     // system
-    , FileRateLimiter::class                 => FileRateLimiterFactory::class,
+    , FileRateLimiter::class                 => FileRateLimiterFactory::class
 
     // handler
-    EventHandler::class                      => EventHandlerFactory::class
+    , EventHandler::class                    => EventHandlerFactory::class
 
     // events
     // ---- listener
