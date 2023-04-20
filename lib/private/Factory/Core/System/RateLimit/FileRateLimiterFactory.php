@@ -23,10 +23,10 @@ namespace Keestash\Factory\Core\System\RateLimit;
 
 use Keestash\Core\Builder\Data\DataServiceBuilder;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
-use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use RateLimit\Rate;
 use RateLimit\RateLimiter;
 

@@ -67,7 +67,7 @@ class Routes extends KeestashCommand {
         $webRoutes = [];
         $apiRoutes = [];
         if (false === $input->getOption(Routes::OPTION_NAME_NO_WEB)) {
-            $webRoutes = $this->config->get(ConfigProvider::WEB_ROUTER)->toArray();
+            $webRoutes = $this->config->get(ConfigProvider::WEB_ROUTER, new Config([]))->toArray();
         }
         if (false === $input->getOption(Routes::OPTION_NAME_NO_API)) {
             $apiRoutes = $this->config->get(ConfigProvider::API_ROUTER)->toArray();

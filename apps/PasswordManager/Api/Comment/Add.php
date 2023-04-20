@@ -36,23 +36,25 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\HTTP\Input\ISanitizerService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
     private CommentRepository $commentRepository;
     private NodeRepository    $nodeRepository;
-    private LoggerInterface           $logger;
+    private LoggerInterface   $logger;
     private IJWTService       $jwtService;
 
     public function __construct(
-        CommentRepository $commentRepository
-        , NodeRepository  $nodeRepository
-        , LoggerInterface         $logger
-        , IJWTService     $jwtService
+        CommentRepository                    $commentRepository
+        , NodeRepository                     $nodeRepository
+        , LoggerInterface                    $logger
+        , IJWTService                        $jwtService
+        , private readonly ISanitizerService $sanitizerService
     ) {
         $this->commentRepository = $commentRepository;
         $this->nodeRepository    = $nodeRepository;
@@ -94,7 +96,9 @@ class Add implements RequestHandlerInterface {
         }
 
         $comment = new Comment();
-        $comment->setComment($commentString);
+        $comment->setComment(
+            $this->sanitizerService->sanitize($commentString)
+        );
         $comment->setCreateTs(new DateTimeImmutable());
         $comment->setNode($node);
         $comment->setUser($token->getUser());

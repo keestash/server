@@ -37,6 +37,7 @@ class Get implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new JsonResponse([],IResponse::NOT_FOUND);
         $data = $this->installerService->verifyConfigurationFile();
         return new JsonResponse(
             [

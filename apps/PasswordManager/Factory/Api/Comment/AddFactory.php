@@ -25,8 +25,9 @@ use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\HTTP\Input\ISanitizerService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class AddFactory {
 
@@ -36,6 +37,7 @@ class AddFactory {
             , $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IJWTService::class)
+            , $container->get(ISanitizerService::class)
         );
     }
 

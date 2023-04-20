@@ -47,6 +47,12 @@ class AddEmailAddress implements RequestHandlerInterface {
         $parameters = (array) $request->getParsedBody();
         $email      = $parameters['email'] ?? '';
 
+        $hasEmailAddress = $this->demoUsersRepository->hasEmailAddress($email);
+
+        if (true === $hasEmailAddress) {
+            return new JsonResponse([], IResponse::CONFLICT);
+        }
+
         if (false === $this->userService->validEmail($email)) {
             throw new GeneralApiException('invalid email');
         }
@@ -54,9 +60,7 @@ class AddEmailAddress implements RequestHandlerInterface {
         $this->demoUsersRepository->add($email);
 
         return new JsonResponse(
-            [
-                "message" => "ok"
-            ]
+            []
             , IResponse::OK
         );
     }

@@ -38,6 +38,7 @@ interface IResponse {
     public const NOT_FOUND             = 404;
     public const NOT_ALLOWED           = 405;
     public const NOT_ACCEPTABLE        = 406;
+    public const CONFLICT              = 409;
     public const TOO_MANY_REQUESTS     = 429;
     public const INTERNAL_SERVER_ERROR = 500;
 
