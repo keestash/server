@@ -24,24 +24,19 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Install\ConfigProvider;
 
 return [
-    CoreConfigProvider::COMMANDS            => require __DIR__ . '/commands.php'
-    , CoreConfigProvider::DEPENDENCIES      => require __DIR__ . '/dependencies.php'
-    , CoreConfigProvider::API_ROUTER        => require __DIR__ . '/api_router.php'
-    , CoreConfigProvider::APP_LIST          => [
+    CoreConfigProvider::COMMANDS              => require __DIR__ . '/commands.php'
+    , CoreConfigProvider::DEPENDENCIES        => require __DIR__ . '/dependencies.php'
+    , CoreConfigProvider::API_ROUTER          => require __DIR__ . '/api_router.php'
+    , CoreConfigProvider::APP_LIST            => [
         ConfigProvider::APP_ID => [
-            CoreConfigProvider::APP_ORDER      => 4,
-            CoreConfigProvider::APP_NAME       => 'Install',
-            CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::INSTALL,
-            CoreConfigProvider::APP_VERSION    => 1,
-        ],
-    ],
-    CoreConfigProvider::INSTALL_APPS_ROUTES => [
+            CoreConfigProvider::APP_ORDER        => 4
+            , CoreConfigProvider::APP_NAME       => 'Install'
+            , CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::INSTALL
+            , CoreConfigProvider::APP_VERSION    => 1
+        ]
+    ]
+    , CoreConfigProvider::INSTALL_APPS_ROUTES => [
         ConfigProvider::INSTALL
         , ConfigProvider::INSTALL_ALL
-    ],
-    'templates'                             => [
-        'paths' => [
-            'install' => [__DIR__ . '/../template/']
-        ]
     ]
 ];

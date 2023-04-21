@@ -38,11 +38,6 @@ return [
             CoreConfigProvider::APP_VERSION    => 1,
         ],
     ]
-    , CoreConfigProvider::TEMPLATES                    => [
-        'paths' => [
-            'settings' => [__DIR__ . '/../template/']
-        ]
-    ]
     , ConfigProvider::ALLOWED_PROFILE_IMAGE_EXTENSIONS => [
         IExtension::PNG
         , IExtension::JPEG

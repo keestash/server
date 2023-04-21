@@ -36,9 +36,4 @@ return [
     , CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php'
     , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
     , CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php'
-    , CoreConfigProvider::TEMPLATES    => [
-        'paths' => [
-            'forgotPassword' => [realpath(__DIR__ . '/../template/')]
-        ]
-    ]
 ];
