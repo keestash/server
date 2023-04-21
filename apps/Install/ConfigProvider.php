@@ -23,10 +23,9 @@ namespace KSA\Install;
 
 final class ConfigProvider {
 
-    public const INSTALL                    = '/install[/]';
-    public const INSTALL_ALL                = '/install/apps/all[/]';
-    public const INSTALL_APPS_CONFIGURATION = '/install/apps/configuration[/]';
-    public const APP_ID                     = 'install';
+    public const INSTALL     = '/install[/]';
+    public const INSTALL_ALL = '/install/apps/all[/]';
+    public const APP_ID      = 'install';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

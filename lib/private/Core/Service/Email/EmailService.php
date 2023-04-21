@@ -126,7 +126,7 @@ class EmailService implements IEmailService {
             if (false === $this->hasSubject()) return false;
             if (false === $this->hasBody()) return false;
 
-            $this->mailer->send();
+//            $this->mailer->send();
             return true;
         } catch (Exception $e) {
             $this->logger->debug('error with mail sending', ['e' => $e]);

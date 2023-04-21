@@ -22,25 +22,16 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
-use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\Command\Info\Routes;
-use KSA\GeneralApi\Command\Migration\MigrateApps;
-use KSA\GeneralApi\Command\QualityTool\PHPStan;
 use KSA\GeneralApi\Factory\Api\Demo\AddEmailAddressFactory;
-use KSA\GeneralApi\Factory\Api\Thumbnail\GetFactory;
 use KSA\GeneralApi\Factory\Command\Info\RoutesFactory;
-use KSA\GeneralApi\Factory\Command\MigrateAppsFactory;
-use KSA\GeneralApi\Factory\Command\PHPStanFactory;
 
 return [
     ConfigProvider::FACTORIES => [
         // command
-        MigrateApps::class     => MigrateAppsFactory::class,
-        PHPStan::class         => PHPStanFactory::class,
         Routes::class          => RoutesFactory::class,
 
         // api
         AddEmailAddress::class => AddEmailAddressFactory::class,
-        Get::class             => GetFactory::class,
     ],
 ];

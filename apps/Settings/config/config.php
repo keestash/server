@@ -24,15 +24,6 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Settings\ConfigProvider;
 use KSP\Core\DTO\File\IExtension;
 
-
-// TODO register background jobs
-//"background_jobs": {
-//"KSA\\Users\\BackgroundJob\\UserDeleteTask": {
-//"type": "regular.type.job",
-//"interval": 68400
-//}
-//}
-
 return [
     CoreConfigProvider::DEPENDENCIES                   => require __DIR__ . '/dependencies.php'
     , CoreConfigProvider::API_ROUTER                   => require __DIR__ . '/api_router.php'

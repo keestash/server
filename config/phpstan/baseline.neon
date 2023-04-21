@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$hash of method KSA\\\\ForgotPassword\\\\Api\\\\AccountDetails\\:\\:hasHash\\(\\) expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: ../../apps/ForgotPassword/Api/AccountDetails.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
@@ -21,104 +16,9 @@ parameters:
 			path: ../../apps/ForgotPassword/Event/Listener/ForgotPasswordMailLinkListener.php
 
 		-
-			message: "#^Parameter \\#1 \\$extension of method KSP\\\\Core\\\\Service\\\\File\\\\Icon\\\\IIconService\\:\\:getIconForExtension\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/GeneralApi/Api/Thumbnail/Get.php
-
-		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../apps/GeneralApi/Command/Info/Routes.php
-
-		-
-			message: "#^Cannot access offset 'charset' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'host' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'log_requests' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'password' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'port' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'schema_name' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'smtp_host' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'smtp_password' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'smtp_user' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Cannot access offset 'user' on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#1 \\$host of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:testDatabaseConnection\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#1 \\$val of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:isValid\\(\\) expects string\\|null, mixed given\\.$#"
-			count: 5
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#1 \\$val of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:validLogRequestOption\\(\\) expects string\\|null, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#2 \\$schemaName of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:testDatabaseConnection\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#3 \\$user of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:testDatabaseConnection\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#4 \\$password of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:testDatabaseConnection\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Parameter \\#5 \\$port of method KSA\\\\InstallInstance\\\\Api\\\\Config\\\\Update\\:\\:testDatabaseConnection\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/Config/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Api/EndUpdate/EndUpdate.php
 
 		-
 			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
@@ -316,7 +216,12 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
 
 		-
-			message: "#^Parameter \\#1 \\$name of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:searchUsers\\(\\) expects string, mixed given\\.$#"
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\ShareableUsers\\:\\:excludeInvalidUsers\\(\\) is unused\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
 

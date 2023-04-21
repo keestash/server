@@ -25,11 +25,11 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ShareableUsers
@@ -41,14 +41,14 @@ class ShareableUsers implements RequestHandlerInterface {
 
     private IUserRepository $userRepository;
     private NodeRepository  $nodeRepository;
-    private LoggerInterface         $logger;
+    private LoggerInterface $logger;
     private IJWTService     $jwtService;
 
     public function __construct(
-        IUserRepository  $userRepository
-        , NodeRepository $nodeRepository
-        , LoggerInterface        $logger
-        , IJWTService    $jwtService
+        IUserRepository   $userRepository
+        , NodeRepository  $nodeRepository
+        , LoggerInterface $logger
+        , IJWTService     $jwtService
     ) {
         $this->userRepository = $userRepository;
         $this->nodeRepository = $nodeRepository;

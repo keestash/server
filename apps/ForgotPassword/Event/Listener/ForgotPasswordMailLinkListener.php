@@ -34,14 +34,14 @@ use Ramsey\Uuid\Uuid;
 
 class ForgotPasswordMailLinkListener implements IListener {
 
-    private Application                    $legacy;
+    private Application               $legacy;
     private IHTTPService              $httpService;
     private TemplateRendererInterface $templateRenderer;
     private IL10N                     $translator;
     private IEmailService             $emailService;
 
     public function __construct(
-        Application $legacy
+        Application                 $legacy
         , IHTTPService              $httpService
         , TemplateRendererInterface $templateRenderer
         , IL10N                     $translator

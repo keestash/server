@@ -21,37 +21,8 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\InstallInstance\Api\Config\Get;
-use KSA\InstallInstance\Api\Config\Update;
-use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
-use KSA\InstallInstance\ConfigProvider;
-use KSP\Api\IRoute;
-use KSP\Api\IVerb;
 
 return [
-    CoreConfigProvider::ROUTES                    => [
-        [
-            IRoute::PATH         => ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
-            , IRoute::MIDDLEWARE => Update::class
-            , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => Update::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
-            , IRoute::MIDDLEWARE => Get::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => Get::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::INSTALL_INSTANCE_END_UPDATE
-            , IRoute::MIDDLEWARE => EndUpdate::class
-            , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => EndUpdate::class
-        ],
-    ]
-    , CoreConfigProvider::INSTALL_INSTANCE_ROUTES => [
-        ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
-        , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
-        , ConfigProvider::INSTALL_INSTANCE_END_UPDATE
-    ]
+    CoreConfigProvider::ROUTES                    => []
+    , CoreConfigProvider::INSTALL_INSTANCE_ROUTES => []
 ];

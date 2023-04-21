@@ -26,6 +26,5 @@ use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
 return [
     ForgotPasswordEvent::class => [
         ForgotPasswordMailLinkListener::class
-        //        , PasswordResetMailSendListener::class
     ]
 ];

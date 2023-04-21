@@ -21,24 +21,17 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use Keestash\Core\System\RateLimit\OnceAYearRateLimiter;
+use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
-use KSA\GeneralApi\Api\Thumbnail\Get;
 use KSA\GeneralApi\ConfigProvider;
 use KSP\Api\IRoute;
 use KSP\Api\IVerb;
 
 return [
     CoreConfigProvider::ROUTES        => [
-//        [
-//            IRoute::PATH         => ConfigProvider::THUMBNAIL_BY_EXTENSION
-//            , IRoute::MIDDLEWARE => Get::class
-//            , IRoute::METHOD     => IVerb::GET
-//            , IRoute::NAME       => Get::class
-//        ],
         [
             IRoute::PATH         => ConfigProvider::DEMOUSERS_ADD
-            , IRoute::MIDDLEWARE => AddEmailAddress::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, AddEmailAddress::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => AddEmailAddress::class
         ],

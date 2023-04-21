@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
+use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
 use KSA\Settings\Api\Organization\Activate;
 use KSA\Settings\Api\Organization\Add;
 use KSA\Settings\Api\Organization\Get;
@@ -23,79 +24,79 @@ return [
     CoreConfigProvider::ROUTES => [
         [
             IRoute::PATH         => ConfigProvider::ORGANIZATION_BY_ID
-            , IRoute::MIDDLEWARE => Get::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, Get::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => Get::class
         ],
         [
             IRoute::PATH         => ConfigProvider::ORGANIZATION_ACTIVATE
-            , IRoute::MIDDLEWARE => Activate::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, Activate::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Activate::class
         ],
         [
             IRoute::PATH         => ConfigProvider::ORGANIZATION_ADD
-            , IRoute::MIDDLEWARE => Add::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, Add::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Add::class
         ],
         [
             IRoute::PATH         => ConfigProvider::ORGANIZATION_LIST_ALL
-            , IRoute::MIDDLEWARE => ListAll::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, ListAll::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => ListAll::class
         ],
         [
             IRoute::PATH         => ConfigProvider::ORGANIZATION_UPDATE
-            , IRoute::MIDDLEWARE => Update::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, Update::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Update::class
         ],
         [
             IRoute::PATH         => ConfigProvider::ORGANIZATION_USER_CHANGE
-            , IRoute::MIDDLEWARE => User::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, User::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => User::class
         ],
         [
-            IRoute::PATH       => ConfigProvider::USER_EDIT,
-            IRoute::MIDDLEWARE => UserEdit::class,
-            IRoute::METHOD     => IVerb::POST,
-            IRoute::NAME       => UserEdit::class
+            IRoute::PATH         => ConfigProvider::USER_EDIT
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UserEdit::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => UserEdit::class
         ],
         [
-            IRoute::PATH       => ConfigProvider::USER_ADD,
-            IRoute::MIDDLEWARE => UserAdd::class,
-            IRoute::METHOD     => IVerb::POST,
-            IRoute::NAME       => UserAdd::class
+            IRoute::PATH         => ConfigProvider::USER_ADD
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UserAdd::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => UserAdd::class
         ],
         [
-            IRoute::PATH       => ConfigProvider::USER_GET_ALL,
-            IRoute::MIDDLEWARE => GetAll::class,
-            IRoute::METHOD     => IVerb::GET,
-            IRoute::NAME       => GetAll::class
+            IRoute::PATH         => ConfigProvider::USER_GET_ALL
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, GetAll::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => GetAll::class
         ],
         [
-            IRoute::PATH       => ConfigProvider::USER_REMOVE,
-            IRoute::MIDDLEWARE => UserRemove::class,
-            IRoute::METHOD     => IVerb::POST,
-            IRoute::NAME       => UserRemove::class
+            IRoute::PATH         => ConfigProvider::USER_REMOVE
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UserRemove::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => UserRemove::class
         ],
         [
-            IRoute::PATH       => ConfigProvider::USER_LOCK,
-            IRoute::MIDDLEWARE => UserLock::class,
-            IRoute::METHOD     => IVerb::POST,
-            IRoute::NAME       => UserLock::class
+            IRoute::PATH         => ConfigProvider::USER_LOCK
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UserLock::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => UserLock::class
         ],
         [
             IRoute::PATH         => ConfigProvider::USER_GET_HASH
-            , IRoute::MIDDLEWARE => UserGetByHash::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UserGetByHash::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => UserGetByHash::class
         ],
         [
             IRoute::PATH         => ConfigProvider::USER_PROFILE_IMAGE_UPDATE
-            , IRoute::MIDDLEWARE => UpdateProfileImage::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UpdateProfileImage::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => UpdateProfileImage::class
         ],

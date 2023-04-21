@@ -23,7 +23,6 @@ namespace KSA\InstallInstance;
 
 final class ConfigProvider {
 
-    public const CONFIG_PROVIDER_INSTALLATION_ROUTES = 'routes.installation.provider.config';
     public const INSTALL_INSTANCE                    = '/install_instance[/]';
     public const INSTALL_INSTANCE_CONFIG_DATA        = '/install_instance/config_data[/]';
     public const INSTALL_INSTANCE_END_UPDATE         = '/install_instance/end_update[/]';

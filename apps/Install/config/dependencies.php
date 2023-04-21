@@ -20,20 +20,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\Install\Api\InstallApps;
-use KSA\Install\Api\InstallConfiguration;
-use KSA\Install\Factory\Api\InstallAppsFactory;
-use KSA\Install\Factory\Api\InstallConfigurationFactory;
+use KSA\Install\Factory\Command\InstallFactory;
 use KSA\InstallInstance\Command\Install;
-use KSA\InstallInstance\Factory\Command\InstallFactory;
 
 return [
     'factories' => [
-        // api
-        InstallApps::class            => InstallAppsFactory::class
-        , InstallConfiguration::class => InstallConfigurationFactory::class
-
         // command
-        , Install::class              => InstallFactory::class
+        Install::class => InstallFactory::class
     ]
 ];
