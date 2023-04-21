@@ -27,12 +27,7 @@ return [
     ConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php',
     ConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php',
     ConfigProvider::COMMANDS     => require __DIR__ . '/commands.php',
-    'templates'              => [
-        'paths' => [
-            'generalApi' => [__DIR__ . '/../template/']
-        ]
-    ],
-    ConfigProvider::APP_LIST => [
+    ConfigProvider::APP_LIST     => [
         \KSA\GeneralApi\ConfigProvider::APP_ID => [
             ConfigProvider::APP_ORDER      => 2,
             ConfigProvider::APP_NAME       => 'General Api',

@@ -30,13 +30,10 @@ return [
     , ConfigProvider::COMMANDS    => require __DIR__ . '/commands.php'
     , ConfigProvider::APP_LIST    => [
         LoginConfigProvider::APP_ID => [
-            ConfigProvider::APP_ORDER      => 3,
-            ConfigProvider::APP_NAME       => 'Login',
-            ConfigProvider::APP_BASE_ROUTE => LoginConfigProvider::LOGIN,
-            ConfigProvider::APP_VERSION    => 1,
+            ConfigProvider::APP_ORDER        => 3
+            , ConfigProvider::APP_NAME       => 'Login'
+            , ConfigProvider::APP_BASE_ROUTE => LoginConfigProvider::LOGIN
+            , ConfigProvider::APP_VERSION    => 1
         ],
-    ]
-    , ConfigProvider::TEMPLATES   => [
-        ConfigProvider::PATHS => []
     ]
 ];
