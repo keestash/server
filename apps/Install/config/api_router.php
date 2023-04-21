@@ -21,30 +21,8 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\Install\Api\InstallApps;
-use KSA\Install\Api\InstallConfiguration;
-use KSA\Install\ConfigProvider;
-use KSP\Api\IRoute;
-use KSP\Api\IVerb;
 
 return [
-    CoreConfigProvider::ROUTES        => [
-        [
-            IRoute::PATH         => ConfigProvider::INSTALL_ALL
-            , IRoute::MIDDLEWARE => InstallApps::class
-            , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => InstallApps::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::INSTALL_APPS_CONFIGURATION
-            , IRoute::MIDDLEWARE => InstallConfiguration::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => InstallConfiguration::class
-        ],
-    ],
-    CoreConfigProvider::PUBLIC_ROUTES => [
-        ConfigProvider::INSTALL_ALL
-        , ConfigProvider::INSTALL
-        , ConfigProvider::INSTALL_APPS_CONFIGURATION
-    ],
+    CoreConfigProvider::ROUTES        => [],
+    CoreConfigProvider::PUBLIC_ROUTES => [],
 ];

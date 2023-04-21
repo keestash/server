@@ -21,17 +21,11 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use KSA\InstallInstance\Api\Config\Get;
-use KSA\InstallInstance\Api\Config\Update;
-use KSA\InstallInstance\Api\EndUpdate\EndUpdate;
 use KSA\InstallInstance\Command\Environment;
 use KSA\InstallInstance\Command\Install;
 use KSA\InstallInstance\Command\ListEnvironment;
 use KSA\InstallInstance\Command\Ping;
 use KSA\InstallInstance\Command\Uninstall;
-use KSA\InstallInstance\Factory\Api\Config\GetFactory;
-use KSA\InstallInstance\Factory\Api\Config\UpdateFactory;
-use KSA\InstallInstance\Factory\Api\EndUpdate\EndUpdateFactory;
 use KSA\InstallInstance\Factory\Command\EnvironmentFactory;
 use KSA\InstallInstance\Factory\Command\InstallFactory;
 use KSA\InstallInstance\Factory\Command\ListEnvironmentFactory;
@@ -40,13 +34,8 @@ use KSA\InstallInstance\Factory\Command\UninstallFactory;
 
 return [
     ConfigProvider::FACTORIES => [
-        // api
-        Get::class               => GetFactory::class
-        , Update::class          => UpdateFactory::class
-        , EndUpdate::class       => EndUpdateFactory::class
-
         // command
-        , Uninstall::class       => UninstallFactory::class
+        Uninstall::class         => UninstallFactory::class
         , Install::class         => InstallFactory::class
         , Ping::class            => PingFactory::class
         , Environment::class     => EnvironmentFactory::class

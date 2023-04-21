@@ -23,15 +23,10 @@ namespace KSA\ForgotPassword;
 
 final class ConfigProvider {
 
-    public const STAMP_NAME_PASSWORD_RESET_MAIL_SENT = 'sent.mail.reset.password.name.stamp';
-
-    public const FORGOT_PASSWORD                = "/forgot_password[/]";
-    public const RESET_PASSWORD                 = "/reset_password/:token[/]";
-    public const APP_ID                         = 'forgotPassword';
-    public const FORGOT_PASSWORD_CONFIGURATION  = '/forgot_password/configuration[/]';
-    public const RESET_PASSWORD_ACCOUNT_DETAILS = '/reset_password/account_details/:resetPasswordToken/';
-    public const FORGOT_PASSWORD_SUBMIT         = '/forgot_password/submit[/]';
-    public const RESET_PASSWORD_UPDATE          = '/reset_password/update[/]';
+    public const FORGOT_PASSWORD        = "/forgot_password[/]";
+    public const APP_ID                 = 'forgotPassword';
+    public const FORGOT_PASSWORD_SUBMIT = '/forgot_password/submit[/]';
+    public const RESET_PASSWORD_UPDATE  = '/reset_password/update[/]';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

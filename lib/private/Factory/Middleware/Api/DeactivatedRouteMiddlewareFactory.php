@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,19 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Factory\Api\Config;
+namespace Keestash\Factory\Middleware\Api;
 
-use Keestash\Core\Service\Instance\InstallerService;
-use KSA\InstallInstance\Api\Config\Update;
-use Laminas\Config\Config;
+use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
+use KSP\Core\Service\Router\IRouterService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class UpdateFactory {
+class DeactivatedRouteMiddlewareFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Update {
-        return new Update(
-            $container->get(InstallerService::class)
-            , $container->get(Config::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): DeactivatedRouteMiddleware {
+        return new DeactivatedRouteMiddleware(
+            $container->get(LoggerInterface::class)
+            , $container->get(IRouterService::class)
         );
     }
 

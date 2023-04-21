@@ -32,11 +32,11 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\IUserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class ForgotPassword implements RequestHandlerInterface {
 
@@ -44,7 +44,7 @@ class ForgotPassword implements RequestHandlerInterface {
     private IUserStateRepository $userStateRepository;
     private IL10N                $translator;
     private IUserRepository      $userRepository;
-    private LoggerInterface              $logger;
+    private LoggerInterface      $logger;
     private IEventService        $eventManager;
 
     public function __construct(
@@ -52,7 +52,7 @@ class ForgotPassword implements RequestHandlerInterface {
         , IUserStateRepository $userStateRepository
         , IL10N                $translator
         , IUserRepository      $userRepository
-        , LoggerInterface              $logger
+        , LoggerInterface      $logger
         , IEventService        $eventManager
     ) {
         $this->userService         = $userService;

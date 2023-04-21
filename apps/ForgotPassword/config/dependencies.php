@@ -37,8 +37,6 @@ return [
         // api
         ForgotPassword::class                   => ForgotPasswordFactory::class
         , ResetPassword::class                  => ResetPasswordFactory::class
-        , Configuration::class                  => ConfigurationFactory::class
-        , AccountDetails::class                 => AccountDetailsFactory::class
 
         // event
         // -- listener

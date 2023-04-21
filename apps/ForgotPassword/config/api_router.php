@@ -21,45 +21,26 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\ForgotPassword\Api\AccountDetails;
-use KSA\ForgotPassword\Api\Configuration;
+use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
 use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Api\ResetPassword;
 use KSA\ForgotPassword\ConfigProvider;
 use KSP\Api\IVerb;
 
-return [];
 return [
     CoreConfigProvider::ROUTES        => [
         [
             'path'         => ConfigProvider::FORGOT_PASSWORD_SUBMIT
-            , 'middleware' => ForgotPassword::class
+            , 'middleware' => [DeactivatedRouteMiddleware::class, ForgotPassword::class]
             , 'method'     => IVerb::POST
             , 'name'       => ForgotPassword::class
         ],
         [
             'path'         => ConfigProvider::RESET_PASSWORD_UPDATE
-            , 'middleware' => ResetPassword::class
+            , 'middleware' => [DeactivatedRouteMiddleware::class, ResetPassword::class]
             , 'method'     => IVerb::POST
             , 'name'       => ResetPassword::class
-        ],
-        [
-            'path'         => ConfigProvider::FORGOT_PASSWORD_CONFIGURATION
-            , 'middleware' => Configuration::class
-            , 'method'     => IVerb::GET
-            , 'name'       => Configuration::class
-        ],
-        [
-            'path'         => ConfigProvider::RESET_PASSWORD_ACCOUNT_DETAILS
-            , 'middleware' => AccountDetails::class
-            , 'method'     => IVerb::GET
-            , 'name'       => AccountDetails::class
-        ],
+        ]
     ],
-    CoreConfigProvider::PUBLIC_ROUTES => [
-        ConfigProvider::FORGOT_PASSWORD_SUBMIT
-        , ConfigProvider::RESET_PASSWORD_UPDATE
-        , ConfigProvider::FORGOT_PASSWORD_CONFIGURATION
-        , ConfigProvider::RESET_PASSWORD_ACCOUNT_DETAILS
-    ]
+    CoreConfigProvider::PUBLIC_ROUTES => []
 ];

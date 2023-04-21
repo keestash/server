@@ -26,7 +26,6 @@ use KSA\PasswordManager\Exception\Node\Comment\CommentException;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use KST\TestCase;
-use Monolog\Handler\IFTTTHandler;
 
 /**
  * Class AddTest
@@ -58,9 +57,9 @@ class AddTest extends TestCase {
      *  does not belong to the organization
      */
     public function testAll(
-        array $parameters
+        array     $parameters
         , ?string $exception
-        , bool $isValid
+        , bool    $isValid
     ): void {
         /** @var Add $add */
         $add = $this->getServiceManager()->get(Add::class);
@@ -82,8 +81,31 @@ class AddTest extends TestCase {
         );
 
         $response = $add->handle($serverRequest);
-
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
     }
+
+//    public function testWithXSS(): void {
+//        $comment = '<body onload=alert(\'test1\')>The body</body>';
+//
+//        /** @var Add $add */
+//        $add = $this->getServiceManager()->get(Add::class);
+//        /** @var RequestService $requestService */
+//        $requestService = $this->getServiceManager()->get(RequestService::class);
+//        /** @var CommentRepository $commentRepository */
+//        $commentRepository = $this->getServiceManager()->get(CommentRepository::class);
+//
+//        $serverRequest = $requestService->getRequestWithToken(
+//            $this->getUser()
+//            , []
+//            , []
+//            , ['comment' => $comment, 'node_id' => 2]
+//            , []
+//            , []
+//        );
+//        $response      = $add->handle($serverRequest);
+//        $data = json_decode((string)$response->getBody(), true);
+//        $c  = $commentRepository->getCommentById($data['comment']['id']);
+//        dump($c->getComment());exit();
+//    }
 
 }

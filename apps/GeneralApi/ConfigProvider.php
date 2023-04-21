@@ -23,10 +23,8 @@ namespace KSA\GeneralApi;
 
 final class ConfigProvider {
 
-    public const ROUTE_LIST_ALL             = "/route_list/all[/]";
     public const THUMBNAIL_BY_EXTENSION     = "/thumbnail/:extension[/]";
     public const DEMOUSERS_ADD              = '/demousers/user/add[/]';
-    public const DEFAULT_SLASH              = "/";
     public const DEFAULT                    = "";
     public const APP_ID                     = 'generalApi';
 
