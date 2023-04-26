@@ -43,6 +43,7 @@
     "laminas/laminas-config": "^3.5",
     "laminas/laminas-config-aggregator": "^1.5",
     "laminas/laminas-diactoros": "^2.5",
+    "laminas/laminas-escaper": "^2.12",
     "laminas/laminas-i18n": "^2.15",
     "laminas/laminas-serializer": "^2.13",
     "laminas/laminas-servicemanager": "^3.6",
@@ -84,11 +85,11 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Keestash\\": "lib/private/",
-      "KSP\\": "lib/public/",
       "KSA\\": "apps/",
+      "KSP\\": "lib/public/",
       "KST\\": "test/",
-      "KST\\Service\\": "test/src/"
+      "KST\\Service\\": "test/src/",
+      "Keestash\\": "lib/private/"
     }
   },
   "config": {
@@ -104,6 +105,9 @@
     "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G",
     "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
     "test": "./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1",
-    "test-coverage": "php -d xdebug.mode=coverage ./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1 --coverage-html test/result/"
+    "test-coverage": [
+      "Composer\\Config::disableProcessTimeout",
+      "php -d xdebug.mode=coverage ./vendor/bin/phpunit --configuration test/phpunit.xml --verbose -d memory_limit=-1 --coverage-html test/result/"
+    ]
   }
 }
