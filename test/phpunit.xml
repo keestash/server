@@ -16,8 +16,11 @@
     </testsuites>
     <coverage>
         <include>
-            <directory>../test</directory>
-            <directory>../apps/*/Test</directory>
+            <directory>../lib/private</directory>
+            <directory>../apps/</directory>
         </include>
+        <exclude>
+            <directory>../lib/public</directory>
+        </exclude>
     </coverage>
 </phpunit>
