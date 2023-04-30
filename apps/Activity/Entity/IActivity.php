@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,22 +19,19 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+namespace KSA\Activity\Entity;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\System\Installation\Instance\LockHandler;
-use Keestash\Middleware\InstanceInstalledMiddleware;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
+use DateTimeInterface;
+use KSP\Core\DTO\Entity\IJsonObject;
 
-class InstanceInstalledMiddlewareFactory {
+interface IActivity extends IJsonObject {
 
-    public function __invoke(ContainerInterface $container): InstanceInstalledMiddleware {
-        return new InstanceInstalledMiddleware(
-            $container->get(InstanceDB::class)
-            , $container->get(LockHandler::class)
-            , $container->get(LoggerInterface::class)
-        );
-    }
+    public function getActivityId(): string;
+
+    public function getAppId(): string;
+
+    public function getDescription(): string;
+
+    public function getCreateTs(): DateTimeInterface;
 
 }
