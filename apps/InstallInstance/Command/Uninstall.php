@@ -47,7 +47,7 @@ class Uninstall extends KeestashCommand {
             ->setDescription("uninstalls the instance");
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $output->writeln("unlinking instance db file");
         $this->removeInstanceDB($output);
         $output->writeln("unlinking scss files");

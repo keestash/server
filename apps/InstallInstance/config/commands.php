@@ -20,16 +20,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use KSA\InstallInstance\Command\CreateConfig;
+use KSA\InstallInstance\Command\CreateSystemUser;
 use KSA\InstallInstance\Command\Environment;
-use KSA\InstallInstance\Command\Install;
+use KSA\InstallInstance\Command\InstanceData;
 use KSA\InstallInstance\Command\ListEnvironment;
+use KSA\InstallInstance\Command\Permission\CreatePermissions;
 use KSA\InstallInstance\Command\Ping;
+use KSA\InstallInstance\Command\Role\AssignPermissionsToRoles;
+use KSA\InstallInstance\Command\Role\CreateRoles;
 use KSA\InstallInstance\Command\Uninstall;
 
 return [
     Uninstall::class
-    , Install::class
     , Ping::class
     , Environment::class
     , ListEnvironment::class
+    , CreateConfig::class
+    , CreatePermissions::class
+    , CreateSystemUser::class
+    , InstanceData::class
+    , CreateRoles::class
+    , AssignPermissionsToRoles::class
 ];

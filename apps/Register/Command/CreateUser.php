@@ -23,12 +23,12 @@ namespace KSA\Register\Command;
 
 use DateTimeImmutable;
 use Exception;
+use JsonException;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
-use KSA\Register\Exception\CreateUserException;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
@@ -67,11 +67,11 @@ class CreateUser extends KeestashCommand {
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
-     *
-     * @return int|void
-     * @throws CreateUserException|KeestashException
+     * @return int
+     * @throws KeestashException
+     * @throws JsonException
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a user");
         $name           = (string) $style->ask("Username") ?? "";

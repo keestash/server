@@ -82,7 +82,7 @@ class DeleteUser extends KeestashCommand {
         $confirmed = $yes;
 
         if (false === $yes) {
-            $confirmed = $this->askQuestion(
+            $confirmed = $this->confirmQuestion(
                 'do you really want to delete this user permanently?'
                 , $input
                 , $output
@@ -96,7 +96,7 @@ class DeleteUser extends KeestashCommand {
         }
 
         if (false === $yes) {
-            $confirmed = $this->askQuestion(
+            $confirmed = $this->confirmQuestion(
                 'do you really want to delete this user permanently?'
                 , $input
                 , $output

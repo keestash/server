@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,36 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\InstallInstance\Factory\Command;
+namespace KSA\InstallInstance\Factory\Command\Role;
 
-use Keestash\Core\Service\File\FileService;
-use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Core\System\Installation\Instance\LockHandler;
-use KSA\InstallInstance\Command\Install;
-use KSP\Core\Repository\File\IFileRepository;
-use Psr\Log\LoggerInterface;
-use KSP\Core\Service\User\IUserService;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use KSA\InstallInstance\Command\Role\CreateRoles;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class InstallFactory implements FactoryInterface {
+class CreateRolesFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): Install {
-        return new Install(
+    ): CreateRoles {
+        return new CreateRoles(
             $container->get(Config::class)
+            , $container->get(RBACRepositoryInterface::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(InstallerService::class)
-            , $container->get(LockHandler::class)
-            , $container->get(IUserRepositoryService::class)
-            , $container->get(IUserService::class)
-            , $container->get(IFileRepository::class)
-            , $container->get(FileService::class)
         );
     }
 

@@ -21,6 +21,8 @@ declare(strict_types=1);
  */
 
 use Keestash\Command\App\ListAll;
+use Keestash\Command\Derivation\AddDerivation;
+use Keestash\Command\Derivation\ClearDerivation;
 use Keestash\Command\Keestash\Cors;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
@@ -48,6 +50,7 @@ return [
     , QueueDelete::class
     , Reset::class
     , ListAll::class
-    , \Keestash\Command\Derivation::class
+    , ClearDerivation::class
+    , AddDerivation::class
     , Cors::class
 ];

@@ -75,7 +75,7 @@ class Cors extends KeestashCommand {
         $configExists = file_exists($destination);
 
         if (true === $configExists) {
-            $backup = $forceBackup || $this->askQuestion('do you want to backup the existing file?', $input, $output);
+            $backup = $forceBackup || $this->confirmQuestion('do you want to backup the existing file?', $input, $output);
 
             if (true === $backup) {
                 $backupFile       = dirname($destination) . '/allowed_origins.bak';
@@ -91,7 +91,7 @@ class Cors extends KeestashCommand {
         }
 
         if ($configExists && false === $forceWrite) {
-            $overwrite = $this->askQuestion('do you really want to overwrite?', $input, $output);
+            $overwrite = $this->confirmQuestion('do you really want to overwrite?', $input, $output);
             if (false === $overwrite) {
                 $this->writeInfo('aborting', $output);
                 return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;

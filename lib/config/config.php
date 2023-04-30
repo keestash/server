@@ -44,6 +44,7 @@ return [
     , ConfigProvider::COMMANDS                         => require __DIR__ . '/commands.php'
     , ConfigProvider::EVENTS                           => require __DIR__ . '/events.php'
     , ConfigProvider::API_ROUTER                       => require __DIR__ . '/router.php'
+    , ConfigProvider::PERMISSIONS                      => require __DIR__ . '/permissions.php'
     , ConfigProvider::TEMPLATES                        => [
         'extension' => 'twig'
         , 'paths'   => [

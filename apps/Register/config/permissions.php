@@ -23,14 +23,23 @@ declare(strict_types=1);
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Register\ConfigProvider;
 use KSP\Core\DTO\RBAC\IPermission;
+use KSP\Core\DTO\RBAC\IRole;
 
 return [
-    CoreConfigProvider::PERMISSION_MAPPING => [
+    CoreConfigProvider::PERMISSION_MAPPING     => [
         ConfigProvider::USER_EXISTS_BY_USERNAME => IPermission::PERMISSION_REGISTER_USER_EXIST
         , ConfigProvider::USER_EXISTS_BY_MAIL   => IPermission::PERMISSION_REGISTER_USER_EXIST
-    ],
-    CoreConfigProvider::PERMISSION_FREE    => [
+    ]
+    , CoreConfigProvider::PERMISSION_FREE      => [
         ConfigProvider::REGISTER_ADD
         , ConfigProvider::PASSWORD_REQUIREMENTS
-    ],
+    ]
+    , CoreConfigProvider::PERMISSION_LIST      => [
+        IPermission::PERMISSION_REGISTER_USER_EXIST => IPermission::PERMISSION_NAME_REGISTER_USER_EXIST
+    ]
+    , CoreConfigProvider::ROLE_PERMISSION_LIST => [
+        IRole::ROLE_NAME_USER_ADMIN => [
+            IPermission::PERMISSION_REGISTER_USER_EXIST
+        ]
+    ]
 ];

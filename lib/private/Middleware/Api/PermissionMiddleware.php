@@ -37,22 +37,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class PermissionMiddleware implements MiddlewareInterface {
 
-    private IRouterService       $routeService;
-    private Config               $config;
-    private RBACServiceInterface $rbacService;
 
     public function __construct(
-        IRouterService         $routeService
-        , Config               $config
-        , RBACServiceInterface $rbacService
+        private readonly IRouterService         $routeService
+        , private readonly Config               $config
+        , private readonly RBACServiceInterface $rbacService
     ) {
-        $this->routeService = $routeService;
-        $this->config       = $config;
-        $this->rbacService  = $rbacService;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        return $handler->handle($request);
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
         if (true === $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC)) {

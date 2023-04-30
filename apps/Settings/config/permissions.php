@@ -20,12 +20,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use doganoo\SimpleRBAC\Entity\RoleInterface;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Settings\ConfigProvider;
 use KSP\Core\DTO\RBAC\IPermission;
+use KSP\Core\DTO\RBAC\IRole;
 
 return [
-    CoreConfigProvider::PERMISSION_MAPPING => [
+    CoreConfigProvider::PERMISSION_MAPPING     => [
         // user
         ConfigProvider::USER_GET_HASH               => IPermission::PERMISSION_READ_USER
         , ConfigProvider::USER_GET_ALL              => IPermission::PERMISSION_READ_USER
@@ -43,6 +45,35 @@ return [
         , ConfigProvider::ORGANIZATION_UPDATE       => IPermission::PERMISSION_ORGANIZATION_UPDATE
         , ConfigProvider::ORGANIZATION_USER_CHANGE  => IPermission::PERMISSION_ORGANIZATION_CHANGE
     ]
-    , CoreConfigProvider::PERMISSION_FREE  => [
+    , CoreConfigProvider::PERMISSION_FREE      => []
+    , CoreConfigProvider::PERMISSION_LIST      => [
+        IPermission::PERMISSION_READ_USER               => IPermission::PERMISSION_NAME_READ_USER
+        , IPermission::PERMISSION_UPDATE_USER_PROFILE   => IPermission::PERMISSION_NAME_UPDATE_USER_PROFILE
+        , IPermission::PERMISSION_USER_ADD              => IPermission::PERMISSION_NAME_USER_ADD
+        , IPermission::PERMISSION_USER_EDIT             => IPermission::PERMISSION_NAME_USER_EDIT
+        , IPermission::PERMISSION_USER_LOCK             => IPermission::PERMISSION_NAME_USER_LOCK
+        , IPermission::PERMISSION_USER_REMOVE           => IPermission::PERMISSION_NAME_USER_REMOVE
+        , IPermission::PERMISSION_ORGANIZATION_ACTIVATE => IPermission::PERMISSION_NAME_ORGANIZATION_ACTIVATE
+        , IPermission::PERMISSION_ORGANIZATION_ADD      => IPermission::PERMISSION_NAME_ORGANIZATION_ADD
+        , IPermission::PERMISSION_ORGANIZATION_GET      => IPermission::PERMISSION_NAME_ORGANIZATION_GET
+        , IPermission::PERMISSION_ORGANIZATION_UPDATE   => IPermission::PERMISSION_NAME_ORGANIZATION_UPDATE
+        , IPermission::PERMISSION_ORGANIZATION_CHANGE   => IPermission::PERMISSION_NAME_ORGANIZATION_CHANGE
+    ]
+    , CoreConfigProvider::ROLE_PERMISSION_LIST => [
+        RoleInterface::DEFAULT_NAME   => [
+            IPermission::PERMISSION_READ_USER
+            , IPermission::PERMISSION_UPDATE_USER_PROFILE
+            , IPermission::PERMISSION_USER_EDIT
+        ]
+        , IRole::ROLE_NAME_USER_ADMIN => [
+            IPermission::PERMISSION_USER_ADD
+            , IPermission::PERMISSION_USER_LOCK
+            , IPermission::PERMISSION_USER_REMOVE
+            , IPermission::PERMISSION_ORGANIZATION_ACTIVATE
+            , IPermission::PERMISSION_ORGANIZATION_ADD
+            , IPermission::PERMISSION_ORGANIZATION_GET
+            , IPermission::PERMISSION_ORGANIZATION_UPDATE
+            , IPermission::PERMISSION_ORGANIZATION_CHANGE
+        ]
     ]
 ];

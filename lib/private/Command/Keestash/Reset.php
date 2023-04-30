@@ -54,7 +54,7 @@ class Reset extends KeestashCommand {
         $answer = true;
 
         if (0 === count($uuid)) {
-            $answer = $this->askQuestion(
+            $answer = $this->confirmQuestion(
                 'do you really want to reset all queue entries?'
                 , $input
                 , $output

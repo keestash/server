@@ -27,5 +27,6 @@ return [
     CoreConfigProvider::PERMISSION_MAPPING => [],
     CoreConfigProvider::PERMISSION_FREE    => [
         ConfigProvider::LOGIN_SUBMIT
+        , ConfigProvider::LOGOUT_SUBMIT
     ]
 ];

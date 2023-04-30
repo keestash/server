@@ -21,39 +21,24 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
-use Keestash\ConfigProvider;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IRequest;
-use Psr\Log\LoggerInterface;
-use Laminas\Config\Config;
-use Laminas\Diactoros\Response\RedirectResponse;
+use KSP\Api\IResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class InstanceInstalledMiddleware implements MiddlewareInterface {
 
-    private HTTPService    $httpService;
-    private InstanceDB     $instanceDB;
-    private LockHandler    $lockHandler;
-    private LoggerInterface        $logger;
-    private Config         $config;
-
     public function __construct(
-        HTTPService      $httpService
-        , InstanceDB     $instanceDB
-        , LockHandler    $lockHandler
-        , LoggerInterface        $logger
-        , Config         $config
+        private readonly InstanceDB        $instanceDB
+        , private readonly LockHandler     $lockHandler
+        , private readonly LoggerInterface $logger
     ) {
-        $this->httpService   = $httpService;
-        $this->instanceDB    = $instanceDB;
-        $this->lockHandler   = $lockHandler;
-        $this->logger        = $logger;
-        $this->config        = $config;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -67,12 +52,11 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
         }
 
         if ((null === $instanceHash || null === $instanceId)) {
-            $this->logger->debug("The whole application is not installed. Please Install");
+            $this->logger->debug("The whole application is not installed. Please Install", ['hash' => $instanceHash, 'id' => $instanceId]);
             $this->lockHandler->lock();
-            return new RedirectResponse(
-                $this->httpService->buildWebRoute(
-                    (string) $this->config->get(ConfigProvider::INSTALL_INSTANCE_ROUTE)
-                )
+            return new JsonResponse(
+                [],
+                IResponse::SERVICE_UNAVAILABLE
             );
         }
 

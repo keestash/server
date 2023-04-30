@@ -26,9 +26,13 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IRole extends RoleInterface, IJsonObject {
 
-    public const ROLE_USER_ADMIN         = 2;
-    public const ROLE_ORGANIZATION_ADMIN = 3;
-    public const ROLE_APP_ADMIN          = 4;
-    public const ROLE_LDAP_ADMIN         = 6;
+    public const ROLE_USER_ADMIN              = 2;
+    public const ROLE_NAME_USER_ADMIN         = 'USER_ADMIN';
+    public const ROLE_ORGANIZATION_ADMIN      = 3;
+    public const ROLE_NAME_ORGANIZATION_ADMIN = 'ORGANIZATION_ADMIN';
+    public const ROLE_APP_ADMIN               = 4;
+    public const ROLE_NAME_APP_ADMIN          = 'APP_ADMIN';
+    public const ROLE_LDAP_ADMIN              = 6;
+    public const ROLE_NAME_LDAP_ADMIN         = 'LDAP_ADMIN';
 
 }

@@ -50,19 +50,22 @@ final class ConfigProvider {
     public const WEB_ROUTER_STYLESHEETS  = 'stylesheets.router.web';
     public const EVENTS                  = 'events';
     public const WEB_ROUTER_SCRIPTS      = 'scripts.router.web';
-    /** @deprecated  */
-    public const WEB_ROUTER              = 'router.web';
-    public const API_ROUTER              = 'router.api';
-    public const DEPENDENCIES            = 'dependencies';
-    public const FACTORIES               = 'factories';
-    public const ALIASES                 = 'aliases';
-    public const TEMPLATES               = 'templates';
-    public const PATHS                   = 'paths';
-    public const COUNTRY_CODES           = 'codes.country';
-    public const COUNTRY_PREFIXES        = 'prefixes.country';
-    public const PERMISSIONS             = 'permissions';
-    public const PERMISSION_MAPPING      = 'mapping.permissions';
-    public const PERMISSION_FREE         = 'free.permissions';
+    /** @deprecated */
+    public const WEB_ROUTER           = 'router.web';
+    public const API_ROUTER           = 'router.api';
+    public const DEPENDENCIES         = 'dependencies';
+    public const FACTORIES            = 'factories';
+    public const ALIASES              = 'aliases';
+    public const TEMPLATES            = 'templates';
+    public const PATHS                = 'paths';
+    public const COUNTRY_CODES        = 'codes.country';
+    public const COUNTRY_PREFIXES     = 'prefixes.country';
+    public const PERMISSIONS          = 'permissions';
+    public const PERMISSION_MAPPING   = 'mapping.permissions';
+    public const PERMISSION_FREE      = 'free.permissions';
+    public const PERMISSION_LIST      = 'list.permission';
+    public const ROLE_LIST            = 'list.role';
+    public const ROLE_PERMISSION_LIST = 'list.permission.role';
 
     public const APP_LIST         = 'list.app';
     public const APP_ID           = 'id.app';

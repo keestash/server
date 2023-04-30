@@ -56,7 +56,7 @@ class Get extends KeestashCommand {
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $userIds   = (array) $input->getArgument(Get::ARGUMENT_NAME_USER_ID);
         $userList  = new ArrayList();
         $tableRows = [];
