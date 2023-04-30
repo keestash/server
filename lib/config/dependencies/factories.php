@@ -26,6 +26,8 @@ use doganoo\DIP\Object\String\StringService;
 use GuzzleHttp\Client;
 use Keestash\Api\PingHandler;
 use Keestash\Command\App\ListAll;
+use Keestash\Command\Derivation\AddDerivation;
+use Keestash\Command\Derivation\ClearDerivation;
 use Keestash\Command\Keestash\Cors;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
@@ -106,7 +108,8 @@ use Keestash\Core\System\Application;
 use Keestash\Core\System\Installation\App\LockHandler;
 use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\Command\App\ListAllFactory;
-use Keestash\Factory\Command\DerivationFactory;
+use Keestash\Factory\Command\Derivation\AddDerivationFactory;
+use Keestash\Factory\Command\Derivation\ClearDerivationFactory;
 use Keestash\Factory\Command\Keestash\CorsFactory;
 use Keestash\Factory\Command\Keestash\EventsFactory;
 use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
@@ -331,7 +334,8 @@ return [
     , QueueDelete::class                     => QueueDeleteFactory::class
     , Reset::class                           => ResetFactory::class
     , ListAll::class                         => ListAllFactory::class
-    , \Keestash\Command\Derivation::class    => DerivationFactory::class
+    , ClearDerivation::class                 => ClearDerivationFactory::class
+    , AddDerivation::class                   => AddDerivationFactory::class
     , Cors::class                            => CorsFactory::class
 
     // command

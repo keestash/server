@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -20,12 +20,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\Install\Factory\Command\InstallFactory;
-use KSA\InstallInstance\Command\Install;
+use KSA\Activity\Event\ActivityTriggeredEvent;
+use KSA\Activity\Event\Listener\ActivityTriggeredListener;
 
 return [
-    'factories' => [
-        // command
-        Install::class => InstallFactory::class
+    ActivityTriggeredEvent::class => [
+        ActivityTriggeredListener::class
     ]
 ];

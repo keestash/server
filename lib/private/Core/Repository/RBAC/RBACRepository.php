@@ -275,12 +275,14 @@ class RBACRepository implements RBACRepositoryInterface {
         $queryBuilder->insert('`role`')
             ->values(
                 [
-                    'name'        => '?'
+                    'id'          => '?'
+                    , 'name'      => '?'
                     , 'create_ts' => '?'
                 ]
             )
-            ->setParameter(0, $role->getName())
-            ->setParameter(1,
+            ->setParameter(0, $role->getId())
+            ->setParameter(1, $role->getName())
+            ->setParameter(2,
                 $this->dateTimeService->toYMDHIS($role->getCreateTs())
             )
             ->executeStatement();
@@ -354,12 +356,14 @@ class RBACRepository implements RBACRepositoryInterface {
         $queryBuilder->insert('`permission`')
             ->values(
                 [
-                    'name'        => '?'
+                    'id'          => '?'
+                    , 'name'      => '?'
                     , 'create_ts' => '?'
                 ]
             )
-            ->setParameter(0, $permission->getName())
-            ->setParameter(1,
+            ->setParameter(0, $permission->getId())
+            ->setParameter(1, $permission->getName())
+            ->setParameter(2,
                 $this->dateTimeService->toYMDHIS($permission->getCreateTs())
             )
             ->executeStatement();

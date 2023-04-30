@@ -21,13 +21,8 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\InstallInstance\ConfigProvider;
 
 return [
-    CoreConfigProvider::PERMISSION_FREE      => [
-        ConfigProvider::INSTALL_INSTANCE_UPDATE_CONFIG
-        , ConfigProvider::INSTALL_INSTANCE_CONFIG_DATA
-        , ConfigProvider::INSTALL_INSTANCE_END_UPDATE
-    ]
+    CoreConfigProvider::PERMISSION_FREE      => []
     , CoreConfigProvider::PERMISSION_MAPPING => []
 ];

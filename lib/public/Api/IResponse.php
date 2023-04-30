@@ -41,6 +41,7 @@ interface IResponse {
     public const CONFLICT              = 409;
     public const TOO_MANY_REQUESTS     = 429;
     public const INTERNAL_SERVER_ERROR = 500;
+    public const SERVICE_UNAVAILABLE   = 503;
 
 
 }

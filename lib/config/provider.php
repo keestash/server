@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use doganoo\SimpleRBAC\ConfigProvider as SimpleRBACConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\Activity\ConfigProvider as ActivityConfigProvider;
 use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
 use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
 use KSA\Install\ConfigProvider as InstallConfigProvider;
@@ -77,6 +78,7 @@ return [
         : function (): array {
             return [];
         }
+    , ActivityConfigProvider::class
 
     // Third Party libs
     , SimpleRBACConfigProvider::class

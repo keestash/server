@@ -43,8 +43,8 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Psr\Log\LoggerInterface;
 
 class UserRepositoryService implements IUserRepositoryService {
 
@@ -54,7 +54,7 @@ class UserRepositoryService implements IUserRepositoryService {
     private IUserRepository      $userRepository;
     private IUserStateRepository $userStateRepository;
     private FileService          $fileService;
-    private LoggerInterface              $logger;
+    private LoggerInterface      $logger;
     private IEventService        $eventManager;
 
     public function __construct(
@@ -64,7 +64,7 @@ class UserRepositoryService implements IUserRepositoryService {
         , IUserRepository      $userRepository
         , IUserStateRepository $userStateRepository
         , FileService          $fileService
-        , LoggerInterface              $logger
+        , LoggerInterface      $logger
         , IEventService        $eventManager
     ) {
         $this->apiLogRepository    = $apiLogRepository;
@@ -155,6 +155,19 @@ class UserRepositoryService implements IUserRepositoryService {
     public function userExistsByName(string $name): bool {
         try {
             $this->userRepository->getUser($name);
+            return true;
+        } catch (UserNotFoundException $exception) {
+            return false;
+        }
+    }
+
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function userExistsById(string $id): bool {
+        try {
+            $this->userRepository->getUserById($id);
             return true;
         } catch (UserNotFoundException $exception) {
             return false;

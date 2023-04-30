@@ -19,44 +19,47 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Command;
+namespace Keestash\Command\Derivation;
 
+use DateTimeImmutable;
+use Keestash\Command\KeestashCommand;
+use Keestash\Core\DTO\Derivation\Derivation;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
-use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use Symfony\Component\Console\Input\InputArgument;
+use KSP\Core\Service\Derivation\IDerivationService;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Derivation extends KeestashCommand {
-
-    public const ARGUMENT_NAME_USER_ID = 'user-id';
+class AddDerivation extends KeestashCommand {
 
     public function __construct(
         private readonly IDerivationRepository $derivationRepository
         , private readonly IUserRepository     $userRepository
-        , private readonly ITokenRepository    $tokenRepository
+        , private readonly IDerivationService  $derivationService
     ) {
         parent::__construct();
     }
 
     protected function configure(): void {
-        $this->setName("derivation:clear")
-            ->setDescription("clears a key derivation for a given user")
-            ->addArgument(
-                Derivation::ARGUMENT_NAME_USER_ID
-                , InputArgument::REQUIRED
-                , 'the user id'
-            );
-
+        $this->setName("derivation:add")
+            ->setDescription("adds a new derivation for a user");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $userId = $input->getArgument(Derivation::ARGUMENT_NAME_USER_ID);
-        $user   = $this->userRepository->getUserById((string) $userId);
+        $userId = $this->askQuestion('user id', $input, $output);
+
+        $user = $this->userRepository->getUserById($userId);
         $this->derivationRepository->clear($user);
-        $this->tokenRepository->removeForUser($user);
+        $this->derivationRepository->add(
+            new Derivation(
+                Uuid::uuid4()->toString()
+                , $user
+                , $this->derivationService->derive($user->getPassword())
+                , new DateTimeImmutable()
+            )
+        );
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 

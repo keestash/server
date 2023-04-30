@@ -57,7 +57,7 @@ class CreateFolder extends KeestashCommand {
             ->addArgument("parent", InputArgument::REQUIRED, "The parent node. Must be a folder or root (default)");
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = (string) $input->getArgument("user_id");
         $name   = $input->getArgument("name");
         $parent = (int) $input->getArgument("parent");

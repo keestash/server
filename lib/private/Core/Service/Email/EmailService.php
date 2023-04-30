@@ -126,7 +126,11 @@ class EmailService implements IEmailService {
             if (false === $this->hasSubject()) return false;
             if (false === $this->hasBody()) return false;
 
-//            $this->mailer->send();
+            $sendAllowed = $this->instanceDb->getOption(InstanceDB::OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED);
+
+            if ($sendAllowed === 'true') {
+                $this->mailer->send();
+            }
             return true;
         } catch (Exception $e) {
             $this->logger->debug('error with mail sending', ['e' => $e]);

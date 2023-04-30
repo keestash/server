@@ -1,6 +1,11 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getActivity\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Activity/Event/Listener/ActivityTriggeredListener.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
@@ -19,6 +24,11 @@ parameters:
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../apps/GeneralApi/Command/Info/Routes.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/CreateSystemUser.php
 
 		-
 			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
@@ -46,24 +56,9 @@ parameters:
 			path: ../../apps/InstallInstance/Command/Environment.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 1
-			path: ../../apps/InstallInstance/Command/Install.php
-
-		-
-			message: "#^Part \\$host \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Install.php
-
-		-
-			message: "#^Part \\$port \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Install.php
-
-		-
-			message: "#^Part \\$schemaName \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Install.php
+			path: ../../apps/InstallInstance/Command/Permission/CreatePermissions.php
 
 		-
 			message: "#^Parameter \\#1 \\$message of method Keestash\\\\Command\\\\KeestashCommand\\:\\:writeInfo\\(\\) expects string, string\\|false given\\.$#"
@@ -74,6 +69,16 @@ parameters:
 			message: "#^Parameter \\#1 \\$message of method Psr\\\\Log\\\\LoggerInterface\\:\\:error\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: ../../apps/InstallInstance/Command/Ping.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Role/AssignPermissionsToRoles.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/InstallInstance/Command/Role/CreateRoles.php
 
 		-
 			message: "#^Parameter \\#1 \\$filename of function unlink expects string, mixed given\\.$#"
@@ -726,6 +731,11 @@ parameters:
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
 
 		-
+			message: "#^Method Keestash\\\\Core\\\\DTO\\\\RBAC\\\\Permission\\:\\:compareTo\\(\\) has parameter \\$object with no type specified\\.$#"
+			count: 1
+			path: ../../lib/private/Core/DTO/RBAC/Permission.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/EncryptionKey/KeyRepository.php
@@ -861,8 +871,8 @@ parameters:
 			path: ../../lib/private/Factory/Core/System/RateLimit/FileRateLimiterFactory.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 2
 			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
 
 		-

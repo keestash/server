@@ -61,6 +61,12 @@ interface IUserRepositoryService {
     public function userExistsByName(string $name): bool;
 
     /**
+     * @param string $id
+     * @return bool
+     */
+    public function userExistsById(string $id): bool;
+
+    /**
      * @param string $email
      * @return bool
      */

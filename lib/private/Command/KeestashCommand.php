@@ -28,6 +28,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class KeestashCommand extends Command implements IKeestashCommand {
 
@@ -87,7 +88,7 @@ abstract class KeestashCommand extends Command implements IKeestashCommand {
      * @param bool            $default
      * @return bool
      */
-    protected function askQuestion(
+    protected function confirmQuestion(
         string            $question
         , InputInterface  $input
         , OutputInterface $output
@@ -96,6 +97,30 @@ abstract class KeestashCommand extends Command implements IKeestashCommand {
         $helper   = $this->getHelper('question');
         $question = new ConfirmationQuestion($question, $default);
         return $helper->ask($input, $output, $question);
+    }
+
+    protected function askHiddenQuestion(
+        string            $question
+        , InputInterface  $input
+        , OutputInterface $output
+    ): string {
+        $style = new SymfonyStyle($input, $output);
+        $style->title($question);
+        return (string) ($style->askHidden($question) ?? null);
+    }
+
+    protected function askQuestion(
+        string            $question
+        , InputInterface  $input
+        , OutputInterface $output
+    ): string {
+        $style = new SymfonyStyle($input, $output);
+        $style->title($question);
+        return (string) ($style->ask($question) ?? null);
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int {
+        return parent::execute($input, $output);
     }
 
 }

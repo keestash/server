@@ -19,26 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Command;
+namespace KSA\InstallInstance\Factory\Command\Role;
 
-use Keestash\Command\Derivation;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
-use KSP\Core\Repository\Token\ITokenRepository;
-use KSP\Core\Repository\User\IUserRepository;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use KSA\InstallInstance\Command\Role\AssignPermissionsToRoles;
+use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class DerivationFactory implements FactoryInterface {
+class AssignPermissionsToRolesFactory implements FactoryInterface {
 
     public function __invoke(
-        ContainerInterface $container,
-                           $requestedName,
-        ?array             $options = null
-    ): Derivation {
-        return new Derivation(
-            $container->get(IDerivationRepository::class)
-            , $container->get(IUserRepository::class)
-            , $container->get(ITokenRepository::class)
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): AssignPermissionsToRoles {
+        return new AssignPermissionsToRoles(
+            $container->get(Config::class)
+            , $container->get(RBACRepositoryInterface::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 
