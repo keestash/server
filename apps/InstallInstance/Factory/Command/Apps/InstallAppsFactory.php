@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,32 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Install\Factory\Command;
+namespace KSA\InstallInstance\Factory\Command\Apps;
 
-use Keestash\Core\Service\App\InstallerService;
-use Keestash\Core\System\Installation\App\LockHandler;
-use KSA\Install\Command\Install;
+use KSA\InstallInstance\Command\Apps\InstallApps;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Service\App\IAppService;
-use KSP\Core\Service\App\ILoaderService;
-use Psr\Log\LoggerInterface;
+use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class InstallFactory implements FactoryInterface {
+class InstallAppsFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): Install {
-        return new Install(
-            $container->get(InstallerService::class)
-            , $container->get(LockHandler::class)
-            , $container->get(LoggerInterface::class)
-            , $container->get(ILoaderService::class)
+    ): InstallApps {
+        return new InstallApps(
+            $container->get(Config::class)
             , $container->get(IAppRepository::class)
-            , $container->get(IAppService::class)
         );
     }
 
