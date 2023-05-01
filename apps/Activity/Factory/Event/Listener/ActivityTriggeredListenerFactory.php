@@ -25,6 +25,7 @@ use KSA\Activity\Event\Listener\ActivityTriggeredListener;
 use KSA\Activity\Repository\ActivityRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ActivityTriggeredListenerFactory implements FactoryInterface {
 
@@ -35,6 +36,7 @@ class ActivityTriggeredListenerFactory implements FactoryInterface {
     ): ActivityTriggeredListener {
         return new ActivityTriggeredListener(
             $container->get(ActivityRepository::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

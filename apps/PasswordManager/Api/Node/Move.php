@@ -23,6 +23,8 @@ namespace KSA\PasswordManager\Api\Node;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Exception\Edge\EdgeException;
 use KSA\PasswordManager\Exception\Node\NodeNotFoundException;
@@ -45,19 +47,13 @@ use Psr\Log\LoggerInterface;
  */
 class Move implements RequestHandlerInterface {
 
-    private NodeRepository $nodeRepository;
-    private IL10N          $translator;
-    private AccessService  $accessService;
-
     public function __construct(
-        IL10N                              $l10n
-        , NodeRepository                   $nodeRepository
-        , AccessService                    $accessService
-        , private readonly LoggerInterface $logger
+        private readonly NodeRepository     $nodeRepository
+        , private readonly AccessService    $accessService
+        , private readonly LoggerInterface  $logger
+        , private readonly IActivityService $activityService
+        , private readonly IL10N            $translator
     ) {
-        $this->translator     = $l10n;
-        $this->nodeRepository = $nodeRepository;
-        $this->accessService  = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -82,7 +78,7 @@ class Move implements RequestHandlerInterface {
         if (false === $this->accessService->hasAccess($targetNode, $token->getUser())) {
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("target does not exist")
+                    "message" => "target does not exist"
                 ]
                 , IResponse::FORBIDDEN);
         }
@@ -120,6 +116,12 @@ class Move implements RequestHandlerInterface {
                 , IResponse::NOT_MODIFIED
             );
         }
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , $this->translator->translate(sprintf('Node moved to %s', $targetNode->getName()))
+        );
 
         return new JsonResponse(
             [

@@ -24,6 +24,8 @@ namespace KSA\PasswordManager\Api\Node\Credential;
 use DateTimeImmutable;
 use doganoo\DI\Object\String\IStringService;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
@@ -47,24 +49,14 @@ use Psr\Log\LoggerInterface;
  */
 class Update implements RequestHandlerInterface {
 
-    private NodeRepository    $nodeRepository;
-    private IStringService    $stringService;
-    private CredentialService $credentialService;
-    private IL10N             $translator;
-    private LoggerInterface   $logger;
-
     public function __construct(
-        IL10N               $l10n
-        , NodeRepository    $nodeRepository
-        , IStringService    $stringService
-        , CredentialService $credentialService
-        , LoggerInterface   $logger
+        private readonly IL10N               $translator
+        , private readonly NodeRepository    $nodeRepository
+        , private readonly IStringService    $stringService
+        , private readonly CredentialService $credentialService
+        , private readonly LoggerInterface   $logger
+        , private readonly IActivityService $activityService
     ) {
-        $this->translator        = $l10n;
-        $this->nodeRepository    = $nodeRepository;
-        $this->stringService     = $stringService;
-        $this->credentialService = $credentialService;
-        $this->logger            = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -120,6 +112,12 @@ class Update implements RequestHandlerInterface {
 
         $parent->setUpdateTs(new DateTimeImmutable());
         $this->nodeRepository->updateNode($parent);
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , "updated credential"
+        );
 
         return new JsonResponse(
             [

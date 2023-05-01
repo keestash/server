@@ -22,19 +22,35 @@ declare(strict_types=1);
 namespace KSA\Activity\Event\Listener;
 
 use KSA\Activity\Event\ActivityTriggeredEvent;
+use KSA\Activity\Exception\ActivityNotFoundException;
 use KSA\Activity\Repository\ActivityRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
+use Psr\Log\LoggerInterface;
 
 class ActivityTriggeredListener implements IListener {
 
     public function __construct(
         private readonly ActivityRepository $activityRepository
+        , private readonly LoggerInterface  $logger
     ) {
     }
 
     public function execute(IEvent|ActivityTriggeredEvent $event): void {
-        $this->activityRepository->insert($event->getActivity());
+        try {
+            $this->logger->debug('retrieving the activity', ['activity' => $event->getActivity()]);
+            $this->activityRepository->get($event->getActivity()->getActivityId());
+            $this->logger->debug('activity found. Processing with this one');
+        } catch (ActivityNotFoundException) {
+            $this->logger->debug('no activity found. Inserting ....');
+            $this->activityRepository->insert($event->getActivity());
+            $this->logger->debug('done');
+        }
+
+        $this->logger->debug('inserting activity data', ['count' => $event->getActivity()->getData()->length()]);
+        foreach ($event->getActivity()->getData() as $description) {
+            $this->activityRepository->insertDescription($description, $event->getActivity()->getActivityId());
+        }
     }
 
 }

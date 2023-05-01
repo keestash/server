@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Activity\Entity;
 
 use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IActivity extends IJsonObject {
@@ -30,7 +31,9 @@ interface IActivity extends IJsonObject {
 
     public function getAppId(): string;
 
-    public function getDescription(): string;
+    public function getReferenceKey(): string;
+
+    public function getData(): ArrayList;
 
     public function getCreateTs(): DateTimeInterface;
 

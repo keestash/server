@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -20,28 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider;
-use KSA\Activity\Event\Listener\ActivityTriggeredListener;
-use KSA\Activity\Factory\Event\Listener\ActivityTriggeredListenerFactory;
-use KSA\Activity\Factory\Repository\ActivityRepositoryFactory;
-use KSA\Activity\Factory\Service\ActivityServiceFactory;
-use KSA\Activity\Repository\ActivityRepository;
+namespace KSA\Activity\Factory\Service;
+
 use KSA\Activity\Service\ActivityService;
 use KSA\Activity\Service\IActivityService;
+use KSP\Core\Service\Event\IEventService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-return [
-    ConfigProvider::FACTORIES => [
-        // event
-        // --- listener
-        ActivityTriggeredListener::class => ActivityTriggeredListenerFactory::class
+class ActivityServiceFactory implements FactoryInterface {
 
-        // repository
-        , ActivityRepository::class      => ActivityRepositoryFactory::class
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): IActivityService {
+        return new ActivityService(
+            $container->get(IEventService::class)
+        );
+    }
 
-        // service
-        , ActivityService::class         => ActivityServiceFactory::class
-    ],
-    ConfigProvider::ALIASES   => [
-        IActivityService::class => ActivityService::class
-    ]
-];
+}

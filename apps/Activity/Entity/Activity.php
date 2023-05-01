@@ -22,13 +22,15 @@ declare(strict_types=1);
 namespace KSA\Activity\Entity;
 
 use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 
 class Activity implements IActivity {
 
     public function __construct(
         private readonly string            $activityId,
         private readonly string            $appId,
-        private readonly string            $description,
+        private readonly string            $referenceKey,
+        private readonly ArrayList         $data,
         private readonly DateTimeInterface $createTs
     ) {
     }
@@ -50,8 +52,15 @@ class Activity implements IActivity {
     /**
      * @return string
      */
-    public function getDescription(): string {
-        return $this->description;
+    public function getReferenceKey(): string {
+        return $this->referenceKey;
+    }
+
+    /**
+     * @return ArrayList
+     */
+    public function getData(): ArrayList {
+        return $this->data;
     }
 
     /**
@@ -61,12 +70,14 @@ class Activity implements IActivity {
         return $this->createTs;
     }
 
+
     public function jsonSerialize(): array {
         return [
-            'activity_id' => $this->getActivityId(),
-            'app_id'      => $this->getAppId(),
-            'description' => $this->getDescription(),
-            'create_ts'   => $this->getCreateTs()
+            'activity_id'     => $this->getActivityId()
+            , 'app_id'        => $this->getAppId()
+            , 'reference_key' => $this->getReferenceKey()
+            , 'data'          => $this->getData()->toArray()
+            , 'create_ts'     => $this->getCreateTs()
         ];
     }
 

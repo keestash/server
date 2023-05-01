@@ -72,6 +72,7 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $files     = $request->getUploadedFiles();
         $fileCount = count($files);
         /** @var IToken $token */

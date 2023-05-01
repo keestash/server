@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Node\Node as NodeObject;
@@ -33,10 +35,10 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
@@ -47,24 +49,14 @@ use Throwable;
  */
 class Create implements RequestHandlerInterface {
 
-    private NodeRepository        $nodeRepository;
-    private CredentialService     $credentialService;
-    private LoggerInterface               $logger;
-    private NodeEncryptionService $nodeEncryptionService;
-    private AccessService         $accessService;
-
     public function __construct(
-        NodeRepository          $nodeRepository
-        , CredentialService     $credentialService
-        , LoggerInterface               $logger
-        , NodeEncryptionService $nodeEncryptionService
-        , AccessService         $accessService
+        private readonly NodeRepository          $nodeRepository
+        , private readonly CredentialService     $credentialService
+        , private readonly LoggerInterface       $logger
+        , private readonly NodeEncryptionService $nodeEncryptionService
+        , private readonly AccessService         $accessService
+        , private readonly IActivityService      $activityService
     ) {
-        $this->nodeRepository        = $nodeRepository;
-        $this->credentialService     = $credentialService;
-        $this->logger                = $logger;
-        $this->nodeEncryptionService = $nodeEncryptionService;
-        $this->accessService         = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -114,6 +106,12 @@ class Create implements RequestHandlerInterface {
             $edge = $this->credentialService->insertCredential($credential, $parent);
             $this->nodeEncryptionService->decryptNode($credential);
             $edge->setNode($credential);
+
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $credential->getId()
+                , "created credential"
+            );
         } catch (Throwable $exception) {
             $this->logger->error($exception->getMessage());
             return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);

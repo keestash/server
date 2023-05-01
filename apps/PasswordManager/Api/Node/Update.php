@@ -23,6 +23,8 @@ namespace KSA\PasswordManager\Api\Node;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Exception\Node\NodeNotUpdatedException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -35,8 +37,9 @@ use Psr\Log\LoggerInterface;
 class Update implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly NodeRepository    $nodeRepository
-        , private readonly LoggerInterface $logger
+        private readonly NodeRepository     $nodeRepository
+        , private readonly LoggerInterface  $logger
+        , private readonly IActivityService $activityService
     ) {
     }
 
@@ -68,6 +71,11 @@ class Update implements RequestHandlerInterface {
 
         try {
             $this->nodeRepository->updateNode($node);
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $node->getId()
+                , "updated node"
+            );
         } catch (NodeNotUpdatedException $exception) {
             $this->logger->warning(
                 'could not update node'

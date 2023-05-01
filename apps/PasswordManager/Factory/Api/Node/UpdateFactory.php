@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Update;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -37,6 +38,7 @@ class UpdateFactory implements FactoryInterface {
         return new Update(
             $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IActivityService::class)
         );
     }
 

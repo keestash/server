@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,22 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node\Folder;
+namespace KSA\Activity\Exception;
 
-use KSA\Activity\Service\IActivityService;
-use KSA\PasswordManager\Api\Node\Folder\Create;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\NodeService;
-use Psr\Container\ContainerInterface;
-
-class CreateFactory {
-
-    public function __invoke(ContainerInterface $container): Create {
-        return new Create(
-            $container->get(NodeRepository::class)
-            , $container->get(NodeService::class)
-            , $container->get(IActivityService::class)
-        );
-    }
+class ActivityNotFoundException extends ActivityException {
 
 }
