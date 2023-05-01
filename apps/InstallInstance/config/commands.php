@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use KSA\InstallInstance\Command\Apps\InstallApps;
 use KSA\InstallInstance\Command\CreateConfig;
 use KSA\InstallInstance\Command\CreateSystemUser;
 use KSA\InstallInstance\Command\Environment;
@@ -42,4 +43,6 @@ return [
     , InstanceData::class
     , CreateRoles::class
     , AssignPermissionsToRoles::class
+    , InstallApps::class
+    , \KSA\InstallInstance\Command\Apps\Uninstall::class
 ];

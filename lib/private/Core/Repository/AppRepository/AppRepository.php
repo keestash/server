@@ -76,6 +76,11 @@ class AppRepository implements IAppRepository {
         return $map;
     }
 
+    /**
+     * @param string $id
+     * @return IApp
+     * @throws AppNotFoundException
+     */
     public function getApp(string $id): IApp {
         try {
             $app          = null;
@@ -144,6 +149,14 @@ class AppRepository implements IAppRepository {
         // There is otherwise an exception thrown.
         // Do not know how to handle this better for now
         return true;
+    }
+
+    public function remove(IApp $app): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->delete('`app_config`')
+            ->where('app_id = ?')
+            ->setParameter(0, $app->getId())
+            ->executeStatement();
     }
 
 }

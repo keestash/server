@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\AppRepository;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash\Exception\App\AppNotFoundException;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\IRepository;
 
@@ -29,8 +30,15 @@ interface IAppRepository extends IRepository {
 
     public function getAllApps(): HashTable;
 
+    /**
+     * @param string $id
+     * @return IApp
+     * @throws AppNotFoundException
+     */
     public function getApp(string $id): IApp;
 
     public function replace(IApp $app): bool;
+
+    public function remove(IApp $app): void;
 
 }

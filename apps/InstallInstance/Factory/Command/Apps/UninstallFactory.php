@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Install;
+namespace KSA\InstallInstance\Factory\Command\Apps;
 
-final class ConfigProvider {
+use KSA\InstallInstance\Command\Apps\Uninstall;
+use KSP\Core\Repository\AppRepository\IAppRepository;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-    public const INSTALL     = '/install[/]';
-    public const INSTALL_ALL = '/install/apps/all[/]';
-    public const APP_ID      = 'install';
+class UninstallFactory implements FactoryInterface {
 
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Uninstall {
+        return new Uninstall(
+            $container->get(IAppRepository::class)
+            , $container->get(LoggerInterface::class)
+        );
     }
 
 }

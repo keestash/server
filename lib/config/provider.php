@@ -25,7 +25,6 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Activity\ConfigProvider as ActivityConfigProvider;
 use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
 use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
-use KSA\Install\ConfigProvider as InstallConfigProvider;
 use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
 use KSA\LDAP\ConfigProvider as LDAPConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
@@ -61,7 +60,6 @@ return [
     , CoreConfigProvider::class
     , ForgotPasswordConfigProvider::class
     , GeneralApiConfigProvider::class
-    , InstallConfigProvider::class
     , InstallInstanceConfigProvider::class
     , LoginConfigProvider::class
     , class_exists(LDAPConfigProvider::class)
