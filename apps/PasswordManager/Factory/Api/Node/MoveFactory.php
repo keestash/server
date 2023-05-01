@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
@@ -32,10 +33,11 @@ class MoveFactory {
 
     public function __invoke(ContainerInterface $container): Move {
         return new Move(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
             , $container->get(AccessService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IActivityService::class)
+            , $container->get(IL10N::class)
         );
     }
 

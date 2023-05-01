@@ -40,12 +40,12 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface;
 use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
@@ -67,23 +67,23 @@ class Add implements RequestHandlerInterface {
     private const ERROR_NOT_CONNECTED      = 1;
 
     private IFileRepository $fileRepository;
-    private NodeRepository $nodeRepository;
-    private IDataService   $dataManager;
-    private FileRepository $nodeFileRepository;
+    private NodeRepository  $nodeRepository;
+    private IDataService    $dataManager;
+    private FileRepository  $nodeFileRepository;
     private IFileService    $uploadFileService;
-    private LoggerInterface         $logger;
+    private LoggerInterface $logger;
     private IJWTService     $jwtService;
     private Config          $config;
 
     public function __construct(
-        IFileRepository  $uploadFileRepository
-        , NodeRepository $nodeRepository
-        , FileRepository $nodeFileRepository
-        , IFileService   $uploadFileService
-        , LoggerInterface        $logger
-        , Config         $config
-        , IJWTService    $jwtService
-        , IDataService   $dataManager
+        IFileRepository   $uploadFileRepository
+        , NodeRepository  $nodeRepository
+        , FileRepository  $nodeFileRepository
+        , IFileService    $uploadFileService
+        , LoggerInterface $logger
+        , Config          $config
+        , IJWTService     $jwtService
+        , IDataService    $dataManager
     ) {
         $this->fileRepository     = $uploadFileRepository;
         $this->nodeRepository     = $nodeRepository;
@@ -96,6 +96,7 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $parameters = (array) $request->getParsedBody();
         $nodeId     = $parameters["node_id"] ?? null;
         $fileList   = $request->getUploadedFiles();

@@ -23,6 +23,8 @@ namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTime;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -30,8 +32,6 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -44,21 +44,11 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Create implements RequestHandlerInterface {
 
-    private IL10N          $translator;
-    private NodeRepository $nodeRepository;
-    private NodeService    $nodeService;
-    private LoggerInterface        $logger;
-
     public function __construct(
-        IL10N            $l10n
-        , NodeRepository $nodeRepository
-        , NodeService    $nodeService
-        , LoggerInterface        $logger
+        private readonly NodeRepository     $nodeRepository
+        , private readonly NodeService      $nodeService
+        , private readonly IActivityService $activityService
     ) {
-        $this->translator     = $l10n;
-        $this->nodeRepository = $nodeRepository;
-        $this->nodeService    = $nodeService;
-        $this->logger         = $logger;
     }
 
 
@@ -103,6 +93,12 @@ class Create implements RequestHandlerInterface {
         );
 
         $edge = $this->nodeRepository->addEdge($edge);
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $folder->getId()
+            , "updated node"
+        );
 
         return new JsonResponse(
             [

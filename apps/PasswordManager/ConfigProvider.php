@@ -28,7 +28,6 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_ORGANIZATION_NODE_ADD    = "/password_manager/organization/node/add[/]";
     public const PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE = "/password_manager/organization/node/update[/]";
     public const PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE = "/password_manager/organization/node/remove/";
-
     public const PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT = "/password_manager/public_share/decrypt/:hash[/]";
     public const PASSWORD_MANAGER_PUBLIC_SHARE_SINGLE  = "/s/:hash[/]";
     public const PASSWORD_MANAGER_PUBLIC_SHARE  = '/password_manager/share[/]';

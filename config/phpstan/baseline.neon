@@ -2,7 +2,7 @@ parameters:
 	ignoreErrors:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getActivity\\(\\)\\.$#"
-			count: 1
+			count: 6
 			path: ../../apps/Activity/Event/Listener/ActivityTriggeredListener.php
 
 		-
@@ -156,47 +156,32 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Generate/Quality.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Attachment\\\\Add\\:\\:removeFile\\(\\) is unused\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Attachment\\\\Get\\:\\:addIcons\\(\\) is unused\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
 
 		-
-			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
 
 		-
-			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Remove.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setName\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
 
@@ -214,6 +199,21 @@ parameters:
 			message: "#^Parameter \\#1 \\$name of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:getByName\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/GetByName.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Organization/Add.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Organization/Remove.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Organization/Update.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"

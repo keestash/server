@@ -59,6 +59,7 @@ class Update implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new \Keestash\Api\Response\JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $parameters = (array) $request->getParsedBody();
 
         $nodeId         = (int) ($parameters['node_id'] ?? 0);

@@ -31,34 +31,24 @@ use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNo
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private OrganizationNodeRepository $organizationNodeRepository;
-    private IOrganizationRepository    $organizationRepository;
-    private NodeRepository             $nodeRepository;
-    private LoggerInterface       $logger;
-    private IEventService $eventManager;
-
     public function __construct(
-        OrganizationNodeRepository $organizationNodeRepository
-        , IOrganizationRepository  $organizationRepository
-        , NodeRepository           $nodeRepository
-        , LoggerInterface                  $logger
-        , IEventService            $eventManager
+        private readonly OrganizationNodeRepository $organizationNodeRepository
+        , private readonly IOrganizationRepository  $organizationRepository
+        , private readonly NodeRepository           $nodeRepository
+        , private readonly LoggerInterface          $logger
+        , private readonly IEventService            $eventManager
     ) {
-        $this->organizationNodeRepository = $organizationNodeRepository;
-        $this->organizationRepository     = $organizationRepository;
-        $this->nodeRepository             = $nodeRepository;
-        $this->logger                     = $logger;
-        $this->eventManager               = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $parameters = (array) $request->getParsedBody();
 
         $nodeId         = (int) ($parameters['node_id'] ?? 0);

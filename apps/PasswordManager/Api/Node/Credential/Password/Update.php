@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential\Password;
 
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -38,18 +40,12 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Update implements RequestHandlerInterface {
 
-    private NodeRepository        $nodeRepository;
-    private CredentialService     $credentialService;
-    private NodeEncryptionService $nodeEncryptionService;
-
     public function __construct(
-        NodeRepository          $nodeRepository
-        , CredentialService     $credentialService
-        , NodeEncryptionService $nodeEncryptionService
+        private readonly NodeRepository          $nodeRepository
+        , private readonly CredentialService     $credentialService
+        , private readonly NodeEncryptionService $nodeEncryptionService
+        , private readonly IActivityService      $activityService
     ) {
-        $this->nodeRepository        = $nodeRepository;
-        $this->credentialService     = $credentialService;
-        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -71,6 +67,12 @@ class Update implements RequestHandlerInterface {
         $this->credentialService->updatePassword(
             $credential
             , $passwordPlain
+        );
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $credential->getId()
+            , "updated credential"
         );
 
         return new JsonResponse([]);
