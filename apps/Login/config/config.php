@@ -32,7 +32,6 @@ return [
         LoginConfigProvider::APP_ID => [
             ConfigProvider::APP_ORDER        => 3
             , ConfigProvider::APP_NAME       => 'Login'
-            , ConfigProvider::APP_BASE_ROUTE => LoginConfigProvider::LOGIN
             , ConfigProvider::APP_VERSION    => 1
         ],
     ]

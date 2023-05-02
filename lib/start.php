@@ -24,16 +24,15 @@ use Laminas\Config\Config;
 use Laminas\ConfigAggregator\ConfigAggregator;
 use Laminas\ServiceManager\ServiceManager;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../lib/versioncheck.php';
-require_once __DIR__ . '/../lib/filecheck.php';
-require_once __DIR__ . '/../lib/extensioncheck.php';
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../lib/versioncheck.php';
+require __DIR__ . '/../lib/filecheck.php';
+require __DIR__ . '/../lib/extensioncheck.php';
 
 $configAggregator = new ConfigAggregator(
     require __DIR__ . '/config/provider.php'
     , __DIR__ . '/../config/cache/config-cache.php'
 );
-
 $config       = $configAggregator->getMergedConfig();
 $configObject = new Config($config);
 

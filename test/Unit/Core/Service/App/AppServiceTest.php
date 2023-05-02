@@ -44,7 +44,6 @@ class AppServiceTest extends TestCase {
                 ConfigProvider::APP_NAME         => $name
                 , ConfigProvider::APP_ORDER      => 1
                 , ConfigProvider::APP_VERSION    => 1
-                , ConfigProvider::APP_BASE_ROUTE => "index.php/my-awesome-route"
             ]
         );
 
@@ -53,8 +52,6 @@ class AppServiceTest extends TestCase {
         $this->assertEquals($app->getName(), $name);
         $this->assertEquals($app->getOrder(), 1);
         $this->assertEquals($app->getVersion(), 1);
-        $this->assertEquals($app->getBaseRoute(), "index.php/my-awesome-route"
-        );
     }
 
     public function testToConfigApp(): void {
@@ -66,7 +63,6 @@ class AppServiceTest extends TestCase {
                 ConfigProvider::APP_NAME         => $name
                 , ConfigProvider::APP_ORDER      => 1
                 , ConfigProvider::APP_VERSION    => 1
-                , ConfigProvider::APP_BASE_ROUTE => "index.php/my-awesome-route"
             ]
         );
 

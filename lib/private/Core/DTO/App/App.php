@@ -28,7 +28,6 @@ class App implements IApp {
     private string $id;
     private int    $order = 0;
     private string $name;
-    private string $baseRoute;
     private int    $version;
 
     public function getId(): string {
@@ -56,20 +55,6 @@ class App implements IApp {
     }
 
     /**
-     * @return string
-     */
-    public function getBaseRoute(): string {
-        return $this->baseRoute;
-    }
-
-    /**
-     * @param string $baseRoute
-     */
-    public function setBaseRoute(string $baseRoute): void {
-        $this->baseRoute = $baseRoute;
-    }
-
-    /**
      * @return int
      */
     public function getVersion(): int {
@@ -85,11 +70,10 @@ class App implements IApp {
 
     public function jsonSerialize(): array {
         return [
-            'id'           => $this->getId()
-            , 'order'      => $this->getOrder()
-            , 'name'       => $this->getName()
-            , 'base_route' => $this->getBaseRoute()
-            , 'version'    => $this->getVersion()
+            'id'        => $this->getId()
+            , 'order'   => $this->getOrder()
+            , 'name'    => $this->getName()
+            , 'version' => $this->getVersion()
         ];
     }
 

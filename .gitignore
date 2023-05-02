@@ -289,3 +289,5 @@ smtp.php
 apps/Payment
 apps/Payment/*
 /apps/LDAP/
+/test/cache/cache.json/test-results
+/test/cache/test-results

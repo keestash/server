@@ -38,7 +38,6 @@ class AppService implements IAppService {
         $app->setName((string) $data[ConfigProvider::APP_NAME]);
         $app->setOrder((int) $data[ConfigProvider::APP_ORDER]);
         $app->setVersion((int) $data[ConfigProvider::APP_VERSION]);
-        $app->setBaseRoute((string) $data[ConfigProvider::APP_BASE_ROUTE]);
         return $app;
     }
 

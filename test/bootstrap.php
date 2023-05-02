@@ -57,6 +57,14 @@ $instanceDb->addOption(
     InstanceDB::OPTION_NAME_ENVIRONMENT
     , 'dev'
 );
+$instanceDb->addOption(
+    InstanceDB::OPTION_NAME_SAAS
+    , 'false'
+);
+$instanceDb->addOption(
+    InstanceDB::OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED
+    , 'false'
+);
 
 /** @var IMigrator $migrator */
 $migrator = $container->get(IMigrator::class);

@@ -39,7 +39,6 @@ return [
     , ConfigProvider::DATA_PATH                        => realpath(__DIR__ . '/../../data/')
     , ConfigProvider::INSTANCE_PATH                    => realpath(__DIR__ . '/../../')
     , ConfigProvider::APP_PATH                         => realpath(__DIR__ . '/../../apps/')
-    , ConfigProvider::INSTALL_INSTANCE_ROUTE           => 'install_instance'
     , ConfigProvider::DEPENDENCIES                     => require __DIR__ . '/dependencies.php'
     , ConfigProvider::COMMANDS                         => require __DIR__ . '/commands.php'
     , ConfigProvider::EVENTS                           => require __DIR__ . '/events.php'

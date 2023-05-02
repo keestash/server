@@ -25,7 +25,6 @@ use DateTimeImmutable;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Http\JWT\Audience;
-use Keestash\Core\Service\Encryption\RecryptService;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\Token\TokenNotCreatedException;
@@ -78,7 +77,6 @@ class Login implements RequestHandlerInterface {
         , IConnectionRepository                  $connectionRepository
         , private readonly IDerivationRepository $derivationRepository
         , private readonly IDerivationService    $derivationService
-        , private readonly RecryptService        $recryptService
     ) {
         $this->userRepository       = $userRepository;
         $this->translator           = $translator;
@@ -156,8 +154,6 @@ class Login implements RequestHandlerInterface {
                 , new DateTimeImmutable()
             )
         );
-
-        $this->recryptService->recrypt($user);
 
         $user->setJWT(
             $this->jwtService->getJWT(

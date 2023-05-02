@@ -31,7 +31,6 @@ return [
         \KSA\GeneralApi\ConfigProvider::APP_ID => [
             ConfigProvider::APP_ORDER      => 2,
             ConfigProvider::APP_NAME       => 'General Api',
-            ConfigProvider::APP_BASE_ROUTE => '',
             ConfigProvider::APP_VERSION    => 1,
         ],
     ],

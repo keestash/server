@@ -22,8 +22,7 @@ declare(strict_types=1);
 
 use Laminas\ServiceManager\ServiceManager;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
+require __DIR__ . '/../../vendor/autoload.php';
 /** @var ServiceManager $container */
 $container         = require __DIR__ . '/../../lib/start.php';
 $mocked            = require __DIR__ . '/../config/dependencies.php';

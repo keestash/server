@@ -40,14 +40,14 @@ use Psr\Container\ContainerInterface;
 
     chdir(dirname(__DIR__));
 
-    require_once __DIR__ . '/../lib/versioncheck.php';
-    require_once __DIR__ . '/../lib/filecheck.php';
-    require_once __DIR__ . '/../lib/extensioncheck.php';
-    require_once __DIR__ . '/../config/config.php';
-    require_once __DIR__ . '/../config/config.php';
+    require __DIR__ . '/../lib/versioncheck.php';
+    require __DIR__ . '/../lib/filecheck.php';
+    require __DIR__ . '/../lib/extensioncheck.php';
+    require __DIR__ . '/../config/config.php';
+    require __DIR__ . '/../config/config.php';
 
     /** @var ContainerInterface $container */
-    $container = require_once __DIR__ . '/../lib/start.php';
+    $container = require __DIR__ . '/../lib/start.php';
 
     /** @var NodeService $nodeService */
     $nodeService = $container->get(NodeService::class);

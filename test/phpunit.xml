@@ -1,17 +1,17 @@
 <phpunit
         bootstrap="bootstrap.php"
         cacheResultFile="result/result.json"
+        colors="true"
+        failOnWarning="true"
         verbose="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true"
+        beStrictAboutChangesToGlobalState="true"
 >
     <testsuites>
         <testsuite name="Keestash">
-            <directory>../test</directory>
+            <directory suffix=".php">../test</directory>
         </testsuite>
         <testsuite name="Apps">
-            <directory>../apps/*/Test</directory>
+            <directory suffix=".php">../apps/*/Test</directory>
         </testsuite>
     </testsuites>
     <coverage>

@@ -24,24 +24,24 @@ namespace Keestash\Core\Service\Router;
 use Keestash\ConfigProvider;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 class RouterService implements IRouterService {
 
     private RouterInterface     $router;
     private Config              $config;
-    private LoggerInterface             $logger;
+    private LoggerInterface     $logger;
     private IEnvironmentService $environmentService;
 
     public function __construct(
         RouterInterface       $router
         , Config              $config
-        , LoggerInterface             $logger
+        , LoggerInterface     $logger
         , IEnvironmentService $environmentService
     ) {
         $this->router             = $router;
@@ -78,43 +78,8 @@ class RouterService implements IRouterService {
         return $this->router->generateUri($name);
     }
 
-    public function routesToInstallation(
-        ServerRequestInterface $request
-        , bool                 $withInstance = true
-        , bool                 $withApps = true
-    ): bool {
-        $currentRoute       = $this->getMatchedPath($request);
-        $installationRoutes = [];
-
-        if (true === $withInstance) {
-            $installationRoutes = array_merge(
-                $installationRoutes
-                , $this->config
-                ->get(ConfigProvider::INSTALL_APPS_ROUTES)
-                ->toArray()
-            );
-        }
-
-        if (true === $withApps) {
-            $installationRoutes = array_merge(
-                $installationRoutes
-                , $this->config
-                ->get(ConfigProvider::INSTALL_INSTANCE_ROUTES)
-                ->toArray()
-            );
-        }
-
-        foreach ($installationRoutes as $publicRoute) {
-            if ($currentRoute === $publicRoute) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function isPublicRoute(ServerRequestInterface $request): bool {
-        $path   = $this->getMatchedPath($request);
+        $path = $this->getMatchedPath($request);
 
         switch ($this->environmentService->getEnv()) {
             case ConfigProvider::ENVIRONMENT_WEB:

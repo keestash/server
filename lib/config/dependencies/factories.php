@@ -153,12 +153,10 @@ use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
 use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
 use Keestash\Factory\Core\Service\Derivation\DerivationServiceFactory;
 use Keestash\Factory\Core\Service\Email\EmailServiceFactory;
-use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Credential\DerivedCredentialServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Password\PasswordServiceFactory;
-use Keestash\Factory\Core\Service\Encryption\RecryptServiceFactory;
 use Keestash\Factory\Core\Service\Event\EventServiceFactory;
 use Keestash\Factory\Core\Service\Event\Listener\RolesAndPermissionsListenerFactory;
 use Keestash\Factory\Core\Service\File\FileServiceFactory;
@@ -188,7 +186,6 @@ use Keestash\Factory\Middleware\Api\PermissionMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\RateLimiterMiddlewareFactory;
 use Keestash\Factory\Middleware\Api\UserActiveMiddlewareFactory;
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
-use Keestash\Factory\Middleware\AppsInstalledMiddlewareFactory;
 use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
@@ -203,7 +200,6 @@ use Keestash\Middleware\Api\PermissionMiddleware;
 use Keestash\Middleware\Api\RateLimiterMiddleware;
 use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
-use Keestash\Middleware\AppsInstalledMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Keestash\Queue\Handler\EventHandler;
@@ -259,7 +255,6 @@ return [
 
     // middleware
     InstanceInstalledMiddleware::class                             => InstanceInstalledMiddlewareFactory::class,
-    AppsInstalledMiddleware::class                                 => AppsInstalledMiddlewareFactory::class,
     DispatchMiddleware::class                                      => DispatchMiddlewareFactory::class,
     ApplicationStartedMiddleware::class                            => ApplicationStartedMiddlewareFactory::class,
     RateLimiterMiddleware::class                                   => RateLimiterMiddlewareFactory::class,
@@ -288,7 +283,6 @@ return [
     KeestashEncryptionService::class                               => KeestashEncryptionServiceFactory::class,
     FileService::class                                             => FileServiceFactory::class,
     RawFileService::class                                          => RawFileServiceFactory::class,
-    CredentialService::class                                       => CredentialServiceFactory::class,
     DerivedCredentialService::class                                => DerivedCredentialServiceFactory::class,
     EmailService::class                                            => EmailServiceFactory::class,
     OrganizationService::class                                     => OrganizationServiceFactory::class,
@@ -321,7 +315,6 @@ return [
     Base64Service::class                                           => InvokableFactory::class,
     DefaultPaymentService::class                                   => InvokableFactory::class,
     DerivationService::class                                       => DerivationServiceFactory::class,
-    RecryptService::class                                          => RecryptServiceFactory::class,
 
     GetText::class                           => InvokableFactory::class,
     \doganoo\PHPUtil\HTTP\Session::class     => InvokableFactory::class,

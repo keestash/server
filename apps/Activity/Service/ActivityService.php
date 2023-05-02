@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Activity\Service;
 
+use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\Activity\Entity\Activity;
 use KSA\Activity\Event\ActivityTriggeredEvent;
@@ -48,7 +49,7 @@ class ActivityService implements IActivityService {
                     , $appId
                     , $referenceKey
                     , $data
-                    , new \DateTimeImmutable()
+                    , new DateTimeImmutable()
                 )
             )
         );

@@ -28,7 +28,6 @@ use Keestash\Middleware\Api\PermissionMiddleware;
 use Keestash\Middleware\Api\RateLimiterMiddleware;
 use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
-use Keestash\Middleware\AppsInstalledMiddleware;
 use Keestash\Middleware\BooleanizeMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
@@ -51,7 +50,6 @@ return function (Application $app) {
     $app->pipe(BodyParamsMiddleware::class);
     $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);
-    $app->pipe(AppsInstalledMiddleware::class);
     $app->pipe(KeestashHeaderMiddleware::class);
     $app->pipe(CSPHeaderMiddleware::class);
     $app->pipe(PermissionMiddleware::class);

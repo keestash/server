@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,9 +20,17 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider;
+use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\Activity\ConfigProvider;
 
 return [
-    ConfigProvider::EVENTS => require_once __DIR__ . '/events.php',
-    ConfigProvider::DEPENDENCIES => require_once __DIR__ . '/dependencies.php'
+    CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php',
+    CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php',
+    CoreConfigProvider::APP_LIST     => [
+        ConfigProvider::APP_ID => [
+            CoreConfigProvider::APP_ORDER   => 7,
+            CoreConfigProvider::APP_NAME    => 'Activity',
+            CoreConfigProvider::APP_VERSION => 1,
+        ],
+    ]
 ];

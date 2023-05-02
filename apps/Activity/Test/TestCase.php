@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\Encryption\Credential;
+namespace KSA\Activity\Test;
 
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use Psr\Container\ContainerInterface;
-
-class CredentialServiceFactory {
-
-    public function __invoke(ContainerInterface $container): ICredentialService {
-        return new CredentialService();
-    }
+class TestCase extends \KST\TestCase {
 
 }
