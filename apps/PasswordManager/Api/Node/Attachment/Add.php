@@ -96,7 +96,6 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $parameters = (array) $request->getParsedBody();
         $nodeId     = $parameters["node_id"] ?? null;
         $fileList   = $request->getUploadedFiles();

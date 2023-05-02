@@ -28,7 +28,6 @@ return [
         ConfigProvider::APP_ID => [
             CoreConfigProvider::APP_ORDER      => 6,
             CoreConfigProvider::APP_NAME       => 'Register',
-            CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::REGISTER,
             CoreConfigProvider::APP_VERSION    => 1,
         ],
     ]

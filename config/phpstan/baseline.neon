@@ -156,24 +156,24 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Generate/Quality.php
 
 		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Attachment\\\\Add\\:\\:removeFile\\(\\) is unused\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Attachment\\\\Get\\:\\:addIcons\\(\\) is unused\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Get.php
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
@@ -199,21 +199,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$name of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:getByName\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/GetByName.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Add.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Remove.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Organization/Update.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
@@ -731,11 +716,6 @@ parameters:
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
 
 		-
-			message: "#^Method Keestash\\\\Core\\\\DTO\\\\RBAC\\\\Permission\\:\\:compareTo\\(\\) has parameter \\$object with no type specified\\.$#"
-			count: 1
-			path: ../../lib/private/Core/DTO/RBAC/Permission.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/EncryptionKey/KeyRepository.php
@@ -816,22 +796,12 @@ parameters:
 			path: ../../lib/private/Core/Service/Encryption/Password/PasswordService.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Service/Encryption/RecryptService.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\|Laminas\\\\Diactoros\\\\UploadedFile\\:\\:getTmpName\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
 
 		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../lib/private/Core/Service/Router/RouterService.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../lib/private/Core/Service/Router/RouterService.php
 

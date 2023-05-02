@@ -34,7 +34,6 @@ return [
         ConfigProvider::APP_ID => [
             CoreConfigProvider::APP_ORDER      => 1,
             CoreConfigProvider::APP_NAME       => 'Settings',
-            CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::SETTINGS,
             CoreConfigProvider::APP_VERSION    => 1,
         ],
     ]

@@ -38,7 +38,6 @@ return [
         \KSA\PasswordManager\ConfigProvider::APP_ID => [
             ConfigProvider::APP_ORDER      => 0,
             ConfigProvider::APP_NAME       => 'Password Manager',
-            ConfigProvider::APP_BASE_ROUTE => \KSA\PasswordManager\ConfigProvider::PASSWORD_MANAGER,
             ConfigProvider::APP_VERSION    => 1,
         ],
     ],

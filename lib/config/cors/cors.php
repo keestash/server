@@ -24,7 +24,7 @@ use KSP\Api\IResponse;
 
 return
     [
-        'allowed_origins'     => require_once __DIR__ . '/allowed_origins.php',
+        'allowed_origins'     => require __DIR__ . '/allowed_origins.php',
         'exposed_headers'     => [
             IResponse::HEADER_X_KEESTASH_TOKEN
             , IResponse::HEADER_X_KEESTASH_USER

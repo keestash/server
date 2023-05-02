@@ -28,7 +28,6 @@ return [
         ConfigProvider::APP_ID => [
             CoreConfigProvider::APP_ORDER      => 7,
             CoreConfigProvider::APP_NAME       => 'Forgot Password',
-            CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::FORGOT_PASSWORD,
             CoreConfigProvider::APP_VERSION    => 1,
         ],
     ]

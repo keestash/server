@@ -32,7 +32,6 @@ return [
         ConfigProvider::APP_ID => [
             CoreConfigProvider::APP_ORDER        => 5
             , CoreConfigProvider::APP_NAME       => 'Install Instance'
-            , CoreConfigProvider::APP_BASE_ROUTE => ConfigProvider::INSTALL_INSTANCE
             , CoreConfigProvider::APP_VERSION    => 1
         ],
     ]

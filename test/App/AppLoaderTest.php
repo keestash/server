@@ -31,13 +31,11 @@ class AppLoaderTest extends TestCase {
         $app = new App();
         $app->setId("id");
         $app->setName("TestApp");
-        $app->setBaseRoute("unit_test_route");
         $app->setOrder(1);
 
         $this->assertInstanceOf(IApp::class, $app);
         $this->assertTrue($app->getId() === "id");
         $this->assertTrue($app->getName() === "TestApp");
-        $this->assertTrue($app->getBaseRoute() === "unit_test_route");
         $this->assertTrue($app->getOrder() === 1);
     }
 

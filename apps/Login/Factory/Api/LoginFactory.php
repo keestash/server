@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Login\Factory\Api;
 
-use Keestash\Core\Service\Encryption\RecryptService;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Api\Login;
 use KSA\Login\Service\TokenService;
@@ -55,7 +54,6 @@ class LoginFactory {
             , $container->get(IConnectionRepository::class)
             , $container->get(IDerivationRepository::class)
             , $container->get(IDerivationService::class)
-            , $container->get(RecryptService::class)
         );
     }
 

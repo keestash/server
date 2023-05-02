@@ -33,10 +33,4 @@ interface IRouterService {
 
     public function isPublicRoute(ServerRequestInterface $request): bool;
 
-    public function routesToInstallation(
-        ServerRequestInterface $request
-        , bool                 $withInstance = true
-        , bool                 $withApps = true
-    ): bool;
-
 }

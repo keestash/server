@@ -64,14 +64,6 @@ class ApplicationStartedMiddleware implements MiddlewareInterface {
             , $this->routerService->getMatchedPath($request)
         );
         $request = $request->withAttribute(
-            IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTALL
-            , $this->routerService->routesToInstallation($request, true, false)
-        );
-        $request = $request->withAttribute(
-            IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL
-            , $this->routerService->routesToInstallation($request, false, true)
-        );
-        $request = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_IS_PUBLIC
             , $this->routerService->isPublicRoute($request)
         );

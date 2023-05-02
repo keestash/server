@@ -31,8 +31,6 @@ interface IApp extends IJsonObject {
 
     public function getName(): string;
 
-    public function getBaseRoute(): string;
-
     public function getVersion(): int;
 
 }
