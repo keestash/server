@@ -21,7 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
+use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSA\PasswordManager\Api\Comment\Add;
 use KSA\PasswordManager\Api\Comment\Get;
 use KSA\PasswordManager\Api\Comment\Remove;

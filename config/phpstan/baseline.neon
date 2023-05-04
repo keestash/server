@@ -656,19 +656,9 @@ parameters:
 			path: ../../lib/private/Command/Keestash/Events.php
 
 		-
-			message: "#^Left side of \\|\\| is always true\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Keestash/Worker.php
-
-		-
-			message: "#^Right side of \\|\\| is always true\\.$#"
-			count: 1
-			path: ../../lib/private/Command/Keestash/Worker.php
-
-		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
-			path: ../../lib/private/Command/Keestash/Worker.php
+			path: ../../lib/private/Command/Keestash/Worker/WorkerRunner.php
 
 		-
 			message: "#^Cannot call method ask\\(\\) on mixed\\.$#"
@@ -821,14 +811,24 @@ parameters:
 			path: ../../lib/private/Core/Service/User/UserService.php
 
 		-
-			message: "#^Result of \\|\\| is always true\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+			path: ../../lib/private/Factory/Command/Keestash/ClearRateLimiterFileFactory.php
 
 		-
-			message: "#^Variable \\$CONFIG on left side of \\?\\? is never defined\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Core/System/Installation/Verification/ConfigFileReadable.php
+			path: ../../lib/private/Factory/Command/Keestash/Worker/WorkerFlusherFactory.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Command/Keestash/Worker/WorkerLockerFactory.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Command/Keestash/Worker/WorkerRunnerFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Logger\\\\ILoggerBuilder\\:\\:withPath\\(\\)\\.$#"
@@ -838,15 +838,15 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Factory/Core/System/RateLimit/FileRateLimiterFactory.php
-
-		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../lib/private/Middleware/Api/PermissionMiddleware.php
+			path: ../../lib/private/Factory/ThirdParty/nikolaposa/RateLimit/FileRateLimiterFactory.php
 
 		-
 			message: "#^Class Keestash\\\\Middleware\\\\DispatchMiddleware extends @final class Mezzio\\\\Router\\\\Middleware\\\\DispatchMiddleware\\.$#"
 			count: 1
 			path: ../../lib/private/Middleware/DispatchMiddleware.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 2
+			path: ../../lib/private/Middleware/PermissionMiddleware.php
 

@@ -23,26 +23,10 @@ namespace KSP\Core\Service\Instance;
 
 interface IInstallerService {
 
-    public function removeInstaller(): bool;
-
-    public function getAll(): ?array;
-
     public function updateInstaller(string $key, string $value): bool;
-
-    public function removeOption(string $key): bool;
-
-    public function writeInstaller(array $messages): bool;
 
     public function hasIdAndHash(): bool;
 
     public function writeIdAndHash(): bool;
-
-    public function writeProductionMode(): bool;
-
-    public function verifyConfigurationFile(bool $force = false): array;
-
-    public function isInstalled(): bool;
-
-    public function runCoreMigrations(): bool;
 
 }

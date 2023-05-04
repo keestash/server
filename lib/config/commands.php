@@ -23,11 +23,16 @@ declare(strict_types=1);
 use Keestash\Command\App\ListAll;
 use Keestash\Command\Derivation\AddDerivation;
 use Keestash\Command\Derivation\ClearDerivation;
+use Keestash\Command\Derivation\DerivationList;
+use Keestash\Command\Keestash\ClearRateLimiterFile;
 use Keestash\Command\Keestash\Cors;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
 use Keestash\Command\Keestash\QueueList;
 use Keestash\Command\Keestash\Reset;
+use Keestash\Command\Keestash\Worker\WorkerFlusher;
+use Keestash\Command\Keestash\Worker\WorkerLocker;
+use Keestash\Command\Keestash\Worker\WorkerRunner;
 use Keestash\Command\Permission\Add;
 use Keestash\Command\Permission\AssignPermissionToRole;
 use Keestash\Command\Permission\Get;
@@ -36,7 +41,7 @@ use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 
 return [
-    \Keestash\Command\Keestash\Worker::class
+    WorkerRunner::class
     , Get::class
     , \Keestash\Command\Role\Get::class
     , RolesByUser::class
@@ -53,4 +58,8 @@ return [
     , ClearDerivation::class
     , AddDerivation::class
     , Cors::class
+    , DerivationList::class
+    , ClearRateLimiterFile::class
+    , WorkerLocker::class
+    , WorkerFlusher::class
 ];

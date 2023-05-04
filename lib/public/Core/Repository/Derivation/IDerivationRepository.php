@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Derivation;
 
+use Doctrine\DBAL\Exception;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Exception\Repository\Derivation\DerivationNotDeletedException;
 use Keestash\Exception\Repository\NoRowsFoundException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\DTO\Derivation\IDerivation;
@@ -28,7 +31,14 @@ use KSP\Core\DTO\User\IUser;
 
 interface IDerivationRepository {
 
+    /**
+     * @param IUser $user
+     * @return void
+     * @throws DerivationNotDeletedException
+     * @throws Exception
+     */
     public function clear(IUser $user): void;
+
     public function add(IDerivation $derivation): void;
 
     /**
@@ -38,6 +48,8 @@ interface IDerivationRepository {
      * @throws PasswordManagerException
      */
     public function get(IUser $user): IDerivation;
+
+    public function getAll(): ArrayList;
 
     public function remove(IDerivation $derivation): void;
 

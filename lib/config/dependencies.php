@@ -20,7 +20,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
+
 return [
-    'factories' => require __DIR__ . '/dependencies/factories.php',
-    'aliases'   => require __DIR__ . '/dependencies/aliases.php'
+    ConfigProvider::FACTORIES => require __DIR__ . '/dependencies/factories.php'
+    , ConfigProvider::ALIASES   => require __DIR__ . '/dependencies/aliases.php'
 ];

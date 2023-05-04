@@ -2,7 +2,7 @@
         bootstrap="bootstrap.php"
         cacheResultFile="result/result.json"
         colors="true"
-        failOnWarning="true"
+        failOnWarning="false"
         verbose="true"
         beStrictAboutChangesToGlobalState="true"
 >

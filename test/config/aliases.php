@@ -21,8 +21,6 @@ declare(strict_types=1);
  */
 
 use Keestash\Core\Service\Cache\RedisService as RealRedisService;
-use Keestash\Core\System\Installation\App\LockHandler as CoreAppLockHandler;
-use Keestash\Core\System\Installation\Instance\LockHandler as CoreInstanceLockHandler;
 use KSP\Core\Service\Config\IIniConfigService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Email\IEmailService;
@@ -38,8 +36,6 @@ use KST\Service\Core\Service\Email\EmailService;
 use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
-use KST\Service\Core\System\Installation\App\LockHandler as TestAppLockHandler;
-use KST\Service\Core\System\Installation\Instance\LockHandler as TestInstanceLockHandler;
 
 return [
     IMigrator::class                 => Migrator::class
@@ -47,8 +43,6 @@ return [
     , IEventService::class           => EventService::class
     , ILocaleService::class          => LocaleService::class
     , RealRedisService::class        => RedisService::class
-    , CoreAppLockHandler::class      => TestAppLockHandler::class
-    , CoreInstanceLockHandler::class => TestInstanceLockHandler::class
     , IIniConfigService::class       => IniConfigService::class
     , IEmailService::class           => EmailService::class
     , ICredentialService::class      => CredentialService::class

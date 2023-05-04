@@ -23,23 +23,13 @@ namespace Keestash\Factory\Core\Service\Instance;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Core\System\Installation\Instance\LockHandler;
-use KSP\Core\Backend\IBackend;
-use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Phinx\IMigrator;
-use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class InstallerServiceFactory {
 
     public function __invoke(ContainerInterface $container): InstallerService {
         return new InstallerService(
-            $container->get(LockHandler::class)
-            , $container->get(IMigrator::class)
-            , $container->get(InstanceDB::class)
-            , $container->get(IConfigService::class)
-            , $container->get(Config::class)
-            , $container->get(IBackend::class)
+            $container->get(InstanceDB::class)
         );
     }
 

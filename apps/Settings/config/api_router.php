@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
+use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSA\Settings\Api\Organization\Activate;
 use KSA\Settings\Api\Organization\Add;
 use KSA\Settings\Api\Organization\Get;

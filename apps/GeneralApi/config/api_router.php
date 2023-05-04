@@ -21,7 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
+use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSA\GeneralApi\Api\Demo\AddEmailAddress;
 use KSA\GeneralApi\ConfigProvider;
 use KSP\Api\IRoute;

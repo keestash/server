@@ -21,7 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider as CoreConfigProvider;
-use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
+use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSA\ForgotPassword\Api\ForgotPassword;
 use KSA\ForgotPassword\Api\ResetPassword;
 use KSA\ForgotPassword\ConfigProvider;
