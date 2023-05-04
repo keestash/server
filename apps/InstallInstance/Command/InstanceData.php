@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\InstallInstance\Command;
 
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\Service\Instance\InstallerService;
+use KSP\Core\Service\Instance\IInstallerService;
 use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSP\Command\IKeestashCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InstanceData extends KeestashCommand {
 
     public function __construct(
-        private readonly InstallerService $installerService
+        private readonly IInstallerService $installerService
     ) {
         parent::__construct();
     }

@@ -26,15 +26,6 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 
 class Application {
 
-    public function getVendor(): HashTable {
-        $table = new HashTable();
-        $table->put("name", "Doğan Uçar");
-        $table->put("web", "https://www.dogan-ucar.de");
-        $table->put("email", "dogan@dogan-ucar.de");
-        $table->put("vendor", "Dogan Ucar");
-        return $table;
-    }
-
     public function getMetaData(): HashTable {
         $table = new HashTable();
         $table->put("name", "Keestash");

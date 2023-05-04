@@ -20,17 +20,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Middleware\Api\CSPHeaderMiddleware;
-use Keestash\Middleware\Api\EnvironmentMiddleware;
-use Keestash\Middleware\Api\ExceptionHandlerMiddleware;
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use Keestash\Middleware\Api\PermissionMiddleware;
-use Keestash\Middleware\Api\RateLimiterMiddleware;
-use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\BooleanizeMiddleware;
+use Keestash\Middleware\CSPHeaderMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
+use Keestash\Middleware\EnvironmentMiddleware;
+use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
+use Keestash\Middleware\KeestashHeaderMiddleware;
+use Keestash\Middleware\PermissionMiddleware;
+use Keestash\Middleware\RateLimiterMiddleware;
+use Keestash\Middleware\SanitizeInputMiddleware;
+use Keestash\Middleware\UserActiveMiddleware;
 use Mezzio\Application;
 use Mezzio\Cors\Middleware\CorsMiddleware;
 use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
@@ -48,6 +49,7 @@ return function (Application $app) {
     $app->pipe(CorsMiddleware::class);
     $app->pipe(RateLimiterMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
+    $app->pipe(SanitizeInputMiddleware::class);
     $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);
     $app->pipe(KeestashHeaderMiddleware::class);

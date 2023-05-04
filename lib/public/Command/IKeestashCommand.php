@@ -26,5 +26,6 @@ interface IKeestashCommand {
     public const RETURN_CODE_NOT_RAN_SUCCESSFUL = 23456;
     public const RETURN_CODE_INVALID_ARGUMENT   = 12345;
     public const RETURN_CODE_RAN_SUCCESSFUL     = 0;
+    public const OPTION_NAME_SILENT             = 'silent';
 
 }

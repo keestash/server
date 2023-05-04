@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Factory\Middleware;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\System\Installation\Instance\LockHandler;
 use Keestash\Middleware\InstanceInstalledMiddleware;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -32,7 +31,6 @@ class InstanceInstalledMiddlewareFactory {
     public function __invoke(ContainerInterface $container): InstanceInstalledMiddleware {
         return new InstanceInstalledMiddleware(
             $container->get(InstanceDB::class)
-            , $container->get(LockHandler::class)
             , $container->get(LoggerInterface::class)
         );
     }

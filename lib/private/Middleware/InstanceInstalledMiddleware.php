@@ -23,7 +23,6 @@ namespace Keestash\Middleware;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\System\Installation\Instance\LockHandler;
 use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -36,24 +35,21 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
 
     public function __construct(
         private readonly InstanceDB        $instanceDB
-        , private readonly LockHandler     $lockHandler
         , private readonly LoggerInterface $logger
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $isLocked             = $this->lockHandler->isLocked();
         $routesToInstallation = $request->getAttribute(IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL, false);
         $instanceHash         = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
         $instanceId           = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
 
-        if (true === $isLocked && true === $routesToInstallation) {
+        if (true === $routesToInstallation) {
             return $handler->handle($request);
         }
 
         if ((null === $instanceHash || null === $instanceId)) {
             $this->logger->debug("The whole application is not installed. Please Install", ['hash' => $instanceHash, 'id' => $instanceId]);
-            $this->lockHandler->lock();
             return new JsonResponse(
                 [],
                 IResponse::SERVICE_UNAVAILABLE

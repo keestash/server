@@ -28,11 +28,16 @@ use Keestash\Api\PingHandler;
 use Keestash\Command\App\ListAll;
 use Keestash\Command\Derivation\AddDerivation;
 use Keestash\Command\Derivation\ClearDerivation;
+use Keestash\Command\Derivation\DerivationList;
+use Keestash\Command\Keestash\ClearRateLimiterFile;
 use Keestash\Command\Keestash\Cors;
 use Keestash\Command\Keestash\Events;
 use Keestash\Command\Keestash\QueueDelete;
 use Keestash\Command\Keestash\QueueList;
 use Keestash\Command\Keestash\Reset;
+use Keestash\Command\Keestash\Worker\WorkerFlusher;
+use Keestash\Command\Keestash\Worker\WorkerLocker;
+use Keestash\Command\Keestash\Worker\WorkerRunner;
 use Keestash\Command\Permission\Add;
 use Keestash\Command\Permission\AssignPermissionToRole;
 use Keestash\Command\Permission\Get;
@@ -74,12 +79,10 @@ use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Derivation\DerivationService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
-use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
-use Keestash\Core\Service\Encryption\RecryptService;
 use Keestash\Core\Service\Event\EventService;
 use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
 use Keestash\Core\Service\File\FileService;
@@ -105,17 +108,19 @@ use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
-use Keestash\Core\System\Installation\App\LockHandler;
-use Keestash\Core\System\RateLimit\FileRateLimiter;
 use Keestash\Factory\Command\App\ListAllFactory;
 use Keestash\Factory\Command\Derivation\AddDerivationFactory;
 use Keestash\Factory\Command\Derivation\ClearDerivationFactory;
+use Keestash\Factory\Command\Derivation\DerivationListFactory;
+use Keestash\Factory\Command\Keestash\ClearRateLimiterFileFactory;
 use Keestash\Factory\Command\Keestash\CorsFactory;
 use Keestash\Factory\Command\Keestash\EventsFactory;
 use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
 use Keestash\Factory\Command\Keestash\QueueListFactory;
 use Keestash\Factory\Command\Keestash\ResetFactory;
-use Keestash\Factory\Command\Keestash\WorkerFactory;
+use Keestash\Factory\Command\Keestash\Worker\WorkerFlusherFactory;
+use Keestash\Factory\Command\Keestash\Worker\WorkerLockerFactory;
+use Keestash\Factory\Command\Keestash\Worker\WorkerRunnerFactory;
 use Keestash\Factory\Command\Permission\AddFactory;
 use Keestash\Factory\Command\Permission\AssignPermissionToRoleFactory;
 use Keestash\Factory\Command\Permission\GetFactory;
@@ -174,34 +179,33 @@ use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
 use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
-use Keestash\Factory\Core\System\Installation\App\AppLockHandlerFactory;
-use Keestash\Factory\Core\System\Installation\Instance\InstanceLockHandlerFactory;
-use Keestash\Factory\Core\System\RateLimit\FileRateLimiterFactory;
-use Keestash\Factory\Middleware\Api\CSPHeaderMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\DeactivatedRouteMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\EnvironmentMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\KeestashHeaderMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\PermissionMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\RateLimiterMiddlewareFactory;
-use Keestash\Factory\Middleware\Api\UserActiveMiddlewareFactory;
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
+use Keestash\Factory\Middleware\CSPHeaderMiddlewareFactory;
+use Keestash\Factory\Middleware\DeactivatedRouteMiddlewareFactory;
 use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
+use Keestash\Factory\Middleware\EnvironmentMiddlewareFactory;
+use Keestash\Factory\Middleware\ExceptionHandlerMiddlewareFactory as ApiExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
+use Keestash\Factory\Middleware\KeestashHeaderMiddlewareFactory;
+use Keestash\Factory\Middleware\PermissionMiddlewareFactory;
+use Keestash\Factory\Middleware\RateLimiterMiddlewareFactory;
+use Keestash\Factory\Middleware\SanitizeInputMiddlewareFactory;
+use Keestash\Factory\Middleware\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
-use Keestash\Middleware\Api\CSPHeaderMiddleware;
-use Keestash\Middleware\Api\DeactivatedRouteMiddleware;
-use Keestash\Middleware\Api\EnvironmentMiddleware;
-use Keestash\Middleware\Api\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
-use Keestash\Middleware\Api\KeestashHeaderMiddleware;
-use Keestash\Middleware\Api\PermissionMiddleware;
-use Keestash\Middleware\Api\RateLimiterMiddleware;
-use Keestash\Middleware\Api\UserActiveMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
+use Keestash\Middleware\CSPHeaderMiddleware;
+use Keestash\Middleware\DeactivatedRouteMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
+use Keestash\Middleware\EnvironmentMiddleware;
+use Keestash\Middleware\ExceptionHandlerMiddleware as ApiExceptionHandlerMiddlerware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
+use Keestash\Middleware\KeestashHeaderMiddleware;
+use Keestash\Middleware\PermissionMiddleware;
+use Keestash\Middleware\RateLimiterMiddleware;
+use Keestash\Middleware\SanitizeInputMiddleware;
+use Keestash\Middleware\UserActiveMiddleware;
 use Keestash\Queue\Handler\EventHandler;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
@@ -212,146 +216,146 @@ use Psr\Log\LoggerInterface;
 
 return [
     // Api
-    PingHandler::class                 => InvokableFactory::class,
+    PingHandler::class                                        => InvokableFactory::class
 
     // App
-    ProjectConfiguration::class        => ProjectConfigurationFactory::class,
+    , ProjectConfiguration::class                             => ProjectConfigurationFactory::class
 
     // repository
-    ApiLogRepository::class            => ApiLogRepositoryFactory::class,
-    MySQLBackend::class                => MySQLBackendFactory::class,
-    FileRepository::class              => FileRepositoryFactory::class,
-    UserRepository::class              => UserRepositoryFactory::class,
-    UserKeyRepository::class           => UserKeyRepositoryFactory::class,
-    OrganizationKeyRepository::class   => OrganizationKeyRepositoryFactory::class,
-    UserStateRepository::class         => UserStateRepositoryFactory::class,
-    InstanceRepository::class          => InstanceRepositoryFactory::class,
-    TokenRepository::class             => TokenRepositoryFactory::class,
-    AppRepository::class               => AppRepositoryFactory::class,
-    QueueRepository::class             => QueueRepositoryFactory::class,
-    RBACRepository::class              => PermissionRepositoryFactory::class,
-    DefaultLDAPRepository::class       => InvokableFactory::class,
-    DefaultConnectionRepository::class => InvokableFactory::class,
-    DefaultPaymentLogRepository::class => InvokableFactory::class,
-    MailLogRepository::class           => MailLogRepositoryFactory::class,
-    DerivationRepository::class        => DerivationRepositoryFactory::class,
+    , ApiLogRepository::class                                 => ApiLogRepositoryFactory::class
+    , MySQLBackend::class                                     => MySQLBackendFactory::class
+    , FileRepository::class                                   => FileRepositoryFactory::class
+    , UserRepository::class                                   => UserRepositoryFactory::class
+    , UserKeyRepository::class                                => UserKeyRepositoryFactory::class
+    , OrganizationKeyRepository::class                        => OrganizationKeyRepositoryFactory::class
+    , UserStateRepository::class                              => UserStateRepositoryFactory::class
+    , InstanceRepository::class                               => InstanceRepositoryFactory::class
+    , TokenRepository::class                                  => TokenRepositoryFactory::class
+    , AppRepository::class                                    => AppRepositoryFactory::class
+    , QueueRepository::class                                  => QueueRepositoryFactory::class
+    , RBACRepository::class                                   => PermissionRepositoryFactory::class
+    , DefaultLDAPRepository::class                            => InvokableFactory::class
+    , DefaultConnectionRepository::class                      => InvokableFactory::class
+    , DefaultPaymentLogRepository::class                      => InvokableFactory::class
+    , MailLogRepository::class                                => MailLogRepositoryFactory::class
+    , DerivationRepository::class                             => DerivationRepositoryFactory::class
 
-    LoggerInterface::class                                         => LoggerFactory::class,
-    Application::class                                             => LegacyFactory::class,
-    EventService::class                                            => EventServiceFactory::class,
-    LoaderService::class                                           => LoaderServiceFactory::class,
-    VerificationService::class                                     => VerificationFactory::class,
-    InstanceDB::class                                              => InstanceDBFactory::class,
-    Migrator::class                                                => MigratorFactory::class,
-    JobRepository::class                                           => JobRepositoryFactory::class,
-    LockHandler::class                                             => AppLockHandlerFactory::class,
-    \Keestash\Core\System\Installation\Instance\LockHandler::class => InstanceLockHandlerFactory::class,
-    JWTService::class                                              => JWTServiceFactory::class,
+    , LoggerInterface::class                                  => LoggerFactory::class
+    , Application::class                                      => LegacyFactory::class
+    , EventService::class                                     => EventServiceFactory::class
+    , LoaderService::class                                    => LoaderServiceFactory::class
+    , VerificationService::class                              => VerificationFactory::class
+    , InstanceDB::class                                       => InstanceDBFactory::class
+    , Migrator::class                                         => MigratorFactory::class
+    , JobRepository::class                                    => JobRepositoryFactory::class
+    , JWTService::class                                       => JWTServiceFactory::class
 
     // builder
-    EmailValidator::class                                          => EmailValidatorFactory::class,
-    PhoneValidator::class                                          => PhoneValidatorFactory::class,
-    UriValidator::class                                            => UriValidatorFactory::class,
+    , EmailValidator::class                                   => EmailValidatorFactory::class
+    , PhoneValidator::class                                   => PhoneValidatorFactory::class
+    , UriValidator::class                                     => UriValidatorFactory::class
 
     // middleware
-    InstanceInstalledMiddleware::class                             => InstanceInstalledMiddlewareFactory::class,
-    DispatchMiddleware::class                                      => DispatchMiddlewareFactory::class,
-    ApplicationStartedMiddleware::class                            => ApplicationStartedMiddlewareFactory::class,
-    RateLimiterMiddleware::class                                   => RateLimiterMiddlewareFactory::class,
-    PermissionMiddleware::class                                    => PermissionMiddlewareFactory::class,
-    EnvironmentMiddleware::class                                   => EnvironmentMiddlewareFactory::class,
-    CSPHeaderMiddleware::class                                     => CSPHeaderMiddlewareFactory::class,
-    DeactivatedRouteMiddleware::class                              => DeactivatedRouteMiddlewareFactory::class,
+    , InstanceInstalledMiddleware::class                      => InstanceInstalledMiddlewareFactory::class
+    , DispatchMiddleware::class                               => DispatchMiddlewareFactory::class
+    , ApplicationStartedMiddleware::class                     => ApplicationStartedMiddlewareFactory::class
+    , RateLimiterMiddleware::class                            => RateLimiterMiddlewareFactory::class
+    , PermissionMiddleware::class                             => PermissionMiddlewareFactory::class
+    , EnvironmentMiddleware::class                            => EnvironmentMiddlewareFactory::class
+    , CSPHeaderMiddleware::class                              => CSPHeaderMiddlewareFactory::class
+    , DeactivatedRouteMiddleware::class                       => DeactivatedRouteMiddlewareFactory::class
+    , SanitizeInputMiddleware::class                          => SanitizeInputMiddlewareFactory::class
 
     // api
-    KeestashHeaderMiddleware::class                                => KeestashHeaderMiddlewareFactory::class,
-    ApiExceptionHandlerMiddlerware::class                          => ApiExceptionHandlerMiddlewareFactory::class,
+    , KeestashHeaderMiddleware::class                         => KeestashHeaderMiddlewareFactory::class
+    , ApiExceptionHandlerMiddlerware::class                   => ApiExceptionHandlerMiddlewareFactory::class
 
     // web
-    UserActiveMiddleware::class                                    => UserActiveMiddlewareFactory::class,
+    , UserActiveMiddleware::class                             => UserActiveMiddlewareFactory::class
 
     // ThirdParty
-    DateTimeService::class                                         => DateTimeServiceFactory::class,
-    Connection::class                                              => ConnectionFactory::class,
-    \doganoo\DIP\HTTP\HTTPService::class                           => InvokableFactory::class,
-    Client::class                                                  => InvokableFactory::class,
+    , DateTimeService::class                                  => DateTimeServiceFactory::class
+    , Connection::class                                       => ConnectionFactory::class
+    , \doganoo\DIP\HTTP\HTTPService::class                    => InvokableFactory::class
+    , Client::class                                           => InvokableFactory::class
 
     // service
-    UserService::class                                             => UserServiceFactory::class,
-    ConfigService::class                                           => ConfigServiceFactory::class,
-    KeyService::class                                              => KeyServiceFactory::class,
-    KeestashEncryptionService::class                               => KeestashEncryptionServiceFactory::class,
-    FileService::class                                             => FileServiceFactory::class,
-    RawFileService::class                                          => RawFileServiceFactory::class,
-    DerivedCredentialService::class                                => DerivedCredentialServiceFactory::class,
-    EmailService::class                                            => EmailServiceFactory::class,
-    OrganizationService::class                                     => OrganizationServiceFactory::class,
-    InstallerService::class                                        => InstallerServiceFactory::class,
-    HTTPService::class                                             => HTTPServiceFactory::class,
-    \Keestash\Core\Service\Instance\InstallerService::class        => \Keestash\Factory\Core\Service\Instance\InstallerServiceFactory::class,
-    LanguageService::class                                         => LanguageServiceFactory::class,
-    RouterService::class                                           => RouterServiceFactory::class,
-    UserRepositoryService::class                                   => UserRepositoryServiceFactory::class,
-    \Keestash\Core\Service\File\Upload\FileService::class          => \Keestash\Factory\Core\Service\Upload\FileServiceFactory::class,
-    SanitizerService::class                                        => SanitizerServiceFactory::class,
-    ApiRequestService::class                                       => ApiRequestServiceFactory::class,
-    NullService::class                                             => InvokableFactory::class,
-    ReflectionService::class                                       => InvokableFactory::class,
-    LocaleService::class                                           => InvokableFactory::class,
-    EnvironmentService::class                                      => InvokableFactory::class,
-    AppService::class                                              => AppServiceFactory::class,
-    EdgeService::class                                             => InvokableFactory::class,
-    IconService::class                                             => InvokableFactory::class,
-    PasswordService::class                                         => PasswordServiceFactory::class,
-    IniConfigService::class                                        => InvokableFactory::class,
-    StringService::class                                           => InvokableFactory::class,
-    AccessService::class                                           => InvokableFactory::class,
-    CSVService::class                                              => CSVServiceFactory::class,
-    MimeTypeService::class                                         => InvokableFactory::class,
-    QueueService::class                                            => QueueServiceFactory::class,
-    OutputSanitizerService::class                                  => InvokableFactory::class,
-    RouteService::class                                            => InvokableFactory::class,
-    LDAPService::class                                             => LDAPServiceFactory::class,
-    Base64Service::class                                           => InvokableFactory::class,
-    DefaultPaymentService::class                                   => InvokableFactory::class,
-    DerivationService::class                                       => DerivationServiceFactory::class,
+    , UserService::class                                      => UserServiceFactory::class
+    , ConfigService::class                                    => ConfigServiceFactory::class
+    , KeyService::class                                       => KeyServiceFactory::class
+    , KeestashEncryptionService::class                        => KeestashEncryptionServiceFactory::class
+    , FileService::class                                      => FileServiceFactory::class
+    , RawFileService::class                                   => RawFileServiceFactory::class
+    , DerivedCredentialService::class                         => DerivedCredentialServiceFactory::class
+    , EmailService::class                                     => EmailServiceFactory::class
+    , OrganizationService::class                              => OrganizationServiceFactory::class
+    , InstallerService::class                                 => InstallerServiceFactory::class
+    , HTTPService::class                                      => HTTPServiceFactory::class
+    , \Keestash\Core\Service\Instance\InstallerService::class => \Keestash\Factory\Core\Service\Instance\InstallerServiceFactory::class
+    , LanguageService::class                                  => LanguageServiceFactory::class
+    , RouterService::class                                    => RouterServiceFactory::class
+    , UserRepositoryService::class                            => UserRepositoryServiceFactory::class
+    , \Keestash\Core\Service\File\Upload\FileService::class   => \Keestash\Factory\Core\Service\Upload\FileServiceFactory::class
+    , SanitizerService::class                                 => SanitizerServiceFactory::class
+    , ApiRequestService::class                                => ApiRequestServiceFactory::class
+    , NullService::class                                      => InvokableFactory::class
+    , ReflectionService::class                                => InvokableFactory::class
+    , LocaleService::class                                    => InvokableFactory::class
+    , EnvironmentService::class                               => InvokableFactory::class
+    , AppService::class                                       => AppServiceFactory::class
+    , EdgeService::class                                      => InvokableFactory::class
+    , IconService::class                                      => InvokableFactory::class
+    , PasswordService::class                                  => PasswordServiceFactory::class
+    , IniConfigService::class                                 => InvokableFactory::class
+    , StringService::class                                    => InvokableFactory::class
+    , AccessService::class                                    => InvokableFactory::class
+    , CSVService::class                                       => CSVServiceFactory::class
+    , MimeTypeService::class                                  => InvokableFactory::class
+    , QueueService::class                                     => QueueServiceFactory::class
+    , OutputSanitizerService::class                           => InvokableFactory::class
+    , RouteService::class                                     => InvokableFactory::class
+    , LDAPService::class                                      => LDAPServiceFactory::class
+    , Base64Service::class                                    => InvokableFactory::class
+    , DefaultPaymentService::class                            => InvokableFactory::class
+    , DerivationService::class                                => DerivationServiceFactory::class
 
-    GetText::class                           => InvokableFactory::class,
-    \doganoo\PHPUtil\HTTP\Session::class     => InvokableFactory::class,
-    HTMLPurifier::class                      => InvokableFactory::class,
+    , GetText::class                                          => InvokableFactory::class
+    , \doganoo\PHPUtil\HTTP\Session::class                    => InvokableFactory::class
+    , HTMLPurifier::class                                     => InvokableFactory::class
 
     // command
-    \Keestash\Command\Keestash\Worker::class => WorkerFactory::class
-    , Events::class                          => EventsFactory::class
-    , QueueList::class                       => QueueListFactory::class
-    , QueueDelete::class                     => QueueDeleteFactory::class
-    , Reset::class                           => ResetFactory::class
-    , ListAll::class                         => ListAllFactory::class
-    , ClearDerivation::class                 => ClearDerivationFactory::class
-    , AddDerivation::class                   => AddDerivationFactory::class
-    , Cors::class                            => CorsFactory::class
+    , WorkerRunner::class                                     => WorkerRunnerFactory::class
+    , Events::class                                           => EventsFactory::class
+    , QueueList::class                                        => QueueListFactory::class
+    , QueueDelete::class                                      => QueueDeleteFactory::class
+    , Reset::class                                            => ResetFactory::class
+    , ListAll::class                                          => ListAllFactory::class
+    , ClearDerivation::class                                  => ClearDerivationFactory::class
+    , AddDerivation::class                                    => AddDerivationFactory::class
+    , Cors::class                                             => CorsFactory::class
+    , DerivationList::class                                   => DerivationListFactory::class
+    , ClearRateLimiterFile::class                             => ClearRateLimiterFileFactory::class
+    , WorkerLocker::class                                     => WorkerLockerFactory::class
+    , WorkerFlusher::class                                    => WorkerFlusherFactory::class
 
     // command
     // --- listener
-    , RolesAndPermissionsListener::class     => RolesAndPermissionsListenerFactory::class
+    , RolesAndPermissionsListener::class                      => RolesAndPermissionsListenerFactory::class
 
-    , Get::class                             => GetFactory::class
-    , \Keestash\Command\Role\Get::class      => \Keestash\Factory\Command\Role\GetFactory::class
-    , RolesByUser::class                     => RolesByUserFactory::class
-    , PermissionsByRole::class               => PermissionsByRoleFactory::class
-    , Add::class                             => AddFactory::class
-    , \Keestash\Command\Role\Add::class      => \Keestash\Factory\Command\Role\AddFactory::class
-    , AssignRoleToUser::class                => AssignRoleToUserFactory::class
-    , AssignPermissionToRole::class          => AssignPermissionToRoleFactory::class
-
-    // system
-    , FileRateLimiter::class                 => FileRateLimiterFactory::class
+    , Get::class                                              => GetFactory::class
+    , \Keestash\Command\Role\Get::class                       => \Keestash\Factory\Command\Role\GetFactory::class
+    , RolesByUser::class                                      => RolesByUserFactory::class
+    , PermissionsByRole::class                                => PermissionsByRoleFactory::class
+    , Add::class                                              => AddFactory::class
+    , \Keestash\Command\Role\Add::class                       => \Keestash\Factory\Command\Role\AddFactory::class
+    , AssignRoleToUser::class                                 => AssignRoleToUserFactory::class
+    , AssignPermissionToRole::class                           => AssignPermissionToRoleFactory::class
 
     // handler
-    , EventHandler::class                    => EventHandlerFactory::class
+    , EventHandler::class                                     => EventHandlerFactory::class
 
     // events
     // ---- listener
-    , RemoveOutdatedTokens::class            => RemoveOutdatedTokensFactory::class
-    , SendSummaryMail::class                 => SendSummaryMailListenerFactory::class
+    , RemoveOutdatedTokens::class                             => RemoveOutdatedTokensFactory::class
+    , SendSummaryMail::class                                  => SendSummaryMailListenerFactory::class
 ];

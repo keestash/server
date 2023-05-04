@@ -26,11 +26,22 @@ use KSP\Command\IKeestashCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class KeestashCommand extends Command implements IKeestashCommand {
+
+    protected function configure(): void {
+        $this->addOption(
+            IKeestashCommand::OPTION_NAME_SILENT
+            , 's'
+            , InputOption::VALUE_NONE
+            , 'no output'
+        );
+        parent::configure();
+    }
 
     protected function addRequiredArgument(string $name, string $description): void {
         $this->_addArgument($name, InputArgument::REQUIRED, $description);

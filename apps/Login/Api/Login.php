@@ -51,44 +51,21 @@ use Ramsey\Uuid\Uuid;
 
 class Login implements RequestHandlerInterface {
 
-    private IUserRepository       $userRepository;
-    private IL10N                 $translator;
-    private UserService           $userService;
-    private ITokenRepository      $tokenRepository;
-    private TokenService          $tokenService;
-    private ILocaleService        $localeService;
-    private ILanguageService      $languageService;
-    private IJWTService           $jwtService;
-    private LoggerInterface       $logger;
-    private ILDAPService          $ldapService;
-    private IConnectionRepository $connectionRepository;
-
     public function __construct(
-        IUserRepository                          $userRepository
-        , IL10N                                  $translator
-        , UserService                            $userService
-        , ITokenRepository                       $tokenManager
-        , TokenService                           $tokenService
-        , ILocaleService                         $localeService
-        , ILanguageService                       $languageService
-        , IJWTService                            $jwtService
-        , LoggerInterface                        $logger
-        , ILDAPService                           $ldapService
-        , IConnectionRepository                  $connectionRepository
+        private readonly IUserRepository         $userRepository
+        , private readonly IL10N                 $translator
+        , private readonly UserService           $userService
+        , private readonly ITokenRepository      $tokenRepository
+        , private readonly TokenService          $tokenService
+        , private readonly ILocaleService        $localeService
+        , private readonly ILanguageService      $languageService
+        , private readonly IJWTService           $jwtService
+        , private readonly LoggerInterface       $logger
+        , private readonly ILDAPService          $ldapService
+        , private readonly IConnectionRepository $connectionRepository
         , private readonly IDerivationRepository $derivationRepository
         , private readonly IDerivationService    $derivationService
     ) {
-        $this->userRepository       = $userRepository;
-        $this->translator           = $translator;
-        $this->userService          = $userService;
-        $this->tokenRepository      = $tokenManager;
-        $this->tokenService         = $tokenService;
-        $this->localeService        = $localeService;
-        $this->languageService      = $languageService;
-        $this->jwtService           = $jwtService;
-        $this->logger               = $logger;
-        $this->ldapService          = $ldapService;
-        $this->connectionRepository = $connectionRepository;
     }
 
     /**

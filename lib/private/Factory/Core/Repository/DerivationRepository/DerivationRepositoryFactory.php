@@ -25,6 +25,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\Derivation\DerivationRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
+use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -40,6 +41,7 @@ class DerivationRepositoryFactory implements FactoryInterface {
             $container->get(IBackend::class)
             , $container->get(IDateTimeService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IUserRepository::class)
         );
     }
 
