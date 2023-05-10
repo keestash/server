@@ -71,7 +71,7 @@ class EncryptionService {
 
         $keyHolderCredential = $this->credentialService->createCredential($credential->getKeyHolder());
 
-        $this->logger->info('decrypting ' . $credential->getKeyHolder()->getId() . ' with ' . $keyHolderCredential->getId());
+        $this->logger->debug('decrypting ' . $credential->getKeyHolder()->getId() . ' with ' . $keyHolderCredential->getId());
         $tempKey->setSecret(
             $this->encryptionService->decrypt(
                 $keyHolderCredential

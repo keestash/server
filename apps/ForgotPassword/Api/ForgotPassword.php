@@ -109,7 +109,6 @@ class ForgotPassword implements RequestHandlerInterface {
         $userStates       = $this->userStateRepository->getUsersWithPasswordResetRequest();
         $alreadyRequested = false;
 
-
         /** @var IUserState $userState */
         foreach ($userStates->toArray() as $userState) {
             if ($user->getId() === $userState->getUser()->getId()) {

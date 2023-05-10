@@ -21,6 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\Register\Test;
 
-class TestCase extends \KST\TestCase {
+abstract class TestCase extends \KST\TestCase {
 
 }

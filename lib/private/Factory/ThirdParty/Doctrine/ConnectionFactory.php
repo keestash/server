@@ -21,11 +21,14 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\ThirdParty\Doctrine;
 
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Logging\Middleware;
 use KSP\Core\Service\Config\IConfigService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ConnectionFactory implements FactoryInterface {
 
@@ -36,6 +39,8 @@ class ConnectionFactory implements FactoryInterface {
     ): Connection {
         /** @var IConfigService $config */
         $config = $container->get(IConfigService::class);
+        /** @var LoggerInterface $logger */
+        $logger = $container->get(LoggerInterface::class);
         return DriverManager::getConnection(
             [
                 'driver'     => 'pdo_mysql'
@@ -44,7 +49,10 @@ class ConnectionFactory implements FactoryInterface {
                 , 'port'     => (int) $config->getValue('db_port')
                 , 'user'     => (string) $config->getValue('db_user')
                 , 'password' => (string) $config->getValue('db_password')
-            ]
+            ],
+            (new Configuration())->setMiddlewares(
+                [new Middleware($logger)]
+            )
         );
     }
 

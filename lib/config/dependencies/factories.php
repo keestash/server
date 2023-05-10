@@ -194,6 +194,7 @@ use Keestash\Factory\Middleware\UserActiveMiddlewareFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
+use Keestash\Factory\ThirdParty\nikolaposa\RateLimit\FileRateLimiterFactory;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\CSPHeaderMiddleware;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
@@ -207,6 +208,7 @@ use Keestash\Middleware\RateLimiterMiddleware;
 use Keestash\Middleware\SanitizeInputMiddleware;
 use Keestash\Middleware\UserActiveMiddleware;
 use Keestash\Queue\Handler\EventHandler;
+use Keestash\ThirdParty\nikolaposa\RateLimit\FileRateLimiter;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -278,6 +280,7 @@ return [
     , Connection::class                                       => ConnectionFactory::class
     , \doganoo\DIP\HTTP\HTTPService::class                    => InvokableFactory::class
     , Client::class                                           => InvokableFactory::class
+    , FileRateLimiter::class                                  => FileRateLimiterFactory::class
 
     // service
     , UserService::class                                      => UserServiceFactory::class
