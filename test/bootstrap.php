@@ -26,6 +26,7 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Phinx\IMigrator;
+use KST\Service\Exception\WarningException;
 use KST\Service\Service\UserService;
 use KST\Service\ThirdParty\Phinx\Adapter\SQLiteAdapter;
 use Laminas\Config\Config;
@@ -36,6 +37,13 @@ const __PHPUNIT_MODE__ = true;
 
 /** @var ContainerInterface $container */
 $container = require __DIR__ . '/config/service_manager.php';
+
+set_error_handler(
+    static function (int $errno, string $message): void {
+        throw new WarningException($message, $errno);
+    }, E_WARNING | E_USER_WARNING
+);
+
 
 $config   = $container->get(Config::class);
 $fileName = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';

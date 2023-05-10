@@ -77,6 +77,7 @@ final class ConfigProvider {
 
     public const DEFAULT_USER_LIFETIME = 60 * 60;
 
+    public const PING_ROUTE = '/ping';
 
     public function __invoke(): array {
         return require __DIR__ . '/../config/config.php';

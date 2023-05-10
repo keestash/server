@@ -32,7 +32,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
-class TestCase extends FrameworkTestCase {
+abstract class TestCase extends FrameworkTestCase {
 
     private ServiceManager  $serviceManager;
     private ResponseService $responseService;

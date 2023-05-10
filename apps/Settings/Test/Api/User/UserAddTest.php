@@ -25,12 +25,13 @@ use KSA\Register\Test\TestCase;
 use KSA\Settings\Api\User\UserAdd;
 use KSA\Settings\Test\Api\Organization\AddTest;
 use KSP\Api\IResponse;
+use KST\Service\Exception\WarningException;
 use Ramsey\Uuid\Uuid;
 
 class UserAddTest extends TestCase {
 
     public function testWithEmptyRequest(): void {
-        $this->expectWarning();
+        $this->expectException(WarningException::class);
         /** @var UserAdd $userAdd */
         $userAdd = $this->getService(UserAdd::class);
 

@@ -43,6 +43,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
 
     private function setHandler(): void {
         $self = $this;
+
         set_error_handler(
         /** @phpstan-ignore-next-line */
             static function (int $id

@@ -25,6 +25,7 @@ use KSA\Register\Test\TestCase;
 use KSA\Settings\Api\User\UserEdit;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserRepository;
+use KST\Service\Exception\WarningException;
 use KST\Service\Service\UserService;
 
 class UserEditTest extends TestCase {
@@ -58,7 +59,7 @@ class UserEditTest extends TestCase {
     }
 
     public function testWithMissingData(): void {
-        $this->expectWarning();
+        $this->expectException(WarningException::class);
         /** @var UserEdit $userEdit */
         $userEdit = $this->getService(UserEdit::class);
 

@@ -79,10 +79,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
             try {
                 $node = $this->nodeRepository->getNode((int) $nodeId, 0, 0);
             } catch (PasswordManagerException $exception) {
-                $this->logger->info('no node found', ['nodeId' => $nodeId, 'exception' => $exception]);
-            }
-
-            if (null === $node) {
+                $this->logger->debug('no node found', ['nodeId' => $nodeId, 'exception' => $exception]);
                 continue;
             }
 

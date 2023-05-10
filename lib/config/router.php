@@ -28,13 +28,13 @@ use KSP\Api\IVerb;
 return [
     ConfigProvider::ROUTES        => [
         [
-            IRoute::PATH       => '/ping[/]',
-            IRoute::MIDDLEWARE => PingHandler::class,
-            IRoute::NAME       => PingHandler::class,
-            IRoute::METHOD     => IVerb::GET
+            IRoute::PATH         => ConfigProvider::PING_ROUTE
+            , IRoute::MIDDLEWARE => PingHandler::class
+            , IRoute::NAME       => PingHandler::class
+            , IRoute::METHOD     => IVerb::GET
         ]
     ],
     ConfigProvider::PUBLIC_ROUTES => [
-        '/ping[/]'
+        ConfigProvider::PING_ROUTE
     ]
 ];

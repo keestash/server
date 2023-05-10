@@ -27,7 +27,7 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 
-class TestCase extends \KST\TestCase {
+abstract class TestCase extends \KST\TestCase {
 
     protected function getRootForUser(): Root {
         /** @var NodeRepository $nodeRepository */
