@@ -12,6 +12,8 @@ use KSA\PasswordManager\Test\Service\ResponseService;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Encryption\IStringMaskService;
+use KST\Service\Exception\KSTException;
 use KST\Service\Service\UserService;
 use Laminas\Config\Config;
 use Mezzio\Application;
@@ -28,13 +30,15 @@ abstract class TestCase extends \KST\TestCase {
     private RequestService      $requestService;
     private Config              $config;
     private ?ConsoleApplication $consoleApplication = null;
+    private IStringMaskService  $stringMaskService;
 
     protected function setUp(): void {
         parent::setUp();
-        $this->application     = $this->getService(Application::class);
-        $this->responseService = $this->getService(ResponseService::class);
-        $this->requestService  = $this->getService(RequestService::class);
-        $this->config          = $this->getService(Config::class);
+        $this->application       = $this->getService(Application::class);
+        $this->responseService   = $this->getService(ResponseService::class);
+        $this->requestService    = $this->getService(RequestService::class);
+        $this->config            = $this->getService(Config::class);
+        $this->stringMaskService = $this->getService(IStringMaskService::class);
 
         (require __DIR__ . '/../../lib/config/pipeline/api/pipeline.php')($this->application);
         $router = $this->config->get(ConfigProvider::API_ROUTER);
@@ -117,9 +121,33 @@ abstract class TestCase extends \KST\TestCase {
                 $user
             )
         );
+
+        if (
+            false === $response->hasHeader(VerificationService::FIELD_NAME_TOKEN)
+            || false === $response->hasHeader(VerificationService::FIELD_NAME_USER_HASH)
+        ) {
+            throw new KSTException('hash or token not given');
+        }
+
+        $token = $response->getHeader(VerificationService::FIELD_NAME_TOKEN)[0] ?? null;
+        $hash  = $response->getHeader(VerificationService::FIELD_NAME_USER_HASH)[0] ?? null;
+
+        if (
+            null === $token
+            || null == $hash
+        ) {
+            throw new KSTException(
+                sprintf(
+                    'hash or token are null: %s, %s'
+                    , $this->stringMaskService->mask($hash)
+                    , $this->stringMaskService->mask($token)
+                )
+            );
+        }
+
         return [
-            VerificationService::FIELD_NAME_TOKEN       => $response->getHeader(VerificationService::FIELD_NAME_TOKEN)[0]
-            , VerificationService::FIELD_NAME_USER_HASH => $response->getHeader(VerificationService::FIELD_NAME_USER_HASH)[0]
+            VerificationService::FIELD_NAME_TOKEN       => $token
+            , VerificationService::FIELD_NAME_USER_HASH => $hash
         ];
     }
 
