@@ -60,6 +60,7 @@ use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
+use Keestash\Core\Service\Encryption\Mask\StringMaskService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
 use Keestash\Core\Service\Event\EventService;
 use Keestash\Core\Service\File\FileService;
@@ -118,6 +119,7 @@ use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\Service\Encryption\IStringMaskService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\Core\Service\Event\IEventService;
@@ -209,6 +211,7 @@ return [
     , IDerivationService::class                         => DerivationService::class
     , IPermissionService::class                         => PermissionService::class
     , IRoleService::class                               => RoleService::class
+    , IStringMaskService::class                         => StringMaskService::class
 
     , IL10N::class                                      => GetText::class
     , ILoaderService::class                             => LoaderService::class

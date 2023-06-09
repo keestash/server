@@ -94,6 +94,7 @@ use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
+use Keestash\Core\Service\Encryption\Mask\StringMaskService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
 use Keestash\Core\Service\Event\EventService;
 use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
@@ -338,26 +339,27 @@ return [
     , IniConfigService::class                                 => InvokableFactory::class
     , StringService::class                                    => InvokableFactory::class
     , AccessService::class                                    => InvokableFactory::class
-    , CSVService::class                                       => CSVServiceFactory::class
-    , MimeTypeService::class                                  => InvokableFactory::class
-    , QueueService::class                                     => QueueServiceFactory::class
-    , RouteService::class                                     => InvokableFactory::class
-    , LDAPService::class                                      => LDAPServiceFactory::class
-    , Base64Service::class                                    => InvokableFactory::class
-    , DefaultPaymentService::class                            => InvokableFactory::class
-    , DerivationService::class                                => DerivationServiceFactory::class
-    , PermissionService::class                                => PermissionServiceFactory::class
-    , RoleService::class                                      => RoleServiceFactory::class
+    , CSVService::class                    => CSVServiceFactory::class
+    , MimeTypeService::class               => InvokableFactory::class
+    , QueueService::class                  => QueueServiceFactory::class
+    , RouteService::class                  => InvokableFactory::class
+    , LDAPService::class                   => LDAPServiceFactory::class
+    , Base64Service::class                 => InvokableFactory::class
+    , DefaultPaymentService::class         => InvokableFactory::class
+    , DerivationService::class             => DerivationServiceFactory::class
+    , PermissionService::class             => PermissionServiceFactory::class
+    , RoleService::class                   => RoleServiceFactory::class
+    , StringMaskService::class             => InvokableFactory::class
 
-    , GetText::class                                          => InvokableFactory::class
-    , \doganoo\PHPUtil\HTTP\Session::class                    => InvokableFactory::class
-    , HTMLPurifier::class                                     => InvokableFactory::class
+    , GetText::class                       => InvokableFactory::class
+    , \doganoo\PHPUtil\HTTP\Session::class => InvokableFactory::class
+    , HTMLPurifier::class                  => InvokableFactory::class
 
     // command
-    , WorkerRunner::class                                     => WorkerRunnerFactory::class
-    , ListEvents::class                                       => EventsFactory::class
-    , QueueList::class                                        => QueueListFactory::class
-    , QueueDelete::class                                      => QueueDeleteFactory::class
+    , WorkerRunner::class                  => WorkerRunnerFactory::class
+    , ListEvents::class                    => EventsFactory::class
+    , QueueList::class                     => QueueListFactory::class
+    , QueueDelete::class                   => QueueDeleteFactory::class
     , Reset::class                                            => ResetFactory::class
     , ListAll::class                                          => ListAllFactory::class
     , ClearDerivation::class                                  => ClearDerivationFactory::class
