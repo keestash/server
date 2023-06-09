@@ -60,7 +60,7 @@ class OrganizationRepository {
             ->setParameter(0, $organization->getId())
             ->setParameter(1, $node->getId());
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
         $this->backend->endTransaction();
     }
 
@@ -114,7 +114,7 @@ class OrganizationRepository {
             ->setParameter(0, $organization->getId())
             ->setParameter(1, $node->getId());
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     public function removeNodeOrganization(Node $node): void {
@@ -131,7 +131,7 @@ class OrganizationRepository {
             ->setParameter(0, $node->getId())
             ->setParameter(1, $node->getOrganization()->getId());
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
 }

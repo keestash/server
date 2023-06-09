@@ -46,11 +46,6 @@ class ActivityTriggeredListener implements IListener {
             $this->activityRepository->insert($event->getActivity());
             $this->logger->debug('done');
         }
-
-        $this->logger->debug('inserting activity data', ['count' => $event->getActivity()->getData()->length()]);
-        foreach ($event->getActivity()->getData() as $description) {
-            $this->activityRepository->insertDescription($description, $event->getActivity()->getActivityId());
-        }
     }
 
 }

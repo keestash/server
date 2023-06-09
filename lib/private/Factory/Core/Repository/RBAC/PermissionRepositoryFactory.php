@@ -28,6 +28,7 @@ use Keestash\Core\Repository\RBAC\RBACRepository;
 use KSP\Core\Backend\IBackend;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class PermissionRepositoryFactory implements FactoryInterface {
 
@@ -39,6 +40,7 @@ class PermissionRepositoryFactory implements FactoryInterface {
         return new RBACRepository(
             $container->get(IBackend::class)
             , $container->get(IDateTimeService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

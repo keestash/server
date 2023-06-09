@@ -25,6 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\Service\Config\ConfigService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LogLevel;
 
 class ConfigServiceFactory implements FactoryInterface {
 
@@ -35,6 +36,7 @@ class ConfigServiceFactory implements FactoryInterface {
     ): ConfigService {
         $table = new HashTable();
         $table->put('test.config', true);
+        $table->put('log_level', LogLevel::DEBUG);
         return new ConfigService(
             $table
         );

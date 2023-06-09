@@ -24,6 +24,7 @@ namespace KST\Integration\Core\Repository\EncryptionKey\Organization;
 use DateTimeImmutable;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\DTO\Organization\Organization;
+use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -58,11 +59,13 @@ class OrganizationKeyRepositoryTest extends TestCase {
         );
         $key = $organizationKeyRepository->storeKey($organization, $key);
         $this->assertInstanceOf(IKey::class, $key);
+        $key = $organizationKeyRepository->getKey($organization);
+
+        $this->assertInstanceOf(IKey::class, $key);
         $organization = $organizationRepository->remove($organization);
         $this->assertTrue($organization instanceof IOrganization);
-        $this->assertTrue(
-            true === $organizationKeyRepository->remove($organization)
-        );
+        $this->expectException(KeyNotFoundException::class);
+        $organizationKeyRepository->getKey($organization);
     }
 
     public function testStoreAndGetAndRemoveKey(): void {
@@ -94,9 +97,8 @@ class OrganizationKeyRepositoryTest extends TestCase {
         $this->assertTrue($retrievedKey instanceof IKey);
         $organization = $organizationRepository->remove($organization);
         $this->assertTrue($organization instanceof IOrganization);
-        $this->assertTrue(
-            true === $organizationKeyRepository->remove($organization)
-        );
+        $this->expectException(KeyNotFoundException::class);
+        $organizationKeyRepository->getKey($organization);
     }
 
     public function testStoreAndGetAndUpdateAndRemoveKey(): void {
@@ -130,9 +132,8 @@ class OrganizationKeyRepositoryTest extends TestCase {
         $this->assertTrue(true === $organizationKeyRepository->updateKey($retrievedKey));
         $organization = $organizationRepository->remove($organization);
         $this->assertTrue($organization instanceof IOrganization);
-        $this->assertTrue(
-            true === $organizationKeyRepository->remove($organization)
-        );
+        $this->expectException(KeyNotFoundException::class);
+        $organizationKeyRepository->getKey($organization);
     }
 
 }

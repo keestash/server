@@ -123,7 +123,7 @@ class SendSummaryMail implements IListener {
             , (string) $this->configService->getValue("email_user")
         );
         $sent = $this->emailService->send();
-        $this->logger->info('send summary mail', ['sent' => $sent]);
+        $this->logger->debug('send summary mail', ['sent' => $sent]);
         $mailLog = new MailLog();
         $mailLog->setId((string) Uuid::uuid4());
         $mailLog->setSubject(SendSummaryMail::SUBJECT_SUMMARY_EMAIL);

@@ -25,7 +25,7 @@ use DateTime;
 use Doctrine\DBAL\Exception;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Edge\Edge;
-use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
+use KSA\PasswordManager\Event\Node\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
 use KSA\Settings\Repository\IOrganizationRepository;

@@ -28,6 +28,7 @@ use KSP\Core\DTO\File\IFile;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
 use KST\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class FileServiceTest extends TestCase {
 
@@ -39,9 +40,14 @@ class FileServiceTest extends TestCase {
     }
 
     public function testGetProfileImagePath(): void {
-        $url = $this->fileService->getProfileImagePath($this->getUser());
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $url  = $this->fileService->getProfileImagePath($user);
         $this->assertInstanceOf(URL::class, $url);
         $this->assertStringContainsString('/asset/img/profile-picture.png', $url->getIdentifier());
+        $this->removeUser($user);
     }
 
     public function testGetDefaultImage(): void {
@@ -51,21 +57,31 @@ class FileServiceTest extends TestCase {
     }
 
     public function testGetProfileImage(): void {
-        $profileImage = $this->fileService->getProfileImage(
-            $this->getUser()
+        $user         = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+        $profileImage = $this->fileService->getProfileImage($user);
         $this->assertInstanceOf(URL::class, $profileImage);
-        $this->assertStringContainsString('profile_image_2', $profileImage->getIdentifier());
+        $this->assertStringContainsString('profile_image_' . $user->getId(), $profileImage->getIdentifier());
+        $this->removeUser($user);
     }
 
     public function testGetProfileImageName(): void {
-        $profileImage = $this->fileService->getProfileImageName(
-            $this->getUser()
+        $user         = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $this->assertTrue($profileImage === "profile_image_{$this->getUser()->getId()}");
+        $profileImage = $this->fileService->getProfileImageName($user);
+        $this->assertTrue($profileImage === "profile_image_{$user->getId()}");
+        $this->removeUser($user);
     }
 
     public function testRead(): void {
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
@@ -79,7 +95,7 @@ class FileServiceTest extends TestCase {
         $file->setSize(1);
         $file->setContent("this is a test file");
         $file->setHash(md5((string) time()));
-        $file->setOwner($this->getUser());
+        $file->setOwner($user);
 
         $file = $fileRepository->add($file);
 
@@ -103,6 +119,7 @@ class FileServiceTest extends TestCase {
         $this->assertTrue($retrieved->getOwner()->getId() === $file->getOwner()->getId());
         $unlinked = unlink($file->getFullPath());
         $this->assertTrue(true === $unlinked);
+        $this->removeUser($user);
     }
 
 }

@@ -29,6 +29,7 @@ use KSP\Core\Service\Config\IConfigService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class ConnectionFactory implements FactoryInterface {
 
@@ -41,6 +42,7 @@ class ConnectionFactory implements FactoryInterface {
         $config = $container->get(IConfigService::class);
         /** @var LoggerInterface $logger */
         $logger = $container->get(LoggerInterface::class);
+        // $logger = new NullLogger();
         return DriverManager::getConnection(
             [
                 'driver'     => 'pdo_mysql'

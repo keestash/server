@@ -22,30 +22,29 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service\Node;
 
 use DateTime;
+use DateTimeImmutable;
 use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Event\Node\NodeRemovedEvent;
+use KSA\PasswordManager\Exception\InvalidNodeTypeException;
+use KSA\PasswordManager\Exception\Node\NodeNotRemovedException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Event\IEventService;
 
 class NodeService {
 
-    private IUserRepository $userRepository;
-    private NodeRepository  $nodeRepository;
-    private UserService     $userService;
-
     public function __construct(
-        IUserRepository  $userRepository
-        , NodeRepository $nodeRepository
-        , UserService    $userService
+        private readonly IUserRepository  $userRepository
+        , private readonly NodeRepository $nodeRepository
+        , private readonly UserService    $userService
+        , private readonly IEventService  $eventService
     ) {
-        $this->userRepository = $userRepository;
-        $this->nodeRepository = $nodeRepository;
-        $this->userService    = $userService;
     }
 
     /**
@@ -66,8 +65,7 @@ class NodeService {
         $user = $this->userRepository->getUserById($userId);
 
         return
-            $node !== null
-            && false === $this->userService->isDisabled($user)
+            false === $this->userService->isDisabled($user)
             && false === $node->getUser()->equals($user)
             && false === $node->isSharedTo($user);
     }
@@ -78,7 +76,7 @@ class NodeService {
         $edge = $this->prepareEdge($nodeId, $userId);
         $edge->setType(Edge::TYPE_SHARE);
         $edge->setExpireTs($expireTs);
-        $edge->setCreateTs(new DateTime());
+        $edge->setCreateTs(new DateTimeImmutable());
         return $edge;
     }
 
@@ -153,6 +151,19 @@ class NodeService {
             if (null !== $nodeObject->getOrganization()) return $nodeObject->getOrganization();
         }
         return null;
+    }
+
+    /**
+     * @param Node $node
+     * @return void
+     * @throws InvalidNodeTypeException
+     * @throws NodeNotRemovedException
+     */
+    public function removeNode(Node $node): void {
+        $this->nodeRepository->remove($node);
+        $this->eventService->execute(
+            new NodeRemovedEvent($node)
+        );
     }
 
 }

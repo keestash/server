@@ -24,17 +24,17 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 use DateTime;
 use Exception;
 use KSA\PasswordManager\Entity\Edge\Edge;
-use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
+use KSA\PasswordManager\Event\Node\NodeOrganizationUpdatedEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Update implements RequestHandlerInterface {
 

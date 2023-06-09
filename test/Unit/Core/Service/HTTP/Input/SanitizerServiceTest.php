@@ -45,14 +45,40 @@ class SanitizerServiceTest extends TestCase {
         );
     }
 
-    public function testSanitizeAll(): void {
-        $this->markTestSkipped('implement once sanitizer is implemented');
+    /**
+     * @return void
+     * @dataProvider provideSanitizeAll
+     */
+    public function testSanitizeAll(array $input): void {
+        $result = [
+            'alert' => 'tests'
+            , 'img' => ''
+        ];
+        $output = $this->sanitizerService->sanitizeAll($input);
+
+        $this->assertTrue(
+            $output['alert'] === $result['alert']
+        );
+        $this->assertTrue(
+            $output['img'] === $result['img']
+        );
     }
 
     public function provideSanitize(): array {
         return [
             ['<alert>tests</alert>', 'tests']
             , ['<img src="javascript:evil();" onload="evil();" />', '']
+        ];
+    }
+
+    public function provideSanitizeAll(): array {
+        return [
+            [
+                [
+                    'alert' => '<alert>tests</alert>',
+                    'img'   => '<img src="javascript:evil();" onload="evil();" />'
+                ],
+            ],
         ];
     }
 

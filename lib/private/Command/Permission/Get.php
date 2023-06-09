@@ -47,7 +47,7 @@ class Get extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("permission:get")
+        $this->setName("keestash:permission:get")
             ->setDescription("lists one, a list or all permissions")
             ->addArgument(
                 Get::ARGUMENT_NAME_PERMISSION_IDENTIFIER

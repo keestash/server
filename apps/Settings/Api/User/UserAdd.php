@@ -21,27 +21,29 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\User;
 
+use Error;
+use Exception;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\User\UserNotCreatedException;
 use KSP\Api\IResponse;
-use Psr\Log\LoggerInterface;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use TypeError;
 
 class UserAdd implements RequestHandlerInterface {
 
     private UserService            $userService;
     private IUserRepositoryService $userRepositoryService;
-    private LoggerInterface                $logger;
+    private LoggerInterface        $logger;
 
     public function __construct(
         UserService              $userService
         , IUserRepositoryService $userRepositoryService
-        , LoggerInterface                $logger
+        , LoggerInterface        $logger
     ) {
         $this->userService           = $userService;
         $this->userRepositoryService = $userRepositoryService;
@@ -53,7 +55,7 @@ class UserAdd implements RequestHandlerInterface {
 
         try {
             $user = $this->userService->toNewUser($parameters);
-        } catch (TypeError $error) {
+        } catch (Error|Exception $error) {
             $this->logger->error('error while converting to user', ['error' => $error]);
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }

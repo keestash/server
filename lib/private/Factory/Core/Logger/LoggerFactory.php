@@ -63,9 +63,6 @@ class LoggerFactory {
             ->withDevHandler(
                 $configService->getValue('sentry_dsn', '')
             )
-            ->withConsoleHandler(
-                $environmentService->isConsole()
-            )
             ->build();
 
     }

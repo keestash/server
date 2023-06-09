@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Test\Integration\Api;
 
 use KSA\ForgotPassword\Api\ForgotPassword;
-use KSA\ForgotPassword\Test\TestCase;
+use KSA\ForgotPassword\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -38,7 +38,7 @@ class ForgotPasswordTest extends TestCase {
         /** @var ForgotPassword $forgotPassword */
         $forgotPassword = $this->getService(ForgotPassword::class);
         $response       = $forgotPassword->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
@@ -48,7 +48,7 @@ class ForgotPasswordTest extends TestCase {
         /** @var ForgotPassword $forgotPassword */
         $forgotPassword = $this->getService(ForgotPassword::class);
         $response       = $forgotPassword->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'input' => 'NoValidInput'
                 ]
@@ -83,7 +83,7 @@ class ForgotPasswordTest extends TestCase {
         /** @var ForgotPassword $forgotPassword */
         $forgotPassword = $this->getService(ForgotPassword::class);
         $response       = $forgotPassword->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'input' => $user->getName()
                 ]
@@ -122,7 +122,7 @@ class ForgotPasswordTest extends TestCase {
         /** @var ForgotPassword $forgotPassword */
         $forgotPassword = $this->getService(ForgotPassword::class);
         $response       = $forgotPassword->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'input' => $user->getName()
                 ]
@@ -139,7 +139,7 @@ class ForgotPasswordTest extends TestCase {
         /** @var ForgotPassword $forgotPassword */
         $forgotPassword = $this->getService(ForgotPassword::class);
         $response       = $forgotPassword->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'input' => UserService::TEST_USER_ID_2_NAME
                 ]

@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Generate;
 
-use KSA\PasswordManager\Api\Generate\Quality;
-use KSA\PasswordManager\Test\TestCase;
+use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 
 class QualityTest extends TestCase {
@@ -31,7 +31,7 @@ class QualityTest extends TestCase {
         /** @var Quality $quality */
         $quality  = $this->getService(Quality::class);
         $response = $quality->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
@@ -41,7 +41,7 @@ class QualityTest extends TestCase {
         /** @var Quality $quality */
         $quality      = $this->getService(Quality::class);
         $response     = $quality->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
                 ->withAttribute('value', 'abcd')
         );
         $responseBody = $this->getResponseBody($response);

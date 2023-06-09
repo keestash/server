@@ -20,25 +20,37 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Command\App\InstallApps;
 use Keestash\Command\App\ListAll;
+use Keestash\Command\CreateSystemUser;
 use Keestash\Command\Derivation\AddDerivation;
 use Keestash\Command\Derivation\ClearDerivation;
 use Keestash\Command\Derivation\DerivationList;
-use Keestash\Command\Keestash\ClearRateLimiterFile;
-use Keestash\Command\Keestash\Cors;
-use Keestash\Command\Keestash\Events;
-use Keestash\Command\Keestash\QueueDelete;
-use Keestash\Command\Keestash\QueueList;
-use Keestash\Command\Keestash\Reset;
-use Keestash\Command\Keestash\Worker\WorkerFlusher;
-use Keestash\Command\Keestash\Worker\WorkerLocker;
-use Keestash\Command\Keestash\Worker\WorkerRunner;
+use Keestash\Command\Environment\Environment;
+use Keestash\Command\Environment\ListEnvironment;
+use Keestash\Command\Event\ListEvents;
+use Keestash\Command\Install\CreateConfig;
+use Keestash\Command\Install\InstanceData;
+use Keestash\Command\Install\Uninstall;
 use Keestash\Command\Permission\Add;
-use Keestash\Command\Permission\AssignPermissionToRole;
+use Keestash\Command\Permission\CreatePermissions;
 use Keestash\Command\Permission\Get;
 use Keestash\Command\Permission\PermissionsByRole;
+use Keestash\Command\Permission\Role\AssignPermissionsToRoles;
+use Keestash\Command\Permission\Role\AssignPermissionToRole;
+use Keestash\Command\Permission\Role\CreateRoles;
+use Keestash\Command\Ping;
+use Keestash\Command\RateLimit\ClearRateLimiterFile;
 use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
+use Keestash\Command\Routes;
+use Keestash\Command\Security\Cors;
+use Keestash\Command\Worker\Queue\QueueDelete;
+use Keestash\Command\Worker\Queue\QueueList;
+use Keestash\Command\Worker\Queue\Reset;
+use Keestash\Command\Worker\WorkerFlusher;
+use Keestash\Command\Worker\WorkerLocker;
+use Keestash\Command\Worker\WorkerRunner;
 
 return [
     WorkerRunner::class
@@ -50,7 +62,7 @@ return [
     , \Keestash\Command\Role\Add::class
     , AssignRoleToUser::class
     , AssignPermissionToRole::class
-    , Events::class
+    , ListEvents::class
     , QueueList::class
     , QueueDelete::class
     , Reset::class
@@ -62,4 +74,17 @@ return [
     , ClearRateLimiterFile::class
     , WorkerLocker::class
     , WorkerFlusher::class
+    , Routes::class
+    , Uninstall::class
+    , Ping::class
+    , Environment::class
+    , ListEnvironment::class
+    , CreateConfig::class
+    , CreatePermissions::class
+    , CreateSystemUser::class
+    , InstanceData::class
+    , CreateRoles::class
+    , AssignPermissionsToRoles::class
+    , InstallApps::class
+    , \Keestash\Command\App\Uninstall::class
 ];

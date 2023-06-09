@@ -21,10 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Generate;
 
-use KSA\PasswordManager\Api\Generate\Generate;
+use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GenerateTest extends TestCase {
 
@@ -39,9 +40,11 @@ class GenerateTest extends TestCase {
         /** @var ResponseService $responseService */
         $responseService = $this->getServiceManager()->get(ResponseService::class);
 
-        $request = $requestService->getRequestWithToken(
-            $this->getUser()
+        $user    = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+        $request = $requestService->getVirtualRequestWithToken($user);
 
         foreach ($attributes as $name => $value) {
             $request = $request->withAttribute($name, $value);
@@ -49,6 +52,7 @@ class GenerateTest extends TestCase {
 
         $response = $generate->handle($request);
         $this->assertTrue($valid === $responseService->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     // TODO add more cases

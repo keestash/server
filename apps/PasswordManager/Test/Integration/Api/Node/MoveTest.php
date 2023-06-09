@@ -21,67 +21,60 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
-use DateTime;
 use KSA\PasswordManager\Api\Node\Move;
-use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Service\Node\NodeService;
-use KST\TestCase;
+use KSA\PasswordManager\ConfigProvider;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IVerb;
+use Ramsey\Uuid\Uuid;
 
 class MoveTest extends TestCase {
 
     public function testMove(): void {
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
         /** @var Move $move */
-        $move = $this->getServiceManager()->get(Move::class);
-        /** @var NodeService $nodeService */
-        $nodeService = $this->getServiceManager()->get(NodeService::class);
-        $user        = $this->getUser();
-        $userRoot    = $nodeRepository->getRootForUser($user);
-
-        $node        = $credentialService->createCredential(
-            "moveTestPassword"
-            , "keestash.test"
-            , "move.test"
-            , "MoveTst"
-            , $user
+        $move     = $this->getServiceManager()->get(Move::class);
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
-        $currentEdge = $credentialService->insertCredential($node, $userRoot);
+        $userRoot = $this->getRootFolder($user);
 
-        $this->assertTrue($userRoot->getId() === $currentEdge->getParent()->getId());
-
-        $newFolder = new Folder();
-        $newFolder->setUser($user);
-        $newFolder->setCreateTs(new DateTime());
-        $newFolder->setUpdateTs(null);
-        $newFolder->setName('TheNewFolder');
-        $newFolder->setType(Folder::FOLDER);
-
-        $folderId = $nodeRepository->addFolder($newFolder);
-        $newFolder->setId((int) $folderId);
-
-        $newFolderEdge = $nodeService->prepareRegularEdge(
-            $newFolder
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
             , $userRoot
-            , $user
         );
 
-        $newFolderEdge = $nodeRepository->addEdge($newFolderEdge);
+        $this->assertTrue($userRoot->getId() === $edge->getParent()->getId());
 
-        $node    = $currentEdge->getNode();
-        $request = $this->getDefaultRequest(
-            [
-                'node_id'          => $node->getId()
-                , 'target_node_id' => $newFolderEdge->getNode()->getId()
-            ]
+        $newFolderEdge = $this->createAndInsertFolder(
+            $user
+            , Uuid::uuid4()->toString()
+            , $userRoot
         );
 
-        $response = $move->handle($request);
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_MOVE
+                    , [
+                    'node_id'          => $edge->getNode()->getId()
+                    , 'target_node_id' => $newFolderEdge->getNode()->getId()
+                ],
+                    $user
+                    , $headers
+                )
+            );
+
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+
     }
 
     public function testWithMissingData(): void {
@@ -114,7 +107,7 @@ class MoveTest extends TestCase {
         ];
 
         foreach ($data as $datum) {
-            $request  = $this->getDefaultRequest($datum);
+            $request  = $this->getVirtualRequest($datum);
             $response = $move->handle($request);
             $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         }

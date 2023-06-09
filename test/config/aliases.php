@@ -21,29 +21,41 @@ declare(strict_types=1);
  */
 
 use Keestash\Core\Service\Cache\RedisService as RealRedisService;
+use Keestash\Middleware\RateLimiterMiddleware;
+use KSP\Core\Backend\SQLBackend\ISQLBackend;
 use KSP\Core\Service\Config\IIniConfigService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\Phinx\IMigrator;
+use KST\Service\Core\Backend\SQLiteBackend;
 use KST\Service\Core\Cache\RedisService;
 use KST\Service\Core\Manager\EventManager\EventService;
 use KST\Service\Core\Service\Config\IniConfigService;
 use KST\Service\Core\Service\Core\Locale\LocaleService;
 use KST\Service\Core\Service\Email\EmailService;
 use KST\Service\Core\Service\Encryption\Credential\CredentialService;
+use KST\Service\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\Phinx\Migrator;
+use KST\Service\Middleware\DeactivatedRouteMiddleware;
+use KST\Service\Middleware\RateLimiterMiddleware as TestRateLimiter;
 
 return [
-    IMigrator::class                 => Migrator::class
-    , IHTTPService::class            => HTTPService::class
-    , IEventService::class           => EventService::class
-    , ILocaleService::class          => LocaleService::class
-    , RealRedisService::class        => RedisService::class
-    , IIniConfigService::class       => IniConfigService::class
-    , IEmailService::class           => EmailService::class
-    , ICredentialService::class      => CredentialService::class
+    IMigrator::class                                         => Migrator::class
+    , IHTTPService::class                                    => HTTPService::class
+    , IEventService::class                                   => EventService::class
+    , ILocaleService::class                                  => LocaleService::class
+    , RealRedisService::class                                => RedisService::class
+    , IIniConfigService::class                               => IniConfigService::class
+    , IEmailService::class                                   => EmailService::class
+    , ICredentialService::class                              => CredentialService::class
+    , IFileService::class                                    => FileService::class
+    , RateLimiterMiddleware::class                           => TestRateLimiter::class
+    , \Keestash\Middleware\DeactivatedRouteMiddleware::class => DeactivatedRouteMiddleware::class
+    , ISQLBackend::class                                     => SQLiteBackend::class
+    , \KSP\Core\Backend\IBackend::class                      => ISQLBackend::class
 ];

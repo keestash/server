@@ -103,5 +103,15 @@ interface IPermission extends PermissionInterface, IJsonObject {
     public const PERMISSION_NAME_LDAP_CONFIG_REMOVE                         = 'LDAP_CONFIG_REMOVE';
     public const PERMISSION_PAYMENT_CANCEL                                  = 42;
     public const PERMISSION_NAME_PAYMENT_CANCEL                             = 'PAYMENT_CANCEL';
+    public const PERMISSION_CREDENTIAL_ADDITIONAL_DATA_GET                  = 43;
+    public const PERMISSION_NAME_CREDENTIAL_ADDITIONAL_DATA_GET             = 'CREDENTIAL_ADDITIONAL_DATA_GET';
+    public const PERMISSION_CREDENTIAL_ADDITIONAL_DATA_ADD                  = 44;
+    public const PERMISSION_NAME_CREDENTIAL_ADDITIONAL_DATA_ADD             = 'CREDENTIAL_ADDITIONAL_DATA_ADD';
+    public const PERMISSION_CREDENTIAL_ADDITIONAL_DATA_GET_VALUE            = 45;
+    public const PERMISSION_NAME_CREDENTIAL_ADDITIONAL_DATA_GET_VALUE       = 'CREDENTIAL_ADDITIONAL_DATA_GET_VALUE';
+    public const PERMISSION_CREDENTIAL_ADDITIONAL_DATA_DELETE               = 46;
+    public const PERMISSION_NAME_CREDENTIAL_ADDITIONAL_DATA_DELETE          = 'CREDENTIAL_ADDITIONAL_DATA_DELETE';
+    public const PERMISSION_CREDENTIAL_ACTIVITY_GET                         = 47;
+    public const PERMISSION_NAME_CREDENTIAL_ACTIVITY_GET                    = 'CREDENTIAL_ACTIVITY_GET';
 
 }

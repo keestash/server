@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Test\Integration\Api;
 
 use KSA\Register\Api\MinimumCredential;
-use KSA\Register\Test\TestCase;
+use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 
 class MinimumCredentialTest extends TestCase {
@@ -31,7 +31,7 @@ class MinimumCredentialTest extends TestCase {
         /** @var MinimumCredential $minimumCredential */
         $minimumCredential = $this->getService(MinimumCredential::class);
         $response          = $minimumCredential->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
@@ -41,7 +41,7 @@ class MinimumCredentialTest extends TestCase {
         /** @var MinimumCredential $minimumCredential */
         $minimumCredential = $this->getService(MinimumCredential::class);
         $response          = $minimumCredential->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
                 ->withQueryParams(
                     [
                         'password' => '<SCRIPT SRC=http://xss.rocks/xss.js></SCRIPT>'
@@ -63,7 +63,7 @@ class MinimumCredentialTest extends TestCase {
         /** @var MinimumCredential $minimumCredential */
         $minimumCredential = $this->getService(MinimumCredential::class);
         $response          = $minimumCredential->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
                 ->withQueryParams(
                     [
                         'password' => 123456
@@ -85,7 +85,7 @@ class MinimumCredentialTest extends TestCase {
         /** @var MinimumCredential $minimumCredential */
         $minimumCredential = $this->getService(MinimumCredential::class);
         $response          = $minimumCredential->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
                 ->withQueryParams(
                     [
                         'password' => '1E]U_t"0Xh&}gtTPA`|?'

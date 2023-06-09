@@ -35,7 +35,7 @@ class ApiRequestServiceTest extends TestCase {
 
     public function testLog(): void {
         $this->apiRequestService->log(
-            $this->getDefaultRequest([])
+            $this->getVirtualRequest([])
             , time()
         );
         $this->assertTrue(true === true);

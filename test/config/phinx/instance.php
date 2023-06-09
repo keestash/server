@@ -37,10 +37,7 @@ $dirname = realpath($config->get(ConfigProvider::INSTANCE_PATH));
 
 /** @var Connection $connection */
 $connection = $container->get(Connection::class);
-$pdo        = $connection
-    ->getWrappedConnection()
-    ->getWrappedConnection()
-;
+$pdo        = $connection->getNativeConnection();
 
 return [
     'environments'           => [

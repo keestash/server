@@ -24,6 +24,7 @@ namespace KST\Unit\Core\Service\Encryption\Credential;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KST\Unit\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class CredentialServiceTest extends TestCase {
 
@@ -31,11 +32,14 @@ class CredentialServiceTest extends TestCase {
         /** @var ICredentialService $credentialService */
         $credentialService = $this->getService(ICredentialService::class);
 
-        $credential = $credentialService->createCredential(
-            $this->getUser()
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+
+        $credential = $credentialService->createCredential($user);
         $this->assertTrue($credential instanceof ICredential);
-        $this->assertTrue($credential->getKeyHolder()->getId() === $this->getUser()->getId());
+        $this->assertTrue($credential->getKeyHolder()->getId() === $user->getId());
     }
 
 }

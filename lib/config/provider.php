@@ -24,14 +24,13 @@ use doganoo\SimpleRBAC\ConfigProvider as SimpleRBACConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Activity\ConfigProvider as ActivityConfigProvider;
 use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
-use KSA\GeneralApi\ConfigProvider as GeneralApiConfigProvider;
-use KSA\InstallInstance\ConfigProvider as InstallInstanceConfigProvider;
 use KSA\LDAP\ConfigProvider as LDAPConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
 use KSA\Payment\ConfigProvider as PaymentConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
+use KSA\Instance\ConfigProvider as InstanceConfigProvider;
 use Laminas\Diactoros\ConfigProvider as DiactorosConfigProvider;
 use Laminas\HttpHandlerRunner\ConfigProvider as HttpHandlerRunnerConfigProvider;
 use Laminas\Router\ConfigProvider as LaminasRouterConfigProvider;
@@ -59,15 +58,12 @@ return [
     // Keestash
     , CoreConfigProvider::class
     , ForgotPasswordConfigProvider::class
-    , GeneralApiConfigProvider::class
-    , InstallInstanceConfigProvider::class
     , LoginConfigProvider::class
     , class_exists(LDAPConfigProvider::class)
         ? LDAPConfigProvider::class
         : function (): array {
             return [];
         }
-
     , PasswordManagerConfigProvider::class
     , RegisterConfigProvider::class
     , SettingsConfigProvider::class
@@ -77,6 +73,7 @@ return [
             return [];
         }
     , ActivityConfigProvider::class
+    , InstanceConfigProvider::class
 
     // Third Party libs
     , SimpleRBACConfigProvider::class

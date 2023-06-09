@@ -47,8 +47,9 @@ class ConfigServiceTest extends TestCase {
     public function testGetAll(): void {
         $all = $this->configService->getAll();
         $this->assertIsArray($all);
-        $this->assertCount(1, $all);
+        $this->assertCount(2, $all);
         $this->assertArrayHasKey('test.config', $all);
+        $this->assertArrayHasKey('log_level', $all);
     }
 
     public function provideData(): array {

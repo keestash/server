@@ -33,7 +33,7 @@ use KSA\Activity\Exception\ActivityNotFoundException;
 use KSP\Core\Backend\IBackend;
 use Psr\Log\LoggerInterface;
 
-class ActivityRepository {
+class ActivityRepository implements IActivityRepository {
 
     public function __construct(
         private readonly IBackend           $backend
@@ -78,17 +78,19 @@ class ActivityRepository {
                 $row[0]
                 , $row[1]
                 , $row[2]
-                , new ArrayList()
+                , $this->getDescriptions($row[0])
                 , $this->dateTimeService->fromString((string) $row[3])
             );
 
         } catch (Exception $e) {
+            // @codeCoverageIgnoreStart
             $message = 'error while retrieving the activity';
             $this->logger->error(
                 $message
                 , ['exception' => $e]
             );
             throw new ActivityException($message);
+            // @codeCoverageIgnoreEnd
         }
         return $activity;
     }
@@ -111,15 +113,20 @@ class ActivityRepository {
                 ->setParameter(3, $this->dateTimeService->toYMDHIS($activity->getCreateTs()))
                 ->executeStatement();
 
+            foreach ($activity->getData() as $description) {
+                $this->insertDescription($description, $activity->getActivityId());
+            }
             return $activity;
 
         } catch (Exception $exception) {
+            // @codeCoverageIgnoreStart
             $this->logger->error('error while inserting activity', ['exception' => $exception]);
             throw new ActivityException();
+            // @codeCoverageIgnoreEnd
         }
     }
 
-    public function insertDescription(string $description, string $activityId): void {
+    private function insertDescription(string $description, string $activityId): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->insert('activity_data')
@@ -143,9 +150,110 @@ class ActivityRepository {
             }
 
         } catch (Exception $exception) {
+            // @codeCoverageIgnoreStart
             $this->logger->error('error while inserting activity', ['exception' => $exception]);
             throw new ActivityException();
+            // @codeCoverageIgnoreEnd
         }
+    }
+
+    public function getAll(string $appId, string $referenceKey): ArrayList {
+        $list = new ArrayList();
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->select(
+                [
+                    'a.activity_id'
+                    , 'a.app_id'
+                    , 'a.reference_key'
+                    , 'a.create_ts'
+                ]
+            )
+                ->from('activity', 'a')
+                ->where('a.app_id = ?')
+                ->andWhere('a.reference_key = ?')
+                ->setParameter(0, $appId)
+                ->setParameter(1, $referenceKey);
+
+            $result        = $queryBuilder->executeQuery();
+            $activities    = $result->fetchAllNumeric();
+            $activityCount = count($activities);
+
+            if (0 === $activityCount) {
+                throw new ActivityNotFoundException();
+            }
+
+            foreach ($activities as $row) {
+                $list->add(
+                    new Activity(
+                        $row[0]
+                        , $row[1]
+                        , $row[2]
+                        , $this->getDescriptions((string) $row[0])
+                        , $this->dateTimeService->fromString((string) $row[3])
+                    )
+                );
+            }
+        } catch (Exception $e) {
+            // @codeCoverageIgnoreStart
+            $message = 'error while retrieving the activity';
+            $this->logger->error(
+                $message
+                , ['exception' => $e]
+            );
+            throw new ActivityException($message);
+            // @codeCoverageIgnoreEnd
+        }
+        return $list;
+    }
+
+    private function getDescriptions(string $activityId): ArrayList {
+        $list = new ArrayList();
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->select(
+                [
+                    'description'
+                    , 'activity_id'
+                    , 'create_ts'
+                ]
+            )
+                ->from('activity_data', 'a')
+                ->andWhere('a.activity_id = ?')
+                ->setParameter(0, $activityId);
+
+            $result        = $queryBuilder->executeQuery();
+            $activities    = $result->fetchAllNumeric();
+            $activityCount = count($activities);
+
+            if (0 === $activityCount) {
+                throw new ActivityNotFoundException();
+            }
+
+            foreach ($activities as $row) {
+                $list->add($row[0]);
+            }
+        } catch (Exception $e) {
+            // @codeCoverageIgnoreStart
+            $message = 'error while retrieving the activity';
+            $this->logger->error(
+                $message
+                , ['exception' => $e]
+            );
+            throw new ActivityException($message);
+            // @codeCoverageIgnoreEnd
+        }
+        return $list;
+    }
+
+    public function remove(string $appId, string $referenceKey): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->delete('activity')
+            ->where('app_id = ?')
+            ->andWhere('reference_key = ?')
+            ->setParameter(0, $appId)
+            ->setParameter(1, $referenceKey)
+            ->executeStatement();
     }
 
 }

@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\RBAC;
 
+use DateTimeImmutable;
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
@@ -33,19 +35,17 @@ use Keestash\Core\DTO\RBAC\NullRole;
 use Keestash\Core\DTO\RBAC\Permission;
 use Keestash\Core\DTO\RBAC\Role;
 use Keestash\Exception\KeestashException;
+use Keestash\Exception\Repository\RowNotInsertedException;
 use KSP\Core\Backend\IBackend;
+use Psr\Log\LoggerInterface;
 
 class RBACRepository implements RBACRepositoryInterface {
 
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-
     public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
+        private readonly IBackend           $backend
+        , private readonly IDateTimeService $dateTimeService
+        , private readonly LoggerInterface  $logger
     ) {
-        $this->dateTimeService = $dateTimeService;
-        $this->backend         = $backend;
     }
 
     public function getRolesByUser(UserInterface $user): HashTable {
@@ -186,6 +186,18 @@ class RBACRepository implements RBACRepositoryInterface {
         );
     }
 
+    public function clearPermissions(): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->delete('`permission`')
+            ->executeStatement();
+    }
+
+    public function clearRoles(): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->delete('`role`')
+            ->executeStatement();
+    }
+
     public function getPermission(int $permissionId): PermissionInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -302,26 +314,45 @@ class RBACRepository implements RBACRepositoryInterface {
     }
 
     public function assignRoleToUser(UserInterface $user, RoleInterface $role): void {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $queryBuilder->insert('`role_user`')
-            ->values(
-                [
-                    'role_id'     => '?'
-                    , 'user_id'   => '?'
-                    , 'create_ts' => '?'
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->insert('`role_user`')
+                ->values(
+                    [
+                        'role_id'     => '?'
+                        , 'user_id'   => '?'
+                        , 'create_ts' => '?'
+                    ]
+                )
+                ->setParameter(0, $role->getId())
+                ->setParameter(1, $user->getId())
+                ->setParameter(2,
+                    $this->dateTimeService->toYMDHIS($role->getCreateTs())
+                )
+                ->executeStatement();
+
+            $lastInsertId = $this->backend->getConnection()->lastInsertId();
+
+            if (false === is_numeric($lastInsertId)) {
+                $this->logger->error(
+                    'no numeric id found'
+                    , [
+                        'userId'   => $user->getId()
+                        , 'roleId' => $role->getId()
+                    ]
+                );
+                throw new RowNotInsertedException();
+            }
+        } catch (Exception $e) {
+            $this->logger->error(
+                'role not assigned to user'
+                , [
+                    'userId'      => $user->getId()
+                    , 'roleId'    => $role->getId()
+                    , 'exception' => $e
                 ]
-            )
-            ->setParameter(0, $role->getId())
-            ->setParameter(1, $user->getId())
-            ->setParameter(2,
-                $this->dateTimeService->toYMDHIS($role->getCreateTs())
-            )
-            ->executeStatement();
-
-        $lastInsertId = $this->backend->getConnection()->lastInsertId();
-
-        if (false === is_numeric($lastInsertId)) {
-            throw new KeestashException();
+            );
+            throw new RowNotInsertedException();
         }
 
     }
@@ -339,7 +370,7 @@ class RBACRepository implements RBACRepositoryInterface {
             ->setParameter(0, $role->getId())
             ->setParameter(1, $permission->getId())
             ->setParameter(2,
-                $this->dateTimeService->toYMDHIS($role->getCreateTs())
+                $this->dateTimeService->toYMDHIS(new DateTimeImmutable())
             )
             ->executeStatement();
 

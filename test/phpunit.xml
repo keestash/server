@@ -21,6 +21,11 @@
         </include>
         <exclude>
             <directory>../lib/public</directory>
+            <directory>../apps/*/Event/</directory>
+            <directory>../apps/*/Factory/</directory>
+            <directory>../apps/*/Test/</directory>
+            <directory>../apps/*/Exception/</directory>
+            <directory>../apps/*/Repository/Migration/</directory>
         </exclude>
     </coverage>
 </phpunit>

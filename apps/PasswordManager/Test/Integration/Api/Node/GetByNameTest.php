@@ -23,32 +23,31 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Entity\Folder\Root;
-use KSA\PasswordManager\Entity\Node\Node;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GetByNameTest extends TestCase {
 
     public function testGet(): void {
-        /** @var GetByName $get */
-        $get = $this->getServiceManager()->get(GetByName::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $node           = $nodeRepository->getRootForUser($this->getUser());
-
-        $this->assertTrue($node instanceof Node);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $node = $this->getRootFolder($user);
         $this->assertTrue($node instanceof Root);
 
-        $request  = $this->getDefaultRequest();
-        $response = $get->handle($request->withAttribute('name', $node->getName()));
+        /** @var GetByName $get */
+        $get      = $this->getServiceManager()->get(GetByName::class);
+        $response = $get->handle($this->getVirtualRequest()->withAttribute('name', $node->getName()));
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testGetNonExisting(): void {
         /** @var GetByName $get */
         $get      = $this->getServiceManager()->get(GetByName::class);
         $response = $get->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(
             false === $this->getResponseService()->isValidResponse($response)
@@ -59,7 +58,7 @@ class GetByNameTest extends TestCase {
         /** @var GetByName $get */
         $get = $this->getServiceManager()->get(GetByName::class);
 
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $response = $get->handle($request->withAttribute('name', md5(uniqid('', true))));
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $data = $this->getResponseService()->getResponseData($response);

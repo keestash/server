@@ -25,6 +25,8 @@ use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Permission\IPermissionService;
+use KSP\Core\Service\Permission\IRoleService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Exception\WarningException;
 use KST\Service\Service\UserService;
@@ -44,7 +46,6 @@ set_error_handler(
     }, E_WARNING | E_USER_WARNING
 );
 
-
 $config   = $container->get(Config::class);
 $fileName = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
 
@@ -54,7 +55,14 @@ if (is_file($fileName)) {
 
 AdapterFactory::instance()
     ->registerAdapter('sqlite', SQLiteAdapter::class);
+/** @var \Doctrine\DBAL\Connection $connection */
+$connection = $container->get(\Doctrine\DBAL\Connection::class);
+$connection->executeStatement('PRAGMA foreign_keys = ON;');
 
+/** @var IPermissionService $permissionService */
+$permissionService = $container->get(IPermissionService::class);
+/** @var IRoleService $roleService */
+$roleService = $container->get(IRoleService::class);
 /** @var IEnvironmentService $environmentService */
 $environmentService = $container->get(IEnvironmentService::class);
 $environmentService->setEnv(ConfigProvider::ENVIRONMENT_UNIT_TEST);
@@ -79,11 +87,15 @@ $migrator = $container->get(IMigrator::class);
 $migrator->runCore();
 $migrator->runApps();
 
-/** @var IEventService $eventManager */
-$eventManager = $container->get(IEventService::class);
-$eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
-$eventManager->execute(new ApplicationStartedEvent(new DateTime()));
+/** @var IEventService $eventService */
+$eventService = $container->get(IEventService::class);
+$eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
+$eventService->execute(new ApplicationStartedEvent(new DateTimeImmutable()));
 
 /** @var UserService $userService */
 $userService = $container->get(UserService::class);
+
+$permissionService->recreatePermissions();
+$roleService->recreateRoles();
 $userService->createTestUsers();
+$roleService->assignAllRoles();

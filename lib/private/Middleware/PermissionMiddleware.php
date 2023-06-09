@@ -34,6 +34,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class PermissionMiddleware implements MiddlewareInterface {
 
@@ -41,6 +42,7 @@ class PermissionMiddleware implements MiddlewareInterface {
         private readonly IRouterService         $routeService
         , private readonly Config               $config
         , private readonly RBACServiceInterface $rbacService
+        , private readonly LoggerInterface $logger
     ) {
     }
 
@@ -68,6 +70,13 @@ class PermissionMiddleware implements MiddlewareInterface {
         $permissionIds = $permissionMap[$path] ?? null;
 
         if (null === $permissionIds) {
+            $this->logger->error(
+                'did not find permissions for path',
+                [
+                    'path' => $request->getUri(),
+                    'matchedPath' => $path,
+                ]
+            );
             throw new KeestashException();
         }
 
@@ -81,6 +90,7 @@ class PermissionMiddleware implements MiddlewareInterface {
                 return $handler->handle($request);
             }
         }
+
         return new JsonResponse(['user is not allowed to perform this operation'], IResponse::FORBIDDEN);
     }
 

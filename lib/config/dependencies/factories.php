@@ -25,25 +25,37 @@ use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
 use GuzzleHttp\Client;
 use Keestash\Api\PingHandler;
+use Keestash\Command\App\InstallApps;
 use Keestash\Command\App\ListAll;
+use Keestash\Command\CreateSystemUser;
 use Keestash\Command\Derivation\AddDerivation;
 use Keestash\Command\Derivation\ClearDerivation;
 use Keestash\Command\Derivation\DerivationList;
-use Keestash\Command\Keestash\ClearRateLimiterFile;
-use Keestash\Command\Keestash\Cors;
-use Keestash\Command\Keestash\Events;
-use Keestash\Command\Keestash\QueueDelete;
-use Keestash\Command\Keestash\QueueList;
-use Keestash\Command\Keestash\Reset;
-use Keestash\Command\Keestash\Worker\WorkerFlusher;
-use Keestash\Command\Keestash\Worker\WorkerLocker;
-use Keestash\Command\Keestash\Worker\WorkerRunner;
+use Keestash\Command\Environment\Environment;
+use Keestash\Command\Environment\ListEnvironment;
+use Keestash\Command\Event\ListEvents;
+use Keestash\Command\Install\CreateConfig;
+use Keestash\Command\Install\InstanceData;
+use Keestash\Command\Install\Uninstall;
 use Keestash\Command\Permission\Add;
-use Keestash\Command\Permission\AssignPermissionToRole;
+use Keestash\Command\Permission\CreatePermissions;
 use Keestash\Command\Permission\Get;
 use Keestash\Command\Permission\PermissionsByRole;
+use Keestash\Command\Permission\Role\AssignPermissionsToRoles;
+use Keestash\Command\Permission\Role\AssignPermissionToRole;
+use Keestash\Command\Permission\Role\CreateRoles;
+use Keestash\Command\Ping;
+use Keestash\Command\RateLimit\ClearRateLimiterFile;
 use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
+use Keestash\Command\Routes;
+use Keestash\Command\Security\Cors;
+use Keestash\Command\Worker\Queue\QueueDelete;
+use Keestash\Command\Worker\Queue\QueueList;
+use Keestash\Command\Worker\Queue\Reset;
+use Keestash\Command\Worker\WorkerFlusher;
+use Keestash\Command\Worker\WorkerLocker;
+use Keestash\Command\Worker\WorkerRunner;
 use Keestash\Core\Backend\MySQLBackend;
 use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
 use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
@@ -93,12 +105,13 @@ use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
-use Keestash\Core\Service\HTTP\Output\SanitizerService as OutputSanitizerService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\LDAP\LDAPService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Payment\DefaultPaymentService;
+use Keestash\Core\Service\Permission\PermissionService;
+use Keestash\Core\Service\Permission\RoleService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
@@ -108,25 +121,36 @@ use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
+use Keestash\Factory\Command\App\InstallAppsFactory;
 use Keestash\Factory\Command\App\ListAllFactory;
+use Keestash\Factory\Command\CreateSystemUserFactory;
 use Keestash\Factory\Command\Derivation\AddDerivationFactory;
 use Keestash\Factory\Command\Derivation\ClearDerivationFactory;
 use Keestash\Factory\Command\Derivation\DerivationListFactory;
-use Keestash\Factory\Command\Keestash\ClearRateLimiterFileFactory;
-use Keestash\Factory\Command\Keestash\CorsFactory;
-use Keestash\Factory\Command\Keestash\EventsFactory;
-use Keestash\Factory\Command\Keestash\QueueDeleteFactory;
-use Keestash\Factory\Command\Keestash\QueueListFactory;
-use Keestash\Factory\Command\Keestash\ResetFactory;
-use Keestash\Factory\Command\Keestash\Worker\WorkerFlusherFactory;
-use Keestash\Factory\Command\Keestash\Worker\WorkerLockerFactory;
-use Keestash\Factory\Command\Keestash\Worker\WorkerRunnerFactory;
+use Keestash\Factory\Command\Environment\EnvironmentFactory;
+use Keestash\Factory\Command\Environment\ListEnvironmentFactory;
+use Keestash\Factory\Command\Event\EventsFactory;
+use Keestash\Factory\Command\Install\CreateConfigFactory;
+use Keestash\Factory\Command\Install\InstanceDataFactory;
+use Keestash\Factory\Command\Install\UninstallFactory;
 use Keestash\Factory\Command\Permission\AddFactory;
-use Keestash\Factory\Command\Permission\AssignPermissionToRoleFactory;
+use Keestash\Factory\Command\Permission\CreatePermissionsFactory;
 use Keestash\Factory\Command\Permission\GetFactory;
 use Keestash\Factory\Command\Permission\PermissionsByRoleFactory;
+use Keestash\Factory\Command\Permission\Role\AssignPermissionsToRolesFactory;
+use Keestash\Factory\Command\Permission\Role\AssignPermissionToRoleFactory;
+use Keestash\Factory\Command\Permission\Role\CreateRolesFactory;
+use Keestash\Factory\Command\RateLimit\ClearRateLimiterFileFactory;
 use Keestash\Factory\Command\Role\AssignRoleToUserFactory;
 use Keestash\Factory\Command\Role\RolesByUserFactory;
+use Keestash\Factory\Command\RoutesFactory;
+use Keestash\Factory\Command\Security\CorsFactory;
+use Keestash\Factory\Command\Worker\Queue\QueueDeleteFactory;
+use Keestash\Factory\Command\Worker\Queue\QueueListFactory;
+use Keestash\Factory\Command\Worker\Queue\ResetFactory;
+use Keestash\Factory\Command\Worker\WorkerFlusherFactory;
+use Keestash\Factory\Command\Worker\WorkerLockerFactory;
+use Keestash\Factory\Command\Worker\WorkerRunnerFactory;
 use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
@@ -172,6 +196,8 @@ use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\LDAP\LDAPServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
+use Keestash\Factory\Core\Service\Permission\PermissionServiceFactory;
+use Keestash\Factory\Core\Service\Permission\RoleServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
 use Keestash\Factory\Core\Service\Queue\QueueServiceFactory;
 use Keestash\Factory\Core\Service\Router\ApiRequestServiceFactory;
@@ -315,12 +341,13 @@ return [
     , CSVService::class                                       => CSVServiceFactory::class
     , MimeTypeService::class                                  => InvokableFactory::class
     , QueueService::class                                     => QueueServiceFactory::class
-    , OutputSanitizerService::class                           => InvokableFactory::class
     , RouteService::class                                     => InvokableFactory::class
     , LDAPService::class                                      => LDAPServiceFactory::class
     , Base64Service::class                                    => InvokableFactory::class
     , DefaultPaymentService::class                            => InvokableFactory::class
     , DerivationService::class                                => DerivationServiceFactory::class
+    , PermissionService::class                                => PermissionServiceFactory::class
+    , RoleService::class                                      => RoleServiceFactory::class
 
     , GetText::class                                          => InvokableFactory::class
     , \doganoo\PHPUtil\HTTP\Session::class                    => InvokableFactory::class
@@ -328,7 +355,7 @@ return [
 
     // command
     , WorkerRunner::class                                     => WorkerRunnerFactory::class
-    , Events::class                                           => EventsFactory::class
+    , ListEvents::class                                       => EventsFactory::class
     , QueueList::class                                        => QueueListFactory::class
     , QueueDelete::class                                      => QueueDeleteFactory::class
     , Reset::class                                            => ResetFactory::class
@@ -340,6 +367,20 @@ return [
     , ClearRateLimiterFile::class                             => ClearRateLimiterFileFactory::class
     , WorkerLocker::class                                     => WorkerLockerFactory::class
     , WorkerFlusher::class                                    => WorkerFlusherFactory::class
+    , Routes::class                                           => RoutesFactory::class
+    , Uninstall::class                                        => UninstallFactory::class
+    , Ping::class                                             => InvokableFactory::class
+    , Environment::class                                      => EnvironmentFactory::class
+    , ListEnvironment::class                                  => ListEnvironmentFactory::class
+    , CreateConfig::class                                     => CreateConfigFactory::class
+    , CreatePermissions::class                                => CreatePermissionsFactory::class
+    , CreateSystemUser::class                                 => CreateSystemUserFactory::class
+    , InstanceData::class                                     => InstanceDataFactory::class
+    , CreateRoles::class                                      => CreateRolesFactory::class
+    , AssignPermissionsToRoles::class                         => AssignPermissionsToRolesFactory::class
+    , InstallApps::class                                      => InstallAppsFactory::class
+    , \Keestash\Command\App\Uninstall::class                  => \Keestash\Factory\Command\App\UninstallFactory::class
+
 
     // command
     // --- listener

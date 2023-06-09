@@ -34,49 +34,67 @@ class TokenRepositoryTest extends TestCase {
         /** @var ITokenRepository $tokenRepository */
         $tokenRepository = $this->getService(ITokenRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $token = new Token();
         $token->setCreateTs(new DateTimeImmutable());
         $token->setName((string) Uuid::uuid4());
         $token->setValue((string) Uuid::uuid4());
-        $token->setUser($this->getUser());
+        $token->setUser($user);
         $token = $tokenRepository->add($token);
 
         $this->assertTrue($token instanceof IToken);
         $token = $tokenRepository->remove($token);
         $this->assertTrue($token instanceof IToken);
+        $this->removeUser($user);
     }
 
     public function testAddAndGetByHash(): void {
         /** @var ITokenRepository $tokenRepository */
         $tokenRepository = $this->getService(ITokenRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $token = new Token();
         $token->setCreateTs(new DateTimeImmutable());
         $token->setName((string) Uuid::uuid4());
         $token->setValue((string) Uuid::uuid4());
-        $token->setUser($this->getUser());
+        $token->setUser($user);
         $token    = $tokenRepository->add($token);
         $newToken = $tokenRepository->getByValue($token->getValue());
         $this->assertTrue($newToken instanceof IToken);
         $this->assertTrue($newToken->getId() === $token->getId());
+        $this->removeUser($user);
     }
 
     public function testAddAndGetByHashAndRemoveForUser(): void {
         /** @var ITokenRepository $tokenRepository */
         $tokenRepository = $this->getService(ITokenRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $token = new Token();
         $token->setCreateTs(new DateTimeImmutable());
         $token->setName((string) Uuid::uuid4());
         $token->setValue((string) Uuid::uuid4());
-        $token->setUser($this->getUser());
+        $token->setUser($user);
         $token = $tokenRepository->add($token);
 
         $this->assertTrue($token instanceof IToken);
         $newToken = $tokenRepository->getByValue($token->getValue());
         $this->assertTrue($newToken instanceof IToken);
         $this->assertTrue($newToken->getId() === $token->getId());
-        $tokenRepository->removeForUser($this->getUser());
+        $tokenRepository->removeForUser($user);
+        $this->removeUser($user);
     }
 
 }

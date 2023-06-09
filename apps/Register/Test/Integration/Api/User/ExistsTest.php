@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Test\Integration\Api\User;
 
 use KSA\Register\Api\User\Exists;
-use KSA\Register\Test\TestCase;
+use KSA\Register\Test\Integration\TestCase;
 use KST\Service\Service\UserService;
 
 class ExistsTest extends TestCase {
@@ -31,7 +31,7 @@ class ExistsTest extends TestCase {
         /** @var Exists $exists */
         $exists       = $this->getService(Exists::class);
         $response     = $exists->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $responseBody = (array) json_decode(
             (string) $response->getBody()
@@ -48,7 +48,7 @@ class ExistsTest extends TestCase {
         /** @var Exists $exists */
         $exists       = $this->getService(Exists::class);
         $response     = $exists->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
             ->withAttribute('userName' , UserService::TEST_RESET_PASSWORD_USER_ID_7_NAME)
         );
         $responseBody = (array) json_decode(

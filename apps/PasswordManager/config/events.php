@@ -25,13 +25,15 @@ use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
+use KSA\PasswordManager\Event\Listener\NodeRemovedEventListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
-use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
+use KSA\PasswordManager\Event\Listener\RemoveExpired;
 use KSA\PasswordManager\Event\Node\Credential\CredentialCreatedEvent;
 use KSA\PasswordManager\Event\Node\Credential\CredentialUpdatedEvent;
-use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
-use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
-use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
+use KSA\PasswordManager\Event\Node\NodeAddedToOrganizationEvent;
+use KSA\PasswordManager\Event\Node\NodeOrganizationUpdatedEvent;
+use KSA\PasswordManager\Event\Node\NodeRemovedEvent;
+use KSA\PasswordManager\Event\Node\NodeRemovedFromOrganizationEvent;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 
 return [
@@ -58,5 +60,8 @@ return [
     ],
     CredentialUpdatedEvent::class             => [
         CredentialChangedListener::class
+    ],
+    NodeRemovedEvent::class                   => [
+        NodeRemovedEventListener::class
     ]
 ];

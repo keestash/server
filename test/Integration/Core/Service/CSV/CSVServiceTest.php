@@ -27,13 +27,6 @@ use KST\Integration\TestCase;
 
 class CSVServiceTest extends TestCase {
 
-    public const EXAMPLE_CSV_FOR_TEST_FROM_STRING = 'Username;Identifier;First name;Last name
-booker12;9012;Rachel;Booker
-grey07;2070;Laura;Grey
-johnson81;4081;Craig;Johnson
-jenkins46;9346;Mary;Jenkins
-smith79;5079;Jamie;Smith';
-
     public function testWithFileNotFound(): void {
         $this->expectException(FileNotFoundException::class);
         /** @var ICSVService $csvService */
@@ -61,11 +54,15 @@ smith79;5079;Jamie;Smith';
     }
 
     public function testReadString(): void {
-        $this->markTestSkipped('not working yet, fix it');
         /** @var ICSVService $csvService */
         $csvService = $this->getService(ICSVService::class);
         $users      = $csvService->readString(
-            CSVServiceTest::EXAMPLE_CSV_FOR_TEST_FROM_STRING
+            'Username;Identifier;First name;Last name
+booker12;9012;Rachel;Booker
+grey07;2070;Laura;Grey
+johnson81;4081;Craig;Johnson
+jenkins46;9346;Mary;Jenkins
+smith79;5079;Jamie;Smith'
             , true
             , ';'
         );

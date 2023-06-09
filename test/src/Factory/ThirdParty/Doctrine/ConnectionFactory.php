@@ -21,11 +21,15 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\ThirdParty\Doctrine;
 
+use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Logging\Middleware;
 use Keestash\ConfigProvider;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class ConnectionFactory {
 
@@ -33,12 +37,17 @@ class ConnectionFactory {
         /** @var Config $config */
         $config   = $container->get(Config::class);
         $fileName = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
-
+        /** @var LoggerInterface $logger */
+        $logger = $container->get(LoggerInterface::class);
+        $logger = new NullLogger();
         return DriverManager::getConnection(
             [
                 'driver' => 'pdo_sqlite'
                 , 'path' => $fileName
-            ]
+            ],
+            (new Configuration())->setMiddlewares(
+                [new Middleware($logger)]
+            )
         );
     }
 

@@ -21,11 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Comment;
 
-use KSA\PasswordManager\Api\Comment\Add;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Add;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class AddTest
@@ -68,16 +69,19 @@ class AddTest extends TestCase {
         /** @var ResponseService $responseService */
         $responseService = $this->getServiceManager()->get(ResponseService::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         if (null !== $exception) {
             $this->expectException($exception);
         }
-        $serverRequest = $requestService->getRequestWithToken(
-            $this->getUser()
+        $serverRequest = $requestService->getVirtualRequestWithToken(
+            $user
             , []
             , []
             , $parameters
-            , []
-            , []
         );
 
         $response = $add->handle($serverRequest);

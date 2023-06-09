@@ -22,16 +22,18 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Service;
 
+use GuzzleHttp\Psr7\Utils;
 use Keestash\Core\DTO\Token\Token;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
+use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\ServerRequestFactory;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RequestService {
 
-    public function getRequestWithToken(
-        IUser $user
+    public function getVirtualRequestWithToken(
+        IUser   $user
         , array $server = []
         , array $query = []
         , array $body = []
@@ -44,6 +46,39 @@ class RequestService {
             , $body
             , []
             , []
+        );
+        $token   = new Token();
+        $token->setUser($user);
+        $token->setCreateTs(new \DateTime());
+        $token->setName("Test.Keestash.PasswordManager");
+        $token->setValue(bin2hex(random_bytes(16)));
+        $token->setId(1);
+        return $request->withAttribute(IToken::class, $token);
+    }
+
+    public function getRequestWithToken(
+        IUser    $user
+        , string $method
+        , string $uri
+        , array  $body = []
+        , array  $headers = []
+        , array  $files = []
+        , array  $server = []
+        , array  $query = []
+        , array  $cookies = []
+    ): ServerRequestInterface {
+        $request = new ServerRequest(
+            $server
+            , $files
+            , $uri
+            , $method
+            , Utils::streamFor(json_encode($body, JSON_THROW_ON_ERROR))
+            , array_merge(
+                ['Content-Type' => 'application/json']
+                , $headers
+            )
+            , $cookies
+            , $query
         );
         $token   = new Token();
         $token->setUser($user);

@@ -37,7 +37,10 @@ class KeyServiceTest extends TestCase {
         $keyService = $this->getService(IKeyService::class);
         /** @var ICredentialService $credentialService */
         $credentialService = $this->getService(ICredentialService::class);
-        $keyHolder         = $this->getUser();
+        $keyHolder         = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         $key               = $keyService->createKey(
             $credentialService->createCredential(
                 $keyHolder
@@ -52,7 +55,10 @@ class KeyServiceTest extends TestCase {
         $keyService = $this->getService(IKeyService::class);
         /** @var ICredentialService $credentialService */
         $credentialService = $this->getService(ICredentialService::class);
-        $keyHolder         = $this->getUser();
+        $keyHolder         = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         $key               = $keyService->createKey(
             $credentialService->createCredential(
                 $keyHolder
@@ -68,7 +74,10 @@ class KeyServiceTest extends TestCase {
     public function testGetKey(): void {
         /** @var IKeyService $keyService */
         $keyService = $this->getService(IKeyService::class);
-        $keyHolder  = $this->getUser();
+        $keyHolder  = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         $key        = $keyService->getKey($keyHolder);
         $this->assertInstanceOf(IKey::class, $key);
     }

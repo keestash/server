@@ -22,8 +22,11 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\PasswordManager\Exception\InvalidNodeTypeException;
+use KSA\PasswordManager\Exception\Node\NodeNotRemovedException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
@@ -38,15 +41,11 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class Delete implements RequestHandlerInterface {
 
-    private NodeRepository $nodeRepository;
-    private IL10N          $translator;
-
     public function __construct(
-        IL10N            $l10n
-        , NodeRepository $nodeRepository
+        private readonly IL10N            $translator
+        , private readonly NodeRepository $nodeRepository
+        , private readonly NodeService    $nodeService
     ) {
-        $this->translator     = $l10n;
-        $this->nodeRepository = $nodeRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -64,22 +63,17 @@ class Delete implements RequestHandlerInterface {
             );
         }
 
-        $deleted = $this->nodeRepository->remove($node);
-
-        if (false === $deleted) {
+        try {
+            $this->nodeService->removeNode($node);
+        } catch (NodeNotRemovedException|InvalidNodeTypeException) {
             return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("error while deleting")
-                ]
+                []
                 , IResponse::INTERNAL_SERVER_ERROR
             );
         }
 
         return new JsonResponse(
-            [
-                "message" => $this->translator->translate("deleted")
-            ]
-            , IResponse::OK
+            [], IResponse::OK
         );
     }
 

@@ -22,10 +22,13 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use KSA\Activity\Event\Listener\ActivityTriggeredListener;
+use KSA\Activity\Event\Listener\RemoveReferenceListener;
 use KSA\Activity\Factory\Event\Listener\ActivityTriggeredListenerFactory;
+use KSA\Activity\Factory\Event\Listener\RemoveReferenceListenerFactory;
 use KSA\Activity\Factory\Repository\ActivityRepositoryFactory;
 use KSA\Activity\Factory\Service\ActivityServiceFactory;
 use KSA\Activity\Repository\ActivityRepository;
+use KSA\Activity\Repository\IActivityRepository;
 use KSA\Activity\Service\ActivityService;
 use KSA\Activity\Service\IActivityService;
 
@@ -34,6 +37,7 @@ return [
         // event
         // --- listener
         ActivityTriggeredListener::class => ActivityTriggeredListenerFactory::class
+        , RemoveReferenceListener::class => RemoveReferenceListenerFactory::class
 
         // repository
         , ActivityRepository::class      => ActivityRepositoryFactory::class
@@ -42,6 +46,7 @@ return [
         , ActivityService::class         => ActivityServiceFactory::class
     ],
     ConfigProvider::ALIASES   => [
-        IActivityService::class => ActivityService::class
+        IActivityService::class      => ActivityService::class
+        , IActivityRepository::class => ActivityRepository::class
     ]
 ];

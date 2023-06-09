@@ -375,7 +375,7 @@ class UserRepository implements IUserRepository {
             $userCount = count($users);
 
             if (0 === $userCount) {
-                $this->logger->warning('user not found', ['usercount' => $userCount, 'sql' => $queryBuilder->getSQL(), 'id' => $id]);
+                $this->logger->debug('user not found', ['usercount' => $userCount, 'id' => $id]);
                 throw new UserNotFoundException();
             }
 

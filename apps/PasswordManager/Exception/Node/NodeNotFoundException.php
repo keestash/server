@@ -21,6 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Exception\Node;
 
-final class NodeNotFoundException extends NodeException {
+final class NodeNotFoundException extends NotFoundException {
 
 }

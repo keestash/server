@@ -47,8 +47,9 @@ class IniConfigServiceTest extends TestCase {
     public function testGetAll(): void {
         $all = $this->configService->getAll();
         $this->assertIsArray($all);
-        $this->assertCount(1, $all);
+        $this->assertCount(2, $all);
         $this->assertArrayHasKey('ini.test.config', $all);
+        $this->assertArrayHasKey('upload_max_filesize', $all);
     }
 
     /**

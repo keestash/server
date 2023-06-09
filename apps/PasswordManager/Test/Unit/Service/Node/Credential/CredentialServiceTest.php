@@ -29,7 +29,9 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Unit\TestCase;
+use KSP\Core\DTO\User\IUser;
+use Ramsey\Uuid\Uuid;
 
 class CredentialServiceTest extends TestCase {
 
@@ -48,7 +50,7 @@ class CredentialServiceTest extends TestCase {
         $this->nodeEncryptionService = $this->getServiceManager()->get(NodeEncryptionService::class);
     }
 
-    private function getCredential(bool $encrypt = false): Credential {
+    private function getCredential(IUser $user, bool $encrypt = false): Credential {
         $password = "mySuperSecurePassword";
         $url      = "keestash.com";
         $userName = "keestashSystemUser";
@@ -59,7 +61,7 @@ class CredentialServiceTest extends TestCase {
             , $url
             , $userName
             , $title
-            , $this->getUser()
+            , $user
         );
 
         if (true === $encrypt) {
@@ -74,8 +76,13 @@ class CredentialServiceTest extends TestCase {
         $userName = "keestashSystemUser";
         $title    = "organization.keestash.com";
 
-        $credential = $this->getCredential(true);
-        $key        = $this->keyService->getKey($this->getUser());
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
+        $credential = $this->getCredential($user, true);
+        $key        = $this->keyService->getKey($user);
 
         $this->assertTrue($credential instanceof Credential);
         $this->assertTrue($credential instanceof Node);
@@ -102,21 +109,34 @@ class CredentialServiceTest extends TestCase {
                 , (string) $credential->getUsername()->getEncrypted()
             ) === $userName);
         $this->assertTrue($credential->getName() === $title);
-        $this->assertTrue($credential->getUser()->getId() === $this->getUser()->getId());
+        $this->assertTrue($credential->getUser()->getId() === $user->getId());
         $this->assertTrue($credential->getType() === Node::CREDENTIAL);
+        $this->removeUser($user);
     }
 
     public function testInsertCredential(): void {
-        $credential = $this->getCredential();
-        $root       = $this->nodeRepository->getRootForUser($this->getUser());
+        $user       = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $credential = $this->getCredential($user);
+        $root       = $this->nodeRepository->getRootForUser($user);
         $edge       = $this->credentialService->insertCredential($credential, $root);
         $this->assertTrue($edge instanceof Edge);
         $this->assertIsInt($edge->getNode()->getId()); // indicates that the DB AI PK is set
+        $this->removeUser($user);
     }
 
     public function testUpdatePassword(): void {
-        $credential  = $this->getCredential();
-        $edge        = $this->credentialService->insertCredential($credential, $this->nodeRepository->getRootForUser($this->getUser()));
+        $user        = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $credential  = $this->getCredential($user);
+        $edge        = $this->credentialService->insertCredential(
+            $credential,
+            $this->nodeRepository->getRootForUser($user)
+        );
         $newPassword = "myNewPassword";
 
         $this->assertIsInt($edge->getNode()->getId());

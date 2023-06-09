@@ -40,7 +40,7 @@ class EmailValidatorBuilder implements IValidatorBuilder {
 
     public function withDeepMxCheck(bool $deepMxCheck): EmailValidatorBuilder {
         $instance                 = clone $this;
-        $instance->useDeepMxCheck = $deepMxCheck;
+        $instance->useDeepMxCheck    = $deepMxCheck;
         return $instance;
     }
 

@@ -45,34 +45,18 @@ class Update implements RequestHandlerInterface {
 
     public const CONTEXT = "nodeAvatar";
 
-    private IUploadFileService $uploadFileService;
-    private IFileRepository $fileRepository;
-    private IDataService    $dataManager;
-    private FileRepository  $nodeFileRepository;
-    private NodeRepository     $nodeRepository;
-    private IRawFileService    $rawFileService;
-    private AccessService      $accessService;
-
     public function __construct(
-        IUploadFileService $uploadFileService
-        , IFileRepository  $fileRepository
-        , FileRepository   $nodeFileRepository
-        , NodeRepository   $nodeRepository
-        , IRawFileService  $rawFileService
-        , AccessService    $accessService
-        , IDataService     $dataManager
+        private readonly IUploadFileService $uploadFileService
+        , private readonly IFileRepository  $fileRepository
+        , private readonly FileRepository   $nodeFileRepository
+        , private readonly NodeRepository   $nodeRepository
+        , private readonly IRawFileService  $rawFileService
+        , private readonly AccessService    $accessService
+        , private readonly IDataService     $dataManager
     ) {
-        $this->uploadFileService  = $uploadFileService;
-        $this->fileRepository     = $fileRepository;
-        $this->nodeFileRepository = $nodeFileRepository;
-        $this->nodeRepository     = $nodeRepository;
-        $this->rawFileService     = $rawFileService;
-        $this->accessService      = $accessService;
-        $this->dataManager        = $dataManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $files     = $request->getUploadedFiles();
         $fileCount = count($files);
         /** @var IToken $token */

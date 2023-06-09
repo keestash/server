@@ -113,6 +113,12 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         }
 
         if (null === $key) {
+            $this->logger->warning(
+                'no key for user found'
+                , [
+                    'userId' => $user->getId()
+                ]
+            );
             throw new KeyNotFoundException('no key found');
         }
 

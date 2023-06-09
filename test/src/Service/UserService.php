@@ -137,7 +137,7 @@ class UserService {
         );
         foreach ($this->userData as $data) {
             $data['create_ts']  = json_decode(
-                json_encode(new DateTimeImmutable())
+                json_encode(new DateTimeImmutable(), JSON_THROW_ON_ERROR)
                 , true
             );
             $data['deleted']    = false;

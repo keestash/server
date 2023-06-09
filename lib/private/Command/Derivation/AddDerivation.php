@@ -43,7 +43,7 @@ class AddDerivation extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("derivation:add")
+        $this->setName("keestash:derivation:add")
             ->setDescription("adds a new derivation for a user");
     }
 

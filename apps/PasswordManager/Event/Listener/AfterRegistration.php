@@ -96,19 +96,19 @@ class AfterRegistration implements IListener {
 
         try {
             $this->keyService->createAndStoreKey($event->getUser());
-            $this->logger->info('key created');
+            $this->logger->info('key created', ['userId' => $event->getUser()->getId()]);
             $root = $this->createRootFolder($event);
-            $this->logger->info('folder created');
+            $this->logger->info('root folder created', ['userId' => $event->getUser()->getId()]);
             $this->createStarterPassword($event, $root);
-            $this->logger->info('password created');
+            $this->logger->info('password created', ['userId' => $event->getUser()->getId()]);
             $this->writeEmail($event->getUser());
-            $this->logger->info('email sent');
+            $this->logger->info('email sent', ['userId' => $event->getUser()->getId()]);
         } catch (KeyNotCreatedException $e) {
-            $this->logger->error('key not created', ['exception' => $e]);
+            $this->logger->error('key not created', ['exception' => $e, 'userId' => $event->getUser()->getId()]);
             $this->keyService->remove($event->getUser());
             $this->nodeRepository->removeForUser($event->getUser());
         } catch (PasswordManagerException|FolderNotCreatedException $exception) {
-            $this->logger->error('password/folder not created', ['exception' => $exception]);
+            $this->logger->error('password/folder not created', ['exception' => $exception, 'userId' => $event->getUser()->getId()]);
             $this->keyService->remove($event->getUser());
             $this->nodeRepository->removeForUser($event->getUser());
         }

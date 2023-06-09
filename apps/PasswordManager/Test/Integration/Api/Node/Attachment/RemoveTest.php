@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Attachment;
 
 use KSA\PasswordManager\Api\Node\Attachment\Remove;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
 
 /**
  * Class RemoveTest
@@ -36,7 +36,7 @@ class RemoveTest extends TestCase {
         /** @var Remove $remove */
         $remove   = $this->getServiceManager()->get(Remove::class);
         $response = $remove->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -45,7 +45,7 @@ class RemoveTest extends TestCase {
         /** @var Remove $remove */
         $remove   = $this->getServiceManager()->get(Remove::class);
         $response = $remove->handle(
-            $this->getDefaultRequest(['fileId' => 99999])
+            $this->getVirtualRequest(['fileId' => 99999])
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }

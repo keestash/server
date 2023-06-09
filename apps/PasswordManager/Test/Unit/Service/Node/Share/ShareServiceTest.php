@@ -23,10 +23,10 @@ namespace KSA\PasswordManager\Test\Unit\Service\Node\Share;
 
 use DateTime;
 use DateTimeInterface;
-use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Unit\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class ShareServiceTest extends TestCase {
 
@@ -49,15 +49,20 @@ class ShareServiceTest extends TestCase {
     }
 
     public function testGenerateSharingHash(): void {
+        $user       = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         $credential = $this->credentialService->createCredential(
             "topsecret"
             , "myawsome.route"
             , "keestash.com"
             , "keestash"
-            , $this->getUser()
+            , $user
         );
         $hash       = $this->shareService->generateSharingHash($credential);
         $this->assertTrue(true === is_string($hash));
+        $this->removeUser($user);
     }
 
 }

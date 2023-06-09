@@ -23,11 +23,10 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node\Attachment;
 
 use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
-use KSA\PasswordManager\Exception\Node\Credential\NoFileException;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use Laminas\Diactoros\UploadedFile;
+use Ramsey\Uuid\Uuid;
 
 class AddTest extends TestCase {
 
@@ -36,10 +35,11 @@ class AddTest extends TestCase {
         $add = $this->getServiceManager()->get(Add::class);
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $user           = $this->getUser();
-        $userRoot       = $nodeRepository->getRootForUser($user);
+        $user              = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $userRoot          = $this->getRootFolder($user);
 
         $node = $credentialService->createCredential(
             "addAttachmentPassword"
@@ -59,7 +59,7 @@ class AddTest extends TestCase {
             , 0
         );
 
-        $request  = $this->getDefaultRequest(
+        $request  = $this->getVirtualRequest(
             [
                 'node_id' => $edge->getNode()->getId()
             ]
@@ -68,6 +68,7 @@ class AddTest extends TestCase {
         $response = $add->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         unlink((string) $file);
+        $this->removeUser($user);
     }
 
     public function testWithNoFiles(): void {
@@ -75,10 +76,11 @@ class AddTest extends TestCase {
         $add = $this->getServiceManager()->get(Add::class);
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $user           = $this->getUser();
-        $userRoot       = $nodeRepository->getRootForUser($user);
+        $user              = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $userRoot          = $this->getRootFolder($user);
 
         $node = $credentialService->createCredential(
             "addAttachmentNoFilesPassword"
@@ -89,19 +91,20 @@ class AddTest extends TestCase {
         );
         $edge = $credentialService->insertCredential($node, $userRoot);
 
-        $request  = $this->getDefaultRequest(
+        $request  = $this->getVirtualRequest(
             [
                 'node_id' => $edge->getNode()->getId()
             ]
         );
         $response = $add->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testWithNoFilesAndNoId(): void {
         /** @var Add $add */
         $add      = $this->getServiceManager()->get(Add::class);
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $response = $add->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -120,7 +123,7 @@ class AddTest extends TestCase {
             , 0
         );
 
-        $request  = $this->getDefaultRequest([
+        $request  = $this->getVirtualRequest([
             "node_id" => "1"
         ]);
         $request  = $request->withUploadedFiles([$uploadedFile]);
@@ -144,7 +147,7 @@ class AddTest extends TestCase {
             , 0
         );
 
-        $request  = $this->getDefaultRequest(
+        $request  = $this->getVirtualRequest(
             [
                 'node_id' => 9999
             ]

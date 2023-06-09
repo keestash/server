@@ -85,15 +85,6 @@ class LoggerBuilder implements ILoggerBuilder {
         return $instance;
     }
 
-    public function withConsoleHandler(bool $include): ILoggerBuilder {
-        $instance = clone $this;
-        if (false === $include) {
-            return $instance;
-        }
-        $instance->handlers[] = new DumpHandler();
-        return $instance;
-    }
-
     public function build(): LoggerInterface {
         $logger = new Logger(ILoggerManager::FILE_LOGGER);
         /** @var HandlerInterface $handler */

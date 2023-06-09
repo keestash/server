@@ -25,7 +25,7 @@ use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\Repository\User\IUserRepository;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Unit\TestCase;
 
 class EncryptionServiceTest extends TestCase {
 

@@ -23,34 +23,33 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Core\Repository\User\IUserRepository;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class DeleteTest extends TestCase {
 
     public function testDelete(): void {
         /** @var Delete $delete */
         $delete = $this->getServiceManager()->get(Delete::class);
-        $user   = $this->getUser();
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
-
-        $parent = new Folder();
-        $node   = $credentialService->createCredential(
-            "deleteTestPassword"
-            , "keestash.test"
-            , "deletetest.test"
-            , "Deletetest"
-            , $user
+        $user   = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge   = $credentialService->insertCredential($node, $parent);
-        $node   = $edge->getNode();
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $this->getRootFolder($user)
+        );
+        $node = $edge->getNode();
 
         $request = $this->getRequestService()
-            ->getRequestWithToken(
+            ->getVirtualRequestWithToken(
                 $user
                 , []
                 , []
@@ -64,13 +63,14 @@ class DeleteTest extends TestCase {
 
     public function testDeleteNonDeletable(): void {
         /** @var Delete $delete */
-        $delete = $this->getServiceManager()->get(Delete::class);
-        $user   = $this->getUser();
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $node           = $nodeRepository->getRootForUser($user);
-        $request        = $this->getRequestService()
-            ->getRequestWithToken(
+        $delete  = $this->getServiceManager()->get(Delete::class);
+        $user    = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $node    = $this->getRootFolder($user);
+        $request = $this->getRequestService()
+            ->getVirtualRequestWithToken(
                 $user
                 , []
                 , []
@@ -80,14 +80,18 @@ class DeleteTest extends TestCase {
 
         $response = $delete->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testDeleteNonExisting(): void {
         /** @var Delete $delete */
         $delete  = $this->getServiceManager()->get(Delete::class);
-        $user    = $this->getUser();
+        $user    = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         $request = $this->getRequestService()
-            ->getRequestWithToken(
+            ->getVirtualRequestWithToken(
                 $user
                 , []
                 , []
@@ -97,39 +101,39 @@ class DeleteTest extends TestCase {
 
         $response = $delete->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testDeleteNotOwnedByUser(): void {
         /** @var Delete $delete */
         $delete = $this->getServiceManager()->get(Delete::class);
-        $user   = $this->getUser();
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
+        $user   = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getServiceManager()->get(IUserRepository::class);
 
-        $parent = new Folder();
-        $node   = $credentialService->createCredential(
-            "deleteTestPassword"
-            , "keestash.test"
-            , "deletetest.test"
-            , "Deletetest"
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
             , $user
+            , $this->getRootFolder($user)
         );
-        $edge   = $credentialService->insertCredential($node, $parent);
-        $node   = $edge->getNode();
 
         $request = $this->getRequestService()
-            ->getRequestWithToken(
+            ->getVirtualRequestWithToken(
                 $userRepository->getUserById((string) UserService::TEST_LOCKED_USER_ID_4)
                 , []
                 , []
-                , ['id' => $node->getId()]
+                , ['id' => $edge->getNode()->getId()]
             );
-
 
         $response = $delete->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
 }

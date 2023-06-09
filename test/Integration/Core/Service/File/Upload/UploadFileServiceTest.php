@@ -25,22 +25,30 @@ use GuzzleHttp\Psr7\UploadedFile;
 use KSP\Core\DTO\File\Upload\IFile;
 use KSP\Core\Service\File\Upload\IFileService;
 use KST\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class UploadFileServiceTest extends TestCase {
 
     private IFileService $fileService;
 
+    public const TMP_TEST_FILE = __DIR__ . '/uploadedfileservicetestfile.txt';
+
     protected function setUp(): void {
         parent::setUp();
         $this->fileService = $this->getService(IFileService::class);
+        file_put_contents(
+            UploadFileServiceTest::TMP_TEST_FILE
+            , Uuid::uuid4()->toString()
+        );
     }
 
     public function testToFile(): void {
-        $file       = __DIR__ . '/uploadedfileservicetestfile.txt';
-        $fileSize   = filesize($file);
+        $fileSize   = filesize(
+            UploadFileServiceTest::TMP_TEST_FILE
+        );
         $fileObject = $this->fileService->toFile(
             new UploadedFile(
-                $file
+                UploadFileServiceTest::TMP_TEST_FILE
                 , $fileSize
                 , 0
             )
@@ -53,12 +61,13 @@ class UploadFileServiceTest extends TestCase {
     }
 
     public function testValidateUploadedFile(): void {
-        $file     = __DIR__ . '/uploadedfileservicetestfile.txt';
-        $fileSize = filesize($file);
+        $fileSize = filesize(
+            UploadFileServiceTest::TMP_TEST_FILE
+        );
         $result   = $this->fileService->validateUploadedFile(
             $this->fileService->toFile(
                 new UploadedFile(
-                    $file
+                    UploadFileServiceTest::TMP_TEST_FILE
                     , $fileSize
                     , 0
                 )
@@ -69,11 +78,12 @@ class UploadFileServiceTest extends TestCase {
     }
 
     public function testToCoreFile(): void {
-        $file     = __DIR__ . '/uploadedfileservicetestfile.txt';
-        $fileSize = filesize($file);
+        $fileSize = filesize(
+            UploadFileServiceTest::TMP_TEST_FILE
+        );
         $file     = $this->fileService->toFile(
             new UploadedFile(
-                $file
+                UploadFileServiceTest::TMP_TEST_FILE
                 , $fileSize
                 , 0
             )
@@ -86,18 +96,23 @@ class UploadFileServiceTest extends TestCase {
     }
 
     public function testMoveUploadedFileAndRemoveUploadedFile(): void {
-        $file     = __DIR__ . '/uploadedfileservicetestfile.txt';
-        $fileSize = filesize($file);
+        $fileSize = filesize(
+            UploadFileServiceTest::TMP_TEST_FILE
+        );
         $file     = $this->fileService->toFile(
             new UploadedFile(
-                $file
+                UploadFileServiceTest::TMP_TEST_FILE
                 , $fileSize
                 , 0
             )
         );
         $coreFile = $this->fileService->toCoreFile($file);
         $coreFile->setDirectory(__DIR__);
-        $coreFile->setName('uploadedfileservicetestfile');
+        $coreFile->setName(
+            basename(
+                'uploadedfileservicetestfile'
+            )
+        );
 
         // both are mocked, so no actual test needed
         $this->assertTrue(

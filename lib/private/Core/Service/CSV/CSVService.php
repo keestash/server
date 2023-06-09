@@ -73,7 +73,7 @@ class CSVService implements ICSVService {
         if (true === $hasOffset) {
             $csv->setHeaderOffset(0);
         }
-
+        $csv->setDelimiter($delimiter);
         return iterator_to_array($csv->getRecords());
     }
 

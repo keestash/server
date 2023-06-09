@@ -32,21 +32,12 @@ class BreadCrumbService {
 
     private const ROOT_CACHE_KEY = 'key.cache.root.{userId}';
 
-    private ICacheService  $cacheService;
-    private NodeRepository $nodeRepository;
-    private IL10N          $translator;
-    private LoggerInterface        $logger;
-
     public function __construct(
-        ICacheService    $cacheService
-        , NodeRepository $nodeRepository
-        , IL10N          $translator
-        , LoggerInterface        $logger
+        private readonly ICacheService     $cacheService
+        , private readonly NodeRepository  $nodeRepository
+        , private readonly IL10N           $translator
+        , private readonly LoggerInterface $logger
     ) {
-        $this->cacheService   = $cacheService;
-        $this->nodeRepository = $nodeRepository;
-        $this->translator     = $translator;
-        $this->logger         = $logger;
     }
 
     public function getBreadCrumbs(Node $node, IUser $user): array {

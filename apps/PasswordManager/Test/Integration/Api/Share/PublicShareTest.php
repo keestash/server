@@ -22,11 +22,12 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Share;
 
 use DateTime;
-use KSA\PasswordManager\Api\Share\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class PublicShareTest
@@ -52,8 +53,12 @@ class PublicShareTest extends TestCase {
         /** @var ShareService $shareService */
         $shareService = $this->getServiceManager()->get(ShareService::class);
 
-        $request = $requestService->getRequestWithToken(
-            $this->getUser()
+        $user    = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $request = $requestService->getVirtualRequestWithToken(
+            $user
             , []
             , []
             , $params

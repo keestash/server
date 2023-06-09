@@ -21,12 +21,47 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Unit\Service;
 
-use KSA\PasswordManager\Test\TestCase;
+
+use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Service\AccessService;
+use KSA\PasswordManager\Test\Unit\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class AccessServiceTest extends TestCase {
 
     public function testHasAccess(): void {
-        $this->markTestSkipped('implement me :(');
+        /** @var AccessService $accessService */
+        $accessService = $this->getService(AccessService::class);
+
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
+        $credential = new Credential();
+        $credential->setUser($user);
+        $this->assertTrue(true === $accessService->hasAccess($credential, $user));
+        $this->removeUser($user);
+    }
+
+
+    public function testHasNoAccess(): void {
+        /** @var AccessService $accessService */
+        $accessService = $this->getService(AccessService::class);
+
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $otherUser = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
+        $credential = new Credential();
+        $credential->setUser($otherUser);
+        $this->assertTrue(false === $accessService->hasAccess($credential, $user));
+        $this->removeUser($user);
     }
 
 }

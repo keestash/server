@@ -76,6 +76,8 @@ use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\LDAP\LDAPService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Payment\DefaultPaymentService;
+use Keestash\Core\Service\Permission\PermissionService;
+use Keestash\Core\Service\Permission\RoleService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\Router\ApiRequestService;
@@ -132,6 +134,8 @@ use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\LDAP\ILDAPService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Payment\IPaymentService;
+use KSP\Core\Service\Permission\IPermissionService;
+use KSP\Core\Service\Permission\IRoleService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Core\Service\Router\IApiRequestService;
@@ -145,76 +149,77 @@ use RateLimit\RateLimiter;
 
 return [
     // repository
-    IApiLogRepository::class                                 => ApiLogRepository::class
-    , ISQLBackend::class                                     => MySQLBackend::class
-    , IBackend::class                                        => ISQLBackend::class
-    , IFileRepository::class                                 => FileRepository::class
-    , IUserRepository::class                                 => UserRepository::class
-    , IUserKeyRepository::class                              => UserKeyRepository::class
-    , IOrganizationKeyRepository::class                      => OrganizationKeyRepository::class
-    , ITokenRepository::class                                => TokenRepository::class
-    , IAppRepository::class                                  => AppRepository::class
-    , IJobRepository::class                                  => JobRepository::class
-    , IQueueRepository::class                                => QueueRepository::class
-    , IUserStateRepository::class                            => UserStateRepository::class
-    , RBACRepositoryInterface::class                         => RBACRepository::class
-    , ILDAPUserRepository::class                             => DefaultLDAPRepository::class
-    , IConnectionRepository::class                           => DefaultConnectionRepository::class
-    , IPaymentLogRepository::class                           => DefaultPaymentLogRepository::class
-    , IMailLogRepository::class                              => MailLogRepository::class
-    , IDerivationRepository::class                           => DerivationRepository::class
+    IApiLogRepository::class                            => ApiLogRepository::class
+    , ISQLBackend::class                                => MySQLBackend::class
+    , IBackend::class                                   => ISQLBackend::class
+    , IFileRepository::class                            => FileRepository::class
+    , IUserRepository::class                            => UserRepository::class
+    , IUserKeyRepository::class                         => UserKeyRepository::class
+    , IOrganizationKeyRepository::class                 => OrganizationKeyRepository::class
+    , ITokenRepository::class                           => TokenRepository::class
+    , IAppRepository::class                             => AppRepository::class
+    , IJobRepository::class                             => JobRepository::class
+    , IQueueRepository::class                           => QueueRepository::class
+    , IUserStateRepository::class                       => UserStateRepository::class
+    , RBACRepositoryInterface::class                    => RBACRepository::class
+    , ILDAPUserRepository::class                        => DefaultLDAPRepository::class
+    , IConnectionRepository::class                      => DefaultConnectionRepository::class
+    , IPaymentLogRepository::class                      => DefaultPaymentLogRepository::class
+    , IMailLogRepository::class                         => MailLogRepository::class
+    , IDerivationRepository::class                      => DerivationRepository::class
 
     // service
-    , IUserService::class                                    => UserService::class
-    , IConfigService::class                                  => ConfigService::class
-    , IDateTimeService::class                                => DateTimeService::class
-    , IKeyService::class                                     => KeyService::class
-    , IEncryptionService::class                              => KeestashEncryptionService::class
-    , IFileService::class                                    => FileService::class
-    , ICredentialService::class                              => DerivedCredentialService::class
-    , ICacheService::class                                   => NullService::class
-    , IEmailService::class                                   => EmailService::class
-    , IOrganizationService::class                            => OrganizationService::class
-    , ILocaleService::class                                  => LocaleService::class
-    , ILanguageService::class                                => LanguageService::class
-    , IEnvironmentService::class                             => EnvironmentService::class
-    , IRouterService::class                                  => RouterService::class
-    , IAppService::class                                     => AppService::class
-    , IUserRepositoryService::class                          => UserRepositoryService::class
-    , IIconService::class                                    => IconService::class
-    , \KSP\Core\Service\File\Upload\IFileService::class      => \Keestash\Core\Service\File\Upload\FileService::class
-    , IStringService::class                                  => StringService::class
-    , IJWTService::class                                     => JWTService::class
-    , IHTTPService::class                                    => HTTPService::class
-    , IInstallerService::class                               => InstallerService::class
-    , IApiRequestService::class                              => ApiRequestService::class
-    , IAccessService::class                                  => AccessService::class
-    , \doganoo\DI\HTTP\IHTTPService::class                   => \doganoo\DIP\HTTP\HTTPService::class
-    , IPasswordService::class                                => PasswordService::class
-    , ICSVService::class                                     => CSVService::class
-    , IMimeTypeService::class                                => MimeTypeService::class
-    , IQueueService::class                                   => QueueService::class
-    , IRawFileService::class                                 => RawFileService::class
-    , ISanitizerService::class                               => SanitizerService::class
-    , \KSP\Core\Service\HTTP\Output\ISanitizerService::class => \Keestash\Core\Service\HTTP\Output\SanitizerService::class
-    , IRouteService::class                                   => RouteService::class
-    , IVerificationService::class                            => VerificationService::class
-    , IEventService::class                                   => EventService::class
-    , ILDAPService::class                                    => LDAPService::class
-    , IBase64Service::class                                  => Base64Service::class
-    , IPaymentService::class                                 => DefaultPaymentService::class
-    , IDerivationService::class                              => DerivationService::class
+    , IUserService::class                               => UserService::class
+    , IConfigService::class                             => ConfigService::class
+    , IDateTimeService::class                           => DateTimeService::class
+    , IKeyService::class                                => KeyService::class
+    , IEncryptionService::class                         => KeestashEncryptionService::class
+    , IFileService::class                               => FileService::class
+    , ICredentialService::class                         => DerivedCredentialService::class
+    , ICacheService::class                              => NullService::class
+    , IEmailService::class                              => EmailService::class
+    , IOrganizationService::class                       => OrganizationService::class
+    , ILocaleService::class                             => LocaleService::class
+    , ILanguageService::class                           => LanguageService::class
+    , IEnvironmentService::class                        => EnvironmentService::class
+    , IRouterService::class                             => RouterService::class
+    , IAppService::class                                => AppService::class
+    , IUserRepositoryService::class                     => UserRepositoryService::class
+    , IIconService::class                               => IconService::class
+    , \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class
+    , IStringService::class                             => StringService::class
+    , IJWTService::class                                => JWTService::class
+    , IHTTPService::class                               => HTTPService::class
+    , IInstallerService::class                          => InstallerService::class
+    , IApiRequestService::class                         => ApiRequestService::class
+    , IAccessService::class                             => AccessService::class
+    , \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class
+    , IPasswordService::class                           => PasswordService::class
+    , ICSVService::class                                => CSVService::class
+    , IMimeTypeService::class                           => MimeTypeService::class
+    , IQueueService::class                              => QueueService::class
+    , IRawFileService::class                            => RawFileService::class
+    , ISanitizerService::class                          => SanitizerService::class
+    , IRouteService::class                              => RouteService::class
+    , IVerificationService::class                       => VerificationService::class
+    , IEventService::class                              => EventService::class
+    , ILDAPService::class                               => LDAPService::class
+    , IBase64Service::class                             => Base64Service::class
+    , IPaymentService::class                            => DefaultPaymentService::class
+    , IDerivationService::class                         => DerivationService::class
+    , IPermissionService::class                         => PermissionService::class
+    , IRoleService::class                               => RoleService::class
 
-    , IL10N::class                                           => GetText::class
-    , ILoaderService::class                                  => LoaderService::class
-    , SessionHandlerInterface::class                         => SessionHandler::class
-    , IMigrator::class                                       => Migrator::class
-    , ConfigurationInterface::class                          => ProjectConfiguration::class
+    , IL10N::class                                      => GetText::class
+    , ILoaderService::class                             => LoaderService::class
+    , SessionHandlerInterface::class                    => SessionHandler::class
+    , IMigrator::class                                  => Migrator::class
+    , ConfigurationInterface::class                     => ProjectConfiguration::class
 
     // handler
-    , IEventHandler::class                                   => EventHandler::class
+    , IEventHandler::class                              => EventHandler::class
 
     // third party
-    , ClientInterface::class                                 => Client::class
-    , RateLimiter::class                                     => FileRateLimiter::class
+    , ClientInterface::class                            => Client::class
+    , RateLimiter::class                                => FileRateLimiter::class
 ];

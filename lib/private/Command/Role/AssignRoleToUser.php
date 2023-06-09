@@ -49,7 +49,7 @@ class AssignRoleToUser extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("role:user:assign")
+        $this->setName("keestash:role:assign-user")
             ->setDescription("adds a user to role")
             ->addArgument(
                 AssignRoleToUser::ARGUMENT_NAME_USER_ID

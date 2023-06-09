@@ -57,7 +57,7 @@ class Create implements RequestHandlerInterface {
         $token      = $request->getAttribute(IToken::class);
         $parameters = (array) $request->getParsedBody();
         $name       = $parameters["name"] ?? null;
-        $parent     = $parameters['parent'] ?? null;
+        $parent     = $parameters['node_id'] ?? null;
         if (null !== $parent) {
             $parent = (string) $parent;
         }
