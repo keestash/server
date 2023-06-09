@@ -57,7 +57,7 @@ class SanitizerService implements ISanitizerService {
      */
     public function sanitizeAll(array $all): array {
         foreach ($all as $key => $input) {
-            $all[$key] = $input;
+            $all[$key] = $this->sanitize($input);
         }
 
         return $all;

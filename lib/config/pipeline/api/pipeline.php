@@ -21,7 +21,6 @@ declare(strict_types=1);
  */
 
 use Keestash\Middleware\ApplicationStartedMiddleware;
-use Keestash\Middleware\BooleanizeMiddleware;
 use Keestash\Middleware\CSPHeaderMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\EnvironmentMiddleware;
@@ -50,7 +49,6 @@ return function (Application $app) {
     $app->pipe(RateLimiterMiddleware::class);
     $app->pipe(BodyParamsMiddleware::class);
     $app->pipe(SanitizeInputMiddleware::class);
-    $app->pipe(BooleanizeMiddleware::class);
     $app->pipe(InstanceInstalledMiddleware::class);
     $app->pipe(KeestashHeaderMiddleware::class);
     $app->pipe(CSPHeaderMiddleware::class);

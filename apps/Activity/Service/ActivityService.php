@@ -41,7 +41,7 @@ class ActivityService implements IActivityService {
      * @param ArrayList $data
      * @return void
      */
-    public function insertActivity(string $appId, string $referenceKey, ArrayList $data): void {
+    private function insertActivity(string $appId, string $referenceKey, ArrayList $data): void {
         $this->eventService->execute(
             new ActivityTriggeredEvent(
                 new Activity(

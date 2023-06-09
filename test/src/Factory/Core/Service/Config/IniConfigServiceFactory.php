@@ -33,7 +33,10 @@ class IniConfigServiceFactory implements FactoryInterface {
         , ?array           $options = null
     ): IniConfigService {
         return new IniConfigService(
-            ['ini.test.config' => true]
+            [
+                'ini.test.config'       => true
+                , 'upload_max_filesize' => "100M"
+            ]
         );
     }
 

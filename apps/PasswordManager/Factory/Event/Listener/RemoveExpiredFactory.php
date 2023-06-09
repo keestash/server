@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
 use Keestash\Core\Service\Instance\InstallerService;
-use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
+use KSA\PasswordManager\Event\Listener\RemoveExpired;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class RemoveExpiredFactory {
 

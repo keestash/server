@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Test\Unit\Service\Node;
 
 use DateTime;
 use DateTimeInterface;
+use Keestash\Core\DTO\User\NullUser;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -31,7 +32,9 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Unit\TestCase;
+use KSP\Core\DTO\User\IUser;
+use Ramsey\Uuid\Uuid;
 
 class NodeServiceTest extends TestCase {
 
@@ -56,29 +59,36 @@ class NodeServiceTest extends TestCase {
      * TODO test shared edge
      */
     public function testIsShareable(): void {
-        $credential = $this->provideCredential();
+        $user       = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $credential = $this->provideCredential($user);
         $this->nodeRepository->addCredential($credential);
-        $shareable = $this->nodeService->isShareable($credential->getId(), (string) $this->getUser()->getId());
+        $shareable = $this->nodeService->isShareable($credential->getId(), (string) $user->getId());
         $this->assertTrue(false === $shareable);
     }
 
-    private function provideCredential(): Credential {
-
+    private function provideCredential(IUser $user): Credential {
         $credential = $this->credentialService->createCredential(
             "topsecret"
             , "myawsome.route"
             , "keestash.com"
             , "keestash"
-            , $this->getUser()
+            , $user
         );
         $this->nodeEncryptionService->encryptNode($credential);
         return $credential;
     }
 
     public function testPrepareSharedEdge(): void {
-        $credential = $this->provideCredential();
+        $user       = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $credential = $this->provideCredential($user);
         $this->nodeRepository->addCredential($credential);
-        $edge               = $this->nodeService->prepareSharedEdge($credential->getId(), (string) $this->getUser()->getId());
+        $edge               = $this->nodeService->prepareSharedEdge($credential->getId(), (string) $user->getId());
         $expectedExpireDate = new DateTime();
         $expectedExpireDate->modify('+10 days');
 
@@ -90,11 +100,10 @@ class NodeServiceTest extends TestCase {
     }
 
     public function testPrepareRegularEdge(): void {
-        $user       = $this->getUser();
+        $user       = new NullUser();
         $folder     = new Folder();
         $credential = new Credential();
         $edge       = $this->nodeService->prepareRegularEdge($credential, $folder, $user);
-        $this->assertTrue($edge instanceof Edge);
         $this->assertTrue($edge->getNode() === $credential);
         $this->assertTrue($edge->getParent() === $folder);
         $this->assertTrue(null === $edge->getExpireTs());
@@ -103,7 +112,10 @@ class NodeServiceTest extends TestCase {
     }
 
     public function testCreateRootFolder(): void {
-        $user     = $this->getUser();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         $folderId = 1;
         $root     = $this->nodeService->createRootFolder(
             $folderId
@@ -114,6 +126,7 @@ class NodeServiceTest extends TestCase {
         $this->assertTrue($root->getName() === Node::ROOT);
         $this->assertTrue($root->getUser()->getId() === $user->getId());
         $this->assertTrue($root->getCreateTs() < new DateTime());
+        $this->removeUser($user);
     }
 
     public function testValidType(): void {

@@ -54,6 +54,11 @@ interface ITokenRepository extends IRepository {
     public function remove(IToken $token): IToken;
 
     /**
+     * @throws TokenNotDeletedException
+     */
+    public function removeAll(): void;
+
+    /**
      * @param IUser $user
      * @return void
      * @throws TokenNotDeletedException

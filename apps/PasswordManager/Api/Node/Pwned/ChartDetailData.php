@@ -37,21 +37,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ChartDetailData implements RequestHandlerInterface {
 
-    private PwnedBreachesRepository  $pwnedBreachesRepository;
-    private PwnedPasswordsRepository $pwnedPasswordsRepository;
-    private NodeRepository           $nodeRepository;
-    private AccessService            $accessService;
-
     public function __construct(
-        PwnedBreachesRepository    $pwnedBreachesRepository
-        , PwnedPasswordsRepository $pwnedPasswordsRepository
-        , NodeRepository           $nodeRepository
-        , AccessService            $accessService
+        private readonly PwnedBreachesRepository    $pwnedBreachesRepository
+        , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
+        , private readonly NodeRepository           $nodeRepository
+        , private readonly AccessService            $accessService
     ) {
-        $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
-        $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
-        $this->nodeRepository           = $nodeRepository;
-        $this->accessService            = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

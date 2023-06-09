@@ -28,6 +28,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Router\IVerificationService;
 use KST\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class VerificationTest extends TestCase {
 
@@ -42,11 +43,16 @@ class VerificationTest extends TestCase {
         /** @var ITokenRepository $tokenRepository */
         $tokenRepository = $this->getService(ITokenRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $token = new Token();
         $token->setCreateTs(new DateTimeImmutable());
         $token->setName(VerificationTest::class);
         $token->setValue(md5((string) time()));
-        $token->setUser($this->getUser());
+        $token->setUser($user);
         $token          = $tokenRepository->add($token);
         $retrievedToken = $this->verificationService->verifyToken(
             [
@@ -62,6 +68,7 @@ class VerificationTest extends TestCase {
         $this->assertTrue($token->getName() === $retrievedToken->getName());
         $this->assertTrue($token->getUser()->getId() === $retrievedToken->getUser()->getId());
         $this->assertTrue($token->getValue() === $retrievedToken->getValue());
+        $this->removeUser($user);
     }
 
 }

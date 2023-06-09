@@ -23,27 +23,25 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential\Password;
 
 use Keestash\Core\DTO\Token\Token;
 use KSA\PasswordManager\Api\Node\Credential\Password\Get;
-use KSA\PasswordManager\Exception\PasswordManagerException;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\User\IUserRepository;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
 
     public function testWithNoNodeId(): void {
         /** @var Get $get */
         $get      = $this->getServiceManager()->get(Get::class);
-        $response = $get->handle($this->getDefaultRequest());
+        $response = $get->handle($this->getVirtualRequest());
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
 
     public function testWithInvalidNodeId(): void {
         /** @var Get $get */
         $get      = $this->getServiceManager()->get(Get::class);
-        $response = $get->handle($this->getDefaultRequest()->withAttribute('id', 9999));
+        $response = $get->handle($this->getVirtualRequest()->withAttribute('id', 9999));
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
 
@@ -52,25 +50,23 @@ class GetTest extends TestCase {
         $get = $this->getServiceManager()->get(Get::class);
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getServiceManager()->get(IUserRepository::class);
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
 
-        $user           = $this->getUser();
-        $root           = $nodeRepository->getRootForUser($user);
-        $node           = $credentialService->createCredential(
-            "getPasswordTest"
-            , "keestash.test"
-            , "getpassword.test"
-            , "GetPasswordTest"
-            , $user
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge           = $credentialService->insertCredential($node, $root);
-        $node           = $edge->getNode();
+        $root = $this->getRootFolder($user);
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $root
+        );
 
-        $request = $this->getDefaultRequest();
-        $request = $request->withAttribute('id', $node->getId());
+        $request = $this->getVirtualRequest();
+        $request = $request->withAttribute('id', $edge->getNode()->getId());
         /** @var IToken|Token $token */
         $token = $request->getAttribute(IToken::class);
         /** @phpstan-ignore-next-line */
@@ -78,42 +74,44 @@ class GetTest extends TestCase {
         $request  = $request->withAttribute(IToken::class, $token);
         $response = $get->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testGetNonPassword(): void {
         /** @var Get $get */
-        $get = $this->getServiceManager()->get(Get::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $user           = $this->getUser();
-        $root           = $nodeRepository->getRootForUser($user);
+        $get  = $this->getServiceManager()->get(Get::class);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $root = $this->getRootFolder($user);
 
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $request  = $request->withAttribute('id', $root->getId());
         $response = $get->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testGet(): void {
         /** @var Get $get */
-        $get = $this->getServiceManager()->get(Get::class);
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $user           = $this->getUser();
-        $root           = $nodeRepository->getRootForUser($user);
-        $node           = $credentialService->createCredential(
-            "getPasswordTest"
-            , "keestash.test"
-            , "getpassword.test"
-            , "GetPasswordTest"
-            , $user
+        $get  = $this->getServiceManager()->get(Get::class);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge           = $credentialService->insertCredential($node, $root);
-        $node           = $edge->getNode();
+        $root = $this->getRootFolder($user);
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $root
+        );
+        $node = $edge->getNode();
 
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $request  = $request->withAttribute('node_id', $node->getId());
         $response = $get->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));

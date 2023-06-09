@@ -43,6 +43,7 @@ use KSA\PasswordManager\Exception\Edge\EdgeNotFoundException;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\Node\NodeException;
 use KSA\PasswordManager\Exception\Node\NodeNotFoundException;
+use KSA\PasswordManager\Exception\Node\NodeNotRemovedException;
 use KSA\PasswordManager\Exception\Node\NodeNotUpdatedException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\PublicShareRepository;
@@ -120,6 +121,7 @@ class NodeRepository {
         $id   = $rows[0]['id'] ?? 0;
         $id   = (int) $id;
         if (0 === $id) {
+            $this->logger->warning('no folder data given',['rows'=>$rows]);
             throw new PasswordManagerException();
         }
 
@@ -623,27 +625,37 @@ ORDER BY d.`level`;
         }
     }
 
+    /**
+     * @param Node $node
+     * @return bool
+     * @throws InvalidNodeTypeException
+     * @throws NodeNotRemovedException
+     */
     public function remove(Node $node): bool {
+        try {
+            if ($node instanceof Root) {
+                throw new InvalidNodeTypeException();
+            }
 
-        if ($node instanceof Root) {
-            throw new PasswordManagerException();
+            $edgesRemoved = $this->removeEdges($node);
+            if (false === $edgesRemoved) return false;
+
+            if ($node instanceof Credential) {
+                $credentialRemoved = $this->removeCredential($node);
+                if (false === $credentialRemoved) return false;
+            }
+
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            return $queryBuilder->delete(
+                    'pwm_node'
+                )
+                    ->where('id = ?')
+                    ->setParameter(0, $node->getId())
+                    ->executeStatement() !== 0;
+        } catch (Exception $exception) {
+            $this->logger->warning('node not removed', ['exception' => $exception, 'nodeId' => $node->getId()]);
+            throw new NodeNotRemovedException();
         }
-
-        $edgesRemoved = $this->removeEdges($node);
-        if (false === $edgesRemoved) return false;
-
-        if ($node instanceof Credential) {
-            $credentialRemoved = $this->removeCredential($node);
-            if (false === $credentialRemoved) return false;
-        }
-
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete(
-                'pwm_node'
-            )
-                ->where('id = ?')
-                ->setParameter(0, $node->getId())
-                ->executeStatement() !== 0;
     }
 
     private function removeEdges(Node $node): bool {

@@ -270,7 +270,14 @@ class QueueRepository implements IQueueRepository {
             }
 
         } catch (Exception $exception) {
-            $this->logger->error('error updating queue', ['exception' => $exception]);
+            $this->logger->error(
+                'error updating queue',
+                [
+                    'exception' => $exception
+                    , 'uuid'    => $uuid
+                    , 'attempt' => $attempts
+                ]
+            );
             throw new QueueNotUpdatedException();
         }
     }

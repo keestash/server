@@ -47,7 +47,7 @@ class PermissionsByRole extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("permission:role:get")
+        $this->setName("keestash:permission:role:get")
             ->setDescription("lists all permissions by a given role")
             ->addArgument(
                 PermissionsByRole::ARGUMENT_NAME_ROLE_ID

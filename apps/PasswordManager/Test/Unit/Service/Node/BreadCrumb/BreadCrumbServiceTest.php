@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Unit\Service\Node\BreadCrumb;
 
-use KST\TestCase;
+use KSA\PasswordManager\Test\Unit\TestCase;
 
 class BreadCrumbServiceTest extends TestCase {
 
     public function testXyz(): void {
-        $this->markTestSkipped('implement me :(');
+        $this->markTestSkipped('we can not test this, as we do not have SQL commands like "WITH RECURSIVE" etc');
     }
 
 }

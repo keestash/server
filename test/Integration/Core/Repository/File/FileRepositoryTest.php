@@ -28,6 +28,7 @@ use Keestash\Core\DTO\URI\URI;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Repository\File\IFileRepository;
 use KST\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class FileRepositoryTest extends TestCase {
 
@@ -35,12 +36,15 @@ class FileRepositoryTest extends TestCase {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -51,18 +55,22 @@ class FileRepositoryTest extends TestCase {
         $addedFile = $fileRepository->add($file);
         $this->assertTrue($addedFile instanceof IFile);
         $this->assertTrue(true === is_numeric($addedFile->getId()));
+        $this->removeUser($user);
     }
 
     public function testUpdate(): void {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -79,6 +87,7 @@ class FileRepositoryTest extends TestCase {
         $updatedFile = $fileRepository->update($addedFile);
         $this->assertTrue($updatedFile instanceof IFile);
         $this->assertTrue($updatedFile->getName() === $newName);
+        $this->removeUser($user);
     }
 
     public function testAddAll(): void {
@@ -86,12 +95,15 @@ class FileRepositoryTest extends TestCase {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -105,9 +117,7 @@ class FileRepositoryTest extends TestCase {
         $file = new File();
         $file->setName(FileRepositoryTest::class . '1');
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file.1');
         $file->setSize(2);
@@ -120,18 +130,22 @@ class FileRepositoryTest extends TestCase {
         $fileList = $fileRepository->addAll($fileList);
         $this->assertTrue($fileList instanceof FileList);
         $this->assertTrue($fileList->length() === 2);
+        $this->removeUser($user);
     }
 
     public function testRemove(): void {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -144,18 +158,22 @@ class FileRepositoryTest extends TestCase {
         $this->assertTrue(true === is_numeric($addedFile->getId()));
 
         $fileRepository->remove($file);
+        $this->removeUser($user);
     }
 
     public function testRemoveForUser(): void {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -167,7 +185,8 @@ class FileRepositoryTest extends TestCase {
         $this->assertTrue($addedFile instanceof IFile);
         $this->assertTrue(true === is_numeric($addedFile->getId()));
 
-        $fileRepository->removeForUser($this->getUser());
+        $fileRepository->removeForUser($user);
+        $this->removeUser($user);
     }
 
     public function testRemoveAll(): void {
@@ -175,12 +194,15 @@ class FileRepositoryTest extends TestCase {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -194,9 +216,7 @@ class FileRepositoryTest extends TestCase {
         $file = new File();
         $file->setName(FileRepositoryTest::class . '1');
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file.1');
         $file->setSize(2);
@@ -211,18 +231,22 @@ class FileRepositoryTest extends TestCase {
         $this->assertTrue($fileList->length() === 2);
 
         $fileRepository->removeAll($fileList);
+        $this->removeUser($user);
     }
 
     public function testGet(): void {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -238,18 +262,22 @@ class FileRepositoryTest extends TestCase {
         $this->assertTrue($retrievedFile instanceof IFile);
         $this->assertTrue(true === is_numeric($retrievedFile->getId()));
         $this->assertTrue($retrievedFile->getId() === $addedFile->getId());
+        $this->removeUser($user);
     }
 
     public function testGetByUri(): void {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -267,18 +295,22 @@ class FileRepositoryTest extends TestCase {
         $this->assertTrue($retrievedFile instanceof IFile);
         $this->assertTrue(true === is_numeric($retrievedFile->getId()));
         $this->assertTrue($retrievedFile->getId() === $addedFile->getId());
+        $this->removeUser($user);
     }
 
     public function testGetByName(): void {
         /** @var IFileRepository $fileRepository */
         $fileRepository = $this->getService(IFileRepository::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $file = new File();
         $file->setName(FileRepositoryTest::class);
         $file->setCreateTs(new DateTimeImmutable());
-        $file->setOwner(
-            $this->getUser()
-        );
+        $file->setOwner($user);
         $file->setHash(md5((string) time()));
         $file->setContent('test.file');
         $file->setSize(1);
@@ -294,6 +326,7 @@ class FileRepositoryTest extends TestCase {
         $this->assertTrue($retrievedFile instanceof IFile);
         $this->assertTrue(true === is_numeric($retrievedFile->getId()));
         $this->assertTrue($retrievedFile->getId() === $addedFile->getId());
+        $this->removeUser($user);
     }
 
 }

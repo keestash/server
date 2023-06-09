@@ -25,36 +25,36 @@ use KSA\PasswordManager\Api\Node\Get;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\User\IUserRepository;
 use KST\Service\Service\UserService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
 
     public function testGet(): void {
-        $this->markTestSkipped('broken, please fix me');
         /** @var Get $get */
-        $get = $this->getServiceManager()->get(Get::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $node           = $nodeRepository->getRootForUser($this->getUser());
+        $get  = $this->getServiceManager()->get(Get::class);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $root = $this->getRootFolder($user);
 
-        $this->assertTrue($node instanceof Node);
-        $this->assertTrue($node instanceof Root);
-
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $response = $get->handle(
-            $request->withAttribute('node_id', (string) $node->getId())
+            $request->withAttribute('node_id', (string) $root->getId())
         );
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testGetNonExisting(): void {
         /** @var Get $get */
         $get      = $this->getServiceManager()->get(Get::class);
         $response = $get->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(
             false === $this->getResponseService()->isValidResponse($response)
@@ -65,7 +65,7 @@ class GetTest extends TestCase {
         /** @var Get $get */
         $get = $this->getServiceManager()->get(Get::class);
 
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $response = $get->handle($request->withAttribute('id', 99999));
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -77,12 +77,16 @@ class GetTest extends TestCase {
         $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getServiceManager()->get(IUserRepository::class);
-        $node           = $nodeRepository->getRootForUser($this->getUser());
+        $user           = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $node           = $nodeRepository->getRootForUser($user);
 
         $this->assertTrue($node instanceof Node);
         $this->assertTrue($node instanceof Root);
 
-        $request = $this->getDefaultRequest();
+        $request = $this->getVirtualRequest();
         $request = $request->withAttribute('id', $node->getId());
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);

@@ -40,7 +40,7 @@ class DerivationList extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("derivation:list")
+        $this->setName("keestash:derivation:list")
             ->setDescription("lists all derivation entries");
     }
 

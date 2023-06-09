@@ -26,32 +26,21 @@ use doganoo\DI\Encryption\User\IUserService;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Organization\Organization;
-use KSA\Settings\Event\Organization\OrganizationAddedEvent;
-use KSA\Settings\Repository\IOrganizationRepository;
+use KSA\Settings\Service\IOrganizationService;
 use KSP\Api\IResponse;
-use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private IOrganizationRepository $organizationRepository;
-    private IEventService           $eventManager;
-    private LoggerInterface                 $logger;
-    private IUserService            $userService;
-
     public function __construct(
-        IOrganizationRepository $organizationRepository
-        , IEventService         $eventManager
-        , LoggerInterface               $logger
-        , IUserService          $userService
+        private readonly IOrganizationService $organizationService
+        , private readonly LoggerInterface    $logger
+        , private readonly IUserService       $userService
     ) {
-        $this->organizationRepository = $organizationRepository;
-        $this->eventManager           = $eventManager;
-        $this->logger                 = $logger;
-        $this->userService            = $userService;
+
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -73,10 +62,7 @@ class Add implements RequestHandlerInterface {
         $organization->setActiveTs(new DateTimeImmutable());
 
         try {
-            $organization = $this->organizationRepository->insert($organization);
-            $this->eventManager->execute(
-                new OrganizationAddedEvent($organization)
-            );
+            $organization = $this->organizationService->add($organization);
         } catch (Exception $exception) {
             $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
             return new JsonResponse(

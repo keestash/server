@@ -21,18 +21,24 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Event\Listener;
 
+use Doctrine\DBAL\Exception;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
+use Keestash\Exception\Repository\Derivation\DerivationNotFoundException;
+use Keestash\Exception\Repository\NoRowsFoundException;
+use Keestash\Exception\Token\TokenNotDeletedException;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Event\Listener\IListener;
+use Psr\Log\LoggerInterface;
 
 class RemoveOutdatedTokens implements IListener {
 
     public function __construct(
         private readonly ITokenRepository        $tokenRepository
         , private readonly IDerivationRepository $derivationRepository
+        , private readonly LoggerInterface       $logger
     ) {
 
     }
@@ -40,20 +46,27 @@ class RemoveOutdatedTokens implements IListener {
     /**
      * @param IEvent|ApplicationStartedEvent $event
      * @return void
+     * @throws Exception
      */
-    public function execute(IEvent $event): void {
+    public function execute(IEvent|ApplicationStartedEvent $event): void {
         $tokens = $this->tokenRepository->getOlderThan(
             $event->getDateTime()->modify('-1 day')
         );
 
         /** @var IToken $token */
         foreach ($tokens as $token) {
-            $this->tokenRepository->remove($token);
-            $this->derivationRepository->remove(
-                $this->derivationRepository->get(
-                    $token->getUser()
-                )
-            );
+            try {
+                $this->tokenRepository->remove($token);
+                $this->derivationRepository->remove(
+                    $this->derivationRepository->get(
+                        $token->getUser()
+                    )
+                );
+            } catch (TokenNotDeletedException $e) {
+                $this->logger->error('token not deleted', ['exception' => $e]);
+            } catch (NoRowsFoundException|DerivationNotFoundException $e) {
+                $this->logger->debug('no rows found', ['exception' => $e]);
+            }
         }
     }
 

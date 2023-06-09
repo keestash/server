@@ -21,12 +21,113 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Pwned;
 
-use KSA\PasswordManager\Test\TestCase;
+use DateTimeImmutable;
+use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use KSA\PasswordManager\ConfigProvider;
+use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
+use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
+use KSP\Api\IVerb;
+use KSP\Core\DTO\RBAC\IRole;
+use Ramsey\Uuid\Uuid;
 
 class ChartDetailDataTest extends TestCase {
 
-    public function testWithEmptyRequest(): void {
-        $this->markTestSkipped('need to mock');
+    public function testWithEmptyResponse(): void {
+        /** @var RBACRepositoryInterface $rbacRepository */
+        $rbacRepository = $this->getService(RBACRepositoryInterface::class);
+
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $rbacRepository->assignRoleToUser(
+            $user
+            , $rbacRepository->getRole(IRole::ROLE_USER_ADMIN)
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::GET
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL
+                    , []
+                    , $user
+                    , $headers
+                )
+            );
+
+        $this->assertStatusCode(IResponse::OK, $response);
+        $body = json_decode(
+            (string) $response->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
+        );
+
+        $this->assertTrue(2 === count($body));
+        $this->assertArrayHasKey('passwords', $body);
+        $this->assertArrayHasKey('breaches', $body);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+    }
+
+    public function testWithSingleResponse(): void {
+        /** @var PwnedPasswordsRepository $pwnPasswordRepository */
+        $pwnPasswordRepository = $this->getService(PwnedPasswordsRepository::class);
+        /** @var RBACRepositoryInterface $rbacRepository */
+        $rbacRepository = $this->getService(RBACRepositoryInterface::class);
+
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $rbacRepository->assignRoleToUser(
+            $user
+            , $rbacRepository->getRole(IRole::ROLE_USER_ADMIN)
+        );
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $this->getRootFolder($user)
+        );
+
+        $severity = 7;
+
+        $passwords = $pwnPasswordRepository->replace(
+            new Passwords(
+                $edge->getNode()
+                , $severity
+                , new DateTimeImmutable()
+                , new DateTimeImmutable()
+            )
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::GET
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL
+                    , []
+                    , $user
+                    , $headers
+                )
+            );
+
+        $this->assertStatusCode(IResponse::OK, $response);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
     }
 
 }

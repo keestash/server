@@ -21,13 +21,14 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use KSA\PasswordManager\Api\Comment\Add as AddComment;
-use KSA\PasswordManager\Api\Comment\Get;
-use KSA\PasswordManager\Api\Comment\Remove;
-use KSA\PasswordManager\Api\Generate\Generate;
-use KSA\PasswordManager\Api\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
+use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Add as AddComment;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Get;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Remove;
 use KSA\PasswordManager\Api\Node\Credential\Create;
+use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
+use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\GetByName;
@@ -36,10 +37,10 @@ use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
 use KSA\PasswordManager\Api\Node\Organization\Update as UpdateNodeOrganization;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
-use KSA\PasswordManager\Api\Node\ShareableUsers;
-use KSA\PasswordManager\Api\Share\PublicShare;
-use KSA\PasswordManager\Api\Share\PublicShareSingle;
-use KSA\PasswordManager\Api\Share\Share;
+use KSA\PasswordManager\Api\Node\Share\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\Share;
+use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
@@ -47,14 +48,16 @@ use KSA\PasswordManager\Command\Node\ImportPwned;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
+use KSA\PasswordManager\Event\Listener\NodeRemovedEventListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
-use KSA\PasswordManager\Event\Listener\PublicShare\RemoveExpired;
-use KSA\PasswordManager\Factory\Api\Comment\AddFactory as AddCommentFactory;
-use KSA\PasswordManager\Factory\Api\Comment\GetFactory;
-use KSA\PasswordManager\Factory\Api\Comment\RemoveFactory;
-use KSA\PasswordManager\Factory\Api\Generate\GenerateFactory;
-use KSA\PasswordManager\Factory\Api\Generate\QualityFactory;
+use KSA\PasswordManager\Event\Listener\RemoveExpired;
+use KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\GetValueFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\AddFactory as AddCommentFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\GetFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\CreateFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Generate\GenerateFactory;
+use KSA\PasswordManager\Factory\Api\Node\Credential\Generate\QualityFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdateFactory as UpdatePasswordFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
@@ -64,10 +67,10 @@ use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\UpdateFactory as UpdateNodeOrganizationFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDataFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDetailDataFactory;
+use KSA\PasswordManager\Factory\Api\Node\Share\PublicShareFactory;
+use KSA\PasswordManager\Factory\Api\Node\Share\PublicShareSingleFactory;
+use KSA\PasswordManager\Factory\Api\Node\Share\ShareFactory;
 use KSA\PasswordManager\Factory\Api\Node\ShareableUsersFactory;
-use KSA\PasswordManager\Factory\Api\Share\PublicShareFactory;
-use KSA\PasswordManager\Factory\Api\Share\PublicShareSingleFactory;
-use KSA\PasswordManager\Factory\Api\Share\ShareFactory;
 use KSA\PasswordManager\Factory\Command\CreateCredentialFactory;
 use KSA\PasswordManager\Factory\Command\CreateFolderFactory;
 use KSA\PasswordManager\Factory\Command\DumpFactory;
@@ -75,10 +78,12 @@ use KSA\PasswordManager\Factory\Command\ImportPwnedFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CredentialChangedListenerFactory;
+use KSA\PasswordManager\Factory\Event\Listener\NodeRemovedEventListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Middleware\NodeAccessMiddlewareFactory;
 use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
+use KSA\PasswordManager\Factory\Repository\Node\Credential\AdditionalData\AdditionalDataRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\OrganizationRepositoryFactory;
@@ -94,6 +99,7 @@ use KSA\PasswordManager\Factory\Service\Node\PwnedServiceFactory;
 use KSA\PasswordManager\Factory\Service\NodeEncryptionServiceFactory;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSA\PasswordManager\Repository\CommentRepository;
+use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository;
@@ -114,98 +120,121 @@ return [
     ConfigProvider::FACTORIES => [
         // api
         // ---- comment
-        AddComment::class                                               => AddCommentFactory::class,
-        Get::class                                                      => GetFactory::class,
-        Remove::class                                                   => RemoveFactory::class,
+        AddComment::class                                                                    => AddCommentFactory::class,
+        Get::class                                                                           => GetFactory::class,
+        Remove::class                                                                        => RemoveFactory::class,
 
         // ---- generate
-        Generate::class                                                 => GenerateFactory::class,
-        Quality::class                                                  => QualityFactory::class,
+        Generate::class                                                                      => GenerateFactory::class,
+        Quality::class                                                                       => QualityFactory::class,
 
         // ---- PublicShare
-        PublicShare::class                                              => PublicShareFactory::class,
-        PublicShareSingle::class                                        => PublicShareSingleFactory::class,
-        \KSA\PasswordManager\Api\Share\Remove::class                    => \KSA\PasswordManager\Factory\Api\Share\RemoveFactory::class,
-        Share::class                                                    => ShareFactory::class,
+        PublicShare::class                                                                   => PublicShareFactory::class,
+        PublicShareSingle::class                                                             => PublicShareSingleFactory::class,
+        \KSA\PasswordManager\Api\Node\Share\Remove::class                                    => \KSA\PasswordManager\Factory\Api\Node\Share\RemoveFactory::class,
+        Share::class                                                                         => ShareFactory::class,
 
         // ---- Node
-        \KSA\PasswordManager\Api\Node\Get::class                        => \KSA\PasswordManager\Factory\Api\Node\GetFactory::class,
-        GetByName::class                                                => GetByNameFactory::class,
-        Move::class                                                     => MoveFactory::class,
-        ShareableUsers::class                                           => ShareableUsersFactory::class,
-        Delete::class                                                   => DeleteFactory::class,
-        \KSA\PasswordManager\Api\Node\Update::class                     => \KSA\PasswordManager\Factory\Api\Node\UpdateFactory::class,
+        \KSA\PasswordManager\Api\Node\Get::class                                             => \KSA\PasswordManager\Factory\Api\Node\GetFactory::class,
+        GetByName::class                                                                     => GetByNameFactory::class,
+        Move::class                                                                          => MoveFactory::class,
+        ShareableUsers::class                                                                => ShareableUsersFactory::class,
+        Delete::class                                                                        => DeleteFactory::class,
+        \KSA\PasswordManager\Api\Node\Update::class                                          => \KSA\PasswordManager\Factory\Api\Node\UpdateFactory::class,
 
         // ---- Node
         // ---- ---- Pwned
-        ChartData::class                                                => ChartDataFactory::class,
-        ChartDetailData::class                                          => ChartDetailDataFactory::class,
+        ChartData::class                                                                     => ChartDataFactory::class,
+        ChartDetailData::class                                                               => ChartDetailDataFactory::class,
 
         // ---- Organization
-        AddNodeOrganization::class                                      => AddFactory::class,
-        UpdateNodeOrganization::class                                   => UpdateNodeOrganizationFactory::class,
-        \KSA\PasswordManager\Api\Node\Organization\Remove::class        => \KSA\PasswordManager\Factory\Api\Node\Organization\RemoveFactory::class,
+        AddNodeOrganization::class                                                           => AddFactory::class,
+        UpdateNodeOrganization::class                                                        => UpdateNodeOrganizationFactory::class,
+        \KSA\PasswordManager\Api\Node\Organization\Remove::class                             => \KSA\PasswordManager\Factory\Api\Node\Organization\RemoveFactory::class,
 
         // ---- Node
         // ---- ---- Attachment
-        Add::class                                                      => \KSA\PasswordManager\Factory\Api\Node\Attachment\AddFactory::class,
-        \KSA\PasswordManager\Api\Node\Attachment\Get::class             => \KSA\PasswordManager\Factory\Api\Node\Attachment\GetFactory::class,
-        \KSA\PasswordManager\Api\Node\Attachment\Remove::class          => \KSA\PasswordManager\Factory\Api\Node\Attachment\RemoveFactory::class,
+        Add::class                                                                           => \KSA\PasswordManager\Factory\Api\Node\Attachment\AddFactory::class,
+        \KSA\PasswordManager\Api\Node\Attachment\Get::class                                  => \KSA\PasswordManager\Factory\Api\Node\Attachment\GetFactory::class,
+        \KSA\PasswordManager\Api\Node\Attachment\Remove::class                               => \KSA\PasswordManager\Factory\Api\Node\Attachment\RemoveFactory::class,
+
+        // ---- Node
+        // ---- ---- Activity
+        \KSA\PasswordManager\Api\Node\Activity\Get::class                                    => \KSA\PasswordManager\Factory\Api\Node\Activity\GetFactory::class,
 
         // ---- Node
         // ---- ---- Avatar
-        \KSA\PasswordManager\Api\Node\Avatar\Update::class              => \KSA\PasswordManager\Factory\Api\Node\Avatar\UpdateFactory::class,
+        \KSA\PasswordManager\Api\Node\Avatar\Update::class                                   => \KSA\PasswordManager\Factory\Api\Node\Avatar\UpdateFactory::class,
 
         // ---- Node
         // ---- ---- Credential
-        Create::class                                                   => CreateFactory::class,
-        Update::class                                                   => UpdateFactory::class,
+        Create::class                                                                        => CreateFactory::class,
+        Update::class                                                                        => UpdateFactory::class,
 
         // ---- Node
         // ---- ---- Credential
         // ---- ---- ---- Password
-        \KSA\PasswordManager\Api\Node\Credential\Password\Get::class    => \KSA\PasswordManager\Factory\Api\Node\Credential\Password\GetFactory::class,
-        \KSA\PasswordManager\Api\Node\Credential\Password\Update::class => UpdatePasswordFactory::class,
+        \KSA\PasswordManager\Api\Node\Credential\Password\Get::class                         => \KSA\PasswordManager\Factory\Api\Node\Credential\Password\GetFactory::class,
+        \KSA\PasswordManager\Api\Node\Credential\Password\Update::class                      => UpdatePasswordFactory::class,
+
+        // ---- Node
+        // ---- ---- Credential
+        // ---- ---- ---- Password
+        \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Get::class                   => \KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\GetFactory::class,
+        \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete::class                => \KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\DeleteFactory::class,
+        GetValue::class                                                                      => GetValueFactory::class,
+        \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Add::class                   => \KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\AddFactory::class,
 
         // ---- Node
         // ---- ---- Folder
-        \KSA\PasswordManager\Api\Node\Folder\Create::class              => \KSA\PasswordManager\Factory\Api\Node\Folder\CreateFactory::class,
+        \KSA\PasswordManager\Api\Node\Folder\Create::class                                   => \KSA\PasswordManager\Factory\Api\Node\Folder\CreateFactory::class,
 
         // service
-        NodeEncryptionService::class                                    => NodeEncryptionServiceFactory::class,
-        EncryptionService::class                                        => EncryptionServiceFactory::class,
-        NodeService::class                                              => NodeServiceFactory::class,
-        BreadCrumbService::class                                        => BreadCrumbServiceFactory::class,
-        CredentialService::class                                        => CredentialServiceFactory::class,
-        ShareService::class                                             => InvokableFactory::class,
-        AccessService::class                                            => AccessServiceFactory::class,
-        PwnedService::class                                             => PwnedServiceFactory::class,
+        NodeEncryptionService::class                                                         => NodeEncryptionServiceFactory::class,
+        EncryptionService::class                                                             => EncryptionServiceFactory::class,
+        NodeService::class                                                                   => NodeServiceFactory::class,
+        BreadCrumbService::class                                                             => BreadCrumbServiceFactory::class,
+        CredentialService::class                                                             => CredentialServiceFactory::class,
+        ShareService::class                                                                  => InvokableFactory::class,
+        AccessService::class                                                                 => AccessServiceFactory::class,
+        PwnedService::class                                                                  => PwnedServiceFactory::class,
+        \KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService::class => \KSA\PasswordManager\Factory\Service\Node\Credential\AdditionalData\EncryptionServiceFactory::class,
 
         // event
         // ---- listener
-        AfterRegistration::class                                        => AfterRegistrationFactory::class,
-        AfterPasswordChanged::class                                     => AfterPasswordChangedListenerFactory::class,
-        RemoveExpired::class                                            => RemoveExpiredFactory::class,
-        OrganizationChangeListener::class                               => OrganizationAddListenerFactory::class,
-        CredentialChangedListener::class                                => CredentialChangedListenerFactory::class,
+        AfterRegistration::class                                                             => AfterRegistrationFactory::class,
+        AfterPasswordChanged::class                                                          => AfterPasswordChangedListenerFactory::class,
+        RemoveExpired::class                                                                 => RemoveExpiredFactory::class,
+        OrganizationChangeListener::class                                                    => OrganizationAddListenerFactory::class,
+        CredentialChangedListener::class                                                     => CredentialChangedListenerFactory::class,
+        NodeRemovedEventListener::class                                                      => NodeRemovedEventListenerFactory::class,
 
         // dependency
-        NodeAccessMiddleware::class                                     => NodeAccessMiddlewareFactory::class,
+        NodeAccessMiddleware::class                                                          => NodeAccessMiddlewareFactory::class,
 
         // command
-        CreateFolder::class                                             => CreateFolderFactory::class,
-        CreateCredential::class                                         => CreateCredentialFactory::class,
-        Dump::class                                                     => DumpFactory::class,
-        ImportPwned::class                                              => ImportPwnedFactory::class,
-        
+        CreateFolder::class                                                                  => CreateFolderFactory::class,
+        CreateCredential::class                                                              => CreateCredentialFactory::class,
+        Dump::class                                                                          => DumpFactory::class,
+        ImportPwned::class                                                                   => ImportPwnedFactory::class,
+
         // repository
-        FileRepository::class                                           => FileRepositoryFactory::class,
-        NodeRepository::class                                           => NodeRepositoryFactory::class,
-        OrganizationRepository::class                                   => OrganizationRepositoryFactory::class,
-        CommentRepository::class                                        => CommentRepositoryFactory::class,
-        PublicShareRepository::class                                    => PublicShareRepositoryFactory::class,
-        PwnedPasswordsRepository::class                                 => PwnedPasswordsRepositoryFactory::class,
-        PwnedBreachesRepository::class                                  => PwnedBreachesRepositoryFactory::class
+        PublicShareRepository::class                                                         => PublicShareRepositoryFactory::class,
+        CommentRepository::class                                                             => CommentRepositoryFactory::class,
+
+        // repository
+        // ---- node
+        FileRepository::class                                                                => FileRepositoryFactory::class,
+        NodeRepository::class                                                                => NodeRepositoryFactory::class,
+        OrganizationRepository::class                                                        => OrganizationRepositoryFactory::class,
+        PwnedPasswordsRepository::class                                                      => PwnedPasswordsRepositoryFactory::class,
+        PwnedBreachesRepository::class                                                       => PwnedBreachesRepositoryFactory::class,
+
+        // repository
+        // ---- node
+        // ---- ---- credential
+        // ---- ---- ---- credential
+        AdditionalDataRepository::class                                                      => AdditionalDataRepositoryFactory::class
     ],
 
 ];

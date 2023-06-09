@@ -25,7 +25,8 @@ use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class UpdateTest
@@ -40,10 +41,11 @@ class UpdateTest extends TestCase {
         $update = $this->getServiceManager()->get(Update::class);
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $user           = $this->getUser();
-        $root           = $nodeRepository->getRootForUser($user);
+        $user           = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $root           = $this->getRootFolder($user);
         $node           = $credentialService->createCredential(
             "deleteTestPassword"
             , "keestash.test"
@@ -55,7 +57,7 @@ class UpdateTest extends TestCase {
         $node           = $edge->getNode();
 
         $response = $update->handle(
-            $this->getDefaultRequest([
+            $this->getVirtualRequest([
                 'name'       => 'TestUpdateNewName'
                 , 'username' => [
                     "plain" => 'TestUpdateNewUsername'
@@ -68,6 +70,7 @@ class UpdateTest extends TestCase {
         );
 
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testUpdateInvalidNodeId(): void {
@@ -76,7 +79,7 @@ class UpdateTest extends TestCase {
         $update = $this->getServiceManager()->get(Update::class);
 
         $response = $update->handle(
-            $this->getDefaultRequest([
+            $this->getVirtualRequest([
                 'name'       => 'TestUpdateNewName'
                 , 'username' => 'TestUpdateNewUsername'
                 , 'url'      => 'TestUpdateNewUrl'
@@ -93,7 +96,7 @@ class UpdateTest extends TestCase {
         $update = $this->getServiceManager()->get(Update::class);
 
         $response = $update->handle(
-            $this->getDefaultRequest([
+            $this->getVirtualRequest([
                 'name'       => 'TestUpdateNewName'
                 , 'username' => 'TestUpdateNewUsername'
                 , 'url'      => 'TestUpdateNewUrl'

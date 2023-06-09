@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Test\Integration\Api\User;
 
 use KSA\Register\Api\User\Add;
-use KSA\Register\Test\TestCase;
+use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -35,7 +35,7 @@ class AddTest extends TestCase {
         $add = $this->getService(Add::class);
 
         $response = $add->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
 
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
@@ -47,7 +47,7 @@ class AddTest extends TestCase {
         $add = $this->getService(Add::class);
 
         $response = $add->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
@@ -70,7 +70,7 @@ class AddTest extends TestCase {
         $add = $this->getService(Add::class);
 
         $response = $add->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
@@ -93,7 +93,7 @@ class AddTest extends TestCase {
         $add = $this->getService(Add::class);
 
         $response = $add->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'first_name'             => AddTest::class
                     , 'last_name'            => AddTest::class
@@ -125,7 +125,7 @@ class AddTest extends TestCase {
         $add      = $this->getService(Add::class);
         $password = '1E]U_t"0Xh&}gtTPA`|?';
         $response = $add->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'first_name'             => $firstName
                     , 'last_name'            => $lastName

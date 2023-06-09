@@ -36,7 +36,7 @@
     "doganoo/di-services": "^0.0",
     "doganoo/php-algorithms": "^2.0.0",
     "doganoo/php-util": "^0.5",
-    "doganoo/simple-rbac": "dev-master",
+    "doganoo/simple-rbac": "^1.8",
     "ezyang/htmlpurifier": "^4.13",
     "firebase/php-jwt": "^6.4",
     "guzzlehttp/guzzle": "^7.0",

@@ -21,23 +21,22 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
-use KSA\PasswordManager\Api\Node\ShareableUsers;
+use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
 
 class ShareableUsersTest extends TestCase {
 
     public function testShareableUsers(): void {
         /** @var ShareableUsers $shareableUsers */
         $shareableUsers = $this->getServiceManager()->get(ShareableUsers::class);
-        $user           = $this->getUser();
         /** @var NodeRepository $nodeRepository */
         $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
         $node           = $nodeRepository->getNode(2, 0, 0);
 
         $this->assertInstanceOf(Credential::class, $node);
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $request  = $request->withAttribute('nodeId', $node->getId());
         $request  = $request->withAttribute('query', 'TestUser');
         $response = $shareableUsers->handle($request);

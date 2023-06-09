@@ -24,8 +24,9 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node;
 use KSA\PasswordManager\Api\Node\Update;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Test\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
+use Ramsey\Uuid\Uuid;
 
 class UpdateTest extends TestCase {
 
@@ -36,19 +37,22 @@ class UpdateTest extends TestCase {
         $nodeRepository = $this->getService(NodeRepository::class);
         /** @var Update $update */
         $update = $this->getService(Update::class);
-        $user   = $this->getUser();
-        $parent = $this->getRootForUser();
-        $node   = $credentialService->createCredential(
-            "deleteTestPassword"
-            , "keestash.test"
-            , "deletetest.test"
-            , "Deletetest"
-            , $user
+        $user   = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge   = $credentialService->insertCredential($node, $parent);
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $this->getRootFolder($user)
+        );
 
         $response = $update->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'node_id' => $edge->getNode()->getId()
                     , 'name'  => UpdateTest::class
@@ -64,13 +68,14 @@ class UpdateTest extends TestCase {
             UpdateTest::class === $retrievedNode->getName()
         );
         $nodeRepository->remove($retrievedNode);
+        $this->removeUser($user);
     }
 
     public function handleEmptyRequest(): void {
         /** @var Update $update */
         $update   = $this->getService(Update::class);
         $response = $update->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(
             false === $this->getResponseService()->isValidResponse($response)
@@ -82,7 +87,7 @@ class UpdateTest extends TestCase {
         /** @var Update $update */
         $update   = $this->getService(Update::class);
         $response = $update->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'node_id' => 34456454566453452345
                 ]
@@ -93,4 +98,5 @@ class UpdateTest extends TestCase {
         );
         $this->assertTrue($response->getStatusCode() === IResponse::NOT_FOUND);
     }
+
 }

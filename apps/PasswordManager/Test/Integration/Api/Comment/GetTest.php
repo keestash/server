@@ -21,11 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Comment;
 
-use KSA\PasswordManager\Api\Comment\Get;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Get;
 use KSA\PasswordManager\Exception\Node\Comment\CommentException;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
 
@@ -51,9 +52,12 @@ class GetTest extends TestCase {
         /** @var ResponseService $responseService */
         $responseService = $this->getServiceManager()->get(ResponseService::class);
 
-        $request  = $requestService->getRequestWithToken(
-            $this->getUser()
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+
+        $request  = $requestService->getVirtualRequestWithToken($user);
         $request  = $request->withAttribute('nodeId', $nodeId)
             ->withAttribute("sortField", "id")
             ->withAttribute("sortDirection", "ASC");

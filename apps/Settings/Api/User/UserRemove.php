@@ -31,7 +31,6 @@ use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -39,33 +38,21 @@ use Psr\Log\LoggerInterface;
 
 class UserRemove implements RequestHandlerInterface {
 
-    private IUserRepository      $userRepository;
-    private IUserStateRepository $userStateRepository;
-    private IL10N                $translator;
-    private IEventService        $eventManager;
-    private LoggerInterface              $logger;
-
     public function __construct(
-        IL10N                  $l10n
-        , IUserRepository      $userRepository
-        , IUserStateRepository $userStateRepository
-        , IEventService        $eventManager
-        , LoggerInterface              $logger
+        private readonly IUserRepository        $userRepository
+        , private readonly IUserStateRepository $userStateRepository
+        , private readonly IEventService        $eventManager
+        , private readonly LoggerInterface      $logger
     ) {
-        $this->userRepository      = $userRepository;
-        $this->userStateRepository = $userStateRepository;
-        $this->translator          = $l10n;
-        $this->eventManager        = $eventManager;
-        $this->logger              = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+
         $parameters = (array) $request->getParsedBody();
         $userId     = (int) ($parameters['user_id'] ?? -1);
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
         $user  = $token->getUser();
-
         if ($userId < 1) {
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
@@ -73,7 +60,7 @@ class UserRemove implements RequestHandlerInterface {
         if ($user->getId() !== $userId) {
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("no parameters given")
+                    "message" => "no parameters given"
                 ]
                 , IResponse::FORBIDDEN
             );
@@ -82,9 +69,16 @@ class UserRemove implements RequestHandlerInterface {
         try {
             $user = $this->userRepository->getUserById((string) $userId);
         } catch (UserNotFoundException $exception) {
+            $this->logger->info(
+                'no user found'
+                , [
+                    'userId'      => $userId
+                    , 'exception' => $exception
+                ]
+            );
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("no user found")
+                    "message" => "no user found"
                 ]
                 , IResponse::NOT_FOUND
             );
@@ -94,7 +88,7 @@ class UserRemove implements RequestHandlerInterface {
             $this->userStateRepository->delete($user);
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("user remove")
+                    "message" => "user remove"
                 ]
                 , IResponse::OK
             );
@@ -109,7 +103,7 @@ class UserRemove implements RequestHandlerInterface {
                 );
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("could not delete user")
+                    "message" => "could not delete user"
                 ]
                 , IResponse::INTERNAL_SERVER_ERROR
             );

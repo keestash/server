@@ -43,20 +43,28 @@ class ClearDerivation extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("derivation:clear")
+        $this->setName("keestash:derivation:clear")
             ->setDescription("clears a key derivation for a given user")
             ->addArgument(
                 ClearDerivation::ARGUMENT_NAME_USER_ID
-                , InputArgument::REQUIRED
+                , InputArgument::OPTIONAL
                 , 'the user id'
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = $input->getArgument(ClearDerivation::ARGUMENT_NAME_USER_ID);
-        $user   = $this->userRepository->getUserById((string) $userId);
-        $this->derivationRepository->clear($user);
-        $this->tokenRepository->removeForUser($user);
+
+        if (null !== $userId) {
+            $user = $this->userRepository->getUserById((string) $userId);
+            $this->derivationRepository->clear($user);
+            $this->tokenRepository->removeForUser($user);
+            return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        }
+
+        $this->derivationRepository->clearAll();
+        $this->tokenRepository->removeAll();
+
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 

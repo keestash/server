@@ -28,40 +28,39 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class ResetPassword implements RequestHandlerInterface {
 
-    private IUserStateRepository   $userStateRepository;
-    private IUserService           $userService;
-    private IL10N                  $translator;
-    private IUserRepositoryService $userRepositoryService;
-    private IEventService          $eventManager;
-
     public function __construct(
-        IL10N                    $l10n
-        , IUserStateRepository   $userStateRepository
-        , IUserService           $userService
-        , IUserRepositoryService $userRepositoryService
-        , IEventService          $eventManager
+        private readonly IUserStateRepository     $userStateRepository
+        , private readonly IUserService           $userService
+        , private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IEventService          $eventManager
+        , private readonly LoggerInterface        $logger
     ) {
-        $this->userStateRepository   = $userStateRepository;
-        $this->userService           = $userService;
-        $this->translator            = $l10n;
-        $this->userRepositoryService = $userRepositoryService;
-        $this->eventManager          = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        $this->logger->debug(
+            'reset password flow',
+            [
+                'stage' => 'start'
+            ]
+        );
         $parameters  = (array) $request->getParsedBody();
         $hash        = $parameters["hash"] ?? '';
         $newPassword = $parameters["input"] ?? '';
+
+        if ("" === $hash || "" === $newPassword) {
+            return new JsonResponse([], IResponse::NOT_ACCEPTABLE);
+        }
 
         $debug = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
 
@@ -70,8 +69,8 @@ class ResetPassword implements RequestHandlerInterface {
         if (null === $userState) {
             return new JsonResponse(
                 [
-                    "header"    => $this->translator->translate("User not updated")
-                    , "message" => $this->translator->translate("No user found or session is expired. Please request a new link")
+                    "header"    => "User not updated"
+                    , "message" => "No user found or session is expired. Please request a new link"
                 ]
                 , IResponse::NOT_FOUND
             );
@@ -80,29 +79,48 @@ class ResetPassword implements RequestHandlerInterface {
         if (false === $validPassword) {
             return new JsonResponse(
                 [
-                    "header"    => $this->translator->translate("User not updated")
-                    , "message" => $this->translator->translate("Password minimum requirements not met")
+                    "header"    => "User not updated"
+                    , "message" => "Password minimum requirements not met"
                 ]
                 , IResponse::NOT_ACCEPTABLE
             );
         }
 
-        $newUser = $userState->getUser();
-        $oldUser = clone $newUser;
+        $newUser = clone $userState->getUser();
 
         $newUser->setPassword(
             $this->userService->hashPassword($newPassword)
         );
 
-        $this->userRepositoryService->updateUser($newUser, $oldUser);
-        $this->userStateRepository->revertPasswordChangeRequest($oldUser);
+        $this->logger->debug(
+            'reset password flow',
+            [
+                'stage'   => 'new user password set',
+                'oldUser' => [
+                    'id'       => $userState->getUser()->getId(),
+                    'password' => $userState->getUser()->getPassword()
+                ],
+                'newUser' => [
+                    'id'       => $newUser->getId(),
+                    'password' => $newUser->getPassword()
+                ]
+            ]
+        );
+        $this->userRepositoryService->updateUser($newUser, $userState->getUser());
+        $this->userStateRepository->revertPasswordChangeRequest($userState->getUser());
 
         $this->eventManager->execute(new ResetPasswordEvent());
 
+        $this->logger->debug(
+            'reset password flow',
+            [
+                'stage' => 'end'
+            ]
+        );
         return new JsonResponse(
             [
-                "header"    => $this->translator->translate("User updated")
-                , "message" => $this->translator->translate("We sent an email to reset your password")
+                "header"    => "User updated"
+                , "message" => "We sent an email to reset your password"
             ]
             , IResponse::OK
         );

@@ -21,51 +21,54 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Share;
 
-use KSA\PasswordManager\Api\Share\Remove;
+use KSA\PasswordManager\Api\Node\Share\Remove;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class RemoveTest extends TestCase {
 
     public function testRemoveShare(): void {
         /** @var Remove $remove */
         $remove = $this->getServiceManager()->get(Remove::class);
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
         /** @var ShareService $shareService */
         $shareService = $this->getServiceManager()->get(ShareService::class);
         /** @var PublicShareRepository $shareRepository */
         $shareRepository = $this->getServiceManager()->get(PublicShareRepository::class);
 
-        $parent = new Folder();
-        $node   = $credentialService->createCredential(
-            "publicShareSingleTestCredential"
-            , "keestash.test"
-            , "keestash.test"
-            , "Keestash"
-            , $this->getUser()
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge   = $credentialService->insertCredential($node, $parent);
-        $node   = $edge->getNode();
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $this->getRootFolder($user)
+        );
+        $node = $edge->getNode();
 
         $publicShare = $shareService->createPublicShare($node);
         $publicShare->setNodeId($node->getId());
         $node->setPublicShare($publicShare);
         $node = $shareRepository->shareNode($node);
 
-        $request  = $this->getDefaultRequest(['shareId' => $node->getPublicShare()->getId()]);
+        $request  = $this->getVirtualRequest(['shareId' => $node->getPublicShare()->getId()]);
         $response = $remove->handle($request);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testRemoveShareWithoutId(): void {
         /** @var Remove $remove */
         $remove = $this->getServiceManager()->get(Remove::class);
 
-        $request  = $this->getDefaultRequest();
+        $request  = $this->getVirtualRequest();
         $response = $remove->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }

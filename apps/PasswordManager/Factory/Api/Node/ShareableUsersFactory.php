@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
-use KSA\PasswordManager\Api\Node\ShareableUsers;
+use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ShareableUsersFactory {
 

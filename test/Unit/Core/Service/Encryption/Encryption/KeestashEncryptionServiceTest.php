@@ -25,7 +25,9 @@ use DateTimeImmutable;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
+use KSP\Core\DTO\User\IUser;
 use KST\Unit\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class KeestashEncryptionServiceTest extends TestCase {
 
@@ -33,24 +35,29 @@ class KeestashEncryptionServiceTest extends TestCase {
         /** @var KeestashEncryptionService $encryptionService */
         $encryptionService = $this->getService(KeestashEncryptionService::class);
 
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
         $raw          = md5((string) time());
         $encrypted    = $encryptionService->encrypt(
-            $this->getCredential()
+            $this->getCredential($user)
             , $raw
         );
         $decrpytedRaw = $encryptionService->decrypt(
-            $this->getCredential()
+            $this->getCredential($user)
             , $encrypted
         );
 
         $this->assertTrue($raw === $decrpytedRaw);
     }
 
-    private function getCredential(): ICredential {
+    private function getCredential(IUser $user): ICredential {
         $credential = new Credential();
         $credential->setCreateTs(new DateTimeImmutable());
         $credential->setSecret(md5((string) time()));
-        $credential->setKeyHolder($this->getUser());
+        $credential->setKeyHolder($user);
         return $credential;
     }
 

@@ -23,18 +23,18 @@ namespace KSA\PasswordManager\Test\Integration\Api\Comment;
 
 use DateTime;
 use DateTimeInterface;
-use KSA\PasswordManager\Api\Comment\Remove;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Remove;
 use KSA\PasswordManager\Entity\Comment\Comment;
-use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Test\Integration\TestCase;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use KSP\Core\DTO\User\IUser;
-use KST\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class RemoveTest extends TestCase {
 
@@ -47,29 +47,32 @@ class RemoveTest extends TestCase {
         $responseService = $this->getServiceManager()->get(ResponseService::class);
         /** @var CommentRepository $commentRepository */
         $commentRepository = $this->getServiceManager()->get(CommentRepository::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
 
-        $credential = $this->getCredential();
-        $user       = $this->getUser();
-        $edge       = $credentialService->insertCredential(
-            $credential
-            , $nodeRepository->getRootForUser($user)
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $this->getRootFolder($user)
         );
 
         $comment = $this->getComment(
             new DateTime()
-            , $this->getUser()
+            , $user
             , $edge->getNode()
             , "this is a comment"
         );
 
         $comment = $commentRepository->addComment($comment);
 
-        $request = $requestService->getRequestWithToken(
-            $this->getUser()
+        $request = $requestService->getVirtualRequestWithToken(
+            $user
             , []
             , []
             , ['commentId' => $comment->getId()]
@@ -78,10 +81,10 @@ class RemoveTest extends TestCase {
         $response = $remove->handle($request);
 
         $this->assertTrue(true === $responseService->isValidResponse($response));
-
+        $this->removeUser($user);
     }
 
-    public function testNonExistingComment():void {
+    public function testNonExistingComment(): void {
         $this->expectException(PasswordManagerException::class);
         /** @var Remove $remove */
         $remove = $this->getServiceManager()->get(Remove::class);
@@ -90,8 +93,12 @@ class RemoveTest extends TestCase {
         /** @var ResponseService $responseService */
         $responseService = $this->getServiceManager()->get(ResponseService::class);
 
-        $request = $requestService->getRequestWithToken(
-            $this->getUser()
+        $user    = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $request = $requestService->getVirtualRequestWithToken(
+            $user
             , []
             , []
             , ['commentId' => 9999]
@@ -99,31 +106,14 @@ class RemoveTest extends TestCase {
 
         $response = $remove->handle($request);
         $this->assertTrue(false === $responseService->isValidResponse($response));
-    }
-
-    private function getCredential(): Credential {
-        $password = "mySuperSecurePassword";
-        $url      = "keestash.com";
-        $userName = "keestashSystemUser";
-        $title    = "organization.keestash.com";
-
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
-
-        return $credentialService->createCredential(
-            $password
-            , $url
-            , $userName
-            , $title
-            , $this->getUser()
-        );
+        $this->removeUser($user);
     }
 
     private function getComment(
         DateTimeInterface $createTs
-        , IUser $user
-        , Node $node
-        , string $string
+        , IUser           $user
+        , Node            $node
+        , string          $string
     ): Comment {
         $comment = new Comment();
         $comment->setCreateTs($createTs);

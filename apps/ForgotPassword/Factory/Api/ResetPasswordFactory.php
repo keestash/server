@@ -24,20 +24,20 @@ namespace KSA\ForgotPassword\Factory\Api;
 use KSA\ForgotPassword\Api\ResetPassword;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ResetPasswordFactory {
 
     public function __invoke(ContainerInterface $container): ResetPassword {
         return new ResetPassword(
-            $container->get(IL10N::class)
-            , $container->get(IUserStateRepository::class)
+            $container->get(IUserStateRepository::class)
             , $container->get(IUserService::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(IEventService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

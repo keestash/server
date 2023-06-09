@@ -48,7 +48,7 @@ class RolesByUser extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("role:user:get")
+        $this->setName("keestash:role:get-user")
             ->setDescription("lists all roles by a given user")
             ->addArgument(
                 RolesByUser::ARGUMENT_NAME_USER_ID

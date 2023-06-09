@@ -70,6 +70,25 @@ class DerivationRepository implements IDerivationRepository {
     }
 
     /**
+     * @return void
+     * @throws DerivationNotDeletedException
+     * @throws Exception
+     */
+    public function clearAll(): void {
+        try {
+            $this->backend->getConnection()->beginTransaction();
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('`derivation`')
+                ->executeStatement();
+            $this->backend->getConnection()->commit();
+        } catch (Exception $e) {
+            $this->backend->getConnection()->rollBack();
+            $this->logger->error('error while clearing derivation', ['exception' => $e]);
+            throw new DerivationNotDeletedException();
+        }
+    }
+
+    /**
      * @param IDerivation $derivation
      * @return void
      * @throws DerivationNotAddedException
@@ -105,7 +124,6 @@ class DerivationRepository implements IDerivationRepository {
      * @param IUser $user
      * @return IDerivation
      * @throws DerivationNotFoundException
-     * @throws Exception
      * @throws NoRowsFoundException
      */
     public function get(IUser $user): IDerivation {

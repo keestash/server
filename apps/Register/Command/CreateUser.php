@@ -29,6 +29,7 @@ use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
@@ -113,7 +114,7 @@ class CreateUser extends KeestashCommand {
         } catch (Exception $exception) {
             $this->writeError("Could not create user $name", $output);
             $this->writeError($exception->getMessage() . " " . $exception->getTraceAsString(), $output);
-            return 1;
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
         $this->derivationRepository->clear($user);
@@ -133,7 +134,7 @@ class CreateUser extends KeestashCommand {
         );
 
         $this->writeInfo("$name created", $output);
-        return 0;
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

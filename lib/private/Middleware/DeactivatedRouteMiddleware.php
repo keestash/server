@@ -46,7 +46,7 @@ class DeactivatedRouteMiddleware implements MiddlewareInterface {
                 , 'server_params' => $request->getServerParams()
             ]
         );
-        return new NotFoundResponse();
+        return new NotFoundResponse(['route not found']);
     }
 
 }

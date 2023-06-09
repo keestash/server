@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Avatar;
 
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
 
 class UpdateTest extends TestCase {
 

@@ -21,22 +21,36 @@ declare(strict_types=1);
 
 namespace KST;
 
-use JsonException;
-use KSA\PasswordManager\Test\Service\RequestService;
-use KSA\PasswordManager\Test\Service\ResponseService;
+use DateTimeImmutable;
+use Keestash\ConfigProvider;
+use Keestash\Core\DTO\Organization\Organization;
+use KSA\Register\Event\UserRegistrationConfirmedEvent;
+use KSA\Settings\Service\IOrganizationService;
+use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use KST\Integration\Core\Service\User\Repository\UserRepositoryServiceTest;
+use KST\Service\Event\TestStartedEvent;
+use Laminas\Config\Config;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 abstract class TestCase extends FrameworkTestCase {
 
-    private ServiceManager  $serviceManager;
-    private ResponseService $responseService;
-    private RequestService  $requestService;
+    private ServiceManager $serviceManager;
+
+    protected function setUp(): void {
+        parent::setUp();
+        $this->serviceManager = require __DIR__ . '/config/service_manager.php';
+        $eventService         = $this->serviceManager->get(IEventService::class);
+        $config               = $this->serviceManager->get(Config::class);
+
+        $eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
+        $eventService->execute(new TestStartedEvent(new DateTimeImmutable()));
+    }
 
     protected function getServiceManager(): ServiceManager {
         return $this->serviceManager;
@@ -46,69 +60,63 @@ abstract class TestCase extends FrameworkTestCase {
         return $this->getServiceManager()->get($name);
     }
 
-    protected function logResponse(ResponseInterface $response): void {
-        /** @var LoggerInterface $logger */
-        $logger = $this->getService(LoggerInterface::class);
-        $logger->debug('response', [
-            'status'    => $response->getStatusCode()
-            , 'body'    => (string) $response->getBody()
-            , 'headers' => $response->getHeaders()
-        ]);
-    }
+    protected function createUser(
+        string   $name
+        , string $password
+        , bool   $locked = false
+    ): IUser {
+        /** @var IUserRepositoryService $userRepositoryService */
+        $userRepositoryService = $this->getService(IUserRepositoryService::class);
+        /** @var IUserService $userService */
+        $userService = $this->getService(IUserService::class);
+        /** @var IEventService $eventService */
+        $eventService = $this->getService(IEventService::class);
 
-    protected function setUp(): void {
-        parent::setUp();
-        $this->serviceManager  = require __DIR__ . '/config/service_manager.php';
-        $this->responseService = $this->serviceManager->get(ResponseService::class);
-        $this->requestService  = $this->serviceManager->get(RequestService::class);
-    }
-
-    protected function getResponseService(): ResponseService {
-        return $this->responseService;
-    }
-
-    protected function getRequestService(): RequestService {
-        return $this->requestService;
-    }
-
-    protected function getUser(): IUser {
-        return $this->serviceManager->get(IUserRepository::class)
-            ->getUserById((string) Service\Service\UserService::TEST_USER_ID_2);
-    }
-
-    protected function getDefaultRequest(array $body = []): ServerRequestInterface {
-        return $this->getRequestService()->getRequestWithToken(
-            $this->getUser()
-            , []
-            , []
-            , $body
+        $user = $userRepositoryService->createUser(
+            $userService->toNewUser(
+                [
+                    'user_name'    => $name
+                    , 'email'      => Uuid::uuid4() . '@keestash.com'
+                    , 'last_name'  => UserRepositoryServiceTest::class
+                    , 'first_name' => UserRepositoryServiceTest::class
+                    , 'password'   => $password
+                    , 'phone'      => '0049123456789'
+                    , 'website'    => 'https://keestash.com'
+                    , 'locked'     => $locked
+                    , 'deleted'    => false
+                ]
+            )
         );
-    }
 
-    /**
-     * @param ResponseInterface $response
-     * @return array
-     * @throws JsonException
-     */
-    protected function getResponseBody(ResponseInterface $response): array {
-        return (array) json_decode(
-            (string) $response->getBody()
-            , true
-            , 512
-            , JSON_THROW_ON_ERROR
+        $eventService->execute(
+            new UserRegistrationConfirmedEvent(
+                $user
+            )
         );
+
+        return $user;
     }
 
-    public function assertInvalidResponse(ResponseInterface $response): void {
-        $this->assertTrue(false === $this->responseService->isValidResponse($response));
+    protected function createAndInsertOrganization(string $name): IOrganization {
+        /** @var IOrganizationService $organizationService */
+        $organizationService = $this->getService(IOrganizationService::class);
+        /** @var IUserService $userService */
+        $userService = $this->getService(IUserService::class);
+
+        $organization = new Organization();
+        $organization->setCreateTs(new DateTimeImmutable());
+        $organization->setActiveTs(new DateTimeImmutable());
+        $organization->setName($name);
+        $organization->setPassword(
+            $userService->hashPassword(md5((string) time()))
+        );
+        return $organizationService->add($organization);
     }
 
-    public function assertValidResponse(ResponseInterface $response): void {
-        $this->assertTrue(true === $this->responseService->isValidResponse($response));
-    }
-
-    public function assertStatusCode(int $statusCode, ResponseInterface $response): void {
-        $this->assertTrue($statusCode === $response->getStatusCode());
+    protected function removeUser(IUser $user): void {
+        /** @var IUserRepositoryService $userRepositoryService */
+        $userRepositoryService = $this->getService(IUserRepositoryService::class);
+        $userRepositoryService->removeUser($user);
     }
 
 }

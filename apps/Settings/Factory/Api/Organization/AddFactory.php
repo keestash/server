@@ -23,17 +23,15 @@ namespace KSA\Settings\Factory\Api\Organization;
 
 use doganoo\DI\Encryption\User\IUserService;
 use KSA\Settings\Api\Organization\Add;
-use KSA\Settings\Repository\IOrganizationRepository;
-use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
+use KSA\Settings\Service\IOrganizationService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class AddFactory {
 
     public function __invoke(ContainerInterface $container): Add {
         return new Add(
-            $container->get(IOrganizationRepository::class)
-            , $container->get(IEventService::class)
+            $container->get(IOrganizationService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IUserService::class)
         );

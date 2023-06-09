@@ -27,6 +27,7 @@ use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class PermissionMiddlewareFactory implements FactoryInterface {
 
@@ -39,6 +40,7 @@ class PermissionMiddlewareFactory implements FactoryInterface {
             $container->get(IRouterService::class)
             , $container->get(Config::class)
             , $container->get(RBACServiceInterface::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

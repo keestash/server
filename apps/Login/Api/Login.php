@@ -83,7 +83,13 @@ class Login implements RequestHandlerInterface {
         try {
             $user = $this->userRepository->getUser($userName);
         } catch (UserNotFoundException $exception) {
-            $this->logger->error('error retrieving user', ['exception' => $exception, 'userName' => $userName]);
+            $this->logger->error(
+                'error retrieving user',
+                [
+                    'exception' => $exception,
+                    'userName'  => $userName,
+                ]
+            );
             return new JsonResponse(
                 'no user found'
                 , IResponse::NOT_FOUND

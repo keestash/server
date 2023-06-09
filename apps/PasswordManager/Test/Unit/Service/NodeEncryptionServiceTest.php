@@ -21,12 +21,37 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Unit\Service;
 
-use KSA\PasswordManager\Test\TestCase;
+
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\AccessService;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Test\Unit\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class NodeEncryptionServiceTest extends TestCase {
 
     public function testHasAccess(): void {
-        $this->markTestSkipped('implement me :(');
+        /** @var AccessService $accessService */
+        $accessService = $this->getService(AccessService::class);
+        /** @var CredentialService $credentialService */
+        $credentialService = $this->getService(CredentialService::class);
+        /** @var NodeRepository $nodeRepository */
+        $nodeRepository = $this->getService(NodeRepository::class);
+        $user           = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
+        $rootFolder = $nodeRepository->getRootForUser($user);
+        $credential = $credentialService->createCredential(
+            "topsecret"
+            , "myawsome.route"
+            , "keestash.com"
+            , "keestash"
+            , $user
+        );
+        $edge       = $credentialService->insertCredential($credential, $rootFolder);
+        $this->assertTrue(true === $accessService->hasAccess($edge->getNode(), $user));
     }
 
 }

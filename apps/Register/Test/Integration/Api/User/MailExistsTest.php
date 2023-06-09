@@ -23,7 +23,7 @@ namespace KSA\Register\Test\Integration\Api\User;
 
 use Keestash\Core\System\Application;
 use KSA\Register\Api\User\MailExists;
-use KSA\Register\Test\TestCase;
+use KSA\Register\Test\Integration\TestCase;
 use KST\Service\Service\UserService;
 
 class MailExistsTest extends TestCase {
@@ -32,7 +32,7 @@ class MailExistsTest extends TestCase {
         /** @var MailExists $exists */
         $exists       = $this->getService(MailExists::class);
         $response     = $exists->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $responseBody = (array) json_decode(
             (string) $response->getBody()
@@ -51,7 +51,7 @@ class MailExistsTest extends TestCase {
         /** @var MailExists $exists */
         $exists       = $this->getService(MailExists::class);
         $response     = $exists->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
                 ->withAttribute('address', UserService::TEST_PASSWORD_RESET_USER_ID_5_EMAIL)
         );
         $responseBody = (array) json_decode(

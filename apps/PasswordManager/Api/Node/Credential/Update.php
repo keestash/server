@@ -55,7 +55,7 @@ class Update implements RequestHandlerInterface {
         , private readonly IStringService    $stringService
         , private readonly CredentialService $credentialService
         , private readonly LoggerInterface   $logger
-        , private readonly IActivityService $activityService
+        , private readonly IActivityService  $activityService
     ) {
     }
 

@@ -27,18 +27,21 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use KST\Service\Service\UserService;
 use KST\Integration\TestCase;
 use Ramsey\Uuid\Uuid;
 
 class UserRepositoryTest extends TestCase {
 
     public function testGetUser(): void {
+        $insertedUser = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
-        $user           = $userRepository->getUser(UserService::TEST_RESET_PASSWORD_USER_ID_7_NAME);
-        $this->assertTrue($user instanceof IUser);
-        $this->assertTrue($user->getId() === UserService::TEST_RESET_PASSWORD_USER_ID_7);
+        $user           = $userRepository->getUser($insertedUser->getName());
+        $this->assertTrue($user->getId() === $insertedUser->getId());
+        $this->removeUser($insertedUser);
     }
 
     public function testGetNonExistingUser(): void {
@@ -56,23 +59,12 @@ class UserRepositoryTest extends TestCase {
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
 
-        $user          = $userRepositoryService->createUser(
-            $userService->toNewUser(
-                [
-                    'user_name'    => Uuid::uuid4()->toString()
-                    , 'email'      => 'UserRepositoryTest' . Uuid::uuid4() . '@keestash.com'
-                    , 'last_name'  => UserRepositoryTest::class
-                    , 'first_name' => UserRepositoryTest::class
-                    , 'password'   => md5((string) time())
-                    , 'phone'      => '0049123456789'
-                    , 'website'    => 'https://keestash.com'
-                    , 'locked'     => false
-                    , 'deleted'    => false
-                ]
-            )
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+
         $retrievedUser = $userRepository->getUserByEmail($user->getEmail());
-        $this->assertTrue($retrievedUser instanceof IUser);
         $this->assertTrue($retrievedUser->getId() === $user->getId());
         $userRepositoryService->removeUser($retrievedUser);
     }
@@ -87,9 +79,14 @@ class UserRepositoryTest extends TestCase {
     public function testGetUserByHash(): void {
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
-        $user           = $userRepository->getUserByHash($this->getUser()->getHash());
-        $this->assertTrue($user instanceof IUser);
-        $this->assertTrue($user->getId() === $this->getUser()->getId());
+
+        $user       = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $userByHash = $userRepository->getUserByHash($user->getHash());
+        $this->assertTrue($userByHash->getId() === $user->getId());
+        $this->removeUser($user);
     }
 
     public function testGetNonExistingUserByHash(): void {
@@ -109,26 +106,14 @@ class UserRepositoryTest extends TestCase {
     public function testInsertUpdateAndRemove(): void {
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
-        /** @var IUserService $userService */
-        $userService = $this->getService(IUserService::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
 
-        $user          = $userRepositoryService->createUser( // we need to use the service instead of the repository
-            $userService->toNewUser(
-                [
-                    'user_name'    => Uuid::uuid4()->toString()
-                    , 'email'      => Uuid::uuid4() . '@keestash.com'
-                    , 'last_name'  => UserRepositoryTest::class
-                    , 'first_name' => UserRepositoryTest::class
-                    , 'password'   => md5((string) time())
-                    , 'phone'      => '0049123456789'
-                    , 'website'    => 'https://keestash.com'
-                    , 'locked'     => false
-                    , 'deleted'    => false
-                ]
-            )
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+
         $retrievedUser = $userRepository->getUserByEmail($user->getEmail());
         $this->assertTrue($retrievedUser instanceof IUser);
         $this->assertTrue($retrievedUser->getId() === $user->getId());
@@ -149,25 +134,12 @@ class UserRepositoryTest extends TestCase {
         $userRepository = $this->getService(IUserRepository::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
-        /** @var IUserService $userService */
-        $userService = $this->getService(IUserService::class);
 
         $usersToDelete = new ArrayList();
         foreach ([1, 2, 3] as $id) {
-            $user = $userRepository->insert(
-                $userService->toNewUser(
-                    [
-                        'user_name'    => UserRepositoryTest::class . Uuid::uuid4()->toString()
-                        , 'email'      => Uuid::uuid4() . '@keestash.com'
-                        , 'last_name'  => UserRepositoryTest::class
-                        , 'first_name' => UserRepositoryTest::class
-                        , 'password'   => md5((string) time())
-                        , 'phone'      => '0049123456789'
-                        , 'website'    => 'https://keestash.com'
-                        , 'locked'     => false
-                        , 'deleted'    => false
-                    ]
-                )
+            $user = $this->createUser(
+                UserRepositoryTest::class . Uuid::uuid4()->toString()
+                , Uuid::uuid4()->toString()
             );
             $usersToDelete->add($user);
         }
@@ -176,8 +148,7 @@ class UserRepositoryTest extends TestCase {
         $this->assertTrue($usersFound->length() === 3);
 
         foreach ($usersToDelete as $user) {
-//            $userRepository->remove($user);
-            $userRepositoryService->removeUser($user);
+            $this->removeUser($user);
         }
     }
 

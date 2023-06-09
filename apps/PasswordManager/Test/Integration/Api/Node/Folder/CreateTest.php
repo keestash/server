@@ -21,12 +21,12 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Folder;
 
-use DateTime;
 use KSA\PasswordManager\Api\Node\Folder\Create;
-use KSA\PasswordManager\Entity\Folder\Folder;
-use KSA\PasswordManager\Entity\Node\Node;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KST\TestCase;
+use KSA\PasswordManager\ConfigProvider;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
+use KSP\Api\IVerb;
+use Ramsey\Uuid\Uuid;
 
 class CreateTest extends TestCase {
 
@@ -34,7 +34,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -43,7 +43,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(['name' => 'test'])
+            $this->getVirtualRequest(['name' => 'test'])
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -52,7 +52,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(['parent' => 999])
+            $this->getVirtualRequest(['parent' => 999])
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -61,7 +61,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'parent' => "2"
                     , 'name' => 'CreateTest'
@@ -72,27 +72,48 @@ class CreateTest extends TestCase {
     }
 
     public function testWithNoAccess(): void {
-        /** @var Create $create */
-        $create   = $this->getServiceManager()->get(Create::class);
-        $response = $create->handle(
-            $this->getDefaultRequest(
-                [
-                    'parent' => "22"
-                    , 'name' => 'CreateTest'
-                ]
-            )
+        $firstUser          = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $secondUserPassword = Uuid::uuid4()->toString();
+        $secondUser         = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $secondUserPassword
+        );
+
+        $edge = $this->createAndInsertFolder(
+            $firstUser
+            , Uuid::uuid4()->toString()
+            , $this->getRootFolder($firstUser)
+        );
+
+        $headers  = $this->login($secondUser, $secondUserPassword);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_CREATE
+                    , [
+                        'node_id' => $edge->getNode()->getId()
+                        , 'name'  => Uuid::uuid4()->toString()
+                    ]
+                    , $secondUser
+                    , $headers
+                )
+            );
+        $this->assertStatusCode(IResponse::UNAUTHORIZED, $response);
+        $this->logout($headers, $secondUser);
     }
 
     public function testAddToRoot(): void {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
-                    'parent' => 'root'
-                    , 'name' => 'CreateTest'
+                    'node_id' => 'root'
+                    , 'name'  => 'CreateTest'
                 ]
             )
         );
@@ -103,26 +124,34 @@ class CreateTest extends TestCase {
 
         /** @var Create $create */
         $create = $this->getServiceManager()->get(Create::class);
-        /** @var NodeRepository $nodeRepository */
-        $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
 
-        $folder = new Folder();
-        $folder->setUser($this->getUser());
-        $folder->setCreateTs(new DateTime());
-        $folder->setUpdateTs(new DateTime());
-        $folder->setName('TestAddToFolder');
-        $folder->setType(Node::FOLDER);
-        $id = $nodeRepository->addFolder($folder);
-        $folder->setId((int) $id);
-
-        $response = $create->handle(
-            $this->getDefaultRequest(
-                [
-                    'parent' => (string) $folder->getId()
-                    , 'name' => 'CreateTest'
-                ]
-            )
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
+
+        $edge = $this->createAndInsertFolder(
+            $user
+            , Uuid::uuid4()->toString()
+            , $this->getRootFolder($user)
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_CREATE
+                    , [
+                        'node_id' => $edge->getNode()->getId()
+                        , 'name'  => Uuid::uuid4()->toString()
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }
 

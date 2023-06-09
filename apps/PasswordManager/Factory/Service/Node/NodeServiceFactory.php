@@ -21,10 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Service\Node;
 
-use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
 
 class NodeServiceFactory {
@@ -33,7 +34,8 @@ class NodeServiceFactory {
         return new NodeService(
             $container->get(IUserRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(UserService::class)
+            , $container->get(IUserService::class)
+            , $container->get(IEventService::class)
         );
     }
 

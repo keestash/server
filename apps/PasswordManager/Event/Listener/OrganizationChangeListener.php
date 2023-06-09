@@ -26,9 +26,9 @@ use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
-use KSA\PasswordManager\Event\NodeAddedToOrganizationEvent;
-use KSA\PasswordManager\Event\NodeOrganizationUpdatedEvent;
-use KSA\PasswordManager\Event\NodeRemovedFromOrganizationEvent;
+use KSA\PasswordManager\Event\Node\NodeAddedToOrganizationEvent;
+use KSA\PasswordManager\Event\Node\NodeOrganizationUpdatedEvent;
+use KSA\PasswordManager\Event\Node\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
@@ -79,6 +79,7 @@ class OrganizationChangeListener implements IListener {
             throw new PasswordManagerException();
         }
         $vector = new IntegerVector();
+
         $this->work(
             $event->getNode()
             , $vector

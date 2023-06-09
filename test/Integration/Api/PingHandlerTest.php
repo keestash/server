@@ -31,7 +31,7 @@ class PingHandlerTest extends TestCase {
         /** @var PingHandler $pingHandler */
         $pingHandler  = $this->getService(PingHandler::class);
         $response     = $pingHandler->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $responseBody = $this->getResponseBody($response);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));

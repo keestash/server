@@ -31,6 +31,7 @@ interface IResponse {
     public const HEADER_CONTENT_SECURITY_POLICY_REPORT_ONLY = "Content-Security-Policy-Report-Only";
 
     public const OK                    = 200;
+    public const CREATED               = 201;
     public const NOT_MODIFIED          = 304;
     public const BAD_REQUEST           = 400;
     public const UNAUTHORIZED          = 401;

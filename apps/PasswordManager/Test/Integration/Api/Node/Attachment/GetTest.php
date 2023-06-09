@@ -23,7 +23,9 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node\Attachment;
 
 use KSA\PasswordManager\Api\Node\Attachment\Get;
 use KSP\Api\IResponse;
-use KST\TestCase;
+use KSP\Api\IVerb;
+use KST\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
 
@@ -31,7 +33,7 @@ class GetTest extends TestCase {
         /** @var Get $get */
         $get      = $this->getServiceManager()->get(Get::class);
         $response = $get->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -40,29 +42,41 @@ class GetTest extends TestCase {
         /** @var Get $get */
         $get      = $this->getServiceManager()->get(Get::class);
         $response = $get->handle(
-            $this->getDefaultRequest()->withAttribute('nodeId', 99999)
+            $this->getVirtualRequest()->withAttribute('nodeId', 99999)
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
 
     public function testWithNoAccess(): void {
-        $this->markTestSkipped('we need a way to run these handlers using the middlewars');
-        /** @var Get $get */
-        $get      = $this->getServiceManager()->get(Get::class);
-        $response = $get->handle(
-            $this->getDefaultRequest()->withAttribute('nodeId', 5)
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()->handle(
+            $this->getRequest(
+                IVerb::GET
+                , '/password_manager/attachments/get/5'
+                , []
+                , $user
+                , $headers
+            )
+        );
+
         $this->assertTrue(
             false === $this->getResponseService()->isValidResponse($response)
             && $response->getStatusCode() === IResponse::FORBIDDEN
         );
+        $this->logout($headers, $user);
     }
 
     public function testGet(): void {
         /** @var Get $get */
         $get      = $this->getServiceManager()->get(Get::class);
         $response = $get->handle(
-            $this->getDefaultRequest()->withAttribute('nodeId', 2)
+            $this->getVirtualRequest()->withAttribute('nodeId', 2)
         );
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }

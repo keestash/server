@@ -25,19 +25,12 @@ use Keestash\Exception\EncryptionFailedException;
 use KSA\PasswordManager\Api\Node\Credential\Password\Update;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Test\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class UpdateTest extends TestCase {
-
-    public function getNonExistentData(): array {
-        return [
-            ['passwordPlain' => null, 'nodeId' => null]
-            , ['passwordPlain' => 'dsfsdfdsfdasdsa', 'nodeId' => null]
-            , ['passwordPlain' => 'sfsdfsdfdsfsdf', 'nodeId' => 9999]
-            , ['passwordPlain' => null, 'nodeId' => 9999]
-        ];
-    }
 
     /**
      * @dataProvider getNonExistentData
@@ -47,7 +40,7 @@ class UpdateTest extends TestCase {
         /** @var Update $update */
         $update   = $this->getServiceManager()->get(Update::class);
         $response = $update->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'passwordPlain' => $passwordPlain
                     , 'nodeId'      => $nodeId
@@ -59,12 +52,16 @@ class UpdateTest extends TestCase {
     }
 
     public function testUpdateOnNonCredential(): void {
-        $this->expectException(EncryptionFailedException::class);
-        $root = $this->getRootForUser();
+        $this->expectException(PasswordManagerException::class);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $root = $this->getRootFolder($user);
         /** @var Update $update */
         $update   = $this->getServiceManager()->get(Update::class);
         $response = $update->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'passwordPlain' => uniqid()
                     , 'nodeId'      => $root->getId()
@@ -73,26 +70,37 @@ class UpdateTest extends TestCase {
         );
 
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
     public function testUpdateCredential(): void {
         /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        $credential        = $this->createCredential(
-            "updateTestPassword"
-            , "keestash.test"
-            , "updateTest"
-            , "UpdateTestPassword"
+        $credentialService = $this->getService(CredentialService::class);
+        /** @var NodeRepository $nodeRepository */
+        $nodeRepository = $this->getService(NodeRepository::class);
+        $user           = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+        $root           = $this->getRootFolder($user);
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $root
         );
 
         /** @var Update $update */
         $update      = $this->getServiceManager()->get(Update::class);
         $newPassword = uniqid();
         $response    = $update->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'passwordPlain' => $newPassword
-                    , 'nodeId'      => $credential->getId()
+                    , 'nodeId'      => $edge->getNode()->getId()
                 ]
             )
         );
@@ -100,12 +108,21 @@ class UpdateTest extends TestCase {
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
 
         /** @var Credential $retrievedCredential */
-        $retrievedCredential = $this->getNode($credential->getId());
+        $retrievedCredential = $nodeRepository->getNode($edge->getNode()->getId(), 0, 0);
 
         $this->assertInstanceOf(Credential::class, $retrievedCredential);
-        $this->assertSame($credential->getId(), $retrievedCredential->getId());
+        $this->assertSame($edge->getNode()->getId(), $retrievedCredential->getId());
         $this->assertSame($newPassword, $credentialService->getDecryptedPassword($retrievedCredential));
+        $this->removeUser($user);
+    }
 
+    public function getNonExistentData(): array {
+        return [
+            ['passwordPlain' => null, 'nodeId' => null]
+            , ['passwordPlain' => 'dsfsdfdsfdasdsa', 'nodeId' => null]
+            , ['passwordPlain' => 'sfsdfsdfdsfsdf', 'nodeId' => 9999]
+            , ['passwordPlain' => null, 'nodeId' => 9999]
+        ];
     }
 
 }

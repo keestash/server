@@ -21,11 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Activity\Service;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-
 interface IActivityService {
-
-    public function insertActivity(string $appId, string $referenceKey, ArrayList $data): void;
 
     public function insertActivityWithSingleMessage(string $appId, string $referenceKey, string $description): void;
 

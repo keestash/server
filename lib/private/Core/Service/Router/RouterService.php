@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Router;
 
 use Keestash\ConfigProvider;
-use Keestash\Exception\KeestashException;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\Config\Config;
@@ -79,25 +78,11 @@ class RouterService implements IRouterService {
     }
 
     public function isPublicRoute(ServerRequestInterface $request): bool {
-        $path = $this->getMatchedPath($request);
-
-        switch ($this->environmentService->getEnv()) {
-            case ConfigProvider::ENVIRONMENT_WEB:
-                $routes = $this->config
-                    ->get(ConfigProvider::WEB_ROUTER)
-                    ->get(ConfigProvider::PUBLIC_ROUTES)
-                    ->toArray();
-                break;
-            case ConfigProvider::ENVIRONMENT_API:
-                $routes = $this->config
-                    ->get(ConfigProvider::API_ROUTER)
-                    ->get(ConfigProvider::PUBLIC_ROUTES)
-                    ->toArray();
-                break;
-            default:
-                throw new KeestashException('unknown environment ' . $this->environmentService->getEnv());
-        }
-
+        $path   = $this->getMatchedPath($request);
+        $routes = $this->config
+            ->get(ConfigProvider::API_ROUTER)
+            ->get(ConfigProvider::PUBLIC_ROUTES)
+            ->toArray();
         return in_array($path, $routes, true);
     }
 

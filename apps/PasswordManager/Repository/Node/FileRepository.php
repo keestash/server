@@ -38,27 +38,14 @@ use Psr\Log\LoggerInterface;
 
 class FileRepository {
 
-    private NodeRepository     $nodeRepository;
-    private IDateTimeService   $dateTimeService;
-    private CoreFileRepository $fileRepository;
-    private LoggerInterface            $logger;
-    private IJWTService        $jwtService;
-    private IBackend           $backend;
-
     public function __construct(
-        IBackend             $backend
-        , NodeRepository     $nodeRepository
-        , IDateTimeService   $dateTimeService
-        , CoreFileRepository $fileRepository
-        , LoggerInterface            $logger
-        , IJWTService        $jwtService
+        private readonly IBackend             $backend
+        , private readonly NodeRepository     $nodeRepository
+        , private readonly IDateTimeService   $dateTimeService
+        , private readonly CoreFileRepository $fileRepository
+        , private readonly LoggerInterface    $logger
+        , private readonly IJWTService        $jwtService
     ) {
-        $this->nodeRepository  = $nodeRepository;
-        $this->dateTimeService = $dateTimeService;
-        $this->fileRepository  = $fileRepository;
-        $this->logger          = $logger;
-        $this->jwtService      = $jwtService;
-        $this->backend         = $backend;
     }
 
     public function connectFilesToNode(FileList $fileList): bool {

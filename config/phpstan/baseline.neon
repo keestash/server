@@ -2,8 +2,38 @@ parameters:
 	ignoreErrors:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getActivity\\(\\)\\.$#"
-			count: 6
+			count: 3
 			path: ../../apps/Activity/Event/Listener/ActivityTriggeredListener.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getAppId\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Activity/Event/Listener/RemoveReferenceListener.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getReferenceKey\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/Activity/Event/Listener/RemoveReferenceListener.php
+
+		-
+			message: "#^Parameter \\#1 \\$activityId of method KSA\\\\Activity\\\\Repository\\\\ActivityRepository\\:\\:getDescriptions\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/Activity/Repository/ActivityRepository.php
+
+		-
+			message: "#^Cannot call method getAppId\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Activity/Test/Unit/Service/ActivityServiceTest.php
+
+		-
+			message: "#^Cannot call method getData\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Activity/Test/Unit/Service/ActivityServiceTest.php
+
+		-
+			message: "#^Cannot call method getReferenceKey\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Activity/Test/Unit/Service/ActivityServiceTest.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
@@ -16,86 +46,6 @@ parameters:
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
 
 		-
-			message: "#^Part \\$appName \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
-			count: 2
-			path: ../../apps/ForgotPassword/Event/Listener/ForgotPasswordMailLinkListener.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
-			count: 2
-			path: ../../apps/GeneralApi/Command/Info/Routes.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/CreateSystemUser.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Environment.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:getOption\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Environment.php
-
-		-
-			message: "#^Parameter \\#2 \\$value of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Environment.php
-
-		-
-			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Environment.php
-
-		-
-			message: "#^Parameter \\#4 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Environment.php
-
-		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Permission/CreatePermissions.php
-
-		-
-			message: "#^Parameter \\#1 \\$message of method Keestash\\\\Command\\\\KeestashCommand\\:\\:writeInfo\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Ping.php
-
-		-
-			message: "#^Parameter \\#1 \\$message of method Psr\\\\Log\\\\LoggerInterface\\:\\:error\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Ping.php
-
-		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Role/AssignPermissionsToRoles.php
-
-		-
-			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Role/CreateRoles.php
-
-		-
-			message: "#^Parameter \\#1 \\$filename of function unlink expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/InstallInstance/Command/Uninstall.php
-
-		-
-			message: "#^Parameter \\#1 \\$files of method KSA\\\\InstallInstance\\\\Command\\\\Uninstall\\:\\:removeFiles\\(\\) expects array, array\\<int, string\\>\\|false given\\.$#"
-			count: 2
-			path: ../../apps/InstallInstance/Command/Uninstall.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\<int, string\\>\\|false given\\.$#"
-			count: 2
-			path: ../../apps/InstallInstance/Command/Uninstall.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
 			path: ../../apps/Login/Api/Configuration.php
@@ -106,54 +56,29 @@ parameters:
 			path: ../../apps/Login/Api/Login.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Cannot access offset 'language' on mixed\\.$#"
 			count: 1
-			path: ../../apps/Login/Test/Api/LoginTest.php
+			path: ../../apps/Login/Test/Integration/Api/LoginTest.php
 
 		-
-			message: "#^Property KSA\\\\Login\\\\Test\\\\Service\\\\TokenServiceTest\\:\\:\\$tokenService \\(KSA\\\\Login\\\\Service\\\\TokenService\\) does not accept mixed\\.$#"
+			message: "#^Cannot access offset 'locale' on mixed\\.$#"
 			count: 1
-			path: ../../apps/Login/Test/Service/TokenServiceTest.php
+			path: ../../apps/Login/Test/Integration/Api/LoginTest.php
 
 		-
-			message: "#^Parameter \\#2 \\$sortField of method KSA\\\\PasswordManager\\\\Repository\\\\CommentRepository\\:\\:getCommentsByNode\\(\\) expects string, mixed given\\.$#"
+			message: "#^Property KSA\\\\Login\\\\Test\\\\Unit\\\\Service\\\\TokenServiceTest\\:\\:\\$tokenService \\(KSA\\\\Login\\\\Service\\\\TokenService\\) does not accept mixed\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Comment/Get.php
+			path: ../../apps/Login/Test/Unit/Service/TokenServiceTest.php
 
 		-
-			message: "#^Parameter \\#3 \\$sortDir of method KSA\\\\PasswordManager\\\\Repository\\\\CommentRepository\\:\\:getCommentsByNode\\(\\) expects string, mixed given\\.$#"
+			message: "#^Variable \\$appId might not be defined\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Comment/Get.php
+			path: ../../apps/PasswordManager/Api/Node/Activity/Get.php
 
 		-
-			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
+			message: "#^Variable \\$referenceKey might not be defined\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Comment/Remove.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Generate/Quality.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setQuality\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Generate/Quality.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setValue\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Generate/Quality.php
-
-		-
-			message: "#^Parameter \\#1 \\$val of method KSA\\\\PasswordManager\\\\Api\\\\Generate\\\\Quality\\:\\:addCharacterSets\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Generate/Quality.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of method Keestash\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\Password\\:\\:setValue\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Generate/Quality.php
+			path: ../../apps/PasswordManager/Api/Node/Activity/Get.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
@@ -181,9 +106,69 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Remove.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
+
+		-
+			message: "#^Using nullsafe method call on non\\-nullable type KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\AdditionalData\\\\AdditionalData\\. Use \\-\\> instead\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/AdditionalData/GetValue.php
+
+		-
+			message: "#^Parameter \\#2 \\$sortField of method KSA\\\\PasswordManager\\\\Repository\\\\CommentRepository\\:\\:getCommentsByNode\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Comment/Get.php
+
+		-
+			message: "#^Parameter \\#3 \\$sortDir of method KSA\\\\PasswordManager\\\\Repository\\\\CommentRepository\\:\\:getCommentsByNode\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Comment/Get.php
+
+		-
+			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Comment/Remove.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setQuality\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setValue\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
+
+		-
+			message: "#^Parameter \\#1 \\$val of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Credential\\\\Generate\\\\Quality\\:\\:addCharacterSets\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Keestash\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\Password\\:\\:setValue\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
 
 		-
 			message: "#^Parameter \\#1 \\$parent of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:getParentNode\\(\\) expects string, string\\|null given\\.$#"
@@ -201,24 +186,24 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/GetByName.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
+			message: "#^Parameter \\#1 \\$hash of method KSA\\\\PasswordManager\\\\Repository\\\\PublicShareRepository\\:\\:getShare\\(\\) expects string, mixed given\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
+			path: ../../apps/PasswordManager/Api/Node/Share/PublicShareSingle.php
 
 		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\ShareableUsers\\:\\:excludeInvalidUsers\\(\\) is unused\\.$#"
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
+			path: ../../apps/PasswordManager/Api/Node/Share/ShareableUsers.php
+
+		-
+			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Share\\\\ShareableUsers\\:\\:excludeInvalidUsers\\(\\) is unused\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Share/ShareableUsers.php
 
 		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/ShareableUsers.php
-
-		-
-			message: "#^Parameter \\#1 \\$hash of method KSA\\\\PasswordManager\\\\Repository\\\\PublicShareRepository\\:\\:getShare\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Share/PublicShareSingle.php
+			path: ../../apps/PasswordManager/Api/Node/Share/ShareableUsers.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUserById\\(\\) expects string, mixed given\\.$#"
@@ -279,11 +264,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Factory/Api/Node/Avatar/UpdateFactory.php
-
-		-
-			message: "#^Parameter \\#1 \\$bag of method KSA\\\\PasswordManager\\\\Middleware\\\\NodeAccessMiddleware\\:\\:extractNodeIds\\(\\) expects array, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Middleware/NodeAccessMiddleware.php
 
 		-
 			message: "#^Parameter \\#1 \\$comment of method KSA\\\\PasswordManager\\\\Entity\\\\Comment\\\\Comment\\:\\:setComment\\(\\) expects string, mixed given\\.$#"
@@ -391,6 +371,16 @@ parameters:
 			path: ../../apps/PasswordManager/Service/Node/BreadCrumb/BreadCrumbService.php
 
 		-
+			message: "#^Parameter \\#2 \\$encrypted of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:decrypt\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Service/Node/Credential/AdditionalData/EncryptionService.php
+
+		-
+			message: "#^Parameter \\#2 \\$raw of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Service/Node/Credential/AdditionalData/EncryptionService.php
+
+		-
 			message: "#^Method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\PwnedService\\:\\:importBreaches\\(\\) should return array but returns mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Service/Node/PwnedService.php
@@ -411,22 +401,142 @@ parameters:
 			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
 
 		-
+			message: "#^Cannot access offset 'activityList' on mixed\\.$#"
+			count: 5
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'activity_id' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'app_id' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'create_ts' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'data' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'date' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'reference_key' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Cannot access offset 0 on mixed\\.$#"
+			count: 6
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$datetime of function strtotime expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$haystack of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertCount\\(\\) expects Countable\\|iterable, mixed given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
+
+		-
 			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Parameter \\#2 \\$credential of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\AdditionalData\\\\EncryptionService\\:\\:encrypt\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/DeleteTest.php
+
+		-
+			message: "#^Cannot access offset 'createTs' on mixed\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Attachment/GetTest.php
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'data' on mixed\\.$#"
+			count: 9
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'date' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'id' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'key' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'nodeId' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 0 on mixed\\.$#"
+			count: 8
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$datetime of function strtotime expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 5
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$credential of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\AdditionalData\\\\EncryptionService\\:\\:encrypt\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$haystack of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertCount\\(\\) expects Countable\\|iterable, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'value' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetValueTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetValueTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$credential of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\AdditionalData\\\\EncryptionService\\:\\:encrypt\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetValueTest.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Token\\\\IToken\\:\\:setUser\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
 
@@ -436,9 +546,49 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/MoveTest.php
 
 		-
+			message: "#^Call to an undefined method KSA\\\\Settings\\\\Service\\\\IOrganizationService\\:\\:remove\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Organization/AddTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Organization/AddTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Organization/UpdateTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDataTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 3
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDataTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDetailDataTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDetailDataTest.php
+
+		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Share\\\\PublicShare\\|null\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Share/RemoveTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:setId\\(\\) expects int, int\\|null given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/TestCase.php
 
 		-
 			message: "#^Call to an undefined method Mockery\\\\ExpectationInterface\\|Mockery\\\\HigherOrderMessage\\:\\:andReturn\\(\\)\\.$#"
@@ -474,11 +624,6 @@ parameters:
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Credential\\\\CredentialServiceTest\\:\\:\\$nodeRepository \\(KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Credential/CredentialServiceTest.php
-
-		-
-			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Edge\\\\EdgeServiceTest\\:\\:\\$credentialService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\) does not accept mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Edge/EdgeServiceTest.php
 
 		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Edge\\\\EdgeServiceTest\\:\\:\\$edgeService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Edge\\\\EdgeService\\) does not accept mixed\\.$#"
@@ -643,27 +788,77 @@ parameters:
 		-
 			message: "#^Cannot call method getActiveTs\\(\\) on KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\|null\\.$#"
 			count: 1
-			path: ../../apps/Settings/Test/Api/Organization/ActivateTest.php
+			path: ../../apps/Settings/Test/Integration/Api/Organization/ActivateTest.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Parameter \\#1 \\$streamOrFile of class Laminas\\\\Diactoros\\\\UploadedFile constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string, resource\\|false given\\.$#"
 			count: 1
-			path: ../../apps/Settings/Test/Api/User/UserRemoveTest.php
+			path: ../../apps/Settings/Test/Integration/Api/User/UpdateProfileImageTest.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Command/CreateSystemUser.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Environment/Environment.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:getOption\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Environment/Environment.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method Keestash\\\\Core\\\\Repository\\\\Instance\\\\InstanceDB\\:\\:addOption\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Environment/Environment.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Environment/Environment.php
+
+		-
+			message: "#^Parameter \\#4 \\.\\.\\.\\$values of function sprintf expects bool\\|float\\|int\\|string\\|null, mixed given\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Environment/Environment.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
-			path: ../../lib/private/Command/Keestash/Events.php
+			path: ../../lib/private/Command/Event/ListEvents.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Parameter \\#1 \\$filename of function unlink expects string, mixed given\\.$#"
 			count: 1
-			path: ../../lib/private/Command/Keestash/Worker/WorkerRunner.php
+			path: ../../lib/private/Command/Install/Uninstall.php
+
+		-
+			message: "#^Parameter \\#1 \\$files of method Keestash\\\\Command\\\\Install\\\\Uninstall\\:\\:removeFiles\\(\\) expects array, array\\<int, string\\>\\|false given\\.$#"
+			count: 2
+			path: ../../lib/private/Command/Install/Uninstall.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\<int, string\\>\\|false given\\.$#"
+			count: 2
+			path: ../../lib/private/Command/Install/Uninstall.php
 
 		-
 			message: "#^Cannot call method ask\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Command/KeestashCommand.php
+
+		-
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Routes.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Worker/WorkerRunner.php
 
 		-
 			message: "#^Call to an undefined method Monolog\\\\Handler\\\\HandlerInterface\\:\\:setFormatter\\(\\)\\.$#"
@@ -791,8 +986,28 @@ parameters:
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
 
 		-
+			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearPermissions\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Permission/PermissionService.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Permission/PermissionService.php
+
+		-
+			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRoles\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Permission/RoleService.php
+
+		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 2
+			path: ../../lib/private/Core/Service/Permission/RoleService.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
+			count: 1
 			path: ../../lib/private/Core/Service/Router/RouterService.php
 
 		-
@@ -813,22 +1028,22 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Factory/Command/Keestash/ClearRateLimiterFileFactory.php
+			path: ../../lib/private/Factory/Command/RateLimit/ClearRateLimiterFileFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Factory/Command/Keestash/Worker/WorkerFlusherFactory.php
+			path: ../../lib/private/Factory/Command/Worker/WorkerFlusherFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Factory/Command/Keestash/Worker/WorkerLockerFactory.php
+			path: ../../lib/private/Factory/Command/Worker/WorkerLockerFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Factory/Command/Keestash/Worker/WorkerRunnerFactory.php
+			path: ../../lib/private/Factory/Command/Worker/WorkerRunnerFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Logger\\\\ILoggerBuilder\\:\\:withPath\\(\\)\\.$#"

@@ -229,6 +229,23 @@ class TokenRepository implements ITokenRepository {
     }
 
     /**
+     * @throws TokenNotDeletedException
+     */
+    public function removeAll(): void {
+        try {
+
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete(
+                'token'
+            )
+                ->executeStatement();
+        } catch (Exception $exception) {
+            $this->logger->error('error removing token', ['exception' => $exception]);
+            throw new TokenNotDeletedException();
+        }
+    }
+
+    /**
      * @param IUser $user
      * @return void
      * @throws TokenNotDeletedException

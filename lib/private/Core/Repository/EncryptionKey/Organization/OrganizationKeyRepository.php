@@ -26,6 +26,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
 use Keestash\Exception\KeestashException;
+use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -34,19 +35,12 @@ use Psr\Log\LoggerInterface;
 
 class OrganizationKeyRepository extends KeyRepository implements IOrganizationKeyRepository {
 
-    private IDateTimeService $dateTimeService;
-    private LoggerInterface          $logger;
-    private IBackend         $backend;
-
     public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
+        private readonly IBackend           $backend
+        , private readonly IDateTimeService $dateTimeService
+        , private readonly LoggerInterface  $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
-        $this->backend         = $backend;
     }
 
     /**
@@ -85,7 +79,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
     /**
      * @param IOrganization $organization
      * @return IKey
-     * @throws KeestashException
+     * @throws KeyNotFoundException
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws Exception
      */
@@ -104,10 +98,10 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             ->setParameter(0, $organization->getId());
 
         $result = $queryBuilder->executeQuery();
-        $users  = $result->fetchAllAssociative();
+        $keys  = $result->fetchAllAssociative();
 
         $key = null;
-        foreach ($users as $row) {
+        foreach ($keys as $row) {
             $key = new Key();
             $key->setId((int) $row['id']);
             $key->setSecret((string) $row['value']);
@@ -116,7 +110,13 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         }
 
         if (null === $key) {
-            throw new KeestashException();
+            $this->logger->error(
+                'key not found for organization'
+                , [
+                    'organizationId' => $organization->getId()
+                ]
+            );
+            throw new KeyNotFoundException();
         }
 
         return $key;

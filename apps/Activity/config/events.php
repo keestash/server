@@ -22,9 +22,14 @@ declare(strict_types=1);
 
 use KSA\Activity\Event\ActivityTriggeredEvent;
 use KSA\Activity\Event\Listener\ActivityTriggeredListener;
+use KSA\Activity\Event\Listener\RemoveReferenceListener;
+use KSA\Activity\Event\ReferenceRemovedEvent;
 
 return [
-    ActivityTriggeredEvent::class => [
+    ActivityTriggeredEvent::class  => [
         ActivityTriggeredListener::class
+    ]
+    , ReferenceRemovedEvent::class => [
+        RemoveReferenceListener::class
     ]
 ];

@@ -22,13 +22,14 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
-use KSA\PasswordManager\Api\Comment\Add;
-use KSA\PasswordManager\Api\Comment\Get;
-use KSA\PasswordManager\Api\Comment\Remove;
-use KSA\PasswordManager\Api\Generate\Generate;
-use KSA\PasswordManager\Api\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
+use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Add;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Get;
+use KSA\PasswordManager\Api\Node\Credential\Comment\Remove;
 use KSA\PasswordManager\Api\Node\Credential\Create;
+use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
+use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\Get as NodeGet;
 use KSA\PasswordManager\Api\Node\GetByName;
@@ -37,11 +38,11 @@ use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;
 use KSA\PasswordManager\Api\Node\Pwned\Activate;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
-use KSA\PasswordManager\Api\Node\ShareableUsers;
-use KSA\PasswordManager\Api\Share\PublicShare;
-use KSA\PasswordManager\Api\Share\PublicShareSingle;
-use KSA\PasswordManager\Api\Share\Remove as RemoveShare;
-use KSA\PasswordManager\Api\Share\Share;
+use KSA\PasswordManager\Api\Node\Share\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\Remove as RemoveShare;
+use KSA\PasswordManager\Api\Node\Share\Share;
+use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSP\Api\IRoute;
@@ -228,6 +229,36 @@ return [
             , IRoute::MIDDLEWARE => Activate::class
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Activate::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ACTIVITY_GET
+            , IRoute::MIDDLEWARE => \KSA\PasswordManager\Api\Node\Activity\Get::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Activity\Get::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET_VALUE
+            , IRoute::MIDDLEWARE => GetValue::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => GetValue::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET
+            , IRoute::MIDDLEWARE => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Get::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Get::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_ADD
+            , IRoute::MIDDLEWARE => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Add::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Add::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_DELETE
+            , IRoute::MIDDLEWARE => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete::class
+            , IRoute::METHOD     => IVerb::DELETE
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => []

@@ -37,18 +37,11 @@ use Psr\Log\LoggerInterface;
 
 class NodeAccessMiddleware implements MiddlewareInterface {
 
-    private AccessService   $accessService;
-    private NodeRepository  $nodeRepository;
-    private LoggerInterface $logger;
-
     public function __construct(
-        AccessService     $accessService
-        , NodeRepository  $nodeRepository
-        , LoggerInterface $logger
+        private readonly AccessService     $accessService
+        , private readonly NodeRepository  $nodeRepository
+        , private readonly LoggerInterface $logger
     ) {
-        $this->accessService  = $accessService;
-        $this->nodeRepository = $nodeRepository;
-        $this->logger         = $logger;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
@@ -70,7 +63,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
             case IVerb::DELETE:
             case IVerb::POST;
                 $nodeIds = $this->extractNodeIds((array) $request->getParsedBody(), $nodeIds);
-                $nodeIds = $this->extractNodeIds(json_decode((string) $request->getBody(), true, JSON_THROW_ON_ERROR), $nodeIds);
+                $nodeIds = $this->extractNodeIds((array) json_decode((string) $request->getBody(), true, JSON_THROW_ON_ERROR), $nodeIds);
                 break;
         }
 

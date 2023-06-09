@@ -37,24 +37,13 @@ use Psr\Log\LoggerInterface;
 
 class ChartData implements RequestHandlerInterface {
 
-    private PwnedBreachesRepository  $pwnedBreachesRepository;
-    private PwnedPasswordsRepository $pwnedPasswordsRepository;
-    private NodeRepository           $nodeRepository;
-    private LoggerInterface          $logger;
-    private AccessService            $accessService;
-
     public function __construct(
-        PwnedBreachesRepository    $pwnedBreachesRepository
-        , PwnedPasswordsRepository $pwnedPasswordsRepository
-        , NodeRepository           $nodeRepository
-        , LoggerInterface          $logger
-        , AccessService            $accessService
+        private readonly PwnedBreachesRepository    $pwnedBreachesRepository
+        , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
+        , private readonly NodeRepository           $nodeRepository
+        , private readonly LoggerInterface          $logger
+        , private readonly AccessService            $accessService
     ) {
-        $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
-        $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
-        $this->nodeRepository           = $nodeRepository;
-        $this->logger                   = $logger;
-        $this->accessService            = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

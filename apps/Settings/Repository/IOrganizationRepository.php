@@ -29,7 +29,7 @@ use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
 /**
- * Interface IOrganizationRepository
+ * Interface IOrganizationService
  * @package KSA\Settings\Repository
  * @author  Dogan Ucar <dogan.ucar@check24.de>
  */

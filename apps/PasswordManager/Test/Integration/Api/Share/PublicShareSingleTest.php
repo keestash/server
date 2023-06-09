@@ -21,36 +21,38 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Share;
 
-use KSA\PasswordManager\Api\Share\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class PublicShareSingleTest extends TestCase {
 
     public function testPublicShareSingle(): void {
-        $user = $this->getUser();
         /** @var PublicShareSingle $publicShareSingle */
         $publicShareSingle = $this->getServiceManager()->get(PublicShareSingle::class);
         /** @var ShareService $shareService */
         $shareService = $this->getServiceManager()->get(ShareService::class);
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
         /** @var PublicShareRepository $shareRepository */
         $shareRepository = $this->getServiceManager()->get(PublicShareRepository::class);
 
-        $parent = new Folder();
-        $node   = $credentialService->createCredential(
-            "publicShareSingleTestCredential"
-            , "keestash.test"
-            , "keestash.test"
-            , "Keestash"
-            , $user
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge   = $credentialService->insertCredential($node, $parent);
-        $node   = $edge->getNode();
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $this->getRootFolder($user)
+        );
+
+        $node = $edge->getNode();
 
         $publicShare = $shareService->createPublicShare($node);
         $publicShare->setNodeId($node->getId());
@@ -58,25 +60,31 @@ class PublicShareSingleTest extends TestCase {
         $node = $shareRepository->shareNode($node);
 
         $request  = $this->getRequestService()
-            ->getRequestWithToken($user);
+            ->getVirtualRequestWithToken($user);
         $response = $publicShareSingle->handle($request->withAttribute("hash", $publicShare->getHash()));
 
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }
 
     public function testPublicShareWithoutHash(): void {
-        $user = $this->getUser();
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         /** @var PublicShareSingle $publicShareSingle */
         $publicShareSingle = $this->getServiceManager()->get(PublicShareSingle::class);
         $request           = $this->getRequestService()
-            ->getRequestWithToken($user);
+            ->getVirtualRequestWithToken($user);
 
         $response = $publicShareSingle->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
 
     public function testExpiredPublicShare(): void {
-        $user = $this->getUser();
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
         /** @var PublicShareSingle $publicShareSingle */
         $publicShareSingle = $this->getServiceManager()->get(PublicShareSingle::class);
         /** @var ShareService $shareService */
@@ -86,15 +94,14 @@ class PublicShareSingleTest extends TestCase {
         /** @var PublicShareRepository $shareRepository */
         $shareRepository = $this->getServiceManager()->get(PublicShareRepository::class);
 
-        $parent = new Folder();
-        $node   = $credentialService->createCredential(
-            "publicShareSingleTestCredential"
-            , "keestash.test"
-            , "keestash.test"
-            , "Keestash"
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
             , $user
+            , $this->getRootFolder($user)
         );
-        $edge   = $credentialService->insertCredential($node, $parent);
         $node   = $edge->getNode();
 
         $publicShare = $shareService->createPublicShare($node);
@@ -104,7 +111,7 @@ class PublicShareSingleTest extends TestCase {
         $node = $shareRepository->shareNode($node);
 
         $request  = $this->getRequestService()
-            ->getRequestWithToken($user);
+            ->getVirtualRequestWithToken($user);
         $response = $publicShareSingle->handle($request->withAttribute("hash", $publicShare->getHash()));
 
         $data = $this->getResponseService()->getFailedResponseData($response);

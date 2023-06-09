@@ -23,7 +23,8 @@ declare(strict_types=1);
 use doganoo\DI\Encryption\User\IUserService;
 use doganoo\DIP\Encryption\User\UserService;
 use Keestash\ConfigProvider;
-use KSA\GeneralApi\Factory\Repository\DemoUsersRepositoryFactory;
+use KSA\Instance\Factory\Repository\DemoUsersRepositoryFactory;
+use KSA\Instance\Repository\DemoUsersRepository;
 use KSA\Settings\Api\Organization\Activate;
 use KSA\Settings\Api\Organization\Add;
 use KSA\Settings\Api\Organization\Get;
@@ -35,7 +36,6 @@ use KSA\Settings\Api\User\UserAdd;
 use KSA\Settings\Api\User\UserEdit;
 use KSA\Settings\Api\User\UserLock;
 use KSA\Settings\Api\User\UserRemove;
-use KSA\Settings\BackgroundJob\UserDeleteTask;
 use KSA\Settings\Command\ListSettings;
 use KSA\Settings\Command\Lock;
 use KSA\Settings\Command\UpdatePassword;
@@ -66,21 +66,20 @@ use KSA\Settings\Factory\Event\Listener\UpdateSettingsListenerFactory;
 use KSA\Settings\Factory\Repository\OrganizationRepositoryFactory;
 use KSA\Settings\Factory\Repository\OrganizationUserRepositoryFactory;
 use KSA\Settings\Factory\Repository\SettingsRepositoryFactory;
-use KSA\Settings\Repository\DemoUsersRepository;
+use KSA\Settings\Factory\Service\OrganizationServiceFactory;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
 use KSA\Settings\Repository\OrganizationUserRepository;
 use KSA\Settings\Repository\SettingsRepository;
+use KSA\Settings\Service\IOrganizationService;
+use KSA\Settings\Service\OrganizationService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     ConfigProvider::FACTORIES => [
         // service
         UserService::class                           => InvokableFactory::class
-
-        // background job
-        , UserDeleteTask::class                      => UserDeleteTaskFactory::class
 
         // api
         , Activate::class                            => ActivateFactory::class
@@ -114,10 +113,14 @@ return [
         , \KSA\Settings\Command\Get::class           => \KSA\Settings\Factory\Command\GetFactory::class
         , Lock::class                                => LockFactory::class
         , ListSettings::class                        => ListSettingsFactory::class
+
+        // service
+        , OrganizationService::class                 => OrganizationServiceFactory::class
     ]
     , ConfigProvider::ALIASES => [
         IOrganizationRepository::class       => OrganizationRepository::class
         , IOrganizationUserRepository::class => OrganizationUserRepository::class
         , IUserService::class                => UserService::class
+        , IOrganizationService::class        => OrganizationService::class
     ]
 ];

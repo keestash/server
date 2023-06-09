@@ -24,7 +24,8 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Integration\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class CreateTest extends TestCase {
 
@@ -32,7 +33,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest()
+            $this->getVirtualRequest()
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
     }
@@ -41,7 +42,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'username'   => 'CreateCredentialTest'
                     , 'password' => 'MyAwesomeSuperSecurePassword'
@@ -57,7 +58,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'name'       => 'CreateCredentialTestName'
                     , 'username' => 'CreateCredentialTest'
@@ -74,7 +75,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'parent'     => 'root'
                     , 'username' => 'CreateCredentialTest'
@@ -91,7 +92,7 @@ class CreateTest extends TestCase {
         /** @var Create $create */
         $create   = $this->getServiceManager()->get(Create::class);
         $response = $create->handle(
-            $this->getDefaultRequest(
+            $this->getVirtualRequest(
                 [
                     'parent'     => 'root'
                     , 'name'     => 'CreateCredentialTestName'
@@ -112,21 +113,25 @@ class CreateTest extends TestCase {
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
         /** @var NodeRepository $nodeRepository */
         $nodeRepository = $this->getServiceManager()->get(NodeRepository::class);
-        $user           = $this->getUser();
-        $root           = $nodeRepository->getRootForUser($user);
-        $node           = $credentialService->createCredential(
-            "deleteTestPassword"
-            , "keestash.test"
-            , "deletetest.test"
-            , "Deletetest"
-            , $user
+        $user           = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
-        $edge           = $credentialService->insertCredential($node, $root);
-        $node           = $edge->getNode();
-        $response       = $create->handle(
-            $this->getDefaultRequest(
+        $root           = $this->getRootFolder($user);
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $root
+        );
+
+        $response = $create->handle(
+            $this->getVirtualRequest(
                 [
-                    'parent'     => (string) $node->getId()
+                    'parent'     => (string) $edge->getNode()->getId()
                     , 'name'     => 'CreateCredentialTestName'
                     , 'username' => 'CreateCredentialTest'
                     , 'password' => 'MyAwesomeSuperSecurePassword'
@@ -136,6 +141,7 @@ class CreateTest extends TestCase {
             )
         );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->removeUser($user);
     }
 
 }

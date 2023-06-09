@@ -86,9 +86,6 @@ class UpdatePassword extends KeestashCommand {
         }
 
         $newUser = clone $user;
-        if (true === $withEvents) {
-            $newUser = clone $user;
-        }
 
         $requirementsMet = $this->userService->passwordHasMinimumRequirements($password);
 

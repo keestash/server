@@ -26,6 +26,7 @@ use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class RemoveOutdatedTokensFactory implements FactoryInterface {
 
@@ -37,6 +38,7 @@ class RemoveOutdatedTokensFactory implements FactoryInterface {
         return new RemoveOutdatedTokens(
             $container->get(ITokenRepository::class)
             , $container->get(IDerivationRepository::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

@@ -22,26 +22,24 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Unit\Service\Node\Edge;
 
 use DateTime;
+use Keestash\Core\DTO\User\NullUser;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KST\TestCase;
+use KSA\PasswordManager\Test\Unit\TestCase;
 
 class EdgeServiceTest extends TestCase {
 
-    private EdgeService       $edgeService;
-    private CredentialService $credentialService;
+    private EdgeService $edgeService;
 
     protected function setUp(): void {
         parent::setUp();
-        $this->edgeService       = $this->getServiceManager()->get(EdgeService::class);
-        $this->credentialService = $this->getServiceManager()->get(CredentialService::class);
+        $this->edgeService = $this->getServiceManager()->get(EdgeService::class);
     }
 
     public function testPrepareRegularEdge(): void {
-        $user       = $this->getUser();
+        $user       = new NullUser();
         $folder     = new Folder();
         $credential = new Credential();
         $credential->setUser($user);
