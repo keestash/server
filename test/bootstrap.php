@@ -34,6 +34,7 @@ use KST\Service\ThirdParty\Phinx\Adapter\SQLiteAdapter;
 use Laminas\Config\Config;
 use Phinx\Db\Adapter\AdapterFactory;
 use Psr\Container\ContainerInterface;
+use KSP\Core\Service\Instance\IInstallerService;
 
 const __PHPUNIT_MODE__ = true;
 
@@ -65,10 +66,17 @@ $permissionService = $container->get(IPermissionService::class);
 $roleService = $container->get(IRoleService::class);
 /** @var IEnvironmentService $environmentService */
 $environmentService = $container->get(IEnvironmentService::class);
-$environmentService->setEnv(ConfigProvider::ENVIRONMENT_UNIT_TEST);
-
+/** @var IInstallerService $installerService */
+$installerService = $container->get(IInstallerService::class);
 /** @var InstanceDB $instanceDb */
 $instanceDb = $container->get(InstanceDB::class);
+
+$environmentService->setEnv(ConfigProvider::ENVIRONMENT_UNIT_TEST);
+
+if (false === $installerService->hasIdAndHash()) {
+    $installerService->writeIdAndHash();
+}
+
 $instanceDb->addOption(
     InstanceDB::OPTION_NAME_ENVIRONMENT
     , 'dev'

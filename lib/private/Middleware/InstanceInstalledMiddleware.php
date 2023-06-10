@@ -51,7 +51,9 @@ class InstanceInstalledMiddleware implements MiddlewareInterface {
         if ((null === $instanceHash || null === $instanceId)) {
             $this->logger->debug("The whole application is not installed. Please Install", ['hash' => $instanceHash, 'id' => $instanceId]);
             return new JsonResponse(
-                [],
+                [
+                    'errorCode' => 48599
+                ],
                 IResponse::SERVICE_UNAVAILABLE
             );
         }
