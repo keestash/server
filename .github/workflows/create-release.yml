@@ -39,6 +39,7 @@ jobs:
           php_version: 8.1.13
           memory_limit: 256M
           version: 9.6.4
+          bootstrap: test/bootstrap.php
 
       # end tests
       - name: end tests
