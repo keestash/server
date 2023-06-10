@@ -138,9 +138,10 @@ abstract class TestCase extends \KST\TestCase {
         ) {
             throw new KSTException(
                 sprintf(
-                    'hash or token are null: %s, %s'
+                    'hash or token are null: %s, %s, %s'
                     , $this->stringMaskService->mask($hash)
                     , $this->stringMaskService->mask($token)
+                    , $response->getBody()->getContents()
                 )
             );
         }
