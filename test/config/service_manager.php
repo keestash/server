@@ -20,6 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
+use Laminas\Config\Config;
 use Laminas\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../../vendor/autoload.php';
@@ -64,5 +66,18 @@ foreach ($mockedAliasesApps as $path) {
     }
 }
 
+/** @var Config $config */
+$config                                           = $container->get(Config::class);
+$newConfigArray                                   = $config->toArray();
+$config                                           = null;
+$newConfigArray[ConfigProvider::INSTANCE_DB_PATH] = __DIR__ . '/instance.db';
+$newConfig                                        = new Config(
+    $newConfigArray
+);
+
+$container->setService(
+    Config::class
+    , $container->build(Config::class)
+);
 $container->setAllowOverride(false);
 return $container;

@@ -45,10 +45,6 @@ class InstanceDB {
         $this->createTable();
     }
 
-    public static function getPath(): string {
-        return ConfigProvider::INSTANCE_DB_PATH;
-    }
-
     private function createTable(): void {
         $this->database->query(
             'CREATE TABLE IF NOT EXISTS `instance`
