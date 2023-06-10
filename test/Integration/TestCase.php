@@ -126,7 +126,12 @@ abstract class TestCase extends \KST\TestCase {
             false === $response->hasHeader(VerificationService::FIELD_NAME_TOKEN)
             || false === $response->hasHeader(VerificationService::FIELD_NAME_USER_HASH)
         ) {
-            throw new KSTException('hash or token not given');
+            throw new KSTException(
+                sprintf(
+                    'hash or token not given, %s'
+                    , $response->getBody()
+                )
+            );
         }
 
         $token = $response->getHeader(VerificationService::FIELD_NAME_TOKEN)[0] ?? null;
@@ -141,7 +146,7 @@ abstract class TestCase extends \KST\TestCase {
                     'hash or token are null: %s, %s, %s'
                     , $this->stringMaskService->mask($hash)
                     , $this->stringMaskService->mask($token)
-                    , $response->getBody()->getContents()
+                    , $response->getBody()
                 )
             );
         }
