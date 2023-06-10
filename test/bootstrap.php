@@ -47,6 +47,7 @@ set_error_handler(
     }, E_WARNING | E_USER_WARNING
 );
 
+/** @var Config $config */
 $config   = $container->get(Config::class);
 $fileName = $config->get(ConfigProvider::TEST_PATH) . '/config/test.unit.keestash.sqlite';
 
@@ -54,11 +55,14 @@ if (is_file($fileName)) {
     unlink($fileName);
 }
 
+$path = $config->get(ConfigProvider::INSTANCE_DB_PATH);
+
+if (true === is_file($path)) {
+    unlink($path);
+}
+
 AdapterFactory::instance()
     ->registerAdapter('sqlite', SQLiteAdapter::class);
-/** @var \Doctrine\DBAL\Connection $connection */
-$connection = $container->get(\Doctrine\DBAL\Connection::class);
-$connection->executeStatement('PRAGMA foreign_keys = ON;');
 
 /** @var IPermissionService $permissionService */
 $permissionService = $container->get(IPermissionService::class);
@@ -73,9 +77,7 @@ $instanceDb = $container->get(InstanceDB::class);
 
 $environmentService->setEnv(ConfigProvider::ENVIRONMENT_UNIT_TEST);
 
-if (false === $installerService->hasIdAndHash()) {
-    $installerService->writeIdAndHash();
-}
+$installerService->writeIdAndHash();
 
 $instanceDb->addOption(
     InstanceDB::OPTION_NAME_ENVIRONMENT
