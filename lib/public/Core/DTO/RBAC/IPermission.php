@@ -113,5 +113,7 @@ interface IPermission extends PermissionInterface, IJsonObject {
     public const PERMISSION_NAME_CREDENTIAL_ADDITIONAL_DATA_DELETE          = 'CREDENTIAL_ADDITIONAL_DATA_DELETE';
     public const PERMISSION_CREDENTIAL_ACTIVITY_GET                         = 47;
     public const PERMISSION_NAME_CREDENTIAL_ACTIVITY_GET                    = 'CREDENTIAL_ACTIVITY_GET';
+    public const PERMISSION_FORGOT_PASSWORD_RESET_PASSWORD                  = 48;
+    public const PERMISSION_NAME_FORGOT_PASSWORD_RESET_PASSWORD             = 'FORGOT_PASSWORD_RESET_PASSWORD';
 
 }

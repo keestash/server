@@ -69,8 +69,7 @@ class ResetPassword implements RequestHandlerInterface {
         if (null === $userState) {
             return new JsonResponse(
                 [
-                    "header"    => "User not updated"
-                    , "message" => "No user found or session is expired. Please request a new link"
+                    "responseCode" => 133909
                 ]
                 , IResponse::NOT_FOUND
             );

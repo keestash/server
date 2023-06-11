@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,26 +19,30 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Middleware\EnvironmentMiddleware;
+namespace KSA\Settings\Service;
+
+
+use Keestash\Core\DTO\LDAP\LDAPOption;
+use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Repository\SettingsRepository;
-use KSA\Settings\Service\ISettingsService;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Container\ContainerInterface;
 
-class EnvironmentMiddlewareFactory implements FactoryInterface {
+class SettingsService implements ISettingsService {
 
-    public function __invoke(
-        ContainerInterface $container
-        ,                  $requestedName
-        , ?array           $options = null
-    ): EnvironmentMiddleware {
-        return new EnvironmentMiddleware(
-            $container->get(InstanceDB::class)
-            , $container->get(ISettingsService::class)
-        );
+    public function __construct(
+        private readonly SettingsRepository $settingsRepository
+    ) {
+    }
+
+    public function isRegisterEnabled(): bool {
+        try {
+            $setting = $this->settingsRepository->get(
+                LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+            );
+            return $setting->getValue() === 'false';
+        } catch (SettingNotFoundException) {
+            return true;
+        }
     }
 
 }

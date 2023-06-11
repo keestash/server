@@ -21,10 +21,19 @@ declare(strict_types=1);
 
 namespace KSA\Register\Test\Integration\Api\User;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\LDAP\LDAPOption;
+use Keestash\Core\Service\App\LoaderService;
 use KSA\Register\Api\User\Add;
+use KSA\Register\ConfigProvider;
 use KSA\Register\Test\Integration\TestCase;
+use KSA\Settings\Entity\Setting;
+use KSA\Settings\Exception\SettingsException;
+use KSA\Settings\Repository\SettingsRepository;
 use KSP\Api\IResponse;
+use KSP\Api\IVerb;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Ramsey\Uuid\Uuid;
 
@@ -116,6 +125,11 @@ class AddTest extends TestCase {
         $userRepository = $this->getService(IUserRepository::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
+        /** @var SettingsRepository $settingRepository */
+        $settingRepository = $this->getService(SettingsRepository::class);
+        $settingRepository->remove(
+            LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+        );
 
         $firstName = md5((string) time());
         $lastName  = md5((string) (time() + 1));
@@ -143,6 +157,53 @@ class AddTest extends TestCase {
 
         $user = $userRepository->getUser($userName);
         $userRepositoryService->removeUser($user);
+    }
+
+    public function testWithDisabledApp(): void {
+        /** @var SettingsRepository $settingRepository */
+        $settingRepository = $this->getService(SettingsRepository::class);
+        try {
+            $restrictLocalAccounts = $settingRepository->get(
+                LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+            );
+            $settingRepository->remove(
+                LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+            );
+        } catch (SettingsException) {
+            $restrictLocalAccounts = null;
+        }
+        $settingRepository->add(
+            new Setting(
+                LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+                , 'true'
+                , new DateTimeImmutable()
+            )
+        );
+
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        // no need a payload as it should stop before validating
+                    ]
+                )
+            );
+
+        $data = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertArrayHasKey(0, $data);
+        $this->assertTrue($data[0] === 'unknown operation');
+        $settingRepository->remove(
+            LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+        );
+        $settingRepository->remove(
+            LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
+        );
+        if (null !== $restrictLocalAccounts) {
+            $settingRepository->add($restrictLocalAccounts);
+        }
     }
 
 }

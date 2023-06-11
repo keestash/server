@@ -175,10 +175,21 @@ abstract class TestCase extends \KST\TestCase {
         string   $verb
         , string $path
         , array  $body
-        , IUser  $user
+        , ?IUser $user = null
         , array  $keestashHeaders = []
         , array  $files = []
     ): ServerRequestInterface {
+
+        if (null === $user) {
+            return $this->getRequestService()
+                ->getRequest(
+                    $verb
+                    , $path
+                    , $body
+                    , $keestashHeaders
+                    , $files
+                );
+        }
         return $this->getRequestService()
             ->getRequestWithToken(
                 $user
@@ -253,6 +264,15 @@ abstract class TestCase extends \KST\TestCase {
 
     public function assertStatusCode(int $statusCode, ResponseInterface $response): void {
         $this->assertTrue($statusCode === $response->getStatusCode());
+    }
+
+    public function getDecodedData(ResponseInterface $response): array {
+        return json_decode(
+            (string) $response->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
+        );
     }
 
 }

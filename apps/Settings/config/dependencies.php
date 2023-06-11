@@ -67,19 +67,23 @@ use KSA\Settings\Factory\Repository\OrganizationRepositoryFactory;
 use KSA\Settings\Factory\Repository\OrganizationUserRepositoryFactory;
 use KSA\Settings\Factory\Repository\SettingsRepositoryFactory;
 use KSA\Settings\Factory\Service\OrganizationServiceFactory;
+use KSA\Settings\Factory\Service\SettingsServiceFactory;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
 use KSA\Settings\Repository\OrganizationUserRepository;
 use KSA\Settings\Repository\SettingsRepository;
 use KSA\Settings\Service\IOrganizationService;
+use KSA\Settings\Service\ISettingsService;
 use KSA\Settings\Service\OrganizationService;
+use KSA\Settings\Service\SettingsService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     ConfigProvider::FACTORIES => [
         // service
         UserService::class                           => InvokableFactory::class
+        , SettingsService::class                     => SettingsServiceFactory::class
 
         // api
         , Activate::class                            => ActivateFactory::class
@@ -122,5 +126,6 @@ return [
         , IOrganizationUserRepository::class => OrganizationUserRepository::class
         , IUserService::class                => UserService::class
         , IOrganizationService::class        => OrganizationService::class
+        , ISettingsService::class            => SettingsService::class
     ]
 ];

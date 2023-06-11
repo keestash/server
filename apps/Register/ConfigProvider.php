@@ -23,9 +23,8 @@ namespace KSA\Register;
 
 final class ConfigProvider {
 
-    public const REGISTER               = '/register[/]';
-    public const REGISTER_ADD           = '/register/add[/]';
-    public const REGISTER_CONFIRM           = '/register/confirm';
+    public const REGISTER_ADD           = '/register/add';
+    public const REGISTER_CONFIRM       = '/register/confirm';
     public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';
     public const REGISTER_CONFIGURATION = '/register/configuration[/]';
 

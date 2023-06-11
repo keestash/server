@@ -22,15 +22,14 @@ declare(strict_types=1);
 namespace KSA\ForgotPassword\Test\Integration\Api;
 
 use KSA\ForgotPassword\Api\ResetPassword;
+use KSA\ForgotPassword\ConfigProvider;
 use KSA\ForgotPassword\Test\Integration\TestCase;
 use KSP\Api\IResponse;
+use KSP\Api\IVerb;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
-use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\User\IUserService;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Service\Service\UserService;
 use Ramsey\Uuid\Uuid;
 
@@ -75,14 +74,8 @@ class ResetPasswordTest extends TestCase {
         $hash = Uuid::uuid4();
         /** @var IPasswordService $passwordService */
         $passwordService = $this->getService(IPasswordService::class);
-        /** @var IUserRepositoryService $userRepositoryService */
-        $userRepositoryService = $this->getService(IUserRepositoryService::class);
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
-        /** @var IUserService $userService */
-        $userService = $this->getService(IUserService::class);
-        /** @var IEventService $eventService */
-        $eventService = $this->getService(IEventService::class);
 
         $user = $this->createUser(
             Uuid::uuid4()->toString()
@@ -104,8 +97,38 @@ class ResetPasswordTest extends TestCase {
                 ]
             )
         );
+
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
+    }
+
+    public function testWithNonExistingUser(): void {
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::RESET_PASSWORD_UPDATE
+                    , [
+                        'hash'    => Uuid::uuid4()->toString()
+                        , 'input' => Uuid::uuid4()->toString()
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+        $data     = $this->getDecodedData($response);
+        $this->assertArrayHasKey("responseCode", $data);
+        $this->assertTrue($data['responseCode'] === 133909);
+        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
     }
 
 

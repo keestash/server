@@ -149,4 +149,18 @@ class ForgotPasswordTest extends TestCase {
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
     }
 
+    public function testWithEmailAddress(): void {
+        /** @var ForgotPassword $forgotPassword */
+        $forgotPassword = $this->getService(ForgotPassword::class);
+        $response       = $forgotPassword->handle(
+            $this->getVirtualRequest(
+                [
+                    'input' => UserService::TEST_USER_ID_2_EMAIL
+                ]
+            )
+        );
+        $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->assertTrue(IResponse::OK === $response->getStatusCode());
+    }
+
 }
