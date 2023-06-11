@@ -26,6 +26,7 @@ use Keestash\Core\DTO\LDAP\LDAPOption;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Repository\SettingsRepository;
+use KSA\Settings\Service\ISettingsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -34,14 +35,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 class EnvironmentMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly SettingsRepository $settingsRepository
-        , private readonly InstanceDB       $instanceDb
+        private readonly InstanceDB         $instanceDb
+        , private readonly ISettingsService $settingsService
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $isSaas          = 'true' === $this->instanceDb->getOption(InstanceDB::OPTION_NAME_SAAS);
-        $registerEnabled = $this->isRegisterEnabled();
+        $registerEnabled = $this->settingsService->isRegisterEnabled();
 
         $request = $request->withAttribute(
             ConfigProvider::ENVIRONMENT_SAAS,
@@ -52,17 +53,6 @@ class EnvironmentMiddleware implements MiddlewareInterface {
             , $registerEnabled
         );
         return $handler->handle($request);
-    }
-
-    private function isRegisterEnabled(): bool {
-        try {
-            $setting = $this->settingsRepository->get(
-                LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
-            );
-            return $setting->getValue() === 'false';
-        } catch (SettingNotFoundException $exception) {
-            return false;
-        }
     }
 
 }

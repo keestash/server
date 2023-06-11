@@ -32,6 +32,7 @@ use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
 use KSA\Register\Event\UserRegisteredEvent;
+use KSA\Settings\Service\ISettingsService;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\App\ILoaderService;
@@ -47,7 +48,6 @@ use Psr\Log\LoggerInterface;
 class Add implements RequestHandlerInterface {
 
     private UserService            $userService;
-    private ILoaderService         $loader;
     private LoggerInterface        $logger;
     private IUserRepositoryService $userRepositoryService;
     private IStringService         $stringService;
@@ -57,20 +57,19 @@ class Add implements RequestHandlerInterface {
     private IConfigService         $configService;
 
     public function __construct(
-        UserService                      $userService
-        , ILoaderService                 $loader
-        , LoggerInterface                $logger
-        , IUserRepositoryService         $userRepositoryService
-        , IStringService                 $stringService
-        , IPaymentService                $paymentService
-        , IPaymentLogRepository          $paymentLogRepository
-        , Application                    $application
-        , IConfigService                 $configService
-        , private readonly IEventService $eventService
+        UserService                         $userService
+        , LoggerInterface                   $logger
+        , IUserRepositoryService            $userRepositoryService
+        , IStringService                    $stringService
+        , IPaymentService                   $paymentService
+        , IPaymentLogRepository             $paymentLogRepository
+        , Application                       $application
+        , IConfigService                    $configService
+        , private readonly IEventService    $eventService
+        , private readonly ISettingsService $settingsService
     ) {
 
         $this->userService           = $userService;
-        $this->loader                = $loader;
         $this->logger                = $logger;
         $this->userRepositoryService = $userRepositoryService;
         $this->stringService         = $stringService;
@@ -81,20 +80,15 @@ class Add implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        // a little bit out of sense, but
-        // we do not want to enable registering
-        // even if someone has found a hacky way
-        // to enable this controller!
-        $registerEnabled = $this->loader->hasApp(ConfigProvider::APP_ID);
+        $registerEnabled = $this->settingsService->isRegisterEnabled();
         $isSaas          = $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS);
 
         if (false === $registerEnabled) {
-
+            $this->logger->info('register disabled, but tried to register', ['body' => $request->getBody()]);
             return new JsonResponse(
                 ['unknown operation']
                 , IResponse::BAD_REQUEST
             );
-
         }
 
         // TODO create a token and forward it to the frontend

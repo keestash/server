@@ -28,6 +28,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
 use Laminas\Diactoros\ServerRequest;
 use Laminas\Diactoros\ServerRequestFactory;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RequestService {
@@ -67,7 +68,27 @@ class RequestService {
         , array  $query = []
         , array  $cookies = []
     ): ServerRequestInterface {
-        $request = new ServerRequest(
+        $request = $this->getRequest($method, $uri, $body, $headers, $files, $server, $query, $cookies);
+        $token   = new Token();
+        $token->setUser($user);
+        $token->setCreateTs(new \DateTime());
+        $token->setName("Test.Keestash.PasswordManager");
+        $token->setValue(bin2hex(random_bytes(16)));
+        $token->setId(1);
+        return $request->withAttribute(IToken::class, $token);
+    }
+
+    public function getRequest(
+        string   $method
+        , string $uri
+        , array  $body = []
+        , array  $headers = []
+        , array  $files = []
+        , array  $server = []
+        , array  $query = []
+        , array  $cookies = []
+    ): ServerRequestInterface {
+        return new ServerRequest(
             $server
             , $files
             , $uri
@@ -80,13 +101,6 @@ class RequestService {
             , $cookies
             , $query
         );
-        $token   = new Token();
-        $token->setUser($user);
-        $token->setCreateTs(new \DateTime());
-        $token->setName("Test.Keestash.PasswordManager");
-        $token->setValue(bin2hex(random_bytes(16)));
-        $token->setId(1);
-        return $request->withAttribute(IToken::class, $token);
     }
 
 }

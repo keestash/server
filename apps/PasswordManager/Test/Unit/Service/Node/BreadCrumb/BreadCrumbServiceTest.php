@@ -25,6 +25,7 @@ use KSA\PasswordManager\Test\Unit\TestCase;
 
 class BreadCrumbServiceTest extends TestCase {
 
+
     public function testXyz(): void {
         $this->markTestSkipped('we can not test this, as we do not have SQL commands like "WITH RECURSIVE" etc');
     }

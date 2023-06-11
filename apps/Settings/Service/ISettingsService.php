@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword;
+namespace KSA\Settings\Service;
 
-final class ConfigProvider {
+interface ISettingsService {
 
-    public const APP_ID                 = 'forgotPassword';
-    public const FORGOT_PASSWORD_SUBMIT = '/forgot_password/submit';
-    public const RESET_PASSWORD_UPDATE  = '/reset_password/update';
-
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
-    }
+    public function isRegisterEnabled(): bool;
 
 }

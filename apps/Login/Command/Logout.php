@@ -46,7 +46,7 @@ class Logout extends KeestashCommand {
 
     protected function configure(): void {
         $this->setName("login:logout")
-            ->setDescription("logs in a user");
+            ->setDescription("logs out a user");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
@@ -58,7 +58,7 @@ class Logout extends KeestashCommand {
             $user = $this->userRepository->getUser($userName);
         } catch (UserNotFoundException $exception) {
             $this->logger->error('error retrieving user', ['exception' => $exception, 'userName' => $userName]);
-            throw new Exception("No User Found");
+            throw new UserNotFoundException("No User Found");
         }
 
         $this->tokenRepository->removeForUser($user);

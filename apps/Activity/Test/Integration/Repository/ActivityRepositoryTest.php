@@ -91,13 +91,21 @@ class ActivityRepositoryTest extends TestCase {
         );
     }
 
-    public function testActivityNotFound():void {
+    public function testActivityNotFound(): void {
         $this->expectException(ActivityNotFoundException::class);
         $this->activityRepository->get(Uuid::uuid4()->toString());
     }
 
-    public function testGetAllNotFound():void {
+    public function testGetAllNotFound(): void {
         $this->expectException(ActivityNotFoundException::class);
-        $this->activityRepository->getAll('blablablub','blublb');
+        $this->activityRepository->getAll('blablablub', 'blublb');
     }
+
+    public function testImplementsRepositoryInterface(): void {
+        $this->assertInstanceOf(
+            IActivityRepository::class
+            , $this->activityRepository
+        );
+    }
+
 }

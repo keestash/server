@@ -72,11 +72,11 @@ class Login extends KeestashCommand {
             $user = $this->userRepository->getUser($userName);
         } catch (UserNotFoundException $exception) {
             $this->logger->error('error retrieving user', ['exception' => $exception, 'userName' => $userName]);
-            throw new Exception("No User Found");
+            throw new UserNotFoundException("No User Found");
         }
 
         if (true === $this->userService->isDisabled($user)) {
-            throw new Exception("No User Found");
+            throw new UserNotFoundException("No User Found");
         }
 
         $verified = false;
@@ -92,7 +92,14 @@ class Login extends KeestashCommand {
         }
 
         if (false === $verified) {
-            throw new Exception("Invalid Credentials");
+            $this->logger->warning(
+                'user is not verified'
+                , [
+                    'isLdap' => $user->isLdapUser()
+                ]
+            );
+            $this->writeError('Invalid credentials', $output);
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
         $token = $this->tokenService->generate("login", $user);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -22,18 +22,17 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\ForgotPassword\ConfigProvider;
+use KSP\Core\DTO\RBAC\IPermission;
 
 return [
-    CoreConfigProvider::APP_LIST       => [
-        ConfigProvider::APP_ID => [
-            CoreConfigProvider::APP_ORDER   => 7,
-            CoreConfigProvider::APP_NAME    => 'Forgot Password',
-            CoreConfigProvider::APP_VERSION => 1,
-        ],
+    CoreConfigProvider::PERMISSION_MAPPING     => [
+        ConfigProvider::RESET_PASSWORD_UPDATE => IPermission::PERMISSION_FORGOT_PASSWORD_RESET_PASSWORD
     ]
-    , CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php'
-    , CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php'
-    , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
-    , CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php'
-    , CoreConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php'
+    , CoreConfigProvider::PERMISSION_FREE      => [
+        ConfigProvider::RESET_PASSWORD_UPDATE
+    ]
+    , CoreConfigProvider::PERMISSION_LIST      => [
+        IPermission::PERMISSION_FORGOT_PASSWORD_RESET_PASSWORD => IPermission::PERMISSION_NAME_FORGOT_PASSWORD_RESET_PASSWORD
+    ]
+    , CoreConfigProvider::ROLE_PERMISSION_LIST => []
 ];
