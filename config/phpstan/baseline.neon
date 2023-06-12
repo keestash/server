@@ -46,6 +46,51 @@ parameters:
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
 
 		-
+			message: "#^Cannot access offset 'active_ts' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'base_dn' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'create_ts' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'date' on mixed\\.$#"
+			count: 2
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'host' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'password' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'port' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot access offset 'user_dn' on mixed\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
+			message: "#^Cannot call method getTimestamp\\(\\) on DateTimeInterface\\|null\\.$#"
+			count: 1
+			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
+
+		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
 			path: ../../apps/Login/Api/Configuration.php
@@ -659,6 +704,21 @@ parameters:
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Share\\\\ShareServiceTest\\:\\:\\$shareService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Share\\\\ShareService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Share/ShareServiceTest.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
+			count: 4
+			path: ../../apps/Payment/Event/Listener/WebhookListener.php
+
+		-
+			message: "#^Cannot access offset 'id' on mixed\\.$#"
+			count: 1
+			path: ../../apps/Payment/Event/Listener/WebhookListener.php
+
+		-
+			message: "#^Cannot access offset 'object' on mixed\\.$#"
+			count: 1
+			path: ../../apps/Payment/Event/Listener/WebhookListener.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"

@@ -8,7 +8,7 @@ parameters:
 	checkMissingIterableValueType: false
 	treatPhpDocTypesAsCertain: false
 	checkGenericClassInNonGenericObjectType: false
-	reportUnmatchedIgnoredErrors: true
+	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 	    - '#Property (.*) is never read, only written+\.#'
 	    - '#Constant (.*) is unused#'

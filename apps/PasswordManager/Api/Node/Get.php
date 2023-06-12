@@ -34,6 +34,7 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
+use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -50,30 +51,16 @@ use Psr\Log\LoggerInterface;
  */
 class Get implements RequestHandlerInterface {
 
-    private NodeRepository           $nodeRepository;
-    private BreadCrumbService        $breadCrumbService;
-    private LoggerInterface          $logger;
-    private NodeEncryptionService    $nodeEncryptionService;
-    private CommentRepository        $commentRepository;
-    private PwnedPasswordsRepository $pwnedPasswordsRepository;
-    private PwnedBreachesRepository  $pwnedBreachesRepository;
-
     public function __construct(
-        NodeRepository             $nodeRepository
-        , BreadCrumbService        $breadCrumbService
-        , LoggerInterface          $logger
-        , NodeEncryptionService    $nodeEncryptionService
-        , CommentRepository        $commentRepository
-        , PwnedPasswordsRepository $pwnedPasswordsRepository
-        , PwnedBreachesRepository  $pwnedBreachesRepository
+        private readonly NodeRepository             $nodeRepository
+        , private readonly BreadCrumbService        $breadCrumbService
+        , private readonly LoggerInterface          $logger
+        , private readonly NodeEncryptionService    $nodeEncryptionService
+        , private readonly CommentRepository        $commentRepository
+        , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
+        , private readonly PwnedBreachesRepository  $pwnedBreachesRepository
+        , private readonly NodeService              $nodeService
     ) {
-        $this->nodeRepository           = $nodeRepository;
-        $this->breadCrumbService        = $breadCrumbService;
-        $this->logger                   = $logger;
-        $this->nodeEncryptionService    = $nodeEncryptionService;
-        $this->commentRepository        = $commentRepository;
-        $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
-        $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -84,7 +71,17 @@ class Get implements RequestHandlerInterface {
         if (null === $rootId) {
             return new JsonResponse(
                 ["no node id given. Could not retrieve data"]
-                , IResponse::NOT_FOUND
+                , IResponse::BAD_REQUEST
+            );
+        }
+
+        if (false === $this->nodeService->isValidNodeId((string) $rootId)) {
+            $this->logger->info('invalid node id', ['nodeId' => $rootId]);
+            return new JsonResponse(
+                [
+                    "responseCode" => 957586
+                ]
+                , IResponse::BAD_REQUEST
             );
         }
 

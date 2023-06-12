@@ -166,4 +166,11 @@ class NodeService {
         );
     }
 
+    public function isValidNodeId(string $nodeId): bool {
+        if (true === is_numeric($nodeId)) {
+            return ((int) $nodeId) > 0;
+        }
+        return $nodeId === Node::ROOT;
+    }
+
 }
