@@ -291,3 +291,4 @@ apps/Payment/*
 /apps/LDAP/
 /test/cache/cache.json/test-results
 /test/cache/test-results
+/test/code-coverage/
