@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Queue;
 
+use Doctrine\DBAL\Exception;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use JsonException;
 use Keestash\Exception\Queue\QueueException;
 use Keestash\Exception\Queue\QueueNotCreatedException;
 use Keestash\Exception\Queue\QueueNotDeletedException;
@@ -41,6 +44,18 @@ interface IQueueRepository extends IRepository {
      * @throws QueueException
      */
     public function getSchedulableMessages(): array;
+
+    /**
+     * @param ArrayList $messageList
+     * @return void
+     * @throws Exception
+     * @throws JsonException
+     */
+    public function bulkInsert(ArrayList $messageList): void;
+
+    public function connect(): void;
+
+    public function disconnect(): void;
 
     /**
      * @param IMessage $message

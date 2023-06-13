@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\Backend;
+namespace Keestash\Core\Backend\SQLBackend;
 
 use Doctrine\DBAL\Connection;
 use Keestash;
@@ -50,7 +50,7 @@ class MySQLBackend implements ISQLBackend {
     }
 
     public function disconnect(): bool {
-        // TODO implement
+        $this->connection->close();
         return true;
     }
 

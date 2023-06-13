@@ -28,7 +28,7 @@ use doganoo\DIP\Object\String\StringService;
 use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use Keestash\Core\Repository\Derivation\DerivationRepository;

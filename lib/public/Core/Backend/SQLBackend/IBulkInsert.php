@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Backend;
+namespace KSP\Core\Backend\SQLBackend;
 
-use Doctrine\DBAL\Connection;
-use Keestash\Core\Backend\SQLBackend\MySQLBackend;
-use KSP\Core\Backend\IBackend;
-use KSP\Core\Service\Config\IConfigService;
-use Psr\Container\ContainerInterface;
+interface IBulkInsert {
 
-class MySQLBackendFactory {
-
-    public function __invoke(ContainerInterface $container): IBackend {
-        return new MySQLBackend(
-            $container->get(Connection::class)
-            , $container->get(IConfigService::class)
-        );
-    }
+    public function insert(string $table, array $data, array $types = []): void;
 
 }

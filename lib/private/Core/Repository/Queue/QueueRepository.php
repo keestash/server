@@ -24,6 +24,9 @@ namespace Keestash\Core\Repository\Queue;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use JsonException;
+use Keestash\Core\Backend\SQLBackend\BulkInsert;
 use Keestash\Exception\Queue\QueueException;
 use Keestash\Exception\Queue\QueueNotCreatedException;
 use Keestash\Exception\Queue\QueueNotDeletedException;
@@ -164,6 +167,44 @@ class QueueRepository implements IQueueRepository {
             $this->logger->error('message not deleted', ['exception' => $exception]);
             throw new QueueNotDeletedException();
         }
+    }
+
+    /**
+     * @param ArrayList $messageList
+     * @return void
+     * @throws Exception
+     * @throws JsonException
+     */
+    public function bulkInsert(ArrayList $messageList): void {
+        $list = [];
+
+        foreach ($messageList as $message) {
+            $list[] = [
+                "`id`"            => $message->getId()
+                , "`priority`"    => $message->getPriority()
+                , "`attempts`"    => $message->getAttempts()
+                , "`payload`"     => json_encode(
+                    $message->getPayload()
+                    , JSON_THROW_ON_ERROR
+                )
+                , "`reserved_ts`" => $this->dateTimeService->toYMDHIS($message->getReservedTs())
+                , "`create_ts`"   => $this->dateTimeService->toYMDHIS($message->getCreateTs())
+                , "`stamps`"      => json_encode(
+                    $message->getStamps()->toArray()
+                    , JSON_THROW_ON_ERROR
+                )
+            ];
+        }
+        $bulkInsert = new BulkInsert($this->backend->getConnection());
+        $bulkInsert->insert('`queue`', $list);
+    }
+
+    public function connect(): void {
+        $this->backend->connect();
+    }
+
+    public function disconnect(): void {
+        $this->backend->disconnect();
     }
 
     /**

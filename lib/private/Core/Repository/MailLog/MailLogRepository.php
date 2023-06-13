@@ -69,7 +69,7 @@ class MailLogRepository implements IMailLogRepository {
                 ->executeStatement();
             return $mailLog;
         } catch (Exception $exception) {
-            $this->logger->error('error inserting queue', ['exception' => $exception]);
+            $this->logger->error('error mail repository', ['exception' => $exception]);
             throw new KeestashException();
         }
     }

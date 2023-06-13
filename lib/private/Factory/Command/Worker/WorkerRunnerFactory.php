@@ -48,7 +48,7 @@ class WorkerRunnerFactory implements FactoryInterface {
         return new WorkerRunner(
             $container->get(IQueueService::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(IQueueRepository::class)
+            , $container->build(IQueueRepository::class)
             , $container->get(IEventHandler::class)
             , $dataService
         );

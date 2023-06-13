@@ -60,7 +60,7 @@ class SettingsRepository
                 ->setParameter(2, $this->dateTimeService->toYMDHIS($setting->getCreateTs()))
                 ->executeStatement();
         } catch (Exception $exception) {
-            $this->logger->error('error inserting queue', ['exception' => $exception]);
+            $this->logger->error('error inserting setting', ['exception' => $exception]);
             throw new QueueNotCreatedException();
         }
 

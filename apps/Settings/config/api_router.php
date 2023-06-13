@@ -96,7 +96,7 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::USER_PROFILE_IMAGE_UPDATE
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UpdateProfileImage::class]
+            , IRoute::MIDDLEWARE => UpdateProfileImage::class
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => UpdateProfileImage::class
         ],

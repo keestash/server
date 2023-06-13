@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Event;
 
 use DateTimeImmutable;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Event\ReservedEvent;
 use Keestash\Core\DTO\Queue\EventMessage;
 use KSP\Core\DTO\Event\IEvent;
@@ -49,6 +50,7 @@ class EventService implements IEventService {
         $listeners  = $this->listeners[get_class($event)] ?? [];
         $serializer = new PhpSerialize();
 
+        $messageList = new ArrayList();
         foreach ($listeners as $listener) {
 
             if (false === is_string($listener)) {
@@ -76,9 +78,10 @@ class EventService implements IEventService {
             $message->setAttempts(0);
             $message->setPriority(1);
             $message->setCreateTs(new DateTimeImmutable());
-            $this->queueRepository->insert($message);
+            $messageList->add($message);
 
         }
+        $this->queueRepository->bulkInsert($messageList);
 
     }
 
