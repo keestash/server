@@ -1096,12 +1096,22 @@ parameters:
 			path: ../../lib/private/Factory/Command/Worker/WorkerFlusherFactory.php
 
 		-
+			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Command/Worker/WorkerFlusherFactory.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/Command/Worker/WorkerLockerFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Command/Worker/WorkerRunnerFactory.php
+
+		-
+			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/Command/Worker/WorkerRunnerFactory.php
 

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Service\Core\Backend;
 
 use Doctrine\DBAL\Connection;
-use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
 
 class SQLiteBackend implements ISQLBackend {

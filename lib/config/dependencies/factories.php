@@ -56,7 +56,7 @@ use Keestash\Command\Worker\Queue\Reset;
 use Keestash\Command\Worker\WorkerFlusher;
 use Keestash\Command\Worker\WorkerLocker;
 use Keestash\Command\Worker\WorkerRunner;
-use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
 use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;

@@ -47,7 +47,7 @@ class WorkerFlusherFactory implements FactoryInterface {
         return new WorkerFlusher(
             $container->get(IQueueService::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(IQueueRepository::class)
+            , $container->build(IQueueRepository::class)
             , $container->get(IEventHandler::class)
             , $dataService
         );

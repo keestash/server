@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\Core\Backend;
 
-use Keestash\Core\Backend\MySQLBackend;
+use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use KST\Service\Core\Backend\SQLiteBackend;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

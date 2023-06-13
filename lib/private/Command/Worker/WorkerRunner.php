@@ -58,9 +58,11 @@ class WorkerRunner extends KeestashCommand {
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $workerLogFile = $this->dataService->getPath() . '/' . WorkerRunner::WORKER_LOG_FILE;
         while (true) {
+            $this->queueRepository->connect();
             $queue = $this->queueService->getQueue();
 
             if (0 === $queue->length() || true === is_file($workerLogFile)) {
+                $this->queueRepository->disconnect();
                 usleep(500000);
                 continue;
             }
@@ -95,6 +97,7 @@ class WorkerRunner extends KeestashCommand {
                 $this->writeInfo('ended successfully', $output);
 
             }
+            $this->queueRepository->disconnect();
         }
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
