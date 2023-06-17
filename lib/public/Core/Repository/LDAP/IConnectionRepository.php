@@ -21,16 +21,37 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\LDAP;
 
+use Doctrine\DBAL\Exception;
+use Keestash\Exception\LDAP\ConnectionNotCreatedException;
 use Keestash\Exception\LDAP\LDAPException;
+use Keestash\Exception\Repository\TooManyRowsException;
 use KSP\Core\DTO\LDAP\IConnection;
 use KSP\Core\DTO\User\IUser;
 
 interface IConnectionRepository {
 
+    /**
+     * @param IConnection $connection
+     * @return void
+     * @throws ConnectionNotCreatedException
+     * @throws Exception
+     */
     public function add(IConnection $connection): void;
 
+    /**
+     * @param string $host
+     * @return IConnection
+     * @throws Exception
+     * @throws LDAPException
+     */
     public function getConnection(string $host): IConnection;
 
+    /**
+     * @return IConnection
+     * @throws Exception
+     * @throws LDAPException
+     * @throws TooManyRowsException
+     */
     public function getActiveConnection(): IConnection;
 
     public function getConnectionByUser(IUser $user): IConnection;

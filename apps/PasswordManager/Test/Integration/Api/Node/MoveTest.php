@@ -24,14 +24,13 @@ namespace KSA\PasswordManager\Test\Integration\Api\Node;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use Ramsey\Uuid\Uuid;
 
 class MoveTest extends TestCase {
 
     public function testMove(): void {
-        /** @var Move $move */
-        $move     = $this->getServiceManager()->get(Move::class);
         $password = Uuid::uuid4()->toString();
         $user     = $this->createUser(
             Uuid::uuid4()->toString()
@@ -112,6 +111,132 @@ class MoveTest extends TestCase {
             $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         }
 
+    }
+
+    public function testMoveToSelfNotPossible(): void {
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $userRoot = $this->getRootFolder($user);
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $userRoot
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_MOVE
+                    , [
+                    'node_id'          => $edge->getNode()->getId()
+                    , 'target_node_id' => $edge->getNode()->getId()
+                ],
+                    $user
+                    , $headers
+                )
+            );
+        $this->assertStatusCode(IResponse::CONFLICT, $response);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+    }
+
+    public function testWithNoAccess(): void {
+        $password  = Uuid::uuid4()->toString();
+        $user      = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+        $otherUser = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $userRoot = $this->getRootFolder($user);
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $userRoot
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_MOVE
+                    , [
+                    'node_id'          => $edge->getNode()->getId()
+                    , 'target_node_id' => $this->getRootFolder($otherUser)->getId()
+                ],
+                    $user
+                    , $headers
+                )
+            );
+
+        $this->assertStatusCode(IResponse::FORBIDDEN, $response);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+    }
+
+    public function testMoveToNonFolder(): void {
+        $password  = Uuid::uuid4()->toString();
+        $user      = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $userRoot = $this->getRootFolder($user);
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $userRoot
+        );
+
+        $edge2 = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $user
+            , $userRoot
+        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_NODE_MOVE
+                    , [
+                    'node_id'          => $edge->getNode()->getId()
+                    , 'target_node_id' => $edge2->getNode()->getId()
+                ],
+                    $user
+                    , $headers
+                )
+            );
+
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
     }
 
 }

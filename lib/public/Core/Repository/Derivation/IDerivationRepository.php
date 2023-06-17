@@ -21,11 +21,13 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\Derivation;
 
+use DateTimeInterface;
 use Doctrine\DBAL\Exception;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Exception\Repository\Derivation\DerivationNotDeletedException;
 use Keestash\Exception\Repository\Derivation\DerivationNotFoundException;
 use Keestash\Exception\Repository\NoRowsFoundException;
+use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\DTO\Derivation\IDerivation;
 use KSP\Core\DTO\User\IUser;
 
@@ -59,6 +61,20 @@ interface IDerivationRepository {
 
     public function getAll(): ArrayList;
 
+    /**
+     * @param IDerivation $derivation
+     * @return void
+     * @throws DerivationNotDeletedException
+     * @throws Exception
+     */
     public function remove(IDerivation $derivation): void;
+
+    /**
+     * @param DateTimeInterface $reference
+     * @return ArrayList
+     * @throws Exception
+     * @throws UserNotFoundException
+     */
+    public function getOlderThan(DateTimeInterface $reference): ArrayList;
 
 }

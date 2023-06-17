@@ -62,7 +62,7 @@ class Get implements RequestHandlerInterface {
                         , 'userId'       => $token->getUser()->getId()
                     ]
                 );
-                return new JsonResponse([], IResponse::NOT_ALLOWED);
+                return new JsonResponse([], IResponse::UNAUTHORIZED);
             }
 
             $list = $this->activityRepository->getAll((string) $appId, (string) $referenceKey);

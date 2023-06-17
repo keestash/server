@@ -25,6 +25,7 @@ use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Edge\Edge;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
@@ -38,6 +39,7 @@ use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -60,6 +62,7 @@ class Get implements RequestHandlerInterface {
         , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
         , private readonly PwnedBreachesRepository  $pwnedBreachesRepository
         , private readonly NodeService              $nodeService
+        , private readonly IResponseService         $responseService
     ) {
     }
 
@@ -79,7 +82,7 @@ class Get implements RequestHandlerInterface {
             $this->logger->info('invalid node id', ['nodeId' => $rootId]);
             return new JsonResponse(
                 [
-                    "responseCode" => 957586
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID)
                 ]
                 , IResponse::BAD_REQUEST
             );
@@ -160,6 +163,7 @@ class Get implements RequestHandlerInterface {
         }
 
         // regular cases: we are requesting one of the defaults. Check!
+        // @codeCoverageIgnoreStart
         switch ($id) {
             case DefaultEntry::DEFAULT_ENTRY_RECENTLY_MODIFIED:
 
@@ -200,6 +204,7 @@ class Get implements RequestHandlerInterface {
             default:
                 throw new PasswordManagerException('unknown operation ' . $id);
         }
+        // @codeCoverageIgnoreEnd
 
         $this->nodeEncryptionService->decryptNode($root);
         return $root;

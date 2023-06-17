@@ -22,12 +22,17 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Get;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Root;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
+use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\HTTP\IResponseService;
 use KST\Service\Service\UserService;
 use Ramsey\Uuid\Uuid;
 
@@ -94,6 +99,66 @@ class GetTest extends TestCase {
         $request  = $request->withAttribute(IToken::class, $token);
         $response = $get->handle($request);
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+    }
+
+    public function testWithInValidNodeId(): void {
+        /** @var IResponseService $responseService */
+        $responseService = $this->getService(IResponseService::class);
+        $password        = Uuid::uuid4()->toString();
+        $user            = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+        $headers         = $this->login($user, $password);
+        $response        = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::GET
+                    , str_replace(':node_id', Uuid::uuid4()->toString(), ConfigProvider::PASSWORD_MANAGER_NODE_GET_BY_ID)
+                    , []
+                    , $user
+                    , $headers
+                )
+            );
+
+        $data = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertTrue($data['responseCode'] === $responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID));
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+    }
+
+    public function testGetRoot(): void {
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::GET
+                    , str_replace(':node_id', Node::ROOT, ConfigProvider::PASSWORD_MANAGER_NODE_GET_BY_ID)
+                    , []
+                    , $user
+                    , $headers
+                )
+            );
+
+        $data = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::OK, $response);
+        $this->assertArrayHasKey('breadCrumb', $data);
+        $this->assertArrayHasKey('node', $data);
+        $this->assertArrayHasKey('type', $data['node']);
+        $this->assertArrayHasKey('user', $data['node']);
+        $this->assertArrayHasKey('id', $data['node']['user']);
+        $this->assertArrayHasKey('comments', $data);
+        $this->assertArrayHasKey('pwned', $data);
+        $this->assertTrue($data['node']['type'] === Node::ROOT);
+        $this->assertTrue($data['node']['user']['id'] === $user->getId());
+        $this->logout($headers, $user);
+        $this->removeUser($user);
     }
 
 }

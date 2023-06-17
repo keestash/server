@@ -33,6 +33,7 @@ use KST\Service\Core\Service\Email\EmailService;
 use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Service\HTTP\HTTPService;
+use KST\Service\Core\Service\LDAP\LDAPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Factory\Core\Backend\SQLiteBackendFactory;
 use KST\Service\Factory\Core\Builder\Validator\EmailValidatorFactory;
@@ -44,6 +45,7 @@ use KST\Service\Factory\Core\Service\Config\IniConfigServiceFactory;
 use KST\Service\Factory\Core\Service\Email\EmailServiceFactory;
 use KST\Service\Factory\Core\Service\File\Upload\FileServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
+use KST\Service\Factory\Core\Service\LDAP\LDAPServiceFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
 use KST\Service\Factory\Middleware\DeactivatedRouteMiddlewareFactory;
 use KST\Service\Factory\Service\UserServiceFactory;
@@ -72,4 +74,5 @@ return [
     , EmailValidator::class             => EmailValidatorFactory::class
     , DeactivatedRouteMiddleware::class => DeactivatedRouteMiddlewareFactory::class
     , SQLiteBackend::class              => SQLiteBackendFactory::class
+    , LDAPService::class                => LDAPServiceFactory::class
 ];

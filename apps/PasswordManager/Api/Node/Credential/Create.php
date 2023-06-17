@@ -88,7 +88,7 @@ class Create implements RequestHandlerInterface {
         if (
             // parent is not a folder
             !$parent instanceof Folder
-            // parent does not belong to me
+            // parent does not belong to me/not shared to me
             || false === $this->accessService->hasAccess($parent, $token->getUser())
         ) {
             return new JsonResponse([], IResponse::BAD_REQUEST);
@@ -113,7 +113,7 @@ class Create implements RequestHandlerInterface {
                 , "created credential"
             );
         } catch (Throwable $exception) {
-            $this->logger->error($exception->getMessage());
+            $this->logger->error('error while handling insert/decrypt/activity insert', ['exception' => $exception]);
             return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }
 

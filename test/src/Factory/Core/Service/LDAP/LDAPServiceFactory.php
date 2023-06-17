@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,15 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Command;
+namespace KST\Service\Factory\Core\Service\LDAP;
 
-use Symfony\Component\Console\Command\Command;
+use KSP\Core\Service\LDAP\ILDAPService;
+use KST\Service\Core\Service\LDAP\LDAPService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-interface IKeestashCommand {
+class LDAPServiceFactory implements FactoryInterface {
 
-    public const RETURN_CODE_NOT_RAN_SUCCESSFUL = Command::FAILURE;
-    public const RETURN_CODE_INVALID_ARGUMENT   = Command::INVALID;
-    public const RETURN_CODE_RAN_SUCCESSFUL     = Command::SUCCESS;
-    public const OPTION_NAME_SILENT             = 'silent';
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ILDAPService {
+        return new LDAPService(
+            $container->get(\Keestash\Core\Service\LDAP\LDAPService::class)
+        );
+    }
 
 }

@@ -121,4 +121,53 @@ class GetTest extends TestCase {
         return $path;
     }
 
+    public function testWithNoAccess(): void {
+        /** @var IActivityRepository $activityRepository */
+        $activityRepository = $this->getService(IActivityRepository::class);
+        $activityString     = Uuid::uuid4()->toString();
+        $data               = new ArrayList();
+        $data->add($activityString);
+
+        $firstUser = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+        );
+
+        $password   = Uuid::uuid4()->toString();
+        $secondUser = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $edge = $this->createAndInsertCredential(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
+            , $firstUser
+            , $this->getRootFolder($firstUser)
+        );
+
+        $activity = new Activity(
+            Uuid::uuid4()->toString()
+            , 'passwordManager'
+            , (string) $edge->getNode()->getId()
+            , $data
+            , new DateTimeImmutable()
+        );
+        $activityRepository->insert($activity);
+
+        $headers  = $this->login($secondUser, $password);
+        $response = $this->getApplication()->handle(
+            $this->getRequest(
+                IVerb::GET
+                , $this->preparePath($activity->getAppId(), $activity->getReferenceKey())
+                , []
+                , $secondUser
+                , $headers
+            )
+        );
+        $this->assertStatusCode(IResponse::UNAUTHORIZED, $response);
+    }
+
 }
