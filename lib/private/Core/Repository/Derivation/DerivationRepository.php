@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\Derivation;
 
+use DateTimeInterface;
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
@@ -227,6 +228,47 @@ class DerivationRepository implements IDerivationRepository {
             $this->logger->error('error retrieving all derivations', ['exception' => $e]);
             throw new DerivationNotDeletedException();
         }
+    }
+
+    /**
+     * @param DateTimeInterface $reference
+     * @return ArrayList
+     * @throws Exception
+     * @throws UserNotFoundException
+     */
+    public function getOlderThan(DateTimeInterface $reference): ArrayList {
+        $list         = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $derivations  = $queryBuilder
+            ->select(
+                [
+                    '`id`'
+                    , '`derivation`'
+                    , '`user_id`'
+                    , '`create_ts`'
+                ]
+            )
+            ->from('`derivation`')
+            ->andWhere('create_ts < ?')
+            ->orWhere('create_ts IS NULL')
+            ->setParameter(
+                0
+                , $this->dateTimeService->toYMDHIS($reference)
+            );
+
+        $derivations = $derivations->executeQuery()
+            ->fetchAllNumeric();
+        foreach ($derivations as $row) {
+            $list->add(
+                new Derivation(
+                    $row['id']
+                    , $this->userRepository->getUserById((string) $row['user_id'])
+                    , $row['derivation']
+                    , $this->dateTimeService->fromString((string) $row['create_ts'])
+                )
+            );
+        }
+        return $list;
     }
 
 }

@@ -23,8 +23,7 @@ namespace Keestash\Core\DTO\Event\Listener;
 
 use Doctrine\DBAL\Exception;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
-use Keestash\Exception\Repository\Derivation\DerivationNotFoundException;
-use Keestash\Exception\Repository\NoRowsFoundException;
+use Keestash\Exception\Repository\Derivation\DerivationNotDeletedException;
 use Keestash\Exception\Token\TokenNotDeletedException;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Token\IToken;
@@ -49,23 +48,47 @@ class RemoveOutdatedTokens implements IListener {
      * @throws Exception
      */
     public function execute(IEvent|ApplicationStartedEvent $event): void {
-        $tokens = $this->tokenRepository->getOlderThan(
-            $event->getDateTime()->modify('-1 day')
+        $reference   = $event->getDateTime()->modify('-1 day');
+        $tokens      = $this->tokenRepository->getOlderThan($reference);
+        $derivations = $this->derivationRepository->getOlderThan($reference);
+
+        $this->logger->debug(
+            'deleting outdated tokens/derivations'
+            , [
+                'reference'        => $reference
+                , 'tokenSize'      => $tokens->size()
+                , 'derivationSize' => $derivations->size()
+            ]
         );
 
         /** @var IToken $token */
         foreach ($tokens as $token) {
             try {
-                $this->tokenRepository->remove($token);
-                $this->derivationRepository->remove(
-                    $this->derivationRepository->get(
-                        $token->getUser()
-                    )
+                $this->logger->debug(
+                    'removing token'
+                    , [
+                        'createTs'    => $token->getCreateTs()
+                        , 'reference' => $reference
+                    ]
                 );
+                $this->tokenRepository->remove($token);
             } catch (TokenNotDeletedException $e) {
                 $this->logger->error('token not deleted', ['exception' => $e]);
-            } catch (NoRowsFoundException|DerivationNotFoundException $e) {
-                $this->logger->debug('no rows found', ['exception' => $e]);
+            }
+        }
+
+        foreach ($derivations as $derivation) {
+            try {
+                $this->logger->debug(
+                    'removing derivation'
+                    , [
+                        'createTs'    => $derivation->getCreateTs()
+                        , 'reference' => $reference
+                    ]
+                );
+                $this->derivationRepository->remove($derivation);
+            } catch (Exception|DerivationNotDeletedException $e) {
+                $this->logger->error('token not deleted', ['exception' => $e]);
             }
         }
     }

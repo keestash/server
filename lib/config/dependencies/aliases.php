@@ -71,6 +71,7 @@ use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
+use Keestash\Core\Service\HTTP\ResponseService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\L10N\GetText;
@@ -130,6 +131,7 @@ use KSP\Core\Service\File\RawFile\IRawFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\Input\ISanitizerService;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\L10N\IL10N;
@@ -212,6 +214,7 @@ return [
     , IPermissionService::class                         => PermissionService::class
     , IRoleService::class                               => RoleService::class
     , IStringMaskService::class                         => StringMaskService::class
+    , IResponseService::class                           => ResponseService::class
 
     , IL10N::class                                      => GetText::class
     , ILoaderService::class                             => LoaderService::class

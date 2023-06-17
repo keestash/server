@@ -28,6 +28,7 @@ return [
     ConfigProvider::EVENTS                                              => require __DIR__ . '/events.php',
     ConfigProvider::COMMANDS                                            => require __DIR__ . '/commands.php',
     ConfigProvider::PERMISSIONS                                         => require __DIR__ . '/permissions.php',
+    ConfigProvider::RESPONSE_CODES                                      => require __DIR__ . '/response_codes.php',
     \KSA\PasswordManager\ConfigProvider::FILE_UPLOAD_ALLOWED_EXTENSIONS => require __DIR__ . '/allowed_extensions.php',
     ConfigProvider::TEMPLATES                                           => [
         'paths' => [
@@ -36,9 +37,9 @@ return [
     ],
     ConfigProvider::APP_LIST                                            => [
         \KSA\PasswordManager\ConfigProvider::APP_ID => [
-            ConfigProvider::APP_ORDER      => 0,
-            ConfigProvider::APP_NAME       => 'Password Manager',
-            ConfigProvider::APP_VERSION    => 1,
+            ConfigProvider::APP_ORDER   => 0,
+            ConfigProvider::APP_NAME    => 'Password Manager',
+            ConfigProvider::APP_VERSION => 1,
         ],
     ],
 

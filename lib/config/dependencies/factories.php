@@ -106,6 +106,7 @@ use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Keestash\Core\Service\HTTP\HTTPService;
 use Keestash\Core\Service\HTTP\Input\SanitizerService;
 use Keestash\Core\Service\HTTP\JWTService;
+use Keestash\Core\Service\HTTP\ResponseService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\LDAP\LDAPService;
@@ -194,6 +195,7 @@ use Keestash\Factory\Core\Service\File\RawFile\RawFileServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\CORS\ProjectConfigurationFactory;
 use Keestash\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
+use Keestash\Factory\Core\Service\HTTP\ResponseServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\LDAP\LDAPServiceFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
@@ -339,27 +341,28 @@ return [
     , IniConfigService::class                                 => InvokableFactory::class
     , StringService::class                                    => InvokableFactory::class
     , AccessService::class                                    => InvokableFactory::class
-    , CSVService::class                    => CSVServiceFactory::class
-    , MimeTypeService::class               => InvokableFactory::class
-    , QueueService::class                  => QueueServiceFactory::class
-    , RouteService::class                  => InvokableFactory::class
-    , LDAPService::class                   => LDAPServiceFactory::class
-    , Base64Service::class                 => InvokableFactory::class
-    , DefaultPaymentService::class         => InvokableFactory::class
-    , DerivationService::class             => DerivationServiceFactory::class
-    , PermissionService::class             => PermissionServiceFactory::class
-    , RoleService::class                   => RoleServiceFactory::class
-    , StringMaskService::class             => InvokableFactory::class
+    , CSVService::class                                       => CSVServiceFactory::class
+    , MimeTypeService::class                                  => InvokableFactory::class
+    , QueueService::class                                     => QueueServiceFactory::class
+    , RouteService::class                                     => InvokableFactory::class
+    , LDAPService::class                                      => LDAPServiceFactory::class
+    , Base64Service::class                                    => InvokableFactory::class
+    , DefaultPaymentService::class                            => InvokableFactory::class
+    , DerivationService::class                                => DerivationServiceFactory::class
+    , PermissionService::class                                => PermissionServiceFactory::class
+    , RoleService::class                                      => RoleServiceFactory::class
+    , StringMaskService::class                                => InvokableFactory::class
+    , ResponseService::class                                  => ResponseServiceFactory::class
 
-    , GetText::class                       => InvokableFactory::class
-    , \doganoo\PHPUtil\HTTP\Session::class => InvokableFactory::class
-    , HTMLPurifier::class                  => InvokableFactory::class
+    , GetText::class                                          => InvokableFactory::class
+    , \doganoo\PHPUtil\HTTP\Session::class                    => InvokableFactory::class
+    , HTMLPurifier::class                                     => InvokableFactory::class
 
     // command
-    , WorkerRunner::class                  => WorkerRunnerFactory::class
-    , ListEvents::class                    => EventsFactory::class
-    , QueueList::class                     => QueueListFactory::class
-    , QueueDelete::class                   => QueueDeleteFactory::class
+    , WorkerRunner::class                                     => WorkerRunnerFactory::class
+    , ListEvents::class                                       => EventsFactory::class
+    , QueueList::class                                        => QueueListFactory::class
+    , QueueDelete::class                                      => QueueDeleteFactory::class
     , Reset::class                                            => ResetFactory::class
     , ListAll::class                                          => ListAllFactory::class
     , ClearDerivation::class                                  => ClearDerivationFactory::class

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use Keestash\Core\Service\Cache\RedisService as RealRedisService;
 use Keestash\Middleware\RateLimiterMiddleware;
+use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
 use KSP\Core\Service\Config\IIniConfigService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
@@ -30,6 +31,7 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
+use KSP\Core\Service\LDAP\ILDAPService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Core\Backend\SQLiteBackend;
 use KST\Service\Core\Cache\RedisService;
@@ -40,6 +42,7 @@ use KST\Service\Core\Service\Email\EmailService;
 use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Service\HTTP\HTTPService;
+use KST\Service\Core\Service\LDAP\LDAPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Middleware\DeactivatedRouteMiddleware;
 use KST\Service\Middleware\RateLimiterMiddleware as TestRateLimiter;
@@ -57,5 +60,6 @@ return [
     , RateLimiterMiddleware::class                           => TestRateLimiter::class
     , \Keestash\Middleware\DeactivatedRouteMiddleware::class => DeactivatedRouteMiddleware::class
     , ISQLBackend::class                                     => SQLiteBackend::class
-    , \KSP\Core\Backend\IBackend::class                      => ISQLBackend::class
+    , IBackend::class                                        => ISQLBackend::class
+    , ILDAPService::class                                    => LDAPService::class
 ];

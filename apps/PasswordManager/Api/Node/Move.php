@@ -75,12 +75,13 @@ class Move implements RequestHandlerInterface {
             );
         }
 
+        if ($node->getId() === $targetNode->getId()) {
+            $this->logger->warning('cannot move node to itself', ['nodeId' => $node->getId()]);
+            return new JsonResponse([], IResponse::CONFLICT);
+        }
+
         if (false === $this->accessService->hasAccess($targetNode, $token->getUser())) {
-            return new JsonResponse(
-                [
-                    "message" => "target does not exist"
-                ]
-                , IResponse::FORBIDDEN);
+            return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
         if (false === ($targetNode instanceof Folder)) {

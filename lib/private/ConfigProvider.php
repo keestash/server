@@ -59,6 +59,7 @@ final class ConfigProvider {
     public const COUNTRY_CODES        = 'codes.country';
     public const COUNTRY_PREFIXES     = 'prefixes.country';
     public const PERMISSIONS          = 'permissions';
+    public const RESPONSE_CODES       = 'codes.response';
     public const PERMISSION_MAPPING   = 'mapping.permissions';
     public const PERMISSION_FREE      = 'free.permissions';
     public const PERMISSION_LIST      = 'list.permission';

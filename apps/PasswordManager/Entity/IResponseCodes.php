@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,15 +19,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Command;
+namespace KSA\PasswordManager\Entity;
 
-use Symfony\Component\Console\Command\Command;
+interface IResponseCodes {
 
-interface IKeestashCommand {
-
-    public const RETURN_CODE_NOT_RAN_SUCCESSFUL = Command::FAILURE;
-    public const RETURN_CODE_INVALID_ARGUMENT   = Command::INVALID;
-    public const RETURN_CODE_RAN_SUCCESSFUL     = Command::SUCCESS;
-    public const OPTION_NAME_SILENT             = 'silent';
+    public const RESPONSE_CODE_INVALID_NODE_ID = 957586;
+    public const RESPONSE_NAME_INVALID_NODE_ID = 'id.node.invalid.code.response';
 
 }

@@ -961,6 +961,26 @@ parameters:
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
 
 		-
+			message: "#^Offset 'create_ts' does not exist on array\\<int, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
+
+		-
+			message: "#^Offset 'derivation' does not exist on array\\<int, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\<int, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
+
+		-
+			message: "#^Offset 'user_id' does not exist on array\\<int, mixed\\>\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
+
+		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/EncryptionKey/KeyRepository.php
