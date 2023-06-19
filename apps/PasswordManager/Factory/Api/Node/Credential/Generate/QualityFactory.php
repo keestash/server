@@ -24,7 +24,9 @@ namespace KSA\PasswordManager\Factory\Api\Node\Credential\Generate;
 use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
+use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Log\LoggerInterface;
 
 class QualityFactory implements FactoryInterface {
 
@@ -34,6 +36,8 @@ class QualityFactory implements FactoryInterface {
         , ?array           $options = null): Quality {
         return new Quality(
             $container->get(IPasswordService::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(IResponseService::class)
         );
     }
 

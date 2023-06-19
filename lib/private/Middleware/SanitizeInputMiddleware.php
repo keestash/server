@@ -36,7 +36,6 @@ class SanitizeInputMiddleware implements MiddlewareInterface {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-
         $queryParams    = $request->getQueryParams();
         $newQueryParams = [];
         foreach ($queryParams as $key => $value) {

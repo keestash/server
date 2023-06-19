@@ -26,6 +26,7 @@ use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class DerivedCredentialServiceFactory implements FactoryInterface {
 
@@ -36,6 +37,7 @@ class DerivedCredentialServiceFactory implements FactoryInterface {
     ): ICredentialService {
         return new DerivedCredentialService(
             $container->get(IDerivationRepository::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

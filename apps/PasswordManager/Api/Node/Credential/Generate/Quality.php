@@ -23,25 +23,35 @@ namespace KSA\PasswordManager\Api\Node\Credential\Generate;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Encryption\Password\Password;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
+use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Quality implements RequestHandlerInterface {
 
-    private IPasswordService $passwordService;
-
-    public function __construct(IPasswordService $passwordService) {
-        $this->passwordService = $passwordService;
+    public function __construct(
+        private readonly IPasswordService   $passwordService
+        , private readonly LoggerInterface  $logger
+        , private readonly IResponseService $responseService
+    ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $value = $request->getAttribute('value');
 
         if (null === $value) {
-            return new JsonResponse([], IResponse::BAD_REQUEST);
+            $this->logger->warning('no value given', ['requestAttributes' => $request->getAttributes()]);
+            return new JsonResponse(
+                [
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NO_QUALITY_VALUE_PROVIDED)
+                ]
+                , IResponse::BAD_REQUEST
+            );
         }
 
         $password = new Password();
@@ -53,6 +63,7 @@ class Quality implements RequestHandlerInterface {
         );
 
         if ($password->getEntropy() === INF || $password->getEntropy() === (INF * -1)) {
+            $this->logger->warning('invalid entropy', ['result' => $password]);
             $password->setValue('');
             $password->setEntropy(0);
             $password->setQuality(-1);
@@ -60,23 +71,23 @@ class Quality implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                'quality' => $password->getQuality()
+                'quality' => $password
             ]
             , IResponse::OK
         );
     }
 
     private function addCharacterSets(string $val, Password $password): Password {
-        if (false !== strpos(IPasswordService::DIGITS, $val)) {
+        if (true === str_contains(IPasswordService::DIGITS, $val)) {
             $password->addCharacterSet(IPasswordService::DIGITS);
         }
-        if (false !== strpos(IPasswordService::SPECIAL_CHARACTERS, $val)) {
+        if (true === str_contains(IPasswordService::SPECIAL_CHARACTERS, $val)) {
             $password->addCharacterSet(IPasswordService::SPECIAL_CHARACTERS);
         }
-        if (false !== strpos(IPasswordService::UPPER_CASE_CHARACTERS, $val)) {
+        if (true === str_contains(IPasswordService::UPPER_CASE_CHARACTERS, $val)) {
             $password->addCharacterSet(IPasswordService::UPPER_CASE_CHARACTERS);
         }
-        if (false !== strpos(IPasswordService::LOWER_CASE_CHARACTERS, $val)) {
+        if (true === str_contains(IPasswordService::LOWER_CASE_CHARACTERS, $val)) {
             $password->addCharacterSet(IPasswordService::LOWER_CASE_CHARACTERS);
         }
         return $password;
