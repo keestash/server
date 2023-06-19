@@ -23,5 +23,6 @@ declare(strict_types=1);
 use KSA\PasswordManager\Entity\IResponseCodes;
 
 return [
-    IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID => IResponseCodes::RESPONSE_CODE_INVALID_NODE_ID
+    IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID             => IResponseCodes::RESPONSE_CODE_INVALID_NODE_ID
+    , IResponseCodes::RESPONSE_NAME_NO_QUALITY_VALUE_PROVIDED => IResponseCodes::RESPONSE_CODE_NO_QUALITY_VALUE_PROVIDED
 ];

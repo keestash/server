@@ -47,7 +47,7 @@ class QualityTest extends TestCase {
         $responseBody = $this->getResponseBody($response);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
-        $this->assertTrue($responseBody['quality'] === -1);
+        $this->assertTrue($responseBody['quality']['quality'] === -1);
     }
 
 }

@@ -432,7 +432,7 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
-			count: 2
+			count: 3
 			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
 
 		-
