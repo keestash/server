@@ -23,7 +23,9 @@ namespace KSA\PasswordManager\Entity;
 
 interface IResponseCodes {
 
-    public const RESPONSE_CODE_INVALID_NODE_ID = 957586;
-    public const RESPONSE_NAME_INVALID_NODE_ID = 'id.node.invalid.code.response';
+    public const RESPONSE_CODE_INVALID_NODE_ID           = 957586;
+    public const RESPONSE_NAME_INVALID_NODE_ID           = 'id.node.invalid.code.response';
+    public const RESPONSE_CODE_NO_QUALITY_VALUE_PROVIDED = 879599;
+    public const RESPONSE_NAME_NO_QUALITY_VALUE_PROVIDED = 'provided.value.quality.no';
 
 }

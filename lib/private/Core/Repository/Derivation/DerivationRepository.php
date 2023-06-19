@@ -30,6 +30,7 @@ use Keestash\Exception\Repository\Derivation\DerivationNotAddedException;
 use Keestash\Exception\Repository\Derivation\DerivationNotDeletedException;
 use Keestash\Exception\Repository\Derivation\DerivationNotFoundException;
 use Keestash\Exception\Repository\NoRowsFoundException;
+use Keestash\Exception\Repository\TooManyRowsException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Derivation\IDerivation;
@@ -147,8 +148,15 @@ class DerivationRepository implements IDerivationRepository {
             $derivationCount = count($derivations);
 
             if (0 === $derivationCount) {
+                $this->backend->getConnection()->rollBack();
                 throw new NoRowsFoundException();
             }
+
+            if ($derivationCount > 1) {
+                $this->backend->getConnection()->rollBack();
+                throw new TooManyRowsException();
+            }
+
             $this->backend->getConnection()->commit();
 
             return new Derivation(

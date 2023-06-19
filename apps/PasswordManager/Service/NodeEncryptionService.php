@@ -33,18 +33,11 @@ use Psr\Log\LoggerInterface;
 
 class NodeEncryptionService {
 
-    private EncryptionService $encryptionService;
-    private IKeyService       $keyService;
-    private LoggerInterface   $logger;
-
     public function __construct(
-        EncryptionService $encryptionService
-        , IKeyService     $keyService
-        , LoggerInterface $logger
+        private readonly EncryptionService $encryptionService
+        , private readonly IKeyService     $keyService
+        , private readonly LoggerInterface $logger
     ) {
-        $this->encryptionService = $encryptionService;
-        $this->keyService        = $keyService;
-        $this->logger            = $logger;
     }
 
     /**
@@ -54,24 +47,48 @@ class NodeEncryptionService {
      * @throws EncryptionFailedException
      */
     public function decryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
-
+        $this->logger->debug(
+            'start decrypt node'
+            , [
+                'nodeId'      => $node->getId()
+                , 'keyHolder' => $parentKeyHolder?->getId()
+            ]
+        );
         if ($node instanceof Credential) {
+            $this->logger->debug('node is credential, going to decrypt');
             $this->decryptCredential($node, $parentKeyHolder);
             return;
         }
+
+        $this->logger->debug(
+            'node is folder, going to recursively work'
+            , [
+                'type'       => $node::class
+                , 'edgeSize' => $node->getEdges()->length()
+            ]
+        );
 
         /** @var Edge $edge */
         foreach ($node->getEdges() as $edge) {
 
             $childNode = $edge->getNode();
             if ($childNode instanceof Folder) {
+                $this->logger->debug('childNode is a folder, going to recursive work');
                 $this->decryptNode($childNode, $childNode->getOrganization());
                 continue;
             }
 
+            $this->logger->debug('node is credential, going to decrypt (2)');
             $this->decryptCredential($childNode, $parentKeyHolder);
         }
 
+        $this->logger->debug(
+            'end decrypt node'
+            , [
+                'nodeId'      => $node->getId()
+                , 'keyHolder' => $parentKeyHolder?->getId()
+            ]
+        );
     }
 
     /**
@@ -81,16 +98,32 @@ class NodeEncryptionService {
      * @throws EncryptionFailedException
      */
     private function decryptCredential(Credential &$credential, ?IKeyHolder $parentKeyHolder = null): void {
-
+        $this->logger->debug(
+            'start decryptCredential'
+            , [
+                'credentialId' => $credential->getId()
+                , 'keyHolder'  => $parentKeyHolder?->getId()
+            ]
+        );
         $keyHolder = $credential->getUser();
         // 1. if credential has organization, set:
         if (null !== $credential->getOrganization()) {
+            $this->logger->debug('keyholder is organization, using the organization key to decrypt', ['organizationId' => $credential->getOrganization()->getId()]);
             $keyHolder = $credential->getOrganization();
         } else if (null !== $parentKeyHolder) {
+            $this->logger->debug('parentKeyholder is not null, using this one', ['parentKeyHolder' => $parentKeyHolder->getId(), 'type' => $parentKeyHolder::class]);
             $keyHolder = $parentKeyHolder;
         }
 
         $key = $this->keyService->getKey($keyHolder);
+        $this->logger->debug(
+            'retrieved key for keyholder'
+            , [
+                'keyHolderId' => $keyHolder->getId()
+                , 'keyHolder' => $keyHolder::class
+                , 'keyId'     => $key->getId()
+            ]
+        );
 
         $credential->getUsername()
             ->setPlain(
@@ -123,6 +156,7 @@ class NodeEncryptionService {
                     , (string) $credential->getEntropy()->getEncrypted()
                 )
             );
+        $this->logger->debug('decryption done');
 
     }
 

@@ -51,7 +51,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_ATTACHMENTS_GET_BY_NODE_ID = '/password_manager/attachments/get/:nodeId[/]';
     public const PASSWORD_MANAGER_ATTACHMENTS_REMOVE         = '/password_manager/attachments/remove[/]';
 
-    public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value[/]";
+    public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value";
 
     public const PASSWORD_MANAGER_COMMENT_ADD            = '/password_manager/comment/add[/]';
     public const PASSWORD_MANAGER_COMMENT_GET_BY_NODE_ID = '/password_manager/comment/get/:nodeId/[:sortField/][:sortDirection/]';

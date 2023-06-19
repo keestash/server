@@ -28,6 +28,7 @@ use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class CredentialService
@@ -39,6 +40,7 @@ class DerivedCredentialService implements ICredentialService {
 
     public function __construct(
         private readonly IDerivationRepository $derivationRepository
+        , private readonly LoggerInterface     $logger
     ) {
     }
 
@@ -47,6 +49,15 @@ class DerivedCredentialService implements ICredentialService {
             throw new UserException('currently, we support users only');
         }
         $derivation = $this->derivationRepository->get($keyHolder);
+        $this->logger->debug(
+            'derivation result'
+            , [
+                'id'         => $derivation->getId()
+                , 'user'     => $derivation->getUser()
+                , 'derived'  => $derivation->getDerived()
+                , 'createTs' => $derivation->getCreateTs()
+            ]
+        );
         $credential = new Credential();
         $credential->setKeyHolder($keyHolder);
         $credential->setSecret($derivation->getDerived());
