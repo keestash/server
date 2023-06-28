@@ -44,6 +44,7 @@ use KSA\PasswordManager\Api\Node\Share\Share;
 use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Dump;
+use KSA\PasswordManager\Command\Node\DumpAll;
 use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Command\Node\ImportPwned;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
@@ -75,6 +76,7 @@ use KSA\PasswordManager\Factory\Api\Node\Share\ShareFactory;
 use KSA\PasswordManager\Factory\Api\Node\ShareableUsersFactory;
 use KSA\PasswordManager\Factory\Command\CreateCredentialFactory;
 use KSA\PasswordManager\Factory\Command\CreateFolderFactory;
+use KSA\PasswordManager\Factory\Command\DumpAllFactory;
 use KSA\PasswordManager\Factory\Command\DumpFactory;
 use KSA\PasswordManager\Factory\Command\ImportPwnedFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFactory;
@@ -219,6 +221,7 @@ return [
         CreateFolder::class                                                                  => CreateFolderFactory::class,
         CreateCredential::class                                                              => CreateCredentialFactory::class,
         Dump::class                                                                          => DumpFactory::class,
+        DumpAll::class                                                                       => DumpAllFactory::class,
         ImportPwned::class                                                                   => ImportPwnedFactory::class,
 
         // repository
