@@ -19,24 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\Derivation;
+namespace KSA\PasswordManager\Factory\Api\Node\Folder;
 
-use Keestash\Core\Repository\Instance\InstanceDB;
-use Keestash\Core\Service\Derivation\DerivationService;
-use KSP\Core\Service\Derivation\IDerivationService;
+use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
+use KSA\PasswordManager\Service\Node\NodeService;
+use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-class DerivationServiceFactory implements FactoryInterface {
+class CreateByPathFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): IDerivationService {
-        return new DerivationService(
-            $container->get(InstanceDB::class)
+    ): CreateByPath {
+        return new CreateByPath(
+            $container->get(NodeService::class)
+            , $container->get(IResponseService::class)
             , $container->get(LoggerInterface::class)
         );
     }

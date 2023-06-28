@@ -216,9 +216,14 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
 
 		-
-			message: "#^Parameter \\#1 \\$parent of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Folder\\\\Create\\:\\:getParentNode\\(\\) expects string, string\\|null given\\.$#"
+			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Folder\\\\Folder\\|null\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Api/Node/Folder/CreateByPath.php
+
+		-
+			message: "#^Cannot call method getName\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Folder\\\\Folder\\|null\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Folder/Create.php
+			path: ../../apps/PasswordManager/Api/Node/Folder/CreateByPath.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\:\\:prepareNode\\(\\) expects string, mixed given\\.$#"

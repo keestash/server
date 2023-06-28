@@ -34,7 +34,7 @@ final class ConfigProvider {
 
     public const PASSWORD_MANAGER_NODE_DELETE                          = '/password_manager/node/delete[/]';
     public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE           = "/password_manager/credential/password/update/";
-    public const PASSWORD_MANAGER_CREDENTIAL_CREATE                    = '/password_manager/node/credential/create[/]';
+    public const PASSWORD_MANAGER_CREDENTIAL_CREATE                    = '/password_manager/node/credential/create';
     public const PASSWORD_MANAGER_CREDENTIAL_UPDATE                    = '/password_manager/credential/update[/]';
     public const PASSWORD_MANAGER_CREDENTIAL_GET_BY_NODE_ID            = '/password_manager/credential/get/:node_id[/]';
     public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET       = '/password_manager/credential/additional_data/get/:credentialId';
@@ -67,7 +67,8 @@ final class ConfigProvider {
 
     public const PASSWORD_MANAGER_USERS_SHAREABLE = '/password_manager/users/shareable/:nodeId/:query/';
 
-    public const PASSWORD_MANAGER_NODE_CREATE = '/password_manager/node/create';
+    public const PASSWORD_MANAGER_NODE_CREATE           = '/password_manager/node/create';
+    public const PASSWORD_MANAGER_FOLDER_CREATE_BY_PATH = '/password_manager/node/folder/create/path';
 
     public const APP_ID                         = 'passwordManager';
     public const FILE_UPLOAD_ALLOWED_EXTENSIONS = 'extensions.allowed.upload.file';

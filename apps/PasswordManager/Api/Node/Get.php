@@ -144,7 +144,7 @@ class Get implements RequestHandlerInterface {
             $node = $this->nodeRepository->getNode(
                 (int) $id
                 , 0
-                , 2
+                , 1
             );
             $this->nodeEncryptionService->decryptNode($node);
             return $node;

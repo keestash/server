@@ -31,6 +31,7 @@ use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Api\Node\Delete;
+use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
@@ -61,6 +62,7 @@ use KSA\PasswordManager\Factory\Api\Node\Credential\Generate\QualityFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdateFactory as UpdatePasswordFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
+use KSA\PasswordManager\Factory\Api\Node\Folder\CreateByPathFactory;
 use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
@@ -188,6 +190,7 @@ return [
         // ---- Node
         // ---- ---- Folder
         \KSA\PasswordManager\Api\Node\Folder\Create::class                                   => \KSA\PasswordManager\Factory\Api\Node\Folder\CreateFactory::class,
+        CreateByPath::class                                                                  => CreateByPathFactory::class,
 
         // service
         NodeEncryptionService::class                                                         => NodeEncryptionServiceFactory::class,

@@ -27,5 +27,11 @@ interface IResponseCodes {
     public const RESPONSE_NAME_INVALID_NODE_ID           = 'id.node.invalid.code.response';
     public const RESPONSE_CODE_NO_QUALITY_VALUE_PROVIDED = 879599;
     public const RESPONSE_NAME_NO_QUALITY_VALUE_PROVIDED = 'provided.value.quality.no';
+    public const RESPONSE_CODE_PARENT_NODE_NOT_FOUND     = 385262;
+    public const RESPONSE_NAME_PARENT_NODE_NOT_FOUND     = 'found.not.node.parent';
+    public const RESPONSE_CODE_INVALID_FOLDER_NAME       = 805934;
+    public const RESPONSE_NAME_INVALID_FOLDER_NAME       = 'name.folder.invalid';
+    public const RESPONSE_CODE_INVALID_FOLDER_DELIMITER  = 343454;
+    public const RESPONSE_NAME_INVALID_FOLDER_DELIMITER  = 'delimiter.folder.invalid';
 
 }
