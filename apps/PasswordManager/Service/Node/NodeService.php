@@ -23,8 +23,12 @@ namespace KSA\PasswordManager\Service\Node;
 
 use DateTime;
 use DateTimeImmutable;
+use DateTimeInterface;
+use Doctrine\DBAL\Exception;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\Edge\Edge;
+use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Event\Node\NodeRemovedEvent;
@@ -171,6 +175,105 @@ class NodeService {
             return ((int) $nodeId) > 0;
         }
         return $nodeId === Node::ROOT;
+    }
+
+    public function getParentNode(string $parent, IUser $user): Folder {
+
+        if (Node::ROOT === $parent) {
+            return $this->nodeRepository->getRootForUser($user);
+        }
+
+        $node = $this->nodeRepository->getNode((int) $parent);
+
+        if ($node instanceof Folder) {
+            return $node;
+        }
+
+        throw new PasswordManagerException();
+    }
+
+    /**
+     * @param string|int $nodeId
+     * @param IUser      $user
+     * @param int        $depth
+     * @param int        $maxDepth
+     * @return Node
+     * @throws InvalidNodeTypeException
+     * @throws PasswordManagerException
+     * @throws Exception
+     * @throws UserNotFoundException
+     */
+    public function getNode(
+        string|int $nodeId
+        , IUser    $user
+        , int      $depth = 0
+        , int      $maxDepth = 1
+    ): Node {
+        if (false === $this->isValidNodeId((string) $nodeId)) {
+            throw new PasswordManagerException();
+        }
+        if (true === is_string($nodeId)) {
+            return $this->nodeRepository->getRootForUser($user);
+        }
+        return $this->nodeRepository->getNode($nodeId, $depth, $maxDepth);
+    }
+
+    /**
+     * @param string|int $nodeId
+     * @param IUser      $user
+     * @param int        $depth
+     * @param int        $maxDepth
+     * @return Folder
+     * @throws Exception
+     * @throws InvalidNodeTypeException
+     * @throws PasswordManagerException
+     * @throws UserNotFoundException
+     */
+    public function getFolder(
+        string|int $nodeId
+        , IUser    $user
+        , int      $depth = 0
+        , int      $maxDepth = 1
+    ): Folder {
+        $node = $this->getNode($nodeId, $user, $depth, $maxDepth);
+        if (false === ($node instanceof Folder)) {
+            throw new PasswordManagerException();
+        }
+        return $node;
+    }
+
+    public function createFolder(
+        string              $name
+        , IUser             $user
+        , DateTimeInterface $createTs
+        , Folder            $parent
+    ): Edge {
+        $folder = new Folder();
+        $folder->setUser($user);
+        $folder->setName($name);
+        $folder->setType(Node::FOLDER);
+        $folder->setCreateTs($createTs);
+
+        $lastId = $this->nodeRepository->addFolder($folder);
+
+        if (null === $lastId || 0 === $lastId) {
+            throw new PasswordManagerException();
+        }
+
+        $folder->setId($lastId);
+
+        $edge = $this->prepareRegularEdge(
+            $folder
+            , $parent
+            , $user
+        );
+
+        return $this->nodeRepository->addEdge($edge);
+    }
+
+    public function validFolderName(string $name): bool {
+        if ("" === $name) return false;
+        return true;
     }
 
 }

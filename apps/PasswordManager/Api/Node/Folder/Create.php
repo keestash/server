@@ -62,12 +62,15 @@ class Create implements RequestHandlerInterface {
             $parent = (string) $parent;
         }
 
-        if (false === $this->isValid($name) || false === $this->isValid($parent)) {
+        if (
+            false === $this->nodeService->validFolderName((string) $name)
+            || false === $this->nodeService->validFolderName((string) $parent)
+        ) {
             return new JsonResponse(['invalid name or parent'], IResponse::BAD_REQUEST);
         }
 
         try {
-            $parentNode = $this->getParentNode($parent, $token);
+            $parentNode = $this->nodeService->getParentNode((string) $parent, $token->getUser());
         } catch (PasswordManagerException $exception) {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
@@ -106,27 +109,6 @@ class Create implements RequestHandlerInterface {
             ]
             , IResponse::OK
         );
-    }
-
-    private function isValid(?string $value): bool {
-        if (null === $value) return false;
-        if ("" === $value) return false;
-        return true;
-    }
-
-    private function getParentNode(string $parent, IToken $token): Folder {
-
-        if (Node::ROOT === $parent) {
-            return $this->nodeRepository->getRootForUser($token->getUser());
-        }
-
-        $node = $this->nodeRepository->getNode((int) $parent);
-
-        if ($node instanceof Folder) {
-            return $node;
-        }
-
-        throw new PasswordManagerException();
     }
 
 }

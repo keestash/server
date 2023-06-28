@@ -25,6 +25,7 @@ use Keestash\Api\Response\JsonResponse;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Node\Node as NodeObject;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
@@ -35,6 +36,7 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -56,6 +58,7 @@ class Create implements RequestHandlerInterface {
         , private readonly NodeEncryptionService $nodeEncryptionService
         , private readonly AccessService         $accessService
         , private readonly IActivityService      $activityService
+        , private readonly IResponseService      $responseService
     ) {
     }
 
@@ -81,8 +84,11 @@ class Create implements RequestHandlerInterface {
         try {
             $parent = $this->getParentNode((string) $folder, $token);
         } catch (PasswordManagerException $exception) {
-            $this->logger->error('exception occured while parent request', ['exception' => $exception]);
-            return new JsonResponse([], IResponse::NOT_FOUND);
+            $this->logger->error('exception occured while parent request', ['exception' => $exception, 'parent' => $folder]);
+            return new JsonResponse(
+                ['responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_PARENT_NODE_NOT_FOUND)]
+                , IResponse::NOT_FOUND
+            );
         }
 
         if (

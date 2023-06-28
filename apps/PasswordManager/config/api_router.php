@@ -31,6 +31,7 @@ use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Delete;
+use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
 use KSA\PasswordManager\Api\Node\Get as NodeGet;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
@@ -217,6 +218,12 @@ return [
             , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Folder\Create::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Folder\Create::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_FOLDER_CREATE_BY_PATH
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, CreateByPath::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => CreateByPath::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE

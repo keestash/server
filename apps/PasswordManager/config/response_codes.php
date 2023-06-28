@@ -25,4 +25,5 @@ use KSA\PasswordManager\Entity\IResponseCodes;
 return [
     IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID             => IResponseCodes::RESPONSE_CODE_INVALID_NODE_ID
     , IResponseCodes::RESPONSE_NAME_NO_QUALITY_VALUE_PROVIDED => IResponseCodes::RESPONSE_CODE_NO_QUALITY_VALUE_PROVIDED
+    , IResponseCodes::RESPONSE_NAME_PARENT_NODE_NOT_FOUND     => IResponseCodes::RESPONSE_CODE_PARENT_NODE_NOT_FOUND
 ];
