@@ -87,6 +87,7 @@ class CreateConfig extends KeestashCommand {
             new PDO("mysql:host=$host;port=$port;dbname=$schemaName", $user, $password);
         } catch (Exception $exception) {
             $this->logger->error('error testing database connection', ['exception' => $exception]);
+            $this->writeError('Error. Could not connect to database', $output);
             return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
