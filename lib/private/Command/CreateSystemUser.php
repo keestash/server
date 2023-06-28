@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Command;
 
-use KSA\InstallInstance\Exception\InstallInstanceException;
 use KSA\Instance\Exception\InstanceException;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\File\IFileRepository;

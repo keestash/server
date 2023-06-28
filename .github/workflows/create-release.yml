@@ -37,7 +37,7 @@ jobs:
           configuration: test/phpunit.xml
           php_extensions: intl
           php_version: 8.1.13
-          memory_limit: 256M
+          memory_limit: 512M
           version: 9.6.4
           bootstrap: test/bootstrap.php
 
