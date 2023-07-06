@@ -86,6 +86,7 @@ use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
+use Keestash\Core\Service\Core\Exception\ExceptionHandlerService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
@@ -182,6 +183,7 @@ use Keestash\Factory\Core\Service\App\AppServiceFactory;
 use Keestash\Factory\Core\Service\App\InstallerServiceFactory;
 use Keestash\Factory\Core\Service\App\LoaderServiceFactory;
 use Keestash\Factory\Core\Service\Config\ConfigServiceFactory;
+use Keestash\Factory\Core\Service\Core\Exception\ExceptionHandlerServiceFactory;
 use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
 use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
 use Keestash\Factory\Core\Service\Derivation\DerivationServiceFactory;
@@ -355,6 +357,7 @@ return [
     , RoleService::class                                      => RoleServiceFactory::class
     , StringMaskService::class                                => InvokableFactory::class
     , ResponseService::class                                  => ResponseServiceFactory::class
+    , ExceptionHandlerService::class                          => ExceptionHandlerServiceFactory::class
 
     , GetText::class                                          => InvokableFactory::class
     , \doganoo\PHPUtil\HTTP\Session::class                    => InvokableFactory::class

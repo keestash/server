@@ -126,7 +126,6 @@ class DerivationRepository implements IDerivationRepository {
      * @param IUser $user
      * @return IDerivation
      * @throws DerivationNotFoundException
-     * @throws NoRowsFoundException
      */
     public function get(IUser $user): IDerivation {
         try {
@@ -149,11 +148,19 @@ class DerivationRepository implements IDerivationRepository {
 
             if (0 === $derivationCount) {
                 $this->backend->getConnection()->rollBack();
+                $this->logger->info(
+                    'no derivation found for user',
+                    ['derivationCount' => $derivationCount, 'userId' => $user->getId()]
+                );
                 throw new NoRowsFoundException();
             }
 
             if ($derivationCount > 1) {
                 $this->backend->getConnection()->rollBack();
+                $this->logger->info(
+                    'too many derivations found for user',
+                    ['derivationCount' => $derivationCount, 'userId' => $user->getId()]
+                );
                 throw new TooManyRowsException();
             }
 

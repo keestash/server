@@ -21,12 +21,20 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Encryption\Credential;
 
+use Keestash\Exception\Repository\Derivation\DerivationException;
+use Keestash\Exception\User\UserException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\Service\IService;
 
 interface ICredentialService extends IService {
 
+    /**
+     * @param IKeyHolder $keyHolder
+     * @return ICredential
+     * @throws DerivationException
+     * @throws UserException
+     */
     public function createCredential(IKeyHolder $keyHolder): ICredential;
 
 }

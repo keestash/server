@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service;
 
 use Keestash\Exception\EncryptionFailedException;
+use Keestash\Exception\Repository\Derivation\DerivationException;
+use Keestash\Exception\User\UserException;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -44,7 +46,9 @@ class NodeEncryptionService {
      * @param Node            $node
      * @param IKeyHolder|null $parentKeyHolder
      * @return void
+     * @throws DerivationException
      * @throws EncryptionFailedException
+     * @throws UserException
      */
     public function decryptNode(Node &$node, ?IKeyHolder $parentKeyHolder = null): void {
         $this->logger->debug(
@@ -96,6 +100,8 @@ class NodeEncryptionService {
      * @param IKeyHolder|null $parentKeyHolder
      * @return void
      * @throws EncryptionFailedException
+     * @throws DerivationException
+     * @throws UserException
      */
     private function decryptCredential(Credential &$credential, ?IKeyHolder $parentKeyHolder = null): void {
         $this->logger->debug(

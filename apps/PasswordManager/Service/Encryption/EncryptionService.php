@@ -22,6 +22,9 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Service\Encryption;
 
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
+use Keestash\Exception\EncryptionFailedException;
+use Keestash\Exception\Repository\Derivation\DerivationException;
+use Keestash\Exception\User\UserException;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
@@ -31,7 +34,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Wrapper class for the core encryption service.
  * We just extend the core encryption service in order
- * to have an service within the PasswordManager service
+ * to have a service within the PasswordManager service
  *
  * @package KSA\PasswordManager\Service\Encryption
  */
@@ -48,6 +51,9 @@ class EncryptionService {
      * @param ICredential $credential
      * @param string      $raw
      * @return string
+     * @throws DerivationException
+     * @throws EncryptionFailedException
+     * @throws UserException
      */
     public function encrypt(ICredential $credential, string $raw): string {
         return $this->encryptionService->encrypt(
@@ -59,6 +65,9 @@ class EncryptionService {
     /**
      * @param ICredential $credential
      * @return IKey
+     * @throws DerivationException
+     * @throws EncryptionFailedException
+     * @throws UserException
      */
     private function prepareKey(ICredential $credential): IKey {
         $this->logger->debug(
@@ -103,6 +112,9 @@ class EncryptionService {
      * @param ICredential $credential
      * @param string      $encrypted
      * @return string
+     * @throws DerivationException
+     * @throws EncryptionFailedException
+     * @throws UserException
      */
     public function decrypt(ICredential $credential, string $encrypted): string {
         return $this->encryptionService->decrypt(
