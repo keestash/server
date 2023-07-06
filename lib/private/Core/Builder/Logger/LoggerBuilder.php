@@ -73,7 +73,12 @@ class LoggerBuilder implements ILoggerBuilder {
             return $instance;
         }
 
-        init(['dsn' => $sentryDsn]);
+        init(
+            [
+                'dsn'                  => $sentryDsn
+                , 'traces_sample_rate' => 0.2,
+            ]
+        );
 
         $instance->handlers[] = new Handler(
             SentrySdk::getCurrentHub()

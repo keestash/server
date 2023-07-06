@@ -47,7 +47,7 @@ class Add extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:permission:add")
+        $this->setName("permission:add")
             ->setDescription("add a new permission");
     }
 
