@@ -42,7 +42,7 @@ class Uninstall extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:app:uninstall")
+        $this->setName("app:uninstall")
             ->setDescription("uninstalls an app")
             ->addArgument(
                 Uninstall::ARGUMENT_NAME_APP_ID

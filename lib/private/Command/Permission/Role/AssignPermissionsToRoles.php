@@ -36,7 +36,7 @@ class AssignPermissionsToRoles extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:permission:role:assign-all")
+        $this->setName("permission:role:assign-all")
             ->setDescription("assigns permissions to roles");
     }
 

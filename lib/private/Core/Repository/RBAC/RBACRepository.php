@@ -192,6 +192,28 @@ class RBACRepository implements RBACRepositoryInterface {
             ->executeStatement();
     }
 
+    /**
+     * @param PermissionInterface $permission
+     * @param RoleInterface       $role
+     * @return void
+     * @throws KeestashException
+     */
+    public function removePermissionFromRole(PermissionInterface $permission, RoleInterface $role): void {
+        try {
+
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('`role_permission`')
+                ->where('role_id = ?')
+                ->andWhere('permission_id = ?')
+                ->setParameter(0, $role->getId())
+                ->setParameter(1, $permission->getId())
+                ->executeStatement();
+        } catch (Exception $exception) {
+            $this->logger->error('error while removing permission from role', ['exception' => $exception]);
+            throw new KeestashException();
+        }
+    }
+
     public function clearRoles(): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->delete('`role`')

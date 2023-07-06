@@ -44,6 +44,7 @@ use Keestash\Command\Permission\PermissionsByRole;
 use Keestash\Command\Permission\Role\AssignPermissionsToRoles;
 use Keestash\Command\Permission\Role\AssignPermissionToRole;
 use Keestash\Command\Permission\Role\CreateRoles;
+use Keestash\Command\Permission\Role\RemovePermissionFromRole;
 use Keestash\Command\Ping;
 use Keestash\Command\RateLimit\ClearRateLimiterFile;
 use Keestash\Command\Role\AssignRoleToUser;
@@ -142,6 +143,7 @@ use Keestash\Factory\Command\Permission\PermissionsByRoleFactory;
 use Keestash\Factory\Command\Permission\Role\AssignPermissionsToRolesFactory;
 use Keestash\Factory\Command\Permission\Role\AssignPermissionToRoleFactory;
 use Keestash\Factory\Command\Permission\Role\CreateRolesFactory;
+use Keestash\Factory\Command\Permission\Role\RemovePermissionFromRoleFactory;
 use Keestash\Factory\Command\RateLimit\ClearRateLimiterFileFactory;
 use Keestash\Factory\Command\Role\AssignRoleToUserFactory;
 use Keestash\Factory\Command\Role\RolesByUserFactory;
@@ -385,7 +387,7 @@ return [
     , AssignPermissionsToRoles::class                         => AssignPermissionsToRolesFactory::class
     , InstallApps::class                                      => InstallAppsFactory::class
     , \Keestash\Command\App\Uninstall::class                  => \Keestash\Factory\Command\App\UninstallFactory::class
-
+    , RemovePermissionFromRole::class                         => RemovePermissionFromRoleFactory::class
 
     // command
     // --- listener

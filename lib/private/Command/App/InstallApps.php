@@ -39,7 +39,7 @@ class InstallApps extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:app:install")
+        $this->setName("app:install")
             ->setDescription("installs all apps");
     }
 

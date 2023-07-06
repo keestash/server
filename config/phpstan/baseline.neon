@@ -286,6 +286,11 @@ parameters:
 			path: ../../apps/PasswordManager/Command/Node/Dump.php
 
 		-
+			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getPassword\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Command/Node/DumpAll.php
+
+		-
 			message: "#^Cannot call method getCount\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Command/Node/ImportPwned.php
@@ -914,6 +919,11 @@ parameters:
 			message: "#^Cannot call method ask\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Command/KeestashCommand.php
+
+		-
+			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:removePermissionFromRole\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Permission/Role/RemovePermissionFromRole.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"

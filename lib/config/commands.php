@@ -39,6 +39,7 @@ use Keestash\Command\Permission\PermissionsByRole;
 use Keestash\Command\Permission\Role\AssignPermissionsToRoles;
 use Keestash\Command\Permission\Role\AssignPermissionToRole;
 use Keestash\Command\Permission\Role\CreateRoles;
+use Keestash\Command\Permission\Role\RemovePermissionFromRole;
 use Keestash\Command\Ping;
 use Keestash\Command\RateLimit\ClearRateLimiterFile;
 use Keestash\Command\Role\AssignRoleToUser;
@@ -87,4 +88,5 @@ return [
     , AssignPermissionsToRoles::class
     , InstallApps::class
     , \Keestash\Command\App\Uninstall::class
+    , RemovePermissionFromRole::class
 ];

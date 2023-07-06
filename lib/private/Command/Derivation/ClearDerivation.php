@@ -43,7 +43,7 @@ class ClearDerivation extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:derivation:clear")
+        $this->setName("derivation:clear")
             ->setDescription("clears a key derivation for a given user")
             ->addArgument(
                 ClearDerivation::ARGUMENT_NAME_USER_ID

@@ -40,7 +40,7 @@ class CreateRoles extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:permission:role:create")
+        $this->setName("permission:role:create")
             ->setDescription("creates/restores the permissions")
             ->addOption(
                 CreateConfig::OPTION_NAME_FORCE
