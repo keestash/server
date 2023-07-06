@@ -51,6 +51,7 @@ use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
 use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
+use Keestash\Core\Service\Core\Exception\ExceptionHandlerService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
@@ -112,6 +113,7 @@ use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Access\IAccessService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\CSV\ICSVService;
@@ -215,6 +217,7 @@ return [
     , IRoleService::class                               => RoleService::class
     , IStringMaskService::class                         => StringMaskService::class
     , IResponseService::class                           => ResponseService::class
+    , IExceptionHandlerService::class                   => ExceptionHandlerService::class
 
     , IL10N::class                                      => GetText::class
     , ILoaderService::class                             => LoaderService::class

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Middleware;
+namespace KSP\Core\Service\Core\Exception;
 
-use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+interface IExceptionHandlerService {
 
-class ExceptionHandlerMiddleware implements MiddlewareInterface {
-
-    public function __construct(
-        private readonly IExceptionHandlerService $exceptionHandlerService
-    ) {
-    }
-
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $this->exceptionHandlerService->registerHandler();
-        return $handler->handle($request);
-    }
+    public function registerHandler(): void;
 
 }

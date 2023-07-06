@@ -36,13 +36,13 @@ use Psr\Log\LoggerInterface;
 class PwnedBreachesRepository {
 
     private IBackend         $backend;
-    private LoggerInterface          $logger;
+    private LoggerInterface  $logger;
     private IDateTimeService $dateTimeService;
     private NodeRepository   $nodeRepository;
 
     public function __construct(
         IBackend           $backend
-        , LoggerInterface          $logger
+        , LoggerInterface  $logger
         , IDateTimeService $dateTimeService
         , NodeRepository   $nodeRepository
     ) {

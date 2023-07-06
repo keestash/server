@@ -26,6 +26,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use JsonException;
 use Keestash\Command\KeestashCommand;
+use Keestash\Exception\EncryptionFailedException;
+use Keestash\Exception\Repository\Derivation\DerivationException;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Pwned\Api\Passwords;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
@@ -137,8 +139,9 @@ class ImportPwned extends KeestashCommand {
                 }
                 $this->writeInfo('all great here, nothing found :)', $output);
 
-            } catch (PasswordManagerException|InvalidNodeTypeException|JsonException $e) {
+            } catch (PasswordManagerException|InvalidNodeTypeException|JsonException|EncryptionFailedException|DerivationException $e) {
                 $this->logger->error('error importing breaches', ['exception' => $e]);
+                continue;
             }
 
             $this->pwnedBreachesRepository->replace(
@@ -165,53 +168,63 @@ class ImportPwned extends KeestashCommand {
 
         /** @var \KSA\PasswordManager\Entity\Node\Pwned\Passwords $candidate */
         foreach ($candidates as $candidate) {
-            $this->writeInfo(sprintf('processing %s', $candidate->getNode()->getId()), $output);
-            $credential = $this->nodeRepository->getNode($candidate->getNode()->getId());
+            try {
+                $this->writeInfo(sprintf('processing %s', $candidate->getNode()->getId()), $output);
+                $credential = $this->nodeRepository->getNode($candidate->getNode()->getId());
 
-            if (false === ($credential instanceof Credential)) {
-                continue;
-            }
+                if (false === ($credential instanceof Credential)) {
+                    continue;
+                }
 
-            $this->nodeEncryptionService->decryptNode($credential);
-            $plainPassword = $credential->getPassword()->getPlain();
+                $this->nodeEncryptionService->decryptNode($credential);
 
-            $searchHash = $this->pwnedService->generateSearchHash($plainPassword);
-            $this->writeInfo(sprintf('Search Hash %s', $searchHash), $output);
-            $passwordTree = $this->pwnedService->importPasswords($searchHash);
+                $plainPassword = $credential->getPassword()->getPlain();
 
-            $this->nodeEncryptionService->decryptNode($credential);
+                $searchHash = $this->pwnedService->generateSearchHash($plainPassword);
+                $this->writeInfo(sprintf('Search Hash %s', $searchHash), $output);
+                $passwordTree = $this->pwnedService->importPasswords($searchHash);
 
-            $passwordsNode = $passwordTree->search(
-                new Passwords(
-                    strtoupper(substr(
-                        sha1($plainPassword)
+                $this->nodeEncryptionService->decryptNode($credential);
+
+                $passwordsNode = $passwordTree->search(
+                    new Passwords(
+                        strtoupper(substr(
+                            sha1($plainPassword)
+                            , 0
+                            , 5
+                        ))
+                        , strtoupper(substr(
+                            sha1($plainPassword)
+                            , 5
+                        ))
                         , 0
-                        , 5
-                    ))
-                    , strtoupper(substr(
-                        sha1($plainPassword)
-                        , 5
-                    ))
-                    , 0
-                )
-            );
+                    )
+                );
 
-            if (null !== $passwordsNode) {
-                $this->writeInfo('password leak found', $output);
+                if (null !== $passwordsNode) {
+                    $this->writeInfo('password leak found', $output);
+                }
+
+                $this->pwnedPasswordsRepository->replace(
+                    new \KSA\PasswordManager\Entity\Node\Pwned\Passwords(
+                        $this->nodeRepository->getNode($candidate->getNode()->getId(), 0, 0)
+                        , null !== $passwordsNode
+                        ? (int) floor($passwordsNode->getValue()->getCount() % 10)
+                        : 0
+                        , $candidate->getCreateTs()
+                        , new DateTimeImmutable()
+                    )
+                );
+
+                sleep(10);
+            } catch (EncryptionFailedException|DerivationException $e) {
+                $this->logger->warning(
+                    'passwords import failed'
+                    , [
+                        'exception' => $e
+                    ]
+                );
             }
-
-            $this->pwnedPasswordsRepository->replace(
-                new \KSA\PasswordManager\Entity\Node\Pwned\Passwords(
-                    $this->nodeRepository->getNode($candidate->getNode()->getId(), 0, 0)
-                    , null !== $passwordsNode
-                    ? (int) floor($passwordsNode->getValue()->getCount() % 10)
-                    : 0
-                    , $candidate->getCreateTs()
-                    , new DateTimeImmutable()
-                )
-            );
-
-            sleep(10);
         }
     }
 

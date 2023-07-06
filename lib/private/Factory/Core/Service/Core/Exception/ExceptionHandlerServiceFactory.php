@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,24 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Middleware;
+namespace Keestash\Factory\Core\Service\Core\Exception;
 
+use Keestash\Core\Service\Core\Exception\ExceptionHandlerService;
 use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class ExceptionHandlerMiddleware implements MiddlewareInterface {
+class ExceptionHandlerServiceFactory implements FactoryInterface {
 
-    public function __construct(
-        private readonly IExceptionHandlerService $exceptionHandlerService
-    ) {
-    }
-
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $this->exceptionHandlerService->registerHandler();
-        return $handler->handle($request);
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): IExceptionHandlerService {
+        return new ExceptionHandlerService(
+            $container->get(LoggerInterface::class)
+        );
     }
 
 }
