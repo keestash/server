@@ -22,15 +22,35 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Pwned;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\Settings\Exception\SettingNotFoundException;
+use KSA\Settings\Repository\IUserSettingRepository;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
-class Activate implements RequestHandlerInterface {
+class IsActive implements RequestHandlerInterface {
 
-    public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse([], IResponse::OK);
+    public function __construct(
+        private readonly IUserSettingRepository $userSettingRepository
+        , private readonly LoggerInterface      $logger
+    ) {
+    }
+
+    public
+    function handle(ServerRequestInterface $request): ResponseInterface {
+
+        $user    = $request->getAttribute(IToken::class)->getUser();
+        $setting = null;
+        try {
+            $setting = $this->userSettingRepository->get(ChangeState::USER_SETTING_PWNED_ACTIVE, $user);
+        } catch (SettingNotFoundException $e) {
+            $this->logger->debug('no setting found. Processing');
+        }
+
+        return new JsonResponse(['active' => null !== $setting], IResponse::OK);
     }
 
 }

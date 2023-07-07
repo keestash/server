@@ -36,8 +36,10 @@ use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
 use KSA\PasswordManager\Api\Node\Organization\Update as UpdateNodeOrganization;
+use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
+use KSA\PasswordManager\Api\Node\Pwned\IsActive;
 use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Node\Share\Share;
@@ -49,9 +51,11 @@ use KSA\PasswordManager\Command\Node\Folder\CreateFolder;
 use KSA\PasswordManager\Command\Node\ImportPwned;
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
+use KSA\PasswordManager\Event\Listener\BreachesListener;
 use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
 use KSA\PasswordManager\Event\Listener\NodeRemovedEventListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
+use KSA\PasswordManager\Event\Listener\PasswordsListener;
 use KSA\PasswordManager\Event\Listener\RemoveExpired;
 use KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\GetValueFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\AddFactory as AddCommentFactory;
@@ -68,8 +72,10 @@ use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\UpdateFactory as UpdateNodeOrganizationFactory;
+use KSA\PasswordManager\Factory\Api\Node\Pwned\ChangeStateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDataFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDetailDataFactory;
+use KSA\PasswordManager\Factory\Api\Node\Pwned\IsActiveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Share\PublicShareFactory;
 use KSA\PasswordManager\Factory\Api\Node\Share\PublicShareSingleFactory;
 use KSA\PasswordManager\Factory\Api\Node\Share\ShareFactory;
@@ -81,9 +87,11 @@ use KSA\PasswordManager\Factory\Command\DumpFactory;
 use KSA\PasswordManager\Factory\Command\ImportPwnedFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterPasswordChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\AfterRegistrationFactory;
+use KSA\PasswordManager\Factory\Event\Listener\BreachesListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\CredentialChangedListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\NodeRemovedEventListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
+use KSA\PasswordManager\Factory\Event\Listener\PasswordsListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Middleware\NodeAccessMiddlewareFactory;
 use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
@@ -150,6 +158,8 @@ return [
         // ---- ---- Pwned
         ChartData::class                                                                     => ChartDataFactory::class,
         ChartDetailData::class                                                               => ChartDetailDataFactory::class,
+        ChangeState::class                                                                   => ChangeStateFactory::class,
+        IsActive::class                                                                      => IsActiveFactory::class,
 
         // ---- Organization
         AddNodeOrganization::class                                                           => AddFactory::class,
@@ -213,6 +223,8 @@ return [
         OrganizationChangeListener::class                                                    => OrganizationAddListenerFactory::class,
         CredentialChangedListener::class                                                     => CredentialChangedListenerFactory::class,
         NodeRemovedEventListener::class                                                      => NodeRemovedEventListenerFactory::class,
+        BreachesListener::class                                                              => BreachesListenerFactory::class,
+        PasswordsListener::class                                                             => PasswordsListenerFactory::class,
 
         // dependency
         NodeAccessMiddleware::class                                                          => NodeAccessMiddlewareFactory::class,
