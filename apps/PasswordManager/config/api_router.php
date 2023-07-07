@@ -36,9 +36,10 @@ use KSA\PasswordManager\Api\Node\Get as NodeGet;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;
-use KSA\PasswordManager\Api\Node\Pwned\Activate;
+use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
+use KSA\PasswordManager\Api\Node\Pwned\IsActive;
 use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Node\Share\Remove as RemoveShare;
@@ -232,10 +233,16 @@ return [
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Password\Update::class
         ],
         [
-            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_ACTIVATE
-            , IRoute::MIDDLEWARE => Activate::class
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHANGE_STATE
+            , IRoute::MIDDLEWARE => ChangeState::class
             , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => Activate::class
+            , IRoute::NAME       => ChangeState::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE
+            , IRoute::MIDDLEWARE => IsActive::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => IsActive::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ACTIVITY_GET

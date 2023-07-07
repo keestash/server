@@ -31,6 +31,7 @@ abstract class TestCase extends \KST\TestCase {
     private Config              $config;
     private ?ConsoleApplication $consoleApplication = null;
     private IStringMaskService  $stringMaskService;
+    private LoggerInterface     $logger;
 
     protected function setUp(): void {
         parent::setUp();
@@ -39,6 +40,7 @@ abstract class TestCase extends \KST\TestCase {
         $this->requestService    = $this->getService(RequestService::class);
         $this->config            = $this->getService(Config::class);
         $this->stringMaskService = $this->getService(IStringMaskService::class);
+        $this->logger            = $this->getService(LoggerInterface::class);
 
         (require __DIR__ . '/../../lib/config/pipeline/api/pipeline.php')($this->application);
         $router = $this->config->get(ConfigProvider::API_ROUTER);
@@ -267,12 +269,25 @@ abstract class TestCase extends \KST\TestCase {
     }
 
     public function getDecodedData(ResponseInterface $response): array {
-        return json_decode(
-            (string) $response->getBody()
-            , true
-            , 512
-            , JSON_THROW_ON_ERROR
-        );
+        try {
+            return json_decode(
+                (string) $response->getBody()
+                , true
+                , 512
+                , JSON_THROW_ON_ERROR
+            );
+        } catch (JsonException $e) {
+            $this->logger->error(
+                'error while decoding response body'
+                , [
+                    'exception'  => $e
+                    , 'response' => [
+                        'body' => $response->getBody()
+                    ]
+                ]
+            );
+            throw $e;
+        }
     }
 
 }

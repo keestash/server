@@ -236,6 +236,16 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/GetByName.php
 
 		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Pwned/ChangeState.php
+
+		-
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Pwned/IsActive.php
+
+		-
 			message: "#^Parameter \\#1 \\$hash of method KSA\\\\PasswordManager\\\\Repository\\\\PublicShareRepository\\:\\:getShare\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Share/PublicShareSingle.php
@@ -304,6 +314,11 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getUser\\(\\)\\.$#"
 			count: 3
 			path: ../../apps/PasswordManager/Event/Listener/AfterRegistration.php
+
+		-
+			message: "#^Cannot call method getCount\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Event/Listener/PasswordsListener.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"

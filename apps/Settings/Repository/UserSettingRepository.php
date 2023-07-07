@@ -24,24 +24,30 @@ namespace KSA\Settings\Repository;
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Exception\Queue\QueueNotCreatedException;
-use KSA\Settings\Entity\Setting;
 use KSA\Settings\Entity\UserSetting;
 use KSA\Settings\Exception\SettingNotDeletedException;
 use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
+use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\User\IUserRepository;
 use Psr\Log\LoggerInterface;
 
-class UserSettingRepository {
+class UserSettingRepository implements IUserSettingRepository {
 
     public function __construct(
         private readonly IBackend           $backend
         , private readonly IDateTimeService $dateTimeService
         , private readonly LoggerInterface  $logger
+        , private readonly IUserRepository  $userRepository
     ) {
     }
 
+    /**
+     * @param UserSetting $userSetting
+     * @return void
+     * @throws SettingsException
+     */
     public function add(UserSetting $userSetting): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -61,39 +67,56 @@ class UserSettingRepository {
                 ->executeStatement();
         } catch (Exception $exception) {
             $this->logger->error('error inserting user settings', ['exception' => $exception]);
-            throw new QueueNotCreatedException();
+            throw new SettingsException();
         }
 
     }
 
-    public function remove(string $key): void {
+    /**
+     * @param UserSetting $userSetting
+     * @return void
+     * @throws SettingNotDeletedException
+     */
+    public function remove(UserSetting $userSetting): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->delete(
-                'setting'
+                '`user_setting`'
             )
                 ->where('`key` = ?')
-                ->setParameter(0, $key)
+                ->andWhere('`user_id` = ?')
+                ->setParameter(0, $userSetting->getKey())
+                ->setParameter(1, $userSetting->getUser()->getId())
                 ->executeStatement();
         } catch (Exception $e) {
-            $this->logger->error('not deleted setting', ['key' => $key, 'exception' => $e]);
+            $this->logger->error('not deleted setting', ['setting' => $userSetting, 'exception' => $e]);
             throw new SettingNotDeletedException();
         }
     }
 
-    public function get(string $key): Setting {
+    /**
+     * @param string $key
+     * @param IUser  $user
+     * @return UserSetting
+     * @throws SettingNotFoundException
+     * @throws SettingsException
+     */
+    public function get(string $key, IUser $user): UserSetting {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->select(
                 [
                     's.`key`'
-                    , 's.value'
-                    , 's.create_ts'
+                    , 's.`value`'
+                    , 's.`user_id`'
+                    , 's.`create_ts`'
                 ]
             )
-                ->from('setting', 's')
+                ->from('`user_setting`', 's')
                 ->where('s.`key` = ?')
-                ->setParameter(0, $key);
+                ->andWhere('s.`user_id` = ?')
+                ->setParameter(0, $key)
+                ->setParameter(1, $user->getId());
             $result = $queryBuilder->executeQuery();
 
             $all      = $result->fetchAllAssociative();
@@ -103,8 +126,9 @@ class UserSettingRepository {
                 throw new SettingNotFoundException();
             }
 
-            return new Setting(
+            return new UserSetting(
                 $all[0]['key']
+                , $user
                 , $all[0]['value']
                 , $this->dateTimeService->fromFormat((string) $all[0]['create_ts'])
             );
@@ -123,19 +147,21 @@ class UserSettingRepository {
                 [
                     's.`key`'
                     , 's.`value`'
+                    , 's.`user_id`'
                     , 's.`create_ts`'
                 ]
             )
-                ->from('setting', 's');
+                ->from('`user_setting`', 's');
 
             $result   = $queryBuilder->executeQuery();
             $settings = $result->fetchAllAssociative();
 
             foreach ($settings as $row) {
-                $user = new Setting(
-                    $row['key'],
-                    $row['value'],
-                    $this->dateTimeService->fromString((string) $row['create_ts'])
+                $user = new UserSetting(
+                    $row['key']
+                    , $this->userRepository->getUserById((string) $row['user_id'])
+                    , $row['value']
+                    , $this->dateTimeService->fromString((string) $row['create_ts'])
                 );
                 $list->add($user);
             }

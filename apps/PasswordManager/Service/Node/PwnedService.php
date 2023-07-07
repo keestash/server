@@ -65,7 +65,6 @@ class PwnedService {
             return [];
         }
 
-        $this->logger->error(sprintf('https://haveibeenpwned.com/api/v3/breachedaccount/%s?truncateResponse=false', $account));
         $response = $this->client->request(
             RequestMethodInterface::METHOD_GET
             , sprintf('https://haveibeenpwned.com/api/v3/breachedaccount/%s?truncateResponse=false', $account)
