@@ -38,7 +38,6 @@ use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
 use KSA\PasswordManager\Api\Node\Organization\Update as UpdateNodeOrganization;
 use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
-use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
 use KSA\PasswordManager\Api\Node\Pwned\IsActive;
 use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
@@ -74,7 +73,6 @@ use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\UpdateFactory as UpdateNodeOrganizationFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\ChangeStateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDataFactory;
-use KSA\PasswordManager\Factory\Api\Node\Pwned\ChartDetailDataFactory;
 use KSA\PasswordManager\Factory\Api\Node\Pwned\IsActiveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Share\PublicShareFactory;
 use KSA\PasswordManager\Factory\Api\Node\Share\PublicShareSingleFactory;
@@ -157,7 +155,6 @@ return [
         // ---- Node
         // ---- ---- Pwned
         ChartData::class                                                                     => ChartDataFactory::class,
-        ChartDetailData::class                                                               => ChartDetailDataFactory::class,
         ChangeState::class                                                                   => ChangeStateFactory::class,
         IsActive::class                                                                      => IsActiveFactory::class,
 

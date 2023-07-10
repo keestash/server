@@ -241,6 +241,11 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Pwned/ChangeState.php
 
 		-
+			message: "#^Comparison operation \"\\<\" between int and KSA\\\\Settings\\\\Entity\\\\UserSetting\\|null results in an error\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Pwned/ChartData.php
+
+		-
 			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Pwned/IsActive.php
@@ -406,8 +411,23 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
 
 		-
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			count: 4
+			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
+
+		-
 			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
 			count: 1
+			path: ../../apps/PasswordManager/Repository/Node/PwnedPasswordsRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			count: 4
 			path: ../../apps/PasswordManager/Repository/Node/PwnedPasswordsRepository.php
 
 		-
@@ -639,16 +659,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
 			count: 3
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDataTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of function count expects array\\|Countable, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDetailDataTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDetailDataTest.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Share\\\\PublicShare\\|null\\.$#"

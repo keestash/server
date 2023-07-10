@@ -7,6 +7,7 @@ use Exception;
 use JsonException;
 use Keestash\ConfigProvider;
 use Keestash\Core\Service\Router\VerificationService;
+use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use KSP\Api\IVerb;
@@ -269,25 +270,18 @@ abstract class TestCase extends \KST\TestCase {
     }
 
     public function getDecodedData(ResponseInterface $response): array {
-        try {
-            return json_decode(
-                (string) $response->getBody()
-                , true
-                , 512
-                , JSON_THROW_ON_ERROR
-            );
-        } catch (JsonException $e) {
-            $this->logger->error(
-                'error while decoding response body'
-                , [
-                    'exception'  => $e
-                    , 'response' => [
-                        'body' => $response->getBody()
-                    ]
-                ]
-            );
-            throw $e;
+        $decoded = json_decode(
+            (string) $response->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
+        );
+
+        if (true === is_array($decoded)) {
+            return $decoded;
         }
+        $this->logger->error('should never happen', ['response' => $response, 'body' => $response->getBody(), 'decoded' => $decoded]);
+        throw new KeestashException('should normally not happen');
     }
 
 }

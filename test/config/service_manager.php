@@ -77,7 +77,7 @@ $newConfig                                        = new Config(
 
 $container->setService(
     Config::class
-    , $container->build(Config::class)
+    , $newConfig
 );
 $container->setAllowOverride(false);
 return $container;
