@@ -44,7 +44,6 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_CREDENTIAL_ACTIVITY_GET              = '/password_manager/credential/additional_data/get/:referenceKey/:appId';
 
     public const PASSWORD_MANAGER_NODE_PWNED_CHART_ALL    = '/password_manager/node/pwned/chart/all';
-    public const PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL = '/password_manager/node/pwned/chart/detail';
     public const PASSWORD_MANAGER_NODE_PWNED_CHANGE_STATE = '/password_manager/node/pwned/change_state';
     public const PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE    = '/password_manager/node/pwned/is_active';
 

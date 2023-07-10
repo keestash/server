@@ -58,7 +58,6 @@ class DerivedCredentialService implements ICredentialService {
             throw new UserException('currently, we support users only');
         }
         try {
-
             $derivation = $this->derivationRepository->get($keyHolder);
             $this->logger->debug(
                 'derivation result'

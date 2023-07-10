@@ -64,9 +64,9 @@ use Psr\Log\LoggerInterface;
     try {
         $decoded = JWT::decode(
             $token
-            ,new Key(
+            , new Key(
                 $instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-                ,'HS256'
+                , 'HS256'
             )
         );
     } catch (Throwable $exception) {
@@ -78,7 +78,7 @@ use Psr\Log\LoggerInterface;
     $then = new DateTime();
     $then->setTimestamp((int) $decoded->iat + (int) $lifeTime);
     if ((new DateTime()) > $then) {
-        $logger->info("outdated key");
+        $logger->info("outdated key", ['decoded' => $decoded]);
         header("HTTP/1.0 404 Not Found");
         die();
     }

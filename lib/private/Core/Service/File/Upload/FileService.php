@@ -149,7 +149,7 @@ class FileService implements IFileService {
      * @return bool
      */
     public function removeUploadedFile(ICoreFile $file): bool {
-        return unlink($file->getFullPath());
+        return @unlink($file->getFullPath());
     }
 
 }

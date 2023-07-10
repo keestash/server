@@ -38,7 +38,6 @@ use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;
 use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
-use KSA\PasswordManager\Api\Node\Pwned\ChartDetailData;
 use KSA\PasswordManager\Api\Node\Pwned\IsActive;
 use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
@@ -195,12 +194,6 @@ return [
             , IRoute::MIDDLEWARE => ChartData::class
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => ChartData::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_DETAIL
-            , IRoute::MIDDLEWARE => ChartDetailData::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => ChartDetailData::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_GET_BY_NODE_ID

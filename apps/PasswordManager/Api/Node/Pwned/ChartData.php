@@ -21,13 +21,18 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Pwned;
 
+use doganoo\PHPAlgorithms\Datastructure\Set\HashSet;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Api\Response\NotFoundResponse;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\AccessService;
+use KSA\Settings\Exception\SettingNotFoundException;
+use KSA\Settings\Repository\IUserSettingRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
@@ -43,49 +48,112 @@ class ChartData implements RequestHandlerInterface {
         , private readonly NodeRepository           $nodeRepository
         , private readonly LoggerInterface          $logger
         , private readonly AccessService            $accessService
+        , private readonly IUserSettingRepository   $userSettingRepository
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken|null $token */
-        $token = $request->getAttribute(IToken::class);
+        /** @var IToken $token */
+        $token           = $request->getAttribute(IToken::class);
+        $user            = $token->getUser();
+        $root            = null;
+        $minimumSeverity = null;
+        $lowSeverity     = 0;
+        $passwordsData   = [];
+        $breachesData    = [];
 
-        if (null === $token) {
-            return new JsonResponse(['user not found'], IResponse::NOT_FOUND);
+        try {
+            $root            = $this->nodeRepository->getRootForUser($token->getUser());
+            $minimumSeverity = $this->userSettingRepository->get('pwned.passwords.minimumSeverity', $user);
+        } catch (PasswordManagerException $e) {
+            $this->logger->info('no root for user found', ['exception' => $e, 'userId' => $user->getId()]);
+            return new NotFoundResponse();
+        } catch (SettingNotFoundException $e) {
+            $this->logger->warning(
+                'no minimumSeverity found for user'
+                ,
+                [
+                    'exception'      => $e
+                    , 'userId'       => $user->getId()
+                    , 'defaultValue' => $minimumSeverity
+                ]
+            );
         }
 
-        $root = $this->nodeRepository->getRootForUser($token->getUser());
-
-        $passwords = $this->pwnedPasswordsRepository->getPwnedByNode($root, 1);
+        $passwords = $this->pwnedPasswordsRepository->getPwnedByNode($root, (int) $minimumSeverity?->getValue());
 
         /** @var Passwords $password */
         foreach ($passwords->toArray() as $key => $password) {
-            if (false === $this->accessService->hasAccess($password->getNode(), $token->getUser())) {
+            if (
+                false === $this->accessService->hasAccess($password->getNode(), $token->getUser())
+                || $password->getSeverity() < $minimumSeverity
+            ) {
                 $passwords->remove($key);
+                $lowSeverity++;
             }
+            $passwordsData[] = [
+                'node'       => [
+                    'id'     => $password->getNode()->getId()
+                    , 'name' => $password->getNode()->getName()
+                ]
+                , 'severity' => $password->getSeverity()
+            ];
         }
         $breaches = $this->pwnedBreachesRepository->getPwnedByNode($root);
         /** @var Breaches $breach */
         foreach ($breaches->toArray() as $key => $breach) {
-            if (false === $this->accessService->hasAccess($breach->getNode(), $token->getUser())) {
-                $breaches->remove($key);
+
+            if (
+                false === $this->accessService->hasAccess($breach->getNode(), $token->getUser())
+                || null === $breach->getHibpData()
+            ) {
+                continue;
             }
+
+            $breachesData = [
+                'node'   => [
+                    'id'     => $breach->getNode()->getId()
+                    , 'name' => $breach->getNode()->getName()
+                ]
+                , 'hibp' => $this->getHibpData($breach->getHibpData())
+            ];
         }
 
+        $breachesCount  = count($breachesData);
+        $passwordsCount = count($passwordsData);
+        $totalAmount    = $breachesCount + $passwordsCount;
         return new JsonResponse(
             [
                 'passwords'   => [
-                    'amount'   => $passwords->size()
-                    , 'length' => $passwords->size()
+                    'amount'        => $passwordsCount
+                    , 'length'      => $passwordsCount
+                    , 'lowSeverity' => $lowSeverity
+                    , 'data'        => $passwordsData
                 ]
                 , 'breaches'  => [
-                'amount'   => $breaches->size()
-                , 'length' => $breaches->size()
+                'amount'   => $breachesCount
+                , 'length' => $breachesCount
+                , 'data'   => $breachesData
             ],
-                'totalAmount' => $breaches->size() + $passwords->size()
+                'totalAmount' => $totalAmount
             ]
             , IResponse::OK
         );
+
+    }
+
+    private function getHibpData(array $data): array {
+        $dataClassesSet = new HashSet();
+        $platforms      = new HashSet();
+        foreach ($data as $d) {
+            $dataClassesSet->addAll($d['DataClasses']);
+            $platforms->add($d['Title']);
+        }
+
+        return [
+            'types'       => $dataClassesSet->toArray()
+            , 'platforms' => $platforms->toArray()
+        ];
     }
 
 }
