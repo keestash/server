@@ -60,7 +60,7 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::USER_EDIT
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, UserEdit::class]
+            , IRoute::MIDDLEWARE => UserEdit::class
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => UserEdit::class
         ],

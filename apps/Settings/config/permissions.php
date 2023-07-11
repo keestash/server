@@ -47,17 +47,18 @@ return [
     ]
     , CoreConfigProvider::PERMISSION_FREE      => []
     , CoreConfigProvider::PERMISSION_LIST      => [
-        IPermission::PERMISSION_READ_USER               => IPermission::PERMISSION_NAME_READ_USER
-        , IPermission::PERMISSION_UPDATE_USER_PROFILE   => IPermission::PERMISSION_NAME_UPDATE_USER_PROFILE
-        , IPermission::PERMISSION_USER_ADD              => IPermission::PERMISSION_NAME_USER_ADD
-        , IPermission::PERMISSION_USER_EDIT             => IPermission::PERMISSION_NAME_USER_EDIT
-        , IPermission::PERMISSION_USER_LOCK             => IPermission::PERMISSION_NAME_USER_LOCK
-        , IPermission::PERMISSION_USER_REMOVE           => IPermission::PERMISSION_NAME_USER_REMOVE
-        , IPermission::PERMISSION_ORGANIZATION_ACTIVATE => IPermission::PERMISSION_NAME_ORGANIZATION_ACTIVATE
-        , IPermission::PERMISSION_ORGANIZATION_ADD      => IPermission::PERMISSION_NAME_ORGANIZATION_ADD
-        , IPermission::PERMISSION_ORGANIZATION_GET      => IPermission::PERMISSION_NAME_ORGANIZATION_GET
-        , IPermission::PERMISSION_ORGANIZATION_UPDATE   => IPermission::PERMISSION_NAME_ORGANIZATION_UPDATE
-        , IPermission::PERMISSION_ORGANIZATION_CHANGE   => IPermission::PERMISSION_NAME_ORGANIZATION_CHANGE
+        IPermission::PERMISSION_READ_USER                => IPermission::PERMISSION_NAME_READ_USER
+        , IPermission::PERMISSION_USERS_EDIT_OTHER_USERS => IPermission::PERMISSION_NAME_USERS_EDIT_OTHER_USERS
+        , IPermission::PERMISSION_UPDATE_USER_PROFILE    => IPermission::PERMISSION_NAME_UPDATE_USER_PROFILE
+        , IPermission::PERMISSION_USER_ADD               => IPermission::PERMISSION_NAME_USER_ADD
+        , IPermission::PERMISSION_USER_EDIT              => IPermission::PERMISSION_NAME_USER_EDIT
+        , IPermission::PERMISSION_USER_LOCK              => IPermission::PERMISSION_NAME_USER_LOCK
+        , IPermission::PERMISSION_USER_REMOVE            => IPermission::PERMISSION_NAME_USER_REMOVE
+        , IPermission::PERMISSION_ORGANIZATION_ACTIVATE  => IPermission::PERMISSION_NAME_ORGANIZATION_ACTIVATE
+        , IPermission::PERMISSION_ORGANIZATION_ADD       => IPermission::PERMISSION_NAME_ORGANIZATION_ADD
+        , IPermission::PERMISSION_ORGANIZATION_GET       => IPermission::PERMISSION_NAME_ORGANIZATION_GET
+        , IPermission::PERMISSION_ORGANIZATION_UPDATE    => IPermission::PERMISSION_NAME_ORGANIZATION_UPDATE
+        , IPermission::PERMISSION_ORGANIZATION_CHANGE    => IPermission::PERMISSION_NAME_ORGANIZATION_CHANGE
     ]
     , CoreConfigProvider::ROLE_PERMISSION_LIST => [
         RoleInterface::DEFAULT_NAME   => [
@@ -74,6 +75,7 @@ return [
             , IPermission::PERMISSION_ORGANIZATION_GET
             , IPermission::PERMISSION_ORGANIZATION_UPDATE
             , IPermission::PERMISSION_ORGANIZATION_CHANGE
+            , IPermission::PERMISSION_USERS_EDIT_OTHER_USERS
         ]
     ]
 ];

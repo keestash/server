@@ -117,5 +117,7 @@ interface IPermission extends PermissionInterface, IJsonObject {
     public const PERMISSION_NAME_PASSWORD_MANAGER_NODE_PWNED_ACTIVATE       = 'PASSWORD_MANAGER_NODE_PWNED_ACTIVATE';
     public const PERMISSION_PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE           = 50;
     public const PERMISSION_NAME_PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE      = 'PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE';
+    public const PERMISSION_USERS_EDIT_OTHER_USERS                          = 51;
+    public const PERMISSION_NAME_USERS_EDIT_OTHER_USERS                     = 'USERS_EDIT_OTHER_USERS';
 
 }
