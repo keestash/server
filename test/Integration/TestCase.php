@@ -280,7 +280,7 @@ abstract class TestCase extends \KST\TestCase {
         if (true === is_array($decoded)) {
             return $decoded;
         }
-        $this->logger->error('should never happen', ['response' => $response, 'body' => $response->getBody(), 'decoded' => $decoded]);
+        $this->logger->error('should never happen', ['response' => $response, 'body' => $response->getBody(), 'decoded' => $decoded, 'e' => debug_backtrace()]);
         throw new KeestashException('should normally not happen');
     }
 

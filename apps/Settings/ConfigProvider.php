@@ -29,7 +29,7 @@ final class ConfigProvider {
     public const USER_LOCK                 = '/users/lock[/]';
     public const USER_PROFILE_IMAGE_UPDATE = '/users/profile_image/update';
     public const USER_ADD                  = '/users/add[/]';
-    public const USER_EDIT                 = '/users/edit[/]';
+    public const USER_EDIT                 = '/users/edit';
     public const USER_REMOVE               = '/users/remove';
     public const ORGANIZATION_LIST_ALL     = '/organizations/all/[:includeInactive/][:userHash/]';
     public const ORGANIZATION_ACTIVATE     = '/organizations/activate[/]';

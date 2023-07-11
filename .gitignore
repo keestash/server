@@ -292,3 +292,4 @@ apps/Payment/*
 /test/cache/cache.json/test-results
 /test/cache/test-results
 /test/code-coverage/
+/test/config/instance.db

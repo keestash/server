@@ -21,16 +21,20 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\User;
 
+use doganoo\SimpleRBAC\Service\RBACServiceInterface;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\User\UserNotFoundException;
+use KSA\Settings\Entity\IResponseCodes;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
+use KSP\Core\DTO\RBAC\IPermission;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,32 +44,21 @@ use TypeError;
 
 class UserEdit implements RequestHandlerInterface {
 
-    private IUserRepository        $userRepository;
-    private UserService            $userService;
-    private IL10N                  $translator;
-    private IUserRepositoryService $userRepositoryService;
-    private IJWTService            $jwtService;
-    private LoggerInterface                $logger;
-
     public function __construct(
-        IL10N                    $l10n
-        , IUserRepository        $userRepository
-        , UserService            $userService
-        , IUserRepositoryService $userRepositoryService
-        , IJWTService            $jwtService
-        , LoggerInterface                $logger
+        private readonly IUserRepository          $userRepository
+        , private readonly UserService            $userService
+        , private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IJWTService            $jwtService
+        , private readonly LoggerInterface        $logger
+        , private readonly RBACServiceInterface   $rbacService
+        , private readonly IResponseService       $responseService
     ) {
-        $this->userRepository        = $userRepository;
-        $this->userService           = $userService;
-        $this->translator            = $l10n;
-        $this->userRepositoryService = $userRepositoryService;
-        $this->jwtService            = $jwtService;
-        $this->logger                = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters   = (array) $request->getParsedBody();
-        $userIdToEdit = (int) ($parameters['id'] ?? -1);
+        $userArray    = $parameters['user'] ?? [];
+        $userIdToEdit = (int) ($userArray['id'] ?? -1);
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
         $user  = $token->getUser();
@@ -73,38 +66,49 @@ class UserEdit implements RequestHandlerInterface {
         try {
             $repoUser = $this->userRepository->getUserById((string) $userIdToEdit);
         } catch (UserNotFoundException $exception) {
-            $this->logger->warning('no user found', ['exception' => $exception]);
+            $this->logger->warning(
+                'no user found'
+                , [
+                    'exception'    => $exception
+                    , 'userToEdit' => $userIdToEdit
+                ]
+            );
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        // TODO $user has permission to edit users and/or update organizations
-        //  this constraint could be limiting
-        if ($user->getId() !== $userIdToEdit) {
+        if (false === $this->hasPermissionToEditOtherUsers($user, $repoUser)) {
             return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
-        $oldUser = clone $repoUser;
 
         if (true === $this->userService->isDisabled($repoUser)) {
 
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("no user found")
-                ]
-                , IResponse::BAD_REQUEST
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_DISABLED)
+                ], IResponse::BAD_REQUEST
             );
         }
+        $oldUser = clone $repoUser;
 
         try {
-            $repoUser->setName($parameters['name']);
-            $repoUser->setFirstName($parameters['first_name']);
-            $repoUser->setLastName($parameters['last_name']);
-            $repoUser->setEmail($parameters['email']);
-            $repoUser->setPhone($parameters['phone']);
-            $repoUser->setLocked($parameters['locked']);
-            $repoUser->setDeleted($parameters['deleted']);
-            $repoUser->setLanguage($parameters['language']);
-            $repoUser->setLocale($parameters['locale']);
+            $param         = $userArray['locale'];
+            $splittedParam = explode('_', $param);
+            $language      = strtolower($splittedParam[0]);
+            $locale        = strtolower($splittedParam[1]);
+
+            $languageUpdated =
+                $language !== strtolower($user->getLanguage())
+                && $locale !== strtolower($user->getLocale());
+            $repoUser->setName($userArray['name']);
+            $repoUser->setFirstName($userArray['first_name']);
+            $repoUser->setLastName($userArray['last_name']);
+            $repoUser->setEmail($userArray['email']);
+            $repoUser->setPhone($userArray['phone']);
+            $repoUser->setLocked($userArray['locked']);
+            $repoUser->setDeleted($userArray['deleted']);
+            $repoUser->setLanguage($language);
+            $repoUser->setLocale($locale);
             $repoUser->setJWT(
                 $this->jwtService->getJWT(
                     new Audience(
@@ -114,17 +118,25 @@ class UserEdit implements RequestHandlerInterface {
                 )
             );
         } catch (TypeError $error) {
-            $this->logger->error('error creating user', ['error' => $error, 'parameters' => $parameters]);
+            $this->logger->error('error creating user', ['error' => $error, 'parameters' => $userArray]);
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         $repoUser = $this->userRepositoryService->updateUser($repoUser, $oldUser);
         return new JsonResponse(
             [
-                "user" => $repoUser
+                "user"              => $repoUser
+                , 'languageUpdated' => $languageUpdated
             ]
             , IResponse::OK
         );
+    }
+
+    private function hasPermissionToEditOtherUsers(IUser $me, IUser $other): bool {
+        if ($me->getId() === $other->getId()) {
+            return true;
+        }
+        return $this->rbacService->hasPermission($me, $this->rbacService->getPermission(IPermission::PERMISSION_USERS_EDIT_OTHER_USERS));
     }
 
 }

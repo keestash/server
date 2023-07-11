@@ -48,7 +48,7 @@ class UserEditTest extends TestCase {
         $response = $userEdit->handle(
             $this->getVirtualRequest(
                 [
-                    'id' => UserService::TEST_PASSWORD_RESET_USER_ID_5
+                    'user' => ['id' => UserService::TEST_PASSWORD_RESET_USER_ID_5]
                 ]
             )
         );
@@ -64,8 +64,10 @@ class UserEditTest extends TestCase {
         $response = $userEdit->handle(
             $this->getVirtualRequest(
                 [
-                    'id'           => 2
-                    , 'first_name' => UserEdit::class
+                    'user' => [
+                        'id'           => 2
+                        , 'first_name' => UserEdit::class
+                    ]
                 ]
             )
         );
@@ -83,16 +85,18 @@ class UserEditTest extends TestCase {
         $response       = $userEdit->handle(
             $this->getVirtualRequest(
                 [
-                    'id'           => $user->getId()
-                    , 'name'       => $user->getName()
-                    , 'first_name' => $user->getFirstName()
-                    , 'last_name'  => $user->getLastName()
-                    , 'email'      => $user->getEmail()
-                    , 'phone'      => $user->getPhone()
-                    , 'locked'     => $user->isLocked()
-                    , 'deleted'    => $user->isDeleted()
-                    , 'language'   => $user->getLanguage()
-                    , 'locale'     => $user->getLocale()
+                    'user' => [
+                        'id'           => $user->getId()
+                        , 'name'       => $user->getName()
+                        , 'first_name' => $user->getFirstName()
+                        , 'last_name'  => $user->getLastName()
+                        , 'email'      => $user->getEmail()
+                        , 'phone'      => $user->getPhone()
+                        , 'locked'     => $user->isLocked()
+                        , 'deleted'    => $user->isDeleted()
+                        , 'language'   => $user->getLanguage()
+                        , 'locale'     => "{$user->getLanguage()}_{$user->getLocale()}"
+                    ]
                 ]
             )
         );

@@ -21,25 +21,27 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Api\User;
 
+use doganoo\SimpleRBAC\Service\RBACServiceInterface;
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserEdit;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class UserEditFactory {
 
     public function __invoke(ContainerInterface $container): UserEdit {
         return new UserEdit(
-            $container->get(IL10N::class)
-            , $container->get(IUserRepository::class)
+            $container->get(IUserRepository::class)
             , $container->get(UserService::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(IJWTService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(RBACServiceInterface::class)
+            , $container->get(IResponseService::class)
         );
     }
 
