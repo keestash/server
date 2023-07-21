@@ -51,7 +51,8 @@ class WorkerRunner extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:worker:run")
+        $this->setName("worker:run")
+            ->setAliases(["keestash:worker:run"])
             ->setDescription("runs the keestash daemon");
     }
 

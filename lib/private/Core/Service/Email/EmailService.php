@@ -36,31 +36,21 @@ class EmailService implements IEmailService {
     public const HAS_EXCEPTIONS = true;
     public const IS_HTML        = true;
 
-    private PHPMailer       $mailer;
-    private ConfigService   $configService;
-    private LoggerInterface $logger;
-    private InstanceDB      $instanceDb;
-    private HashTable       $recipients;
-    private HashTable       $carbonCopy;
-    private HashTable       $blindCarbonCopy;
-    private Application     $legacy;
+    private PHPMailer $mailer;
+    private HashTable $recipients;
+    private HashTable $carbonCopy;
+    private HashTable $blindCarbonCopy;
 
     public function __construct(
-        Application       $legacy
-        , ConfigService   $configService
-        , LoggerInterface $logger
-        , InstanceDB      $instanceDB
+        private readonly Application       $legacy
+        , private readonly ConfigService   $configService
+        , private readonly LoggerInterface $logger
+        , private readonly InstanceDB      $instanceDB
     ) {
-        $this->logger          = $logger;
-        $this->instanceDb      = $instanceDB;
         $this->mailer          = new PHPMailer(EmailService::HAS_EXCEPTIONS);
         $this->recipients      = new HashTable();
         $this->carbonCopy      = new HashTable();
         $this->blindCarbonCopy = new HashTable();
-        $this->legacy          = $legacy;
-
-        $this->configService = $configService;
-
     }
 
     private function putDefaults(): void {
@@ -122,18 +112,28 @@ class EmailService implements IEmailService {
             $this->putAllReceivers();
             $recipients = $this->mailer->getAllRecipientAddresses();
 
-            if (0 === count($recipients)) return false;
-            if (false === $this->hasSubject()) return false;
-            if (false === $this->hasBody()) return false;
+            if (0 === count($recipients)) {
+                $this->logger->info('no recipients given. Skipping mail send');
+                return false;
+            }
+            if (false === $this->hasSubject()) {
+                $this->logger->info('no subject given. Skipping mail send');
+                return false;
+            }
+            if (false === $this->hasBody()) {
+                $this->logger->info('no body given. Skipping mail send');
+                return false;
+            }
 
-            $sendAllowed = $this->instanceDb->getOption(InstanceDB::OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED);
+            $sendAllowed = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED);
 
+            $this->logger->debug('notifications allwoed', ['allowed' => $sendAllowed, 'allowedBoolean' => $sendAllowed === 'true']);
             if ($sendAllowed === 'true') {
                 $this->mailer->send();
             }
             return true;
         } catch (Exception $e) {
-            $this->logger->debug('error with mail sending', ['e' => $e]);
+            $this->logger->error('error with mail sending', ['e' => $e]);
             return false;
         } finally {
             $this->clearAll();
@@ -142,7 +142,7 @@ class EmailService implements IEmailService {
     }
 
     private function putAllReceivers(): void {
-        $environment = $this->instanceDb->getOption(InstanceDB::OPTION_NAME_ENVIRONMENT);
+        $environment = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_ENVIRONMENT);
         if ('production' !== $environment) {
             $this->mailer->clearAllRecipients();
             $this->mailer->addAddress(

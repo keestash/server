@@ -39,7 +39,7 @@ class QueueDelete extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:worker:queue:delete")
+        $this->setName("worker:queue:delete")
             ->setDescription("deletes a single message")
             ->addArgument(
                 QueueDelete::ARGUMENT_NAME_UUID

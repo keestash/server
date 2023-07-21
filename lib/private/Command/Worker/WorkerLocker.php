@@ -40,7 +40,7 @@ class WorkerLocker extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:worker:lock")
+        $this->setName("worker:lock")
             ->setDescription("locks or unlocks the worker")
             ->addArgument(
                 WorkerLocker::ARGUMENT_NAME_MODE

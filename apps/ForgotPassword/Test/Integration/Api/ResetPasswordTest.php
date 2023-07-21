@@ -31,6 +31,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KST\Service\Service\UserService;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class ResetPasswordTest extends TestCase {
@@ -76,6 +77,8 @@ class ResetPasswordTest extends TestCase {
         $passwordService = $this->getService(IPasswordService::class);
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var LoggerInterface $logger */
+        $logger = $this->getService(LoggerInterface::class);
 
         $user = $this->createUser(
             Uuid::uuid4()->toString()
@@ -89,15 +92,18 @@ class ResetPasswordTest extends TestCase {
 
         /** @var ResetPassword $resetPassword */
         $resetPassword = $this->getService(ResetPassword::class);
-        $response      = $resetPassword->handle(
-            $this->getVirtualRequest(
-                [
-                    'hash'    => (string) $hash
-                    , 'input' => $passwordService->generatePassword(20, true, true, true, true)->getValue()
-                ]
-            )
+        $input         = $this->getVirtualRequest(
+            [
+                'hash'    => (string) $hash
+                , 'input' => $passwordService->generatePassword(20, true, true, true, true)->getValue()
+            ]
         );
+        $response      = $resetPassword->handle($input);
 
+        $validResponse = true === $this->getResponseService()->isValidResponse($response);
+        if (false === $validResponse) {
+            $logger->error('should not happen, response is invalid', ['response' => $response, 'input' => $input]);
+        }
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
     }
