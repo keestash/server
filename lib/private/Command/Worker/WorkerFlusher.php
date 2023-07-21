@@ -53,7 +53,7 @@ class WorkerFlusher extends KeestashCommand {
 
     protected function configure(): void {
         parent::configure();
-        $this->setName("keestash:worker:flush")
+        $this->setName("worker:flush")
             ->setDescription("flushes the queue/executes all jobs")
             ->addOption(
                 WorkerFlusher::OPTION_NAME_FORCE

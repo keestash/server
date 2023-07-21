@@ -23,6 +23,7 @@ namespace Keestash\Command\Worker\Queue;
 
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Command\KeestashCommand;
+use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Service\Queue\IQueueService;
 use Symfony\Component\Console\Helper\Table;
@@ -44,7 +45,7 @@ class QueueList extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:worker:queue:list")
+        $this->setName("worker:queue:list")
             ->setDescription("lists the current queue entries");
     }
 
@@ -69,7 +70,9 @@ class QueueList extends KeestashCommand {
             ->setHeaders(['ID', 'CreateTs', 'Priority', 'Attempts', 'ReservedTs'])
             ->setRows($tableRows);
         $table->render();
-        return KeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+
+        $this->writeInfo(sprintf('number of entries in queue: %s', $queue->length()), $output);
+        return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
 }

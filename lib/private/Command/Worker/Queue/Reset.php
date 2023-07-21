@@ -39,7 +39,7 @@ class Reset extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:worker:queue:reset")
+        $this->setName("worker:queue:reset")
             ->setDescription("resets attempts of a single message or all, if no id is given")
             ->addArgument(
                 QueueDelete::ARGUMENT_NAME_UUID
