@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Middleware;
 
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
@@ -28,6 +29,7 @@ use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,9 +40,10 @@ use Psr\Log\LoggerInterface;
 class NodeAccessMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly AccessService     $accessService
-        , private readonly NodeRepository  $nodeRepository
-        , private readonly LoggerInterface $logger
+        private readonly AccessService      $accessService
+        , private readonly NodeRepository   $nodeRepository
+        , private readonly LoggerInterface  $logger
+        , private readonly IResponseService $responseService
     ) {
     }
 
@@ -78,7 +81,9 @@ class NodeAccessMiddleware implements MiddlewareInterface {
 
             if (false === $this->accessService->hasAccess($node, $token->getUser())) {
                 return new JsonResponse(
-                    'unauthorized'
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_ACCESS_UNAUTHORIZED)
+                    ]
                     , IResponse::UNAUTHORIZED
                 );
             }

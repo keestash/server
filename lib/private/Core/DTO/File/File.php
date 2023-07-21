@@ -77,30 +77,6 @@ class File implements IFile {
         $this->extension = $extension;
     }
 
-    /**
-     * Specify data which should be serialized to JSON
-     *
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return array data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
-    public function jsonSerialize(): array {
-        return [
-            "id"          => $this->getId()
-            , "name"      => $this->getName()
-            , "tmp_path"  => $this->getTemporaryPath()
-            , "directory" => $this->getDirectory()
-            , "mime_type" => $this->getMimeType()
-            , "hash"      => $this->getHash()
-            , "extension" => $this->getExtension()
-            , "size"      => $this->getSize()
-            , "owner"     => $this->getOwner()
-            , "content"   => $this->getContent()
-            , "create_ts" => $this->getCreateTs()
-        ];
-    }
-
     public function getId(): int {
         return $this->id;
     }
@@ -165,4 +141,25 @@ class File implements IFile {
         $this->createTs = $createTs;
     }
 
+    /**
+     * Specify data which should be serialized to JSON
+     *
+     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return array data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize(): array {
+        return [
+            "id"          => $this->getId()
+            , "name"      => $this->getName()
+            , "mime_type" => $this->getMimeType()
+            , "hash"      => $this->getHash()
+            , "extension" => $this->getExtension()
+            , "size"      => $this->getSize()
+            , "owner"     => $this->getOwner()
+            , "content"   => $this->getContent()
+            , "create_ts" => $this->getCreateTs()
+        ];
+    }
 }

@@ -47,9 +47,10 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_NODE_PWNED_CHANGE_STATE = '/password_manager/node/pwned/change_state';
     public const PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE    = '/password_manager/node/pwned/is_active';
 
-    public const PASSWORD_MANAGER_ATTACHMENTS_ADD            = '/password_manager/attachments/add[/]';
-    public const PASSWORD_MANAGER_ATTACHMENTS_GET_BY_NODE_ID = '/password_manager/attachments/get/:nodeId[/]';
+    public const PASSWORD_MANAGER_ATTACHMENTS_ADD            = '/password_manager/attachments/add';
+    public const PASSWORD_MANAGER_ATTACHMENTS_GET_BY_NODE_ID = '/password_manager/attachments/get/:nodeId';
     public const PASSWORD_MANAGER_ATTACHMENTS_REMOVE         = '/password_manager/attachments/remove[/]';
+    public const PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD         = '/password_manager/attachments/download/:fileId/:jwt';
 
     public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value";
 

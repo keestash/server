@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
+use KSA\PasswordManager\Api\Node\Attachment\Download;
 use KSA\PasswordManager\Api\Node\Avatar\Update;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
 use KSA\PasswordManager\Api\Node\Credential\Comment\Add;
@@ -155,13 +156,13 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_ADD
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Add::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Add::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Add::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_GET_BY_NODE_ID
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Get::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Get::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Get::class
         ],
@@ -170,6 +171,12 @@ return [
             , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Remove::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Download::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Download::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE
@@ -268,5 +275,7 @@ return [
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete::class
         ],
     ],
-    CoreConfigProvider::PUBLIC_ROUTES => []
+    CoreConfigProvider::PUBLIC_ROUTES => [
+        ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD
+    ]
 ];

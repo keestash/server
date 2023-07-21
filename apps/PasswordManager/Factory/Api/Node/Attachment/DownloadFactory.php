@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,28 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Middleware;
+namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
-use Interop\Container\ContainerInterface;
-use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\AccessService;
-use KSP\Core\Service\HTTP\IResponseService;
+use Keestash\Core\Repository\Instance\InstanceDB;
+use KSA\PasswordManager\Api\Node\Attachment\Download;
+use KSP\Core\Repository\File\IFileRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-class NodeAccessMiddlewareFactory implements FactoryInterface {
+class DownloadFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): NodeAccessMiddleware {
-        return new NodeAccessMiddleware(
-            $container->get(AccessService::class)
-            , $container->get(NodeRepository::class)
+    ): Download {
+        return new Download(
+            $container->get(IFileRepository::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(IResponseService::class)
+            , $container->get(InstanceDB::class)
         );
     }
 

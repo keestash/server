@@ -22,9 +22,10 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Attachment;
 
 use KSA\PasswordManager\Api\Node\Attachment\Add;
-use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
 use Laminas\Diactoros\UploadedFile;
 use Ramsey\Uuid\Uuid;
 
@@ -113,7 +114,6 @@ class AddTest extends TestCase {
         /** @var Add $add */
         $add = $this->getServiceManager()->get(Add::class);
 
-        $this->expectException(CredentialException::class);
         $file = (string) tempnam(sys_get_temp_dir(), '');
         file_put_contents($file, "integrationtest.testAddFileFilesOnly");
 
@@ -128,7 +128,7 @@ class AddTest extends TestCase {
         ]);
         $request  = $request->withUploadedFiles([$uploadedFile]);
         $response = $add->handle($request);
-        $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
         unlink($file);
     }
 
@@ -138,8 +138,6 @@ class AddTest extends TestCase {
 
         $file = (string) tempnam(sys_get_temp_dir(), '');
         file_put_contents($file, "integrationtest.testAddFileInvalidNode");
-
-        $this->expectException(CredentialException::class);
 
         $uploadedFile = new UploadedFile(
             $file
@@ -154,7 +152,9 @@ class AddTest extends TestCase {
         );
         $request  = $request->withUploadedFiles([$uploadedFile]);
         $response = $add->handle($request);
-        $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertTrue($decoded['responseCode'] === IResponseCodes::RESPONSE_CODE_NODE_ATTACHMENT_ADD_NO_NODE_FOUND);
         unlink($file);
     }
 

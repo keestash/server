@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Attachment;
 
 use KSA\PasswordManager\Api\Node\Attachment\Get;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KST\Integration\TestCase;
@@ -65,10 +66,9 @@ class GetTest extends TestCase {
             )
         );
 
-        $this->assertTrue(
-            false === $this->getResponseService()->isValidResponse($response)
-            && $response->getStatusCode() === IResponse::FORBIDDEN
-        );
+        $decoded = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::UNAUTHORIZED, $response);
+        $this->assertTrue($decoded['responseCode'] === IResponseCodes::RESPONSE_CODE_NODE_ACCESS_UNAUTHORIZED);
         $this->logout($headers, $user);
     }
 
