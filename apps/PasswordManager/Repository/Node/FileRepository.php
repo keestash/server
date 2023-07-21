@@ -121,6 +121,7 @@ class FileRepository {
             $nodeFile->setCreateTs(
                 $this->dateTimeService->fromFormat($row[4])
             );
+
             $nodeFile->setJwt(
                 $this->jwtService->getJWT(
                     new Audience(
@@ -129,6 +130,7 @@ class FileRepository {
                     )
                 )
             );
+
             $list->add($nodeFile);
         }
 

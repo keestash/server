@@ -14,37 +14,24 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\Service\File\Icon\IIconService;
-use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private NodeRepository $nodeRepository;
-    private FileRepository $nodeFileRepository;
-    private IIconService   $iconService;
-    private Config         $config;
-
     public function __construct(
-        NodeRepository   $nodeRepository
-        , FileRepository $nodeFileRepository
-        , IIconService   $iconService
-        , Config         $config
+        private readonly NodeRepository    $nodeRepository
+        , private readonly FileRepository  $nodeFileRepository
+        , private readonly LoggerInterface $logger
     ) {
-        $this->nodeRepository     = $nodeRepository;
-        $this->nodeFileRepository = $nodeFileRepository;
-        $this->iconService        = $iconService;
-        $this->config             = $config;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -53,7 +40,8 @@ class Get implements RequestHandlerInterface {
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId);
         } catch (PasswordManagerException $exception) {
-            return new JsonResponse(['node not found'], IResponse::INTERNAL_SERVER_ERROR);
+            $this->logger->info('no node found', ['exception' => $exception, 'nodeId' => $nodeId]);
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
         $list = $this->nodeFileRepository->getFilesPerNode(
@@ -64,25 +52,9 @@ class Get implements RequestHandlerInterface {
         return new JsonResponse(
             [
                 "fileList" => $list
-                , "icons"  => $this->addIcons($list)
             ]
             , IResponse::OK
         );
-    }
-
-    private function addIcons(ArrayList $fileList): array {
-        $icons    = [];
-        $assetDir = (string) $this->config->get(Keestash\ConfigProvider::ASSET_PATH);
-        $svgDir   = str_replace("//", "/", "$assetDir/svg/");
-
-        /** @var NodeFile $nodeFile */
-        foreach ($fileList as $nodeFile) {
-            $icons[$nodeFile->getFile()->getId()] = file_get_contents(
-                $svgDir . $this->iconService->getIconForExtension($nodeFile->getFile()->getExtension())
-            );
-        }
-
-        return $icons;
     }
 
 }

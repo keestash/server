@@ -32,7 +32,7 @@ use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-(function () {
+(static function (): void {
 
     require 'vendor/autoload.php';
     /** @var ContainerInterface $container */

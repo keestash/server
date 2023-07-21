@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
+use KSA\PasswordManager\Api\Node\Attachment\Download;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
 use KSA\PasswordManager\Api\Node\Credential\Comment\Add as AddComment;
 use KSA\PasswordManager\Api\Node\Credential\Comment\Get;
@@ -56,6 +57,7 @@ use KSA\PasswordManager\Event\Listener\NodeRemovedEventListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PasswordsListener;
 use KSA\PasswordManager\Event\Listener\RemoveExpired;
+use KSA\PasswordManager\Factory\Api\Node\Attachment\DownloadFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\GetValueFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\AddFactory as AddCommentFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\GetFactory;
@@ -168,6 +170,7 @@ return [
         Add::class                                                                           => \KSA\PasswordManager\Factory\Api\Node\Attachment\AddFactory::class,
         \KSA\PasswordManager\Api\Node\Attachment\Get::class                                  => \KSA\PasswordManager\Factory\Api\Node\Attachment\GetFactory::class,
         \KSA\PasswordManager\Api\Node\Attachment\Remove::class                               => \KSA\PasswordManager\Factory\Api\Node\Attachment\RemoveFactory::class,
+        Download::class                                                                      => DownloadFactory::class,
 
         // ---- Node
         // ---- ---- Activity
