@@ -42,8 +42,9 @@ class ListEnvironment extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:environment:list")
+        $this->setName("environment:list")
             ->setDescription("lists the app environment")
+            ->setAliases(["keestash:environment:list"])
             ->addOption(
                 ListEnvironment::OPTION_NAME_ALL
                 , 'a'

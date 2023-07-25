@@ -126,7 +126,7 @@ class PasswordsListener implements IListener {
         try {
             $setting = $this->userSettingRepository->get(ChangeState::USER_SETTING_PWNED_ACTIVE, $user);
         } catch (SettingNotFoundException $e) {
-            $this->logger->debug('no setting found');
+            $this->logger->debug('no setting found', ['exception' => $e]);
             $setting = null;
         }
         return null !== $setting;

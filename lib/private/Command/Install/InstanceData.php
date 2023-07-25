@@ -37,7 +37,7 @@ class InstanceData extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:install:instance-data")
+        $this->setName("install:instance-data")
             ->setDescription("creates the instance-data");
     }
 

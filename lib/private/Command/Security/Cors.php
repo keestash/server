@@ -44,8 +44,9 @@ class Cors extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:security:cors")
+        $this->setName("security:cors")
             ->setDescription("sets the cors hosts")
+            ->setAliases(["keestash:security:cors"])
             ->addOption(
                 Cors::OPTION_NAME_FORCE_WRITE
                 , 'f'

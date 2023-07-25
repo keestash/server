@@ -56,32 +56,19 @@ class AfterRegistration implements IListener {
 
     public const FIRST_CREDENTIAL_ID = 1;
     public const ROOT_ID             = 1;
-
-    private IKeyService       $keyService;
-    private LoggerInterface   $logger;
-    private NodeService       $nodeService;
-    private NodeRepository    $nodeRepository;
-    private CredentialService $credentialService;
-    private Application       $application;
-
+    
     public function __construct(
-        IKeyService                                  $keyService
-        , LoggerInterface                            $logger
-        , NodeService                                $nodeService
-        , NodeRepository                             $nodeRepository
-        , CredentialService                          $credentialService
-        , Application                                $application
+        private readonly IKeyService                 $keyService
+        , private readonly LoggerInterface           $logger
+        , private readonly NodeService               $nodeService
+        , private readonly NodeRepository            $nodeRepository
+        , private readonly CredentialService         $credentialService
+        , private readonly Application               $application
         , private readonly IEmailService             $emailService
         , private readonly TemplateRendererInterface $templateRenderer
         , private readonly IL10N                     $translator
         , private readonly IMailLogRepository        $mailLogRepository
     ) {
-        $this->keyService        = $keyService;
-        $this->logger            = $logger;
-        $this->nodeService       = $nodeService;
-        $this->nodeRepository    = $nodeRepository;
-        $this->credentialService = $credentialService;
-        $this->application       = $application;
     }
 
     /**

@@ -43,7 +43,7 @@ class Uninstall extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:install:uninstall")
+        $this->setName("install:uninstall")
             ->setDescription("uninstalls the instance");
     }
 

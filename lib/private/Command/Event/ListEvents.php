@@ -38,7 +38,7 @@ class ListEvents extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:event:list")
+        $this->setName("event:list")
             ->setDescription("lists all events and their listener");
     }
 

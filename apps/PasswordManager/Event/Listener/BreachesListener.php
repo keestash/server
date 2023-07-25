@@ -63,7 +63,7 @@ class BreachesListener implements IListener {
         /** @var Breaches $candidate */
         foreach ($candidates as $candidate) {
             if (false === $this->isActiveForUser($candidate->getNode()->getUser())) {
-                $this->logger->info('breach check is deactivated for user. Skipping');
+                $this->logger->info('breach check is deactivated for user. Skipping', ['userId' => $candidate->getNode()->getUser()->getId()]);
                 continue;
             }
 
@@ -128,7 +128,7 @@ class BreachesListener implements IListener {
         try {
             $setting = $this->userSettingRepository->get(ChangeState::USER_SETTING_PWNED_ACTIVE, $user);
         } catch (SettingNotFoundException $e) {
-            $this->logger->debug('no setting found');
+            $this->logger->debug('no setting found', ['exception' => $e]);
             $setting = null;
         }
         return null !== $setting;
