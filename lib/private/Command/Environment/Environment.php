@@ -42,8 +42,9 @@ class Environment extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:environment:add")
+        $this->setName("environment:add")
             ->setDescription("sets the app environment")
+            ->setAliases(["keestash:environment:add"])
             ->addOption(
                 Environment::OPTION_NAME_FORCE
                 , 'f'

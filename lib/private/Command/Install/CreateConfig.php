@@ -48,7 +48,7 @@ class CreateConfig extends KeestashCommand {
     }
 
     protected function configure(): void {
-        $this->setName("keestash:install:config")
+        $this->setName("install:config")
             ->setDescription("writes the instance config file")
             ->addOption(
                 CreateConfig::OPTION_NAME_FORCE

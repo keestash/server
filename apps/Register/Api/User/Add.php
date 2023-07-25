@@ -30,12 +30,10 @@ use Keestash\Core\DTO\Payment\Log;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
-use KSA\Register\ConfigProvider;
 use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Settings\Service\ISettingsService;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
-use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Payment\IPaymentService;
@@ -47,36 +45,18 @@ use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private UserService            $userService;
-    private LoggerInterface        $logger;
-    private IUserRepositoryService $userRepositoryService;
-    private IStringService         $stringService;
-    private IPaymentService        $paymentService;
-    private IPaymentLogRepository  $paymentLogRepository;
-    private Application            $application;
-    private IConfigService         $configService;
-
     public function __construct(
-        UserService                         $userService
-        , LoggerInterface                   $logger
-        , IUserRepositoryService            $userRepositoryService
-        , IStringService                    $stringService
-        , IPaymentService                   $paymentService
-        , IPaymentLogRepository             $paymentLogRepository
-        , Application                       $application
-        , IConfigService                    $configService
-        , private readonly IEventService    $eventService
-        , private readonly ISettingsService $settingsService
+        private readonly UserService              $userService
+        , private readonly LoggerInterface        $logger
+        , private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IStringService         $stringService
+        , private readonly IPaymentService        $paymentService
+        , private readonly IPaymentLogRepository  $paymentLogRepository
+        , private readonly Application            $application
+        , private readonly IConfigService         $configService
+        , private readonly IEventService          $eventService
+        , private readonly ISettingsService       $settingsService
     ) {
-
-        $this->userService           = $userService;
-        $this->logger                = $logger;
-        $this->userRepositoryService = $userRepositoryService;
-        $this->stringService         = $stringService;
-        $this->paymentService        = $paymentService;
-        $this->paymentLogRepository  = $paymentLogRepository;
-        $this->application           = $application;
-        $this->configService         = $configService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -121,6 +101,7 @@ class Add implements RequestHandlerInterface {
         try {
             $this->userService->validatePasswords($password, $passwordRepeat);
         } catch (KeestashException $exception) {
+            $this->logger->warning('password validation failed', ['exception' => $exception]);
             return new JsonResponse(
                 [
                     "status"    => 'error'
