@@ -91,6 +91,10 @@ $instanceDb->addOption(
     InstanceDB::OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED
     , 'false'
 );
+$instanceDb->addOption(
+    InstanceDB::OPTION_NAME_QUERY_LOG_ENABLED
+    , 'true'
+);
 
 /** @var IMigrator $migrator */
 $migrator = $container->get(IMigrator::class);

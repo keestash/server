@@ -25,6 +25,7 @@ use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Core\Service\Config\IConfigService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -42,7 +43,13 @@ class ConnectionFactory implements FactoryInterface {
         $config = $container->get(IConfigService::class);
         /** @var LoggerInterface $logger */
         $logger = $container->get(LoggerInterface::class);
-        // $logger = new NullLogger();
+        /** @var InstanceDB $instanceDb */
+        $instanceDb = $container->get(InstanceDB::class);
+        $logEnabled = $instanceDb->getOption(InstanceDB::OPTION_NAME_QUERY_LOG_ENABLED);
+        $logger     = 'true' === $logEnabled
+            ? $logger
+            : new NullLogger();
+
         return DriverManager::getConnection(
             [
                 'driver'     => 'pdo_mysql'

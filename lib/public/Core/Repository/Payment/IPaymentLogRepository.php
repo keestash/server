@@ -32,6 +32,13 @@ interface IPaymentLogRepository {
 
     public function insert(ILog $log): void;
 
+    /**
+     * @param ILog $log
+     * @return ILog
+     * @throws Exception
+     * @throws JsonException
+     * @throws PaymentException
+     */
     public function update(ILog $log): ILog;
 
     /**

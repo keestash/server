@@ -1126,6 +1126,11 @@ parameters:
 			path: ../../lib/private/Core/Service/Permission/RoleService.php
 
 		-
+			message: "#^Variable \\$messageArray on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Queue/QueueService.php
+
+		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Router/RouterService.php
@@ -1174,6 +1179,16 @@ parameters:
 			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/Command/Worker/WorkerRunnerFactory.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Command/Worker/WorkerSingleRunFactory.php
+
+		-
+			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:build\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Command/Worker/WorkerSingleRunFactory.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Logger\\\\ILoggerBuilder\\:\\:withPath\\(\\)\\.$#"
