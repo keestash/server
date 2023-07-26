@@ -28,6 +28,7 @@ use Keestash\Exception\Queue\QueueException;
 use Keestash\Exception\Queue\QueueNotCreatedException;
 use Keestash\Exception\Queue\QueueNotDeletedException;
 use Keestash\Exception\Queue\QueueNotUpdatedException;
+use Keestash\Exception\Repository\NoRowsFoundException;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\IRepository;
 
@@ -93,7 +94,12 @@ interface IQueueRepository extends IRepository {
      */
     public function deleteByUuid(string $uuid): void;
 
-
+    /**
+     * @param string $uuid
+     * @return array
+     * @throws QueueException
+     * @throws NoRowsFoundException
+     */
     public function getByUuid(string $uuid): array;
 
 }

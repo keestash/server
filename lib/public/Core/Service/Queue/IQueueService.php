@@ -22,11 +22,22 @@ declare(strict_types=1);
 namespace KSP\Core\Service\Queue;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use JsonException;
+use Keestash\Core\DTO\Queue\Message;
+use Keestash\Exception\Repository\NoRowsFoundException;
 use KSP\Core\Service\IService;
 
 interface IQueueService extends IService {
 
     public function getQueue(bool $forceAll = false): ArrayList;
+
+    /**
+     * @param string $uuid
+     * @return Message
+     * @throws JsonException
+     * @throws NoRowsFoundException
+     */
+    public function getByUuid(string $uuid): Message;
 
     public function remove(string $uuid): void;
 

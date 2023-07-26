@@ -57,6 +57,7 @@ use Keestash\Command\Worker\Queue\Reset;
 use Keestash\Command\Worker\WorkerFlusher;
 use Keestash\Command\Worker\WorkerLocker;
 use Keestash\Command\Worker\WorkerRunner;
+use Keestash\Command\Worker\WorkerSingleRun;
 use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
 use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
@@ -156,6 +157,7 @@ use Keestash\Factory\Command\Worker\Queue\ResetFactory;
 use Keestash\Factory\Command\Worker\WorkerFlusherFactory;
 use Keestash\Factory\Command\Worker\WorkerLockerFactory;
 use Keestash\Factory\Command\Worker\WorkerRunnerFactory;
+use Keestash\Factory\Command\Worker\WorkerSingleRunFactory;
 use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
@@ -391,6 +393,7 @@ return [
     , InstallApps::class                                      => InstallAppsFactory::class
     , \Keestash\Command\App\Uninstall::class                  => \Keestash\Factory\Command\App\UninstallFactory::class
     , RemovePermissionFromRole::class                         => RemovePermissionFromRoleFactory::class
+    , WorkerSingleRun::class                                  => WorkerSingleRunFactory::class
 
     // command
     // --- listener

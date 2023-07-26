@@ -25,6 +25,9 @@ use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonException;
 use Keestash\Core\DTO\Queue\EventMessage;
+use Keestash\Core\DTO\Queue\Message;
+use Keestash\Exception\Queue\QueueException;
+use Keestash\Exception\Repository\NoRowsFoundException;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Encryption\IBase64Service;
 use KSP\Core\Service\Queue\IQueueService;
@@ -94,6 +97,53 @@ class QueueService implements IQueueService {
             }
         }
         return $messageList;
+    }
+
+    /**
+     * @param string $uuid
+     * @return Message
+     * @throws JsonException
+     * @throws NoRowsFoundException
+     */
+    public function getByUuid(string $uuid): Message {
+        try {
+            $messageArray = $this->queueRepository->getByUuid($uuid);
+
+            $message = new EventMessage();
+            $message->setId((string) $messageArray["id"]);
+            $message->setCreateTs(
+                $this->dateTimeService->fromFormat((string) $messageArray["create_ts"])
+            );
+            $message->setPriority((int) $messageArray["priority"]);
+            $message->setAttempts((int) $messageArray["attempts"]);
+            $message->setReservedTs(
+                $this->dateTimeService->fromFormat((string) $messageArray["reserved_ts"])
+            );
+            $message->setPayload(
+                $this->base64Service->decryptArrayRecursive(
+                    (array) json_decode(
+                        (string) $messageArray["payload"]
+                        , true
+                        , 512
+                        , JSON_THROW_ON_ERROR
+                    )
+                )
+            );
+
+            return $message;
+        } catch (JsonException $exception) {
+            $this->logger->error(
+                'error parsing payload or stamps'
+                , [
+                    'exception' => $exception
+                    , 'message' => $messageArray ?? []
+                ]
+            );
+            throw $exception;
+        } catch (QueueException|NoRowsFoundException $e) {
+            $this->logger->debug('no message found', ['exception' => $e]);
+            throw new NoRowsFoundException();
+        }
     }
 
     public function remove(string $uuid): void {

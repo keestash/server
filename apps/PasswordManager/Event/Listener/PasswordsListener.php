@@ -58,11 +58,11 @@ class PasswordsListener implements IListener {
         /** @var \KSA\PasswordManager\Entity\Node\Pwned\Passwords $candidate */
         foreach ($candidates as $candidate) {
             if (false === $this->isActiveForUser($candidate->getNode()->getUser())) {
-                $this->logger->info('password check is deactivated for user. Skipping');
+                $this->logger->debug('password check is deactivated for user. Skipping');
                 continue;
             }
             try {
-                $this->logger->info(sprintf('processing %s', $candidate->getNode()->getId()));
+                $this->logger->debug(sprintf('processing %s', $candidate->getNode()->getId()));
                 $credential = $this->nodeRepository->getNode($candidate->getNode()->getId());
 
                 if (false === ($credential instanceof Credential)) {
@@ -74,7 +74,7 @@ class PasswordsListener implements IListener {
                 $plainPassword = $credential->getPassword()->getPlain();
 
                 $searchHash = $this->pwnedService->generateSearchHash($plainPassword);
-                $this->logger->info(sprintf('Search Hash %s', $searchHash));
+                $this->logger->debug(sprintf('Search Hash %s', $searchHash));
                 $passwordTree = $this->pwnedService->importPasswords($searchHash);
 
                 $this->nodeEncryptionService->decryptNode($credential);

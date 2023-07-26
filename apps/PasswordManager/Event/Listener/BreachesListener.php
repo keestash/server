@@ -55,7 +55,7 @@ class BreachesListener implements IListener {
     }
 
     public function execute(IEvent $event): void {
-        $this->logger->info('start handle breaches');
+        $this->logger->debug('start handle breaches');
         $candidates = $this->pwnedBreachesRepository->getOlderThan(
             (new DateTimeImmutable())->modify('-30 min')
         );
@@ -63,12 +63,12 @@ class BreachesListener implements IListener {
         /** @var Breaches $candidate */
         foreach ($candidates as $candidate) {
             if (false === $this->isActiveForUser($candidate->getNode()->getUser())) {
-                $this->logger->info('breach check is deactivated for user. Skipping', ['userId' => $candidate->getNode()->getUser()->getId()]);
+                $this->logger->debug('breach check is deactivated for user. Skipping', ['userId' => $candidate->getNode()->getUser()->getId()]);
                 continue;
             }
 
             $breachFound = [];
-            $this->logger->info(sprintf('processing %s', $candidate->getNode()->getId()));
+            $this->logger->debug(sprintf('processing %s', $candidate->getNode()->getId()));
 
             try {
                 $node = $candidate->getNode();

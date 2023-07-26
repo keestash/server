@@ -31,6 +31,7 @@ use Keestash\Exception\Queue\QueueException;
 use Keestash\Exception\Queue\QueueNotCreatedException;
 use Keestash\Exception\Queue\QueueNotDeletedException;
 use Keestash\Exception\Queue\QueueNotUpdatedException;
+use Keestash\Exception\Repository\NoRowsFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Repository\Queue\IQueueRepository;
@@ -114,6 +115,12 @@ class QueueRepository implements IQueueRepository {
         }
     }
 
+    /**
+     * @param string $uuid
+     * @return array
+     * @throws QueueException
+     * @throws NoRowsFoundException
+     */
     public function getByUuid(string $uuid): array {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -132,10 +139,16 @@ class QueueRepository implements IQueueRepository {
                 ->where('q.id = ?')
                 ->setParameter(0, $uuid);
 
-            $result = $queryBuilder->executeQuery();
-            return $result->fetchAllAssociative()[0] ?? [];
+            $result       = $queryBuilder->executeQuery();
+            $message      = $result->fetchAllAssociative()[0] ?? [];
+            $messageCount = count($message);
+
+            if (0 === $messageCount) {
+                throw new NoRowsFoundException();
+            }
+            return $message;
         } catch (Exception $exception) {
-            $this->logger->error('error getting schedulable queue', ['exception' => $exception]);
+            $this->logger->error('error getting single queue message', ['exception' => $exception]);
             throw new QueueException();
         }
     }
