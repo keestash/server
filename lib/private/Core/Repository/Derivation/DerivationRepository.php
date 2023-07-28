@@ -272,7 +272,7 @@ class DerivationRepository implements IDerivationRepository {
             );
 
         $derivations = $derivations->executeQuery()
-            ->fetchAllNumeric();
+            ->fetchAllAssociative();
         foreach ($derivations as $row) {
             $list->add(
                 new Derivation(

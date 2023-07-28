@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,36 +19,35 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Api\Configuration;
+namespace KSA\Register\Middleware;
 
 use Keestash\Api\Response\JsonResponse;
-use Keestash\ConfigProvider;
-use Keestash\ConfigProvider as CoreConfigProvider;
+use KSA\Settings\Service\ISettingsService;
 use KSP\Api\IResponse;
-use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
-class Configuration implements RequestHandlerInterface {
-
-    private Config $config;
+class RegisterEnabledMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        Config $config
+        private readonly LoggerInterface    $logger
+        , private readonly ISettingsService $settingsService
     ) {
-        $this->config = $config;
     }
 
-    public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse(
-            [
-                'phoneConfig'       => $this->config->get(ConfigProvider::COUNTRY_PREFIXES)->toArray()
-                , 'registerEnabled' => true === $request->getAttribute(ConfigProvider::REGISTER_ENABLED, false)
-                , 'isSaas'          => $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS)
-            ]
-            , IResponse::OK
-        );
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+        $registerEnabled = $this->settingsService->isRegisterEnabled();
+        if (false === $registerEnabled) {
+            $this->logger->info('register disabled, but tried to register', ['body' => $request->getBody()]);
+            return new JsonResponse(
+                ['unknown operation']
+                , IResponse::BAD_REQUEST
+            );
+        }
+        return $handler->handle($request);
     }
 
 }

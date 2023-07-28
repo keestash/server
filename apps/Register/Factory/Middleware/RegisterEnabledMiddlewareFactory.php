@@ -19,39 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Event;
+namespace KSA\Register\Factory\Middleware;
 
-use Keestash\Core\DTO\Event\Event;
-use KSA\Register\Entity\Register\Event\Type;
-use KSP\Core\DTO\User\IUser;
+use KSA\Register\Middleware\RegisterEnabledMiddleware;
+use KSA\Settings\Service\ISettingsService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class UserRegisteredEvent extends Event {
+class RegisterEnabledMiddlewareFactory implements FactoryInterface {
 
-    public function __construct(
-        private readonly IUser  $user
-        , private readonly Type $type
-    ) {
-    }
-
-    /**
-     * @return IUser
-     */
-    public function getUser(): IUser {
-        return $this->user;
-    }
-
-    /**
-     * @return Type
-     */
-    public function getType(): Type {
-        return $this->type;
-    }
-
-    public function jsonSerialize(): array {
-        return [
-            'user'   => $this->getUser()
-            , 'type' => $this->getType()
-        ];
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): RegisterEnabledMiddleware {
+        return new RegisterEnabledMiddleware(
+            $container->get(LoggerInterface::class)
+            , $container->get(ISettingsService::class)
+        );
     }
 
 }

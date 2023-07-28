@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\Repository\Payment;
 
 use Doctrine\DBAL\Exception;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonException;
 use Keestash\Core\DTO\Payment\Log;
 use Keestash\Exception\Payment\PaymentException;
@@ -49,6 +50,9 @@ interface IPaymentLogRepository {
      * @throws JsonException
      */
     public function get(string $key): ILog;
+
+
+    public function getAll(): ArrayList;
 
     /**
      * @param IUser $user

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,26 +19,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Event;
+namespace Keestash\Exception\User\State;
 
-use KSP\Core\DTO\User\IUser;
-
-class UserSubscribedEvent extends Event {
-
-    public function __construct(private readonly IUser $user) {
-    }
-
-    /**
-     * @return IUser
-     */
-    public function getUser(): IUser {
-        return $this->user;
-    }
-
-    public function jsonSerialize(): array {
-        return [
-            'user' => $this->getUser()
-        ];
-    }
+class UserStateNotFoundException extends UserStateException {
 
 }

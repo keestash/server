@@ -19,39 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Event;
+namespace KSA\Register\Entity\Register\Event;
 
-use Keestash\Core\DTO\Event\Event;
-use KSA\Register\Entity\Register\Event\Type;
-use KSP\Core\DTO\User\IUser;
+enum Type {
 
-class UserRegisteredEvent extends Event {
-
-    public function __construct(
-        private readonly IUser  $user
-        , private readonly Type $type
-    ) {
-    }
-
-    /**
-     * @return IUser
-     */
-    public function getUser(): IUser {
-        return $this->user;
-    }
-
-    /**
-     * @return Type
-     */
-    public function getType(): Type {
-        return $this->type;
-    }
-
-    public function jsonSerialize(): array {
-        return [
-            'user'   => $this->getUser()
-            , 'type' => $this->getType()
-        ];
-    }
+    case SAAS;
+    case REGULAR;
+    case CLI;
 
 }

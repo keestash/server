@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Event\Listener;
 
 use DateTimeImmutable;
+use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\MailLog\MailLog;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\System\Application;
@@ -34,7 +35,9 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\Listener\IListener;
@@ -56,7 +59,7 @@ class AfterRegistration implements IListener {
 
     public const FIRST_CREDENTIAL_ID = 1;
     public const ROOT_ID             = 1;
-    
+
     public function __construct(
         private readonly IKeyService                 $keyService
         , private readonly LoggerInterface           $logger
@@ -68,6 +71,8 @@ class AfterRegistration implements IListener {
         , private readonly TemplateRendererInterface $templateRenderer
         , private readonly IL10N                     $translator
         , private readonly IMailLogRepository        $mailLogRepository
+        , private readonly IDerivationRepository     $derivationRepository
+        , private readonly IDerivationService        $derivationService
     ) {
     }
 
@@ -75,11 +80,32 @@ class AfterRegistration implements IListener {
      * @param UserCreatedEvent $event
      */
     public function execute(IEvent $event): void {
-
+        $this->logger->debug('start after registration', ['event' => $event::class]);
         // base case: we do not create stuff for the system user
         if ($event->getUser()->getId() === IUser::SYSTEM_USER_ID) {
+            $this->logger->debug('systemUser detected. Skipping', ['user' => $event->getUser()]);
             return;
         }
+
+        $this->logger->debug('start derivation creation for user', ['user' => $event->getUser()->getId()]);
+        $this->derivationRepository->clear($event->getUser());
+        $derivation = new Derivation(
+            Uuid::uuid4()->toString()
+            , $event->getUser()
+            , $this->derivationService->derive($event->getUser()->getPassword())
+            , new DateTimeImmutable()
+        );
+        $this->derivationRepository->add($derivation);
+
+        $this->logger->info(
+            'derivation result webhook'
+            , [
+                'id'         => $derivation->getId()
+                , 'user'     => $derivation->getUser()
+                , 'derived'  => $derivation->getDerived()
+                , 'createTs' => $derivation->getCreateTs()
+            ]
+        );
 
         try {
             $this->keyService->createAndStoreKey($event->getUser());

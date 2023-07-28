@@ -28,7 +28,8 @@ use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
-use KSA\Register\Event\UserRegistrationConfirmedEvent;
+use KSA\Register\Entity\Register\Event\Type;
+use KSA\Register\Event\UserRegisteredEvent;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Service\Derivation\IDerivationService;
@@ -128,8 +129,9 @@ class CreateUser extends KeestashCommand {
         );
 
         $this->eventService->execute(
-            new UserRegistrationConfirmedEvent(
+            new UserRegisteredEvent(
                 $user
+                , Type::CLI
             )
         );
 

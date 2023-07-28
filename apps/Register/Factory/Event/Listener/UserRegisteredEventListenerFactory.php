@@ -25,6 +25,7 @@ use KSA\Register\Event\Listener\UserRegisteredEventListener;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\L10N\IL10N;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Mezzio\Template\TemplateRendererInterface;
@@ -45,6 +46,7 @@ class UserRegisteredEventListenerFactory implements FactoryInterface {
             , $container->get(LoggerInterface::class)
             , $container->get(IMailLogRepository::class)
             , $container->get(IUserStateRepository::class)
+            , $container->get(IEventService::class)
         );
     }
 

@@ -51,6 +51,7 @@ use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 use Keestash\Command\Routes;
 use Keestash\Command\Security\Cors;
+use Keestash\Command\TestEmail;
 use Keestash\Command\Worker\Queue\QueueDelete;
 use Keestash\Command\Worker\Queue\QueueList;
 use Keestash\Command\Worker\Queue\Reset;
@@ -151,6 +152,7 @@ use Keestash\Factory\Command\Role\AssignRoleToUserFactory;
 use Keestash\Factory\Command\Role\RolesByUserFactory;
 use Keestash\Factory\Command\RoutesFactory;
 use Keestash\Factory\Command\Security\CorsFactory;
+use Keestash\Factory\Command\TestEmailFactory;
 use Keestash\Factory\Command\Worker\Queue\QueueDeleteFactory;
 use Keestash\Factory\Command\Worker\Queue\QueueListFactory;
 use Keestash\Factory\Command\Worker\Queue\ResetFactory;
@@ -394,6 +396,7 @@ return [
     , \Keestash\Command\App\Uninstall::class                  => \Keestash\Factory\Command\App\UninstallFactory::class
     , RemovePermissionFromRole::class                         => RemovePermissionFromRoleFactory::class
     , WorkerSingleRun::class                                  => WorkerSingleRunFactory::class
+    , TestEmail::class                                        => TestEmailFactory::class
 
     // command
     // --- listener

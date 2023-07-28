@@ -23,14 +23,20 @@ namespace KSA\Register\Event\Listener;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\MailLog\MailLog;
+use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
+use KSA\Payment\Event\Listener\WebhookListener;
+use KSA\Register\Entity\Register\Event\Type;
+use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
+use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
@@ -46,66 +52,97 @@ class UserRegisteredEventListener implements IListener {
         , private readonly LoggerInterface           $logger
         , private readonly IMailLogRepository        $mailLogRepository
         , private readonly IUserStateRepository      $userStateRepository
+        , private readonly IEventService             $eventService
     ) {
     }
 
     public function execute(IEvent $event): void {
 
-        if (false === ($event instanceof UserRegistrationConfirmedEvent)) {
-            return;
+        if (false === ($event instanceof UserRegisteredEvent)) {
+            $this->logger->error('unknown event triggered', ['event' => $event]);
+            throw new KeestashException();
         }
 
-        /** @var IUser $user */
-        $user = $event->getUser();
-        $this->emailService->setSubject(
-            $this->translator->translate("Please confirm your Keestash account"),
-        );
+        if ($event->getType() === Type::REGULAR) {
+            $this->logger->debug('start regular registration');
+            /** @var IUser $user */
+            $user = $event->getUser();
+            $this->emailService->setSubject(
+                $this->translator->translate("Please confirm your Keestash account"),
+            );
 
-        $lockedUsers = $this->userStateRepository->getLockedUsers();
-        $userState   = null;
-        /** @var IUserState $us */
-        foreach ($lockedUsers->toArray() as $us) {
-            if ($us->getUser()->getId() === $user->getId()) {
-                $userState = $us;
-                break;
+            $lockedUsers = $this->userStateRepository->getLockedUsers();
+            $userState   = null;
+            /** @var IUserState $us */
+            foreach ($lockedUsers->toArray() as $us) {
+                if ($us->getUser()->getId() === $user->getId()) {
+                    $this->logger->info('user is locked, can not proceed', ['userId' => $user->getId()]);
+                    $userState = $us;
+                    break;
+                }
             }
-        }
 
-        if (null === $userState) {
-            $this->logger->warning('did not found user', ['user' => $user]);
+            if (null === $userState) {
+                $this->logger->warning('did not found user', ['user' => $user]);
+                return;
+            }
+
+            $this->emailService->setBody(
+                $this->templateRenderer->render(
+                    'registerEmail::confirmation_mail', [
+                        'hello'       => $this->translator->translate(
+                            sprintf("Hey %s,", $user->getName())
+                        ),
+                        'topic'       => $this->translator->translate("Your Keestash account"),
+                        'content'     => $this->translator->translate("Please confirm your registration."),
+                        'questions1'  => $this->translator->translate("In case of any questions,"),
+                        'questions2'  => $this->translator->translate(" contact us here."),
+                        'buttonText'  => $this->translator->translate("Confirm"),
+                        'thankYou'    => $this->translator->translate("Thank you,"),
+                        'teamName'    => $this->translator->translate("The Keestash Team"),
+                        'href'        => "https://app.keestash.com/confirmation?token=" . $userState->getStateHash(),
+                        'currentYear' => (new DateTimeImmutable())->format('Y'),
+                    ]
+                )
+            );
+
+            $this->emailService->addRecipient(
+                sprintf("%s %s", $user->getFirstName(), $user->getLastName())
+                , $user->getEmail()
+            );
+            $sent = $this->emailService->send();
+            $this->logger->info('send register email', ['sent' => $sent]);
+            $mailLog = new MailLog();
+            $mailLog->setId((string) Uuid::uuid4());
+            $mailLog->setSubject(AfterRegistration::MAIL_LOG_TYPE_STARTER_EMAIL);
+            $mailLog->setCreateTs(new DateTimeImmutable());
+            $this->mailLogRepository->insert($mailLog);
+            $this->logger->debug('end regular registration');
             return;
         }
 
-        $this->emailService->setBody(
-            $this->templateRenderer->render(
-                'registerEmail::confirmation_mail', [
-                    'hello'       => $this->translator->translate(
-                        sprintf("Hey %s,", $user->getName())
-                    ),
-                    'topic'       => $this->translator->translate("Your Keestash account"),
-                    'content'     => $this->translator->translate("Please confirm your registration."),
-                    'questions1'  => $this->translator->translate("In case of any questions,"),
-                    'questions2'  => $this->translator->translate(" contact us here."),
-                    'buttonText'  => $this->translator->translate("Confirm"),
-                    'thankYou'    => $this->translator->translate("Thank you,"),
-                    'teamName'    => $this->translator->translate("The Keestash Team"),
-                    'href'        => "https://app.keestash.com/confirmation?token=" . $userState->getStateHash(),
-                    'currentYear' => (new DateTimeImmutable())->format('Y'),
-                ]
-            )
-        );
+        if ($event->getType() === Type::CLI) {
+            $this->logger->debug('start cli registration');
+            $this->eventService->execute(
+                new UserRegistrationConfirmedEvent(
+                    $event->getUser()
+                )
+            );
+            $this->logger->debug('end cli registration');
+            return;
+        }
 
-        $this->emailService->addRecipient(
-            sprintf("%s %s", $user->getFirstName(), $user->getLastName())
-            , $user->getEmail()
-        );
-        $sent = $this->emailService->send();
-        $this->logger->info('send register email', ['sent' => $sent]);
-        $mailLog = new MailLog();
-        $mailLog->setId((string) Uuid::uuid4());
-        $mailLog->setSubject(AfterRegistration::MAIL_LOG_TYPE_STARTER_EMAIL);
-        $mailLog->setCreateTs(new DateTimeImmutable());
-        $this->mailLogRepository->insert($mailLog);
+        if ($event->getType() === Type::SAAS) {
+            $this->logger->debug('start saas registration');
+            $this->logger->info(
+                'nothing to do for saas, continuing with payment service',
+                ['target' => WebhookListener::class]
+            );
+            $this->logger->debug('end saas registration');
+            return;
+        }
+        $this->logger->debug('unknown register type', ['event' => $event, 'type' => $event->getType()->name]);
+        throw new RegisterException('unknown type ' . $event->getType()->name);
     }
 
 }
