@@ -3,17 +3,17 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getActivity\\(\\)\\.$#"
 			count: 3
-			path: ../../apps/Activity/Event/ScheduleUserStateEventListenerListener/ActivityTriggeredListener.php
+			path: ../../apps/Activity/Event/Listener/ActivityTriggeredListener.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getAppId\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/Activity/Event/ScheduleUserStateEventListenerListener/RemoveReferenceListener.php
+			path: ../../apps/Activity/Event/Listener/RemoveReferenceListener.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getReferenceKey\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/Activity/Event/ScheduleUserStateEventListenerListener/RemoveReferenceListener.php
+			path: ../../apps/Activity/Event/Listener/RemoveReferenceListener.php
 
 		-
 			message: "#^Parameter \\#1 \\$activityId of method KSA\\\\Activity\\\\Repository\\\\ActivityRepository\\:\\:getDescriptions\\(\\) expects string, mixed given\\.$#"
@@ -44,51 +44,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$debug of method KSA\\\\ForgotPassword\\\\Api\\\\ResetPassword\\:\\:findCandidate\\(\\) expects bool, mixed given\\.$#"
 			count: 1
 			path: ../../apps/ForgotPassword/Api/ResetPassword.php
-
-		-
-			message: "#^Cannot access offset 'active_ts' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'base_dn' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'create_ts' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'date' on mixed\\.$#"
-			count: 2
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'host' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'password' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'port' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'user_dn' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot call method getTimestamp\\(\\) on DateTimeInterface\\|null\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
 
 		-
 			message: "#^Left side of && is always true\\.$#"
@@ -313,17 +268,17 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setSecret\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Event/ScheduleUserStateEventListenerListener/AfterPasswordChanged.php
+			path: ../../apps/PasswordManager/Event/Listener/AfterPasswordChanged.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getUser\\(\\)\\.$#"
 			count: 3
-			path: ../../apps/PasswordManager/Event/ScheduleUserStateEventListenerListener/AfterRegistration.php
+			path: ../../apps/PasswordManager/Event/Listener/AfterRegistration.php
 
 		-
 			message: "#^Cannot call method getCount\\(\\) on mixed\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Event/ScheduleUserStateEventListenerListener/PasswordsListener.php
+			path: ../../apps/PasswordManager/Event/Listener/PasswordsListener.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
@@ -741,26 +696,6 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Share/ShareServiceTest.php
 
 		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/ScheduleUserStateEventListenerListener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'customer_email' on mixed\\.$#"
-			count: 2
-			path: ../../apps/Payment/Event/ScheduleUserStateEventListenerListener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/ScheduleUserStateEventListenerListener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'object' on mixed\\.$#"
-			count: 3
-			path: ../../apps/Payment/Event/ScheduleUserStateEventListenerListener/WebhookListener.php
-
-		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/Configuration/Configuration.php
@@ -776,9 +711,14 @@ parameters:
 			path: ../../apps/Register/Command/CreateUser.php
 
 		-
+			message: "#^Class KSA\\\\Payment\\\\Event\\\\Listener\\\\WebhookListener not found\\.$#"
+			count: 1
+			path: ../../apps/Register/Event/Listener/UserRegisteredEventListener.php
+
+		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
-			path: ../../apps/Register/Event/ScheduleUserStateEventListenerListener/UserRegisteredEventListener.php
+			path: ../../apps/Register/Event/Listener/UserRegisteredEventListener.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setActiveTs\\(\\)\\.$#"
@@ -998,7 +938,7 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getDateTime\\(\\)\\.$#"
 			count: 1
-			path: ../../lib/private/Core/DTO/Event/ScheduleUserStateEventListenerListener/RemoveOutdatedTokens.php
+			path: ../../lib/private/Core/DTO/Event/Listener/RemoveOutdatedTokens.php
 
 		-
 			message: "#^Method Keestash\\\\Core\\\\DTO\\\\File\\\\FileList\\:\\:add\\(\\) has parameter \\$item with no type specified\\.$#"
