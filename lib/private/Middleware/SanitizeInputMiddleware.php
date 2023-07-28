@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Middleware;
 
 use GuzzleHttp\Psr7\Utils;
+use KSP\Core\Service\Payment\IPaymentService;
+use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -31,11 +33,17 @@ use Psr\Log\LoggerInterface;
 class SanitizeInputMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface  $logger
+        , private readonly IRouterService $routerService
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+        $path = $this->routerService->getMatchedPath($request);
+        if (in_array($path, [IPaymentService::PAYMENT_WEBHOOK_ENDPOINT], true)) {
+            return $handler->handle($request);
+        }
+
         $queryParams    = $request->getQueryParams();
         $newQueryParams = [];
         foreach ($queryParams as $key => $value) {

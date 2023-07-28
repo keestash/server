@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,25 +20,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
+use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
+use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
+use Keestash\Factory\Core\Event\Listener\RemoveOutdatedTokensFactory;
+use Keestash\Factory\Core\Event\Listener\SendSummaryMailListenerFactory;
+use Keestash\Factory\Core\Service\Event\Listener\RolesAndPermissionsListenerFactory;
 
-use Keestash\Middleware\SanitizeInputMiddleware;
-use KSP\Core\Service\Router\IRouterService;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
-
-class SanitizeInputMiddlewareFactory implements FactoryInterface {
-
-    public function __invoke(
-        ContainerInterface $container
-        ,                  $requestedName
-        , ?array           $options = null
-    ): SanitizeInputMiddleware {
-        return new SanitizeInputMiddleware(
-            $container->get(LoggerInterface::class)
-            , $container->get(IRouterService::class)
-        );
-    }
-
-}
+return [
+    // events
+    RemoveOutdatedTokens::class          => RemoveOutdatedTokensFactory::class
+    , SendSummaryMail::class             => SendSummaryMailListenerFactory::class
+    , RolesAndPermissionsListener::class => RolesAndPermissionsListenerFactory::class
+];
