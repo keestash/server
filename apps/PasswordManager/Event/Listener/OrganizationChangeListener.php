@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class OrganizationChangeListener
- * @package KSA\PasswordManager\Event\Listener
+ * @package KSA\PasswordManager\Event\ScheduleUserStateEventListenerListener
  * @author  Dogan Ucar <dogan.ucar@check24.de>
  *          TODO this can be a kind of worker
  */

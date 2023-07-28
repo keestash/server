@@ -53,7 +53,7 @@ class ListEvents extends KeestashCommand {
         }
         $table = new Table($output);
         $table
-            ->setHeaders(['Event', 'Listener'])
+            ->setHeaders(['Event', 'ScheduleUserStateEventListenerListener'])
             ->setRows($tableRows);
         $table->render();
         return 0;

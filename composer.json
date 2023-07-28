@@ -62,7 +62,7 @@
     "ramsey/uuid": "^4.1",
     "robmorgan/phinx": "^0.12",
     "sentry/sdk": "^3.2",
-    "stripe/stripe-php": "^10.0",
+    "stripe/stripe-php": "^10.19",
     "symfony/console": "^5.2",
     "symfony/event-dispatcher": "^5.2",
     "symfony/ldap": "^5.4",

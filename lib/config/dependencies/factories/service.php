@@ -68,6 +68,7 @@ use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiRequestService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\VerificationService;
+use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
@@ -107,6 +108,7 @@ use Keestash\Factory\Core\Service\Queue\QueueServiceFactory;
 use Keestash\Factory\Core\Service\Router\ApiRequestServiceFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
+use Keestash\Factory\Core\Service\User\Event\Listener\ScheduleUserStateEventListenerListenerFactory;
 use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
@@ -190,4 +192,5 @@ return [
     , PhoneValidator::class                                   => PhoneValidatorFactory::class
     , UriValidator::class                                     => UriValidatorFactory::class
 
+    , ScheduleUserStateEventListener::class                   => ScheduleUserStateEventListenerListenerFactory::class
 ];
