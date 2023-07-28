@@ -30,8 +30,8 @@ use Keestash\Core\DTO\Payment\Log;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
 use Keestash\Exception\KeestashException;
+use KSA\Register\Entity\Register\Event\Type;
 use KSA\Register\Event\UserRegisteredEvent;
-use KSA\Settings\Service\ISettingsService;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\Config\IConfigService;
@@ -55,24 +55,14 @@ class Add implements RequestHandlerInterface {
         , private readonly Application            $application
         , private readonly IConfigService         $configService
         , private readonly IEventService          $eventService
-        , private readonly ISettingsService       $settingsService
     ) {
     }
 
+    // TODO create a token and forward it to the frontend
+    //  in order to prevent multiple user creation
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $registerEnabled = $this->settingsService->isRegisterEnabled();
-        $isSaas          = $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS);
-
-        if (false === $registerEnabled) {
-            $this->logger->info('register disabled, but tried to register', ['body' => $request->getBody()]);
-            return new JsonResponse(
-                ['unknown operation']
-                , IResponse::BAD_REQUEST
-            );
-        }
-
-        // TODO create a token and forward it to the frontend
-        //  in order to prevent multiple user creation
+        $this->logger->debug('start add user');
+        $isSaas             = (bool) $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS);
         $firstName          = $this->getParameter("first_name", $request);
         $lastName           = $this->getParameter("last_name", $request);
         $userName           = $this->getParameter("user_name", $request);
@@ -82,16 +72,16 @@ class Add implements RequestHandlerInterface {
         $phone              = $this->getParameter("phone", $request);
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
         $website            = $this->getParameter("website", $request);
-
-        if (true === $isSaas) {
-            $phone   = '00000000000';
-            $website = $this->application->getMetaData()->get('web');
-        }
+        // TODO fix
+        $phone   = '00000000000';
+        $website = $this->application->getMetaData()->get('web');
 
         if (true === $this->stringService->isEmpty($termsAndConditions)) {
+            $this->logger->info('terms and conditions are not selected', ['termsAndConditions' => $termsAndConditions]);
             return new JsonResponse(
                 [
                     "status"    => 'error'
+                    , "data"    => []
                     , "message" => 'terms and conditions are not checked'
                 ]
                 , IResponse::BAD_REQUEST
@@ -99,6 +89,7 @@ class Add implements RequestHandlerInterface {
         }
 
         try {
+            $this->logger->debug('start validating password');
             $this->userService->validatePasswords($password, $passwordRepeat);
         } catch (KeestashException $exception) {
             $this->logger->warning('password validation failed', ['exception' => $exception]);
@@ -112,6 +103,7 @@ class Add implements RequestHandlerInterface {
             );
         }
 
+        $this->logger->debug('start creating new user');
         $user = $this->userService->toNewUser(
             [
                 'user_name'    => $userName
@@ -125,6 +117,7 @@ class Add implements RequestHandlerInterface {
             ]
         );
 
+        $this->logger->debug('start validating new user');
         $result = $this->userService->validateNewUser($user);
         if ($result->length() > 0) {
 
@@ -136,15 +129,15 @@ class Add implements RequestHandlerInterface {
                     , "message" => 'invalid new user'
                     , 'data'    => $result->toArray()
                 ]
-
                 , IResponse::BAD_REQUEST
             );
         }
 
         try {
+            $this->logger->debug('start creating new user');
             $user = $this->userRepositoryService->createUser($user);
         } catch (Exception $exception) {
-            $this->logger->error($exception->getTraceAsString());
+            $this->logger->error('error creating new user', ['exception' => $exception]);
             return new JsonResponse(
                 [
                     "status"    => 'error'
@@ -156,6 +149,7 @@ class Add implements RequestHandlerInterface {
         }
 
         if (true === $isSaas) {
+            $this->logger->debug('saas mode - creating subscription');
             $session = $this->paymentService->createSubscription(
                 (string) $this->configService->getValue('stripe_price_id')
             );
@@ -167,6 +161,7 @@ class Add implements RequestHandlerInterface {
             ]);
             $log->setCreateTs(new DateTimeImmutable());
             $this->paymentLogRepository->insert($log);
+            $this->logger->debug('saas mode - responding session id');
             return new JsonResponse(
                 [
                     'session' => $session
@@ -176,11 +171,19 @@ class Add implements RequestHandlerInterface {
         }
 
         $this->eventService->execute(
-            new UserRegisteredEvent($user)
+            new UserRegisteredEvent(
+                $user
+                , true === $isSaas
+                ? Type::SAAS
+                : Type::REGULAR
+            )
         );
 
+        $this->logger->debug('end add user');
         return new JsonResponse(
-            []
+            [
+                'data' => []
+            ]
             , IResponse::OK
         );
     }

@@ -742,7 +742,12 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
-			count: 4
+			count: 1
+			path: ../../apps/Payment/Event/Listener/WebhookListener.php
+
+		-
+			message: "#^Cannot access offset 'customer_email' on mixed\\.$#"
+			count: 2
 			path: ../../apps/Payment/Event/Listener/WebhookListener.php
 
 		-
@@ -752,7 +757,7 @@ parameters:
 
 		-
 			message: "#^Cannot access offset 'object' on mixed\\.$#"
-			count: 1
+			count: 3
 			path: ../../apps/Payment/Event/Listener/WebhookListener.php
 
 		-
@@ -761,9 +766,19 @@ parameters:
 			path: ../../apps/Register/Api/Configuration/Configuration.php
 
 		-
+			message: "#^Strict comparison using \\=\\=\\= between true and false will always evaluate to false\\.$#"
+			count: 1
+			path: ../../apps/Register/Api/User/Add.php
+
+		-
 			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
 			count: 1
 			path: ../../apps/Register/Command/CreateUser.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/Register/Event/Listener/UserRegisteredEventListener.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Organization\\\\IOrganization\\:\\:setActiveTs\\(\\)\\.$#"
@@ -999,26 +1014,6 @@ parameters:
 			message: "#^Property Keestash\\\\Core\\\\DTO\\\\Queue\\\\Stamp\\:\\:\\$value has no type specified\\.$#"
 			count: 1
 			path: ../../lib/private/Core/DTO/Queue/Stamp.php
-
-		-
-			message: "#^Offset 'create_ts' does not exist on array\\<int, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
-
-		-
-			message: "#^Offset 'derivation' does not exist on array\\<int, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
-
-		-
-			message: "#^Offset 'id' does not exist on array\\<int, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
-
-		-
-			message: "#^Offset 'user_id' does not exist on array\\<int, mixed\\>\\.$#"
-			count: 1
-			path: ../../lib/private/Core/Repository/Derivation/DerivationRepository.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Credential\\\\Key\\\\IKey\\:\\:setId\\(\\)\\.$#"

@@ -39,6 +39,8 @@ use KSA\Register\Factory\Api\MinimumCredentialFactory;
 use KSA\Register\Factory\Command\CreateUserFactory;
 use KSA\Register\Factory\Command\DeleteUserFactory;
 use KSA\Register\Factory\Event\Listener\UserRegisteredEventListenerFactory;
+use KSA\Register\Factory\Middleware\RegisterEnabledMiddlewareFactory;
+use KSA\Register\Middleware\RegisterEnabledMiddleware;
 
 return [
     ConfigProvider::FACTORIES => [
@@ -57,5 +59,8 @@ return [
         // event
         // ---- listener
         , UserRegisteredEventListener::class => UserRegisteredEventListenerFactory::class
+
+        // middleware
+        , RegisterEnabledMiddleware::class   => RegisterEnabledMiddlewareFactory::class
     ]
 ];

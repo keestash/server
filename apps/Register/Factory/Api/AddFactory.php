@@ -25,9 +25,7 @@ use doganoo\DIP\Object\String\StringService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
 use KSA\Register\Api\User\Add;
-use KSA\Settings\Service\ISettingsService;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
-use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Payment\IPaymentService;
@@ -48,7 +46,6 @@ class AddFactory {
             , $container->get(Application::class)
             , $container->get(IConfigService::class)
             , $container->get(IEventService::class)
-            , $container->get(ISettingsService::class)
         );
     }
 

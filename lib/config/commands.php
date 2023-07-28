@@ -46,6 +46,7 @@ use Keestash\Command\Role\AssignRoleToUser;
 use Keestash\Command\Role\RolesByUser;
 use Keestash\Command\Routes;
 use Keestash\Command\Security\Cors;
+use Keestash\Command\TestEmail;
 use Keestash\Command\Worker\Queue\QueueDelete;
 use Keestash\Command\Worker\Queue\QueueList;
 use Keestash\Command\Worker\Queue\Reset;
@@ -91,4 +92,5 @@ return [
     , \Keestash\Command\App\Uninstall::class
     , RemovePermissionFromRole::class
     , WorkerSingleRun::class
+    , TestEmail::class
 ];

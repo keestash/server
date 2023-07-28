@@ -34,6 +34,7 @@ use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -94,8 +95,18 @@ class WorkerSingleRun extends KeestashCommand {
             return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
         }
 
+        $tableRows   = [];
+        $tableRows[] = [
+            $message->getId(),
+            $message->getPayload()['listener'] ?? 'no listener',
+            $message->getAttempts()
+        ];
+        $table       = new Table($output);
+        $table
+            ->setHeaders(['ID', 'Listener', 'Attempts'])
+            ->setRows($tableRows);
+        $table->render();
 
-        $this->writeInfo('processing ' . $message->getId(), $output);
         if ($message->getAttempts() > 3 && false === $force) {
             $response = $this->askQuestion(
                 sprintf('the job ran %s times. Do you want to run it?', $message->getAttempts())

@@ -28,6 +28,7 @@ use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Exception\User\State\UserStateException;
+use Keestash\Exception\User\State\UserStateNotFoundException;
 use Keestash\Exception\User\State\UserStateNotInsertedException;
 use Keestash\Exception\User\State\UserStateNotRemovedException;
 use Keestash\Exception\User\UserNotFoundException;
@@ -66,7 +67,7 @@ class UserStateRepository implements IUserStateRepository {
      */
     public function unlock(IUser $user): void {
         if (false === $this->isLocked($user)) {
-            throw new UserStateException();
+            throw new UserStateNotFoundException();
         }
         $this->remove($user, IUserState::USER_STATE_LOCK);
     }
@@ -194,7 +195,7 @@ class UserStateRepository implements IUserStateRepository {
      */
     public function lock(IUser $user): void {
         if (true === $this->isLocked($user)) {
-            throw new UserStateException('user is already locked');
+            throw new UserStateNotFoundException('user is already locked');
         }
         $this->insert(
             $user

@@ -19,39 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Event;
+namespace Keestash\Factory\Command;
 
-use Keestash\Core\DTO\Event\Event;
-use KSA\Register\Entity\Register\Event\Type;
-use KSP\Core\DTO\User\IUser;
+use doganoo\DI\DateTime\IDateTimeService;
+use Keestash\Command\TestEmail;
+use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Email\IEmailService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-class UserRegisteredEvent extends Event {
+class TestEmailFactory implements FactoryInterface {
 
-    public function __construct(
-        private readonly IUser  $user
-        , private readonly Type $type
-    ) {
-    }
-
-    /**
-     * @return IUser
-     */
-    public function getUser(): IUser {
-        return $this->user;
-    }
-
-    /**
-     * @return Type
-     */
-    public function getType(): Type {
-        return $this->type;
-    }
-
-    public function jsonSerialize(): array {
-        return [
-            'user'   => $this->getUser()
-            , 'type' => $this->getType()
-        ];
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): TestEmail {
+        return new TestEmail(
+            $container->get(IEmailService::class)
+            , $container->get(IDateTimeService::class)
+            , $container->get(IConfigService::class)
+        );
     }
 
 }

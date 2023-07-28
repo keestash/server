@@ -23,6 +23,7 @@ namespace Keestash\Command\Worker\Queue;
 
 use Keestash\Command\KeestashCommand;
 use KSP\Command\IKeestashCommand;
+use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\Service\Queue\IQueueService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,6 +60,7 @@ class Reset extends KeestashCommand {
                 , $input
                 , $output
             );
+            $uuid   = $this->queueService->getQueue(true);
         }
 
         if (false === $answer) {
@@ -67,6 +69,9 @@ class Reset extends KeestashCommand {
         }
 
         foreach ($uuid as $u) {
+            if ($u instanceof IMessage) {
+                $u =  $u->getId();
+            }
             $this->writeInfo('reseting ' . $u, $output);
             $this->queueService->updateAttempts((string) $u, 0);
         }

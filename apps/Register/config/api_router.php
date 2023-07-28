@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -27,6 +28,7 @@ use KSA\Register\Api\User\Confirm;
 use KSA\Register\Api\User\Exists;
 use KSA\Register\Api\User\MailExists;
 use KSA\Register\ConfigProvider;
+use KSA\Register\Middleware\RegisterEnabledMiddleware;
 use KSP\Api\IRoute;
 use KSP\Api\IVerb;
 
@@ -40,13 +42,13 @@ return [
     CoreConfigProvider::ROUTES        => [
         [
             IRoute::PATH         => ConfigProvider::REGISTER_ADD
-            , IRoute::MIDDLEWARE => Add::class
+            , IRoute::MIDDLEWARE => [RegisterEnabledMiddleware::class, Add::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Add::class
         ],
         [
             IRoute::PATH         => ConfigProvider::REGISTER_CONFIRM
-            , IRoute::MIDDLEWARE => Confirm::class
+            , IRoute::MIDDLEWARE => [RegisterEnabledMiddleware::class, Confirm::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Confirm::class
         ],
@@ -70,7 +72,7 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::REGISTER_CONFIGURATION
-            , IRoute::MIDDLEWARE => Configuration::class
+            , IRoute::MIDDLEWARE => [RegisterEnabledMiddleware::class, Configuration::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => Configuration::class
         ],
