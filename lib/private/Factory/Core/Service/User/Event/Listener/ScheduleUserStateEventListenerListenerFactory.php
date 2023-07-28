@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -20,23 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Core\DTO\Event\ApplicationStartedEvent;
-use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
-use Keestash\Core\DTO\Event\Listener\SendSummaryMail;
-use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
-use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
-use Keestash\Core\Service\User\Event\ScheduleUserStateEvent;
-use Keestash\Core\Service\User\Event\UserCreatedEvent;
+namespace Keestash\Factory\Core\Service\User\Event\Listener;
 
-return [
-    UserCreatedEvent::class          => [
-        RolesAndPermissionsListener::class
-    ]
-    , ApplicationStartedEvent::class => [
-        RemoveOutdatedTokens::class
-        , SendSummaryMail::class
-    ]
-    , ScheduleUserStateEvent::class  => [
-        ScheduleUserStateEventListener::class
-    ]
-];
+use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
+use KSP\Core\Repository\User\IUserStateRepository;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+
+class ScheduleUserStateEventListenerListenerFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ScheduleUserStateEventListener {
+        return new ScheduleUserStateEventListener(
+            $container->get(LoggerInterface::class)
+            , $container->get(IUserStateRepository::class)
+        );
+    }
+
+}

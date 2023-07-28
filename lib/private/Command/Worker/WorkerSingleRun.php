@@ -103,7 +103,7 @@ class WorkerSingleRun extends KeestashCommand {
         ];
         $table       = new Table($output);
         $table
-            ->setHeaders(['ID', 'Listener', 'Attempts'])
+            ->setHeaders(['ID', 'ScheduleUserStateEventListenerListener', 'Attempts'])
             ->setRows($tableRows);
         $table->render();
 
