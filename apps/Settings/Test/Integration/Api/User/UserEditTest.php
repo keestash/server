@@ -21,11 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Test\Integration\Api\User;
 
+use JsonException;
+use Keestash\Exception\KeestashException;
 use KSA\Settings\Api\User\UserEdit;
+use KSA\Settings\ConfigProvider;
 use KSA\Settings\Test\Integration\TestCase;
 use KSP\Api\IResponse;
+use KSP\Api\IVerb;
 use KSP\Core\Repository\User\IUserRepository;
+use KST\Service\Exception\KSTException;
 use KST\Service\Service\UserService;
+use Ramsey\Uuid\Uuid;
 
 class UserEditTest extends TestCase {
 
@@ -103,6 +109,69 @@ class UserEditTest extends TestCase {
 
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
+    }
+
+    /**
+     * @param string|null $language
+     * @param string|null $locale
+     * @return void
+     * @throws JsonException
+     * @throws KSTException
+     * @throws KeestashException
+     * @dataProvider provideInvalidLanguageAndLocale
+     */
+    public function testWithInvalidLocaleAndLanguageCode(?string $language, ?string $locale): void {
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        $payload = [
+            'id'           => $user->getId()
+            , 'name'       => Uuid::uuid4()->toString()
+            , 'first_name' => $user->getFirstName()
+            , 'last_name'  => $user->getLastName()
+            , 'email'      => $user->getEmail()
+            , 'phone'      => $user->getPhone()
+            , 'locked'     => $user->isLocked()
+            , 'deleted'    => $user->isDeleted()
+        ];
+
+        if (null !== $language) {
+            $payload['language'] = $language;
+        }
+
+        if (null !== $locale) {
+            $payload['locale'] = $locale;
+        }
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::USER_EDIT
+                    , [
+                        'user' => $payload
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
+        $data = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::OK, $response);
+        $this->assertArrayHasKey('user', $data);
+        $this->assertArrayHasKey('languageUpdated', $data);
+        $this->assertTrue(false === $data['languageUpdated']);
+    }
+
+    public function provideInvalidLanguageAndLocale(): array {
+        return [
+            ['', ''],
+            [null, null],
+        ];
     }
 
 }

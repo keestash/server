@@ -80,9 +80,10 @@ class ResetPasswordTest extends TestCase {
         /** @var LoggerInterface $logger */
         $logger = $this->getService(LoggerInterface::class);
 
-        $user = $this->createUser(
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
             Uuid::uuid4()->toString()
-            , Uuid::uuid4()->toString()
+            , $password
         );
 
         $userStateRepository->requestPasswordReset($user, Uuid::uuid4()->toString());
@@ -90,19 +91,31 @@ class ResetPasswordTest extends TestCase {
         $userStateRepository->revertPasswordChangeRequest($user);
         $userStateRepository->requestPasswordReset($user, (string) $hash);
 
-        /** @var ResetPassword $resetPassword */
-        $resetPassword = $this->getService(ResetPassword::class);
-        $input         = $this->getVirtualRequest(
-            [
-                'hash'    => (string) $hash
-                , 'input' => $passwordService->generatePassword(20, true, true, true, true)->getValue()
-            ]
-        );
-        $response = $resetPassword->handle($input);
+        $headers  = $this->login($user, $password);
+        $input    = [
+            'hash'    => (string) $hash
+            , 'input' => $passwordService->generatePassword(20, true, true, true, true)->getValue()
+        ];
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::RESET_PASSWORD_UPDATE
+                    , $input
+                    , $user
+                    , $headers
+                )
+            );
 
-        $validResponse = true === $this->getResponseService()->isValidResponse($response);
-        if (false === $validResponse) {
-            $logger->error('should not happen, response is invalid', ['response' => $response, 'input' => $input]);
+        $this->assertStatusCode(IResponse::OK, $response);
+        // temporary, since sometimes an error occurs, sometimes not
+        if (IResponse::OK !== $response->getStatusCode()) {
+            $logger->error(
+                'should not happen, response is invalid',
+                ['response' => (string) $response->getBody()
+                 , 'input'  => $input
+                ]
+            );
         }
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
