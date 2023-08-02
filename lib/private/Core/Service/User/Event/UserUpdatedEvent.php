@@ -26,12 +26,10 @@ use KSP\Core\DTO\User\IUser;
 
 class UserUpdatedEvent extends Event {
 
-    private IUser $updatedUser;
-    private IUser $oldUser;
-
-    public function __construct(IUser $updatedUser, IUser $oldUser) {
-        $this->updatedUser = $updatedUser;
-        $this->oldUser     = $oldUser;
+    public function __construct(
+        private readonly IUser $updatedUser,
+        private readonly IUser $user
+    ) {
     }
 
     /**
@@ -44,14 +42,14 @@ class UserUpdatedEvent extends Event {
     /**
      * @return IUser
      */
-    public function getOldUser(): IUser {
-        return $this->oldUser;
+    public function getUser(): IUser {
+        return $this->user;
     }
 
     public function jsonSerialize(): array {
         return [
             'updatedUser' => $this->getUpdatedUser()
-            , 'oldUser'   => $this->getOldUser()
+            , 'user'   => $this->getUser()
         ];
     }
 

@@ -31,6 +31,7 @@ use KSA\PasswordManager\Api\Node\Credential\Comment\Remove;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
+use KSA\PasswordManager\Api\Node\Credential\ListAll;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
 use KSA\PasswordManager\Api\Node\Get as NodeGet;
@@ -273,6 +274,12 @@ return [
             , IRoute::MIDDLEWARE => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete::class
             , IRoute::METHOD     => IVerb::DELETE
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_LIST_ALL
+            , IRoute::MIDDLEWARE => ListAll::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => ListAll::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [

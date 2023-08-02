@@ -22,9 +22,12 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential;
 
 use KSA\PasswordManager\Api\Node\Credential\Create;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
+use KSP\Api\IVerb;
 use Ramsey\Uuid\Uuid;
 
 class CreateTest extends TestCase {
@@ -89,21 +92,32 @@ class CreateTest extends TestCase {
     }
 
     public function testValid(): void {
-        /** @var Create $create */
-        $create   = $this->getServiceManager()->get(Create::class);
-        $response = $create->handle(
-            $this->getVirtualRequest(
-                [
-                    'parent'     => 'root'
-                    , 'name'     => 'CreateCredentialTestName'
-                    , 'username' => 'CreateCredentialTest'
-                    , 'password' => 'MyAwesomeSuperSecurePassword'
-                    , 'note'     => 'This password is super secure'
-                    , 'url'      => 'keestash.test'
-                ]
-            )
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString(),
+            $password
         );
-        $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_CREATE
+                    , [
+                        'parent'     => 'root'
+                        , 'name'     => 'CreateCredentialTestName'
+                        , 'username' => 'CreateCredentialTest'
+                        , 'password' => 'MyAwesomeSuperSecurePassword'
+                        , 'note'     => 'This password is super secure'
+                        , 'url'      => 'keestash.test'
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+        $this->assertStatusCode(IResponse::OK, $response);
+        $this->logout($headers, $user);
+        $this->removeUser($user);
     }
 
     public function testWithCredentialAsParent(): void {

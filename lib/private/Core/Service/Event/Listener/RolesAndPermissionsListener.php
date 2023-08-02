@@ -29,10 +29,8 @@ use KSP\Core\Service\Event\Listener\IListener;
 
 class RolesAndPermissionsListener implements IListener {
 
-    private RBACRepositoryInterface $rbacRepository;
 
-    public function __construct(RBACRepositoryInterface $rbacRepository) {
-        $this->rbacRepository = $rbacRepository;
+    public function __construct(private readonly RBACRepositoryInterface $rbacRepository) {
     }
 
     public function execute(IEvent $event): void {

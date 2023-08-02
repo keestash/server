@@ -37,4 +37,11 @@ interface ICredentialService extends IService {
      */
     public function createCredential(IKeyHolder $keyHolder): ICredential;
 
+    /**
+     * @param IKeyHolder $keyHolder
+     * @return ICredential
+     * @throws UserException
+     */
+    public function createCredentialFromDerivation(IKeyHolder $keyHolder): ICredential;
+
 }

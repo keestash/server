@@ -35,25 +35,6 @@ class DerivationService implements IDerivationService {
     }
 
     public function derive(string $raw): string {
-        $this->logger->debug(
-            'scrypt operation result'
-            , [
-                'rawmd5'   => md5($raw)
-                , 'salt'   => (string) $this->instanceDb->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-                , 'n'      => 2048
-                , 'r'      => 2
-                , 'p'      => 1
-                , 'length' => 32
-                , 'result' => Scrypt::calc(
-                    $raw
-                    , (string) $this->instanceDb->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-                    , 2048
-                    , 2
-                    , 1
-                    , 32
-                )
-            ]
-        );
         return Scrypt::calc(
             $raw
             , (string) $this->instanceDb->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)

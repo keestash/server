@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,19 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+namespace KSA\PasswordManager\Factory\Api\Node\Credential;
 
-use Keestash\Middleware\DispatchMiddleware;
-use KSP\Core\Service\Router\IApiRequestService;
+use KSA\PasswordManager\Api\Node\Credential\ListAll;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\NodeEncryptionService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
 
-class DispatchMiddlewareFactory {
+class ListAllFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): MiddlewareInterface {
-        return new DispatchMiddleware(
-            $container->get(IApiRequestService::class)
-            , $container->get(\Mezzio\Router\Middleware\DispatchMiddleware::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ListAll {
+        return new ListAll(
+            $container->get(NodeRepository::class)
+            , $container->get(NodeEncryptionService::class)
         );
     }
 

@@ -24,18 +24,20 @@ namespace Keestash\Middleware;
 use KSP\Core\Service\Router\IApiRequestService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class DispatchMiddleware extends \Mezzio\Router\Middleware\DispatchMiddleware {
+class DispatchMiddleware implements MiddlewareInterface {
 
-    private IApiRequestService $requestService;
 
-    public function __construct(IApiRequestService $requestService) {
-        $this->requestService = $requestService;
+    public function __construct(
+        private readonly IApiRequestService                             $requestService
+        , private readonly \Mezzio\Router\Middleware\DispatchMiddleware $dispatchMiddleware
+    ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $response = parent::process($request, $handler);
+        $response = $this->dispatchMiddleware->process($request, $handler);
         $this->requestService->log(
             $request
             , microtime(true)

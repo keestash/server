@@ -23,13 +23,13 @@ namespace Keestash\Core\DTO\Derivation;
 
 use DateTimeInterface;
 use KSP\Core\DTO\Derivation\IDerivation;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 
 class Derivation implements IDerivation {
 
     public function __construct(
         private readonly string              $id
-        , private readonly IUser             $user
+        , private readonly IKeyHolder        $keyHolder
         , private readonly string            $derived
         , private readonly DateTimeInterface $createTs
     ) {
@@ -39,8 +39,8 @@ class Derivation implements IDerivation {
         return $this->id;
     }
 
-    public function getUser(): IUser {
-        return $this->user;
+    public function getKeyHolder(): IKeyHolder {
+        return $this->keyHolder;
     }
 
     public function getDerived(): string {

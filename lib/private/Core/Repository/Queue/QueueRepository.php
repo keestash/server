@@ -71,7 +71,8 @@ class QueueRepository implements IQueueRepository {
                     , 'q.stamps'
                 ]
             )
-                ->from('queue', 'q');
+                ->from('queue', 'q')
+                ->orderBy('q.`create_ts`', 'ASC');
 
             $result = $queryBuilder->executeQuery();
             return $result->fetchAllAssociative();
@@ -104,6 +105,7 @@ class QueueRepository implements IQueueRepository {
                 ->from('queue', 'q')
                 ->where('q.attempts < ?')
                 ->andWhere('q.reserved_ts < ?')
+                ->orderBy('q.`create_ts`', 'ASC')
                 ->setParameter(0, 3)
                 ->setParameter(1, $this->dateTimeService->toYMDHIS($fiveSecondsAgo));
 
@@ -137,6 +139,7 @@ class QueueRepository implements IQueueRepository {
             )
                 ->from('queue', 'q')
                 ->where('q.id = ?')
+                ->orderBy('q.`create_ts`', 'ASC')
                 ->setParameter(0, $uuid);
 
             $result       = $queryBuilder->executeQuery();

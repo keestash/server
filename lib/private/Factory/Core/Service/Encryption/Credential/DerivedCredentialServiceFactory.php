@@ -23,6 +23,7 @@ namespace Keestash\Factory\Core\Service\Encryption\Credential;
 
 use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -38,6 +39,7 @@ class DerivedCredentialServiceFactory implements FactoryInterface {
         return new DerivedCredentialService(
             $container->get(IDerivationRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IDerivationService::class)
         );
     }
 

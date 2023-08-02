@@ -98,7 +98,7 @@ class ResetPasswordTest extends TestCase {
                 , 'input' => $passwordService->generatePassword(20, true, true, true, true)->getValue()
             ]
         );
-        $response      = $resetPassword->handle($input);
+        $response = $resetPassword->handle($input);
 
         $validResponse = true === $this->getResponseService()->isValidResponse($response);
         if (false === $validResponse) {

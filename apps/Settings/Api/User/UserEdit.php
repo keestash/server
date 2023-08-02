@@ -118,7 +118,16 @@ class UserEdit implements RequestHandlerInterface {
                 )
             );
         } catch (TypeError $error) {
-            $this->logger->error('error creating user', ['error' => $error, 'parameters' => $userArray]);
+            $this->logger->error(
+                'error creating user',
+                [
+                    'error'      => [
+                        'message' => $error->getMessage(),
+                        'trace'   => $error->getTraceAsString()
+                    ],
+                    'parameters' => $userArray
+                ]
+            );
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 

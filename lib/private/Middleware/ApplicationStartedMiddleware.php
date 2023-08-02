@@ -31,6 +31,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 class ApplicationStartedMiddleware implements MiddlewareInterface {
 
@@ -78,6 +79,10 @@ class ApplicationStartedMiddleware implements MiddlewareInterface {
         $request = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_DEBUG
             , $this->configService->getValue('debug', false)
+        );
+        $request = $request->withAttribute(
+            IRequest::ATTRIBUTE_NAME_REQUEST_ID
+            , Uuid::uuid4()->toString()
         );
         return $handler->handle($request);
     }

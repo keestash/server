@@ -54,6 +54,7 @@ final class ConfigProvider {
     public const DEPENDENCIES         = 'dependencies';
     public const FACTORIES            = 'factories';
     public const ALIASES              = 'aliases';
+    public const INVOKABLES           = 'invokables';
     public const TEMPLATES            = 'templates';
     public const PATHS                = 'paths';
     public const COUNTRY_CODES        = 'codes.country';

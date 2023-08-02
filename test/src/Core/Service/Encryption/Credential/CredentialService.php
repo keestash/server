@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Service\Core\Service\Encryption\Credential;
 
-use Keestash\Core\DTO\Encryption\Credential\Credential;
+use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
@@ -34,13 +34,19 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
  */
 class CredentialService implements ICredentialService {
 
+    public function __construct(
+        private readonly DerivedCredentialService $derivedCredentialService
+    ) {
+    }
+
     public function createCredential(IKeyHolder $keyHolder): ICredential {
-        $credential = new Credential();
-        $credential->setKeyHolder($keyHolder);
-        $credential->setSecret($keyHolder->getPassword());
-        $credential->setCreateTs($keyHolder->getCreateTs());
-        $credential->setId($keyHolder->getId());
-        return $credential;
+        // since users exist on short term in tests, we can just create
+        // them on the fly
+        return $this->createCredentialFromDerivation($keyHolder);
+    }
+
+    public function createCredentialFromDerivation(IKeyHolder $keyHolder): ICredential {
+        return $this->derivedCredentialService->createCredentialFromDerivation($keyHolder);
     }
 
 }

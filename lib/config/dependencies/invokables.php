@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,20 +20,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+use Keestash\ThirdParty\Mezzio\Cors\UriFactory;
+use Psr\Http\Message\UriFactoryInterface;
 
-use Keestash\Middleware\DispatchMiddleware;
-use KSP\Core\Service\Router\IApiRequestService;
-use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
-
-class DispatchMiddlewareFactory {
-
-    public function __invoke(ContainerInterface $container): MiddlewareInterface {
-        return new DispatchMiddleware(
-            $container->get(IApiRequestService::class)
-            , $container->get(\Mezzio\Router\Middleware\DispatchMiddleware::class)
-        );
-    }
-
-}
+return [
+    UriFactoryInterface::class => UriFactory::class
+];

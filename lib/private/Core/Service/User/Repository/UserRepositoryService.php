@@ -189,16 +189,17 @@ class UserRepositoryService implements IUserRepositoryService {
 
     /**
      * @param IUser $updatedUser
-     * @param IUser $oldUser
+     * @param IUser $user
      * @return IUser
      * @throws UserNotUpdatedException
      */
-    public function updateUser(IUser $updatedUser, IUser $oldUser): IUser {
-        $updatedUser = $this->userRepository->update($updatedUser);
+    public function updateUser(IUser $updatedUser, IUser $user): IUser {
+        $this->userRepository->update($updatedUser);
+
         $this->eventManager->execute(
             new UserUpdatedEvent(
                 $updatedUser
-                , $oldUser
+                , $user
             )
         );
         return $updatedUser;

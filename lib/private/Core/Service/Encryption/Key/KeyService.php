@@ -23,7 +23,6 @@ namespace Keestash\Core\Service\Encryption\Key;
 
 use DateTime;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
-use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\Key\KeyNotCreatedException;
 use Keestash\Exception\Key\UnsupportedKeyException;
@@ -122,7 +121,6 @@ class KeyService implements IKeyService {
      * @see IKeyService::createKey()
      */
     public function createAndStoreKey(IKeyHolder $keyHolder): IKey {
-        // 1. create a key for the user
         $key = $this->createKey(
             $this->credentialService->createCredential($keyHolder)
             , $keyHolder

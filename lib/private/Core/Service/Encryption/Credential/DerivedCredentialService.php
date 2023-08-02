@@ -21,17 +21,22 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Credential;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Exception\Repository\Derivation\DerivationException;
 use Keestash\Exception\Repository\Derivation\DerivationNotFoundException;
 use Keestash\Exception\Repository\NoRowsFoundException;
 use Keestash\Exception\User\UserException;
+use KSP\Core\DTO\Derivation\IDerivation;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class CredentialService
@@ -44,6 +49,7 @@ class DerivedCredentialService implements ICredentialService {
     public function __construct(
         private readonly IDerivationRepository $derivationRepository
         , private readonly LoggerInterface     $logger
+        , private readonly IDerivationService  $derivationService
     ) {
     }
 
@@ -59,21 +65,7 @@ class DerivedCredentialService implements ICredentialService {
         }
         try {
             $derivation = $this->derivationRepository->get($keyHolder);
-            $this->logger->debug(
-                'derivation result'
-                , [
-                    'id'         => $derivation->getId()
-                    , 'user'     => $derivation->getUser()
-                    , 'derived'  => $derivation->getDerived()
-                    , 'createTs' => $derivation->getCreateTs()
-                ]
-            );
-            $credential = new Credential();
-            $credential->setKeyHolder($keyHolder);
-            $credential->setSecret($derivation->getDerived());
-            $credential->setCreateTs($keyHolder->getCreateTs());
-            $credential->setId($keyHolder->getId());
-            return $credential;
+            return $this->createCredentialHelper($keyHolder, $derivation);
         } catch (DerivationNotFoundException|NoRowsFoundException $e) {
             $this->logger->warning(
                 'no derivation found for keyholder',
@@ -85,6 +77,35 @@ class DerivedCredentialService implements ICredentialService {
             );
             throw new DerivationException();
         }
+    }
+
+    /**
+     * @param IKeyHolder $keyHolder
+     * @return ICredential
+     * @throws UserException
+     */
+    public function createCredentialFromDerivation(IKeyHolder $keyHolder): ICredential {
+        $derivation = new Derivation(
+            Uuid::uuid4()->toString()
+            , $keyHolder
+            , $this->derivationService->derive($keyHolder->getPassword())
+            , new DateTimeImmutable()
+        );
+        return $this->createCredentialHelper($keyHolder, $derivation);
+    }
+
+    /**
+     * @param IKeyHolder  $keyHolder
+     * @param IDerivation $derivation
+     * @return ICredential
+     */
+    private function createCredentialHelper(IKeyHolder $keyHolder, IDerivation $derivation): ICredential {
+        $credential = new Credential();
+        $credential->setKeyHolder($keyHolder);
+        $credential->setSecret($derivation->getDerived());
+        $credential->setCreateTs($keyHolder->getCreateTs());
+        $credential->setId($keyHolder->getId());
+        return $credential;
     }
 
 }
