@@ -37,7 +37,7 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $this->exceptionHandlerService->registerHandler(
-            $request->getAttribute(IRequest::ATTRIBUTE_NAME_REQUEST_ID, 'unknown request id')
+            (string) $request->getAttribute(IRequest::ATTRIBUTE_NAME_REQUEST_ID, 'unknown request id')
         );
         return $handler->handle($request);
     }
