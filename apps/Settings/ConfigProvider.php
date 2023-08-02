@@ -31,6 +31,7 @@ final class ConfigProvider {
     public const USER_ADD                   = '/users/add[/]';
     public const USER_EDIT                  = '/users/edit';
     public const USER_REMOVE                = '/users/remove';
+    public const USER_UPDATE_PASSWORD       = '/users/update-password';
     public const USER_PROFILE_CONFIGURATION = '/users/profile/configuration';
     public const ORGANIZATION_LIST_ALL      = '/organizations/all/[:includeInactive/][:userHash/]';
     public const ORGANIZATION_ACTIVATE      = '/organizations/activate[/]';

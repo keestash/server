@@ -84,46 +84,47 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 return [
     ConfigProvider::FACTORIES => [
         // service
-        UserService::class                           => InvokableFactory::class
-        , SettingsService::class                     => SettingsServiceFactory::class
+        UserService::class                             => InvokableFactory::class
+        , SettingsService::class                       => SettingsServiceFactory::class
 
         // api
-        , Activate::class                            => ActivateFactory::class
-        , Add::class                                 => AddFactory::class
-        , Get::class                                 => GetFactory::class
-        , ListAll::class                             => ListAllFactory::class
-        , Update::class                              => UpdateFactory::class
-        , \KSA\Settings\Api\Organization\User::class => UserFactory::class
-        , UserEdit::class                            => UserEditFactory::class
-        , GetAll::class                              => GetAllFactory::class
-        , UserAdd::class                             => UserAddFactory::class
-        , UserLock::class                            => UserLockFactory::class
-        , UserRemove::class                          => UserRemoveFactory::class
-        , \KSA\Settings\Api\User\Get::class          => \KSA\Settings\Factory\Api\User\GetFactory::class
-        , UpdateProfileImage::class                  => UpdateProfileImageFactory::class
-        , Configuration::class                       => ConfigurationFactory::class
+        , Activate::class                              => ActivateFactory::class
+        , Add::class                                   => AddFactory::class
+        , Get::class                                   => GetFactory::class
+        , ListAll::class                               => ListAllFactory::class
+        , Update::class                                => UpdateFactory::class
+        , \KSA\Settings\Api\Organization\User::class   => UserFactory::class
+        , UserEdit::class                              => UserEditFactory::class
+        , GetAll::class                                => GetAllFactory::class
+        , UserAdd::class                               => UserAddFactory::class
+        , UserLock::class                              => UserLockFactory::class
+        , UserRemove::class                            => UserRemoveFactory::class
+        , \KSA\Settings\Api\User\Get::class            => \KSA\Settings\Factory\Api\User\GetFactory::class
+        , UpdateProfileImage::class                    => UpdateProfileImageFactory::class
+        , Configuration::class                         => ConfigurationFactory::class
+        , \KSA\Settings\Api\User\UpdatePassword::class => \KSA\Settings\Factory\Api\User\UpdatePasswordFactory::class
 
         // repository
-        , OrganizationRepository::class              => OrganizationRepositoryFactory::class
-        , OrganizationUserRepository::class          => OrganizationUserRepositoryFactory::class
-        , DemoUsersRepository::class                 => DemoUsersRepositoryFactory::class
-        , SettingsRepository::class                  => SettingsRepositoryFactory::class
-        , UserSettingRepository::class               => UserSettingRepositoryFactory::class
+        , OrganizationRepository::class                => OrganizationRepositoryFactory::class
+        , OrganizationUserRepository::class            => OrganizationUserRepositoryFactory::class
+        , DemoUsersRepository::class                   => DemoUsersRepositoryFactory::class
+        , SettingsRepository::class                    => SettingsRepositoryFactory::class
+        , UserSettingRepository::class                 => UserSettingRepositoryFactory::class
 
         // event
         // ----- listener
-        , OrganizationAddedEventListener::class      => OrganizationAddedEventListenerFactory::class
-        , PostStateChange::class                     => PostStateChangeFactory::class
-        , UpdateSettingsListener::class              => UpdateSettingsListenerFactory::class
+        , OrganizationAddedEventListener::class        => OrganizationAddedEventListenerFactory::class
+        , PostStateChange::class                       => PostStateChangeFactory::class
+        , UpdateSettingsListener::class                => UpdateSettingsListenerFactory::class
 
         // command
-        , UpdatePassword::class                      => UpdatePasswordFactory::class
-        , \KSA\Settings\Command\Get::class           => \KSA\Settings\Factory\Command\GetFactory::class
-        , Lock::class                                => LockFactory::class
-        , ListSettings::class                        => ListSettingsFactory::class
+        , UpdatePassword::class                        => UpdatePasswordFactory::class
+        , \KSA\Settings\Command\Get::class             => \KSA\Settings\Factory\Command\GetFactory::class
+        , Lock::class                                  => LockFactory::class
+        , ListSettings::class                          => ListSettingsFactory::class
 
         // service
-        , OrganizationService::class                 => OrganizationServiceFactory::class
+        , OrganizationService::class                   => OrganizationServiceFactory::class
     ]
     , ConfigProvider::ALIASES => [
         IOrganizationRepository::class       => OrganizationRepository::class

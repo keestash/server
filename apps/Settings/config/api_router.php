@@ -12,6 +12,7 @@ use KSA\Settings\Api\Organization\User;
 use KSA\Settings\Api\User\Configuration;
 use KSA\Settings\Api\User\Get as UserGetByHash;
 use KSA\Settings\Api\User\GetAll;
+use KSA\Settings\Api\User\UpdatePassword;
 use KSA\Settings\Api\User\UpdateProfileImage;
 use KSA\Settings\Api\User\UserAdd;
 use KSA\Settings\Api\User\UserEdit;
@@ -106,6 +107,12 @@ return [
             , IRoute::MIDDLEWARE => Configuration::class
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => Configuration::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::USER_UPDATE_PASSWORD
+            , IRoute::MIDDLEWARE => UpdatePassword::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => UpdatePassword::class
         ],
     ],
 ];
