@@ -30,6 +30,7 @@ use KSA\Settings\Api\Organization\Add;
 use KSA\Settings\Api\Organization\Get;
 use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Api\Organization\Update;
+use KSA\Settings\Api\User\Configuration;
 use KSA\Settings\Api\User\GetAll;
 use KSA\Settings\Api\User\UpdateProfileImage;
 use KSA\Settings\Api\User\UserAdd;
@@ -48,6 +49,7 @@ use KSA\Settings\Factory\Api\Organization\GetFactory;
 use KSA\Settings\Factory\Api\Organization\ListAllFactory;
 use KSA\Settings\Factory\Api\Organization\UpdateFactory;
 use KSA\Settings\Factory\Api\Organization\UserFactory;
+use KSA\Settings\Factory\Api\User\ConfigurationFactory;
 use KSA\Settings\Factory\Api\User\GetAllFactory;
 use KSA\Settings\Factory\Api\User\UpdateProfileImageFactory;
 use KSA\Settings\Factory\Api\User\UserAddFactory;
@@ -99,6 +101,7 @@ return [
         , UserRemove::class                          => UserRemoveFactory::class
         , \KSA\Settings\Api\User\Get::class          => \KSA\Settings\Factory\Api\User\GetFactory::class
         , UpdateProfileImage::class                  => UpdateProfileImageFactory::class
+        , Configuration::class                       => ConfigurationFactory::class
 
         // repository
         , OrganizationRepository::class              => OrganizationRepositoryFactory::class

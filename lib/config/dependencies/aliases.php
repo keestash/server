@@ -49,6 +49,7 @@ use Keestash\Core\Service\App\AppService;
 use Keestash\Core\Service\App\LoaderService;
 use Keestash\Core\Service\Cache\NullService;
 use Keestash\Core\Service\Config\ConfigService;
+use Keestash\Core\Service\Config\IniConfigService;
 use Keestash\Core\Service\Core\Access\AccessService;
 use Keestash\Core\Service\Core\Environment\EnvironmentService;
 use Keestash\Core\Service\Core\Exception\ExceptionHandlerService;
@@ -112,6 +113,7 @@ use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
 use KSP\Core\Service\Cache\ICacheService;
 use KSP\Core\Service\Config\IConfigService;
+use KSP\Core\Service\Config\IIniConfigService;
 use KSP\Core\Service\Core\Access\IAccessService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
@@ -220,6 +222,7 @@ return [
     , IStringMaskService::class                         => StringMaskService::class
     , IResponseService::class                           => ResponseService::class
     , IExceptionHandlerService::class                   => ExceptionHandlerService::class
+    , IIniConfigService::class                          => IniConfigService::class
 
     , IL10N::class                                      => GetText::class
     , ILoaderService::class                             => LoaderService::class

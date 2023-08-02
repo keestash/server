@@ -9,6 +9,7 @@ use KSA\Settings\Api\Organization\Get;
 use KSA\Settings\Api\Organization\ListAll;
 use KSA\Settings\Api\Organization\Update;
 use KSA\Settings\Api\Organization\User;
+use KSA\Settings\Api\User\Configuration;
 use KSA\Settings\Api\User\Get as UserGetByHash;
 use KSA\Settings\Api\User\GetAll;
 use KSA\Settings\Api\User\UpdateProfileImage;
@@ -99,6 +100,12 @@ return [
             , IRoute::MIDDLEWARE => UpdateProfileImage::class
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => UpdateProfileImage::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::USER_PROFILE_CONFIGURATION
+            , IRoute::MIDDLEWARE => Configuration::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Configuration::class
         ],
     ],
 ];

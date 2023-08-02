@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
+use KSP\Api\IRequest;
 use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,7 +36,9 @@ class ExceptionHandlerMiddleware implements MiddlewareInterface {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $this->exceptionHandlerService->registerHandler();
+        $this->exceptionHandlerService->registerHandler(
+            $request->getAttribute(IRequest::ATTRIBUTE_NAME_REQUEST_ID, 'unknown request id')
+        );
         return $handler->handle($request);
     }
 

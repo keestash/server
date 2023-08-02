@@ -23,20 +23,21 @@ namespace KSA\Settings;
 
 final class ConfigProvider {
 
-    public const APP_ID                    = 'settings';
-    public const USER_GET_HASH             = '/users/get/:userHash[/]';
-    public const USER_GET_ALL              = '/users/all[/]';
-    public const USER_LOCK                 = '/users/lock[/]';
-    public const USER_PROFILE_IMAGE_UPDATE = '/users/profile_image/update';
-    public const USER_ADD                  = '/users/add[/]';
-    public const USER_EDIT                 = '/users/edit';
-    public const USER_REMOVE               = '/users/remove';
-    public const ORGANIZATION_LIST_ALL     = '/organizations/all/[:includeInactive/][:userHash/]';
-    public const ORGANIZATION_ACTIVATE     = '/organizations/activate[/]';
-    public const ORGANIZATION_ADD          = '/organizations/add[/]';
-    public const ORGANIZATION_BY_ID        = '/organizations/:id[/]';
-    public const ORGANIZATION_UPDATE       = '/organizations/update[/]';
-    public const ORGANIZATION_USER_CHANGE  = '/organizations/user/change[/]';
+    public const APP_ID                     = 'settings';
+    public const USER_GET_HASH              = '/users/get/:userHash[/]';
+    public const USER_GET_ALL               = '/users/all[/]';
+    public const USER_LOCK                  = '/users/lock[/]';
+    public const USER_PROFILE_IMAGE_UPDATE  = '/users/profile_image/update';
+    public const USER_ADD                   = '/users/add[/]';
+    public const USER_EDIT                  = '/users/edit';
+    public const USER_REMOVE                = '/users/remove';
+    public const USER_PROFILE_CONFIGURATION = '/users/profile/configuration';
+    public const ORGANIZATION_LIST_ALL      = '/organizations/all/[:includeInactive/][:userHash/]';
+    public const ORGANIZATION_ACTIVATE      = '/organizations/activate[/]';
+    public const ORGANIZATION_ADD           = '/organizations/add[/]';
+    public const ORGANIZATION_BY_ID         = '/organizations/:id[/]';
+    public const ORGANIZATION_UPDATE        = '/organizations/update[/]';
+    public const ORGANIZATION_USER_CHANGE   = '/organizations/user/change[/]';
 
     public const ALLOWED_PROFILE_IMAGE_EXTENSIONS = "extensions.image.profile.allowed";
 
