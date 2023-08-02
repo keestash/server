@@ -85,28 +85,15 @@ class ResetPassword implements RequestHandlerInterface {
             );
         }
 
-        $newUser = clone $userState->getUser();
+        $user       = $userState->getUser();
+        $updateUser = clone $user;
 
-        $newUser->setPassword(
+        $updateUser->setPassword(
             $this->userService->hashPassword($newPassword)
         );
 
-        $this->logger->debug(
-            'reset password flow',
-            [
-                'stage'   => 'new user password set',
-                'oldUser' => [
-                    'id'       => $userState->getUser()->getId(),
-                    'password' => $userState->getUser()->getPassword()
-                ],
-                'newUser' => [
-                    'id'       => $newUser->getId(),
-                    'password' => $newUser->getPassword()
-                ]
-            ]
-        );
-        $this->userRepositoryService->updateUser($newUser, $userState->getUser());
-        $this->userStateRepository->revertPasswordChangeRequest($userState->getUser());
+        $this->userRepositoryService->updateUser($updateUser, $user);
+        $this->userStateRepository->revertPasswordChangeRequest($user);
 
         $this->eventManager->execute(new ResetPasswordEvent());
 

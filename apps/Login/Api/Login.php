@@ -135,15 +135,7 @@ class Login implements RequestHandlerInterface {
             , $this->derivationService->derive($user->getPassword())
             , new DateTimeImmutable()
         );
-        $this->logger->debug(
-            'derivation result login'
-            , [
-                'id'         => $derivation->getId()
-                , 'user'     => $derivation->getUser()
-                , 'derived'  => $derivation->getDerived()
-                , 'createTs' => $derivation->getCreateTs()
-            ]
-        );
+
         $this->derivationRepository->add($derivation);
 
         $user->setJWT(

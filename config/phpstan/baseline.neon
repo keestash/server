@@ -337,7 +337,7 @@ parameters:
 
 		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DIP\\\\DateTime\\\\DateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
-			count: 2
+			count: 3
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
 
 		-
@@ -444,6 +444,11 @@ parameters:
 			message: "#^Parameter \\#2 \\$raw of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#"
 			count: 3
 			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
+
+		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Feature/PasswordChange/PasswordChangeTest.php
 
 		-
 			message: "#^Cannot access offset 'activityList' on mixed\\.$#"
@@ -1134,11 +1139,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/ThirdParty/nikolaposa/RateLimit/FileRateLimiterFactory.php
-
-		-
-			message: "#^Class Keestash\\\\Middleware\\\\DispatchMiddleware extends @final class Mezzio\\\\Router\\\\Middleware\\\\DispatchMiddleware\\.$#"
-			count: 1
-			path: ../../lib/private/Middleware/DispatchMiddleware.php
 
 		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"

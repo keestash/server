@@ -31,5 +31,6 @@ interface IRequest {
     public const ATTRIBUTE_NAME_INSTANCE_ID_AND_HASH_GIVEN = 'given.hash.and.id.instance.name.attribute';
     public const ATTRIBUTE_NAME_DEBUG                      = 'debug.name.attribute';
     public const ATTRIBUTE_NAME_MATCHED_PATH               = 'path.matched.name.attribute';
+    public const ATTRIBUTE_NAME_REQUEST_ID                 = 'id.request.name.attribute';
 
 }

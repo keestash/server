@@ -23,9 +23,8 @@ namespace KSA\PasswordManager\Test\Unit\Service\Encryption;
 
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
-use KSP\Core\Repository\User\IUserRepository;
-use KST\Service\Service\UserService;
 use KSA\PasswordManager\Test\Unit\TestCase;
+use Ramsey\Uuid\Uuid;
 
 class EncryptionServiceTest extends TestCase {
 
@@ -34,14 +33,14 @@ class EncryptionServiceTest extends TestCase {
         /** @var EncryptionService $encryptionService */
         $encryptionService = $serviceManager->get(EncryptionService::class);
 
-        /** @var IUserRepository $userRepository */
-        $userRepository = $this->getServiceManager()
-            ->get(IUserRepository::class);
         /** @var KeyService $keyService */
         $keyService = $this->getServiceManager()
             ->get(KeyService::class);
 
-        $user = $userRepository->getUserById((string) UserService::TEST_USER_ID_2);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString(),
+            Uuid::uuid4()->toString()
+        );
 
         $raw       = 'thisisaverysecretstring';
         $key       = $keyService->getKey($user);
@@ -50,6 +49,8 @@ class EncryptionServiceTest extends TestCase {
         $this->assertTrue(strlen($encrypted) > 0);
         $this->assertTrue($raw !== $encrypted);
         $this->assertTrue($encryptionService->decrypt($key, $encrypted) === $raw);
+
+        $this->removeUser($user);
     }
 
 }

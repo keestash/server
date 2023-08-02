@@ -121,7 +121,7 @@ class NodeRepository {
         $id   = $rows[0]['id'] ?? 0;
         $id   = (int) $id;
         if (0 === $id) {
-            $this->logger->warning('no folder data given',['rows'=>$rows]);
+            $this->logger->warning('no folder data given', ['rows' => $rows]);
             throw new PasswordManagerException();
         }
 
@@ -621,6 +621,7 @@ ORDER BY d.`level`;
         try {
             return $this->getNode((int) $rows[0][0], $depth, $maxDepth);
         } catch (PasswordManagerException $exception) {
+            $this->logger->error('error getting parent node', ['exception' => $exception]);
             return null;
         }
     }
@@ -887,6 +888,81 @@ ORDER BY d.`level`;
             ->where('pn.`user_id` = ?')
             ->setParameter(0, $user->getId())
             ->executeStatement();
+    }
+
+    public function getCredentialsByUser(IUser $user): ArrayList {
+        $list         = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder = $queryBuilder->select(
+            [
+                'n.`id`'
+                , 'n.`name`'
+                , 'n.`user_id`'
+                , 'n.`type`'
+                , 'n.`create_ts`'
+                , 'n.`update_ts`'
+                , 'c.`id`'
+                , 'c.`username`'
+                , 'c.`password`'
+                , 'c.`entropy`'
+                , 'c.`url`'
+                , 'c.`note`'
+                , 'c.`create_ts`'
+            ]
+        )
+            ->from('`pwm_node`', 'n')
+            ->join('n', 'pwm_credential', 'c', 'n.`id` = c.`node_id`')
+            ->where('n.`type` = ?')
+            ->andWhere('n.`user_id` = ?')
+            ->setParameter(0, Node::CREDENTIAL)
+            ->setParameter(1, $user->getId());
+
+        $result = $queryBuilder->executeQuery();
+
+        foreach ($result->fetchAllNumeric() as $row) {
+            $id       = (int) $row[0];
+            $name     = $row[1];
+            $type     = $row[3];
+            $createTs = $this->dateTimeService->fromFormat($row[4]);
+            $updateTs =
+                $row[5] !== null
+                    ? $this->dateTimeService->fromFormat((string) $row[5])
+                    : null;
+
+            $credential = new Credential();
+            $credential->setId($id);
+            $credential->setName((string) $name);
+            $credential->setUser($user);
+            $credential->setCreateTs($createTs);
+            $credential->setUpdateTs($updateTs);
+            $credential->setType((string) $type);
+
+            $credential->setCredentialId((int) $row[6]);
+
+            $userName = new Username();
+            $userName->setEncrypted((string) $row[7]);
+            $credential->setUsername($userName);
+
+            $password = new Password();
+            $password->setEncrypted((string) $row[8]);
+            $credential->setPassword($password);
+
+            $entropy = new Entropy();
+            $entropy->setEncrypted((string) $row[9]);
+            $credential->setEntropy($entropy);
+
+            $url = new URL();
+            $url->setEncrypted((string) $row[10]);
+            $credential->setUrl($url);
+
+            // TODO remove createTs on credential level, rely only on node level
+            $credential->setCreateTs(
+                $this->dateTimeService->fromFormat((string) $row[12])
+            );
+
+            $list->add($credential);
+        }
+        return $list;
     }
 
 }

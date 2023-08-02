@@ -97,16 +97,6 @@ class AfterRegistration implements IListener {
         );
         $this->derivationRepository->add($derivation);
 
-        $this->logger->info(
-            'derivation result webhook'
-            , [
-                'id'         => $derivation->getId()
-                , 'user'     => $derivation->getUser()
-                , 'derived'  => $derivation->getDerived()
-                , 'createTs' => $derivation->getCreateTs()
-            ]
-        );
-
         try {
             $this->keyService->createAndStoreKey($event->getUser());
             $this->logger->info('key created', ['userId' => $event->getUser()->getId()]);

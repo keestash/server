@@ -74,10 +74,10 @@ interface IUserRepositoryService {
 
     /**
      * @param IUser $updatedUser
-     * @param IUser $oldUser
+     * @param IUser $user
      * @return IUser
      * @throws UserNotUpdatedException
      */
-    public function updateUser(IUser $updatedUser, IUser $oldUser): IUser;
+    public function updateUser(IUser $updatedUser, IUser $user): IUser;
 
 }

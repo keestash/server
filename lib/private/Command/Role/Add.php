@@ -49,7 +49,7 @@ class Add extends KeestashCommand {
 
     protected function configure(): void {
         $this->setName("role:add")
-            ->setDescription("add a new permission");
+            ->setDescription("add a new role");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {

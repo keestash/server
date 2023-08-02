@@ -89,6 +89,7 @@ use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Queue\Handler\EventHandler;
+use Keestash\ThirdParty\Mezzio\Cors\UriFactory;
 use Keestash\ThirdParty\nikolaposa\RateLimit\FileRateLimiter;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
@@ -151,6 +152,7 @@ use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\Queue\Handler\IEventHandler;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
+use Psr\Http\Message\UriFactoryInterface;
 use RateLimit\RateLimiter;
 
 return [
@@ -231,4 +233,5 @@ return [
     // third party
     , ClientInterface::class                            => Client::class
     , RateLimiter::class                                => FileRateLimiter::class
+    , UriFactoryInterface::class                        => UriFactory::class
 ];

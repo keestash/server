@@ -63,52 +63,36 @@ class AfterPasswordChanged implements IListener {
      */
     public function execute(IEvent $event): void {
         $this->logger->debug('start AfterPasswordChange');
-        if ($event->getUpdatedUser()->getPassword() === $event->getOldUser()->getPassword()) {
+        if ($event->getUpdatedUser()->getPassword() === $event->getUser()->getPassword()) {
             $this->logger->debug('the passwords are the same - not updating!!');
             return;
         }
 
-        $updatedDerivation = new Derivation(
-            Uuid::uuid4()->toString()
-            , $event->getUpdatedUser()
-            , $this->derivationService->derive($event->getUpdatedUser()->getPassword())
-            , new DateTimeImmutable()
-        );
-
-        $oldDerivation = new Derivation(
-            Uuid::uuid4()->toString()
-            , $event->getOldUser()
-            , $this->derivationService->derive($event->getOldUser()->getPassword())
-            , new DateTimeImmutable()
-        );
-
-        $this->logger->debug(
-            'reset password flow',
-            [
-                'updatedDerivation' => $event->getUpdatedUser()->getPassword(),
-                'oldDerivation'     => $event->getOldUser()->getPassword(),
-                'equal'             => $event->getUpdatedUser()->getPassword() === $event->getOldUser()->getPassword(),
-                'oldUser'           => $event->getOldUser()->getId(),
-                'updatedUser'       => $event->getUpdatedUser()->getId()
-            ]
-        );
-
-        $updatedCredential = $this->credentialService->createCredential($event->getUpdatedUser());
-        $oldCredential     = $this->credentialService->createCredential($event->getOldUser());
-
+        $credential        = $this->credentialService->createCredentialFromDerivation($event->getUser());
+        $updatedCredential = $this->credentialService->createCredentialFromDerivation($event->getUpdatedUser());
         $this->logger->debug('retrieved both, old and new credential');
         /** @var IKey|Key $key */
-        $key = $this->encryptionKeyRepository->getKey($event->getOldUser());
+        $key = $this->encryptionKeyRepository->getKey($event->getUser());
         $this->logger->debug('retrieved key');
 
-        $oldSecretPlain = $this->encryptionService->decrypt($oldCredential, $key->getSecret());
-        $newSecret      = $this->encryptionService->encrypt($updatedCredential, $oldSecretPlain);
+        $oldSecretPlain = $this->encryptionService->decrypt($credential, $key->getSecret());
+        $newSecret = $this->encryptionService->encrypt($updatedCredential, $oldSecretPlain);
         $this->logger->debug('recrypted :)');
 
-        $this->derivationRepository->clear($event->getUpdatedUser());
-        $this->derivationRepository->add($updatedDerivation);
         $key->setSecret($newSecret);
         $added = $this->encryptionKeyRepository->updateKey($key);
+
+        $this->derivationRepository->clear($event->getUpdatedUser());
+
+        $this->derivationRepository->add(
+            new Derivation(
+                Uuid::uuid4()->toString()
+                , $event->getUpdatedUser()
+                , $this->derivationService->derive($event->getUpdatedUser()->getPassword())
+                , new DateTimeImmutable()
+            )
+        );
+
         $this->logger->debug('updated :)');
 
         if (false === $added) {

@@ -25,4 +25,5 @@ use Keestash\ConfigProvider;
 return [
     ConfigProvider::FACTORIES => require __DIR__ . '/dependencies/factories.php'
     , ConfigProvider::ALIASES   => require __DIR__ . '/dependencies/aliases.php'
+    , ConfigProvider::INVOKABLES   => require __DIR__ . '/dependencies/invokables.php'
 ];

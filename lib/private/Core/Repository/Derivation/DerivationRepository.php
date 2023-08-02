@@ -111,7 +111,7 @@ class DerivationRepository implements IDerivationRepository {
                 )
                 ->setParameter(0, $derivation->getId())
                 ->setParameter(1, $derivation->getDerived())
-                ->setParameter(2, $derivation->getUser()->getId())
+                ->setParameter(2, $derivation->getKeyHolder()->getId())
                 ->setParameter(3, $this->dateTimeService->toYMDHIS($derivation->getCreateTs()))
                 ->executeStatement();
             $this->backend->getConnection()->commit();

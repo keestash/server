@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\Derivation;
 
 use DateTimeInterface;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 
 interface IDerivation {
 
     public function getId(): string;
 
-    public function getUser(): IUser;
+    public function getKeyHolder(): IKeyHolder;
 
     public function getDerived(): string;
 

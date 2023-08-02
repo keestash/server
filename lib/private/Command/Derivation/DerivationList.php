@@ -53,7 +53,7 @@ class DerivationList extends KeestashCommand {
                 $derivation->getId()
                 , $this->dateTimeService->toDMYHIS($derivation->getCreateTs())
                 , $derivation->getDerived()
-                , $derivation->getUser()->getId()
+                , $derivation->getKeyHolder()->getId()
             ];
         }
 

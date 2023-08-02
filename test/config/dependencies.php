@@ -43,6 +43,7 @@ use KST\Service\Factory\Core\Repository\InstanceDBFactory;
 use KST\Service\Factory\Core\Service\Config\ConfigServiceFactory;
 use KST\Service\Factory\Core\Service\Config\IniConfigServiceFactory;
 use KST\Service\Factory\Core\Service\Email\EmailServiceFactory;
+use KST\Service\Factory\Core\Service\Encryption\CredentialServiceFactory;
 use KST\Service\Factory\Core\Service\File\Upload\FileServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\LDAP\LDAPServiceFactory;
@@ -68,7 +69,7 @@ return [
     , ConfigService::class              => ConfigServiceFactory::class
     , IniConfigService::class           => IniConfigServiceFactory::class
     , InstanceDB::class                 => InstanceDBFactory::class
-    , CredentialService::class          => InvokableFactory::class
+    , CredentialService::class          => CredentialServiceFactory::class
     , FileService::class                => FileServiceFactory::class
     , RateLimiterMiddleware::class      => InvokableFactory::class
     , EmailValidator::class             => EmailValidatorFactory::class

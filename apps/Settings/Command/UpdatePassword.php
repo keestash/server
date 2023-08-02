@@ -29,7 +29,6 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -55,13 +54,7 @@ class UpdatePassword extends KeestashCommand {
 
     protected function configure(): void {
         $this->setName("users:user:change-password")
-            ->setDescription("changes a password for a given user")
-            ->addOption(
-                UpdatePassword::OPTION_NAME_WITH_EVENTS
-                , 'w'
-                , InputOption::VALUE_NONE
-                , 'wheter all events hanging on update user should be triggered'
-            );
+            ->setDescription("changes the password for a given user");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
@@ -70,7 +63,6 @@ class UpdatePassword extends KeestashCommand {
         $userId         = (string) ($style->ask("UserId") ?? "");
         $password       = (string) ($style->askHidden("Password") ?? "");
         $passwordRepeat = (string) ($style->askHidden("Password Repeat") ?? "");
-        $withEvents     = (bool) $input->getOption(UpdatePassword::OPTION_NAME_WITH_EVENTS);
 
         $user = $this->userRepository->getUserById($userId);
 

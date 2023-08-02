@@ -42,6 +42,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_ADD       = '/password_manager/credential/additional_data/add';
     public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_DELETE    = '/password_manager/credential/additional_data/delete/:advid';
     public const PASSWORD_MANAGER_CREDENTIAL_ACTIVITY_GET              = '/password_manager/credential/additional_data/get/:referenceKey/:appId';
+    public const PASSWORD_MANAGER_CREDENTIAL_LIST_ALL                  = '/password_manager/credential/list_all';
 
     public const PASSWORD_MANAGER_NODE_PWNED_CHART_ALL    = '/password_manager/node/pwned/chart/all';
     public const PASSWORD_MANAGER_NODE_PWNED_CHANGE_STATE = '/password_manager/node/pwned/change_state';
@@ -50,7 +51,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_ATTACHMENTS_ADD            = '/password_manager/attachments/add';
     public const PASSWORD_MANAGER_ATTACHMENTS_GET_BY_NODE_ID = '/password_manager/attachments/get/:nodeId';
     public const PASSWORD_MANAGER_ATTACHMENTS_REMOVE         = '/password_manager/attachments/remove[/]';
-    public const PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD         = '/password_manager/attachments/download/:fileId/:jwt';
+    public const PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD       = '/password_manager/attachments/download/:fileId/:jwt';
 
     public const PASSWORD_MANAGER_GENERATE_QUALITY = "/password_manager/generate/quality/:value";
 
