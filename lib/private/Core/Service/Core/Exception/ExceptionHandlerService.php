@@ -32,20 +32,21 @@ class ExceptionHandlerService implements IExceptionHandlerService {
     ) {
     }
 
-    public function registerHandler(): void {
-        $this->setErrorHandler();
-        $this->setExceptionHandler();
+    public function registerHandler(string $requestId): void {
+        $this->setErrorHandler($requestId);
+        $this->setExceptionHandler($requestId);
     }
 
-    private function setExceptionHandler(): void {
+    private function setExceptionHandler(string $requestId): void {
         $self = $this;
         set_exception_handler(
-            static function (Throwable $exception) use ($self): void {
+            static function (Throwable $exception) use ($self, $requestId): void {
 
                 $self->logger->error(
                     (string) json_encode(
                         [
                             "id"                => $exception->getCode()
+                            , 'requestId'       => $requestId
                             , "message"         => $exception->getMessage()
                             , "file"            => $exception->getFile()
                             , "line"            => $exception->getLine()
@@ -57,7 +58,7 @@ class ExceptionHandlerService implements IExceptionHandlerService {
             });
     }
 
-    private function setErrorHandler(): void {
+    private function setErrorHandler(string $requestId): void {
         $self = $this;
         set_error_handler(
         /** @phpstan-ignore-next-line */
@@ -66,12 +67,13 @@ class ExceptionHandlerService implements IExceptionHandlerService {
                 , string         $file
                 , int            $line
                 , array          $context = []
-            ) use ($self): void {
+            ) use ($self, $requestId): void {
 
                 $self->logger->error(
                     (string) json_encode(
                         [
                             "id"                => $id
+                            , 'requestId'       => $requestId
                             , "message"         => $message
                             , "file"            => $file
                             , "line"            => $line

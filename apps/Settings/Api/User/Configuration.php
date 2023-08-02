@@ -19,10 +19,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Core\Exception;
+namespace KSA\Settings\Api\User;
 
-interface IExceptionHandlerService {
+use Keestash\Api\Response\OkResponse;
+use KSP\Core\Service\Config\IIniConfigService;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-    public function registerHandler(string $requestId): void;
+class Configuration implements RequestHandlerInterface {
+
+    public function __construct(
+        private readonly IIniConfigService $iniConfigService
+    ) {
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface {
+        return new OkResponse(
+            [
+                'uploadMaxFilesize' => $this->iniConfigService->toBytes(
+                    (string) $this->iniConfigService->getValue("upload_max_filesize", -1)
+                )
+            ]
+        );
+    }
 
 }

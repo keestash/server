@@ -19,10 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Core\Exception;
+namespace KSA\Settings\Factory\Api\User;
 
-interface IExceptionHandlerService {
+use KSA\Settings\Api\User\Configuration;
+use KSP\Core\Service\Config\IIniConfigService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-    public function registerHandler(string $requestId): void;
+class ConfigurationFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Configuration {
+        return new Configuration(
+            $container->get(IIniConfigService::class)
+        );
+    }
 
 }
