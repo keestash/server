@@ -37,6 +37,7 @@ return [
         , ConfigProvider::USER_LOCK                  => IPermission::PERMISSION_USER_LOCK
         , ConfigProvider::USER_REMOVE                => IPermission::PERMISSION_USER_REMOVE
         , ConfigProvider::USER_PROFILE_CONFIGURATION => IPermission::PERMISSION_SETTINGS_USER_PROFILE_CONFIGURATION
+        , ConfigProvider::USER_UPDATE_PASSWORD       => IPermission::PERMISSION_SETTINGS_USER_UPDATE_PASSWORD
 
         // organization
         , ConfigProvider::ORGANIZATION_ACTIVATE      => IPermission::PERMISSION_ORGANIZATION_ACTIVATE
@@ -61,6 +62,7 @@ return [
         , IPermission::PERMISSION_ORGANIZATION_UPDATE                 => IPermission::PERMISSION_NAME_ORGANIZATION_UPDATE
         , IPermission::PERMISSION_ORGANIZATION_CHANGE                 => IPermission::PERMISSION_NAME_ORGANIZATION_CHANGE
         , IPermission::PERMISSION_SETTINGS_USER_PROFILE_CONFIGURATION => IPermission::PERMISSION_NAME_SETTINGS_USER_PROFILE_CONFIGURATION
+        , IPermission::PERMISSION_SETTINGS_USER_UPDATE_PASSWORD       => IPermission::PERMISSION_NAME_SETTINGS_USER_UPDATE_PASSWORD
     ]
     , CoreConfigProvider::ROLE_PERMISSION_LIST => [
         RoleInterface::DEFAULT_NAME   => [
@@ -68,6 +70,7 @@ return [
             , IPermission::PERMISSION_UPDATE_USER_PROFILE
             , IPermission::PERMISSION_USER_EDIT
             , IPermission::PERMISSION_SETTINGS_USER_PROFILE_CONFIGURATION
+            , IPermission::PERMISSION_SETTINGS_USER_UPDATE_PASSWORD
         ]
         , IRole::ROLE_NAME_USER_ADMIN => [
             IPermission::PERMISSION_USER_ADD

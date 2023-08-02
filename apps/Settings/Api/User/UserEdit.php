@@ -80,7 +80,6 @@ class UserEdit implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
-
         if (true === $this->userService->isDisabled($repoUser)) {
 
             return new JsonResponse(
