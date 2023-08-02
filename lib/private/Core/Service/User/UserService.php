@@ -324,7 +324,6 @@ class UserService implements IUserService {
             $result->add('email address is invalid');
         }
 
-        $this->phoneValidator->setOptions(['country' => $user->getLocale()]);
         if (false === $this->validateWithAllCountries($user->getPhone())) {
             $result->add('invalid phone');
         }

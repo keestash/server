@@ -91,14 +91,19 @@ class UserEdit implements RequestHandlerInterface {
         $oldUser = clone $repoUser;
 
         try {
-            $param         = $userArray['locale'];
-            $splittedParam = explode('_', $param);
-            $language      = strtolower($splittedParam[0]);
-            $locale        = strtolower($splittedParam[1]);
+            $param           = $userArray['locale'] ?? null;
+            $languageUpdated = false;
 
-            $languageUpdated =
-                $language !== strtolower($user->getLanguage())
-                && $locale !== strtolower($user->getLocale());
+            if (null !== $param && "" !== $param) {
+                $splittedParam   = explode('_', $param);
+                $language        = strtolower($splittedParam[0] ?? '');
+                $locale          = strtolower($splittedParam[1] ?? '');
+                $languageUpdated =
+                    $language !== strtolower($user->getLanguage())
+                    && $locale !== strtolower($user->getLocale());
+                $repoUser->setLanguage($language);
+                $repoUser->setLocale($locale);
+            }
             $repoUser->setName($userArray['name']);
             $repoUser->setFirstName($userArray['first_name']);
             $repoUser->setLastName($userArray['last_name']);
@@ -106,8 +111,6 @@ class UserEdit implements RequestHandlerInterface {
             $repoUser->setPhone($userArray['phone']);
             $repoUser->setLocked($userArray['locked']);
             $repoUser->setDeleted($userArray['deleted']);
-            $repoUser->setLanguage($language);
-            $repoUser->setLocale($locale);
             $repoUser->setJWT(
                 $this->jwtService->getJWT(
                     new Audience(
@@ -118,7 +121,7 @@ class UserEdit implements RequestHandlerInterface {
             );
         } catch (TypeError $error) {
             $this->logger->error(
-                'error creating user',
+                'error setting user properties',
                 [
                     'error'      => [
                         'message' => $error->getMessage(),
