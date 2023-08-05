@@ -22,10 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Middleware;
 
 use Keestash\ConfigProvider;
-use Keestash\Core\DTO\LDAP\LDAPOption;
 use Keestash\Core\Repository\Instance\InstanceDB;
-use KSA\Settings\Exception\SettingNotFoundException;
-use KSA\Settings\Repository\SettingsRepository;
 use KSA\Settings\Service\ISettingsService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,6 +47,10 @@ class EnvironmentMiddleware implements MiddlewareInterface {
         );
         $request = $request->withAttribute(
             ConfigProvider::REGISTER_ENABLED
+            , $registerEnabled
+        );
+        $request = $request->withAttribute(
+            ConfigProvider::ACCOUNT_RESET_ENABLED
             , $registerEnabled
         );
         return $handler->handle($request);

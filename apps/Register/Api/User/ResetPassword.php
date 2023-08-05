@@ -20,57 +20,46 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Api;
+namespace KSA\Register\Api\User;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\User\UserNotFoundException;
-use KSA\ForgotPassword\Event\ForgotPasswordEvent;
+use KSA\Register\Entity\IResponseCodes;
+use KSA\Register\Event\ResetPasswordEvent;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\IUserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class ForgotPassword implements RequestHandlerInterface {
-
-    private IUserService         $userService;
-    private IUserStateRepository $userStateRepository;
-    private IL10N                $translator;
-    private IUserRepository      $userRepository;
-    private LoggerInterface      $logger;
-    private IEventService        $eventManager;
+class ResetPassword implements RequestHandlerInterface {
 
     public function __construct(
-        IUserService           $userService
-        , IUserStateRepository $userStateRepository
-        , IL10N                $translator
-        , IUserRepository      $userRepository
-        , LoggerInterface      $logger
-        , IEventService        $eventManager
+        private readonly IUserService           $userService
+        , private readonly IUserStateRepository $userStateRepository
+        , private readonly IUserRepository      $userRepository
+        , private readonly LoggerInterface      $logger
+        , private readonly IEventService        $eventManager
+        , private readonly IResponseService     $responseService
     ) {
-        $this->userService         = $userService;
-        $this->userStateRepository = $userStateRepository;
-        $this->translator          = $translator;
-        $this->userRepository      = $userRepository;
-        $this->logger              = $logger;
-        $this->eventManager        = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters     = (array) $request->getParsedBody();
-        $input          = $parameters["input"] ?? null;
-        $responseHeader = $this->translator->translate("Password reset");
+        $parameters = (array) $request->getParsedBody();
+        $input      = $parameters["input"] ?? null;
 
         if (null === $input || "" === $input) {
             return new JsonResponse(
-                ['no input given']
+                [
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_INVALID_INPUT)
+                ]
                 , IResponse::BAD_REQUEST
             );
         }
@@ -94,14 +83,18 @@ class ForgotPassword implements RequestHandlerInterface {
 
         if (null === $user) {
             return new JsonResponse(
-                ["No user found"]
+                [
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_NOT_FOUND)
+                ]
                 , IResponse::NOT_FOUND
             );
         }
 
         if (true === $this->userService->isDisabled($user)) {
             return new JsonResponse(
-                ["Can not reset the user. Please contact your admin"]
+                [
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_DISABLED)
+                ]
                 , IResponse::FORBIDDEN
             );
         }
@@ -121,8 +114,7 @@ class ForgotPassword implements RequestHandlerInterface {
 
             return new JsonResponse(
                 [
-                    "header"    => $responseHeader
-                    , "message" => $this->translator->translate("You have already requested an password reset. Please check your mails or try later again")
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_ALREADY_SENT)
                 ]
                 , IResponse::NOT_ACCEPTABLE
             );
@@ -130,12 +122,12 @@ class ForgotPassword implements RequestHandlerInterface {
         }
 
         $this->eventManager->execute(
-            new ForgotPasswordEvent($user)
+            new ResetPasswordEvent($user)
         );
 
         return new JsonResponse(
             [
-                "header" => $responseHeader
+                "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_SENT)
             ]
             , IResponse::OK
         );

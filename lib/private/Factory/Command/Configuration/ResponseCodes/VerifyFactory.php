@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -14,17 +13,29 @@ declare(strict_types=1);
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public Liocense for more details.
+ * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\ForgotPassword\Event\ForgotPasswordEvent;
-use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
+namespace Keestash\Factory\Command\Configuration\ResponseCodes;
 
-return [
-    ForgotPasswordEvent::class => [
-        ForgotPasswordMailLinkListener::class
-    ]
-];
+use Keestash\Command\Configuration\ResponseCodes\Verify;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
+
+class VerifyFactory implements FactoryInterface {
+
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Verify {
+        return new Verify(
+            $container->get(Config::class)
+        );
+    }
+
+}

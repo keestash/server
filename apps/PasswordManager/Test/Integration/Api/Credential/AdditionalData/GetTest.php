@@ -182,7 +182,6 @@ class GetTest extends TestCase {
                     , $headers
                 )
             );
-
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
         $this->logout($headers, $user);
         $this->removeUser($user);

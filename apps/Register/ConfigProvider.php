@@ -31,6 +31,9 @@ final class ConfigProvider {
     public const USER_EXISTS_BY_USERNAME = '/user/exists/:userName[/]';
     public const USER_EXISTS_BY_MAIL     = '/user/mail/exists/:address[/]';
     public const APP_ID                  = 'register';
+    public const RESET_PASSWORD          = '/register/reset-password';
+    public const RESET_PASSWORD_CONFIRM  = '/register/reset-password/confirm';
+    public const RESET_PASSWORD_RETRIEVE = '/register/reset-password/retrieve/:hash';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

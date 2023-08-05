@@ -19,56 +19,64 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Test\Integration\Api;
+namespace KSA\Register\Test\Integration\Api\User;
 
-use KSA\ForgotPassword\Api\ResetPassword;
-use KSA\ForgotPassword\ConfigProvider;
-use KSA\ForgotPassword\Test\Integration\TestCase;
+use KSA\Register\ConfigProvider;
+use KSA\Register\Entity\IResponseCodes;
+use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
-use KST\Service\Service\UserService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
-class ResetPasswordTest extends TestCase {
+class ResetPasswordConfirmTest extends TestCase {
 
     public function testWithNoUserFound(): void {
-        /** @var ResetPassword $resetPassword */
-        $resetPassword = $this->getService(ResetPassword::class);
-        $response      = $resetPassword->handle(
-            $this->getVirtualRequest()
-        );
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::NOT_ACCEPTABLE === $response->getStatusCode());
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::RESET_PASSWORD_CONFIRM
+                    , []
+                )
+            );
+
+        $decoded = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertTrue($decoded['responseCode'] === IResponseCodes::RESPONSE_CODE_RESET_PASSWORD_CONFIRM_USER_BY_HASH_NOT_FOUND);
     }
 
     public function testWithMinimumPasswordsAreNotSet(): void {
-        $hash = Uuid::uuid4();
-        /** @var IUserRepository $userRepository */
-        $userRepository = $this->getService(IUserRepository::class);
+        $hash = (string) Uuid::uuid4();
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
-        $user                = $userRepository->getUserById((string) UserService::TEST_RESET_PASSWORD_USER_ID_7);
-        $this->assertInstanceOf(IUser::class, $user);
-        $userStateRepository->requestPasswordReset($user, (string) $hash);
 
-        /** @var ResetPassword $resetPassword */
-        $resetPassword = $this->getService(ResetPassword::class);
-        $response      = $resetPassword->handle(
-            $this->getVirtualRequest(
-                [
-                    'hash'    => (string) $hash
-                    , 'input' => 'unsafe'
-                ]
-            )
+        $user = $this->createUser(
+            Uuid::uuid4()->toString()
+            , Uuid::uuid4()->toString()
         );
+        $this->assertInstanceOf(IUser::class, $user);
 
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::NOT_ACCEPTABLE === $response->getStatusCode());
+        $userStateRepository->requestPasswordReset($user, $hash);
+
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::RESET_PASSWORD_CONFIRM
+                    , [
+                        'hash' => $hash,
+                    ]
+                )
+            );
+
+        $decoded = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertTrue($decoded['responseCode'] === IResponseCodes::RESPONSE_CODE_RESET_PASSWORD_CONFIRM_INVALID_PASSWORD);
+        $this->removeUser($user);
     }
 
     public function testRegularCase(): void {
@@ -93,14 +101,14 @@ class ResetPasswordTest extends TestCase {
 
         $headers  = $this->login($user, $password);
         $input    = [
-            'hash'    => (string) $hash
-            , 'input' => $passwordService->generatePassword(20, true, true, true, true)->getValue()
+            'hash'       => (string) $hash
+            , 'password' => 'Rtyfgdsfsf124?dfgdfgfdxcSFGISEIJFefsgfdrgwer2345@!3445'
         ];
         $response = $this->getApplication()
             ->handle(
                 $this->getRequest(
                     IVerb::POST
-                    , ConfigProvider::RESET_PASSWORD_UPDATE
+                    , ConfigProvider::RESET_PASSWORD_CONFIRM
                     , $input
                     , $user
                     , $headers
@@ -133,19 +141,19 @@ class ResetPasswordTest extends TestCase {
             ->handle(
                 $this->getRequest(
                     IVerb::POST
-                    , ConfigProvider::RESET_PASSWORD_UPDATE
+                    , ConfigProvider::RESET_PASSWORD_CONFIRM
                     , [
-                        'hash'    => Uuid::uuid4()->toString()
-                        , 'input' => Uuid::uuid4()->toString()
+                        'hash'       => Uuid::uuid4()->toString()
+                        , 'password' => Uuid::uuid4()->toString()
                     ]
                     , $user
                     , $headers
                 )
             );
         $data     = $this->getDecodedData($response);
-        $this->assertArrayHasKey("responseCode", $data);
-        $this->assertTrue($data['responseCode'] === 133909);
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertArrayHasKey("responseCode", $data);
+        $this->assertTrue($data['responseCode'] === IResponseCodes::RESPONSE_CODE_RESET_PASSWORD_CONFIRM_USER_BY_HASH_NOT_FOUND);
         $this->logout($headers, $user);
         $this->removeUser($user);
     }

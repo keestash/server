@@ -122,7 +122,7 @@ class KeyService implements IKeyService {
      */
     public function createAndStoreKey(IKeyHolder $keyHolder): IKey {
         $key = $this->createKey(
-            $this->credentialService->createCredential($keyHolder)
+            $this->credentialService->createCredentialFromDerivation($keyHolder)
             , $keyHolder
         );
         return $this->storeKey($keyHolder, $key);

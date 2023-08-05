@@ -24,15 +24,16 @@ use Keestash\ConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 
 return [
-    ConfigProvider::DEPENDENCIES  => require __DIR__ . '/dependencies.php'
-    , ConfigProvider::API_ROUTER  => require __DIR__ . '/api_router.php'
-    , ConfigProvider::PERMISSIONS => require __DIR__ . '/permissions.php'
-    , ConfigProvider::COMMANDS    => require __DIR__ . '/commands.php'
-    , ConfigProvider::APP_LIST    => [
+    ConfigProvider::DEPENDENCIES     => require __DIR__ . '/dependencies.php'
+    , ConfigProvider::API_ROUTER     => require __DIR__ . '/api_router.php'
+    , ConfigProvider::PERMISSIONS    => require __DIR__ . '/permissions.php'
+    , ConfigProvider::COMMANDS       => require __DIR__ . '/commands.php'
+    , ConfigProvider::RESPONSE_CODES => require __DIR__ . '/response_codes.php'
+    , ConfigProvider::APP_LIST       => [
         LoginConfigProvider::APP_ID => [
-            ConfigProvider::APP_ORDER        => 3
-            , ConfigProvider::APP_NAME       => 'Login'
-            , ConfigProvider::APP_VERSION    => 1
+            ConfigProvider::APP_ORDER     => 3
+            , ConfigProvider::APP_NAME    => 'Login'
+            , ConfigProvider::APP_VERSION => 1
         ],
     ]
 ];

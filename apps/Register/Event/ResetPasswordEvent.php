@@ -1,6 +1,5 @@
 <?php
 declare(strict_types=1);
-
 /**
  * Keestash
  *
@@ -20,20 +19,30 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\ConfigProvider as CoreConfigProvider;
-use KSA\ForgotPassword\ConfigProvider;
+namespace KSA\Register\Event;
 
-return [
-    CoreConfigProvider::APP_LIST       => [
-        ConfigProvider::APP_ID => [
-            CoreConfigProvider::APP_ORDER   => 7,
-            CoreConfigProvider::APP_NAME    => 'Forgot Password',
-            CoreConfigProvider::APP_VERSION => 1,
-        ],
-    ]
-    , CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php'
-    , CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php'
-    , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
-    , CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php'
-    , CoreConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php'
-];
+use Keestash\Core\DTO\Event\Event;
+use KSP\Core\DTO\User\IUser;
+
+class ResetPasswordEvent extends Event {
+
+    private IUser $user;
+
+    public function __construct(IUser $user) {
+        $this->user = $user;
+    }
+
+    /**
+     * @return IUser
+     */
+    public function getUser(): IUser {
+        return $this->user;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'user' => $this->getUser()
+        ];
+    }
+
+}

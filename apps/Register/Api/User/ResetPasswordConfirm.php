@@ -19,15 +19,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Api;
+namespace KSA\Register\Api\User;
 
 use DateTime;
-use KSA\ForgotPassword\Event\ResetPasswordEvent;
-use KSP\Api\IRequest;
+use KSA\Register\Entity\IResponseCodes;
+use KSA\Register\Event\ResetPasswordConfirmEvent;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\Diactoros\Response\JsonResponse;
@@ -36,7 +37,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class ResetPassword implements RequestHandlerInterface {
+class ResetPasswordConfirm implements RequestHandlerInterface {
 
     public function __construct(
         private readonly IUserStateRepository     $userStateRepository
@@ -44,6 +45,7 @@ class ResetPassword implements RequestHandlerInterface {
         , private readonly IUserRepositoryService $userRepositoryService
         , private readonly IEventService          $eventManager
         , private readonly LoggerInterface        $logger
+        , private readonly IResponseService       $responseService
     ) {
     }
 
@@ -54,34 +56,28 @@ class ResetPassword implements RequestHandlerInterface {
                 'stage' => 'start'
             ]
         );
-        $parameters  = (array) $request->getParsedBody();
-        $hash        = $parameters["hash"] ?? '';
-        $newPassword = $parameters["input"] ?? '';
+        $parameters = (array) $request->getParsedBody();
+        $hash       = $parameters["hash"] ?? '';
+        $password   = $parameters["password"] ?? '';
 
-        if ("" === $hash || "" === $newPassword) {
-            return new JsonResponse([], IResponse::NOT_ACCEPTABLE);
-        }
-
-        $debug = $request->getAttribute(IRequest::ATTRIBUTE_NAME_DEBUG, false);
-
-        $userState = $this->findCandidate($hash, $debug);
+        $userState = $this->findCandidate($hash);
 
         if (null === $userState) {
             return new JsonResponse(
                 [
-                    "responseCode" => 133909
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_CONFIRM_USER_BY_HASH_NOT_FOUND)
                 ]
                 , IResponse::NOT_FOUND
             );
         }
-        $validPassword = $this->userService->passwordHasMinimumRequirements($newPassword);
+
+        $validPassword = $this->userService->passwordHasMinimumRequirements($password);
         if (false === $validPassword) {
             return new JsonResponse(
                 [
-                    "header"    => "User not updated"
-                    , "message" => "Password minimum requirements not met"
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_CONFIRM_INVALID_PASSWORD)
                 ]
-                , IResponse::NOT_ACCEPTABLE
+                , IResponse::BAD_REQUEST
             );
         }
 
@@ -89,13 +85,13 @@ class ResetPassword implements RequestHandlerInterface {
         $updateUser = clone $user;
 
         $updateUser->setPassword(
-            $this->userService->hashPassword($newPassword)
+            $this->userService->hashPassword($password)
         );
 
         $this->userRepositoryService->updateUser($updateUser, $user);
         $this->userStateRepository->revertPasswordChangeRequest($user);
 
-        $this->eventManager->execute(new ResetPasswordEvent());
+        $this->eventManager->execute(new ResetPasswordConfirmEvent());
 
         $this->logger->debug(
             'reset password flow',
@@ -104,16 +100,16 @@ class ResetPassword implements RequestHandlerInterface {
             ]
         );
         return new JsonResponse(
-            [
-                "header"    => "User updated"
-                , "message" => "We sent an email to reset your password"
-            ]
+            []
             , IResponse::OK
         );
 
     }
 
     private function findCandidate(string $hash, bool $debug = false): ?IUserState {
+        if ("" === $hash) {
+            return null;
+        }
         $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
 
         foreach ($userStates->keySet() as $userStateId) {

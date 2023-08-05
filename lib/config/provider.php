@@ -57,7 +57,6 @@ return [
 
     // Keestash
     , CoreConfigProvider::class
-    , ForgotPasswordConfigProvider::class
     , LoginConfigProvider::class
     , class_exists(LDAPConfigProvider::class)
         ? LDAPConfigProvider::class

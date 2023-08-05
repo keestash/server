@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,14 +19,25 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Event;
+namespace KSA\Register\Factory\Api;
 
-use Keestash\Core\DTO\Event\Event;
+use KSA\Register\Api\User\ResetPasswordRetrieve;
+use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\HTTP\IResponseService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
+use Psr\Container\ContainerInterface;
 
-class ResetPasswordEvent extends Event {
+class ResetPasswordRetrieveFactory implements FactoryInterface {
 
-    public function jsonSerialize(): array {
-        return [];
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ResetPasswordRetrieve {
+        return new ResetPasswordRetrieve(
+            $container->get(IUserStateRepository::class)
+            , $container->get(IResponseService::class)
+        );
     }
 
 }

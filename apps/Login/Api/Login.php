@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Login\Api;
 
 use DateTimeImmutable;
+use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Http\JWT\Audience;
@@ -29,6 +30,7 @@ use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\Token\TokenNotCreatedException;
 use Keestash\Exception\User\UserNotFoundException;
+use KSA\Login\Entity\IResponseCodes;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -40,9 +42,8 @@ use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\HTTP\IJWTService;
-use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\LDAP\ILDAPService;
-use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -53,7 +54,6 @@ class Login implements RequestHandlerInterface {
 
     public function __construct(
         private readonly IUserRepository         $userRepository
-        , private readonly IL10N                 $translator
         , private readonly UserService           $userService
         , private readonly ITokenRepository      $tokenRepository
         , private readonly TokenService          $tokenService
@@ -65,6 +65,7 @@ class Login implements RequestHandlerInterface {
         , private readonly IConnectionRepository $connectionRepository
         , private readonly IDerivationRepository $derivationRepository
         , private readonly IDerivationService    $derivationService
+        , private readonly IResponseService      $responseService
     ) {
     }
 
@@ -91,7 +92,9 @@ class Login implements RequestHandlerInterface {
                 ]
             );
             return new JsonResponse(
-                'no user found'
+                [
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_NOT_FOUND)
+                ]
                 , IResponse::NOT_FOUND
             );
         }
@@ -99,7 +102,7 @@ class Login implements RequestHandlerInterface {
         if (true === $this->userService->isDisabled($user)) {
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("No User Found")
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_DISABLED)
                 ]
                 , IResponse::NOT_FOUND
             );
@@ -120,7 +123,7 @@ class Login implements RequestHandlerInterface {
         if (false === $verified) {
             return new JsonResponse(
                 [
-                    "message" => $this->translator->translate("Invalid Credentials")
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_CREDENTIALS)
                 ]
                 , IResponse::UNAUTHORIZED
             );
