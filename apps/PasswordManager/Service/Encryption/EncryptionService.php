@@ -70,13 +70,6 @@ class EncryptionService {
      * @throws UserException
      */
     private function prepareKey(ICredential $credential): IKey {
-        $this->logger->debug(
-            'start prepareKey'
-            , [
-                'credentialId' => $credential->getId()
-            ]
-        );
-
         $tempKey = new Key();
         $tempKey->setId(
             $credential->getId()
@@ -84,27 +77,14 @@ class EncryptionService {
         $tempKey->setCreateTs(
             $credential->getCreateTs()
         );
-        $this->logger->debug('default values set for temp key (id, createTs)');
-        $keyHolderCredential = $this->credentialService->createCredential($credential->getKeyHolder());
-        $this->logger->debug(
-            'keyHolderCredential created'
-            , [
-                'credentialId'        => $credential->getId()
-                , 'keyHolder'         => [
-                    'id'          => $credential->getKeyHolder()->getId()
-                    , 'keyHolder' => $credential->getKeyHolder()::class
-                ],
-                'keyHolderCredential' => $keyHolderCredential->getId()
-            ]
-        );
+        $keyHolderCredential = $this->credentialService->createCredentialFromDerivation($credential->getKeyHolder());
+
         $tempKey->setSecret(
             $this->encryptionService->decrypt(
                 $keyHolderCredential
                 , $credential->getSecret()
             )
         );
-        $this->logger->debug('key decrypted and assigned to tempKey');
-        $this->logger->debug('end prepareKey');
         return $tempKey;
     }
 

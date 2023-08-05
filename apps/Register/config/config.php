@@ -24,19 +24,20 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Register\ConfigProvider;
 
 return [
-    CoreConfigProvider::APP_LIST       => [
+    CoreConfigProvider::APP_LIST         => [
         ConfigProvider::APP_ID => [
-            CoreConfigProvider::APP_ORDER      => 6,
-            CoreConfigProvider::APP_NAME       => 'Register',
-            CoreConfigProvider::APP_VERSION    => 1,
+            CoreConfigProvider::APP_ORDER   => 6,
+            CoreConfigProvider::APP_NAME    => 'Register',
+            CoreConfigProvider::APP_VERSION => 1,
         ],
     ]
-    , CoreConfigProvider::DEPENDENCIES => require __DIR__ . '/dependencies.php'
-    , CoreConfigProvider::API_ROUTER   => require __DIR__ . '/api_router.php'
-    , CoreConfigProvider::EVENTS       => require __DIR__ . '/events.php'
-    , CoreConfigProvider::COMMANDS     => require __DIR__ . '/commands.php'
-    , CoreConfigProvider::PERMISSIONS  => require __DIR__ . '/permissions.php'
-    , CoreConfigProvider::TEMPLATES    => [
+    , CoreConfigProvider::DEPENDENCIES   => require __DIR__ . '/dependencies.php'
+    , CoreConfigProvider::API_ROUTER     => require __DIR__ . '/api_router.php'
+    , CoreConfigProvider::EVENTS         => require __DIR__ . '/events.php'
+    , CoreConfigProvider::COMMANDS       => require __DIR__ . '/commands.php'
+    , CoreConfigProvider::PERMISSIONS    => require __DIR__ . '/permissions.php'
+    , CoreConfigProvider::RESPONSE_CODES => require __DIR__ . '/response_codes.php'
+    , CoreConfigProvider::TEMPLATES      => [
         'paths' => [
             'registerEmail' => [__DIR__ . '/../template/email']
         ]

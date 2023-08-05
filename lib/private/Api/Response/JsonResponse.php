@@ -26,10 +26,12 @@ class JsonResponse extends \Laminas\Diactoros\Response\JsonResponse {
     public function __construct(
         array $data
         , int $statusCode
+        , array $headers = []
     ) {
         parent::__construct(
             $data
             , $statusCode
+            , $headers
         );
     }
 

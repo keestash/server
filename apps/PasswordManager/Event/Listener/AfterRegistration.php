@@ -87,7 +87,6 @@ class AfterRegistration implements IListener {
             return;
         }
 
-        $this->logger->debug('start derivation creation for user', ['user' => $event->getUser()->getId()]);
         $this->derivationRepository->clear($event->getUser());
         $derivation = new Derivation(
             Uuid::uuid4()->toString()

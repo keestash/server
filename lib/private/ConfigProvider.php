@@ -67,12 +67,13 @@ final class ConfigProvider {
     public const ROLE_LIST            = 'list.role';
     public const ROLE_PERMISSION_LIST = 'list.permission.role';
 
-    public const APP_LIST         = 'list.app';
-    public const APP_ID           = 'id.app';
-    public const APP_ORDER        = 'order.app';
-    public const APP_NAME         = 'name.app';
-    public const APP_VERSION      = 'version.app';
-    public const REGISTER_ENABLED = 'enabled.register';
+    public const APP_LIST              = 'list.app';
+    public const APP_ID                = 'id.app';
+    public const APP_ORDER             = 'order.app';
+    public const APP_NAME              = 'name.app';
+    public const APP_VERSION           = 'version.app';
+    public const REGISTER_ENABLED      = 'enabled.register';
+    public const ACCOUNT_RESET_ENABLED = 'enabled.reset.account';
 
     public const LOG_REQUESTS_ENABLED  = "enabled";
     public const LOG_REQUESTS_DISABLED = "disabled";

@@ -19,30 +19,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Factory\Event\Listener;
+namespace KSA\Register\Event\Listener;
 
-use Keestash\Core\System\Application;
-use KSA\ForgotPassword\Event\Listener\ForgotPasswordMailLinkListener;
+use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
-use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\L10N\IL10N;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 
-class ForgotPasswordMailLinkListenerFactory implements FactoryInterface {
+class ResetPasswordSendEmailListenerFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): ForgotPasswordMailLinkListener {
-        return new ForgotPasswordMailLinkListener(
-            $container->get(Application::class)
-            , $container->get(IHTTPService::class)
-            , $container->get(TemplateRendererInterface::class)
+    ): ResetPasswordSendEmailListener {
+        return new ResetPasswordSendEmailListener(
+            $container->get(TemplateRendererInterface::class)
             , $container->get(IL10N::class)
             , $container->get(IEmailService::class)
+            , $container->get(IUserStateRepository::class)
+            , $container->get(IConfigService::class)
         );
     }
 

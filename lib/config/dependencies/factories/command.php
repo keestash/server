@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 use Keestash\Command\App\InstallApps;
 use Keestash\Command\App\ListAll;
+use Keestash\Command\Configuration\ResponseCodes\ListAll as ResponseCodeListAll;
+use Keestash\Command\Configuration\ResponseCodes\Verify;
 use Keestash\Command\CreateSystemUser;
 use Keestash\Command\Derivation\AddDerivation;
 use Keestash\Command\Derivation\ClearDerivation;
@@ -56,6 +58,8 @@ use Keestash\Command\Worker\WorkerRunner;
 use Keestash\Command\Worker\WorkerSingleRun;
 use Keestash\Factory\Command\App\InstallAppsFactory;
 use Keestash\Factory\Command\App\ListAllFactory;
+use Keestash\Factory\Command\Configuration\ResponseCodes\ListAllFactory as ResponseCodeListAllFactory;
+use Keestash\Factory\Command\Configuration\ResponseCodes\VerifyFactory;
 use Keestash\Factory\Command\CreateSystemUserFactory;
 use Keestash\Factory\Command\Derivation\AddDerivationFactory;
 use Keestash\Factory\Command\Derivation\ClearDerivationFactory;
@@ -128,4 +132,6 @@ return [
     , RemovePermissionFromRole::class        => RemovePermissionFromRoleFactory::class
     , WorkerSingleRun::class                 => WorkerSingleRunFactory::class
     , TestEmail::class                       => TestEmailFactory::class
+    , ResponseCodeListAll::class             => ResponseCodeListAllFactory::class
+    , Verify::class                          => VerifyFactory::class
 ];

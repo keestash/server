@@ -45,6 +45,7 @@ class Configuration implements RequestHandlerInterface {
             [
                 'phoneConfig'       => $this->config->get(ConfigProvider::COUNTRY_PREFIXES)->toArray()
                 , 'registerEnabled' => true === $request->getAttribute(ConfigProvider::REGISTER_ENABLED, false)
+                , 'resetEnabled'    => true === $request->getAttribute(ConfigProvider::ACCOUNT_RESET_ENABLED, false)
                 , 'isSaas'          => $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS)
             ]
             , IResponse::OK

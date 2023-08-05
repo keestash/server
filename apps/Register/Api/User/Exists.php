@@ -25,19 +25,19 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserRepository;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Exists implements RequestHandlerInterface {
 
     private IUserRepository $userRepository;
-    private LoggerInterface         $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
-        IUserRepository $userRepository
-        , LoggerInterface       $logger
+        IUserRepository   $userRepository
+        , LoggerInterface $logger
     ) {
         $this->userRepository = $userRepository;
         $this->logger         = $logger;

@@ -19,27 +19,27 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Factory\Api;
+namespace KSA\Register\Factory\Api;
 
-use KSA\ForgotPassword\Api\ForgotPassword;
-use KSP\Core\Repository\User\IUserRepository;
+use KSA\Register\Api\User\ResetPasswordConfirm;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class ForgotPasswordFactory {
+class ResetPasswordConfirmFactory {
 
-    public function __invoke(ContainerInterface $container): ForgotPassword {
-        return new ForgotPassword(
-            $container->get(IUserService::class)
-            , $container->get(IUserStateRepository::class)
-            , $container->get(IL10N::class)
-            , $container->get(IUserRepository::class)
-            , $container->get(LoggerInterface::class)
+    public function __invoke(ContainerInterface $container): ResetPasswordConfirm {
+        return new ResetPasswordConfirm(
+            $container->get(IUserStateRepository::class)
+            , $container->get(IUserService::class)
+            , $container->get(IUserRepositoryService::class)
             , $container->get(IEventService::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(IResponseService::class)
         );
     }
 

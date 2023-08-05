@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,25 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Factory\Api;
+namespace Keestash\Factory\Command\Configuration\ResponseCodes;
 
-use KSA\ForgotPassword\Api\ResetPassword;
-use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\User\IUserService;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use Keestash\Command\Configuration\ResponseCodes\ListAll;
+use Laminas\Config\Config;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
-class ResetPasswordFactory {
+class ListAllFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): ResetPassword {
-        return new ResetPassword(
-            $container->get(IUserStateRepository::class)
-            , $container->get(IUserService::class)
-            , $container->get(IUserRepositoryService::class)
-            , $container->get(IEventService::class)
-            , $container->get(LoggerInterface::class)
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): ListAll {
+        return new ListAll(
+            $container->get(Config::class)
         );
     }
 

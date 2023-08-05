@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,14 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Test\Integration;
+namespace KSA\Register\Event;
 
-abstract class TestCase extends \KST\Integration\TestCase {
+use Keestash\Core\DTO\Event\Event;
+
+class ResetPasswordConfirmEvent extends Event {
+
+    public function jsonSerialize(): array {
+        return [];
+    }
 
 }

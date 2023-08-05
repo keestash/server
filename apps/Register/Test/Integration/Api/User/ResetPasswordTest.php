@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword\Test\Integration\Api;
+namespace KSA\Register\Test\Integration\Api\User;
 
-use KSA\ForgotPassword\Api\ForgotPassword;
-use KSA\ForgotPassword\Test\Integration\TestCase;
+use KSA\Register\Api\User\ResetPassword;
+use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -32,11 +32,11 @@ use KST\Integration\Core\Repository\User\UserRepositoryTest;
 use KST\Service\Service\UserService;
 use Ramsey\Uuid\Uuid;
 
-class ForgotPasswordTest extends TestCase {
+class ResetPasswordTest extends TestCase {
 
     public function testWithoutInput(): void {
-        /** @var ForgotPassword $forgotPassword */
-        $forgotPassword = $this->getService(ForgotPassword::class);
+        /** @var ResetPassword $forgotPassword */
+        $forgotPassword = $this->getService(ResetPassword::class);
         $response       = $forgotPassword->handle(
             $this->getVirtualRequest()
         );
@@ -45,8 +45,8 @@ class ForgotPasswordTest extends TestCase {
     }
 
     public function testWithInvalidInput(): void {
-        /** @var ForgotPassword $forgotPassword */
-        $forgotPassword = $this->getService(ForgotPassword::class);
+        /** @var ResetPassword $forgotPassword */
+        $forgotPassword = $this->getService(ResetPassword::class);
         $response       = $forgotPassword->handle(
             $this->getVirtualRequest(
                 [
@@ -80,8 +80,8 @@ class ForgotPasswordTest extends TestCase {
         );
 
         $this->assertInstanceOf(IUser::class, $user);
-        /** @var ForgotPassword $forgotPassword */
-        $forgotPassword = $this->getService(ForgotPassword::class);
+        /** @var ResetPassword $forgotPassword */
+        $forgotPassword = $this->getService(ResetPassword::class);
         $response       = $forgotPassword->handle(
             $this->getVirtualRequest(
                 [
@@ -119,8 +119,8 @@ class ForgotPasswordTest extends TestCase {
         $this->assertInstanceOf(IUser::class, $user);
         $userStateRepository->requestPasswordReset($user, $user->getHash());
 
-        /** @var ForgotPassword $forgotPassword */
-        $forgotPassword = $this->getService(ForgotPassword::class);
+        /** @var ResetPassword $forgotPassword */
+        $forgotPassword = $this->getService(ResetPassword::class);
         $response       = $forgotPassword->handle(
             $this->getVirtualRequest(
                 [
@@ -136,8 +136,8 @@ class ForgotPasswordTest extends TestCase {
 
 
     public function testRegularCase(): void {
-        /** @var ForgotPassword $forgotPassword */
-        $forgotPassword = $this->getService(ForgotPassword::class);
+        /** @var ResetPassword $forgotPassword */
+        $forgotPassword = $this->getService(ResetPassword::class);
         $response       = $forgotPassword->handle(
             $this->getVirtualRequest(
                 [
@@ -150,17 +150,22 @@ class ForgotPasswordTest extends TestCase {
     }
 
     public function testWithEmailAddress(): void {
-        /** @var ForgotPassword $forgotPassword */
-        $forgotPassword = $this->getService(ForgotPassword::class);
+        $user = $this->createUser(
+            Uuid::uuid4()->toString(),
+            Uuid::uuid4()->toString()
+        );
+        /** @var ResetPassword $forgotPassword */
+        $forgotPassword = $this->getService(ResetPassword::class);
         $response       = $forgotPassword->handle(
             $this->getVirtualRequest(
                 [
-                    'input' => UserService::TEST_USER_ID_2_EMAIL
+                    'input' => $user->getEmail()
                 ]
             )
         );
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->assertTrue(IResponse::OK === $response->getStatusCode());
+        $this->removeUser($user);
     }
 
 }

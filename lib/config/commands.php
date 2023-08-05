@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 use Keestash\Command\App\InstallApps;
 use Keestash\Command\App\ListAll;
+use Keestash\Command\Configuration\ResponseCodes\ListAll as ResponseCodeListAll;
+use Keestash\Command\Configuration\ResponseCodes\Verify;
 use Keestash\Command\CreateSystemUser;
 use Keestash\Command\Derivation\AddDerivation;
 use Keestash\Command\Derivation\ClearDerivation;
@@ -93,4 +95,6 @@ return [
     , RemovePermissionFromRole::class
     , WorkerSingleRun::class
     , TestEmail::class
+    , ResponseCodeListAll::class
+    , Verify::class
 ];

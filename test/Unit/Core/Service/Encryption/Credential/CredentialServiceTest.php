@@ -37,7 +37,7 @@ class CredentialServiceTest extends TestCase {
             , Uuid::uuid4()->toString()
         );
 
-        $credential = $credentialService->createCredential($user);
+        $credential = $credentialService->createCredentialFromDerivation($user);
         $this->assertTrue($credential instanceof ICredential);
         $this->assertTrue($credential->getKeyHolder()->getId() === $user->getId());
     }

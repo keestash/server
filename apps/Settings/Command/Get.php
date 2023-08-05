@@ -82,6 +82,7 @@ class Get extends KeestashCommand {
             $tableRows[] = [
                 $user->getId()
                 , $user->getName()
+                , $user->getEmail()
                 , $user->getHash()
                 , $user->isDeleted()
                 , $user->isLocked()
@@ -90,7 +91,7 @@ class Get extends KeestashCommand {
         }
         $table = new Table($output);
         $table
-            ->setHeaders(['ID', 'Name', 'Hash', 'Deleted', 'Locked', 'Key Exists'])
+            ->setHeaders(['ID', 'Name', 'E-Mail','Hash', 'Deleted', 'Locked', 'Key Exists'])
             ->setRows($tableRows);
         $table->render();
 

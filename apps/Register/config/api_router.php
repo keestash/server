@@ -27,6 +27,9 @@ use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Confirm;
 use KSA\Register\Api\User\Exists;
 use KSA\Register\Api\User\MailExists;
+use KSA\Register\Api\User\ResetPassword;
+use KSA\Register\Api\User\ResetPasswordConfirm;
+use KSA\Register\Api\User\ResetPasswordRetrieve;
 use KSA\Register\ConfigProvider;
 use KSA\Register\Middleware\RegisterEnabledMiddleware;
 use KSP\Api\IRoute;
@@ -38,8 +41,17 @@ return [
         , ConfigProvider::PASSWORD_REQUIREMENTS
         , ConfigProvider::REGISTER_CONFIGURATION
         , ConfigProvider::REGISTER_CONFIRM
+        , ConfigProvider::RESET_PASSWORD
+        , ConfigProvider::RESET_PASSWORD_RETRIEVE
+        , ConfigProvider::RESET_PASSWORD_CONFIRM
     ],
     CoreConfigProvider::ROUTES        => [
+        [
+            IRoute::PATH         => ConfigProvider::RESET_PASSWORD
+            , IRoute::MIDDLEWARE => ResetPassword::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => ResetPassword::class
+        ],
         [
             IRoute::PATH         => ConfigProvider::REGISTER_ADD
             , IRoute::MIDDLEWARE => [RegisterEnabledMiddleware::class, Add::class]
@@ -76,5 +88,17 @@ return [
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => Configuration::class
         ],
+        [
+            IRoute::PATH         => ConfigProvider::RESET_PASSWORD_CONFIRM
+            , IRoute::MIDDLEWARE => ResetPasswordConfirm::class
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => ResetPasswordConfirm::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::RESET_PASSWORD_RETRIEVE
+            , IRoute::MIDDLEWARE => ResetPasswordRetrieve::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => ResetPasswordRetrieve::class
+        ]
     ]
 ];

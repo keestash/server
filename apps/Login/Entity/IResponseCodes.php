@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\ForgotPassword;
+namespace KSA\Login\Entity;
 
-final class ConfigProvider {
+interface IResponseCodes {
 
-    public const APP_ID                 = 'forgotPassword';
-    public const FORGOT_PASSWORD_SUBMIT = '/forgot_password/submit';
-    public const RESET_PASSWORD_UPDATE  = '/reset_password/update';
-
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
-    }
+    public const RESPONSE_CODE_USER_NOT_FOUND = 785561;
+    public const RESPONSE_NAME_USER_NOT_FOUND = 'found.not.user.name.response';
+    public const RESPONSE_CODE_USER_DISABLED  = 786561;
+    public const RESPONSE_NAME_USER_DISABLED  = 'disabled.user.name.response';
+    public const RESPONSE_CODE_INVALID_CREDENTIALS  = 787561;
+    public const RESPONSE_NAME_INVALID_CREDENTIALS  = 'credentials.invalid.name.response';
 
 }

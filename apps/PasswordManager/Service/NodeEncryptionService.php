@@ -208,8 +208,6 @@ class NodeEncryptionService {
 
         $key = $this->keyService->getKey($keyHolder);
 
-        $this->logger->debug('recrypting ' . $credential->getId() . ' with key ' . $key->getId() . ' and keyholder ' . $key->getKeyHolder()->getId() . ' (' . get_class($key->getKeyHolder()) . ')');
-
         $credential->getUsername()
             ->setEncrypted(
                 $this->encryptionService->encrypt(

@@ -42,7 +42,7 @@ class KeyServiceTest extends TestCase {
             , Uuid::uuid4()->toString()
         );
         $key               = $keyService->createKey(
-            $credentialService->createCredential(
+            $credentialService->createCredentialFromDerivation(
                 $keyHolder
             )
             , $keyHolder
@@ -60,7 +60,7 @@ class KeyServiceTest extends TestCase {
             , Uuid::uuid4()->toString()
         );
         $key               = $keyService->createKey(
-            $credentialService->createCredential(
+            $credentialService->createCredentialFromDerivation(
                 $keyHolder
             )
             , $keyHolder

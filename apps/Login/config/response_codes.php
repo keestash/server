@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -18,6 +19,11 @@ declare(strict_types=1);
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-return [
 
+use KSA\Login\Entity\IResponseCodes;
+
+return [
+    IResponseCodes::RESPONSE_NAME_USER_NOT_FOUND        => IResponseCodes::RESPONSE_CODE_USER_NOT_FOUND
+    , IResponseCodes::RESPONSE_NAME_USER_DISABLED       => IResponseCodes::RESPONSE_CODE_USER_DISABLED
+    , IResponseCodes::RESPONSE_NAME_INVALID_CREDENTIALS => IResponseCodes::RESPONSE_CODE_INVALID_CREDENTIALS
 ];

@@ -20,11 +20,16 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use KSA\Register\Event\Listener\ResetPasswordSendEmailListener;
 use KSA\Register\Event\Listener\UserRegisteredEventListener;
+use KSA\Register\Event\ResetPasswordEvent;
 use KSA\Register\Event\UserRegisteredEvent;
 
 return [
     UserRegisteredEvent::class => [
         UserRegisteredEventListener::class
+    ],
+    ResetPasswordEvent::class => [
+        ResetPasswordSendEmailListener::class
     ]
 ];
