@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Command;
 
 use Keestash\Command\KeestashCommand;
+use Keestash\Exception\User\UserException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -74,6 +75,7 @@ class DeleteUser extends KeestashCommand {
      * @param OutputInterface $output
      *
      * @return int
+     * @throws UserException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int {
 

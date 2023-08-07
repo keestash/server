@@ -48,33 +48,16 @@ use Psr\Log\LoggerInterface;
 
 class UserRepositoryService implements IUserRepositoryService {
 
-    private IApiLogRepository    $apiLogRepository;
-    private IFileRepository      $fileRepository;
-    private IUserKeyRepository   $keyRepository;
-    private IUserRepository      $userRepository;
-    private IUserStateRepository $userStateRepository;
-    private FileService          $fileService;
-    private LoggerInterface      $logger;
-    private IEventService        $eventManager;
-
     public function __construct(
-        IApiLogRepository      $apiLogRepository
-        , IFileRepository      $fileRepository
-        , IUserKeyRepository   $keyRepository
-        , IUserRepository      $userRepository
-        , IUserStateRepository $userStateRepository
-        , FileService          $fileService
-        , LoggerInterface      $logger
-        , IEventService        $eventManager
+        private readonly IApiLogRepository      $apiLogRepository
+        , private readonly IFileRepository      $fileRepository
+        , private readonly IUserKeyRepository   $keyRepository
+        , private readonly IUserRepository      $userRepository
+        , private readonly IUserStateRepository $userStateRepository
+        , private readonly FileService          $fileService
+        , private readonly LoggerInterface      $logger
+        , private readonly IEventService        $eventManager
     ) {
-        $this->apiLogRepository    = $apiLogRepository;
-        $this->fileRepository      = $fileRepository;
-        $this->keyRepository       = $keyRepository;
-        $this->userRepository      = $userRepository;
-        $this->userStateRepository = $userStateRepository;
-        $this->fileService         = $fileService;
-        $this->logger              = $logger;
-        $this->eventManager        = $eventManager;
     }
 
     /**
@@ -114,6 +97,7 @@ class UserRepositoryService implements IUserRepositoryService {
         try {
             $this->apiLogRepository->removeForUser($user);
             $this->fileRepository->removeForUser($user);
+            $this->fileService->removeProfileImage($user);
             $this->keyRepository->remove($user);
             $this->userStateRepository->removeAll($user);
             $this->userRepository->remove($user);

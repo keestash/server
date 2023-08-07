@@ -27,6 +27,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use JsonException;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use KSA\PasswordManager\Entity\Node\Pwned\Api\Passwords;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
@@ -34,21 +35,13 @@ use Psr\Log\LoggerInterface;
 
 class PwnedService {
 
-    private ICSVService     $csvService;
-    private ClientInterface $client;
-    private IConfigService  $configService;
-    private LoggerInterface         $logger;
-
     public function __construct(
-        ICSVService       $csvService
-        , ClientInterface $client
-        , IConfigService  $configService
-        , LoggerInterface         $logger
+        private readonly ICSVService       $csvService
+        , private readonly ClientInterface $client
+        , private readonly IConfigService  $configService
+        , private readonly LoggerInterface $logger
+        , private readonly InstanceDB      $instanceDB
     ) {
-        $this->csvService    = $csvService;
-        $this->client        = $client;
-        $this->configService = $configService;
-        $this->logger        = $logger;
     }
 
     /**
@@ -58,6 +51,13 @@ class PwnedService {
      * @throws JsonException
      */
     public function importBreaches(string $account): array {
+
+        $hibpEnabled = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_HIBP_API_REQUEST_ENABLED);
+
+        if ($hibpEnabled !== 'true') {
+            $this->logger->info('HIBP requesting is deactivated, skipping');
+            return [];
+        }
 
         $apiKey = $this->configService->getValue('hibp_api_key');
 
@@ -85,8 +85,15 @@ class PwnedService {
 
     public function importPasswords(string $prefix): BinarySearchTree {
 
+        $hibpEnabled      = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_HIBP_API_REQUEST_ENABLED);
         $binarySearchTree = new BinarySearchTree();
-        $apiKey           = $this->configService->getValue('hibp_api_key');
+
+        if ($hibpEnabled !== 'true') {
+            $this->logger->info('HIBP requesting is deactivated, skipping');
+            return $binarySearchTree;
+        }
+
+        $apiKey = $this->configService->getValue('hibp_api_key');
 
         if (null === $apiKey) {
             return $binarySearchTree;

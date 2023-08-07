@@ -223,7 +223,7 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_FOLDER_CREATE_BY_PATH
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, CreateByPath::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, CreateByPath::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => CreateByPath::class
         ],

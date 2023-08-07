@@ -22,12 +22,13 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Service\Node;
 
 use GuzzleHttp\ClientInterface;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use KSA\PasswordManager\Service\Node\PwnedService;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\CSV\ICSVService;
-use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class PwnedServiceFactory implements FactoryInterface {
 
@@ -41,6 +42,7 @@ class PwnedServiceFactory implements FactoryInterface {
             , $container->get(ClientInterface::class)
             , $container->get(IConfigService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(InstanceDB::class)
         );
     }
 

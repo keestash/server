@@ -37,4 +37,6 @@ interface IFileService {
 
     public function read(IUniformResourceIdentifier $uri): IFile;
 
+    public function removeProfileImage(IUser $user): void;
+
 }
