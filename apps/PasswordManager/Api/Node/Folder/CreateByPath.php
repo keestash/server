@@ -28,7 +28,6 @@ use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Node\Node;
-use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -57,6 +56,7 @@ class CreateByPath implements RequestHandlerInterface {
 
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        $this->logger->debug('start create by path');
         /** @var IToken $token */
         $token        = $request->getAttribute(IToken::class);
         $parameters   = (array) $request->getParsedBody();
@@ -64,9 +64,10 @@ class CreateByPath implements RequestHandlerInterface {
         $delimiter    = $parameters['delimiter'] ?? null;
         $parentNodeId = $parameters['parentNodeId'] ?? Node::ROOT;
         $forceCreate  = true === $parameters['forceCreate'];
-        $parent       = null;
+        $user         = $token->getUser();
         $responses    = new HashTable();
 
+        $this->logger->debug('parameters', $parameters);
         if (false === in_array($delimiter, CreateByPath::VALID_DELIMITERS, true)) {
             return new JsonResponse(
                 [
@@ -79,56 +80,35 @@ class CreateByPath implements RequestHandlerInterface {
         $folderNames = explode($delimiter, $path);
         $folderCount = count($folderNames);
 
+        $parent = $this->nodeService->getFolder($parentNodeId, $user, 0, $folderCount);
+
+        $this->logger->debug('foldernames', ['folderNames' => $folderNames, 'parent' => ['id' => $parent->getId(), 'name' => $parent->getName()]]);
         foreach ($folderNames as $folderName) {
             if (false === $this->nodeService->validFolderName($folderName)) {
-                $this->logger->warning('invalid folder name found. Skipping', ['folderName' => $folderName]);
                 continue;
             }
-
-            try {
-
-                $parent = $this->nodeService->getFolder(
-                    $parentNodeId
-                    , $token->getUser()
-                    , 0
-                    , $folderCount
-                );
-
-                $nodeFound = $this->getNodeByName($parent, $folderName);
-
-                if (true === $this->shouldCreateNewFolder(null !== $nodeFound, $forceCreate)) {
-                    $edge = $this->nodeService->createFolder(
-                        $folderName
-                        , $token->getUser()
-                        , new DateTimeImmutable()
-                        , $parent
-                    );
-                    $responses->put(
-                        $folderName
-                        , [
-                            'id'     => $edge->getNode()->getId()
-                            , 'name' => $edge->getNode()->getName()
-                        ]
-                    );
-                    $parentNodeId = $edge->getNode()->getId();
-                    continue;
-                }
-
-                $responses->put(
+            $this->logger->debug('going to create folder', ['folder' => $folderName, 'parent' => ['id' => $parent->getId(), 'name' => $parent->getName()]]);
+            $child = $this->getChild($parent, $folderName);
+            if (null === $child || true === $forceCreate) {
+                $this->logger->debug('folder not found in parent, going to create', ['folderName' => $folderName, 'forceCreate' => $forceCreate]);
+                $child = $this->nodeService->createFolder(
                     $folderName
-                    , [
-                        'id'     => $nodeFound->getId()
-                        , 'name' => $nodeFound->getName()
-                    ]
-                );
-                $parentNodeId = $nodeFound->getId();
-            } catch (PasswordManagerException $e) {
-                $this->logger->warning('no parent found to create node', ['exception' => $e]);
-                return new JsonResponse([], IResponse::NOT_FOUND);
+                    , $user
+                    , new DateTimeImmutable()
+                    , $parent
+                )->getNode();
             }
-
+            $parent = $this->nodeService->getFolder($child->getId(), $user, 0, $folderCount);
+            $responses->put(
+                $folderName
+                , [
+                    'id'     => $child->getId()
+                    , 'name' => $child->getName()
+                ]
+            );
         }
 
+        $this->logger->debug('end create by path');
         return new JsonResponse(
             [
                 "edge" => $responses->toArray()
@@ -137,8 +117,7 @@ class CreateByPath implements RequestHandlerInterface {
         );
     }
 
-
-    private function getNodeByName(Folder $folder, string $name): ?Folder {
+    private function getChild(Folder $folder, string $name): ?Folder {
         /** @var Edge $edge */
         foreach ($folder->getEdges() as $edge) {
             if (
@@ -151,11 +130,5 @@ class CreateByPath implements RequestHandlerInterface {
         return null;
     }
 
-    private function shouldCreateNewFolder(bool $nodeFound, bool $forceCreate): bool {
-        if (true === $forceCreate) {
-            return true;
-        }
-        return false === $nodeFound;
-    }
 
 }

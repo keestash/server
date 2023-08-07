@@ -112,4 +112,15 @@ class FileService implements IFileService {
         return $this->fileRepository->getByUri($uri);
     }
 
+    public function removeProfileImage(IUser $user): void {
+        $imagePath = $this->getProfileImage($user);
+        $imagePath = realpath($imagePath->getIdentifier());
+
+        if (false === $imagePath) {
+            return;
+        }
+
+        unlink($imagePath);
+    }
+
 }

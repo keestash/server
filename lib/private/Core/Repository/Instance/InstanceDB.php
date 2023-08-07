@@ -35,6 +35,7 @@ class InstanceDB {
     public const OPTION_NAME_ENVIRONMENT                = "environment";
     public const OPTION_NAME_SAAS                       = "saas";
     public const OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED = 'allowed.send.notifications';
+    public const OPTION_NAME_HIBP_API_REQUEST_ENABLED   = 'enabled.request.api.hibp';
     public const OPTION_NAME_QUERY_LOG_ENABLED          = 'enabled.log.query';
 
     private string $path;
