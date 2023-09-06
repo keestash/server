@@ -45,24 +45,13 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class UpdateProfileImage implements RequestHandlerInterface {
 
-    private Config            $config;
-    private UploadFileService $uploadFileService;
-    private IFileRepository   $fileRepository;
-    private IJWTService       $jwtService;
-    private FileService       $fileService;
-
     public function __construct(
-        Config              $config
-        , UploadFileService $uploadFileService
-        , IFileRepository   $fileRepository
-        , IJWTService       $jwtService
-        , FileService       $fileService
+        private readonly Config              $config
+        , private readonly UploadFileService $uploadFileService
+        , private readonly IFileRepository   $fileRepository
+        , private readonly IJWTService       $jwtService
+        , private readonly FileService       $fileService
     ) {
-        $this->config            = $config;
-        $this->uploadFileService = $uploadFileService;
-        $this->fileRepository    = $fileRepository;
-        $this->jwtService        = $jwtService;
-        $this->fileService       = $fileService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

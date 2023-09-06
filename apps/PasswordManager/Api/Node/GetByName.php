@@ -62,7 +62,7 @@ class GetByName implements RequestHandlerInterface {
             );
         }
 
-        $list = $this->nodeRepository->getByName($name, 0, 1);
+        $list = $this->nodeRepository->getByName($name, $token->getUser(), 0, 1);
 
         /** @var Node $node */
         foreach ($list as $key => $node) {

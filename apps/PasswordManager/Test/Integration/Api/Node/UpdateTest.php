@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node;
 
-use KSA\PasswordManager\Api\Node\Update;
+use KSA\PasswordManager\Api\Node\Folder\Update;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Integration\TestCase;

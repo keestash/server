@@ -35,7 +35,6 @@ class ListAll extends KeestashCommand {
         parent::__construct();
     }
 
-
     protected function configure(): void {
         $this->setName("app:list")
             ->setDescription("lists all installed apps");

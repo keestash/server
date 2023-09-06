@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2020> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,46 +19,45 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Api\User;
+namespace KSA\PasswordManager\Api\Node;
 
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Exception\User\UserNotFoundException;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
-use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class Exists implements RequestHandlerInterface {
-
-    private IUserRepository $userRepository;
-    private LoggerInterface $logger;
+class Search implements RequestHandlerInterface {
 
     public function __construct(
-        IUserRepository   $userRepository
-        , LoggerInterface $logger
+        private readonly NodeRepository          $nodeRepository
+        , private readonly LoggerInterface       $logger
+        , private readonly NodeEncryptionService $nodeEncryptionService
     ) {
-        $this->userRepository = $userRepository;
-        $this->logger         = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $userName  = $request->getAttribute("userName");
-        $userFound = false;
+        /** @var IToken $token */
+        $token  = $request->getAttribute(IToken::class);
+        $search = (string) $request->getAttribute('search');
+        $nodes  = $this->nodeRepository->search($search, $token->getUser());
 
-        try {
-            $this->userRepository->getUser((string) $userName);
-            $userFound = true;
-        } catch (UserNotFoundException $exception) {
-            $this->logger->warning('no user found', ['exception' => $exception]);
+        $newList = new ArrayList();
+        foreach ($nodes as $node) {
+            $this->nodeEncryptionService->decryptNode($node);
+            $newList->add($node);
         }
-
+        $this->logger->error('nodes', ['nodes' => $nodes->toArray()]);
         return new JsonResponse(
             [
-                "user_exists" => $userFound
-            ]
-            , IResponse::OK
+                'result' => $newList->toArray()
+            ],
+            IResponse::OK
         );
     }
 

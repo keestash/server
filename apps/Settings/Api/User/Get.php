@@ -28,25 +28,18 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Log\LoggerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private IJWTService     $jwtService;
-    private IUserRepository $userRepository;
-    private LoggerInterface         $logger;
-
     public function __construct(
-        IJWTService       $jwtService
-        , IUserRepository $userRepository
-        , LoggerInterface         $logger
+        private readonly IJWTService       $jwtService
+        , private readonly IUserRepository $userRepository
+        , private readonly LoggerInterface $logger
     ) {
-        $this->jwtService     = $jwtService;
-        $this->userRepository = $userRepository;
-        $this->logger         = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

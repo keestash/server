@@ -22,11 +22,8 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use KSA\Register\Api\Configuration\Configuration;
-use KSA\Register\Api\MinimumCredential;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Confirm;
-use KSA\Register\Api\User\Exists;
-use KSA\Register\Api\User\MailExists;
 use KSA\Register\Api\User\ResetPassword;
 use KSA\Register\Api\User\ResetPasswordConfirm;
 use KSA\Register\Api\User\ResetPasswordRetrieve;
@@ -38,9 +35,6 @@ use KSA\Register\Event\Listener\UserRegisteredEventListener;
 use KSA\Register\Factory\Api\AddFactory;
 use KSA\Register\Factory\Api\Configuration\ConfigurationFactory;
 use KSA\Register\Factory\Api\ConfirmFactory;
-use KSA\Register\Factory\Api\ExistsFactory;
-use KSA\Register\Factory\Api\MailExistsFactory;
-use KSA\Register\Factory\Api\MinimumCredentialFactory;
 use KSA\Register\Factory\Api\ResetPasswordConfirmFactory;
 use KSA\Register\Factory\Api\ResetPasswordFactory;
 use KSA\Register\Factory\Api\ResetPasswordRetrieveFactory;
@@ -53,10 +47,7 @@ use KSA\Register\Middleware\RegisterEnabledMiddleware;
 return [
     ConfigProvider::FACTORIES => [
         // api
-        Exists::class                           => ExistsFactory::class
-        , Add::class                            => AddFactory::class
-        , MailExists::class                     => MailExistsFactory::class
-        , MinimumCredential::class              => MinimumCredentialFactory::class
+        Add::class                              => AddFactory::class
         , Configuration::class                  => ConfigurationFactory::class
         , Confirm::class                        => ConfirmFactory::class
         , ResetPassword::class                  => ResetPasswordFactory::class

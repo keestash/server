@@ -28,14 +28,11 @@ use KSP\Core\DTO\RBAC\IRole;
 
 return [
     CoreConfigProvider::PERMISSION_MAPPING     => [
-        ConfigProvider::USER_EXISTS_BY_USERNAME   => IPermission::PERMISSION_REGISTER_USER_EXIST
-        , ConfigProvider::USER_EXISTS_BY_MAIL     => IPermission::PERMISSION_REGISTER_USER_EXIST
-        , ConfigProvider::RESET_PASSWORD_CONFIRM  => IPermission::PERMISSION_RESET_PASSWORD_RESET_PASSWORD
+        ConfigProvider::RESET_PASSWORD_CONFIRM    => IPermission::PERMISSION_RESET_PASSWORD_RESET_PASSWORD
         , ConfigProvider::RESET_PASSWORD_RETRIEVE => IPermission::PERMISSION_RESET_PASSWORD_RESET_PASSWORD_RETRIEVE
     ]
     , CoreConfigProvider::PERMISSION_FREE      => [
         ConfigProvider::REGISTER_ADD
-        , ConfigProvider::PASSWORD_REQUIREMENTS
         , ConfigProvider::RESET_PASSWORD
         , ConfigProvider::RESET_PASSWORD_RETRIEVE
     ]
@@ -45,7 +42,7 @@ return [
         , IPermission::PERMISSION_RESET_PASSWORD_RESET_PASSWORD_RETRIEVE => IPermission::PERMISSION_NAME_PASSWORD_RESET_PASSWORD_RETRIEVE
     ]
     , CoreConfigProvider::ROLE_PERMISSION_LIST => [
-        RoleInterface::DEFAULT_NAME      => [
+        RoleInterface::DEFAULT_NAME => [
             IPermission::PERMISSION_RESET_PASSWORD_RESET_PASSWORD
         ],
         IRole::ROLE_NAME_USER_ADMIN => [

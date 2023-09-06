@@ -22,11 +22,8 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Register\Api\Configuration\Configuration;
-use KSA\Register\Api\MinimumCredential;
 use KSA\Register\Api\User\Add;
 use KSA\Register\Api\User\Confirm;
-use KSA\Register\Api\User\Exists;
-use KSA\Register\Api\User\MailExists;
 use KSA\Register\Api\User\ResetPassword;
 use KSA\Register\Api\User\ResetPasswordConfirm;
 use KSA\Register\Api\User\ResetPasswordRetrieve;
@@ -38,7 +35,6 @@ use KSP\Api\IVerb;
 return [
     CoreConfigProvider::PUBLIC_ROUTES => [
         ConfigProvider::REGISTER_ADD
-        , ConfigProvider::PASSWORD_REQUIREMENTS
         , ConfigProvider::REGISTER_CONFIGURATION
         , ConfigProvider::REGISTER_CONFIRM
         , ConfigProvider::RESET_PASSWORD
@@ -63,24 +59,6 @@ return [
             , IRoute::MIDDLEWARE => [RegisterEnabledMiddleware::class, Confirm::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Confirm::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::USER_EXISTS_BY_MAIL
-            , IRoute::MIDDLEWARE => MailExists::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => MailExists::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::USER_EXISTS_BY_USERNAME
-            , IRoute::MIDDLEWARE => Exists::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => Exists::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::PASSWORD_REQUIREMENTS
-            , IRoute::MIDDLEWARE => MinimumCredential::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => MinimumCredential::class
         ],
         [
             IRoute::PATH         => ConfigProvider::REGISTER_CONFIGURATION

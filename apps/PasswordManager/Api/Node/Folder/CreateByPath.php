@@ -54,7 +54,6 @@ class CreateByPath implements RequestHandlerInterface {
     ) {
     }
 
-
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $this->logger->debug('start create by path');
         /** @var IToken $token */

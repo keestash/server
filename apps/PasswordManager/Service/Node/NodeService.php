@@ -166,7 +166,7 @@ class NodeService {
     public function removeNode(Node $node): void {
         $this->nodeRepository->remove($node);
         $this->eventService->execute(
-            new NodeRemovedEvent($node)
+            new NodeRemovedEvent($node->getId())
         );
     }
 

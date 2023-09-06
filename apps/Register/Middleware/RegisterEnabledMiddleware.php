@@ -41,7 +41,10 @@ class RegisterEnabledMiddleware implements MiddlewareInterface {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $registerEnabled = $this->settingsService->isRegisterEnabled();
         if (false === $registerEnabled) {
-            $this->logger->info('register disabled, but tried to register', ['body' => $request->getBody()]);
+            $this->logger->info(
+                'register disabled, but tried to consume a register endpoint',
+                ['body' => $request->getBody()]
+            );
             return new JsonResponse(
                 ['unknown operation']
                 , IResponse::BAD_REQUEST

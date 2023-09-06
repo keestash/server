@@ -32,12 +32,14 @@ use KSP\Core\Service\Event\IEventService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Confirm implements RequestHandlerInterface {
 
     public function __construct(
         private readonly IUserStateRepository $userStateRepository
         , private readonly IEventService      $eventService
+        , private readonly LoggerInterface    $logger
     ) {
     }
 
@@ -46,6 +48,7 @@ class Confirm implements RequestHandlerInterface {
         $token = $body['token'] ?? null;
 
         if (null === $token) {
+            $this->logger->debug('no token given');
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
@@ -60,10 +63,12 @@ class Confirm implements RequestHandlerInterface {
         }
 
         if (null === $userState) {
+            $this->logger->info('no userState found');
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         if ($userState->getCreateTs() < ((new DateTimeImmutable())->modify('-7 day'))) {
+            $this->logger->warning('userState expired', ['userState' => $userState]);
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
@@ -72,6 +77,7 @@ class Confirm implements RequestHandlerInterface {
                 $userState->getUser()
             );
         } catch (UserStateException $exception) {
+            $this->logger->error('error unlocking user', ['exception' => $exception]);
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 

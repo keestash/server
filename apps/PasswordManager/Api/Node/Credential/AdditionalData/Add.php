@@ -75,8 +75,8 @@ class Add implements RequestHandlerInterface {
             , new DateTimeImmutable()
         );
 
-        $additionalData = $this->encryptionService->encrypt($additionalData, $node);
-        $this->additionalDataRepository->add($additionalData);
+        $additionalDataEncrypted = $this->encryptionService->encrypt($additionalData, $node);
+        $this->additionalDataRepository->add($additionalDataEncrypted);
         return new JsonResponse(
             [
                 'data' => $additionalData
