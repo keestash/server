@@ -26,6 +26,7 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ConfirmFactory implements FactoryInterface {
 
@@ -37,6 +38,7 @@ class ConfirmFactory implements FactoryInterface {
         return new Confirm(
             $container->get(IUserStateRepository::class)
             , $container->get(IEventService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

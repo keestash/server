@@ -26,19 +26,19 @@ use KSA\PasswordManager\Entity\Node\Node;
 
 class NodeRemovedEvent extends Event {
 
-    public function __construct(private readonly Node $node) {
+    public function __construct(private readonly int $nodeId) {
     }
 
     /**
-     * @return Node
+     * @return int
      */
-    public function getNode(): Node {
-        return $this->node;
+    public function getNodeId(): int {
+        return $this->nodeId;
     }
 
     public function jsonSerialize(): array {
         return [
-            'node' => $this->getNode()
+            'node' => $this->getNodeId()
         ];
     }
 

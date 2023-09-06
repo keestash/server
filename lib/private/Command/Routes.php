@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Command;
 
 use Keestash\ConfigProvider;
+use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSP\Command\IKeestashCommand;
 use Laminas\Config\Config;
 use Symfony\Component\Console\Helper\Table;
@@ -32,7 +33,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Routes extends KeestashCommand {
 
-    public const OPTION_NAME_PATH = 'path';
+    public const OPTION_NAME_PATH                = 'path';
+    public const OPTION_NAME_EXCLUDE_DEACTIVATED = 'exclude-deactivated';
 
     public function __construct(
         private readonly Config $config
@@ -48,14 +50,23 @@ class Routes extends KeestashCommand {
                 , 'r'
                 , InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY
                 , 'filters route path'
+            )
+            ->addOption(
+                Routes::OPTION_NAME_EXCLUDE_DEACTIVATED
+                , 'e'
+                , InputOption::VALUE_NONE
+                , sprintf(
+                    'excludes all routes going through %s middleware',
+                    DeactivatedRouteMiddleware::class
+                )
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
-        $paths  = (array) $input->getOption(Routes::OPTION_NAME_PATH);
-        $routes = $this->config->get(ConfigProvider::API_ROUTER)->toArray();
-
+        $paths              = (array) $input->getOption(Routes::OPTION_NAME_PATH);
+        $excludeDeactivated = (bool) $input->getOption(Routes::OPTION_NAME_EXCLUDE_DEACTIVATED);
+        $routes             = $this->config->get(ConfigProvider::API_ROUTER)->toArray();
         if (0 === count($routes)) {
             $this->writeInfo('no routes found. Please check your options', $output);
             return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
@@ -64,6 +75,7 @@ class Routes extends KeestashCommand {
         $table = new Table($output);
         $table->setHeaders(['path', 'middleware', 'method', 'name']);
 
+        $routeCount = 0;
         foreach ($routes[ConfigProvider::ROUTES] as $route) {
             $data = $route;
 
@@ -71,18 +83,37 @@ class Routes extends KeestashCommand {
                 continue;
             }
 
-            if (is_array($data['middleware'])) {
-                $data['middleware'] = json_encode($data['middleware']);
+            $middleware = $data['middleware'];
+            if (false === is_array($middleware)) {
+                $middleware = [$middleware];
             }
+
+            if (true === $this->excludesDeactivated($excludeDeactivated, $middleware)) {
+                continue;
+            }
+
+            $data['middleware'] = json_encode($data['middleware']);
             if (is_array($data['method'])) {
                 $data['method'] = json_encode($data['method']);
             }
             $table->addRow($data);
             $table->addRow(new TableSeparator());
+            $routeCount++;
         }
 
         $table->render();
+        $this->writeInfo(
+            sprintf('number of endpoints: %s', $routeCount)
+            , $output
+        );
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+    }
+
+    private function excludesDeactivated(bool $exclude, array $middleware): bool {
+        if (false === $exclude) {
+            return false;
+        }
+        return in_array(DeactivatedRouteMiddleware::class, $middleware, true);
     }
 
     private function isFiltered(string $path, array $filterPaths): bool {

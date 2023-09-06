@@ -127,5 +127,7 @@ interface IPermission extends PermissionInterface, IJsonObject {
     public const PERMISSION_NAME_SETTINGS_USER_UPDATE_PASSWORD              = 'SETTINGS_USER_UPDATE_PASSWORD';
     public const PERMISSION_RESET_PASSWORD_RESET_PASSWORD_RETRIEVE          = 55;
     public const PERMISSION_NAME_PASSWORD_RESET_PASSWORD_RETRIEVE           = 'PASSWORD_RESET_PASSWORD_RETRIEVE';
+    public const PERMISSION_RESET_PASSWORD_SEARCH                           = 56;
+    public const PERMISSION_NAME_PASSWORD_SEARCH                            = 'PASSWORD_MANAGER_SEARCH';
 
 }

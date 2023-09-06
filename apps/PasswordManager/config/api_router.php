@@ -41,6 +41,7 @@ use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;
 use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\IsActive;
+use KSA\PasswordManager\Api\Node\Search;
 use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
 use KSA\PasswordManager\Api\Node\Share\Remove as RemoveShare;
@@ -181,9 +182,9 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE
-            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Update::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Folder\Update::class]
             , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Update::class
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Folder\Update::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE_AVATAR
@@ -280,6 +281,12 @@ return [
             , IRoute::MIDDLEWARE => ListAll::class
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => ListAll::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_SEARCH
+            , IRoute::MIDDLEWARE => Search::class
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => Search::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [

@@ -133,7 +133,7 @@ class NodeRepository {
         return $root;
     }
 
-    public function getByName(string $name, int $depth = 0, int $maxDepth = PHP_INT_MAX): ArrayList {
+    public function getByName(string $name, IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): ArrayList {
         $list         = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
             ->select(
@@ -143,7 +143,9 @@ class NodeRepository {
             )
             ->from('pwm_node')
             ->where('name = ?')
-            ->setParameter(0, $name);
+            ->andWhere('user_id = ?')
+            ->setParameter(0, $name)
+            ->setParameter(1, $user->getId());
 
         $statement = $queryBuilder->executeQuery();
 
@@ -152,6 +154,37 @@ class NodeRepository {
         foreach ($ids as $id) {
             $list->add(
                 $this->getNode((int) $id[0], $depth, $maxDepth)
+            );
+        }
+
+        return $list;
+    }
+
+    public function search(string $name, IUser $user): ArrayList {
+        $list         = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder()
+            ->select(
+                [
+                    'id'
+                ]
+            )
+            ->from('pwm_node')
+            ->where('name like ?')
+            ->andWhere('user_id = ?')
+            ->andWhere('type = ?')
+            ->setParameter(0, "%$name%")
+            ->setParameter(1, $user->getId())
+            ->setParameter(2, Node::CREDENTIAL)
+            ->orderBy('update_ts')
+            ->setMaxResults(1);
+
+        $statement = $queryBuilder->executeQuery();
+
+        $ids = $statement->fetchAllNumeric();
+
+        foreach ($ids as $id) {
+            $list->add(
+                $this->getNode((int) $id[0], 0, 1)
             );
         }
 
@@ -964,5 +997,6 @@ ORDER BY d.`level`;
         }
         return $list;
     }
+
 
 }

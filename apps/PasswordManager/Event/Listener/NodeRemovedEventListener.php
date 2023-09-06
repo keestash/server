@@ -48,7 +48,7 @@ class NodeRemovedEventListener implements IListener {
         $this->eventService->execute(
             new ReferenceRemovedEvent(
                 ConfigProvider::APP_ID
-                , (string) $event->getNode()->getId()
+                , (string) $event->getNodeId()
             )
         );
     }

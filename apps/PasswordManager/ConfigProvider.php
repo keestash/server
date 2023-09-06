@@ -32,7 +32,7 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC      = "/password_manager/share/public[/]";
     public const PASSWORD_MANAGER_PUBLIC_SHARE_REMOVE      = '/password_manager/share/remove[/]';
 
-    public const PASSWORD_MANAGER_NODE_DELETE                          = '/password_manager/node/delete[/]';
+    public const PASSWORD_MANAGER_NODE_DELETE                          = '/password_manager/node/delete';
     public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE           = "/password_manager/credential/password/update/";
     public const PASSWORD_MANAGER_CREDENTIAL_CREATE                    = '/password_manager/node/credential/create';
     public const PASSWORD_MANAGER_CREDENTIAL_UPDATE                    = '/password_manager/credential/update[/]';
@@ -62,14 +62,15 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_GENERATE_PASSWORD = '/password_manager/generate_password/:length/:upperCase/:lowerCase/:digit/:specialChars[/]';
 
     public const PASSWORD_MANAGER_NODE_GET_BY_ID     = '/password_manager/node/get/:node_id';
-    public const PASSWORD_MANAGER_NODE_GET_BY_NAME   = '/password_manager/node/name/:name[/]';
+    public const PASSWORD_MANAGER_NODE_GET_BY_NAME   = '/password_manager/node/name/:name';
     public const PASSWORD_MANAGER_NODE_MOVE          = '/password_manager/node/move';
-    public const PASSWORD_MANAGER_NODE_UPDATE        = '/password_manager/node/update';
+    public const PASSWORD_MANAGER_NODE_UPDATE        = '/password_manager/node/folder/update';
     public const PASSWORD_MANAGER_NODE_UPDATE_AVATAR = '/password_manager/node/update/avatar[/]';
 
     public const PASSWORD_MANAGER_USERS_SHAREABLE = '/password_manager/users/shareable/:nodeId/:query/';
 
-    public const PASSWORD_MANAGER_NODE_CREATE           = '/password_manager/node/create';
+    public const PASSWORD_MANAGER_NODE_CREATE           = '/password_manager/node/folder/create';
+    public const PASSWORD_MANAGER_SEARCH                = '/password_manager/search/:search';
     public const PASSWORD_MANAGER_FOLDER_CREATE_BY_PATH = '/password_manager/node/folder/create/path';
 
     public const APP_ID                         = 'passwordManager';

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Factory\Api;
+namespace KSA\PasswordManager\Factory\Api\Node;
 
-use KSA\Register\Api\User\MailExists;
-use KSP\Core\Repository\User\IUserRepository;
+use KSA\PasswordManager\Api\Node\Search;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Service\NodeEncryptionService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class MailExistsFactory {
+class SearchFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): MailExists {
-        return new MailExists(
-            $container->get(IUserRepository::class)
+    public function __invoke(
+        ContainerInterface $container,
+                           $requestedName,
+        ?array             $options = null
+    ): Search {
+        return new Search(
+            $container->get(NodeRepository::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(NodeEncryptionService::class)
         );
     }
 

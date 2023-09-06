@@ -23,13 +23,9 @@ namespace KSA\Register;
 
 final class ConfigProvider {
 
-    public const REGISTER_ADD           = '/register/add';
-    public const REGISTER_CONFIRM       = '/register/confirm';
-    public const PASSWORD_REQUIREMENTS  = '/password_requirements[/]';
-    public const REGISTER_CONFIGURATION = '/register/configuration[/]';
-
-    public const USER_EXISTS_BY_USERNAME = '/user/exists/:userName[/]';
-    public const USER_EXISTS_BY_MAIL     = '/user/mail/exists/:address[/]';
+    public const REGISTER_ADD            = '/register/add';
+    public const REGISTER_CONFIRM        = '/register/confirm';
+    public const REGISTER_CONFIGURATION  = '/register/configuration';
     public const APP_ID                  = 'register';
     public const RESET_PASSWORD          = '/register/reset-password';
     public const RESET_PASSWORD_CONFIRM  = '/register/reset-password/confirm';
