@@ -56,6 +56,7 @@ use Keestash\Command\Worker\WorkerFlusher;
 use Keestash\Command\Worker\WorkerLocker;
 use Keestash\Command\Worker\WorkerRunner;
 use Keestash\Command\Worker\WorkerSingleRun;
+use Keestash\Command\Worker\WorkerSingleShow;
 use Keestash\Factory\Command\App\InstallAppsFactory;
 use Keestash\Factory\Command\App\ListAllFactory;
 use Keestash\Factory\Command\Configuration\ResponseCodes\ListAllFactory as ResponseCodeListAllFactory;
@@ -91,6 +92,7 @@ use Keestash\Factory\Command\Worker\WorkerFlusherFactory;
 use Keestash\Factory\Command\Worker\WorkerLockerFactory;
 use Keestash\Factory\Command\Worker\WorkerRunnerFactory;
 use Keestash\Factory\Command\Worker\WorkerSingleRunFactory;
+use Keestash\Factory\Command\Worker\WorkerSingleShowFactory;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
@@ -131,6 +133,7 @@ return [
     , \Keestash\Command\App\Uninstall::class => \Keestash\Factory\Command\App\UninstallFactory::class
     , RemovePermissionFromRole::class        => RemovePermissionFromRoleFactory::class
     , WorkerSingleRun::class                 => WorkerSingleRunFactory::class
+    , WorkerSingleShow::class                => WorkerSingleShowFactory::class
     , TestEmail::class                       => TestEmailFactory::class
     , ResponseCodeListAll::class             => ResponseCodeListAllFactory::class
     , Verify::class                          => VerifyFactory::class

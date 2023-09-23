@@ -56,6 +56,7 @@ use Keestash\Command\Worker\WorkerFlusher;
 use Keestash\Command\Worker\WorkerLocker;
 use Keestash\Command\Worker\WorkerRunner;
 use Keestash\Command\Worker\WorkerSingleRun;
+use Keestash\Command\Worker\WorkerSingleShow;
 
 return [
     WorkerRunner::class
@@ -97,4 +98,5 @@ return [
     , TestEmail::class
     , ResponseCodeListAll::class
     , Verify::class
+    , WorkerSingleShow::class
 ];
