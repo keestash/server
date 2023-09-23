@@ -20,10 +20,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use KSA\Register\Command\ActivateUser;
 use KSA\Register\Command\CreateUser;
 use KSA\Register\Command\DeleteUser;
 
 return [
     CreateUser::class
     , DeleteUser::class
+    , ActivateUser::class
 ];

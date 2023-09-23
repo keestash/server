@@ -127,6 +127,7 @@ class WorkerSingleRun extends KeestashCommand {
         } catch (Throwable $exception) {
             $this->logger->error('error processing message', ['exception' => $exception, 'context' => 'flusher']);
             $this->writeError('error while processing ' . $message->getId(), $output);
+            $this->writeComment($exception->getMessage(), $output);
         }
 
         switch ($result->getCode()) {
