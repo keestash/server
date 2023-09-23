@@ -23,6 +23,7 @@ namespace KSP\Core\Service\Payment;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Stripe\Checkout\Session;
+use Stripe\Customer;
 use Stripe\Event;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Exception\SignatureVerificationException;
@@ -55,5 +56,7 @@ interface IPaymentService {
      * @throws ApiErrorException
      */
     public function cancelSubscriptionToTheEndOfThePeriod(string $subscriptionId): Subscription;
+
+    public function getCustomer(string $id): Customer;
 
 }

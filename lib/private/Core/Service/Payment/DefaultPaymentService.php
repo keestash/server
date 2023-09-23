@@ -21,11 +21,11 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Payment;
 
-use Keestash\Exception\KeestashException;
 use Keestash\Exception\Payment\ServiceNotImplementedException;
 use KSP\Core\Service\Payment\IPaymentService;
 use Psr\Http\Message\ServerRequestInterface;
 use Stripe\Checkout\Session;
+use Stripe\Customer;
 use Stripe\Event;
 use Stripe\Subscription;
 
@@ -44,6 +44,10 @@ class DefaultPaymentService implements IPaymentService {
     }
 
     public function cancelSubscriptionToTheEndOfThePeriod(string $subscriptionId): Subscription {
+        throw new ServiceNotImplementedException();
+    }
+
+    public function getCustomer(string $id): Customer {
         throw new ServiceNotImplementedException();
     }
 

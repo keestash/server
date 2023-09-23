@@ -27,6 +27,7 @@ use JsonException;
 use Keestash\Core\DTO\Payment\Log;
 use Keestash\Exception\Payment\PaymentException;
 use KSP\Core\DTO\Payment\ILog;
+use KSP\Core\DTO\Payment\Type;
 use KSP\Core\DTO\User\IUser;
 
 interface IPaymentLogRepository {
@@ -51,6 +52,7 @@ interface IPaymentLogRepository {
      */
     public function get(string $key): ILog;
 
+    public function getByType(Type $type): ILog;
 
     public function getAll(): ArrayList;
 
