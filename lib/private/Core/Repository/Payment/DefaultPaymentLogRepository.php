@@ -25,6 +25,7 @@ use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Exception\Payment\PaymentException;
 use Keestash\Exception\Payment\PaymentNotCreatedException;
 use KSP\Core\DTO\Payment\ILog;
+use KSP\Core\DTO\Payment\Type;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
 
@@ -47,6 +48,10 @@ class DefaultPaymentLogRepository implements IPaymentLogRepository {
     }
 
     public function getAll(): ArrayList {
+        throw new PaymentException();
+    }
+
+    public function getByType(Type $type): ILog {
         throw new PaymentException();
     }
 

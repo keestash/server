@@ -72,7 +72,10 @@ class WorkerSingleShow extends KeestashCommand {
             $message->getId(),
             $message->getPayload()['listener'] ?? 'no listener',
             $message->getAttempts(),
-            unserialize($message->getPayload()['event']['serialized'])
+            json_encode(
+                unserialize($message->getPayload()['event']['serialized']),
+                JSON_PRETTY_PRINT
+            )
         ];
         $table       = new Table($output);
         $table
