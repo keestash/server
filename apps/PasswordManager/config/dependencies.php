@@ -189,6 +189,7 @@ return [
         // ---- ---- Credential
         Create::class                                                                        => CreateFactory::class,
         Update::class                                                                        => UpdateFactory::class,
+        \KSA\PasswordManager\Api\Node\Credential\Get::class                                  => \KSA\PasswordManager\Factory\Api\Node\Credential\GetFactory::class,
 
         // ---- Node
         // ---- ---- Credential

@@ -35,9 +35,10 @@ final class ConfigProvider {
     public const PASSWORD_MANAGER_NODE_DELETE                          = '/password_manager/node/delete';
     public const PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE           = "/password_manager/credential/password/update/";
     public const PASSWORD_MANAGER_CREDENTIAL_CREATE                    = '/password_manager/node/credential/create';
-    public const PASSWORD_MANAGER_CREDENTIAL_UPDATE                    = '/password_manager/credential/update[/]';
-    public const PASSWORD_MANAGER_CREDENTIAL_GET_BY_NODE_ID            = '/password_manager/credential/get/:node_id[/]';
-    public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET       = '/password_manager/credential/additional_data/get/:credentialId';
+    public const PASSWORD_MANAGER_CREDENTIAL_UPDATE                       = '/password_manager/credential/update[/]';
+    public const PASSWORD_MANAGER_NODE_CREDENTIAL_PASSWORD_GET_BY_NODE_ID = '/password_manager/node/credential/password/get/:node_id';
+    public const PASSWORD_MANAGER_NODE_CREDENTIAL_GET_BY_NODE_ID          = '/password_manager/node/credential/get/:node_id';
+    public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET          = '/password_manager/credential/additional_data/get/:credentialId';
     public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET_VALUE = '/password_manager/credential/additional_data/get/value/:advid';
     public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_ADD       = '/password_manager/credential/additional_data/add';
     public const PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_DELETE    = '/password_manager/credential/additional_data/delete/:advid';
