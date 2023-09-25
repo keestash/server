@@ -205,10 +205,16 @@ return [
             , IRoute::NAME       => ChartData::class
         ],
         [
-            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_GET_BY_NODE_ID
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_CREDENTIAL_PASSWORD_GET_BY_NODE_ID
             , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Password\Get::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_CREDENTIAL_GET_BY_NODE_ID
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Get::class]
+            , IRoute::METHOD     => IVerb::GET
+            , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Get::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE

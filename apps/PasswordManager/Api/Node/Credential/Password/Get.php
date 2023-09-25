@@ -41,18 +41,11 @@ use Psr\Log\LoggerInterface;
  */
 class Get implements RequestHandlerInterface {
 
-    private NodeRepository    $nodeRepository;
-    private CredentialService $credentialService;
-    private LoggerInterface   $logger;
-
     public function __construct(
-        CredentialService $credentialService
-        , NodeRepository  $nodeRepository
-        , LoggerInterface $logger
+        private readonly CredentialService $credentialService
+        , private readonly NodeRepository  $nodeRepository
+        , private readonly LoggerInterface $logger
     ) {
-        $this->credentialService = $credentialService;
-        $this->nodeRepository    = $nodeRepository;
-        $this->logger            = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

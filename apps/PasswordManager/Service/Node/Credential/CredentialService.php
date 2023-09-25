@@ -191,4 +191,9 @@ class CredentialService {
         return $credential->getPassword()->getPlain();
     }
 
+    public function getDecryptedUsername(Credential $credential): string {
+        $this->nodeEncryptionService->decryptNode($credential);
+        return $credential->getUsername()->getPlain();
+    }
+
 }

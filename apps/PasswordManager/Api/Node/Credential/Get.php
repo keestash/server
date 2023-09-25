@@ -21,44 +21,48 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Credential;
 
-use Keestash\Api\Response\JsonResponse;
+use Keestash\Api\Response\ErrorResponse;
+use Keestash\Api\Response\NotFoundResponse;
+use Keestash\Api\Response\OkResponse;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
+use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
-class ListAll implements RequestHandlerInterface {
+class Get implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly NodeRepository          $nodeRepository
-        , private readonly NodeEncryptionService $nodeEncryptionService
+        private readonly CredentialService $credentialService
+        , private readonly NodeRepository  $nodeRepository
+        , private readonly LoggerInterface $logger
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token  = $request->getAttribute(IToken::class);
-        $user   = $token->getUser();
-        $list   = $this->nodeRepository->getCredentialsByUser($user);
-        $result = [];
+        $nodeId = (int) $request->getAttribute("node_id", 0);
 
-        /** @var Credential $credential */
-        foreach ($list as $credential) {
-            $this->nodeEncryptionService->decryptNode($credential);
-            $result[] = [
-                'id' => $credential->getId(),
-                'url'    => $credential->getUrl()->getPlain()
-            ];
+        try {
+            $node = $this->nodeRepository->getNode($nodeId, 0, 0);
+        } catch (PasswordManagerException $exception) {
+            $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
+            return new ErrorResponse();
         }
-        return new JsonResponse(
+
+        if (false === $node instanceof Credential) {
+            return new NotFoundResponse();
+        }
+
+        return new OkResponse(
             [
-                'list' => $result
+                "decrypted" => [
+                    'userName' => $this->credentialService->getDecryptedUsername($node),
+                    'password' => $this->credentialService->getDecryptedPassword($node)
+                ]
             ]
-            , IResponse::OK
         );
     }
 
