@@ -16,6 +16,9 @@
     "issues": "https://github.com/keestash/server/issues",
     "source": "https://github.com/keestash/server"
   },
+  "conflict": {
+    "stevebauman/unfinalize": "*"
+  },
   "require": {
     "php": "8.1.*",
     "ext-curl": "*",
