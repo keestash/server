@@ -97,6 +97,5 @@ use Psr\Container\ContainerInterface;
                 throw new Exception('unknown method ' . $method);
         }
     }
-
     $app->run();
 })();
