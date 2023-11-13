@@ -87,7 +87,13 @@ class CreateUser extends KeestashCommand {
         $locked         = $input->getOption('locked') ?? false;
         $deleted        = $input->getOption('deleted') ?? false;
 
-        $this->userService->validatePasswords((string) $password, (string) $passwordRepeat);
+        $result = $this->userService->validatePasswords((string) $password, (string) $passwordRepeat);
+
+        if ($result->length() > 0) {
+            throw new KeestashException(
+                (string) json_encode($result->toArray(), JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR)
+            );
+        }
 
         $user   = $this->userService->toNewUser(
             [

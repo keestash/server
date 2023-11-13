@@ -25,7 +25,6 @@ use DateTimeImmutable;
 use Keestash\Core\DTO\MailLog\MailLog;
 use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
-use KSA\Payment\Event\Listener\WebhookListener;
 use KSA\Register\Entity\Register\Event\Type;
 use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
@@ -136,7 +135,6 @@ class UserRegisteredEventListener implements IListener {
             $this->logger->debug('start saas registration');
             $this->logger->info(
                 'nothing to do for saas, continuing with payment service',
-                ['target' => WebhookListener::class]
             );
             $this->logger->debug('end saas registration');
             return;

@@ -39,7 +39,17 @@ class IResponseCodes {
     public const RESPONSE_NAME_RESET_PASSWORD_RETRIEVE_USER_BY_HASH_EXPIRED   = 'expired.hash.by.user.retrieve.password.reset.name.response';
     public const RESPONSE_CODE_RESET_PASSWORD_CONFIRM_USER_BY_HASH_NOT_FOUND  = 133349;
     public const RESPONSE_NAME_RESET_PASSWORD_CONFIRM_USER_BY_HASH_NOT_FOUND  = 'found.not.hash.by.user.confirm.password.reset.name.response';
-    public const RESPONSE_CODE_RESET_PASSWORD_CONFIRM_INVALID_PASSWORD  = 3422341;
-    public const RESPONSE_NAME_RESET_PASSWORD_CONFIRM_INVALID_PASSWORD  = 'password.invalid.confirm.password.reset.name.response';
+    public const RESPONSE_CODE_RESET_PASSWORD_CONFIRM_INVALID_PASSWORD        = 3422341;
+    public const RESPONSE_NAME_RESET_PASSWORD_CONFIRM_INVALID_PASSWORD        = 'password.invalid.confirm.password.reset.name.response';
+    public const RESPONSE_CODE_TERMS_AND_CONDITIONS_NOT_AGREED                = 198378;
+    public const RESPONSE_NAME_TERMS_AND_CONDITIONS_NOT_AGREED                = 'agreed.not.conditions.and.terms.response';
+    public const RESPONSE_CODE_INVALID_PASSWORD                               = 45612365;
+    public const RESPONSE_NAME_INVALID_PASSWORD                               = 'password.invalid';
+    public const RESPONSE_CODE_VALIDATE_USER                                  = 5672344675;
+    public const RESPONSE_NAME_VALIDATE_USER                                  = 'user.validate';
+    public const RESPONSE_CODE_ERROR_CREATING_USER                            = 67823415;
+    public const RESPONSE_NAME_ERROR_CREATING_USER                            = 'user.creating.error';
+    public const RESPONSE_CODE_USER_CREATED                                   = 67891234;
+    public const RESPONSE_NAME_USER_CREATED                                   = 'user.created';
 
 }

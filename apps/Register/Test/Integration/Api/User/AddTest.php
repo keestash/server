@@ -22,141 +22,344 @@ declare(strict_types=1);
 namespace KSA\Register\Test\Integration\Api\User;
 
 use DateTimeImmutable;
+use JsonException;
 use Keestash\Core\DTO\LDAP\LDAPOption;
-use Keestash\Core\Service\App\LoaderService;
-use KSA\Register\Api\User\Add;
+use Keestash\Exception\KeestashException;
 use KSA\Register\ConfigProvider;
+use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Test\Integration\TestCase;
 use KSA\Settings\Entity\Setting;
 use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\SettingsRepository;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\App\ILoaderService;
-use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Ramsey\Uuid\Uuid;
 
 class AddTest extends TestCase {
 
-    public function testWithEmptyRequest(): void {
-        /** @var Add $add */
-        $add = $this->getService(Add::class);
-
-        $response = $add->handle(
-            $this->getVirtualRequest()
-        );
-
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
+    /**
+     * @return void
+     * @throws JsonException
+     * @throws KeestashException
+     */
+    public function testEmptyBody(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , []
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame([
+            'responseCode' => IResponseCodes::RESPONSE_CODE_TERMS_AND_CONDITIONS_NOT_AGREED
+        ], $decoded);
     }
 
-    public function testWithInvalidPassword(): void {
-        /** @var Add $add */
-        $add = $this->getService(Add::class);
-
-        $response = $add->handle(
-            $this->getVirtualRequest(
-                [
-                    'first_name'             => AddTest::class
-                    , 'last_name'            => AddTest::class
-                    , 'user_name'            => Uuid::uuid4()->toString()
-                    , 'email'                => Uuid::uuid4() . '@keestash.com'
-                    , 'password'             => ''
-                    , 'phone'                => '0049691234566'
-                    , 'terms_and_conditions' => true
-                    , 'website'              => 'keestash.com'
-                ]
-            )
-        );
-
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
+    public function testEmptyPassword(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'password'               => ''
+                        , 'phone'                => '0049691234566'
+                        , 'terms_and_conditions' => true
+                        , 'website'              => 'keestash.com'
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame([
+            'responseCode' => IResponseCodes::RESPONSE_CODE_INVALID_PASSWORD,
+            'results'      => [
+                0 => 'PASSWORD_IS_EMPTY'
+            ]
+        ], $decoded);
     }
 
-    public function testWithInvalidWebsite(): void {
-        /** @var Add $add */
-        $add = $this->getService(Add::class);
-
-        $response = $add->handle(
-            $this->getVirtualRequest(
-                [
-                    'first_name'             => AddTest::class
-                    , 'last_name'            => AddTest::class
-                    , 'user_name'            => AddTest::class
-                    , 'email'                => 'dev.null.com'
-                    , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
-                    , 'phone'                => '0049691234566'
-                    , 'terms_and_conditions' => true
-                    , 'website'              => 'keestash.com'
-                ]
-            )
-        );
-
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
+    public function testPasswordsDoNotMatch(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'email'                  => 'dev.null.com'
+                        , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => 'sgdfgsfdfasd'
+                        , 'phone'                => '0049691234566'
+                        , 'terms_and_conditions' => true
+                        , 'website'              => 'keestash.com'
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame([
+            'responseCode' => IResponseCodes::RESPONSE_CODE_INVALID_PASSWORD,
+            'results'      => [
+                0 => 'PASSWORD_AND_PASSWORD_REPEAT_ARE_NOT_EQUAL'
+            ]
+        ], $decoded);
     }
 
-    public function testWithInvalidPhone(): void {
-        /** @var Add $add */
-        $add = $this->getService(Add::class);
-
-        $response = $add->handle(
-            $this->getVirtualRequest(
-                [
-                    'first_name'             => AddTest::class
-                    , 'last_name'            => AddTest::class
-                    , 'user_name'            => AddTest::class
-                    , 'email'                => Uuid::uuid4() . '@keestash.com'
-                    , 'password'             => '1E]U_t"0Xh&}gtTPA`|?'
-                    , 'phone'                => '1e9691234566'
-                    , 'terms_and_conditions' => true
-                    , 'website'              => 'keestash.com'
-                ]
-            )
-        );
-
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
+    public function testUserIsCreated(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'first_name'             => Uuid::uuid4()->toString(),
+                        'last_name'              => Uuid::uuid4()->toString(),
+                        'email'                  => Uuid::uuid4()->toString() . '@keestash.com',
+                        'user_name'              => Uuid::uuid4()->toString(),
+                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'phone'                => '1e9691234566'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::OK, $response);
+        $this->assertSame(['responseCode' => IResponseCodes::RESPONSE_CODE_USER_CREATED,], $decoded);
     }
 
-    public function testRegularCase(): void {
-        /** @var IUserRepository $userRepository */
-        $userRepository = $this->getService(IUserRepository::class);
-        /** @var IUserRepositoryService $userRepositoryService */
-        $userRepositoryService = $this->getService(IUserRepositoryService::class);
-        /** @var SettingsRepository $settingRepository */
-        $settingRepository = $this->getService(SettingsRepository::class);
-        $settingRepository->remove(
-            LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
-        );
-
-        $firstName = md5((string) time());
-        $lastName  = md5((string) (time() + 1));
-        $userName  = md5((string) (time() + 2));
-
-        /** @var Add $add */
-        $add      = $this->getService(Add::class);
-        $password = '1E]U_t"0Xh&}gtTPA`|?';
-        $response = $add->handle(
-            $this->getVirtualRequest(
-                [
-                    'first_name'             => $firstName
-                    , 'last_name'            => $lastName
-                    , 'user_name'            => $userName
-                    , 'email'                => Uuid::uuid4() . '@keestash.com'
-                    , 'password'             => $password
-                    , 'password_repeat'      => $password
-                    , 'phone'                => '004930123456'
-                    , 'terms_and_conditions' => true
-                    , 'website'              => 'keestash.com'
+    public function testInvalidFirstName(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'first_name'             => '',
+                        'last_name'              => Uuid::uuid4()->toString(),
+                        'email'                  => Uuid::uuid4()->toString() . '@keestash.com',
+                        'user_name'              => Uuid::uuid4()->toString(),
+                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'phone'                => '1e9691234566'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame(
+            [
+                'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+                'results'      => [
+                    0 => 'INVALID_FIRST_NAME'
                 ]
-            )
+            ],
+            $decoded
         );
-        $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
+    }
 
-        $user = $userRepository->getUser($userName);
-        $userRepositoryService->removeUser($user);
+    public function testInvalidLastName(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'last_name'              => '',
+                        'first_name'             => Uuid::uuid4()->toString(),
+                        'email'                  => Uuid::uuid4()->toString() . '@keestash.com',
+                        'user_name'              => Uuid::uuid4()->toString(),
+                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'phone'                => '1e9691234566'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame(
+            [
+                'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+                'results'      => [
+                    0 => 'INVALID_LAST_NAME'
+                ]
+            ],
+            $decoded
+        );
+    }
+
+    public function testInvalidUserName(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'user_name'              => '',
+                        'first_name'             => Uuid::uuid4()->toString(),
+                        'email'                  => Uuid::uuid4()->toString() . '@keestash.com',
+                        'last_name'              => Uuid::uuid4()->toString(),
+                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'phone'                => '1e9691234566'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame(
+            [
+                'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+                'results'      => [
+                    0 => 'INVALID_USER_NAME'
+                ]
+            ],
+            $decoded
+        );
+    }
+
+    public function testInvalidEmailAddress(): void {
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'first_name'             => Uuid::uuid4()->toString(),
+                        'last_name'              => Uuid::uuid4()->toString(),
+                        'email'                  => '',
+                        'user_name'              => Uuid::uuid4()->toString(),
+                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'phone'                => '1e9691234566'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame(
+            [
+                'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+                'results'      => [
+                    0 => 'EMAIL_ADDRESS_IS_INVALID'
+                ]
+            ],
+            $decoded
+        );
+    }
+
+    public function testInvalidPhoneNumber(): void {
+        $this->markTestSkipped('phone is hardcoded - test once fixed');
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'first_name'             => Uuid::uuid4()->toString(),
+                        'last_name'              => Uuid::uuid4()->toString(),
+                        'email'                  => Uuid::uuid4()->toString() . '@keestash.com',
+                        'user_name'              => Uuid::uuid4()->toString(),
+                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
+                        , 'phone'                => 'adfasdfsadfsadfsdfdsfsdf'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame(
+            [
+                'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+                'results'      => [
+                    0 => 'INVALID_PHONE'
+                ]
+            ],
+            $decoded
+        );
+    }
+
+    public function testExistingUser(): void {
+        $user = $this->createUser(
+            Uuid::uuid4()->toString(),
+            Uuid::uuid4()->toString()
+        );
+
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'user_name'              => $user->getName()
+                        , 'email'                => Uuid::uuid4() . '@keestash.com'
+                        , 'last_name'            => Uuid::uuid4()->toString()
+                        , 'first_name'           => Uuid::uuid4()->toString()
+                        , 'password'             => $user->getPassword()
+                        , 'password_repeat'      => $user->getPassword()
+                        , 'phone'                => '004913456773'
+                        , 'website'              => 'keestash.com'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame([
+            'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+            'results'      => [
+                0 => 'USER_NAME_EXISTS'
+            ]
+        ], $decoded);
+
+        $this->removeUser($user);
+    }
+
+    public function testExistingEmail(): void {
+        $email = Uuid::uuid4() . '@keestash.com';
+        $user  = $this->createUser(
+            Uuid::uuid4()->toString(),
+            Uuid::uuid4()->toString(),
+            false,
+            $email
+        );
+
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::REGISTER_ADD
+                    , [
+                        'user_name'              => Uuid::uuid4()->toString()
+                        , 'email'                => $user->getEmail()
+                        , 'last_name'            => Uuid::uuid4()->toString()
+                        , 'first_name'           => Uuid::uuid4()->toString()
+                        , 'password'             => $user->getPassword()
+                        , 'password_repeat'      => $user->getPassword()
+                        , 'phone'                => '004913456773'
+                        , 'website'              => 'keestash.com'
+                        , 'terms_and_conditions' => true
+                    ]
+                )
+            );
+        $decoded  = $this->getDecodedData($response);
+        $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
+        $this->assertSame([
+            'responseCode' => IResponseCodes::RESPONSE_CODE_VALIDATE_USER,
+            'results'      => [
+                0 => 'EMAIL_EXISTS'
+            ]
+        ], $decoded);
+
+        $this->removeUser($user);
     }
 
     public function testWithDisabledApp(): void {

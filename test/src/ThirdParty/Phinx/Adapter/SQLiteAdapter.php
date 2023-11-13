@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Service\ThirdParty\Phinx\Adapter;
 
+use Phinx\Db\Adapter\AdapterInterface;
 use Phinx\Db\Adapter\SQLiteAdapter as ParentAdapter;
 use Phinx\Db\Adapter\UnsupportedColumnTypeException;
 use Phinx\Db\Table\Column;
@@ -29,34 +30,34 @@ use Phinx\Util\Literal;
 class SQLiteAdapter extends ParentAdapter {
 
     protected static $supportedColumnTypes = [
-        ParentAdapter::PHINX_TYPE_BIG_INTEGER   => 'biginteger',
-        ParentAdapter::PHINX_TYPE_BINARY        => 'binary_blob',
-        ParentAdapter::PHINX_TYPE_BLOB          => 'blob',
-        ParentAdapter::PHINX_TYPE_BOOLEAN       => 'boolean_integer',
-        ParentAdapter::PHINX_TYPE_CHAR          => 'char',
-        ParentAdapter::PHINX_TYPE_DATE          => 'date_text',
-        ParentAdapter::PHINX_TYPE_DATETIME      => 'datetime_text',
-        ParentAdapter::PHINX_TYPE_DECIMAL       => 'real',
-        ParentAdapter::PHINX_TYPE_DOUBLE        => 'double',
-        ParentAdapter::PHINX_TYPE_ENUM          => 'varchar',
-        ParentAdapter::PHINX_TYPE_FLOAT         => 'float',
-        ParentAdapter::PHINX_TYPE_INTEGER       => 'integer',
-        ParentAdapter::PHINX_TYPE_JSON          => 'json_text',
-        ParentAdapter::PHINX_TYPE_JSONB         => 'jsonb_text',
-        ParentAdapter::PHINX_TYPE_SMALL_INTEGER => 'smallinteger',
-        ParentAdapter::PHINX_TYPE_STRING        => 'varchar',
-        ParentAdapter::PHINX_TYPE_TEXT          => 'text',
-        ParentAdapter::PHINX_TYPE_TIME          => 'time_text',
-        ParentAdapter::PHINX_TYPE_UUID          => 'uuid_text',
-        ParentAdapter::PHINX_TYPE_TIMESTAMP     => 'timestamp_text',
-        ParentAdapter::PHINX_TYPE_VARBINARY     => 'varbinary_blob',
+        AdapterInterface::PHINX_TYPE_BIG_INTEGER   => 'biginteger',
+        AdapterInterface::PHINX_TYPE_BINARY        => 'binary_blob',
+        AdapterInterface::PHINX_TYPE_BLOB          => 'blob',
+        AdapterInterface::PHINX_TYPE_BOOLEAN       => 'boolean_integer',
+        AdapterInterface::PHINX_TYPE_CHAR          => 'char',
+        AdapterInterface::PHINX_TYPE_DATE          => 'date_text',
+        AdapterInterface::PHINX_TYPE_DATETIME      => 'datetime_text',
+        AdapterInterface::PHINX_TYPE_DECIMAL       => 'real',
+        AdapterInterface::PHINX_TYPE_DOUBLE        => 'double',
+        AdapterInterface::PHINX_TYPE_ENUM          => 'varchar',
+        AdapterInterface::PHINX_TYPE_FLOAT         => 'float',
+        AdapterInterface::PHINX_TYPE_INTEGER       => 'integer',
+        AdapterInterface::PHINX_TYPE_JSON          => 'json_text',
+        AdapterInterface::PHINX_TYPE_JSONB         => 'jsonb_text',
+        AdapterInterface::PHINX_TYPE_SMALL_INTEGER => 'smallinteger',
+        AdapterInterface::PHINX_TYPE_STRING        => 'varchar',
+        AdapterInterface::PHINX_TYPE_TEXT          => 'text',
+        AdapterInterface::PHINX_TYPE_TIME          => 'time_text',
+        AdapterInterface::PHINX_TYPE_UUID          => 'uuid_text',
+        AdapterInterface::PHINX_TYPE_TIMESTAMP     => 'timestamp_text',
+        AdapterInterface::PHINX_TYPE_VARBINARY     => 'varbinary_blob',
     ];
 
     public function getColumnTypes(): array {
         return array_keys(SQLiteAdapter::$supportedColumnTypes);
     }
 
-    public function getSqlType($type, $limit = null) {
+    public function getSqlType($type, ?int $limit = null): array {
         $typeLC = strtolower($type);
         if ($type instanceof Literal) {
             $name = $type;

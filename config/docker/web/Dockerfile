@@ -1,4 +1,4 @@
-FROM php:8.1-apache
+FROM php:8.2-apache
 RUN a2enmod ssl && a2enmod rewrite
 RUN apt-get update && apt-get upgrade -y  --allow-unauthenticated
 RUN apt-get install software-properties-common -y

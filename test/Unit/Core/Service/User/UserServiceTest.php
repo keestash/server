@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\User;
 
 use DateTimeImmutable;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\User\IUserService;
@@ -34,6 +35,7 @@ class UserServiceTest extends TestCase {
 
     protected function setUp(): void {
         parent::setUp();
+        /** @var IUserService @userService */
         $this->userService = $this->getService(IUserService::class);
     }
 
@@ -228,12 +230,18 @@ class UserServiceTest extends TestCase {
      * @return void
      * @dataProvider provideValidatePassword
      */
-    public function testValidatePassword(string $password, string $passwordRepeat, ?string $exception): void {
-        if (null !== $exception) {
-            $this->expectException($exception);
+    public function testValidatePassword(
+        string    $password
+        , string  $passwordRepeat
+        , int     $resultCount
+        , ?string $message = null
+    ): void {
+        /** @var ArrayList $result */
+        $result = $this->userService->validatePasswords($password, $passwordRepeat);
+        $this->assertSame($resultCount, $result->length());
+        if (null !== $message) {
+            $this->assertTrue($result->get(0) === $message);
         }
-        $this->userService->validatePasswords($password, $passwordRepeat);
-        $this->assertTrue(1 === 1);
     }
 
     public function testValidateNewUser(): void {
@@ -280,10 +288,10 @@ class UserServiceTest extends TestCase {
 
     public function provideValidatePassword(): array {
         return [
-            ['a', 'a', KeestashException::class]
-            , ['b', 'a', KeestashException::class]
-            , ['absdfsadfsad', 'absdfsadfsad', KeestashException::class]
-            , ['asdadFSFS1213#@$@', 'asdadFSFS1213#@$@', null]
+            ['absdfsadfsad1231!@#$!F', 'absdfsadfsad1231!@#$!F', 0, null]
+            , ['absdfsadfsad1231!@#$!F', 'absdfsadfsad1231!@#$!A', 1, 'PASSWORD_AND_PASSWORD_REPEAT_ARE_NOT_EQUAL']
+            , ['absdfsadfsad', 'absdfsadfsad', 1, 'PASSWORD_MINIMUM_REQUIREMENTS_ARE_NOT_MET']
+            , ['asdadFSFS1213#@$@', 'asdadFSFS1213#@$@', 0, null]
         ];
     }
 
