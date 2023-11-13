@@ -26,7 +26,6 @@ use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 
-/** @noinspection PhpIncludeInspection */
 require realpath(__DIR__ . '/../config.php');
 
 /** @var ContainerInterface $container */

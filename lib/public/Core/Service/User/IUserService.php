@@ -51,7 +51,7 @@ interface IUserService extends IService {
 
     public function isDisabled(?IUser $user): bool;
 
-    public function validatePasswords(string $password, string $passwordRepeat): void;
+    public function validatePasswords(string $password, string $passwordRepeat): ArrayList;
 
     public function validateNewUser(IUser $user): ArrayList;
 

@@ -20,7 +20,7 @@
     "stevebauman/unfinalize": "*"
   },
   "require": {
-    "php": "8.1.*",
+    "php": "^8.2",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-fileinfo": "*",
@@ -63,7 +63,7 @@
     "psr/container": "^1.0",
     "psr/log": "^1.1",
     "ramsey/uuid": "^4.1",
-    "robmorgan/phinx": "^0.12",
+    "robmorgan/phinx": "^0.13",
     "sentry/sdk": "^3.2",
     "stripe/stripe-php": "^10.19",
     "symfony/console": "^5.2",
@@ -105,10 +105,13 @@
   },
   "scripts": {
     "add-php-compatibility": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
-    "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.0 --extensions=php --ignore=vendor/",
+    "php-compatibility": "./vendor/bin/phpcs -p . --standard=PHPCompatibility --runtime-set testVersion 7.4-8.2 --extensions=php --ignore=vendor/",
     "phpstan": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G",
     "phpstan-baseline": "cd vendor/bin && ./phpstan analyse -c ../../config/phpstan/phpstan.neon ../../apps/ ../../lib --level 9 --memory-limit=2G --generate-baseline ../../config/phpstan/baseline.neon",
-    "test": "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1",
+    "test": [
+      "Composer\\Config::disableProcessTimeout",
+      "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1"
+    ],
     "test-coverage": [
       "Composer\\Config::disableProcessTimeout",
       "php -d xdebug.mode=coverage ./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --coverage-html test/code-coverage/"

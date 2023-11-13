@@ -273,25 +273,28 @@ class UserService implements IUserService {
     /**
      * @param string $password
      * @param string $passwordRepeat
-     * @return void
-     * @throws KeestashException
+     * @return ArrayList
      */
-    public function validatePasswords(string $password, string $passwordRepeat): void {
+    public function validatePasswords(string $password, string $passwordRepeat): ArrayList {
+        $resultList = new ArrayList();
         if (true === $this->stringService->isEmpty($password)) {
-            throw new KeestashException('password is empty');
+            $resultList->add('PASSWORD_IS_EMPTY');
+            return $resultList;
         }
 
         if (true === $this->stringService->isEmpty($passwordRepeat)) {
-            throw new KeestashException('password repeat is empty');
+            $resultList->add('PASSWORD_REPEAT_IS_EMPTY');
+            return $resultList;
         }
 
         if (false === $this->stringService->equals($password, $passwordRepeat)) {
-            throw new KeestashException('password and password repeat are not equal');
+            $resultList->add('PASSWORD_AND_PASSWORD_REPEAT_ARE_NOT_EQUAL');
         }
 
         if (false === $this->passwordHasMinimumRequirements($password)) {
-            throw new KeestashException('password minimum requirements are not met');
+            $resultList->add('PASSWORD_MINIMUM_REQUIREMENTS_ARE_NOT_MET');
         }
+        return $resultList;
     }
 
     /**
@@ -301,35 +304,38 @@ class UserService implements IUserService {
     public function validateNewUser(IUser $user): ArrayList {
         $result = new ArrayList();
         if (true === $this->stringService->isEmpty($user->getFirstName())) {
-            $result->add('invalid first name');
+            $result->add('INVALID_FIRST_NAME');
         }
 
         if (true === $this->stringService->isEmpty($user->getLastName())) {
-            $result->add('invalid last name');
+            $result->add('INVALID_LAST_NAME');
         }
 
         if (true === $this->stringService->isEmpty($user->getName())) {
-            $result->add('invalid user name');
+            $result->add('INVALID_USER_NAME');
         }
 
         if (true === $this->userRepositoryService->userExistsByName($user->getName())) {
-            $result->add('user name exists');
+            $result->add('USER_NAME_EXISTS');
         }
 
         if (true === $this->userRepositoryService->userExistsByEmail($user->getEmail())) {
-            $result->add('mail exists');
+            $result->add('EMAIL_EXISTS');
         }
 
-        if (false === $this->emailValidator->isValid($user->getEmail())) {
-            $result->add('email address is invalid');
+        if (
+            false === $this->emailValidator->isValid($user->getEmail())
+            || false === filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)
+        ) {
+            $result->add('EMAIL_ADDRESS_IS_INVALID');
         }
 
         if (false === $this->validateWithAllCountries($user->getPhone())) {
-            $result->add('invalid phone');
+            $result->add('INVALID_PHONE');
         }
 
         if (false === $this->uriValidator->isValid($user->getWebsite())) {
-            $result->add('invalid website');
+            $result->add('INVALID_WEBSITE');
         }
 
         return $result;

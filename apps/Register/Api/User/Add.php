@@ -29,13 +29,14 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Core\DTO\Payment\Log;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
-use Keestash\Exception\KeestashException;
+use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Entity\Register\Event\Type;
 use KSA\Register\Event\UserRegisteredEvent;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
@@ -55,6 +56,7 @@ class Add implements RequestHandlerInterface {
         , private readonly Application            $application
         , private readonly IConfigService         $configService
         , private readonly IEventService          $eventService
+        , private readonly IResponseService       $responseService
     ) {
     }
 
@@ -80,24 +82,21 @@ class Add implements RequestHandlerInterface {
             $this->logger->info('terms and conditions are not selected', ['termsAndConditions' => $termsAndConditions]);
             return new JsonResponse(
                 [
-                    "status"    => 'error'
-                    , "data"    => []
-                    , "message" => 'terms and conditions are not checked'
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_TERMS_AND_CONDITIONS_NOT_AGREED)
                 ]
                 , IResponse::BAD_REQUEST
             );
         }
 
-        try {
-            $this->logger->debug('start validating password');
-            $this->userService->validatePasswords($password, $passwordRepeat);
-        } catch (KeestashException $exception) {
-            $this->logger->warning('password validation failed', ['exception' => $exception]);
+        $this->logger->debug('start validating password');
+        $resultList = $this->userService->validatePasswords($password, $passwordRepeat);
+
+        if ($resultList->length() > 0) {
+            $this->logger->warning('password validation failed', ['results' => $resultList->toArray()]);
             return new JsonResponse(
                 [
-                    "status"    => 'error'
-                    , "data"    => []
-                    , "message" => 'invalid passwords'
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_PASSWORD),
+                    'results'      => $resultList->toArray()
                 ]
                 , IResponse::BAD_REQUEST
             );
@@ -125,9 +124,8 @@ class Add implements RequestHandlerInterface {
 
             return new JsonResponse(
                 [
-                    "status"    => 'error'
-                    , "message" => 'invalid new user'
-                    , 'data'    => $result->toArray()
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_VALIDATE_USER),
+                    'results'      => $result->toArray()
                 ]
                 , IResponse::BAD_REQUEST
             );
@@ -140,9 +138,8 @@ class Add implements RequestHandlerInterface {
             $this->logger->error('error creating new user', ['exception' => $exception]);
             return new JsonResponse(
                 [
-                    "status"    => 'error'
-                    , "data"    => []
-                    , "message" => 'could not create user'
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_ERROR_CREATING_USER),
+                    'results'      => $exception->getMessage()
                 ]
                 , IResponse::INTERNAL_SERVER_ERROR
             );
@@ -182,7 +179,7 @@ class Add implements RequestHandlerInterface {
         $this->logger->debug('end add user');
         return new JsonResponse(
             [
-                'data' => []
+                'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_CREATED)
             ]
             , IResponse::OK
         );

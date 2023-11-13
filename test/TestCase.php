@@ -64,6 +64,7 @@ abstract class TestCase extends FrameworkTestCase {
         string   $name
         , string $password
         , bool   $locked = false
+        , string $email = ''
     ): IUser {
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
@@ -72,11 +73,15 @@ abstract class TestCase extends FrameworkTestCase {
         /** @var IEventService $eventService */
         $eventService = $this->getService(IEventService::class);
 
+        if ($email === '') {
+            $email = Uuid::uuid4() . '@keestash.com';
+        }
+
         $user = $userRepositoryService->createUser(
             $userService->toNewUser(
                 [
                     'user_name'    => $name
-                    , 'email'      => Uuid::uuid4() . '@keestash.com'
+                    , 'email'      => $email
                     , 'last_name'  => UserRepositoryServiceTest::class
                     , 'first_name' => UserRepositoryServiceTest::class
                     , 'password'   => $password
