@@ -23,6 +23,7 @@ namespace Keestash\Factory\Core\Logger;
 
 use Keestash\ConfigProvider;
 use Keestash\Core\Builder\Logger\LoggerBuilder;
+use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
@@ -43,6 +44,8 @@ class LoggerFactory {
         $application = $container->get(Application::class);
         /** @var Config $config */
         $config = $container->get(Config::class);
+        /** @var InstanceDB $instanceDb */
+        $instanceDb = $container->get(InstanceDB::class);
 
         $isUnitTest   = $environmentService->isUnitTest();
         $nameInternal = $application->getMetaData()->get('name_internal');
@@ -50,7 +53,10 @@ class LoggerFactory {
             ? $nameInternal . '_test.log'
             : $nameInternal . '.log';
 
-        $dataRoot = (string) $config->get(ConfigProvider::DATA_PATH);
+        $logLevel       = (int) $configService->getValue("log_level", Logger::ERROR);
+        $sentryLogLevel = $instanceDb->getOption('sentry_log_level');
+        $dataRoot       = (string) $config->get(ConfigProvider::DATA_PATH);
+
         return (new LoggerBuilder())
             ->withLogLevel(
                 (int) $configService->getValue("log_level", Logger::ERROR)
@@ -61,7 +67,10 @@ class LoggerFactory {
             ->withFormatter(new JsonFormatter())
             ->withStreamHandler()
             ->withDevHandler(
-                $configService->getValue('sentry_dsn', '')
+                $configService->getValue('sentry_dsn', ''),
+                null !== $sentryLogLevel
+                    ? (int) $sentryLogLevel
+                    : $logLevel
             )
             ->build();
 

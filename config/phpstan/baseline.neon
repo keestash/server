@@ -686,11 +686,6 @@ parameters:
 			path: ../../apps/Register/Api/Configuration/Configuration.php
 
 		-
-			message: "#^Strict comparison using \\=\\=\\= between true and false will always evaluate to false\\.$#"
-			count: 1
-			path: ../../apps/Register/Api/User/Add.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/User/ResetPasswordConfirm.php
@@ -936,7 +931,7 @@ parameters:
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
 
 		-
-			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int\\|int\\<0, max\\> given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
 
