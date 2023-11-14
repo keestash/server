@@ -26,12 +26,11 @@ use Keestash\Core\DTO\Event\Event;
 
 class PublicShareEvent extends Event {
 
-    private array             $data;
-    private DateTimeInterface $openTs;
-
-    public function __construct(array $data, DateTimeInterface $openTs) {
-        $this->data   = $data;
-        $this->openTs = $openTs;
+    public function __construct(
+        private readonly array               $data
+        , private readonly DateTimeInterface $openTs
+        , private readonly int               $priority = 99999999
+    ) {
     }
 
     /**
@@ -48,10 +47,18 @@ class PublicShareEvent extends Event {
         return $this->openTs;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'data'     => $this->getData()
-            , 'openTs' => $this->getOpenTs()
+            'data'       => $this->getData()
+            , 'openTs'   => $this->getOpenTs()
+            , 'priority' => $this->getPriority()
         ];
     }
 

@@ -170,8 +170,9 @@ class Add implements RequestHandlerInterface {
 
         $this->eventService->execute(
             new UserRegisteredEvent(
-                $user,
-                Type::REGULAR
+                $user
+                , Type::REGULAR
+                , 1
             )
         );
 

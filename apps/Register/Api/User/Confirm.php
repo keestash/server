@@ -84,6 +84,7 @@ class Confirm implements RequestHandlerInterface {
         $this->eventService->execute(
             new UserRegistrationConfirmedEvent(
                 $userState->getUser()
+                , 1
             )
         );
 

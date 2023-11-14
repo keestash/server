@@ -105,7 +105,7 @@ class QueueRepository implements IQueueRepository {
                 ->from('queue', 'q')
                 ->where('q.attempts < ?')
                 ->andWhere('q.reserved_ts < ?')
-                ->orderBy('q.`create_ts`', 'ASC')
+                ->orderBy('q.`priority`', 'ASC')
                 ->setParameter(0, 3)
                 ->setParameter(1, $this->dateTimeService->toYMDHIS($fiveSecondsAgo));
 

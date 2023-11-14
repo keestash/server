@@ -26,19 +26,27 @@ use KSP\Core\DTO\Organization\IOrganization;
 
 class OrganizationAddedEvent extends Event {
 
-    private IOrganization $organization;
-
-    public function __construct(IOrganization $organization) {
-        $this->organization = $organization;
+    public function __construct(
+        private readonly IOrganization $organization
+        , private readonly int         $priority = 99999999
+    ) {
     }
 
     public function getOrganization(): IOrganization {
         return $this->organization;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'organization' => $this->getOrganization()
+            , 'priority'   => $this->getPriority()
         ];
     }
 

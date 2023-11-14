@@ -25,8 +25,22 @@ use Keestash\Core\DTO\Event\Event;
 
 class ResetPasswordConfirmEvent extends Event {
 
+    public function __construct(
+        private readonly int $priority = 99999999
+    ) {
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
-        return [];
+        return [
+            'priority' => $this->getPriority()
+        ];
     }
 
 }

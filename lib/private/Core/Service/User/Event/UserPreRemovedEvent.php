@@ -26,10 +26,10 @@ use KSP\Core\DTO\User\IUser;
 
 class UserPreRemovedEvent extends Event {
 
-    private IUser $deletedUser;
-
-    public function __construct(IUser $deletedUser) {
-        $this->deletedUser = $deletedUser;
+    public function __construct(
+        private readonly IUser $deletedUser
+        , private readonly int $priority = 99999999
+    ) {
     }
 
     /**
@@ -39,9 +39,17 @@ class UserPreRemovedEvent extends Event {
         return $this->deletedUser;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'deletedUser' => $this->getDeletedUser()
+            , 'priority'  => $this->getPriority()
         ];
     }
 

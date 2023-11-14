@@ -25,4 +25,6 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IEvent extends IJsonObject {
 
+    public function getPriority(): int;
+
 }

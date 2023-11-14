@@ -26,10 +26,10 @@ use KSP\Core\DTO\User\IUser;
 
 class ResetPasswordEvent extends Event {
 
-    private IUser $user;
-
-    public function __construct(IUser $user) {
-        $this->user = $user;
+    public function __construct(
+        private readonly IUser $user
+        , private readonly int $priority = 99999999
+    ) {
     }
 
     /**
@@ -39,9 +39,17 @@ class ResetPasswordEvent extends Event {
         return $this->user;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'user' => $this->getUser()
+            'user'       => $this->getUser()
+            , 'priority' => $this->getPriority()
         ];
     }
 

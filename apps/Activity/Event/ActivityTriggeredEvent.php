@@ -26,7 +26,10 @@ use KSA\Activity\Entity\IActivity;
 
 class ActivityTriggeredEvent extends Event {
 
-    public function __construct(private readonly IActivity $activity) {
+    public function __construct(
+        private readonly IActivity $activity
+        , private readonly int     $priority = 99999999
+    ) {
     }
 
     /**
@@ -36,9 +39,17 @@ class ActivityTriggeredEvent extends Event {
         return $this->activity;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'activity' => $this->getActivity()
+            'activity'   => $this->getActivity()
+            , 'priority' => $this->getPriority()
         ];
     }
 

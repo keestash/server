@@ -26,7 +26,10 @@ use KSA\PasswordManager\Entity\Node\Node;
 
 class NodeRemovedEvent extends Event {
 
-    public function __construct(private readonly int $nodeId) {
+    public function __construct(
+        private readonly int   $nodeId
+        , private readonly int $priority = 99999999
+    ) {
     }
 
     /**
@@ -36,9 +39,17 @@ class NodeRemovedEvent extends Event {
         return $this->nodeId;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'node' => $this->getNodeId()
+            'node'       => $this->getNodeId()
+            , 'priority' => $this->getPriority()
         ];
     }
 

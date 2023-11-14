@@ -25,7 +25,11 @@ use Keestash\Core\DTO\Event\Event;
 
 class ReferenceRemovedEvent extends Event {
 
-    public function __construct(private readonly string $appId, private readonly string $referenceKey) {
+    public function __construct(
+        private readonly string   $appId
+        , private readonly string $referenceKey
+        , private readonly int    $priority = 99999999
+    ) {
     }
 
     /**
@@ -42,10 +46,18 @@ class ReferenceRemovedEvent extends Event {
         return $this->referenceKey;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'appId'          => $this->getAppId()
             , 'referenceKey' => $this->getReferenceKey()
+            , 'priority'     => $this->getPriority()
         ];
     }
 

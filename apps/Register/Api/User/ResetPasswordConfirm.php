@@ -91,7 +91,7 @@ class ResetPasswordConfirm implements RequestHandlerInterface {
         $this->userRepositoryService->updateUser($updateUser, $user);
         $this->userStateRepository->revertPasswordChangeRequest($user);
 
-        $this->eventManager->execute(new ResetPasswordConfirmEvent());
+        $this->eventManager->execute(new ResetPasswordConfirmEvent(2));
 
         $this->logger->debug(
             'reset password flow',

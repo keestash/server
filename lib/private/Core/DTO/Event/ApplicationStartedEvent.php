@@ -25,19 +25,25 @@ use DateTimeInterface;
 
 class ApplicationStartedEvent extends Event {
 
-    private DateTimeInterface $dateTime;
 
-    public function __construct(DateTimeInterface $dateTime) {
-        $this->dateTime = $dateTime;
+    public function __construct(
+        private readonly DateTimeInterface $dateTime
+        , private readonly int             $priority = 99999999
+    ) {
     }
 
     public function getDateTime(): DateTimeInterface {
         return $this->dateTime;
     }
 
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'dateTime' => $this->getDateTime()
+            'dateTime'   => $this->getDateTime()
+            , 'priority' => $this->getPriority()
         ];
     }
 

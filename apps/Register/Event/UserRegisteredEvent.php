@@ -30,6 +30,7 @@ class UserRegisteredEvent extends Event {
     public function __construct(
         private readonly IUser  $user
         , private readonly Type $type
+        , private readonly int  $priority = 99999999
     ) {
     }
 
@@ -47,10 +48,18 @@ class UserRegisteredEvent extends Event {
         return $this->type;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'user'   => $this->getUser()
-            , 'type' => $this->getType()
+            'user'       => $this->getUser()
+            , 'type'     => $this->getType()
+            , 'priority' => $this->getPriority()
         ];
     }
 

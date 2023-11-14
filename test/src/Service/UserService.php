@@ -153,7 +153,8 @@ class UserService {
             $user               = $this->userRepositoryService->createUser($user);
             $this->eventService->execute(
                 new UserRegistrationConfirmedEvent(
-                    $user
+                    $user,
+                    1
                 )
             );
             if (false === $data['locked'] && $user->isLocked()) {

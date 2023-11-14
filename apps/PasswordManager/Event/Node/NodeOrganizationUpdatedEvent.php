@@ -27,12 +27,11 @@ use KSP\Core\DTO\Organization\IOrganization;
 
 class NodeOrganizationUpdatedEvent extends Event {
 
-    private Node           $node;
-    private ?IOrganization $organization;
-
-    public function __construct(Node $node, ?IOrganization $organization) {
-        $this->node         = $node;
-        $this->organization = $organization;
+    public function __construct(
+        private readonly Node             $node
+        , private readonly ?IOrganization $organization
+        , private readonly int            $priority = 99999999
+    ) {
     }
 
     /**
@@ -49,10 +48,18 @@ class NodeOrganizationUpdatedEvent extends Event {
         return $this->organization;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'node'           => $this->getNode()
             , 'organization' => $this->getOrganization()
+            , 'priority'     => $this->getPriority()
         ];
     }
 

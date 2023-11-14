@@ -27,8 +27,9 @@ use KSP\Core\DTO\User\IUser;
 class UserUpdatedEvent extends Event {
 
     public function __construct(
-        private readonly IUser $updatedUser,
-        private readonly IUser $user
+        private readonly IUser   $updatedUser
+        , private readonly IUser $user
+        , private readonly int   $priority = 99999999
     ) {
     }
 
@@ -46,10 +47,18 @@ class UserUpdatedEvent extends Event {
         return $this->user;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'updatedUser' => $this->getUpdatedUser()
-            , 'user'   => $this->getUser()
+            , 'user'      => $this->getUser()
+            , 'priority'  => $this->getPriority()
         ];
     }
 
