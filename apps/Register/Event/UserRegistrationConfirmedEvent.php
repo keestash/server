@@ -26,7 +26,10 @@ use KSP\Core\DTO\User\IUser;
 
 class UserRegistrationConfirmedEvent extends Event {
 
-    public function __construct(private readonly IUser $user) {
+    public function __construct(
+        private readonly IUser $user
+        , private readonly int $priority = 99999999
+    ) {
     }
 
     /**
@@ -36,9 +39,17 @@ class UserRegistrationConfirmedEvent extends Event {
         return $this->user;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'user' => $this->getUser()
+            'user'       => $this->getUser()
+            , 'priority' => $this->getPriority()
         ];
     }
 

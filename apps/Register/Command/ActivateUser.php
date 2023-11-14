@@ -87,7 +87,7 @@ class ActivateUser extends KeestashCommand {
         $this->derivationRepository->add($derivation);
 
         $this->eventService->execute(
-            new UserRegistrationConfirmedEvent($user)
+            new UserRegistrationConfirmedEvent($user,1)
         );
 
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;

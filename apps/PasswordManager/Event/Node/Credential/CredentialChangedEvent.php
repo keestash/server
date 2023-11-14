@@ -34,8 +34,9 @@ class CredentialChangedEvent extends Event {
     private Breaches  $breaches;
 
     public function __construct(
-        Credential           $credential
-        , ?DateTimeInterface $updateTs = null
+        Credential             $credential
+        , ?DateTimeInterface   $updateTs = null
+        , private readonly int $priority = 99999999
     ) {
 
         $this->passwords = new Passwords(
@@ -61,10 +62,18 @@ class CredentialChangedEvent extends Event {
         return $this->breaches;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'passwords'  => $this->getPasswords()
             , 'breaches' => $this->getBreaches()
+            , 'priority' => $this->getPriority()
         ];
     }
 

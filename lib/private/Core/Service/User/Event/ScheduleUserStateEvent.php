@@ -28,20 +28,12 @@ use KSP\Core\DTO\User\IUser;
 
 class ScheduleUserStateEvent extends ReservedEvent {
 
-    private string            $stateType;
-    private IUser             $user;
-    private DateTimeInterface $reservedTs;
-
     public function __construct(
-        string              $stateType
-        , IUser             $user
-        , DateTimeInterface $reservedTs = null
+        private readonly string              $stateType
+        , private readonly IUser             $user
+        , private readonly DateTimeInterface $reservedTs = new DateTimeImmutable()
+        , private readonly int               $priority = 99999999
     ) {
-        $this->stateType  = $stateType;
-        $this->user       = $user;
-        $this->reservedTs = null === $reservedTs
-            ? new DateTimeImmutable()
-            : $reservedTs;
     }
 
     /**
@@ -62,11 +54,16 @@ class ScheduleUserStateEvent extends ReservedEvent {
         return $this->stateType;
     }
 
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'user'         => $this->getUser()
             , 'reservedTs' => $this->getReservedTs()
             , 'stateType'  => $this->getStateType()
+            , 'priority'   => $this->getPriority()
         ];
     }
 

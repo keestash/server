@@ -26,12 +26,11 @@ use KSP\Core\DTO\User\IUser;
 
 class UserStateDeleteEvent extends Event {
 
-    private string $stateType;
-    private IUser  $user;
-
-    public function __construct(string $stateType, IUser $user) {
-        $this->stateType = $stateType;
-        $this->user      = $user;
+    public function __construct(
+        private readonly string  $stateType
+        , private readonly IUser $user
+        , private readonly int   $priority = 99999999
+    ) {
     }
 
     /**
@@ -48,10 +47,18 @@ class UserStateDeleteEvent extends Event {
         return $this->user;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
-            'stateType' => $this->getStateType()
-            , 'user'    => $this->getUser()
+            'stateType'  => $this->getStateType()
+            , 'user'     => $this->getUser()
+            , 'priority' => $this->getPriority()
         ];
     }
 

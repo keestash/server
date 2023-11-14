@@ -125,6 +125,7 @@ class UserRegisteredEventListener implements IListener {
             $this->eventService->execute(
                 new UserRegistrationConfirmedEvent(
                     $event->getUser()
+                    , 1
                 )
             );
             $this->logger->debug('end cli registration');

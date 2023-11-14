@@ -26,11 +26,29 @@ use Keestash\Core\DTO\Event\Event;
 
 class TestStartedEvent extends Event {
 
-    public function __construct(DateTimeInterface $dateTime) {
+    public function __construct(
+        private readonly DateTimeInterface $dateTime
+        , private readonly int             $priority = 99999999
+    ) {
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getDateTime(): DateTimeInterface {
+        return $this->dateTime;
     }
 
     public function jsonSerialize(): array {
-        return [];
+        return [
+        ];
     }
 
 }

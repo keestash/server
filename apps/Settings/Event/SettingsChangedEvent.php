@@ -29,6 +29,7 @@ class SettingsChangedEvent extends Event {
     public function __construct(
         private readonly Setting $setting
         , private readonly bool  $override = false
+        , private readonly int   $priority = 99999999
     ) {
     }
 
@@ -46,10 +47,18 @@ class SettingsChangedEvent extends Event {
         return $this->override;
     }
 
+    /**
+     * @return int
+     */
+    public function getPriority(): int {
+        return $this->priority;
+    }
+
     public function jsonSerialize(): array {
         return [
             'setting'    => $this->getSetting()
             , 'override' => $this->isOverride()
+            , 'priority' => $this->getPriority()
         ];
     }
 
