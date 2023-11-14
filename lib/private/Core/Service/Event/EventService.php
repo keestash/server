@@ -34,16 +34,12 @@ use Ramsey\Uuid\Uuid;
 
 class EventService implements IEventService {
 
-    private IQueueRepository $queueRepository;
-    private IBase64Service   $base64Service;
-    private array            $listeners;
+    private array $listeners;
 
     public function __construct(
-        IQueueRepository $queueRepository
-        , IBase64Service $base64Service
+        private readonly IQueueRepository $queueRepository
+        , private readonly IBase64Service $base64Service
     ) {
-        $this->queueRepository = $queueRepository;
-        $this->base64Service   = $base64Service;
     }
 
     public function execute(IEvent $event): void {
@@ -76,7 +72,7 @@ class EventService implements IEventService {
                     : new DateTimeImmutable()
             );
             $message->setAttempts(0);
-            $message->setPriority(1);
+            $message->setPriority($event->getPriority());
             $message->setCreateTs(new DateTimeImmutable());
             $messageList->add($message);
 
