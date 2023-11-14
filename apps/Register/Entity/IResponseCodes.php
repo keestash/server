@@ -51,5 +51,7 @@ class IResponseCodes {
     public const RESPONSE_NAME_ERROR_CREATING_USER                            = 'user.creating.error';
     public const RESPONSE_CODE_USER_CREATED                                   = 67891234;
     public const RESPONSE_NAME_USER_CREATED                                   = 'user.created';
+    public const RESPONSE_CODE_USER_SUBSCRIPTION_CREATED                      = 23491234345;
+    public const RESPONSE_NAME_USER_SUBSCRIPTION_CREATED                      = 'created.subscription.user';
 
 }

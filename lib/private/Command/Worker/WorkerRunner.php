@@ -57,12 +57,27 @@ class WorkerRunner extends KeestashCommand {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $workerLogFile = $this->dataService->getPath() . '/' . WorkerRunner::WORKER_LOG_FILE;
+        $workerLogFile       = $this->dataService->getPath() . '/' . WorkerRunner::WORKER_LOG_FILE;
+        $workerLogFileExists = true === is_file($workerLogFile);
         while (true) {
             $this->queueRepository->connect();
             $queue = $this->queueService->getQueue();
 
-            if (0 === $queue->length() || true === is_file($workerLogFile)) {
+            $this->logger->info(
+                'queue summary',
+                [
+                    'length'              => $queue->length(),
+                    'workerLogFileExists' => $workerLogFileExists,
+                    'context'             => 'runner'
+                ]
+            );
+            if (0 === $queue->length() || $workerLogFileExists) {
+                $this->logger->info(
+                    'no data given or worker log file exists',
+                    [
+                        'context' => 'runner'
+                    ]
+                );
                 $this->queueRepository->disconnect();
                 usleep(500000);
                 continue;
@@ -71,6 +86,16 @@ class WorkerRunner extends KeestashCommand {
             /** @var IMessage $message */
             foreach ($queue as $message) {
                 $this->writeInfo('processing ' . $message->getId(), $output);
+                $this->logger->info(
+                    'processing message',
+                    [
+                        'message' => [
+                            'id'       => $message->getId(),
+                            'attempts' => $message->getAttempts(),
+                            'context'  => 'runner'
+                        ]
+                    ]
+                );
                 if ($message->getAttempts() > 3) {
                     continue;
                 }

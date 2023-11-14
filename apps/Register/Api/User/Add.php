@@ -161,7 +161,8 @@ class Add implements RequestHandlerInterface {
             $this->logger->debug('saas mode - responding session id');
             return new JsonResponse(
                 [
-                    'session' => $session
+                    'session'      => $session,
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_SUBSCRIPTION_CREATED)
                 ]
                 , IResponse::OK
             );
@@ -169,10 +170,8 @@ class Add implements RequestHandlerInterface {
 
         $this->eventService->execute(
             new UserRegisteredEvent(
-                $user
-                , true === $isSaas
-                ? Type::SAAS
-                : Type::REGULAR
+                $user,
+                Type::REGULAR
             )
         );
 

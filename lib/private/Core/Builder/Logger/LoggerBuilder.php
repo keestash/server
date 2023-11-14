@@ -67,7 +67,7 @@ class LoggerBuilder implements ILoggerBuilder {
         return $instance;
     }
 
-    public function withDevHandler(string $sentryDsn): ILoggerBuilder {
+    public function withDevHandler(string $sentryDsn, int $logLevel = -1): ILoggerBuilder {
         $instance = clone $this;
         if ('' === $sentryDsn) {
             return $instance;
@@ -75,14 +75,19 @@ class LoggerBuilder implements ILoggerBuilder {
 
         init(
             [
-                'dsn'                  => $sentryDsn
-                , 'traces_sample_rate' => 0.2,
+                'dsn'                    => $sentryDsn
+                , 'traces_sample_rate'   => 1
+                , 'profiles_sample_rate' => 1.0
             ]
         );
 
+        if ($logLevel === -1) {
+            $logLevel = $this->logLevel;
+        }
+
         $instance->handlers[] = new Handler(
             SentrySdk::getCurrentHub()
-            , $this->logLevel
+            , $logLevel
             , true
             , true
         );
