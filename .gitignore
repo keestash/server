@@ -293,3 +293,6 @@ apps/Payment/*
 /test/cache/test-results
 /test/code-coverage/
 /test/config/instance.db
+/config/docker/web/apache/cert.pem
+/config/docker/web/apache/cert-key.pem
+/lib/config/cors/allowed_origins.bak

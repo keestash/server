@@ -20,6 +20,8 @@ You want to learn more about Keestash?(https://keestash.com).
  #### !! Keestash switched local development from Vagrant to Docker !!
 
 * install Docker on your system.
+* generate certificate keys for SSL/TLS in `config/docker/web/apache`
+  * alternatively, you can turn off SSL encryption in `config/docker/web/apache/keestash.conf` (not recommended)
 * Use the `docker compose up` command in the root folder to create a Docker container.
 * Run several commands within the Docker container in order:
   * Empty the `config/config.php` file if it exists, then use `php ./bin/console.php keestash:install:config` to add the required configuration parameters. 

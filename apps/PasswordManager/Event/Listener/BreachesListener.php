@@ -55,6 +55,7 @@ class BreachesListener implements IListener {
     }
 
     public function execute(IEvent $event): void {
+        return;
         $this->logger->debug('start handle breaches');
         $candidates = $this->pwnedBreachesRepository->getOlderThan(
             (new DateTimeImmutable())->modify('-30 min')
