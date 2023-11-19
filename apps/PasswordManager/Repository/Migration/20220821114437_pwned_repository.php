@@ -28,6 +28,7 @@ final class PwnedRepository extends KeestashMigration {
                 , KeestashMigration::INTEGER
                 , [
                     "null" => false
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -76,6 +77,7 @@ final class PwnedRepository extends KeestashMigration {
                 , KeestashMigration::INTEGER
                 , [
                     "null" => false
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

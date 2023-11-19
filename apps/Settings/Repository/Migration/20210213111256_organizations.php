@@ -76,6 +76,7 @@ class Organizations extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The organization id"
+                    , 'signed'  => false
                 ]
             )
             ->addColumn(
@@ -84,6 +85,7 @@ class Organizations extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The user id"
+                    , 'signed'  => false
                 ]
             )
             ->addColumn(
@@ -122,6 +124,7 @@ class Organizations extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The organization id"
+                    , 'signed'  => false
                 ]
             )
             ->addColumn(
@@ -130,6 +133,7 @@ class Organizations extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The key id"
+                    , 'signed'  => false
                 ]
             )
             ->addColumn(
@@ -168,6 +172,7 @@ class Organizations extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The organization id"
+                    , 'signed' =>false
                 ]
             )
             ->addColumn(
@@ -176,6 +181,7 @@ class Organizations extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The key id"
+                    , 'signed' =>false
                 ]
             )
             ->addColumn(

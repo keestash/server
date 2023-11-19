@@ -94,6 +94,7 @@ class File extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The users id who uploaded the file"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

@@ -35,7 +35,6 @@ class EmailServiceFactory {
 
     public function __invoke(ContainerInterface $container): IEmailService {
         return new EmailService(
-            $container->get(Application::class),
             $container->get(IConfigService::class),
             $container->get(LoggerInterface::class),
             $container->get(InstanceDB::class)

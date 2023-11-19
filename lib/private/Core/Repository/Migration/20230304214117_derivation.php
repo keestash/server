@@ -34,6 +34,7 @@ final class Derivation extends KeestashMigration {
                     "null"      => false
                     , "comment" => "the user"
                     , "after"   => "id"
+                    , 'signed'=> false
                 ]
             )
             ->addColumn(

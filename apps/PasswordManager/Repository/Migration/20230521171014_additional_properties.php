@@ -59,6 +59,7 @@ final class AdditionalProperties extends KeestashMigration {
                     "null"      => false
                     , "comment" => "The node getting commented"
                     , "after"   => "value"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

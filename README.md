@@ -26,12 +26,12 @@ You want to learn more about Keestash?(https://keestash.com).
   * Execute `php ./vendor/bin/phinx migrate -c config/phinx/instance.php` to migrate core databases.
   * Run `php ./vendor/bin/phinx migrate -c config/phinx/apps.php` to migrate app databases.
   * Use `php ./bin/console.php keestash:create-system-user` to create a system user.
-  * Use `php ./bin/console.php keestash:install:instance-data` to add instance-specific configurations.
+  * Use `php ./bin/console.php install:instance-data` to add instance-specific configurations.
     * In certain scenarios, if you encounter an error stating id and hash exists, ignore this step.
-  * Execute `php ./bin/console.php keestash:permission:create` to create permissions.
-  * Run `php ./bin/console.php keestash:permission:role:create` to create all roles.
+  * Execute `php ./bin/console.php permission:create` to create permissions.
+  * Run `php ./bin/console.php permission:role:create` to create all roles.
   * Use `php ./bin/console.php register:create-user` to create a user account.
-  * Run `php ./bin/console.php keestash:permission:role:assign-all` to assign all roles to the created user(s).
+  * Run `php ./bin/console.php permission:role:assign-all` to assign all roles to the created user(s).
     * Make sure users are created before this step.
   * Use `php ./bin/console.php keestash:environment:add --force environment dev` to set the environment to `dev` for Keestash.
   * Execute `php ./bin/console.php keestash:environment:add --force allowed.send.notifications false` to disable sending of notifications (like email).

@@ -71,6 +71,7 @@ final class RolesPermissions extends KeestashMigration {
                     "comment" => "The role id"
                     , 'null'  => false
                     , 'after' => 'id'
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -80,6 +81,7 @@ final class RolesPermissions extends KeestashMigration {
                     "comment" => "The permissions id"
                     , "null"  => false
                     , "after" => "role_id"
+                    , 'signed'=> false
                 ]
             )
             ->addColumn(
@@ -120,6 +122,7 @@ final class RolesPermissions extends KeestashMigration {
                     "comment" => "The role id"
                     , 'null'  => false
                     , 'after' => 'id'
+                    , 'signed' =>false
                 ]
             )
             ->addColumn(
@@ -129,6 +132,7 @@ final class RolesPermissions extends KeestashMigration {
                     "comment" => "The user id"
                     , "null"  => false
                     , "after" => "role_id"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

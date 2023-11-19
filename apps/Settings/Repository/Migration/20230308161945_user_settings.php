@@ -40,6 +40,7 @@ final class UserSettings extends KeestashMigration {
                     "null"      => false
                     , "comment" => "The user's id"
                     , "after" => "key"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
