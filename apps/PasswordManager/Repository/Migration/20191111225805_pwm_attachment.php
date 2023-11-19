@@ -38,6 +38,7 @@ class PwmAttachment extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "the node's id"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -46,6 +47,7 @@ class PwmAttachment extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The file id"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

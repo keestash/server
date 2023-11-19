@@ -46,6 +46,7 @@ class PasswordGraph extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The user to whom the node belongs to"
+                    , 'signed'  => false
                 ]
             )
             ->addColumn(
@@ -92,7 +93,8 @@ class PasswordGraph extends KeestashMigration {
                 "node_id"
                 , "integer"
                 , [
-                "null" => false
+                "null"     => false
+                , 'signed' => false
             ])
             ->addColumn(
                 "username"
@@ -150,6 +152,7 @@ class PasswordGraph extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The node's ID"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -158,6 +161,7 @@ class PasswordGraph extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The parent node that contains a node"
+                    , 'signed' => false
                 ]
             )
             ->addForeignKey(

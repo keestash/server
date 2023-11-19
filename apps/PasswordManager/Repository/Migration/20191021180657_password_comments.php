@@ -45,6 +45,7 @@ class PasswordComments extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The node getting commented"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -53,6 +54,7 @@ class PasswordComments extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The user that made the comment"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

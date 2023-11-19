@@ -154,6 +154,7 @@ class MinimalApp extends AbstractMigration {
                 , [
                     "null"      => false
                     , "comment" => "the user which's state is configured"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -234,6 +235,7 @@ class MinimalApp extends AbstractMigration {
                 , [
                     "null"    => false
                     , "after" => "token"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -302,6 +304,7 @@ class MinimalApp extends AbstractMigration {
                 , [
                     "null"    => false
                     , "after" => "value"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

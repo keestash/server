@@ -56,6 +56,7 @@ class EncryptionKey extends AbstractMigration {
                 , "integer"
                 , [
                     "null" => false
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
@@ -64,6 +65,7 @@ class EncryptionKey extends AbstractMigration {
                 , [
                     "null"    => false
                     , "after" => "user_id"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(

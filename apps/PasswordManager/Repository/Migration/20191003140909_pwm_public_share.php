@@ -38,6 +38,7 @@ class PwmPublicShare extends KeestashMigration {
                 , [
                     "null"      => false
                     , "comment" => "The node that is shared"
+                    , 'signed' => false
                 ]
             )
             ->addColumn(
