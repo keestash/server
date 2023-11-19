@@ -51,6 +51,7 @@ class PasswordsListener implements IListener {
     }
 
     public function execute(IEvent $event): void {
+        return;
         $candidates = $this->pwnedPasswordsRepository->getOlderThan(
             (new DateTimeImmutable())->modify('-30 min')
         );

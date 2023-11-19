@@ -83,6 +83,11 @@ $CONFIG =
         , "email_user"            => ""
 
         /*
+         * The username to the email address to display
+         */
+        , "email_user_name"            => ""
+
+        /*
         * The mail clients protocol (tls, ssl)
         */
         , 'email_protocol'        => 'ssl'

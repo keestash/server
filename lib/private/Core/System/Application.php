@@ -34,7 +34,7 @@ class Application {
         $dateTime = new DateTime();
         $dateTime->setDate(2018, 11, 01);
         $table->put("start_date", $dateTime);
-        $table->put("email", "info@ucar-solutions.de");
+        $table->put("email", "dogan@keestashapps.de");
         $table->put("phone", "+49 (0) 69 175 111 52");
         $table->put("web", "https://www.keestash.com");
         $table->put("facebookPage", "https://www.facebook.com/keestash");
