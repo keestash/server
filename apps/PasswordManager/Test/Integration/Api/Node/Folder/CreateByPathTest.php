@@ -67,7 +67,7 @@ class CreateByPathTest extends TestCase {
         $this->removeUser($user);
     }
 
-    public function providePaths(): array {
+    public static function providePaths(): array {
         return [
             ["d7d6fce99050ec1ef3cdc8793a69c873/2060d73c798241f5d0fcf69613ad733f"]
             , ["d7d6fce99050ec1ef3cdc8793a69c873/2060d73c798241f5d0fcf69613ad733f/d7d6fce99050ec1ef3cdc8793a69c873"]

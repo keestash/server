@@ -22,8 +22,10 @@ declare(strict_types=1);
 namespace KSA\Register\Middleware;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\Register\Entity\IResponseCodes;
 use KSA\Settings\Service\ISettingsService;
 use KSP\Api\IResponse;
+use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -35,18 +37,22 @@ class RegisterEnabledMiddleware implements MiddlewareInterface {
     public function __construct(
         private readonly LoggerInterface    $logger
         , private readonly ISettingsService $settingsService
+        , private readonly IResponseService $responseService
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $registerEnabled = $this->settingsService->isRegisterEnabled();
+
         if (false === $registerEnabled) {
             $this->logger->info(
                 'register disabled, but tried to consume a register endpoint',
                 ['body' => $request->getBody()]
             );
             return new JsonResponse(
-                ['unknown operation']
+                [
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_REGISTER_DISABLED)
+                ]
                 , IResponse::BAD_REQUEST
             );
         }

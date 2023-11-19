@@ -64,7 +64,7 @@ class RawFileServiceTest extends TestCase {
         $this->assertIsString($base64);
     }
 
-    public function provideStringToUri(): array {
+    public static function provideStringToUri(): array {
         return [
             [__DIR__, __DIR__, true, null]
             , [__DIR__ . '/dev/null', __DIR__, true, FileNotExistsException::class]

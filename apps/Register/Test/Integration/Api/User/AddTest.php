@@ -396,8 +396,8 @@ class AddTest extends TestCase {
 
         $data = $this->getDecodedData($response);
         $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
-        $this->assertArrayHasKey(0, $data);
-        $this->assertTrue($data[0] === 'unknown operation');
+        $this->assertArrayHasKey('responseCode', $data);
+        $this->assertTrue($data['responseCode'] === IResponseCodes::RESPONSE_CODE_REGISTER_DISABLED);
         $settingRepository->remove(
             LDAPOption::RESTRICT_LOCAL_ACCOUNTS->value
         );

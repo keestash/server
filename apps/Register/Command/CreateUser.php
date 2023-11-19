@@ -138,6 +138,7 @@ class CreateUser extends KeestashCommand {
             new UserRegisteredEvent(
                 $user
                 , Type::CLI
+                , 1
             )
         );
 

@@ -60,7 +60,7 @@ class IniConfigServiceTest extends TestCase {
         $this->assertTrue($intValue === $this->configService->toBytes($iniValue));
     }
 
-    public function provideToBytesData(): array {
+    public static function provideToBytesData(): array {
         return [
             ['3M', 3145728]
             , ['24M', 25165824]
@@ -68,7 +68,7 @@ class IniConfigServiceTest extends TestCase {
         ];
     }
 
-    public function provideData(): array {
+    public static function provideData(): array {
         return [
             ['ini.test.config', true, null]
             , ['test.config.nonExisting', null, null]

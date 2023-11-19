@@ -56,7 +56,7 @@ class GenerateTest extends TestCase {
     }
 
     // TODO add more cases
-    public function provideData(): array {
+    public static function provideData(): array {
         return [
             [['length' => "8", 'upperCase' => "true", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], true]
             , [['length' => null, 'upperCase' => "true", 'lowerCase' => "true", "digit" => "true", "specialChars" => "true"], false]

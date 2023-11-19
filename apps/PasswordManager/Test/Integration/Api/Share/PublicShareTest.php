@@ -88,7 +88,7 @@ class PublicShareTest extends TestCase {
         );
     }
 
-    public function provideData(): array {
+    public static function provideData(): array {
         return [
             [['node_id' => 845763], false]
             , [['node_id' => 2], true]

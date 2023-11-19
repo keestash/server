@@ -176,7 +176,11 @@ class GetTest extends TestCase {
             ->handle(
                 $this->getRequest(
                     IVerb::GET
-                    , str_replace(':credentialId', Uuid::uuid4()->toString(), ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET)
+                    , str_replace(
+                        ':credentialId'
+                        , Uuid::uuid4()->toString()
+                        , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_ADDITIONAL_DATA_GET
+                    )
                     , []
                     , $user
                     , $headers
@@ -186,6 +190,5 @@ class GetTest extends TestCase {
         $this->logout($headers, $user);
         $this->removeUser($user);
     }
-
 
 }

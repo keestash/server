@@ -52,7 +52,7 @@ class ConfigServiceTest extends TestCase {
         $this->assertArrayHasKey('log_level', $all);
     }
 
-    public function provideData(): array {
+    public static function provideData(): array {
         return [
             ['test.config', true, null]
             , ['test.config.nonExisting', null, null]

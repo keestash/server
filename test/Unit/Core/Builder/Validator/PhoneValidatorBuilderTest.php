@@ -46,7 +46,7 @@ class PhoneValidatorBuilderTest extends TestCase {
         );
     }
 
-    public function getRegularCaseData(): array {
+    public static function getRegularCaseData(): array {
         return [
             ['', false]
             , ['http://aa.keestash.com', false]

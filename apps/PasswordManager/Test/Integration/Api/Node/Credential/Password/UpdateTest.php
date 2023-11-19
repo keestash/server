@@ -116,7 +116,7 @@ class UpdateTest extends TestCase {
         $this->removeUser($user);
     }
 
-    public function getNonExistentData(): array {
+    public static function getNonExistentData(): array {
         return [
             ['passwordPlain' => null, 'nodeId' => null]
             , ['passwordPlain' => 'dsfsdfdsfdasdsa', 'nodeId' => null]
