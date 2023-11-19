@@ -42,8 +42,7 @@ class EmailService implements IEmailService {
     private HashTable $blindCarbonCopy;
 
     public function __construct(
-        private readonly Application       $legacy
-        , private readonly ConfigService   $configService
+        private readonly ConfigService     $configService
         , private readonly LoggerInterface $logger
         , private readonly InstanceDB      $instanceDB
     ) {
@@ -67,12 +66,12 @@ class EmailService implements IEmailService {
         $this->mailer->Port       = (int) $this->configService->getValue("email_port");
 
         $this->mailer->setFrom(
-            (string) $this->legacy->getMetaData()->get("email")
-            , (string) $this->legacy->getMetaData()->get("name")
+            (string) $this->configService->getValue("email_user")
+            , (string) $this->configService->getValue("email_user_name")
         );
         $this->mailer->addReplyTo(
-            (string) $this->legacy->getMetaData()->get("email")
-            , (string) $this->legacy->getMetaData()->get("name")
+            (string) $this->configService->getValue("email_user")
+            , (string) $this->configService->getValue("email_user_name")
         );
         $this->mailer->Debugoutput = function ($message) {
             $this->logger->debug($message);
@@ -81,6 +80,7 @@ class EmailService implements IEmailService {
         // Global Config
         $this->mailer->isHTML(EmailService::IS_HTML);   // Set email format to HTML
     }
+
 
     public function addRecipient(string $name, string $email): void {
         $this->recipients->put($name, $email);
@@ -127,7 +127,7 @@ class EmailService implements IEmailService {
 
             $sendAllowed = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_NOTIFICATIONS_SEND_ALLOWED);
 
-            $this->logger->debug('notifications allwoed', ['allowed' => $sendAllowed, 'allowedBoolean' => $sendAllowed === 'true']);
+            $this->logger->debug('notifications allowed', ['allowed' => $sendAllowed, 'allowedBoolean' => $sendAllowed === 'true']);
             if ($sendAllowed === 'true') {
                 $this->mailer->send();
             }
