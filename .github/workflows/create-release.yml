@@ -38,7 +38,7 @@ jobs:
           php_extensions: intl
           php_version: 8.1.13
           memory_limit: 2G
-          version: 10.4.s
+          version: 10.4.2
           bootstrap: test/bootstrap.php
 
       # end tests
