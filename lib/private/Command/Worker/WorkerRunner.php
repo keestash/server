@@ -85,6 +85,8 @@ class WorkerRunner extends KeestashCommand {
 
             /** @var IMessage $message */
             foreach ($queue as $message) {
+                $start = microtime(true);
+
                 $this->writeInfo('processing ' . $message->getId(), $output);
                 $this->logger->info(
                     'processing message',
@@ -121,7 +123,17 @@ class WorkerRunner extends KeestashCommand {
                         throw new KeestashException();
                 }
                 $this->writeInfo('ended successfully', $output);
-
+                $end = microtime(true);
+                $this->logger->info(
+                    'job execution summary'
+                    , [
+                        'start'       => $start
+                        , 'end'       => $end
+                        , 'duration'  => $end - $start
+                        , 'messageId' => $message->getId()
+                        , 'listener'  => $message->getPayload()['listener'] ?? 'unknown listener'
+                    ]
+                );
             }
             $this->queueRepository->disconnect();
         }

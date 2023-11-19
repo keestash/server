@@ -44,9 +44,8 @@ jobs:
       # end tests
       - name: end tests
         run: |
-          cat test/result/result.json # show test results
-          rm config/config.php    # remove test config
-          sudo rm -r vendor/
+          rm -rf config/config.php    # remove test config
+          sudo rm -rf vendor/
 
       - name: Composer Install
         uses: php-actions/composer@v5
