@@ -53,7 +53,7 @@ class MimeTypeServiceTest extends TestCase {
         $this->assertTrue(true === in_array($extension, $result, true));
     }
 
-    public function provideGetExtension(): array {
+    public static function provideGetExtension(): array {
         return [
             ['asda', '', IndexOutOfBoundsException::class]
             , ['application/xml', IExtension::XML, null]

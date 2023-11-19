@@ -167,7 +167,7 @@ class UserTest extends TestCase {
         $organizationRepository->remove($organization);
     }
 
-    public function getModes(): array {
+    public static function getModes(): array {
         return [
             [User::MODE_ADD, IResponse::OK]
             , [User::MODE_ADD, IResponse::OK]

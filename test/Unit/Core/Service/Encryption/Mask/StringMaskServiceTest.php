@@ -45,7 +45,7 @@ class StringMaskServiceTest extends TestCase {
         );
     }
 
-    public function provideStringsToMask(): array {
+    public static function provideStringsToMask(): array {
         return [
             ['a', 'x']
             , ['ab', 'xx']

@@ -42,7 +42,7 @@ class RouteServiceTest extends TestCase {
         $this->assertTrue($result === $appId);
     }
 
-    public function provideRouteToAppId(): array {
+    public static function provideRouteToAppId(): array {
         return [
             ['/password_manager', 'passwordmanager']
             , ['/install_instance', 'installinstance']

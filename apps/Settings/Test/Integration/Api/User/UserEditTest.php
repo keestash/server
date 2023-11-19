@@ -167,7 +167,7 @@ class UserEditTest extends TestCase {
         $this->assertTrue(false === $data['languageUpdated']);
     }
 
-    public function provideInvalidLanguageAndLocale(): array {
+    public static function provideInvalidLanguageAndLocale(): array {
         return [
             ['', ''],
             [null, null],

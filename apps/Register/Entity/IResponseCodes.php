@@ -53,5 +53,7 @@ class IResponseCodes {
     public const RESPONSE_NAME_USER_CREATED                                   = 'user.created';
     public const RESPONSE_CODE_USER_SUBSCRIPTION_CREATED                      = 23491234345;
     public const RESPONSE_NAME_USER_SUBSCRIPTION_CREATED                      = 'created.subscription.user';
+    public const RESPONSE_CODE_REGISTER_DISABLED                              = 567532;
+    public const RESPONSE_NAME_REGISTER_DISABLED                              = 'disabled.register';
 
 }

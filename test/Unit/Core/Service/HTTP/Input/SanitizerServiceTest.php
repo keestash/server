@@ -64,14 +64,14 @@ class SanitizerServiceTest extends TestCase {
         );
     }
 
-    public function provideSanitize(): array {
+    public static function provideSanitize(): array {
         return [
             ['<alert>tests</alert>', 'tests']
             , ['<img src="javascript:evil();" onload="evil();" />', '']
         ];
     }
 
-    public function provideSanitizeAll(): array {
+    public static function provideSanitizeAll(): array {
         return [
             [
                 [

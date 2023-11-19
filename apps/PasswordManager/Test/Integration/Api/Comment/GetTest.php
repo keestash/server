@@ -30,13 +30,6 @@ use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
 
-    public function getData(): array {
-        return [
-            [2, true]
-            , [99999, false]
-        ];
-    }
-
     /**
      * @throws CommentException
      * @dataProvider getData
@@ -64,6 +57,13 @@ class GetTest extends TestCase {
         $response = $get->handle($request);
 
         $this->assertTrue($isValid === $responseService->isValidResponse($response));
+    }
+
+    public static function getData(): array {
+        return [
+            [2, true]
+            , [99999, false]
+        ];
     }
 
 }

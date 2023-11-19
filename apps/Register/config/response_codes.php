@@ -38,4 +38,5 @@ return [
     , IResponseCodes::RESPONSE_NAME_ERROR_CREATING_USER                            => IResponseCodes::RESPONSE_CODE_ERROR_CREATING_USER
     , IResponseCodes::RESPONSE_NAME_USER_CREATED                                   => IResponseCodes::RESPONSE_CODE_USER_CREATED
     , IResponseCodes::RESPONSE_NAME_USER_SUBSCRIPTION_CREATED                      => IResponseCodes::RESPONSE_CODE_USER_SUBSCRIPTION_CREATED
+    , IResponseCodes::RESPONSE_NAME_REGISTER_DISABLED                              => IResponseCodes::RESPONSE_CODE_REGISTER_DISABLED
 ];

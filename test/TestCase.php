@@ -41,12 +41,18 @@ use Ramsey\Uuid\Uuid;
 abstract class TestCase extends FrameworkTestCase {
 
     private ServiceManager $serviceManager;
+    private array          $performance = [];
 
     protected function setUp(): void {
         parent::setUp();
-        $this->serviceManager = require __DIR__ . '/config/service_manager.php';
-        $eventService         = $this->serviceManager->get(IEventService::class);
-        $config               = $this->serviceManager->get(Config::class);
+        $this->performance[static::class] = [
+            'name'  => static::class,
+            'start' => microtime(true),
+            'end'   => 0
+        ];
+        $this->serviceManager             = require __DIR__ . '/config/service_manager.php';
+        $eventService                     = $this->serviceManager->get(IEventService::class);
+        $config                           = $this->serviceManager->get(Config::class);
 
         $eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
         $eventService->execute(new TestStartedEvent(new DateTimeImmutable()));
@@ -96,6 +102,7 @@ abstract class TestCase extends FrameworkTestCase {
         $eventService->execute(
             new UserRegistrationConfirmedEvent(
                 $user
+                , 1
             )
         );
 
@@ -122,6 +129,11 @@ abstract class TestCase extends FrameworkTestCase {
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
         $userRepositoryService->removeUser($user);
+    }
+
+    protected function tearDown(): void {
+        parent::tearDown();
+        $this->performance[static::class]['end'] = microtime(true);
     }
 
 }

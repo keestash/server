@@ -286,7 +286,7 @@ class UserServiceTest extends TestCase {
         $this->assertTrue($result->length() > 0);
     }
 
-    public function provideValidatePassword(): array {
+    public static function provideValidatePassword(): array {
         return [
             ['absdfsadfsad1231!@#$!F', 'absdfsadfsad1231!@#$!F', 0, null]
             , ['absdfsadfsad1231!@#$!F', 'absdfsadfsad1231!@#$!A', 1, 'PASSWORD_AND_PASSWORD_REPEAT_ARE_NOT_EQUAL']
@@ -295,7 +295,7 @@ class UserServiceTest extends TestCase {
         ];
     }
 
-    public function provideWebsite(): array {
+    public static function provideWebsite(): array {
         return [
             ['a', false]
             , ['ab', false]
@@ -308,7 +308,7 @@ class UserServiceTest extends TestCase {
         ];
     }
 
-    public function provideEmailAddress(): array {
+    public static function provideEmailAddress(): array {
         return [
             ['a', false]
             , ['ab', false]
@@ -317,7 +317,7 @@ class UserServiceTest extends TestCase {
         ];
     }
 
-    public function provideMinimumRequirementsPasswords(): array {
+    public static function provideMinimumRequirementsPasswords(): array {
         return [
             ['a', false]
             , ['ab', false]

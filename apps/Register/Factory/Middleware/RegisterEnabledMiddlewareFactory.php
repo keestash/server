@@ -23,6 +23,7 @@ namespace KSA\Register\Factory\Middleware;
 
 use KSA\Register\Middleware\RegisterEnabledMiddleware;
 use KSA\Settings\Service\ISettingsService;
+use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,6 +38,7 @@ class RegisterEnabledMiddlewareFactory implements FactoryInterface {
         return new RegisterEnabledMiddleware(
             $container->get(LoggerInterface::class)
             , $container->get(ISettingsService::class)
+            , $container->get(IResponseService::class)
         );
     }
 

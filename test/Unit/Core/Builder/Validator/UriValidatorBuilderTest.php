@@ -47,7 +47,7 @@ class UriValidatorBuilderTest extends TestCase {
         );
     }
 
-    public function getRegularCaseData(): array {
+    public static function getRegularCaseData(): array {
         return [
             ['keestash.com', true]
             , ['www.keestash.com', true]

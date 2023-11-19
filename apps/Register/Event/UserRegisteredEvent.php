@@ -30,7 +30,7 @@ class UserRegisteredEvent extends Event {
     public function __construct(
         private readonly IUser  $user
         , private readonly Type $type
-        , private readonly int  $priority = 99999999
+        , private readonly int  $priority
     ) {
     }
 

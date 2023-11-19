@@ -86,7 +86,7 @@ class PasswordServiceTest extends TestCase {
         $this->assertTrue($result->getQuality() === $quality);
     }
 
-    public function provideTestMeasureQuality(): array {
+    public static function provideTestMeasureQuality(): array {
         $q1 = new Password();
         $q1->setValue('sdfasdfadfafdSDFSFSFFFAADFADSFSGSD1232342452424123123424@(#(#$(#$@#');
         $q2 = new Password();
@@ -97,7 +97,7 @@ class PasswordServiceTest extends TestCase {
         ];
     }
 
-    public function provideGeneratePasswordData(): array {
+    public static function provideGeneratePasswordData(): array {
         return [
             [
                 0
@@ -146,7 +146,7 @@ class PasswordServiceTest extends TestCase {
         ];
     }
 
-    public function getFindCharacterSetDataProvider(): array {
+    public static function getFindCharacterSetDataProvider(): array {
         return [
             ['a', [IPasswordService::LOWER_CASE_CHARACTERS]]
             , [

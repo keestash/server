@@ -46,7 +46,7 @@ class EmailValidatorBuilderTest extends TestCase {
         );
     }
 
-    public function getRegularCaseData(): array {
+    public static function getRegularCaseData(): array {
         return [
             ['dev@null.de', true]
             , ['http://aa.keestash.com', false]

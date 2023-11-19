@@ -46,7 +46,7 @@ class IconServiceTest extends TestCase {
         $this->assertTrue($result === $icon);
     }
 
-    public function provideGetIconForExtension(): array {
+    public static function provideGetIconForExtension(): array {
         return [
             [IExtension::JPEG, IICon::JPEG]
             , [IExtension::JPG, IICon::JPEG]

@@ -35,18 +35,6 @@ use Ramsey\Uuid\Uuid;
  */
 class AddTest extends TestCase {
 
-    public function getData(): array {
-        return [
-            [["comment" => "test", 'node_id' => 2], null, true]
-            , [["comment" => null, 'node_id' => 2], CommentException::class, true]
-            , [['node_id' => 2], CommentException::class, true]
-            , [["comment" => "test", 'node_id' => null], CommentException::class, true]
-            , [["comment" => "test", 'node_id' => 9], null, false]
-            , [["comment" => "test"], CommentException::class, true]
-            , [[], CommentException::class, true]
-        ];
-    }
-
     /**
      * @param array       $parameters
      * @param string|null $exception
@@ -112,4 +100,15 @@ class AddTest extends TestCase {
 //        dump($c->getComment());exit();
 //    }
 
+    public static function getData(): array {
+        return [
+            [["comment" => "test", 'node_id' => 2], null, true]
+            , [["comment" => null, 'node_id' => 2], CommentException::class, true]
+            , [['node_id' => 2], CommentException::class, true]
+            , [["comment" => "test", 'node_id' => null], CommentException::class, true]
+            , [["comment" => "test", 'node_id' => 9], null, false]
+            , [["comment" => "test"], CommentException::class, true]
+            , [[], CommentException::class, true]
+        ];
+    }
 }
