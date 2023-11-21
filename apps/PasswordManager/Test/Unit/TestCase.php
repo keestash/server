@@ -21,6 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Unit;
 
-abstract class TestCase extends \KST\Unit\TestCase {
+class TestCase extends \KST\Unit\TestCase {
+
+    public function testByPassMeaninglessRestrictions(): void {
+        // https://github.com/sebastianbergmann/phpunit/issues/5132
+        $this->assertIsString('Because PHPUnit thinks it must dictate how I organize my tests, I had to switch from abstract to regular class and this test');
+    }
 
 }

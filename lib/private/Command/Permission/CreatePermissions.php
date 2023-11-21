@@ -45,7 +45,7 @@ class CreatePermissions extends KeestashCommand {
             ->addOption(
                 CreateConfig::OPTION_NAME_FORCE
                 , 'f'
-                , InputOption::VALUE_OPTIONAL | InputOption::VALUE_NONE
+                , InputOption::VALUE_NONE
                 , 'whether to force recreation'
             );
     }

@@ -99,4 +99,10 @@ interface IFileRepository extends IRepository {
      */
     public function getByName(string $name): IFile;
 
+    public function startTransaction(): void;
+
+    public function endTransaction(): void;
+
+    public function rollBack(): void;
+
 }

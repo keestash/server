@@ -220,6 +220,12 @@ class RBACRepository implements RBACRepositoryInterface {
             ->executeStatement();
     }
 
+    public function clearRolePermissions(): void {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->delete('`role_permission`')
+            ->executeStatement();
+    }
+
     public function getPermission(int $permissionId): PermissionInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(

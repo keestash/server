@@ -423,4 +423,16 @@ class FileRepository implements IFileRepository {
         }
     }
 
+    public function startTransaction(): void {
+        $this->backend->startTransaction();
+    }
+
+    public function endTransaction(): void {
+        $this->backend->endTransaction();
+    }
+
+    public function rollBack(): void {
+        $this->backend->rollbackTransaction();
+    }
+
 }

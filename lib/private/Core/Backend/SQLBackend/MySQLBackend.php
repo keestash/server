@@ -89,4 +89,11 @@ class MySQLBackend implements ISQLBackend {
         return $this->connection->commit();
     }
 
+    public function rollbackTransaction(): void {
+        if (false === $this->connection->isTransactionActive()) {
+            return;
+        }
+        $this->connection->rollBack();
+    }
+
 }

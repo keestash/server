@@ -23,6 +23,8 @@ namespace Keestash\Core\Service\Core\Data;
 
 use Keestash;
 use Keestash\Core\DTO\File\File;
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\File\FileNotFoundException;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Service\Core\Data\IDataService;
@@ -71,23 +73,30 @@ class DataService implements IDataService {
         return true === $copied;
     }
 
-    public function remove(IFile $file): bool {
-
+    /**
+     * @param IFile $file
+     * @return void
+     * @throws FileNotDeletedException
+     * @throws FileNotFoundException
+     */
+    public function remove(IFile $file): void {
         $fullPath   = $file->getFullPath();
         $isFile     = is_file($fullPath);
         $fileExists = is_file($fullPath);
 
         if (false === $fileExists) {
-            return true;
+            return;
         }
+
         if (false === $isFile) {
-            return false;
+            throw new FileNotFoundException();
         }
         $removed = @unlink($fullPath);
 
+
         if (false === $removed) {
+            throw new FileNotDeletedException();
         }
-        return $removed;
     }
 
     public function get(IFile $file): IFile {

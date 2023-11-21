@@ -170,8 +170,8 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_REMOVE
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Remove::class]
-            , IRoute::METHOD     => IVerb::POST
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Attachment\Remove::class]
+            , IRoute::METHOD     => IVerb::DELETE
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Attachment\Remove::class
         ],
         [

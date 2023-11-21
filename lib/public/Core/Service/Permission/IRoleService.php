@@ -31,4 +31,6 @@ interface IRoleService extends IService {
 
     public function assignAllRoles(): void;
 
+    public function reassignAllRoles(): void;
+
 }
