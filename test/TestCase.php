@@ -38,7 +38,7 @@ use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use Ramsey\Uuid\Uuid;
 
-abstract class TestCase extends FrameworkTestCase {
+class TestCase extends FrameworkTestCase {
 
     private ServiceManager $serviceManager;
     private array          $performance = [];
@@ -134,6 +134,11 @@ abstract class TestCase extends FrameworkTestCase {
     protected function tearDown(): void {
         parent::tearDown();
         $this->performance[static::class]['end'] = microtime(true);
+    }
+
+    public function testByPassMeaninglessRestrictions(): void {
+        // https://github.com/sebastianbergmann/phpunit/issues/5132
+        $this->assertIsString('Because PHPUnit thinks it must dictate how I organize my tests, I had to switch from abstract to regular class and this test');
     }
 
 }

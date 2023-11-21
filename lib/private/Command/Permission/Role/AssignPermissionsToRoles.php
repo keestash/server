@@ -25,9 +25,12 @@ use Keestash\Command\KeestashCommand;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Service\Permission\IRoleService;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AssignPermissionsToRoles extends KeestashCommand {
+
+    public const OPTION_NAME_FORCE = 'force';
 
     public function __construct(
         private readonly IRoleService $roleService
@@ -37,10 +40,21 @@ class AssignPermissionsToRoles extends KeestashCommand {
 
     protected function configure(): void {
         $this->setName("permission:role:assign-all")
-            ->setDescription("assigns permissions to roles");
+            ->setDescription("assigns permissions to roles")
+            ->addOption(
+                AssignPermissionsToRoles::OPTION_NAME_FORCE
+                , null
+                , InputOption::VALUE_NONE
+                , 'whether to force recreation'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
+        $force = $input->getOption(AssignPermissionsToRoles::OPTION_NAME_FORCE);
+        if (true === $force) {
+            $this->roleService->reassignAllRoles();
+            return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
+        }
         $this->roleService->assignAllRoles();
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }

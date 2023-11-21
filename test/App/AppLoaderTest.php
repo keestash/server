@@ -27,7 +27,7 @@ use KST\TestCase;
 
 class AppLoaderTest extends TestCase {
 
-    public function testAppObject() {
+    public function testAppObject(): void {
         $app = new App();
         $app->setId("id");
         $app->setName("TestApp");

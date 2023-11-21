@@ -95,6 +95,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
     private function extractNodeIds(array $bag, array $result): array {
         $result[] = $bag['node_id'] ?? null;
         $result[] = $bag['nodeId'] ?? null;
+        $result[] = $bag['node']['id'] ?? null;
         $result[] = $bag['parentNodeId'] ?? null;
         $result[] = $bag['parent_node_id'] ?? null;
         return $result;

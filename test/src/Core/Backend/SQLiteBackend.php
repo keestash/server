@@ -65,4 +65,8 @@ class SQLiteBackend implements ISQLBackend {
         return $this->backend->endTransaction();
     }
 
+    public function rollbackTransaction(): void {
+        $this->backend->rollbackTransaction();
+    }
+
 }

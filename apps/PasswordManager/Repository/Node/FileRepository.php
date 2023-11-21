@@ -22,14 +22,19 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository\Node;
 
 use DateTime;
+use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Common\Exception\NodeNotFoundException;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Repository\File\FileRepository as CoreFileRepository;
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\Repository\NoRowsFoundException;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Exception\NodeFileException;
+use KSA\PasswordManager\Exception\NoNodeFileFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\DTO\Http\JWT\IAudience;
@@ -164,13 +169,31 @@ class FileRepository {
         );
     }
 
-    public function removeByFile(IFile $file): bool {
-        // TODO notify node for update
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete('pwm_node_file')
+    public function startTransaction(): void {
+        $this->backend->startTransaction();
+    }
+
+    public function endTransaction(): void {
+        $this->backend->endTransaction();
+    }
+
+    public function rollBack(): void {
+        $this->backend->rollbackTransaction();
+    }
+
+    public function removeByFile(IFile $file): void {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $affectedRows = $queryBuilder->delete('pwm_node_file')
                 ->where('file_id = ?')
                 ->setParameter(0, $file->getId())
-                ->executeStatement() !== 0;
+                ->executeStatement();
+            if ($affectedRows === 0) {
+                throw new NoNodeFileFoundException();
+            }
+        } catch (Exception) {
+            throw new NodeFileException();
+        }
     }
 
 }

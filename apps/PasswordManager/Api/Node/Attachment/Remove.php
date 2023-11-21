@@ -24,6 +24,8 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\File\FileNotDeletedException;
 use Keestash\Exception\File\FileNotFoundException;
+use Keestash\Exception\Repository\NoRowsFoundException;
+use KSA\PasswordManager\Exception\NodeFileException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
@@ -34,40 +36,30 @@ use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class Remove implements RequestHandlerInterface {
 
     public const CONTEXT = "node_attachments";
 
-    private IFileRepository $fileRepository;
-    private IDataService    $dataManager;
-    private FileRepository  $nodeFileRepository;
-    private IL10N           $translator;
-    private AccessService   $accessService;
-
     public function __construct(
-        IFileRepository  $fileRepository
-        , IL10N          $l10n
-        , FileRepository $nodeFileRepository
-        , AccessService  $accessService
-        , IDataService   $dataManager
+        private readonly IFileRepository   $fileRepository
+        , private readonly FileRepository  $nodeFileRepository
+        , private readonly AccessService   $accessService
+        , private readonly IDataService    $dataManager
+        , private readonly LoggerInterface $logger
     ) {
-        $this->translator         = $l10n;
-        $this->nodeFileRepository = $nodeFileRepository;
-        $this->fileRepository     = $fileRepository;
-        $this->accessService      = $accessService;
-        $this->dataManager        = $dataManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse([],IResponse::NOT_IMPLEMENTED);
         $parameters = (array) $request->getParsedBody();
-        $fileId     = $parameters["fileId"] ?? -1;
+        $nodeId     = (int) $parameters['node']['id'];
+        $fileId     = (int) $parameters['file']['id'];
         $user       = $request->getAttribute(IToken::class)->getUser();
 
         try {
-            $file = $this->fileRepository->get((int) $fileId);
-        } catch (FileNotFoundException $exception) {
+            $file = $this->fileRepository->get($fileId);
+        } catch (FileNotFoundException) {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
@@ -77,40 +69,29 @@ class Remove implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
-        $removed = $this->dataManager->remove($file);
-
-        if (false === $removed) {
-            return new JsonResponse([
-                "message" => $this->translator->translate("could not remove from file system")
-            ], IResponse::NOT_MODIFIED);
-        }
-
-        $removed = $this->nodeFileRepository->removeByFile($file);
-
-        if (false === $removed) {
-            return new JsonResponse([
-                "message" => $this->translator->translate("could unlink to node")
-            ], IResponse::NOT_MODIFIED);
+        if ($nodeId !== $node->getId()) {
+            return new JsonResponse([], IResponse::FORBIDDEN);
         }
 
         try {
-            $this->fileRepository->remove($file);
-        } catch (FileNotDeletedException $exception) {
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("could not remove")
-                ]
-                , IResponse::NOT_MODIFIED
-            );
-        }
+            $this->nodeFileRepository->startTransaction();
+            $this->nodeFileRepository->removeByFile($file);
 
-        return new JsonResponse(
-            [
-                "message" => $this->translator->translate("file removed")
-                , "file"  => $file
-            ]
-            , IResponse::OK
-        );
+            $this->fileRepository->startTransaction();
+            $this->fileRepository->remove($file);
+
+            $this->dataManager->remove($file);
+            $this->nodeFileRepository->endTransaction();
+            $this->fileRepository->endTransaction();
+
+            return new JsonResponse([], IResponse::OK);
+
+        } catch (NodeFileException|FileNotDeletedException|FileNotFoundException $e) {
+            $this->logger->error('error removing file', ['exception' => $e]);
+            $this->nodeFileRepository->rollBack();
+            $this->fileRepository->rollBack();
+            return new JsonResponse([], IResponse::NOT_MODIFIED);
+        }
 
     }
 

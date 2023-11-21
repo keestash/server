@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Core\Data;
 
+use Keestash\Exception\File\FileNotDeletedException;
+use Keestash\Exception\File\FileNotFoundException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Service\IService;
 
@@ -30,7 +32,13 @@ interface IDataService extends IService {
 
     public function get(IFile $file): IFile;
 
-    public function remove(IFile $file): bool;
+    /**
+     * @param IFile $file
+     * @return void
+     * @throws FileNotDeletedException
+     * @throws FileNotFoundException
+     */
+    public function remove(IFile $file): void;
 
     public function getPath(): string;
 

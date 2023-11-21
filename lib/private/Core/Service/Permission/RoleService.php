@@ -123,4 +123,9 @@ class RoleService implements IRoleService {
         return !($permission instanceof NullRole);
     }
 
+    public function reassignAllRoles(): void {
+        $this->rbacRepository->clearRolePermissions();
+        $this->assignAllRoles();
+    }
+
 }

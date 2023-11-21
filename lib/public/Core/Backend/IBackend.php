@@ -33,11 +33,13 @@ interface IBackend {
 
     public function getConnection(): Connection;
 
+    public function startTransaction(): bool;
+
+    public function rollbackTransaction(): void;
+
     public function getSchemaName(): string;
 
     public function getTables(): array;
-
-    public function startTransaction(): bool;
 
     public function endTransaction(): bool;
 

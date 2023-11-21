@@ -30,6 +30,7 @@ use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\L10N\IL10N;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class RemoveFactory {
 
@@ -42,11 +43,10 @@ class RemoveFactory {
 
         return new Remove(
             $container->get(IFileRepository::class)
-            , $container->get(IL10N::class)
             , $container->get(FileRepository::class)
             , $container->get(AccessService::class)
             , $dataManager
-
+            , $container->get(LoggerInterface::class)
         );
     }
 

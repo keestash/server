@@ -1,13 +1,30 @@
 <?xml version="1.0"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" colors="true"
-         failOnWarning="false" beStrictAboutChangesToGlobalState="true"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd" cacheDirectory=".phpunit.cache">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="bootstrap.php"
+         colors="true"
+         failOnWarning="false"
+         beStrictAboutChangesToGlobalState="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd" cacheDirectory=".phpunit.cache"
+>
     <testsuites>
         <testsuite name="Keestash">
             <directory suffix=".php">../test</directory>
+            <exclude>src/</exclude>
+            <exclude>config/</exclude>
+            <exclude>bootstrap.php</exclude>
+            <exclude>asset/</exclude>
+            <exclude>Feature/TestCase.php</exclude>
+            <exclude>Integration/TestCase.php</exclude>
+            <exclude>TestCase.php</exclude>
         </testsuite>
         <testsuite name="Apps">
             <directory suffix=".php">../apps/*/Test</directory>
+            <exclude>../apps/*/Test/Integration/TestCase.php</exclude>
+            <exclude>../apps/*/Test/Feature/TestCase.php</exclude>
+            <exclude>../apps/*/Test/Service/</exclude>
+            <exclude>../apps/*/Test/config/</exclude>
+            <exclude>../apps/*/Test/Unit/TestCase.php</exclude>
+            <exclude>../apps/*/Test/Exception/</exclude>
         </testsuite>
     </testsuites>
     <coverage/>
@@ -23,6 +40,7 @@
             <directory>../apps/*/Test/</directory>
             <directory>../apps/*/Exception/</directory>
             <directory>../apps/*/Repository/Migration/</directory>
+            <directory>src/</directory>
         </exclude>
     </source>
 </phpunit>
