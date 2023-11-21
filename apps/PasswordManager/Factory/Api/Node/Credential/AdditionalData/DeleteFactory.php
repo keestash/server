@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\Delete;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -39,6 +40,7 @@ class DeleteFactory implements FactoryInterface {
             $container->get(AdditionalDataRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(AccessService::class)
+            , $container->get(IActivityService::class)
         );
     }
 

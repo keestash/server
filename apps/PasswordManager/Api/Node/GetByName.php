@@ -21,7 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node;
 
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
@@ -37,15 +40,11 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class GetByName implements RequestHandlerInterface {
 
-    private NodeRepository $nodeRepository;
-    private AccessService  $accessService;
-
     public function __construct(
-        NodeRepository  $nodeRepository
-        , AccessService $accessService
+        private readonly NodeRepository     $nodeRepository
+        , private readonly AccessService    $accessService
+        , private readonly IActivityService $activityService
     ) {
-        $this->nodeRepository = $nodeRepository;
-        $this->accessService  = $accessService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -63,12 +62,16 @@ class GetByName implements RequestHandlerInterface {
         }
 
         $list = $this->nodeRepository->getByName($name, $token->getUser(), 0, 1);
-
         /** @var Node $node */
         foreach ($list as $key => $node) {
             if (false === $this->accessService->hasAccess($node, $token->getUser())) {
                 $list->remove($key);
             }
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $node->getId()
+                , sprintf('read by %s', $token->getUser()->getName())
+            );
         }
 
         return new JsonResponse(

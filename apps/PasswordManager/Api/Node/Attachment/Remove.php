@@ -25,11 +25,14 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\File\FileNotDeletedException;
 use Keestash\Exception\File\FileNotFoundException;
 use Keestash\Exception\Repository\NoRowsFoundException;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Exception\NodeFileException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\L10N\IL10N;
@@ -43,15 +46,18 @@ class Remove implements RequestHandlerInterface {
     public const CONTEXT = "node_attachments";
 
     public function __construct(
-        private readonly IFileRepository   $fileRepository
-        , private readonly FileRepository  $nodeFileRepository
-        , private readonly AccessService   $accessService
-        , private readonly IDataService    $dataManager
-        , private readonly LoggerInterface $logger
+        private readonly IFileRepository    $fileRepository
+        , private readonly FileRepository   $nodeFileRepository
+        , private readonly AccessService    $accessService
+        , private readonly IDataService     $dataManager
+        , private readonly LoggerInterface  $logger
+        , private readonly IActivityService $activityService
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token      = $request->getAttribute(IToken::class);
         $parameters = (array) $request->getParsedBody();
         $nodeId     = (int) $parameters['node']['id'];
         $fileId     = (int) $parameters['file']['id'];
@@ -84,8 +90,17 @@ class Remove implements RequestHandlerInterface {
             $this->nodeFileRepository->endTransaction();
             $this->fileRepository->endTransaction();
 
-            return new JsonResponse([], IResponse::OK);
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $node->getId()
+                , sprintf(
+                    'file %s removed by %s'
+                    , $file->getName()
+                    , $token->getUser()->getName()
+                )
+            );
 
+            return new JsonResponse([], IResponse::OK);
         } catch (NodeFileException|FileNotDeletedException|FileNotFoundException $e) {
             $this->logger->error('error removing file', ['exception' => $e]);
             $this->nodeFileRepository->rollBack();

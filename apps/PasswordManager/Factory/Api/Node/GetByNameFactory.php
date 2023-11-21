@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
@@ -32,6 +33,7 @@ class GetByNameFactory {
         return new GetByName(
             $container->get(NodeRepository::class)
             , $container->get(AccessService::class)
+            , $container->get(IActivityService::class)
         );
     }
 

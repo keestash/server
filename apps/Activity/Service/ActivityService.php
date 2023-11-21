@@ -41,7 +41,7 @@ class ActivityService implements IActivityService {
      * @param ArrayList $data
      * @return void
      */
-    private function insertActivity(string $appId, string $referenceKey, ArrayList $data): void {
+    public function insertActivity(string $appId, string $referenceKey, ArrayList $data): void {
         $this->eventService->execute(
             new ActivityTriggeredEvent(
                 new Activity(
@@ -66,5 +66,6 @@ class ActivityService implements IActivityService {
         $list->add($description);
         $this->insertActivity($appId, $referenceKey, $list);
     }
+
 
 }

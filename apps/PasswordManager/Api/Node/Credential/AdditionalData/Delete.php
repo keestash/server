@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential\AdditionalData;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Exception\Node\NotFoundException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
@@ -39,6 +41,7 @@ class Delete implements RequestHandlerInterface {
         private readonly AdditionalDataRepository $additionalDataRepository
         , private readonly NodeRepository         $nodeRepository
         , private readonly AccessService          $accessService
+        , private readonly IActivityService       $activityService
     ) {
     }
 
@@ -53,6 +56,15 @@ class Delete implements RequestHandlerInterface {
                 return new JsonResponse([], IResponse::FORBIDDEN);
             }
             $this->additionalDataRepository->remove($data);
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $node->getId()
+                , sprintf(
+                    "additional data deleted by %s",
+                    $token->getUser()->getId()
+                )
+            );
+
             return new JsonResponse([], IResponse::OK);
         } catch (NotFoundException|PasswordManagerException) {
             return new JsonResponse([], IResponse::NOT_FOUND);

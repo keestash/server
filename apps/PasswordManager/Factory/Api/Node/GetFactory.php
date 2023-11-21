@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Get;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -46,6 +47,7 @@ class GetFactory {
             , $container->get(PwnedBreachesRepository::class)
             , $container->get(NodeService::class)
             , $container->get(IResponseService::class)
+            , $container->get(IActivityService::class)
         );
     }
 

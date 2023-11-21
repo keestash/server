@@ -64,8 +64,7 @@ class Move implements RequestHandlerInterface {
         $token = $request->getAttribute(IToken::class);
 
         try {
-            $node = $this->nodeRepository->getNode((int) $nodeId);
-            /** @var Folder $targetNode */
+            $node       = $this->nodeRepository->getNode((int) $nodeId);
             $targetNode = $this->nodeRepository->getNode((int) $targetNodeId);
         } catch (PasswordManagerException $exception) {
             $this->logger->info('unknown node id', ['exception' => $exception, 'parameters' => $parameters]);
