@@ -28,6 +28,7 @@ use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
+use KSP\Core\DTO\Token\IToken;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -52,6 +53,8 @@ class Update implements RequestHandlerInterface {
         $parameters    = (array) $request->getParsedBody();
         $passwordPlain = $parameters['passwordPlain'] ?? null;
         $nodeId        = $parameters['nodeId'] ?? null;
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId || null === $passwordPlain) {
             throw new PasswordManagerException('passwordPlain or nodeId is empty');
@@ -72,7 +75,10 @@ class Update implements RequestHandlerInterface {
         $this->activityService->insertActivityWithSingleMessage(
             ConfigProvider::APP_ID
             , (string) $credential->getId()
-            , "updated credential"
+            , sprintf(
+                "updated credential by %s",
+                $token->getUser()->getName()
+            )
         );
 
         return new JsonResponse([]);

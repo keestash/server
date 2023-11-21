@@ -15,11 +15,14 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -28,13 +31,16 @@ use Psr\Log\LoggerInterface;
 class Get implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly NodeRepository    $nodeRepository
-        , private readonly FileRepository  $nodeFileRepository
-        , private readonly LoggerInterface $logger
+        private readonly NodeRepository     $nodeRepository
+        , private readonly FileRepository   $nodeFileRepository
+        , private readonly LoggerInterface  $logger
+        , private readonly IActivityService $activityService
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
         $nodeId = $request->getAttribute("nodeId");
 
         try {
@@ -47,6 +53,15 @@ class Get implements RequestHandlerInterface {
         $list = $this->nodeFileRepository->getFilesPerNode(
             $node
             , NodeFile::FILE_TYPE_ATTACHMENT
+        );
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , sprintf(
+                'files listed by %s'
+                , $token->getUser()->getName()
+            )
         );
 
         return new JsonResponse(

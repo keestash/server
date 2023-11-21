@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential\AdditionalData;
 
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
@@ -39,6 +41,7 @@ class Get implements RequestHandlerInterface {
         private readonly AdditionalDataRepository $additionalDataRepository
         , private readonly NodeRepository         $nodeRepository
         , private readonly AccessService          $accessService
+        , private readonly IActivityService       $activityService
     ) {
     }
 
@@ -63,6 +66,16 @@ class Get implements RequestHandlerInterface {
         }
 
         $data = $this->additionalDataRepository->getByNode($node);
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , sprintf(
+                "additional data retrieved by %s",
+                $token->getUser()->getName()
+            )
+        );
+
         return new JsonResponse(
             [
                 'data' => $data->toArray()

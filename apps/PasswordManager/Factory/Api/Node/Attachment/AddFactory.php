@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
 use Keestash\Core\Builder\Data\DataServiceBuilder;
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
@@ -54,6 +55,7 @@ class AddFactory {
             , $container->get(IJWTService::class)
             , $dataManager
             , $container->get(IResponseService::class)
+            , $container->get(IActivityService::class)
         );
     }
 

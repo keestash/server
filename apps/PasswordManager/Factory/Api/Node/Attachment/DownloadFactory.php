@@ -22,7 +22,9 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Attachment\Download;
+use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -37,8 +39,10 @@ class DownloadFactory implements FactoryInterface {
     ): Download {
         return new Download(
             $container->get(IFileRepository::class)
+            , $container->get(FileRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(InstanceDB::class)
+            , $container->get(IActivityService::class)
         );
     }
 

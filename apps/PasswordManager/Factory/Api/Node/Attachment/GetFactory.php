@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Attachment\Get;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -34,6 +35,7 @@ class GetFactory {
             $container->get(NodeRepository::class)
             , $container->get(FileRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IActivityService::class)
         );
     }
 

@@ -26,6 +26,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\NotFoundResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Exception\File\FileNotCreatedException;
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
 use KSA\PasswordManager\Entity\IResponseCodes;
@@ -78,6 +79,7 @@ class Add implements RequestHandlerInterface {
         , private readonly IJWTService      $jwtService
         , private readonly IDataService     $dataManager
         , private readonly IResponseService $responseService
+        , private readonly IActivityService $activityService
     ) {
     }
 
@@ -217,6 +219,16 @@ class Add implements RequestHandlerInterface {
                 continue;
             }
             $processedFiles[] = $nodeFile;
+
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $node->getId()
+                , sprintf(
+                    '%s added by %s'
+                    , $nodeFile->getFile()->getName()
+                    , $token->getUser()->getName()
+                )
+            );
         }
 
         if (count($processedFiles) > 0) {

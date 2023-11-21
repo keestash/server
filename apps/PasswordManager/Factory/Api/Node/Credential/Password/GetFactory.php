@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential\Password;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Credential\Password\Get;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
@@ -34,6 +35,7 @@ class GetFactory {
             $container->get(CredentialService::class)
             , $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IActivityService::class)
         );
     }
 

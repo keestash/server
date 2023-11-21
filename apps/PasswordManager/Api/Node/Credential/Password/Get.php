@@ -24,10 +24,13 @@ namespace KSA\PasswordManager\Api\Node\Credential\Password;
 use Keestash\Api\Response\ErrorResponse;
 use Keestash\Api\Response\NotFoundResponse;
 use Keestash\Api\Response\OkResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -42,25 +45,37 @@ use Psr\Log\LoggerInterface;
 class Get implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly CredentialService $credentialService
-        , private readonly NodeRepository  $nodeRepository
-        , private readonly LoggerInterface $logger
+        private readonly CredentialService  $credentialService
+        , private readonly NodeRepository   $nodeRepository
+        , private readonly LoggerInterface  $logger
+        , private readonly IActivityService $activityService
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token  = $request->getAttribute(IToken::class);
         $nodeId = (int) $request->getAttribute("node_id", 0);
 
         try {
             $node = $this->nodeRepository->getNode($nodeId, 0, 0);
         } catch (PasswordManagerException $exception) {
-            $this->logger->error($exception->getMessage() . ' ' . $exception->getTraceAsString());
+            $this->logger->error('error retrieving node', ['exception' => $exception]);
             return new ErrorResponse();
         }
 
         if (false === $node instanceof Credential) {
             return new NotFoundResponse();
         }
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , sprintf(
+                "password read by %s"
+                , $token->getUser()->getName()
+            )
+        );
 
         return new OkResponse(
             [

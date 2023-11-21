@@ -131,34 +131,19 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
+			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\:\\:getName\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
+
+		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Remove.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setDirectory\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setId\\(\\)\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setName\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Avatar/Update.php
 
 		-
 			message: "#^Using nullsafe method call on non\\-nullable type KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\AdditionalData\\\\AdditionalData\\. Use \\-\\> instead\\.$#"
@@ -329,11 +314,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/RemoveFactory.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Factory/Api/Node/Avatar/UpdateFactory.php
 
 		-
 			message: "#^Parameter \\#1 \\$comment of method KSA\\\\PasswordManager\\\\Entity\\\\Comment\\\\Comment\\:\\:setComment\\(\\) expects string, mixed given\\.$#"
@@ -1139,6 +1119,11 @@ parameters:
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Permission/PermissionService.php
+
+		-
+			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRolePermissions\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Permission/RoleService.php
 
 		-
 			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRoles\\(\\)\\.$#"

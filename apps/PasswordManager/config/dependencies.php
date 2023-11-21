@@ -182,10 +182,6 @@ return [
         \KSA\PasswordManager\Api\Node\Activity\Get::class                                    => \KSA\PasswordManager\Factory\Api\Node\Activity\GetFactory::class,
 
         // ---- Node
-        // ---- ---- Avatar
-        \KSA\PasswordManager\Api\Node\Avatar\Update::class                                   => \KSA\PasswordManager\Factory\Api\Node\Avatar\UpdateFactory::class,
-
-        // ---- Node
         // ---- ---- Credential
         Create::class                                                                        => CreateFactory::class,
         Update::class                                                                        => UpdateFactory::class,

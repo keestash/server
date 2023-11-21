@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Api\Node\Attachment;
 
 use Keestash\Core\Builder\Data\DataServiceBuilder;
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Attachment\Remove;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
@@ -47,6 +48,7 @@ class RemoveFactory {
             , $container->get(AccessService::class)
             , $dataManager
             , $container->get(LoggerInterface::class)
+            , $container->get(IActivityService::class)
         );
     }
 

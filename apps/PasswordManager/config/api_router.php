@@ -23,7 +23,6 @@ declare(strict_types=1);
 use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSA\PasswordManager\Api\Node\Attachment\Download;
-use KSA\PasswordManager\Api\Node\Avatar\Update;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
 use KSA\PasswordManager\Api\Node\Credential\Comment\Add;
 use KSA\PasswordManager\Api\Node\Credential\Comment\Get;
@@ -185,12 +184,6 @@ return [
             , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Folder\Update::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Folder\Update::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_UPDATE_AVATAR
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, Update::class]
-            , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => Update::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_CREATE

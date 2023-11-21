@@ -24,6 +24,8 @@ namespace KSA\PasswordManager\Api\Node;
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
@@ -63,6 +65,7 @@ class Get implements RequestHandlerInterface {
         , private readonly PwnedBreachesRepository  $pwnedBreachesRepository
         , private readonly NodeService              $nodeService
         , private readonly IResponseService         $responseService
+        , private readonly IActivityService         $activityService
     ) {
     }
 
@@ -97,6 +100,12 @@ class Get implements RequestHandlerInterface {
                 , IResponse::NOT_FOUND
             );
         }
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $root->getId()
+            , sprintf('read by %s', $token->getUser()->getName())
+        );
 
         return new JsonResponse(
             [

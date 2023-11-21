@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData;
 
+use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -43,6 +44,7 @@ class GetValueFactory implements FactoryInterface {
             , $container->get(AccessService::class)
             , $container->get(EncryptionService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IActivityService::class)
         );
     }
 

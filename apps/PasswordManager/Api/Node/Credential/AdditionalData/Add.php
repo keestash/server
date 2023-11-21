@@ -23,6 +23,8 @@ namespace KSA\PasswordManager\Api\Node\Credential\AdditionalData;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\Value;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -31,6 +33,7 @@ use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalData
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService;
 use KSP\Api\IResponse;
+use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -44,10 +47,13 @@ class Add implements RequestHandlerInterface {
         , private readonly NodeRepository         $nodeRepository
         , private readonly EncryptionService      $encryptionService
         , private readonly LoggerInterface        $logger
+        , private readonly IActivityService       $activityService
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        /** @var IToken $token */
+        $token        = $request->getAttribute(IToken::class);
         $parsedBody   = (array) $request->getParsedBody();
         $credentialId = (int) $parsedBody['credentialId'];
         $key          = (string) $parsedBody['key'];
@@ -77,6 +83,16 @@ class Add implements RequestHandlerInterface {
 
         $additionalDataEncrypted = $this->encryptionService->encrypt($additionalData, $node);
         $this->additionalDataRepository->add($additionalDataEncrypted);
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , sprintf(
+                "additional data added by %s",
+                $token->getUser()->getId()
+            )
+        );
+
         return new JsonResponse(
             [
                 'data' => $additionalData
