@@ -296,3 +296,5 @@ apps/Payment/*
 /config/docker/web/apache/cert.pem
 /config/docker/web/apache/cert-key.pem
 /lib/config/cors/allowed_origins.bak
+/test/.phpunit.cache/test-results
+/test/.phpunit.result.cache
