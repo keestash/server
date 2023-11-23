@@ -54,8 +54,8 @@ class Download implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token   = $request->getAttribute(IToken::class);
+//        /** @var IToken $token */
+//        $token   = $request->getAttribute(IToken::class);
         $decoded = JWT::decode(
             (string) $request->getAttribute('jwt')
             , new Key(
@@ -80,15 +80,15 @@ class Download implements RequestHandlerInterface {
             return new EmptyResponse(IResponse::NOT_FOUND);
         }
 
-        $this->activityService->insertActivityWithSingleMessage(
-            ConfigProvider::APP_ID
-            , (string) $node->getId()
-            , sprintf(
-                '%s downloaded by %s'
-                , $file->getName()
-                , $token->getUser()->getName()
-            )
-        );
+//        $this->activityService->insertActivityWithSingleMessage(
+//            ConfigProvider::APP_ID
+//            , (string) $node->getId()
+//            , sprintf(
+//                '%s downloaded by %s'
+//                , $file->getName()
+//                , $token->getUser()->getName()
+//            )
+//        );
 
         return new Response(
             new Stream($file->getFullPath()),

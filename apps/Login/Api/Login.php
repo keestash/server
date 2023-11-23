@@ -87,8 +87,8 @@ class Login implements RequestHandlerInterface {
             $this->logger->error(
                 'error retrieving user',
                 [
-                    'exception' => $exception,
                     'userName'  => $userName,
+                    'exception' => $exception,
                 ]
             );
             return new JsonResponse(
