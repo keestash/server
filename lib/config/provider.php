@@ -23,11 +23,11 @@ declare(strict_types=1);
 use doganoo\SimpleRBAC\ConfigProvider as SimpleRBACConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Activity\ConfigProvider as ActivityConfigProvider;
-use KSA\ForgotPassword\ConfigProvider as ForgotPasswordConfigProvider;
 use KSA\LDAP\ConfigProvider as LDAPConfigProvider;
 use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
 use KSA\Payment\ConfigProvider as PaymentConfigProvider;
+use KSA\Marketing\ConfigProvider as MarketingConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
 use KSA\Instance\ConfigProvider as InstanceConfigProvider;
@@ -68,6 +68,11 @@ return [
     , SettingsConfigProvider::class
     , class_exists(PaymentConfigProvider::class)
         ? PaymentConfigProvider::class
+        : function (): array {
+            return [];
+        }
+    , class_exists(MarketingConfigProvider::class)
+        ? MarketingConfigProvider::class
         : function (): array {
             return [];
         }
