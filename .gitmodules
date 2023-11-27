@@ -1,6 +1,3 @@
-[submodule "apps/Payment"]
-	path = apps/Payment
-	url = ssh://git@github.com-doganoo:keestash/payment.git
 [submodule "apps/LDAP"]
 	path = apps/LDAP
 	url = ssh://git@github.com-doganoo:keestash/ldap.git
