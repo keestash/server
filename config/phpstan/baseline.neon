@@ -36,51 +36,6 @@ parameters:
 			path: ../../apps/Activity/Test/Unit/Service/ActivityServiceTest.php
 
 		-
-			message: "#^Cannot access offset 'active_ts' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'base_dn' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'create_ts' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'date' on mixed\\.$#"
-			count: 2
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'host' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'password' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'port' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot access offset 'user_dn' on mixed\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
-			message: "#^Cannot call method getTimestamp\\(\\) on DateTimeInterface\\|null\\.$#"
-			count: 1
-			path: ../../apps/LDAP/Test/Integration/Api/GetTest.php
-
-		-
 			message: "#^Left side of && is always true\\.$#"
 			count: 2
 			path: ../../apps/Login/Api/Configuration.php
@@ -88,7 +43,7 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/Login/Api/Login.php
+			path: ../../apps/Login/Api/Login/Alpha.php
 
 		-
 			message: "#^Cannot access offset 'language' on mixed\\.$#"
@@ -127,11 +82,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\:\\:setOwner\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\File\\\\IFile\\|KSP\\\\Core\\\\DTO\\\\File\\\\Upload\\\\IFile\\:\\:getName\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Attachment/Add.php
 
@@ -191,9 +141,24 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
 
 		-
-			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\:\\:prepareNode\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\\\Alpha\\:\\:prepareNode\\(\\) expects string, mixed given\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Get.php
+			path: ../../apps/PasswordManager/Api/Node/Get/Alpha.php
+
+		-
+			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Get/Beta.php
+
+		-
+			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\\\Beta\\:\\:prepareNode\\(\\) expects string, mixed given\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Get/Beta.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function base64_encode expects string, string\\|null given\\.$#"
+			count: 2
+			path: ../../apps/PasswordManager/Api/Node/Get/Beta.php
 
 		-
 			message: "#^Parameter \\#1 \\$name of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:getByName\\(\\) expects string, mixed given\\.$#"
@@ -608,7 +573,7 @@ parameters:
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Token\\\\IToken\\:\\:setUser\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Node/GetTest.php
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Get/GetTest.php
 
 		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\|null\\.$#"
@@ -719,36 +684,6 @@ parameters:
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Share\\\\ShareServiceTest\\:\\:\\$shareService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Share\\\\ShareService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Share/ShareServiceTest.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Event\\\\IEvent\\:\\:getEvent\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
-
-		-
-			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Payment\\\\ILog\\:\\:setLog\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'customer' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'customer_email' on mixed\\.$#"
-			count: 2
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'id' on mixed\\.$#"
-			count: 1
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
-
-		-
-			message: "#^Cannot access offset 'object' on mixed\\.$#"
-			count: 4
-			path: ../../apps/Payment/Event/Listener/WebhookListener.php
 
 		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
