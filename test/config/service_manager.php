@@ -71,6 +71,7 @@ $config                                           = $container->get(Config::clas
 $newConfigArray                                   = $config->toArray();
 $config                                           = null;
 $newConfigArray[ConfigProvider::INSTANCE_DB_PATH] = __DIR__ . '/instance.db';
+$newConfigArray['benchmark_file']                 = realpath(__DIR__ . '/../') . '/benchmark.json';
 $newConfig                                        = new Config(
     $newConfigArray
 );

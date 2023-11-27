@@ -55,6 +55,11 @@ if (is_file($fileName)) {
     unlink($fileName);
 }
 
+$benchmarkFile = $config->get('benchmark_file');
+if (is_file($benchmarkFile)) {
+    unlink($benchmarkFile);
+}
+
 $path = $config->get(ConfigProvider::INSTANCE_DB_PATH);
 
 if (true === is_file($path)) {

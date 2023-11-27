@@ -22,104 +22,134 @@ declare(strict_types=1);
 namespace KSA\Login\Test\Integration\Api;
 
 use Keestash\Core\Service\Router\VerificationService;
-use KSA\Login\Api\Login\Login;
+use KSA\Login\ConfigProvider;
+use KSA\Login\Entity\IResponseCodes;
 use KSA\Login\Test\Integration\TestCase;
 use KSP\Api\IResponse;
+use KSP\Api\IVerb;
 use KSP\Core\Repository\User\IUserRepository;
-use KST\Service\Service\UserService;
+use Ramsey\Uuid\Uuid;
 
 class LoginTest extends TestCase {
 
     public function testWithNoParameters(): void {
-        /** @var Login $login */
-        $login    = $this->getService(Login::class);
-        $response = $login->handle(
-            $this->getVirtualRequest()
-        );
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::NOT_FOUND === $response->getStatusCode());
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::LOGIN_SUBMIT
+                    , [
+                        'user'       => 'ThisIsANonExistingUserForLoginApp'
+                        , 'password' => 'ThisIsAnInvalidPasswordForNonExistingUser'
+                    ]
+                )
+            );
+        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_USER_NOT_FOUND, $response);
     }
 
     public function testWithNotExistingUser(): void {
-        /** @var Login $login */
-        $login    = $this->getService(Login::class);
-        $response = $login->handle(
-            $this->getVirtualRequest(
-                [
-                    'user'       => 'ThisIsANonExistingUserForLoginApp'
-                    , 'password' => 'ThisIsAnInvalidPasswordForNonExistingUser'
-                ]
-            )
-        );
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::NOT_FOUND === $response->getStatusCode());
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::LOGIN_SUBMIT
+                    , [
+                        'user'       => 'ThisIsANonExistingUserForLoginApp'
+                        , 'password' => 'ThisIsAnInvalidPasswordForNonExistingUser'
+                    ]
+                )
+            );
+
+        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_USER_NOT_FOUND, $response);
     }
 
     public function testWithDisabledUser(): void {
-        /** @var Login $login */
-        $login    = $this->getService(Login::class);
-        $response = $login->handle(
-            $this->getVirtualRequest(
-                [
-                    'user'       => UserService::TEST_LOCKED_USER_ID_4_NAME
-                    , 'password' => 'ThisIsAnInvalidPasswordForDisabledUser'
-                ]
-            )
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+            , true
         );
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::NOT_FOUND === $response->getStatusCode());
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::LOGIN_SUBMIT
+                    , [
+                        'user'       => $user->getName()
+                        , 'password' => 'ThisIsAnInvalidPasswordForDisabledUser'
+                    ]
+                    , $user
+                )
+            );
+
+        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_USER_DISABLED, $response);
+        $this->removeUser($user);
     }
 
     public function testWithExistingUserButIncorrectPassword(): void {
-        /** @var Login $login */
-        $login    = $this->getService(Login::class);
-        $response = $login->handle(
-            $this->getVirtualRequest(
-                [
-                    'user'       => UserService::TEST_RESET_PASSWORD_USER_ID_7_NAME
-                    , 'password' => 'ThisIsAnInvalidPasswordForNonExistingUser'
-                ]
-            )
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
-        $this->logResponse($response);
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::UNAUTHORIZED === $response->getStatusCode());
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::LOGIN_SUBMIT
+                    , [
+                        'user'       => $user->getName()
+                        , 'password' => 'ThisIsAnInvalidPasswordForNonExistingUser'
+                    ]
+                    , $user
+                )
+            );
+
+        $this->assertStatusCode(IResponse::UNAUTHORIZED, $response);
+        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_INVALID_CREDENTIALS, $response);
+        $this->removeUser($user);
     }
 
     public function testRegularCase(): void {
-        $userName = UserService::TEST_RESET_PASSWORD_USER_ID_7_NAME;
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
-        /** @var Login $login */
-        $login        = $this->getService(Login::class);
-        $response     = $login->handle(
-            $this->getVirtualRequest(
-                [
-                    'user'       => $userName
-                    , 'password' => UserService::TEST_PASSWORD_FORGOT_USER_ID_7_PASSWORD
-                ]
-            )
-        );
-        $responseBody = (array) json_decode(
-            (string) $response->getBody()
-            , true
-            , 512
-            , JSON_THROW_ON_ERROR
-        );
 
-        $user    = $userRepository->getUser($userName);
-        $headers = $response->getHeaders();
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::LOGIN_SUBMIT
+                    , [
+                        'user'       => $user->getName()
+                        , 'password' => $password
+                    ]
+                    , $user
+                )
+            );
 
-        $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
-        $this->assertTrue(IResponse::OK === $response->getStatusCode());
+        $responseBody = $this->getDecodedData($response);
+
+        $user            = $userRepository->getUser($user->getName());
+        $responseHeaders = $response->getHeaders();
+
+        $this->assertStatusCode(IResponse::OK, $response);
         $this->assertTrue(isset($responseBody['settings']));
         $this->assertTrue(isset($responseBody['settings']['locale']));
         $this->assertTrue(isset($responseBody['settings']['language']));
         $this->assertTrue(isset($responseBody['user']));
-        $this->assertTrue($responseBody['user']['name'] === $userName);
-        $this->assertTrue(isset($headers[VerificationService::FIELD_NAME_TOKEN]));
-        $this->assertTrue(isset($headers[VerificationService::FIELD_NAME_USER_HASH]));
-        $this->assertTrue($headers[VerificationService::FIELD_NAME_USER_HASH][0] === $user->getHash());
+        $this->assertTrue($responseBody['user']['name'] === $user->getName());
+        $this->assertTrue(isset($responseHeaders[VerificationService::FIELD_NAME_TOKEN]));
+        $this->assertTrue(isset($responseHeaders[VerificationService::FIELD_NAME_USER_HASH]));
+        $this->assertTrue($responseHeaders[VerificationService::FIELD_NAME_USER_HASH][0] === $user->getHash());
     }
 
 }

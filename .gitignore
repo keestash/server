@@ -296,3 +296,4 @@ smtp.php
 /test/.phpunit.cache/test-results
 /test/.phpunit.result.cache
 /http/
+/test/benchmark.json

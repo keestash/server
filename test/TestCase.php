@@ -41,18 +41,14 @@ use Ramsey\Uuid\Uuid;
 class TestCase extends FrameworkTestCase {
 
     private ServiceManager $serviceManager;
-    private array          $performance = [];
+    private float          $start;
 
     protected function setUp(): void {
         parent::setUp();
-        $this->performance[static::class] = [
-            'name'  => static::class,
-            'start' => microtime(true),
-            'end'   => 0
-        ];
-        $this->serviceManager             = require __DIR__ . '/config/service_manager.php';
-        $eventService                     = $this->serviceManager->get(IEventService::class);
-        $config                           = $this->serviceManager->get(Config::class);
+        $this->start          = microtime(true);
+        $this->serviceManager = require __DIR__ . '/config/service_manager.php';
+        $eventService         = $this->serviceManager->get(IEventService::class);
+        $config               = $this->serviceManager->get(Config::class);
 
         $eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
         $eventService->execute(new TestStartedEvent(new DateTimeImmutable()));
@@ -132,8 +128,23 @@ class TestCase extends FrameworkTestCase {
     }
 
     protected function tearDown(): void {
+        $end = microtime(true);
+        /** @var Config $config */
+        $config        = $this->getService(Config::class);
+        $benchmarkFile = $config->get('benchmark_file');
+        file_put_contents(
+            $benchmarkFile,
+            json_encode(
+                [
+                    'name'     => sprintf("%s::%s", static::class, $this->name()),
+                    'start'    => $this->start,
+                    'end'      => $end,
+                    'duration' => $end - $this->start
+                ]
+            ) . "\n"
+            , FILE_APPEND
+        );
         parent::tearDown();
-        $this->performance[static::class]['end'] = microtime(true);
     }
 
     public function testByPassMeaninglessRestrictions(): void {

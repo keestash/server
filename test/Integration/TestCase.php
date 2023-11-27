@@ -269,6 +269,11 @@ abstract class TestCase extends \KST\TestCase {
         $this->assertTrue($statusCode === $response->getStatusCode());
     }
 
+    public function assertResponseCode(int $responseCode, ResponseInterface $response): void {
+        $decoded = $this->getDecodedData($response);
+        $this->assertTrue($responseCode === $decoded['responseCode'] ?? -1);
+    }
+
     public function getDecodedData(ResponseInterface $response): array {
         $decoded = json_decode(
             (string) $response->getBody()
