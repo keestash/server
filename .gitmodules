@@ -4,3 +4,6 @@
 [submodule "apps/LDAP"]
 	path = apps/LDAP
 	url = ssh://git@github.com-doganoo:keestash/ldap.git
+[submodule "apps/Marketing"]
+	path = apps/Marketing
+	url = ssh://git@github.com-doganoo:keestash/marketing.git
