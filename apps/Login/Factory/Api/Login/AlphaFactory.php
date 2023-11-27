@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login\Factory\Api;
+namespace KSA\Login\Factory\Api\Login;
 
 use Keestash\Core\Service\User\UserService;
-use KSA\Login\Api\Login;
+use KSA\Login\Api\Login\Alpha;
 use KSA\Login\Service\TokenService;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
@@ -34,13 +34,18 @@ use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\LDAP\ILDAPService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-class LoginFactory {
+class AlphaFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Login {
-        return new Login(
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Alpha {
+        return new Alpha(
             $container->get(IUserRepository::class)
             , $container->get(UserService::class)
             , $container->get(ITokenRepository::class)

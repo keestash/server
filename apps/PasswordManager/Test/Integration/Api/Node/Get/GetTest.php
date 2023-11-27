@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Integration\Api\Node;
+namespace KSA\PasswordManager\Test\Integration\Api\Node\Get;
 
-use KSA\PasswordManager\Api\Node\Get;
+use KSA\PasswordManager\Api\Node\Get\Get;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\IResponseCodes;

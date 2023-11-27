@@ -33,7 +33,7 @@ use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSA\PasswordManager\Api\Node\Credential\ListAll;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
-use KSA\PasswordManager\Api\Node\Get as NodeGet;
+use KSA\PasswordManager\Api\Node\Get\Get as NodeGet;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddOrganization;

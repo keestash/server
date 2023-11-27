@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node;
+namespace KSA\PasswordManager\Api\Node\Get;
 
 use DateTime;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
@@ -44,28 +44,21 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * Class Node
- *
- * @package KSA\PasswordManager\Api
- * @author  Dogan Ucar <dogan@dogan-ucar.de>
- */
-class Get implements RequestHandlerInterface {
+final readonly class Alpha {
 
     public function __construct(
-        private readonly NodeRepository             $nodeRepository
-        , private readonly BreadCrumbService        $breadCrumbService
-        , private readonly LoggerInterface          $logger
-        , private readonly NodeEncryptionService    $nodeEncryptionService
-        , private readonly CommentRepository        $commentRepository
-        , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
-        , private readonly PwnedBreachesRepository  $pwnedBreachesRepository
-        , private readonly NodeService              $nodeService
-        , private readonly IResponseService         $responseService
-        , private readonly IActivityService         $activityService
+        private NodeRepository             $nodeRepository
+        , private BreadCrumbService        $breadCrumbService
+        , private LoggerInterface          $logger
+        , private NodeEncryptionService    $nodeEncryptionService
+        , private CommentRepository        $commentRepository
+        , private PwnedPasswordsRepository $pwnedPasswordsRepository
+        , private PwnedBreachesRepository  $pwnedBreachesRepository
+        , private NodeService              $nodeService
+        , private IResponseService         $responseService
+        , private IActivityService         $activityService
     ) {
     }
 
@@ -135,7 +128,6 @@ class Get implements RequestHandlerInterface {
             ]
             , IResponse::OK
         );
-
     }
 
     /**

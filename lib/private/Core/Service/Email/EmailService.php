@@ -25,7 +25,6 @@ use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Exception;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\Service\Config\ConfigService;
-use Keestash\Core\System\Application;
 use KSP\Core\Service\Email\IEmailService;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

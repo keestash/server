@@ -1,0 +1,9 @@
+[submodule "apps/Payment"]
+	path = apps/Payment
+	url = git@github.com-doganoo:keestash/payment.git
+[submodule "apps/LDAP"]
+	path = apps/LDAP
+	url = git@github.com-doganoo:keestash/ldap.git
+[submodule "apps/Marketing"]
+	path = apps/Marketing
+	url = git@github.com-doganoo:keestash/marketing.git

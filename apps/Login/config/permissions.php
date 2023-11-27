@@ -20,12 +20,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use doganoo\SimpleRBAC\Entity\RoleInterface;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Login\ConfigProvider;
+use KSP\Core\DTO\RBAC\IPermission;
 
 return [
-    CoreConfigProvider::PERMISSION_MAPPING => [],
-    CoreConfigProvider::PERMISSION_FREE    => [
+    CoreConfigProvider::PERMISSION_MAPPING   => [
+        ConfigProvider::LOGIN_KEY => IPermission::PERMISSION_LOGIN_KEY
+    ],
+    CoreConfigProvider::PERMISSION_LIST      => [
+        IPermission::PERMISSION_LOGIN_KEY => IPermission::PERMISSION_NAME_LOGIN_KEY
+    ],
+    CoreConfigProvider::ROLE_PERMISSION_LIST => [
+        RoleInterface::DEFAULT_NAME => [
+            IPermission::PERMISSION_LOGIN_KEY
+        ]
+    ],
+    CoreConfigProvider::PERMISSION_FREE      => [
         ConfigProvider::LOGIN_SUBMIT
         , ConfigProvider::LOGOUT_SUBMIT
     ]

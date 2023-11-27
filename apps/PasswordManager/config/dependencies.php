@@ -34,6 +34,8 @@ use KSA\PasswordManager\Api\Node\Credential\ListAll;
 use KSA\PasswordManager\Api\Node\Credential\Update;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
+use KSA\PasswordManager\Api\Node\Get\Alpha;
+use KSA\PasswordManager\Api\Node\Get\Beta;
 use KSA\PasswordManager\Api\Node\GetByName;
 use KSA\PasswordManager\Api\Node\Move;
 use KSA\PasswordManager\Api\Node\Organization\Add as AddNodeOrganization;
@@ -72,6 +74,8 @@ use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdateFactory as Up
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
 use KSA\PasswordManager\Factory\Api\Node\Folder\CreateByPathFactory;
+use KSA\PasswordManager\Factory\Api\Node\Get\AlphaFactory;
+use KSA\PasswordManager\Factory\Api\Node\Get\BetaFactory;
 use KSA\PasswordManager\Factory\Api\Node\GetByNameFactory;
 use KSA\PasswordManager\Factory\Api\Node\MoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Organization\AddFactory;
@@ -151,7 +155,9 @@ return [
         , Share::class                                                                       => ShareFactory::class
 
         // ---- Node
-        , \KSA\PasswordManager\Api\Node\Get::class                                           => \KSA\PasswordManager\Factory\Api\Node\GetFactory::class
+        , \KSA\PasswordManager\Api\Node\Get\Get::class                                       => \KSA\PasswordManager\Factory\Api\Node\Get\GetFactory::class
+        , Alpha::class                                                                       => AlphaFactory::class
+        , Beta::class                                                                        => BetaFactory::class
         , GetByName::class                                                                   => GetByNameFactory::class
         , Move::class                                                                        => MoveFactory::class
         , ShareableUsers::class                                                              => ShareableUsersFactory::class

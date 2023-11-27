@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2019> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login\Api;
+namespace KSA\Login\Api\Login;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
@@ -46,26 +46,25 @@ use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\LDAP\ILDAPService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
-class Login implements RequestHandlerInterface {
+final readonly class Alpha {
 
     public function __construct(
-        private readonly IUserRepository         $userRepository
-        , private readonly UserService           $userService
-        , private readonly ITokenRepository      $tokenRepository
-        , private readonly TokenService          $tokenService
-        , private readonly ILocaleService        $localeService
-        , private readonly ILanguageService      $languageService
-        , private readonly IJWTService           $jwtService
-        , private readonly LoggerInterface       $logger
-        , private readonly ILDAPService          $ldapService
-        , private readonly IConnectionRepository $connectionRepository
-        , private readonly IDerivationRepository $derivationRepository
-        , private readonly IDerivationService    $derivationService
-        , private readonly IResponseService      $responseService
+        private IUserRepository         $userRepository
+        , private UserService           $userService
+        , private ITokenRepository      $tokenRepository
+        , private TokenService          $tokenService
+        , private ILocaleService        $localeService
+        , private ILanguageService      $languageService
+        , private IJWTService           $jwtService
+        , private LoggerInterface       $logger
+        , private ILDAPService          $ldapService
+        , private IConnectionRepository $connectionRepository
+        , private IDerivationRepository $derivationRepository
+        , private IDerivationService    $derivationService
+        , private IResponseService      $responseService
     ) {
     }
 
