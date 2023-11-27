@@ -75,7 +75,15 @@ class SendSummaryMail implements IListener {
 
         $now  = new DateTimeImmutable();
         $diff = $now->getTimestamp() - $referenceDate->getTimestamp();
-        $this->logger->debug('summary', ['log' => $referenceDate->format('Y-m-d H:i:s'), 'diff' => $diff]);
+        $this->logger->debug(
+            'summary',
+            [
+                'referenceDate' => $referenceDate->format('Y-m-d H:i:s'),
+                'now'           => $now->format('Y-m-d H:i:s'),
+                'diff'          => $diff,
+                'willSent'      => $diff < 86400
+            ]
+        );
 
         if ($diff < 86400) {
             return;

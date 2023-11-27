@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Login\Test\Integration\Api;
 
 use Keestash\Core\Service\Router\VerificationService;
-use KSA\Login\Api\Login;
+use KSA\Login\Api\Login\Login;
 use KSA\Login\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserRepository;

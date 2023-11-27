@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login;
+namespace KSP\Api\Version;
 
-final class ConfigProvider {
+interface IVersion {
 
-    public const LOGIN_SUBMIT      = '/login/submit';
-    public const LOGIN_KEY         = '/login/key';
-    public const LOGOUT_SUBMIT     = '/logout/submit';
-    public const APP_CONFIGURATION = '/app/configuration';
-    public const APP_ID            = 'login';
-
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
-    }
+    public function getVersion(): int;
 
 }

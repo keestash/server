@@ -20,19 +20,29 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\ConfigProvider;
 use KSA\Login\Api\Configuration;
-use KSA\Login\Api\Login;
+use KSA\Login\Api\Key\Key;
+use KSA\Login\Api\Login\Alpha;
+use KSA\Login\Api\Login\Login;
 use KSA\Login\Api\Logout;
 use KSA\Login\Factory\Api\ConfigurationFactory;
-use KSA\Login\Factory\Api\LoginFactory;
+use KSA\Login\Factory\Api\Key\KeyFactory;
+use KSA\Login\Factory\Api\Login\AlphaFactory;
+use KSA\Login\Factory\Api\Login\LoginFactory;
 use KSA\Login\Factory\Api\LogoutFactory;
 use KSA\Login\Service\TokenService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'factories' => [
+    ConfigProvider::FACTORIES => [
         // api
+        // -- login
         Login::class                       => LoginFactory::class
+        , Alpha::class                     => AlphaFactory::class
+
+        // -- key
+        , Key::class                       => KeyFactory::class
         , Configuration::class             => ConfigurationFactory::class
         , Logout::class                    => LogoutFactory::class
 

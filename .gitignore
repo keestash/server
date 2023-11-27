@@ -286,9 +286,6 @@ smtp.php
 /lib/private/Core/System/RateLimit/tmp.json
 
 .ignored
-apps/Payment
-apps/Payment/*
-/apps/LDAP/
 /test/cache/cache.json/test-results
 /test/cache/test-results
 /test/code-coverage/

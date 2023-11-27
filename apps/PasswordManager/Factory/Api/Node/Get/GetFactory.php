@@ -19,18 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login;
+namespace KSA\PasswordManager\Factory\Api\Node\Get;
 
-final class ConfigProvider {
+use KSA\PasswordManager\Api\Node\Get\Get;
+use KSA\PasswordManager\Api\Node\Get\Alpha;
+use KSA\PasswordManager\Api\Node\Get\Beta;
+use Psr\Container\ContainerInterface;
 
-    public const LOGIN_SUBMIT      = '/login/submit';
-    public const LOGIN_KEY         = '/login/key';
-    public const LOGOUT_SUBMIT     = '/logout/submit';
-    public const APP_CONFIGURATION = '/app/configuration';
-    public const APP_ID            = 'login';
+class GetFactory {
 
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
+    public function __invoke(ContainerInterface $container): Get {
+        return new Get(
+            $container->get(Alpha::class)
+            , $container->get(Beta::class)
+        );
     }
 
 }

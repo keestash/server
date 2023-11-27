@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2023> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\PasswordManager\Factory\Api\Node\Get;
 
 use KSA\Activity\Service\IActivityService;
-use KSA\PasswordManager\Api\Node\Get;
+use KSA\PasswordManager\Api\Node\Get\Alpha;
 use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
@@ -31,13 +31,18 @@ use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\Service\HTTP\IResponseService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-class GetFactory {
+class AlphaFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Get {
-        return new Get(
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Alpha {
+        return new Alpha(
             $container->get(NodeRepository::class)
             , $container->get(BreadCrumbService::class)
             , $container->get(LoggerInterface::class)

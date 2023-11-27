@@ -20,6 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Middleware\ApiVersionMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\CSPHeaderMiddleware;
 use Keestash\Middleware\DispatchMiddleware;
@@ -43,6 +44,7 @@ use Mezzio\Router\Middleware\RouteMiddleware;
 
 return function (Application $app) {
     $app->pipe(ApplicationStartedMiddleware::class);
+    $app->pipe(ApiVersionMiddleware::class);
     $app->pipe(ExceptionHandlerMiddleware::class);
 //    $app->pipe(new RemoveBasePathMiddleware("/api.php"));
     $app->pipe(CorsMiddleware::class);

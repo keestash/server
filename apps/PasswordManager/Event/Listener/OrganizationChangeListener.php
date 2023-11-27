@@ -46,23 +46,14 @@ use Psr\Log\LoggerInterface;
  * @author  Dogan Ucar <dogan.ucar@check24.de>
  *          TODO this can be a kind of worker
  */
-class OrganizationChangeListener implements IListener {
-
-    private NodeRepository        $nodeRepository;
-    private NodeEncryptionService $nodeEncryptionService;
-    private LoggerInterface               $logger;
-    private EdgeService           $edgeService;
+readonly final class OrganizationChangeListener implements IListener {
 
     public function __construct(
-        NodeRepository          $nodeRepository
-        , NodeEncryptionService $nodeEncryptionService
-        , LoggerInterface               $logger
-        , EdgeService           $edgeService
+        private NodeRepository          $nodeRepository
+        , private NodeEncryptionService $nodeEncryptionService
+        , private LoggerInterface       $logger
+        , private EdgeService           $edgeService
     ) {
-        $this->nodeRepository        = $nodeRepository;
-        $this->nodeEncryptionService = $nodeEncryptionService;
-        $this->logger                = $logger;
-        $this->edgeService           = $edgeService;
     }
 
     /**

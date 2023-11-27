@@ -32,6 +32,7 @@ use Keestash\Factory\Middleware\PermissionMiddlewareFactory;
 use Keestash\Factory\Middleware\RateLimiterMiddlewareFactory;
 use Keestash\Factory\Middleware\SanitizeInputMiddlewareFactory;
 use Keestash\Factory\Middleware\UserActiveMiddlewareFactory;
+use Keestash\Middleware\ApiVersionMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\CSPHeaderMiddleware;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
@@ -44,6 +45,7 @@ use Keestash\Middleware\PermissionMiddleware;
 use Keestash\Middleware\RateLimiterMiddleware;
 use Keestash\Middleware\SanitizeInputMiddleware;
 use Keestash\Middleware\UserActiveMiddleware;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     InstanceInstalledMiddleware::class    => InstanceInstalledMiddlewareFactory::class
@@ -58,4 +60,5 @@ return [
     , UserActiveMiddleware::class         => UserActiveMiddlewareFactory::class
     , ExceptionHandlerMiddleware::class   => ExceptionHandlerMiddlewareFactory::class
     , KeestashHeaderMiddleware::class     => KeestashHeaderMiddlewareFactory::class
+    , ApiVersionMiddleware::class         => InvokableFactory::class
 ];
