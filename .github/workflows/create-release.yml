@@ -29,14 +29,14 @@ jobs:
           dev: yes
           args: --profile --ignore-platform-reqs
           php_extensions: intl
-          php_version: 8.1.13
+          php_version: 8.2.12
 
       - name: PHPUnit Tests
         uses: php-actions/phpunit@v3
         with:
           configuration: test/phpunit.xml
           php_extensions: intl
-          php_version: 8.1.13
+          php_version: 8.2.12
           memory_limit: 2G
           version: 10.4.2
           bootstrap: test/bootstrap.php
@@ -53,7 +53,7 @@ jobs:
           dev: no
           args: --profile --ignore-platform-reqs
           php_extensions: intl
-          php_version: 8.1.12
+          php_version: 8.2.12
 
       - name: create configs
         run: |
