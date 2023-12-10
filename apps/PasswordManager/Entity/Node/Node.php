@@ -23,9 +23,9 @@ namespace KSA\PasswordManager\Entity\Node;
 
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Core\DTO\Access\IAccessable;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Entity\Share\Share;
+use KSP\Core\DTO\Access\IAccessable;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;

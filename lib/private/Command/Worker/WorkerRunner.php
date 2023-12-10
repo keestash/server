@@ -63,7 +63,7 @@ class WorkerRunner extends KeestashCommand {
             $this->queueRepository->connect();
             $queue = $this->queueService->getQueue();
 
-            $this->logger->info(
+            $this->logger->debug(
                 'queue summary',
                 [
                     'length'              => $queue->length(),
@@ -72,7 +72,7 @@ class WorkerRunner extends KeestashCommand {
                 ]
             );
             if (0 === $queue->length() || $workerLogFileExists) {
-                $this->logger->info(
+                $this->logger->debug(
                     'no data given or worker log file exists',
                     [
                         'context' => 'runner'
@@ -88,7 +88,7 @@ class WorkerRunner extends KeestashCommand {
                 $start = microtime(true);
 
                 $this->writeInfo('processing ' . $message->getId(), $output);
-                $this->logger->info(
+                $this->logger->debug(
                     'processing message',
                     [
                         'message' => [

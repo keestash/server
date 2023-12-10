@@ -24,24 +24,20 @@ namespace Keestash\Core\DTO\Payment;
 use DateTimeInterface;
 use KSP\Core\DTO\Payment\ILog;
 
-class Log implements ILog {
+final readonly class Log implements ILog {
 
-    private string            $key;
-    private array             $log;
-    private DateTimeInterface $createTs;
+    public function __construct(
+        private string            $key,
+        private array             $log,
+        private DateTimeInterface $createTs
+    ) {
+    }
 
     /**
      * @return string
      */
     public function getKey(): string {
         return $this->key;
-    }
-
-    /**
-     * @param string $key
-     */
-    public function setKey(string $key): void {
-        $this->key = $key;
     }
 
     /**
@@ -52,24 +48,10 @@ class Log implements ILog {
     }
 
     /**
-     * @param array $log
-     */
-    public function setLog(array $log): void {
-        $this->log = $log;
-    }
-
-    /**
      * @return DateTimeInterface
      */
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
-    }
-
-    /**
-     * @param DateTimeInterface $createTs
-     */
-    public function setCreateTs(DateTimeInterface $createTs): void {
-        $this->createTs = $createTs;
     }
 
 }

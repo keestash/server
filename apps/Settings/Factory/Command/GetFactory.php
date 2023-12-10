@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Command;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use KSA\Settings\Command\Get;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
@@ -39,6 +40,7 @@ class GetFactory implements FactoryInterface {
             $container->get(IUserRepository::class)
             , $container->get(IUserKeyRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IDateTimeService::class)
         );
     }
 

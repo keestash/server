@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Command;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Command\KeestashCommand;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
@@ -34,7 +35,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Get extends KeestashCommand {
+final class Get extends KeestashCommand {
 
     public const ARGUMENT_NAME_USER_ID = 'user-id';
 
@@ -42,6 +43,7 @@ class Get extends KeestashCommand {
         private readonly IUserRepository      $userRepository
         , private readonly IUserKeyRepository $userKeyRepository
         , private readonly LoggerInterface    $logger
+        , private readonly IDateTimeService   $dateTimeService
     ) {
         parent::__construct();
     }
@@ -87,11 +89,12 @@ class Get extends KeestashCommand {
                 , $user->isDeleted()
                 , $user->isLocked()
                 , null !== $key
+                , $this->dateTimeService->toDMYHIS($user->getCreateTs())
             ];
         }
         $table = new Table($output);
         $table
-            ->setHeaders(['ID', 'Name', 'E-Mail','Hash', 'Deleted', 'Locked', 'Key Exists'])
+            ->setHeaders(['ID', 'Name', 'E-Mail', 'Hash', 'Deleted', 'Locked', 'Key Exists', 'Created'])
             ->setRows($tableRows);
         $table->render();
 

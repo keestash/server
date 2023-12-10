@@ -150,13 +150,15 @@ class Add implements RequestHandlerInterface {
             $session = $this->paymentService->createSubscription(
                 (string) $this->configService->getValue('stripe_price_id')
             );
-            $log     = new Log();
-            $log->setKey($session->id);
-            $log->setLog([
-                'session' => $session->toArray(),
-                'user'    => $user
-            ]);
-            $log->setCreateTs(new DateTimeImmutable());
+            $log     = new Log(
+                key: $session->id,
+                log: [
+                    'session' => $session->toArray(),
+                    'user'    => $user
+                ],
+                createTs: new DateTimeImmutable()
+            );
+
             $this->paymentLogRepository->insert($log);
             $this->logger->debug('saas mode - responding session id');
             return new JsonResponse(

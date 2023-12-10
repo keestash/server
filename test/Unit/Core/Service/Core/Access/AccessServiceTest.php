@@ -22,10 +22,10 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\Core\Access;
 
 use DateTimeImmutable;
-use Keestash\Core\DTO\Access\IAccessable;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
+use KSP\Core\DTO\Access\IAccessable;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
