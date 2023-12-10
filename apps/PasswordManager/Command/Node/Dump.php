@@ -34,26 +34,18 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class Dump extends KeestashCommand {
+final class Dump extends KeestashCommand {
 
     public const ARGUMENT_NAME_NODE_ID     = 'nodeId';
     public const OPTION_NAME_SHOW_PASSWORD = 'show-password';
     public const OPTION_NAME_FORCE         = 'force';
 
-    private NodeRepository        $nodeRepository;
-    private LoggerInterface       $logger;
-    private NodeEncryptionService $nodeEncryptionService;
-
     public function __construct(
-        NodeRepository          $nodeRepository
-        , LoggerInterface       $logger
-        , NodeEncryptionService $nodeEncryptionService
+        private readonly NodeRepository          $nodeRepository
+        , private readonly LoggerInterface       $logger
+        , private readonly NodeEncryptionService $nodeEncryptionService
     ) {
         parent::__construct();
-
-        $this->nodeRepository        = $nodeRepository;
-        $this->logger                = $logger;
-        $this->nodeEncryptionService = $nodeEncryptionService;
     }
 
     protected function configure(): void {

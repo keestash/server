@@ -99,6 +99,12 @@ final readonly class Alpha {
         }
 
         if (true === $this->userService->isDisabled($user)) {
+            $this->logger->error(
+                'tried to log in with an disabled user',
+                [
+                    'userName'  => $userName,
+                ]
+            );
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_DISABLED)

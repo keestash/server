@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Core\Access;
 
-use Keestash\Core\DTO\Access\IAccessable;
+use KSP\Core\DTO\Access\IAccessable;
 use KSP\Core\DTO\User\IUser;
 
 interface IAccessService {

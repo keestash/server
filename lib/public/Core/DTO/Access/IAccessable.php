@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Core\DTO\Access;
+namespace KSP\Core\DTO\Access;
 
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
