@@ -24,6 +24,7 @@ namespace KSA\Login\Api\Login;
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\Api\Version\IVersion;
+use KSP\Core\Service\Metric\ICollectorService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -31,7 +32,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 readonly final class Login implements RequestHandlerInterface {
 
     public function __construct(
-        private Alpha $alpha
+        private Alpha               $alpha
+        , private ICollectorService $collector
     ) {
     }
 
@@ -39,10 +41,17 @@ readonly final class Login implements RequestHandlerInterface {
         /** @var IVersion $version */
         $version = $request->getAttribute(IVersion::class);
 
-        return match ($version->getVersion()) {
+        $response = match ($version->getVersion()) {
             1 => $this->alpha->handle($request),
             default => new JsonResponse([], IResponse::NOT_FOUND),
         };
+
+        $this->collector->addCounter(
+            $response->getStatusCode() === IResponse::OK
+                ? 'loginsuccessfull'
+                : 'errorlogin'
+        );
+        return $response;
     }
 
 }

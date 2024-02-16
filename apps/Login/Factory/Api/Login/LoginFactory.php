@@ -23,6 +23,7 @@ namespace KSA\Login\Factory\Api\Login;
 
 use KSA\Login\Api\Login\Alpha;
 use KSA\Login\Api\Login\Login;
+use KSP\Core\Service\Metric\ICollectorService;
 use Psr\Container\ContainerInterface;
 
 class LoginFactory {
@@ -30,6 +31,7 @@ class LoginFactory {
     public function __invoke(ContainerInterface $container): Login {
         return new Login(
             $container->get(Alpha::class)
+            , $container->get(ICollectorService::class)
         );
     }
 

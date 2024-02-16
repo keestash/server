@@ -28,6 +28,7 @@ use KSA\Login\ConfigProvider as LoginConfigProvider;
 use KSA\PasswordManager\ConfigProvider as PasswordManagerConfigProvider;
 use KSA\Payment\ConfigProvider as PaymentConfigProvider;
 use KSA\Marketing\ConfigProvider as MarketingConfigProvider;
+use KSA\Metric\ConfigProvider as MetricConfigProvider;
 use KSA\Register\ConfigProvider as RegisterConfigProvider;
 use KSA\Settings\ConfigProvider as SettingsConfigProvider;
 use KSA\Instance\ConfigProvider as InstanceConfigProvider;
@@ -73,6 +74,11 @@ return [
         }
     , class_exists(MarketingConfigProvider::class)
         ? MarketingConfigProvider::class
+        : function (): array {
+            return [];
+        }
+    , class_exists(MetricConfigProvider::class)
+        ? MetricConfigProvider::class
         : function (): array {
             return [];
         }

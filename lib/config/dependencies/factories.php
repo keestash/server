@@ -21,7 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\Api\PingHandler;
-use Laminas\ServiceManager\Factory\InvokableFactory;
+use Keestash\Factory\Api\PingHandlerFactory;
 
 return
     array_merge(
@@ -31,6 +31,6 @@ return
         , require __DIR__ . '/factories/service.php'
         , require __DIR__ . '/factories/middleware.php'
         , [
-            PingHandler::class => InvokableFactory::class
+            PingHandler::class => PingHandlerFactory::class
         ]
     );

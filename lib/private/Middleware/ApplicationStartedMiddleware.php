@@ -25,66 +25,66 @@ use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
-class ApplicationStartedMiddleware implements MiddlewareInterface {
-
-    private IRouterService      $routerService;
-    private IEnvironmentService $environmentService;
-    private InstallerService    $installerService;
-    private IConfigService      $configService;
-    private LoggerInterface     $logger;
+final readonly class ApplicationStartedMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        IRouterService        $routerService
-        , IEnvironmentService $environmentService
-        , InstallerService    $installerService
-        , IConfigService      $configService
-        , LoggerInterface     $logger
+        private IRouterService        $routerService
+        , private IEnvironmentService $environmentService
+        , private InstallerService    $installerService
+        , private IConfigService      $configService
+        , private ICollectorService   $collector
     ) {
-        $this->routerService      = $routerService;
-        $this->environmentService = $environmentService;
-        $this->installerService   = $installerService;
-        $this->configService      = $configService;
-        $this->logger             = $logger;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $request = $request->withAttribute(
+        $start    = microtime(true);
+        $path     = $this->routerService->getMatchedPath($request);
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_APPLICATION_START
-            , microtime(true)
+            , $start
         );
-        $request = $request->withAttribute(
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_MATCHED_PATH
-            , $this->routerService->getMatchedPath($request)
+            , $path
         );
-        $request = $request->withAttribute(
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_IS_PUBLIC
             , $this->routerService->isPublicRoute($request)
         );
-        $request = $request->withAttribute(
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_ENVIRONMENT
             , $this->environmentService->getEnv()
         );
-        $request = $request->withAttribute(
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_INSTANCE_ID_AND_HASH_GIVEN
             , $this->installerService->hasIdAndHash()
         );
-        $request = $request->withAttribute(
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_DEBUG
             , $this->configService->getValue('debug', false)
         );
-        $request = $request->withAttribute(
+        $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_REQUEST_ID
             , Uuid::uuid4()->toString()
         );
-        return $handler->handle($request);
+        $response = $handler->handle($request);
+
+        $this->collector->addHistogram(
+            'api_performance',
+            (microtime(true) - $start),
+            [
+                'path' => $path
+            ]
+        );
+        return $response;
     }
 
 }

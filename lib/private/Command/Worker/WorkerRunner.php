@@ -124,7 +124,7 @@ class WorkerRunner extends KeestashCommand {
                 }
                 $this->writeInfo('ended successfully', $output);
                 $end = microtime(true);
-                $this->logger->info(
+                $this->logger->debug(
                     'job execution summary'
                     , [
                         'start'       => $start

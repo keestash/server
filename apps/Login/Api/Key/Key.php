@@ -26,6 +26,8 @@ use KSA\PasswordManager\Exception\KeyNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
+use KSP\Core\Service\Encryption\IBase64Service;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,8 +36,10 @@ use Psr\Log\LoggerInterface;
 readonly final class Key implements RequestHandlerInterface {
 
     public function __construct(
-        private IUserKeyRepository $userKeyRepository
-        , private LoggerInterface  $logger
+        private IUserKeyRepository   $userKeyRepository
+        , private LoggerInterface    $logger
+        , private IDerivationService $derivationService
+        , private IBase64Service     $base64Service
     ) {
     }
 
@@ -47,7 +51,8 @@ readonly final class Key implements RequestHandlerInterface {
             $key   = $this->userKeyRepository->getKey($user);
             return new JsonResponse(
                 [
-                    'key' => base64_encode($key->getSecret())
+                    'key'        => $this->base64Service->encrypt($key->getSecret()),
+                    'derivation' => $this->base64Service->encrypt($this->derivationService->derive($user->getPassword()))
                 ],
                 IResponse::OK
             );

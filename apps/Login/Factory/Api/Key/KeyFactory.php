@@ -23,6 +23,8 @@ namespace KSA\Login\Factory\Api\Key;
 
 use KSA\Login\Api\Key\Key;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Derivation\IDerivationService;
+use KSP\Core\Service\Encryption\IBase64Service;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,6 +39,8 @@ final readonly class KeyFactory implements FactoryInterface {
         return new Key(
             $container->get(IUserKeyRepository::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(IDerivationService::class)
+            , $container->get(IBase64Service::class)
         );
     }
 

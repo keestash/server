@@ -85,7 +85,7 @@ $CONFIG =
         /*
          * The username to the email address to display
          */
-        , "email_user_name"            => ""
+        , "email_user_name"       => ""
 
         /*
         * The mail clients protocol (tls, ssl)
@@ -145,12 +145,20 @@ $CONFIG =
         /*
          * The price id charged for keestash
          */
-        , 'stripe_price_id'          => 'your-stripe-price-id-goes-here'
+        , 'stripe_price_id'       => 'your-stripe-price-id-goes-here'
 
         /*
          * The frontend url
          */
         , 'frontend_url'          => 'https://app.keestash.com'
 
+        /*
+         * The namespace for prometheus
+         */
+        , 'prometheus_namespace'  => 'keestash'
 
+        /*
+         * The prefix for prometheus
+         */
+        , 'prometheus_prefix'     => ''
     ];
