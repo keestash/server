@@ -34,6 +34,7 @@ $requiredExtensions = [
     , "pdo_sqlite"
     , "zip"
     , "intl"
+    , "redis"
 ];
 
 $diffed = array_diff(
@@ -46,4 +47,5 @@ if (count($diffed) !== 0) {
     echo var_export($requiredExtensions) . PHP_EOL;
     echo 'The following are missing:' . PHP_EOL;
     echo var_export($diffed) . PHP_EOL;
+    exit();
 }

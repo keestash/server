@@ -25,7 +25,7 @@ use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Router\IRouterService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -42,7 +42,7 @@ class ApplicationStartedMiddlewareFactory implements FactoryInterface {
             , $container->get(IEnvironmentService::class)
             , $container->get(InstallerService::class)
             , $container->get(IConfigService::class)
-            , $container->get(LoggerInterface::class)
+            , $container->get(ICollectorService::class)
         );
     }
 

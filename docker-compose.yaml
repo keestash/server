@@ -1,7 +1,7 @@
 version: '3.3'
 services:
-  keestash_web:
-    container_name: keestash_web
+  keestash-web:
+    container_name: keestash-web
     build:
       context: ./config/docker/web
       dockerfile: Dockerfile
@@ -14,6 +14,8 @@ services:
     ports:
       - '8000:80'
       - '8080:443'
+    networks:
+      - keestash-network
   db:
     container_name: mysql8
     build:
@@ -32,6 +34,21 @@ services:
       - "6033:3306"
     volumes:
       - keestash_db:/var/lib/mysql
+      - ./:/root/
+    networks:
+      - keestash-network
+
+  keestash-redis:
+    image: redis:latest
+    container_name: keestash-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - keestash-network
 
 volumes:
   keestash_db:
+
+networks:
+  keestash-network:
+    driver: bridge

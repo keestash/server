@@ -25,12 +25,20 @@ use Keestash\Api\Response\OkResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class PingHandler implements RequestHandlerInterface {
 
+    public function __construct(
+        private LoggerInterface $logger
+    ) {
+    }
+
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        $time = time();
+        $this->logger->debug('ping handler called', ['time' => $time]);
         return new OkResponse(
-            [time()]
+            [$time]
         );
     }
 
