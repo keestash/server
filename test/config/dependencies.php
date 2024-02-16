@@ -47,6 +47,7 @@ use KST\Service\Factory\Core\Service\Encryption\CredentialServiceFactory;
 use KST\Service\Factory\Core\Service\File\Upload\FileServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\LDAP\LDAPServiceFactory;
+use KST\Service\Factory\Core\Service\Metric\RegistryFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
 use KST\Service\Factory\Middleware\DeactivatedRouteMiddlewareFactory;
 use KST\Service\Factory\Service\UserServiceFactory;
@@ -56,12 +57,14 @@ use KST\Service\Middleware\RateLimiterMiddleware;
 use KST\Service\Service\UserService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Validator\EmailAddress as EmailValidator;
+use Prometheus\CollectorRegistry;
 
 return [
     Connection::class                   => ConnectionFactory::class
     , Migrator::class                   => MigratorFactory::class
     , HTTPService::class                => HTTPServiceFactory::class
     , UserService::class                => UserServiceFactory::class
+    , CollectorRegistry::class          => RegistryFactory::class
     , EventService::class               => EventManagerFactory::class
     , LocaleService::class              => InvokableFactory::class
     , RedisService::class               => RedisServiceFactory::class
