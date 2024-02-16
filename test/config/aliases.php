@@ -46,6 +46,8 @@ use KST\Service\Core\Service\LDAP\LDAPService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Middleware\DeactivatedRouteMiddleware;
 use KST\Service\Middleware\RateLimiterMiddleware as TestRateLimiter;
+use Prometheus\CollectorRegistry;
+use Prometheus\RegistryInterface;
 
 return [
     IMigrator::class                                         => Migrator::class
@@ -62,4 +64,5 @@ return [
     , ISQLBackend::class                                     => SQLiteBackend::class
     , IBackend::class                                        => ISQLBackend::class
     , ILDAPService::class                                    => LDAPService::class
+    , RegistryInterface::class                               => CollectorRegistry::class
 ];
