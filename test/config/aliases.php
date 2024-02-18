@@ -32,7 +32,6 @@ use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IHTTPService;
 use KSP\Core\Service\LDAP\ILDAPService;
-use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Core\Backend\SQLiteBackend;
 use KST\Service\Core\Cache\RedisService;
@@ -44,7 +43,6 @@ use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\LDAP\LDAPService;
-use KST\Service\Core\Service\Metric\CollectorService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Middleware\DeactivatedRouteMiddleware;
 use KST\Service\Middleware\RateLimiterMiddleware as TestRateLimiter;
@@ -67,5 +65,4 @@ return [
     , IBackend::class                                        => ISQLBackend::class
     , ILDAPService::class                                    => LDAPService::class
     , RegistryInterface::class                               => CollectorRegistry::class
-    , ICollectorService::class                               => CollectorService::class
 ];

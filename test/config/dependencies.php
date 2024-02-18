@@ -48,7 +48,6 @@ use KST\Service\Factory\Core\Service\Encryption\CredentialServiceFactory;
 use KST\Service\Factory\Core\Service\File\Upload\FileServiceFactory;
 use KST\Service\Factory\Core\Service\HTTP\HTTPServiceFactory;
 use KST\Service\Factory\Core\Service\LDAP\LDAPServiceFactory;
-use KST\Service\Factory\Core\Service\Metric\CollectorServiceFactory;
 use KST\Service\Factory\Core\Service\Metric\RegistryFactory;
 use KST\Service\Factory\Core\Service\Phinx\MigratorFactory;
 use KST\Service\Factory\Middleware\DeactivatedRouteMiddlewareFactory;
@@ -81,5 +80,4 @@ return [
     , DeactivatedRouteMiddleware::class => DeactivatedRouteMiddlewareFactory::class
     , SQLiteBackend::class              => SQLiteBackendFactory::class
     , LDAPService::class                => LDAPServiceFactory::class
-    , CollectorService::class           => CollectorServiceFactory::class
 ];
