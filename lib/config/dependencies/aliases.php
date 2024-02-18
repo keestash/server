@@ -78,6 +78,7 @@ use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\LDAP\LDAPService;
+use Keestash\Core\Service\Metric\CollectorService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Payment\DefaultPaymentService;
 use Keestash\Core\Service\Permission\PermissionService;
@@ -141,6 +142,7 @@ use KSP\Core\Service\HTTP\Route\IRouteService;
 use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\L10N\IL10N;
 use KSP\Core\Service\LDAP\ILDAPService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Organization\IOrganizationService;
 use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\Permission\IPermissionService;
@@ -154,6 +156,8 @@ use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\Queue\Handler\IEventHandler;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
+use Prometheus\CollectorRegistry;
+use Prometheus\RegistryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use RateLimit\RateLimiter;
 
@@ -223,6 +227,8 @@ return [
     , IResponseService::class                           => ResponseService::class
     , IExceptionHandlerService::class                   => ExceptionHandlerService::class
     , IIniConfigService::class                          => IniConfigService::class
+    , ICollectorService::class                          => CollectorService::class
+    , RegistryInterface::class                          => CollectorRegistry::class
 
     , IL10N::class                                      => GetText::class
     , ILoaderService::class                             => LoaderService::class

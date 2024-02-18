@@ -31,15 +31,15 @@ jobs:
           php_extensions: intl
           php_version: 8.3
 
-#      - name: PHPUnit Tests
-#        uses: php-actions/phpunit@v3
-#        with:
-#          configuration: test/phpunit.xml
-#          php_extensions: intl
-#          php_version: 8.3
-#          memory_limit: 2G
-#          version: 10.4.2
-#          bootstrap: test/bootstrap.php
+      - name: PHPUnit Tests
+        uses: php-actions/phpunit@v3
+        with:
+          configuration: test/phpunit.xml
+          php_extensions: intl
+          php_version: 8.3
+          memory_limit: 2G
+          version: 10.4.2
+          bootstrap: test/bootstrap.php
 
       # end tests
       - name: end tests
