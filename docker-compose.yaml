@@ -46,6 +46,18 @@ services:
     networks:
       - keestash-network
 
+  prometheus:
+    container_name: prometheus
+    build:
+      context: ./config/docker/prometheus
+      dockerfile: Dockerfile
+    volumes:
+      - ./config/docker/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml
+    networks:
+      - keestash-network
+    ports:
+      - '9090:9090'
+
 volumes:
   keestash_db:
 

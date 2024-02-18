@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 use Keestash\Api\PingHandler;
 use Keestash\Factory\Api\PingHandlerFactory;
+use Keestash\Factory\Core\Service\Metric\RegistryFactory;
+use Prometheus\CollectorRegistry;
 
 return
     array_merge(
@@ -31,6 +33,7 @@ return
         , require __DIR__ . '/factories/service.php'
         , require __DIR__ . '/factories/middleware.php'
         , [
-            PingHandler::class => PingHandlerFactory::class
+            PingHandler::class       => PingHandlerFactory::class,
+            CollectorRegistry::class => RegistryFactory::class
         ]
     );

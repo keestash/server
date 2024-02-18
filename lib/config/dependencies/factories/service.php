@@ -58,6 +58,7 @@ use Keestash\Core\Service\HTTP\ResponseService;
 use Keestash\Core\Service\HTTP\Route\RouteService;
 use Keestash\Core\Service\L10N\GetText;
 use Keestash\Core\Service\LDAP\LDAPService;
+use Keestash\Core\Service\Metric\CollectorService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Payment\DefaultPaymentService;
 use Keestash\Core\Service\Permission\PermissionService;
@@ -100,6 +101,7 @@ use Keestash\Factory\Core\Service\HTTP\JWTServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\ResponseServiceFactory;
 use Keestash\Factory\Core\Service\HTTP\SanitizerServiceFactory;
 use Keestash\Factory\Core\Service\LDAP\LDAPServiceFactory;
+use Keestash\Factory\Core\Service\Metric\CollectorFactory;
 use Keestash\Factory\Core\Service\Organization\OrganizationServiceFactory;
 use Keestash\Factory\Core\Service\Permission\PermissionServiceFactory;
 use Keestash\Factory\Core\Service\Permission\RoleServiceFactory;
@@ -193,4 +195,5 @@ return [
     , UriValidator::class                                     => UriValidatorFactory::class
 
     , ScheduleUserStateEventListener::class                   => ScheduleUserStateEventListenerListenerFactory::class
+    , CollectorService::class                                 => CollectorFactory::class
 ];

@@ -52,7 +52,7 @@ final readonly class CollectorService implements ICollectorService {
     }
 
     #[\Override]
-    public function addHistogram(string $name, float $value, array $labels = [], array $buckets = ICollectorService::DEFAULT_HISTOGRAM_BUCKETS, string $helpText = ''): void {
+    public function addHistogram(string $name, float $value, array $labels = [], array $buckets = ICollectorService::HISTOGRAM_BUCKETS, string $helpText = ''): void {
         // silence is golden
     }
 

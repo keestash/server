@@ -20,28 +20,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Metric;
+namespace Keestash\Core\Service\Metric;
 
+use KSP\Core\Service\Metric\ICollectorService;
+use Prometheus\Exception\MetricsRegistrationException;
 use Prometheus\RegistryInterface;
 
-interface ICollectorService {
+final readonly class CollectorService implements ICollectorService {
 
-    public const array HISTOGRAM_BUCKETS = [
-        0.005,
-        0.01,
-        0.025,
-        0.05,
-        0.075,
-        0.1,
-        0.25,
-        0.5,
-        0.75,
-        1,
-        2.5,
-        5,
-        7.5,
-        10
-    ];
+    public function __construct(
+        private RegistryInterface $registry,
+        private string            $namespace = '',
+        private string            $prefix = ''
+    ) {
+    }
 
     /**
      * Incorporates a Counter type metric.
@@ -53,8 +45,26 @@ interface ICollectorService {
      * @param int    $incrementBy Amount to increase the metric by
      * @param array  $labels      Descriptive labels for the metric for detailed categorization
      * @param string $helpText    Descriptive text to assist understanding of the metric
+     * @throws MetricsRegistrationException
      */
-    public function addCounter(string $name, int $incrementBy = 1, array $labels = [], string $helpText = ''): void;
+    public function addCounter(
+        string $name,
+        int    $incrementBy = 1,
+        array  $labels = [],
+        string $helpText = ''
+    ): void {
+        $this->getRegistry()
+            ->getOrRegisterCounter(
+                $this->getNamespace(),
+                $this->getPrefix() . $name,
+                $helpText,
+                array_keys($labels)
+            )
+            ->incBy(
+                $incrementBy,
+                array_values($labels)
+            );
+    }
 
     /**
      * Utilizes the gauge metric type for tracking values that can both increase and decrease,
@@ -64,8 +74,26 @@ interface ICollectorService {
      * @param float  $value    Value to set for the metric
      * @param array  $labels   Descriptive labels for additional detail on the metric
      * @param string $helpText Descriptive text providing assistance in understanding the metric
+     * @throws MetricsRegistrationException
      */
-    public function addGauge(string $name, float $value, array $labels = [], string $helpText = ''): void;
+    public function addGauge(
+        string $name,
+        float  $value,
+        array  $labels = [],
+        string $helpText = ''
+    ): void {
+        $this->getRegistry()
+            ->getOrRegisterGauge(
+                $this->getNamespace(),
+                $this->getPrefix() . $name,
+                $helpText,
+                array_keys($labels)
+            )
+            ->set(
+                $value,
+                array_values($labels)
+            );
+    }
 
     /**
      * Employs the histogram metric type to count how often values are observed within certain predefined ranges or buckets.
@@ -75,28 +103,55 @@ interface ICollectorService {
      * @param array   $labels   Descriptive labels for further detail on the metric
      * @param float[] $buckets  The ranges or buckets for clustering the values
      * @param string  $helpText Descriptive text aiding in the metric's understanding
+     * @throws MetricsRegistrationException
      */
-    public function addHistogram(string $name, float $value, array $labels = [], array $buckets = ICollectorService::HISTOGRAM_BUCKETS, string $helpText = ''): void;
+    public function addHistogram(
+        string $name,
+        float  $value,
+        array  $labels = [],
+        array  $buckets = ICollectorService::HISTOGRAM_BUCKETS,
+        string $helpText = ''
+    ): void {
+        $this->getRegistry()
+            ->getOrRegisterHistogram(
+                $this->getNamespace(),
+                $this->getPrefix() . $name,
+                $helpText,
+                array_keys($labels),
+                $buckets
+            )
+            ->observe(
+                $value,
+                array_values($labels)
+            );
+    }
 
     /**
      * Retrieves an instance of the registry utilized for storing values.
      *
      * @return RegistryInterface
      */
-    public function getRegistry(): RegistryInterface;
+    public function getRegistry(): RegistryInterface {
+        return $this->registry;
+    }
+
 
     /**
      * Provides the namespace encompassing all metrics collected by Prometheus.
      *
      * @return string
      */
-    public function getNamespace(): string;
+    public function getNamespace(): string {
+        return $this->namespace;
+    }
 
     /**
      * Provides the prefix applicable to all metrics.
      *
      * @return string
      */
-    public function getPrefix(): string;
+    public function getPrefix(): string {
+        return $this->prefix;
+    }
 
 }
