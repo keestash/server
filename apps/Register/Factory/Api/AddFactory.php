@@ -29,6 +29,7 @@ use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
@@ -48,6 +49,7 @@ class AddFactory {
             , $container->get(IConfigService::class)
             , $container->get(IEventService::class)
             , $container->get(IResponseService::class)
+            , $container->get(ICollectorService::class)
         );
     }
 

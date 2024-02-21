@@ -26,6 +26,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\User\IUserService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -45,6 +46,7 @@ class ResetPasswordFactory implements FactoryInterface {
             , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
             , $container->get(IResponseService::class)
+            , $container->get(ICollectorService::class)
         );
     }
 

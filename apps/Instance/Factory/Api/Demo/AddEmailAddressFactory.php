@@ -24,6 +24,7 @@ namespace KSA\Instance\Factory\Api\Demo;
 use Keestash\Core\Service\User\UserService;
 use KSA\Instance\Api\Demo\AddEmailAddress;
 use KSA\Instance\Repository\DemoUsersRepository;
+use KSP\Core\Service\Metric\ICollectorService;
 use Psr\Container\ContainerInterface;
 
 class AddEmailAddressFactory {
@@ -32,6 +33,7 @@ class AddEmailAddressFactory {
         return new AddEmailAddress(
             $container->get(DemoUsersRepository::class)
             , $container->get(UserService::class)
+            , $container->get(ICollectorService::class)
         );
     }
 

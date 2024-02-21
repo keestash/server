@@ -97,6 +97,7 @@ class LoggerBuilder implements ILoggerBuilder {
 
     public function build(): LoggerInterface {
         $logger = new Logger(ILoggerManager::FILE_LOGGER);
+
         /** @var HandlerInterface $handler */
         foreach ($this->handlers as $handler) {
             $handler->setLevel($this->logLevel);

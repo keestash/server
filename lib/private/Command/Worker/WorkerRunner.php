@@ -29,6 +29,7 @@ use KSP\Core\DTO\Queue\IMessage;
 use KSP\Core\DTO\Queue\IResult;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Core\Data\IDataService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
 use Psr\Log\LoggerInterface;
@@ -38,14 +39,15 @@ use Throwable;
 
 class WorkerRunner extends KeestashCommand {
 
-    public const WORKER_LOG_FILE = 'file.log.worker.json';
+    public const string WORKER_LOG_FILE = 'file.log.worker.json';
 
     public function __construct(
-        private readonly IQueueService      $queueService
-        , private readonly LoggerInterface  $logger
-        , private readonly IQueueRepository $queueRepository
-        , private readonly IEventHandler    $eventHandler
-        , private readonly IDataService     $dataService
+        private readonly IQueueService       $queueService
+        , private readonly LoggerInterface   $logger
+        , private readonly IQueueRepository  $queueRepository
+        , private readonly IEventHandler     $eventHandler
+        , private readonly IDataService      $dataService
+        , private readonly ICollectorService $collectorService
     ) {
         parent::__construct();
     }
@@ -63,6 +65,10 @@ class WorkerRunner extends KeestashCommand {
             $this->queueRepository->connect();
             $queue = $this->queueService->getQueue();
 
+            $this->collectorService->addCounter(
+                'workerrunner'
+            );
+
             $this->logger->debug(
                 'queue summary',
                 [
@@ -71,6 +77,11 @@ class WorkerRunner extends KeestashCommand {
                     'context'             => 'runner'
                 ]
             );
+            $this->collectorService->addGauge(
+                'workerrunner',
+                $queue->length()
+            );
+
             if (0 === $queue->length() || $workerLogFileExists) {
                 $this->logger->debug(
                     'no data given or worker log file exists',

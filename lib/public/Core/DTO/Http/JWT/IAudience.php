@@ -23,8 +23,9 @@ namespace KSP\Core\DTO\Http\JWT;
 
 interface IAudience {
 
-    public const TYPE_USER       = 'user.type';
-    public const TYPE_ASSET      = 'asset.type';
+    public const string TYPE_USER  = 'user.type';
+    public const string TYPE_ASSET = 'asset.type';
+    public const string TYPE_API   = 'api.type';
 
     public function getType(): string;
 

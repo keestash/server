@@ -25,6 +25,7 @@ use Keestash\Command\KeestashCommand;
 use Keestash\Command\Worker\WorkerRunner;
 use Keestash\Core\Builder\Data\DataServiceBuilder;
 use KSP\Core\Repository\Queue\IQueueRepository;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
 use Laminas\Config\Config;
@@ -51,6 +52,7 @@ class WorkerRunnerFactory implements FactoryInterface {
             , $container->build(IQueueRepository::class)
             , $container->get(IEventHandler::class)
             , $dataService
+            , $container->get(ICollectorService::class)
         );
     }
 

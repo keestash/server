@@ -25,15 +25,17 @@ use Keestash\Api\Response\OkResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
+use KSP\Core\Service\Metric\ICollectorService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Logout implements RequestHandlerInterface {
+final readonly class Logout implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly ITokenRepository        $tokenRepository
-        , private readonly IDerivationRepository $derivationRepository
+        private ITokenRepository        $tokenRepository
+        , private IDerivationRepository $derivationRepository
+        , private ICollectorService     $collectorService
     ) {
     }
 
@@ -42,6 +44,7 @@ class Logout implements RequestHandlerInterface {
         $token = $request->getAttribute(IToken::class);
         $this->tokenRepository->remove($token);
         $this->derivationRepository->clear($token->getUser());
+        $this->collectorService->addCounter('logout');
         return new OkResponse([]);
     }
 

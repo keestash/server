@@ -21,6 +21,10 @@ rule_files:
 scrape_configs:
   - job_name: "keestash"
     scrape_interval: 5s
+    scheme: https  # Use HTTPS instead of HTTP
+    bearer_token: <token>
     metrics_path: /api.php/metrics
     static_configs:
-      - targets: ["localhost:8080"]
+      - targets: ["keestash-web"]
+    tls_config:
+      insecure_skip_verify: true

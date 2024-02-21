@@ -23,30 +23,29 @@ namespace KSA\Instance\Api\Demo;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Exception\Repository\RowNotInsertedException;
 use Keestash\Exception\Validator\ValidationFailedException;
 use KSA\Instance\Repository\DemoUsersRepository;
 use KSP\Api\IResponse;
+use KSP\Core\Service\Metric\ICollectorService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class AddEmailAddress implements RequestHandlerInterface {
-
-    private DemoUsersRepository $demoUsersRepository;
-    private UserService         $userService;
+final readonly class AddEmailAddress implements RequestHandlerInterface {
 
     public function __construct(
-        DemoUsersRepository $demoUsersRepository
-        , UserService       $userService
+        private DemoUsersRepository $demoUsersRepository
+        , private UserService       $userService
+        , private ICollectorService $collectorService
     ) {
-        $this->demoUsersRepository = $demoUsersRepository;
-        $this->userService         = $userService;
     }
 
     /**
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      * @throws ValidationFailedException
+     * @throws RowNotInsertedException
      */
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
@@ -63,6 +62,10 @@ class AddEmailAddress implements RequestHandlerInterface {
         }
 
         $this->demoUsersRepository->add($email);
+
+        $this->collectorService->addCounter(
+            'addDemoUser'
+        );
 
         return new JsonResponse(
             []
