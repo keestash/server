@@ -58,7 +58,7 @@ final readonly class CollectorService implements ICollectorService {
                 $this->getNamespace(),
                 $this->getPrefix() . $name,
                 $helpText,
-                array_keys($labels)
+                array_values($labels)
             )
             ->incBy(
                 $incrementBy,

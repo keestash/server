@@ -34,12 +34,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class Confirm implements RequestHandlerInterface {
+readonly final class Confirm implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IUserStateRepository $userStateRepository
-        , private readonly IEventService      $eventService
-        , private readonly LoggerInterface    $logger
+        private IUserStateRepository $userStateRepository
+        , private IEventService      $eventService
+        , private LoggerInterface    $logger
     ) {
     }
 

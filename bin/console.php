@@ -26,12 +26,15 @@ use Keestash\ConfigProvider;
 use Keestash\Core\System\Application as KeestashApplication;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\Metric\ICollectorService;
 use Laminas\Config\Config;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 (function () {
-
+    $start = microtime(true);
     chdir(dirname(__DIR__));
 
     require __DIR__ . '/../vendor/autoload.php';
@@ -46,6 +49,8 @@ use Symfony\Component\Console\Application;
     $config = $container->get(Config::class);
     /** @var KeestashApplication $keestashApplication */
     $keestashApplication = $container->get(KeestashApplication::class);
+    /** @var ICollectorService $collector */
+    $collector = $container->get(ICollectorService::class);
 
     /** @var IEnvironmentService $environmentService */
     $environmentService = $container->get(IEnvironmentService::class);
@@ -55,6 +60,7 @@ use Symfony\Component\Console\Application;
             $keestashApplication->getMetaData()->get("name") . " CLI Tools"
             , $cliVersion
     );
+    $application->setAutoExit(false);
 
     /** @var IEventService $eventManager */
     $eventManager = $container->get(IEventService::class);
@@ -67,6 +73,22 @@ use Symfony\Component\Console\Application;
         $application->add($command);
     }
 
-    $application->run();
+    $input         = new ArgvInput();
+    $output        = new ConsoleOutput();
+    $firstArgument = $input->getFirstArgument();
+
+    if (null === $firstArgument) {
+        $firstArgument = 'list';
+    }
+
+    $application->run($input, $output);
+
+    $collector->addHistogram(
+            'console_performance',
+            (microtime(true) - $start),
+            [
+                    'argument' => $firstArgument
+            ]
+    );
 
 })();

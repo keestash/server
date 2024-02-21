@@ -37,6 +37,7 @@ use KSP\Core\Repository\Payment\IPaymentLogRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Http\Message\ResponseInterface;
@@ -44,24 +45,28 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class Add implements RequestHandlerInterface {
+readonly final class Add implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly UserService              $userService
-        , private readonly LoggerInterface        $logger
-        , private readonly IUserRepositoryService $userRepositoryService
-        , private readonly IStringService         $stringService
-        , private readonly IPaymentService        $paymentService
-        , private readonly IPaymentLogRepository  $paymentLogRepository
-        , private readonly Application            $application
-        , private readonly IConfigService         $configService
-        , private readonly IEventService          $eventService
-        , private readonly IResponseService       $responseService
+        private UserService              $userService
+        , private LoggerInterface        $logger
+        , private IUserRepositoryService $userRepositoryService
+        , private IStringService         $stringService
+        , private IPaymentService        $paymentService
+        , private IPaymentLogRepository  $paymentLogRepository
+        , private Application            $application
+        , private IConfigService         $configService
+        , private IEventService          $eventService
+        , private IResponseService       $responseService
+        , private ICollectorService      $collectorService
     ) {
     }
 
     // TODO create a token and forward it to the frontend
     //  in order to prevent multiple user creation
+
+    // TODO restrict numeric usernames only
+    // TODO no blanks in usernames
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $this->logger->debug('start add user');
         $isSaas             = (bool) $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS);
@@ -79,6 +84,10 @@ class Add implements RequestHandlerInterface {
         $website = $this->application->getMetaData()->get('web');
 
         if (true === $this->stringService->isEmpty($termsAndConditions)) {
+            $this->collectorService->addCounter(
+                name: 'invalidRegister'
+                , labels: ['termsAndConditionsNotChecked']
+            );
             $this->logger->info('terms and conditions are not selected', ['termsAndConditions' => $termsAndConditions]);
             return new JsonResponse(
                 [
@@ -92,6 +101,10 @@ class Add implements RequestHandlerInterface {
         $resultList = $this->userService->validatePasswords($password, $passwordRepeat);
 
         if ($resultList->length() > 0) {
+            $this->collectorService->addCounter(
+                name: 'invalidRegister'
+                , labels: ['passwordValidationFailed']
+            );
             $this->logger->warning('password validation failed', ['results' => $resultList->toArray()]);
             return new JsonResponse(
                 [
@@ -122,6 +135,11 @@ class Add implements RequestHandlerInterface {
 
             $this->logger->error('error validating new user', ['exception' => $result->toArray()]);
 
+            $this->collectorService->addCounter(
+                name: 'invalidRegister'
+                , labels: ['validationFailed']
+            );
+
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_VALIDATE_USER),
@@ -136,6 +154,12 @@ class Add implements RequestHandlerInterface {
             $user = $this->userRepositoryService->createUser($user);
         } catch (Exception $exception) {
             $this->logger->error('error creating new user', ['exception' => $exception]);
+
+            $this->collectorService->addCounter(
+                name: 'invalidRegister'
+                , labels: ['errorCreatingUser']
+            );
+
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_ERROR_CREATING_USER),
@@ -161,6 +185,12 @@ class Add implements RequestHandlerInterface {
 
             $this->paymentLogRepository->insert($log);
             $this->logger->debug('saas mode - responding session id');
+
+            $this->collectorService->addCounter(
+                name: 'invalidRegister'
+                , labels: ['saasUserCreated']
+            );
+
             return new JsonResponse(
                 [
                     'session'      => $session,
@@ -176,6 +206,10 @@ class Add implements RequestHandlerInterface {
                 , Type::REGULAR
                 , 1
             )
+        );
+
+        $this->collectorService->addCounter(
+            name: 'validRegister'
         );
 
         $this->logger->debug('end add user');

@@ -33,21 +33,23 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\User\IUserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class ResetPassword implements RequestHandlerInterface {
+final readonly class ResetPassword implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IUserService           $userService
-        , private readonly IUserStateRepository $userStateRepository
-        , private readonly IUserRepository      $userRepository
-        , private readonly LoggerInterface      $logger
-        , private readonly IEventService        $eventManager
-        , private readonly IResponseService     $responseService
+        private IUserService           $userService
+        , private IUserStateRepository $userStateRepository
+        , private IUserRepository      $userRepository
+        , private LoggerInterface      $logger
+        , private IEventService        $eventManager
+        , private IResponseService     $responseService
+        , private ICollectorService    $collectorService
     ) {
     }
 
@@ -56,6 +58,12 @@ class ResetPassword implements RequestHandlerInterface {
         $input      = $parameters["input"] ?? null;
 
         if (null === $input || "" === $input) {
+
+            $this->collectorService->addCounter(
+                name: 'invalidResetPassword'
+                , labels: ['noInputGiven']
+            );
+
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_INVALID_INPUT)
@@ -82,6 +90,12 @@ class ResetPassword implements RequestHandlerInterface {
             : $userByMail;
 
         if (null === $user) {
+
+            $this->collectorService->addCounter(
+                name: 'invalidResetPassword'
+                , labels: ['noUserFound']
+            );
+
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_NOT_FOUND)
@@ -91,6 +105,12 @@ class ResetPassword implements RequestHandlerInterface {
         }
 
         if (true === $this->userService->isDisabled($user)) {
+
+            $this->collectorService->addCounter(
+                name: 'invalidResetPassword'
+                , labels: ['disabledUserRequested']
+            );
+
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_DISABLED)
@@ -112,6 +132,11 @@ class ResetPassword implements RequestHandlerInterface {
 
         if (true === $alreadyRequested) {
 
+            $this->collectorService->addCounter(
+                name: 'invalidResetPassword'
+                , labels: ['alreadyRequested']
+            );
+
             return new JsonResponse(
                 [
                     "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_ALREADY_SENT)
@@ -123,6 +148,10 @@ class ResetPassword implements RequestHandlerInterface {
 
         $this->eventManager->execute(
             new ResetPasswordEvent($user)
+        );
+
+        $this->collectorService->addCounter(
+            name: 'resetPasswordSuccess'
         );
 
         return new JsonResponse(

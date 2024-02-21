@@ -28,12 +28,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Configuration implements RequestHandlerInterface {
+readonly final class Configuration implements RequestHandlerInterface {
 
-    private InstanceDB $instanceDB;
+    public function __construct(private InstanceDB $instanceDB) {
 
-    public function __construct(InstanceDB $instanceDB) {
-        $this->instanceDB = $instanceDB;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
