@@ -21,12 +21,14 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
+use Keestash\ConfigProvider;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Router\IRouterService;
+use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -41,6 +43,7 @@ final readonly class ApplicationStartedMiddleware implements MiddlewareInterface
         , private InstallerService    $installerService
         , private IConfigService      $configService
         , private ICollectorService   $collector
+        , private Config              $config
     ) {
     }
 
@@ -77,6 +80,16 @@ final readonly class ApplicationStartedMiddleware implements MiddlewareInterface
         );
         $response = $handler->handle($request);
 
+        $this->addToHistogram($start, $path);
+        return $response;
+    }
+
+    private function addToHistogram(float $start, string $path): void {
+        $metricDisallowList = $this->config->get(ConfigProvider::METRIC_DISALLOW_LIST, new Config([]))->toArray();
+        if (true === in_array($path, $metricDisallowList, true)) {
+            return;
+        }
+
         $this->collector->addHistogram(
             'api_performance',
             (microtime(true) - $start),
@@ -84,7 +97,7 @@ final readonly class ApplicationStartedMiddleware implements MiddlewareInterface
                 'path' => $path
             ]
         );
-        return $response;
+
     }
 
 }

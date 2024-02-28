@@ -27,6 +27,7 @@ use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Router\IRouterService;
+use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Http\Server\MiddlewareInterface;
 
@@ -43,6 +44,7 @@ class ApplicationStartedMiddlewareFactory implements FactoryInterface {
             , $container->get(InstallerService::class)
             , $container->get(IConfigService::class)
             , $container->get(ICollectorService::class)
+            , $container->get(Config::class)
         );
     }
 

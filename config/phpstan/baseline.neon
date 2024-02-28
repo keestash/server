@@ -1201,6 +1201,11 @@ parameters:
 			path: ../../lib/private/Factory/ThirdParty/nikolaposa/RateLimit/FileRateLimiterFactory.php
 
 		-
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../lib/private/Middleware/ApplicationStartedMiddleware.php
+
+		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../lib/private/Middleware/PermissionMiddleware.php
