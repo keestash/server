@@ -31,7 +31,7 @@ use Stripe\Subscription;
 
 interface IPaymentService {
 
-    public const PAYMENT_WEBHOOK_ENDPOINT = '/payment/webhook';
+    public const string PAYMENT_WEBHOOK_ENDPOINT = '/payment/webhook';
 
     /**
      * @throws ApiErrorException

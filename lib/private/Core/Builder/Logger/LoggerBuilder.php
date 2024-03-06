@@ -21,13 +21,16 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Builder\Logger;
 
-use Keestash\Core\Service\Logger\Handler\DumpHandler;
 use KSP\Core\Builder\Logger\ILoggerBuilder;
 use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\HandlerInterface;
-use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
+use Monolog\Processor\MemoryUsageProcessor;
+use Monolog\Processor\ProcessIdProcessor;
+use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
 use Psr\Log\LoggerInterface;
 use Sentry\Monolog\Handler;
 use Sentry\SentrySdk;
@@ -58,11 +61,12 @@ class LoggerBuilder implements ILoggerBuilder {
         return $instance;
     }
 
-    public function withStreamHandler(): ILoggerBuilder {
+    public function withHandler(): ILoggerBuilder {
         $instance             = clone $this;
-        $instance->handlers[] = new StreamHandler(
-            $this->path
-            , $this->logLevel
+        $instance->handlers[] = new RotatingFileHandler(
+            filename: $this->path
+            , maxFiles: 15
+            , level: $this->logLevel
         );
         return $instance;
     }
@@ -98,6 +102,10 @@ class LoggerBuilder implements ILoggerBuilder {
     public function build(): LoggerInterface {
         $logger = new Logger(ILoggerManager::FILE_LOGGER);
 
+        $logger->pushProcessor(new WebProcessor());
+        $logger->pushProcessor(new UidProcessor());
+        $logger->pushProcessor(new MemoryUsageProcessor());
+        $logger->pushProcessor(new ProcessIdProcessor());
         /** @var HandlerInterface $handler */
         foreach ($this->handlers as $handler) {
             $handler->setLevel($this->logLevel);

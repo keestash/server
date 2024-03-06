@@ -34,7 +34,6 @@ use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use KST\Service\Core\Service\File\Upload\FileService;
 use KST\Service\Core\Service\HTTP\HTTPService;
 use KST\Service\Core\Service\LDAP\LDAPService;
-use KST\Service\Core\Service\Metric\CollectorService;
 use KST\Service\Core\Service\Phinx\Migrator;
 use KST\Service\Factory\Core\Backend\SQLiteBackendFactory;
 use KST\Service\Factory\Core\Builder\Validator\EmailValidatorFactory;
