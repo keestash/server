@@ -48,10 +48,9 @@ class LoggerFactory {
         $instanceDb = $container->get(InstanceDB::class);
 
         $isUnitTest   = $environmentService->isUnitTest();
+        $isConsole    = $environmentService->isConsole();
         $nameInternal = $application->getMetaData()->get('name_internal');
-        $logFileName  = true === $isUnitTest
-            ? $nameInternal . '_test.log'
-            : $nameInternal . '.log';
+        $logFileName  = $this->getFileName($isUnitTest, $isConsole, $nameInternal);
 
         $logLevel       = (int) $configService->getValue("log_level", Logger::ERROR);
         $sentryLogLevel = $instanceDb->getOption('sentry_log_level');
@@ -65,7 +64,7 @@ class LoggerFactory {
                 $dataRoot . '/' . $logFileName
             )
             ->withFormatter(new JsonFormatter())
-            ->withStreamHandler()
+            ->withHandler()
             ->withDevHandler(
                 $configService->getValue('sentry_dsn', ''),
                 null !== $sentryLogLevel
@@ -76,5 +75,17 @@ class LoggerFactory {
 
     }
 
+    private function getFileName(bool $isUnitTest, bool $isConsole, string $nameInternal): string {
+        $suffix = '';
+
+        if (true === $isUnitTest) {
+            $suffix = '_test';
+        }
+
+        if (true === $isConsole) {
+            $suffix = '_console';
+        }
+        return "$nameInternal$suffix.log";
+    }
 
 }

@@ -741,6 +741,11 @@ parameters:
 			path: ../../apps/Payment/Event/Listener/WebhookListener.php
 
 		-
+			message: "#^Parameter \\#1 \\$values of static method Stripe\\\\StripeObject\\:\\:constructFrom\\(\\) expects array, mixed given\\.$#"
+			count: 1
+			path: ../../apps/Payment/Test/Service/PaymentService.php
+
+		-
 			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/Register/Api/Configuration/Configuration.php
@@ -986,12 +991,12 @@ parameters:
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
 
 		-
-			message: "#^Parameter \\#2 \\$level of class Monolog\\\\Handler\\\\StreamHandler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
+			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int\\|int\\<0, max\\> given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
 
 		-
-			message: "#^Parameter \\#2 \\$level of class Sentry\\\\Monolog\\\\Handler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int\\|int\\<0, max\\> given\\.$#"
+			message: "#^Parameter \\$level of class Monolog\\\\Handler\\\\RotatingFileHandler constructor expects 100\\|200\\|250\\|300\\|400\\|500\\|550\\|600\\|'ALERT'\\|'alert'\\|'CRITICAL'\\|'critical'\\|'DEBUG'\\|'debug'\\|'EMERGENCY'\\|'emergency'\\|'ERROR'\\|'error'\\|'INFO'\\|'info'\\|'NOTICE'\\|'notice'\\|'WARNING'\\|'warning', int given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
 
@@ -1192,6 +1197,11 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Logger\\\\ILoggerBuilder\\:\\:withPath\\(\\)\\.$#"
+			count: 1
+			path: ../../lib/private/Factory/Core/Logger/LoggerFactory.php
+
+		-
+			message: "#^Parameter \\#3 \\$nameInternal of method Keestash\\\\Factory\\\\Core\\\\Logger\\\\LoggerFactory\\:\\:getFileName\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/Core/Logger/LoggerFactory.php
 

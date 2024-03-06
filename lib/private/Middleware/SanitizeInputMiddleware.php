@@ -56,7 +56,6 @@ class SanitizeInputMiddleware implements MiddlewareInterface {
         $body    = $this->sanitize($body);
         $request = $request->withBody(Utils::streamFor($body));
 
-        $this->logger->debug('sanitize result', ['body' => $body, 'queryParams' => $queryParams]);
         return $handler->handle($request);
     }
 

@@ -32,6 +32,7 @@ use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
+use Monolog\ResettableInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,31 +66,14 @@ class WorkerRunner extends KeestashCommand {
             $this->queueRepository->connect();
             $queue = $this->queueService->getQueue();
 
-            $this->collectorService->addCounter(
-                'workerrunner'
-            );
-
-            $this->logger->debug(
-                'queue summary',
-                [
-                    'length'              => $queue->length(),
-                    'workerLogFileExists' => $workerLogFileExists,
-                    'context'             => 'runner'
-                ]
-            );
             $this->collectorService->addGauge(
                 'workerrunner',
                 $queue->length()
             );
 
             if (0 === $queue->length() || $workerLogFileExists) {
-                $this->logger->debug(
-                    'no data given or worker log file exists',
-                    [
-                        'context' => 'runner'
-                    ]
-                );
                 $this->queueRepository->disconnect();
+                $this->loggerSafeReset();
                 usleep(500000);
                 continue;
             }
@@ -156,6 +140,12 @@ class WorkerRunner extends KeestashCommand {
             $message->getId()
             , $message->getAttempts() + 1
         );
+    }
+
+    private function loggerSafeReset(): void {
+        if ($this->logger instanceof ResettableInterface) {
+            $this->logger->reset();
+        }
     }
 
 }

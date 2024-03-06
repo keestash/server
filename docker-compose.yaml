@@ -74,7 +74,17 @@ services:
       - prometheus
     networks:
       - keestash-network
-  #    restart: unless-stopped
+
+  stripe-cli:
+    build:
+      context: ./config/docker/stripe
+      dockerfile: Dockerfile
+    container_name: stripe-cli
+    environment:
+      STRIPE_CLI_TELEMETRY_OPTOUT: true
+    networks:
+      - keestash-network
+    tty: true
 
 volumes:
   keestash_db:

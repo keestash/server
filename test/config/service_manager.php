@@ -62,7 +62,7 @@ foreach ($mockedAliasesApps as $path) {
     $mocked = require realpath($path);
 
     foreach ($mocked as $name => $factory) {
-        $container->setFactory($name, $factory);
+        $container->setAlias($name, $factory);
     }
 }
 
