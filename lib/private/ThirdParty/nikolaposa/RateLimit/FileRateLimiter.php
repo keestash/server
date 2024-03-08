@@ -31,7 +31,7 @@ use RateLimit\RateLimiter;
 
 class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
 
-    public const FILE_NAME = 'limiter.rate.json';
+    public const string FILE_NAME = 'limiter.rate.json';
 
     private array $store = [];
 

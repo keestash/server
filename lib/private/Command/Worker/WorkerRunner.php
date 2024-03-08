@@ -68,7 +68,7 @@ class WorkerRunner extends KeestashCommand {
 
             $this->collectorService->addGauge(
                 'workerrunner',
-                $queue->length()
+                $queue->length(),
             );
 
             if (0 === $queue->length() || $workerLogFileExists) {
@@ -119,6 +119,15 @@ class WorkerRunner extends KeestashCommand {
                 }
                 $this->writeInfo('ended successfully', $output);
                 $end = microtime(true);
+
+                $this->collectorService->addHistogram(
+                    'workerrunner_performance',
+                    $end - $start,
+                    [
+                        'listener' => $message->getPayload()['listener'] ?? 'unknown listener'
+                    ]
+                );
+                
                 $this->logger->debug(
                     'job execution summary'
                     , [
