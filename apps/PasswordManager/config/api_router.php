@@ -193,7 +193,7 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_CHART_ALL
-            , IRoute::MIDDLEWARE => ChartData::class
+            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, ChartData::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => ChartData::class
         ],
