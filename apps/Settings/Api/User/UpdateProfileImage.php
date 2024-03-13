@@ -81,7 +81,6 @@ class UpdateProfileImage implements RequestHandlerInterface {
         $validationResult = $this->uploadFileService->validateUploadedFile($file);
 
         if ($validationResult->getResults()->length() !== 0) {
-
             return new JsonResponse(
                 ["invalid file"]
                 , IResponse::BAD_REQUEST

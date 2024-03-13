@@ -65,7 +65,8 @@ class QueueRepository implements IQueueRepository {
                 ]
             )
                 ->from('queue', 'q')
-                ->orderBy('q.`priority`', 'ASC');
+                ->orderBy('q.`priority`', 'ASC')
+            ;
 
             $result = $queryBuilder->executeQuery();
             return $result->fetchAllAssociative();

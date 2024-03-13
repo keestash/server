@@ -299,3 +299,4 @@ smtp.php
 /test/benchmark.json
 /tmpl/
 test.php
+/test/.phpunit.cache/
