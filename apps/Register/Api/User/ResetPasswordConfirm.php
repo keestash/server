@@ -23,6 +23,7 @@ namespace KSA\Register\Api\User;
 
 use DateTime;
 use Keestash\Core\DTO\User\NullUserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordConfirmEvent;
 use KSP\Api\IResponse;
@@ -92,7 +93,7 @@ readonly final class ResetPasswordConfirm implements RequestHandlerInterface {
         );
 
         $this->userRepositoryService->updateUser($updateUser, $user);
-        $this->userStateService->clearCarefully($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
+        $this->userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
 
         $this->eventManager->execute(new ResetPasswordConfirmEvent(2));
 

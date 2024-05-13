@@ -24,8 +24,8 @@ namespace KST\Integration\Core\Repository\User;
 use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\IUserService;
@@ -105,7 +105,7 @@ class UserStateRepositoryTest extends TestCase {
 
         foreach ($userList->toArray() as $user) {
             $userState = $userStateService->getState($user);
-            $this->assertTrue($userState->getState() === IUserState::USER_STATE_LOCK);
+            $this->assertTrue($userState->getState() === UserStateName::LOCK);
             $userRepositoryService->removeUser($user);
         }
     }
@@ -175,7 +175,7 @@ class UserStateRepositoryTest extends TestCase {
 
         foreach ($userList->toArray() as $user) {
             $userState = $userStateService->getState($user);
-            $this->assertTrue($userState->getState() === IUserState::USER_STATE_DELETE);
+            $this->assertTrue($userState->getState() === UserStateName::DELETE);
             $userRepositoryService->removeUser($user);
         }
 
@@ -215,13 +215,13 @@ class UserStateRepositoryTest extends TestCase {
             new UserState(
                 0,
                 $retrievedUser,
-                IUserState::USER_STATE_REQUEST_PW_CHANGE,
+                UserStateName::REQUEST_PW_CHANGE,
                 new DateTimeImmutable(),
                 new DateTimeImmutable(),
                 $hash
             )
         );
-        $userStateService->clearCarefully($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
+        $userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
         $userRepositoryService->removeUser($retrievedUser);
     }
 
@@ -256,7 +256,7 @@ class UserStateRepositoryTest extends TestCase {
                 new UserState(
                     0,
                     $user,
-                    IUserState::USER_STATE_REQUEST_PW_CHANGE,
+                    UserStateName::REQUEST_PW_CHANGE,
                     new DateTimeImmutable(),
                     new DateTimeImmutable(),
                     Uuid::uuid4()->toString()
@@ -268,7 +268,7 @@ class UserStateRepositoryTest extends TestCase {
 
         foreach ($userList->toArray() as $user) {
             $userState = $userStateRepository->getByUser($user);
-            $this->assertTrue($userState->getState() === IUserState::USER_STATE_REQUEST_PW_CHANGE);
+            $this->assertTrue($userState->getState() === UserStateName::REQUEST_PW_CHANGE);
             $userRepositoryService->removeUser($user);
         }
 

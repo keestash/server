@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserStateService;
@@ -97,7 +97,7 @@ final readonly class UserRemove implements RequestHandlerInterface {
             $this->eventManager
                 ->execute(
                     new UserStateDeleteEvent(
-                        IUserState::USER_STATE_DELETE
+                        UserStateName::DELETE
                         , $user
                     )
                 );

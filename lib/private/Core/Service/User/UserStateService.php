@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\User;
 
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
@@ -27,7 +28,7 @@ final readonly class UserStateService implements IUserStateService {
     #[\Override] public function setState(IUserState $userState): void {
         $this->userStateRepository->insert(
             $userState->getUser(),
-            $userState->getState(),
+            $userState->getState()->value,
             $userState->getStateHash()
         );
     }
@@ -36,7 +37,7 @@ final readonly class UserStateService implements IUserStateService {
         $this->userStateRepository->remove($user);
     }
 
-    public function clearCarefully(IUser $user, string $expectedState): void {
+    public function clearCarefully(IUser $user, UserStateName $expectedState): void {
         $userState = $this->getState($user);
         if ($userState->getState() !== $expectedState) {
             throw new KeestashException();
@@ -70,7 +71,7 @@ final readonly class UserStateService implements IUserStateService {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_LOCK,
+                UserStateName::LOCK,
                 new \DateTimeImmutable(),
                 new \DateTimeImmutable(),
                 Uuid::uuid4()->toString()
@@ -114,7 +115,7 @@ final readonly class UserStateService implements IUserStateService {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_DELETE,
+                UserStateName::DELETE,
                 new \DateTimeImmutable(),
                 new \DateTimeImmutable(),
                 Uuid::uuid4()->toString()

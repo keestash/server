@@ -10,10 +10,6 @@ use KSP\Core\DTO\User\IUserState;
 
 class NullUserState implements IUserState {
 
-    #[\Override] public static function isValidState(string $state): bool {
-        return false;
-    }
-
     #[\Override] public function getId(): int {
         return PHP_INT_MIN;
     }
@@ -22,8 +18,8 @@ class NullUserState implements IUserState {
         throw new KeestashException();
     }
 
-    #[\Override] public function getState(): string {
-        return 'null';
+    #[\Override] public function getState(): UserStateName {
+        return UserStateName::NULL;
     }
 
     #[\Override] public function getValidFrom(): DateTimeInterface {

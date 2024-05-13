@@ -22,12 +22,12 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserStateService;
@@ -72,7 +72,7 @@ readonly class UserLock implements RequestHandlerInterface {
             $this->eventManager
                 ->execute(
                     new UserStateLockEvent(
-                        IUserState::USER_STATE_LOCK
+                        UserStateName::LOCK
                         , $user
                     )
                 );

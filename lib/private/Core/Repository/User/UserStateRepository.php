@@ -27,6 +27,7 @@ use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash\Core\DTO\User\NullUserState;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\State\UserStateNotInsertedException;
 use Keestash\Exception\User\State\UserStateNotRemovedException;
@@ -91,7 +92,7 @@ final readonly class UserStateRepository implements IUserStateRepository {
             return new UserState(
                 (int) $id,
                 $user,
-                $state,
+                UserStateName::from((string) $state),
                 $this->dateTimeService->fromString((string) $validFrom),
                 $this->dateTimeService->fromString((string) $createTs),
                 (string) $userStateHash
@@ -144,7 +145,7 @@ final readonly class UserStateRepository implements IUserStateRepository {
             return new UserState(
                 (int) $id,
                 $this->userRepository->getUserById((string) $userId),
-                $state,
+                UserStateName::from((string) $state),
                 $this->dateTimeService->fromString((string) $validFrom),
                 $this->dateTimeService->fromString((string) $createTs),
                 (string) $userStateHash

@@ -23,6 +23,7 @@ namespace KSA\Register\Event\Listener;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\MailLog\MailLog;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\KeestashException;
 use KSA\PasswordManager\Event\Listener\AfterRegistration;
 use KSA\Register\Entity\Register\Event\Type;
@@ -30,7 +31,6 @@ use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Email\IEmailService;
@@ -67,7 +67,7 @@ class UserRegisteredEventListener implements IListener {
                 $event->getUser()
             );
 
-            if ($userState->getState() !== IUserState::USER_STATE_LOCK) {
+            if ($userState->getState() !== UserStateName::LOCK) {
                 $this->logger->warning('did not found user', ['user' => $event->getUser()]);
                 return;
             }

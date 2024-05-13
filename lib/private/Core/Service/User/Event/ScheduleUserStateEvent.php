@@ -24,12 +24,13 @@ namespace Keestash\Core\Service\User\Event;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Keestash\Core\DTO\Event\ReservedEvent;
+use Keestash\Core\DTO\User\UserStateName;
 use KSP\Core\DTO\User\IUser;
 
 class ScheduleUserStateEvent extends ReservedEvent {
 
     public function __construct(
-        private readonly string              $stateType
+        private readonly UserStateName       $stateName
         , private readonly IUser             $user
         , private readonly DateTimeInterface $reservedTs = new DateTimeImmutable()
         , private readonly int               $priority = 99999999
@@ -47,11 +48,8 @@ class ScheduleUserStateEvent extends ReservedEvent {
         return $this->reservedTs;
     }
 
-    /**
-     * @return string
-     */
-    public function getStateType(): string {
-        return $this->stateType;
+    public function getStateName(): UserStateName {
+        return $this->stateName;
     }
 
     public function getPriority(): int {
@@ -62,7 +60,7 @@ class ScheduleUserStateEvent extends ReservedEvent {
         return [
             'user'         => $this->getUser()
             , 'reservedTs' => $this->getReservedTs()
-            , 'stateType'  => $this->getStateType()
+            , 'stateName'  => $this->getStateName()
             , 'priority'   => $this->getPriority()
         ];
     }

@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Test\Integration\Api\User;
 
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\Api\User\ResetPassword;
 use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
@@ -124,7 +125,7 @@ class ResetPasswordTest extends TestCase {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_REQUEST_PW_CHANGE,
+                UserStateName::REQUEST_PW_CHANGE,
                 new \DateTimeImmutable(),
                 new \DateTimeImmutable(),
                 $user->getHash()
