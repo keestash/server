@@ -25,89 +25,38 @@ use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
-use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash\Core\DTO\User\NullUserState;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Exception\User\State\UserStateException;
-use Keestash\Exception\User\State\UserStateNotFoundException;
 use Keestash\Exception\User\State\UserStateNotInsertedException;
 use Keestash\Exception\User\State\UserStateNotRemovedException;
-use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 
-class UserStateRepository implements IUserStateRepository {
-
-    private IUserRepository  $userRepository;
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface  $logger;
+final readonly class UserStateRepository implements IUserStateRepository {
 
     public function __construct(
-        IBackend           $backend
-        , IUserRepository  $userRepository
-        , IDateTimeService $dateTimeService
-        , LoggerInterface  $logger
+        private IBackend           $backend
+        , private IUserRepository  $userRepository
+        , private IDateTimeService $dateTimeService
+        , private LoggerInterface  $logger
     ) {
-        $this->backend         = $backend;
-        $this->userRepository  = $userRepository;
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
     }
 
     /**
      * @param IUser $user
-     * @return void
-     * @throws UserStateException
-     * @throws UserStateNotRemovedException
-     */
-    public function unlock(IUser $user): void {
-        if (false === $this->isLocked($user)) {
-            throw new UserStateNotFoundException();
-        }
-        $this->remove($user, IUserState::USER_STATE_LOCK);
-    }
-
-    /**
-     * @param IUser $user
-     * @return bool
-     */
-    private function isLocked(IUser $user): bool {
-        $lockedUsers = $this->getLockedUsers();
-
-        /** @var IUserState $userState */
-        foreach ($lockedUsers->toArray() as $userState) {
-            if (
-                $user->getId() === $userState->getUser()->getId()
-                && $userState->getState() === IUserState::USER_STATE_LOCK
-            ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * @return HashTable
+     * @return IUserState
+     * @throws InvalidKeyTypeException
+     * @throws UnsupportedKeyTypeException
      * @throws UserStateException
      */
-    public function getLockedUsers(): HashTable {
-        return $this->getAll(IUserState::USER_STATE_LOCK);
-    }
-
-    /**
-     * @param string|null $state
-     * @return HashTable
-     * @throws UserStateException
-     */
-    private function getAll(?string $state = null): HashTable {
+    #[\Override]
+    public function getByUser(IUser $user): IUserState {
         try {
-            $table = new HashTable();
-
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder = $queryBuilder->select(
                 [
@@ -121,45 +70,89 @@ class UserStateRepository implements IUserStateRepository {
             )
                 ->from('user_state', 'us');
 
-            if ($state !== null) {
-                $queryBuilder = $queryBuilder->
-                where('us.`state` = ?')
-                    ->setParameter(0, $state);
+            $queryBuilder = $queryBuilder->
+            where('us.`user_id` = ?')
+                ->setParameter(0, $user->getId());
+
+            $userStates     = $queryBuilder->executeQuery()->fetchAllAssociative();
+            $userStateCount = count($userStates);
+
+            if ($userStateCount === 0) {
+                return new NullUserState();
             }
 
-            $usersStates = $queryBuilder->executeQuery()->fetchAllAssociative();
+            $row           = $userStates[0];
+            $id            = $row["id"];
+            $state         = $row["state"];
+            $validFrom     = $row["valid_from"];
+            $createTs      = $row["create_ts"];
+            $userStateHash = $row["state_hash"];
 
-            foreach ($usersStates as $row) {
-                $id            = $row["id"];
-                $userId        = $row["user_id"];
-                $state         = $row["state"];
-                $validFrom     = $row["valid_from"];
-                $createTs      = $row["create_ts"];
-                $userStateHash = $row["state_hash"];
-
-                $user = $this->userRepository->getUserById((string) $userId);
-
-                $userState = new UserState();
-                $userState->setId((int) $id);
-                $userState->setUser($user);
-                $userState->setValidFrom(
-                    $this->dateTimeService->fromString((string) $validFrom)
-                );
-                $userState->setCreateTs(
-                    $this->dateTimeService->fromString((string) $createTs)
-                );
-                $userState->setState((string) $state);
-                $userState->setStateHash((string) $userStateHash);
-
-                $table->put($userState->getId(), $userState);
-            }
-
-            return $table;
-        } catch (Exception|UserNotFoundException $exception) {
+            return new UserState(
+                (int) $id,
+                $user,
+                $state,
+                $this->dateTimeService->fromString((string) $validFrom),
+                $this->dateTimeService->fromString((string) $createTs),
+                (string) $userStateHash
+            );
+        } catch (Exception $exception) {
             $context            = ['exception' => $exception];
             $context['message'] = $exception->getMessage();
-            $context['sql']     = $queryBuilder->getSQL();
-            $context['state']   = $state;
+            $context['state']   = $user;
+
+            $this->logger->error('error retrieving all users', $context);
+            throw new UserStateException();
+        }
+    }
+
+    #[\Override]
+    public function getByHash(string $hash): IUserState {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder = $queryBuilder->select(
+                [
+                    'us.`id`'
+                    , 'us.`user_id`'
+                    , 'us.`state`'
+                    , 'us.`valid_from`'
+                    , 'us.`create_ts`'
+                    , 'us.`state_hash`'
+                ]
+            )
+                ->from('user_state', 'us');
+
+            $queryBuilder = $queryBuilder->
+            where('us.`state_hash` = ?')
+                ->setParameter(0, $hash);
+
+            $userStates     = $queryBuilder->executeQuery()->fetchAllAssociative();
+            $userStateCount = count($userStates);
+
+            if ($userStateCount === 0) {
+                return new NullUserState();
+            }
+
+            $row           = $userStates[0];
+            $id            = $row["id"];
+            $userId        = $row["user_id"];
+            $state         = $row["state"];
+            $validFrom     = $row["valid_from"];
+            $createTs      = $row["create_ts"];
+            $userStateHash = $row["state_hash"];
+
+            return new UserState(
+                (int) $id,
+                $this->userRepository->getUserById((string) $userId),
+                $state,
+                $this->dateTimeService->fromString((string) $validFrom),
+                $this->dateTimeService->fromString((string) $createTs),
+                (string) $userStateHash
+            );
+        } catch (Exception $exception) {
+            $context            = ['exception' => $exception];
+            $context['message'] = $exception->getMessage();
+            $context['hash']    = $hash;
 
             $this->logger->error('error retrieving all users', $context);
             throw new UserStateException();
@@ -167,41 +160,21 @@ class UserStateRepository implements IUserStateRepository {
     }
 
     /**
-     * @param IUser  $user
-     * @param string $state
+     * @param IUser $user
      * @return void
      * @throws UserStateNotRemovedException
      */
-    private function remove(IUser $user, string $state): void {
+    public function remove(IUser $user): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->delete('user_state')
                 ->where('user_id = ?')
-                ->andWhere('state = ?')
                 ->setParameter(0, $user->getId())
-                ->setParameter(1, $state)
                 ->executeStatement();
         } catch (Exception $exception) {
             $this->logger->error('error removing user state', ['exception' => $exception]);
             throw new UserStateNotRemovedException();
         }
-    }
-
-    /**
-     * @param IUser $user
-     * @return void
-     * @throws UserStateException
-     * @throws UserStateNotInsertedException
-     */
-    public function lock(IUser $user): void {
-        if (true === $this->isLocked($user)) {
-            throw new UserStateNotFoundException('user is already locked');
-        }
-        $this->insert(
-            $user
-            , IUserState::USER_STATE_LOCK
-            , Uuid::uuid4()->toString()
-        );
     }
 
     /**
@@ -211,7 +184,7 @@ class UserStateRepository implements IUserStateRepository {
      * @return void
      * @throws UserStateNotInsertedException
      */
-    private function insert(IUser $user, string $state, ?string $hash = null): void {
+    #[\Override] public function insert(IUser $user, string $state, ?string $hash = null): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->insert('user_state')
@@ -245,145 +218,6 @@ class UserStateRepository implements IUserStateRepository {
             $this->logger->error('error inserting user state', ['exception' => $exception]);
             throw new UserStateNotInsertedException();
         }
-    }
-
-    /**
-     * @param IUser $user
-     * @return void
-     * @throws UserStateException
-     * @throws UserStateNotInsertedException
-     * TODO check whether already exists
-     */
-    public function delete(IUser $user): void {
-        if (true === $this->isDeleted($user)) {
-            throw new UserStateException();
-        }
-        $this->insert(
-            $user
-            , IUserState::USER_STATE_LOCK
-        );
-        $this->insert(
-            $user
-            , IUserState::USER_STATE_DELETE
-        );
-    }
-
-    /**
-     * @param IUser $user
-     * @return bool
-     * @throws InvalidKeyTypeException
-     * @throws UnsupportedKeyTypeException
-     */
-    private function isDeleted(IUser $user): bool {
-        $deletedUsers = $this->getDeletedUsers();
-
-        foreach ($deletedUsers->keySet() as $key) {
-            /** @var IUserState $userState */
-            $userState = $deletedUsers->get($key);
-            if ($user->getId() === $userState->getUser()->getId()) return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return HashTable
-     * @throws UserStateException
-     */
-    public function getDeletedUsers(): HashTable {
-        return $this->getAll(IUserState::USER_STATE_DELETE);
-    }
-
-    /**
-     * @param IUser $user
-     * @return void
-     * @throws UserStateException
-     * @throws UserStateNotRemovedException
-     */
-    public function revertDelete(IUser $user): void {
-        if (false === $this->isDeleted($user)) {
-            throw new UserStateException();
-        }
-        $this->remove($user, IUserState::USER_STATE_DELETE);
-    }
-
-    /**
-     * @param IUser $user
-     * @return void
-     * @throws UserStateNotRemovedException
-     */
-    public function removeAll(IUser $user): void {
-        $this->remove(
-            $user
-            , IUserState::USER_STATE_LOCK
-        );
-        $this->remove(
-            $user
-            , IUserState::USER_STATE_LOCK
-        );
-        $this->remove(
-            $user
-            , IUserState::USER_STATE_REQUEST_PW_CHANGE
-        );
-    }
-
-    /**
-     * @param IUser  $user
-     * @param string $hash
-     * @return void
-     * @throws UserStateException
-     * @throws UserStateNotInsertedException
-     */
-    public function requestPasswordReset(IUser $user, string $hash): void {
-        if (true === $this->hasPasswordResetRequested($user)) {
-            throw new UserStateException();
-        }
-        $this->insert(
-            $user
-            , IUserState::USER_STATE_REQUEST_PW_CHANGE
-            , $hash
-        );
-
-    }
-
-    /**
-     * @param IUser $user
-     * @return bool
-     * @throws InvalidKeyTypeException
-     * @throws UnsupportedKeyTypeException
-     */
-    private function hasPasswordResetRequested(IUser $user): bool {
-        $lockedUsers = $this->getUsersWithPasswordResetRequest();
-
-        foreach ($lockedUsers->keySet() as $key) {
-            /** @var IUserState $userState */
-            $userState = $lockedUsers->get($key);
-            if ($user->getId() === $userState->getUser()->getId()) {
-                return true;
-            }
-        }
-        return false;
-
-    }
-
-    /**
-     * @return HashTable
-     * @throws UserStateException
-     */
-    public function getUsersWithPasswordResetRequest(): HashTable {
-        return $this->getAll(IUserState::USER_STATE_REQUEST_PW_CHANGE);
-    }
-
-    /**
-     * @param IUser $user
-     * @return void
-     * @throws UserStateException
-     * @throws UserStateNotRemovedException
-     */
-    public function revertPasswordChangeRequest(IUser $user): void {
-        if (false === $this->hasPasswordResetRequested($user)) {
-            throw new UserStateException();
-        }
-        $this->remove($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
     }
 
 }

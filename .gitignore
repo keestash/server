@@ -300,3 +300,4 @@ smtp.php
 /tmpl/
 test.php
 /test/.phpunit.cache/
+/data/image/*
