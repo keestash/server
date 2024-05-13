@@ -23,12 +23,12 @@ namespace KSA\Register\Api\User;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Exception\User\State\UserStateException;
+use Keestash\Core\DTO\User\NullUserState;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -38,6 +38,7 @@ readonly final class Confirm implements RequestHandlerInterface {
 
     public function __construct(
         private IUserStateRepository $userStateRepository
+        , private IUserStateService  $userStateService
         , private IEventService      $eventService
         , private LoggerInterface    $logger
     ) {
@@ -52,17 +53,9 @@ readonly final class Confirm implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $lockedUsers = $this->userStateRepository->getLockedUsers();
-        $userState   = null;
-        /** @var IUserState $us */
-        foreach ($lockedUsers->toArray() as $us) {
-            if ($us->getStateHash() === $token) {
-                $userState = $us;
-                break;
-            }
-        }
+        $userState = $this->userStateRepository->getByHash($token);
 
-        if (null === $userState) {
+        if ($userState instanceof NullUserState) {
             $this->logger->info('no userState found');
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
@@ -72,14 +65,12 @@ readonly final class Confirm implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        try {
-            $this->userStateRepository->unlock(
-                $userState->getUser()
-            );
-        } catch (UserStateException $exception) {
-            $this->logger->error('error unlocking user', ['exception' => $exception]);
+        if (false === $userState->getUser()->isLocked()) {
+            $this->logger->error('error unlocking user');
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
+
+        $this->userStateService->clear($userState->getUser());
 
         $this->eventService->execute(
             new UserRegistrationConfirmedEvent(

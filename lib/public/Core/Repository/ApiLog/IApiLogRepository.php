@@ -21,14 +21,17 @@ declare(strict_types=1);
 
 namespace KSP\Core\Repository\ApiLog;
 
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\IRepository;
 
 interface IApiLogRepository extends IRepository {
 
-    public function log(IAPIRequest $request): ?int;
+    public function log(IAPIRequest $request): IAPIRequest;
 
     public function removeForUser(IUser $user): bool;
+
+    public function read(IUser $user): ArrayList;
 
 }

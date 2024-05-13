@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2024> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,18 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Login;
+namespace KSP\Core\DTO\User;
 
-final class ConfigProvider {
+use KSP\Core\DTO\Entity\IObject;
 
-    public const string LOGIN_SUBMIT      = '/login/submit';
-    public const string LOGIN_KEY         = '/login/key';
-    public const string LOGOUT_SUBMIT     = '/logout/submit';
-    public const string APP_CONFIGURATION = '/app/configuration';
-    public const string APP_ID            = 'login';
-
-    public function __invoke(): array {
-        return require __DIR__ . '/config/config.php';
-    }
+interface IUserStateName extends IObject {
 
 }

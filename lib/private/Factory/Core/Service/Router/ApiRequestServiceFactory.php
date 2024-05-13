@@ -23,8 +23,6 @@ namespace Keestash\Factory\Core\Service\Router;
 
 use Keestash\Core\Service\Router\ApiRequestService;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Container\ContainerInterface;
@@ -33,9 +31,7 @@ class ApiRequestServiceFactory {
 
     public function __invoke(ContainerInterface $container): IApiRequestService {
         return new ApiRequestService(
-            $container->get(IEnvironmentService::class)
-            , $container->get(IApiLogRepository::class)
-            , $container->get(IInstallerService::class)
+            $container->get(IApiLogRepository::class)
             , $container->get(IRouterService::class)
         );
     }

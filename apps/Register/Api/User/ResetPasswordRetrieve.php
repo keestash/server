@@ -24,6 +24,7 @@ namespace KSA\Register\Api\User;
 use DateTime;
 use DateTimeImmutable;
 use Keestash\Api\Response\OkResponse;
+use Keestash\Core\DTO\User\NullUserState;
 use KSA\Register\Entity\IResponseCodes;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUserState;
@@ -47,7 +48,7 @@ class ResetPasswordRetrieve implements RequestHandlerInterface {
 
         $userState = $this->findCandidate($hash);
 
-        if (null === $userState) {
+        if ($userState instanceof NullUserState) {
             return new JsonResponse(
                 [
                     "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RETRIEVE_USER_BY_HASH_NOT_FOUND)
@@ -76,24 +77,12 @@ class ResetPasswordRetrieve implements RequestHandlerInterface {
         );
     }
 
-    private function findCandidate(string $hash, bool $debug = false): ?IUserState {
-        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
-
-        foreach ($userStates->keySet() as $userStateId) {
-            /** @var IUserState $userState */
-            $userState = $userStates->get($userStateId);
-
-            if (
-                true === $debug
-                || ($userState->getStateHash() === $hash
-                    && $userState->getCreateTs()->diff(new DateTime())->i < 2)
-            ) {
-                return $userState;
-            }
-
+    private function findCandidate(string $hash): IUserState {
+        $userState = $this->userStateRepository->getByHash($hash);
+        if ($userState->getCreateTs()->diff(new DateTime())->i < 2) {
+            return $userState;
         }
-
-        return null;
+        return new NullUserState();
     }
 
 }

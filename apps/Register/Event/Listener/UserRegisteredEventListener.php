@@ -30,7 +30,6 @@ use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -64,33 +63,24 @@ class UserRegisteredEventListener implements IListener {
 
         if ($event->getType() === Type::REGULAR) {
             $this->logger->debug('start regular registration');
-            /** @var IUser $user */
-            $user = $event->getUser();
+            $userState = $this->userStateRepository->getByUser(
+                $event->getUser()
+            );
+
+            if ($userState->getState() !== IUserState::USER_STATE_LOCK) {
+                $this->logger->warning('did not found user', ['user' => $event->getUser()]);
+                return;
+            }
+
             $this->emailService->setSubject(
                 $this->translator->translate("Please confirm your Keestash account"),
             );
-
-            $lockedUsers = $this->userStateRepository->getLockedUsers();
-            $userState   = null;
-            /** @var IUserState $us */
-            foreach ($lockedUsers->toArray() as $us) {
-                if ($us->getUser()->getId() === $user->getId()) {
-                    $this->logger->info('user is locked, can not proceed', ['userId' => $user->getId()]);
-                    $userState = $us;
-                    break;
-                }
-            }
-
-            if (null === $userState) {
-                $this->logger->warning('did not found user', ['user' => $user]);
-                return;
-            }
 
             $this->emailService->setBody(
                 $this->templateRenderer->render(
                     'registerEmail::confirmation_mail', [
                         'hello'       => $this->translator->translate(
-                            sprintf("Hey %s,", $user->getName())
+                            sprintf("Hey %s,", $event->getUser()->getName())
                         ),
                         'topic'       => $this->translator->translate("Your Keestash account"),
                         'content'     => $this->translator->translate("Please confirm your registration."),
@@ -106,8 +96,8 @@ class UserRegisteredEventListener implements IListener {
             );
 
             $this->emailService->addRecipient(
-                sprintf("%s %s", $user->getFirstName(), $user->getLastName())
-                , $user->getEmail()
+                sprintf("%s %s", $event->getUser()->getFirstName(), $event->getUser()->getLastName())
+                , $event->getUser()->getEmail()
             );
             $sent = $this->emailService->send();
             $this->logger->info('send register email', ['sent' => $sent]);

@@ -24,15 +24,15 @@ namespace KST\Service\Service;
 use DateTimeImmutable;
 use Keestash\Core\System\Application;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Ramsey\Uuid\Uuid;
 
-class UserService {
+final class UserService {
 
     public const TEST_USER_ID_2          = 2;
     public const TEST_USER_ID_2_NAME     = 'TestUser2';
@@ -109,26 +109,16 @@ class UserService {
         ]
     ];
 
-    private Application            $legacy;
-    private IUserRepositoryService $userRepositoryService;
-    private IUserService           $userService;
-    private ILocaleService         $localeService;
-    private ILanguageService       $languageService;
 
     public function __construct(
-        Application                             $legacy
-        , IUserRepositoryService                $userRepositoryService
-        , IUserService                          $userService
-        , ILocaleService                        $localeService
-        , ILanguageService                      $languageService
-        , private readonly IEventService        $eventService
-        , private readonly IUserStateRepository $userStateRepository
+        private readonly Application              $legacy
+        , private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IUserService           $userService
+        , private readonly ILocaleService         $localeService
+        , private readonly ILanguageService       $languageService
+        , private readonly IEventService          $eventService
+        , private readonly IUserStateService      $userStateService
     ) {
-        $this->legacy                = $legacy;
-        $this->userRepositoryService = $userRepositoryService;
-        $this->userService           = $userService;
-        $this->languageService       = $languageService;
-        $this->localeService         = $localeService;
     }
 
     public function createTestUsers(): void {
@@ -158,7 +148,7 @@ class UserService {
                 )
             );
             if (false === $data['locked'] && $user->isLocked()) {
-                $this->userStateRepository->unlock($user);
+                $this->userStateService->clear($user);
             }
         }
     }

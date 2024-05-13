@@ -21,12 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\Register\Test\Integration\Api\User;
 
+use Keestash\Core\DTO\User\UserState;
 use KSA\Register\Api\User\ResetPassword;
 use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Integration\Core\Repository\User\UserRepositoryTest;
 use KST\Service\Service\UserService;
@@ -95,8 +97,8 @@ class ResetPasswordTest extends TestCase {
     }
 
     public function testWithAlreadyRequested(): void {
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
         /** @var IUserService $userService */
@@ -117,7 +119,17 @@ class ResetPasswordTest extends TestCase {
             )
         );
         $this->assertInstanceOf(IUser::class, $user);
-        $userStateRepository->requestPasswordReset($user, $user->getHash());
+
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                IUserState::USER_STATE_REQUEST_PW_CHANGE,
+                new \DateTimeImmutable(),
+                new \DateTimeImmutable(),
+                $user->getHash()
+            )
+        );
 
         /** @var ResetPassword $forgotPassword */
         $forgotPassword = $this->getService(ResetPassword::class);

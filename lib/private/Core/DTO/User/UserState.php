@@ -25,38 +25,20 @@ use DateTimeInterface;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 
-class UserState implements IUserState {
+final readonly class UserState implements IUserState {
 
-    private int               $id;
-    private IUser             $user;
-    private string            $state;
-    private DateTimeInterface $validFrom;
-    private DateTimeInterface $createTs;
-    private ?string           $stateHash;
-
-    public static function isValidState(string $state): bool {
-        return in_array(
-            $state, [
-                IUserState::USER_STATE_DELETE
-                , IUserState::USER_STATE_LOCK
-                , IUserState::USER_STATE_REQUEST_PW_CHANGE
-            ]
-            , true
-        );
+    public function __construct(
+        private int               $id,
+        private IUser             $user,
+        private string            $state,
+        private DateTimeInterface $validFrom,
+        private DateTimeInterface $createTs,
+        private string            $stateHash
+    ) {
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void {
-        $this->id = $id;
     }
 
     /**
@@ -67,24 +49,10 @@ class UserState implements IUserState {
     }
 
     /**
-     * @param IUser $user
-     */
-    public function setUser(IUser $user): void {
-        $this->user = $user;
-    }
-
-    /**
      * @return string
      */
     public function getState(): string {
         return $this->state;
-    }
-
-    /**
-     * @param string $state
-     */
-    public function setState(string $state): void {
-        $this->state = $state;
     }
 
     /**
@@ -95,24 +63,10 @@ class UserState implements IUserState {
     }
 
     /**
-     * @param DateTimeInterface $validFrom
-     */
-    public function setValidFrom(DateTimeInterface $validFrom): void {
-        $this->validFrom = $validFrom;
-    }
-
-    /**
      * @return DateTimeInterface
      */
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
-    }
-
-    /**
-     * @param DateTimeInterface $createTs
-     */
-    public function setCreateTs(DateTimeInterface $createTs): void {
-        $this->createTs = $createTs;
     }
 
     /**
@@ -122,11 +76,17 @@ class UserState implements IUserState {
         return $this->stateHash;
     }
 
-    /**
-     * @param string|null $stateHash
-     */
-    public function setStateHash(?string $stateHash): void {
-        $this->stateHash = $stateHash;
+    public static function isValidState(string $state): bool {
+        return in_array(
+            $state, [
+                IUserState::USER_STATE_DELETE
+                , IUserState::USER_STATE_LOCK
+                , IUserState::USER_STATE_REQUEST_PW_CHANGE
+                , IUserState::USER_STATE_LOCK_CANDIDATE_STAGE_ONE
+                , IUserState::USER_STATE_LOCK_CANDIDATE_STAGE_TWO
+            ]
+            , true
+        );
     }
 
 }

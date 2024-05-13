@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2024> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,29 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Register\Event\Listener;
+namespace Keestash\Factory\Core\Service\User;
 
-use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Email\IEmailService;
-use KSP\Core\Service\L10N\IL10N;
-use KSP\Core\Service\User\IUserStateService;
+use Keestash\Core\Service\User\UserStateService;
+use KSP\Core\Repository\User\IUserStateRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-class ResetPasswordSendEmailListenerFactory implements FactoryInterface {
+class UserStateServiceFactory implements FactoryInterface {
 
     public function __invoke(
-        ContainerInterface $container
-        ,                  $requestedName
-        , ?array           $options = null
-    ): ResetPasswordSendEmailListener {
-        return new ResetPasswordSendEmailListener(
-            $container->get(TemplateRendererInterface::class)
-            , $container->get(IL10N::class)
-            , $container->get(IEmailService::class)
-            , $container->get(IConfigService::class)
-            , $container->get(IUserStateService::class)
+        ContainerInterface $container,
+                           $requestedName,
+        ?array             $options = null
+    ): UserStateService {
+        return new UserStateService(
+            $container->get(IUserStateRepository::class),
+            $container->get(LoggerInterface::class)
         );
     }
 
