@@ -23,6 +23,7 @@ namespace KSA\Login\Test\Integration\Command;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Test\Integration\TestCase;
 use KSP\Command\IKeestashCommand;
@@ -78,7 +79,7 @@ class LoginTest extends TestCase {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_LOCK_CANDIDATE_STAGE_ONE,
+                UserStateName::LOCK_CANDIDATE_STAGE_ONE,
                 new DateTimeImmutable(),
                 new DateTimeImmutable(),
                 Uuid::uuid4()->toString()
@@ -89,7 +90,7 @@ class LoginTest extends TestCase {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_LOCK_CANDIDATE_STAGE_TWO,
+                UserStateName::LOCK_CANDIDATE_STAGE_TWO,
                 new DateTimeImmutable(),
                 new DateTimeImmutable(),
                 Uuid::uuid4()->toString()
@@ -100,7 +101,7 @@ class LoginTest extends TestCase {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_LOCK,
+                UserStateName::LOCK,
                 new DateTimeImmutable(),
                 new DateTimeImmutable(),
                 Uuid::uuid4()->toString()

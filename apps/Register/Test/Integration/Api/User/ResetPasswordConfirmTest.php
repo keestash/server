@@ -21,7 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\Register\Test\Integration\Api\User;
 
+use DateTimeImmutable;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\ConfigProvider;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Test\Integration\TestCase;
@@ -65,9 +67,9 @@ class ResetPasswordConfirmTest extends TestCase {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_REQUEST_PW_CHANGE,
-                new \DateTimeImmutable(),
-                new \DateTimeImmutable(),
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
                 $hash
             )
         );
@@ -106,23 +108,23 @@ class ResetPasswordConfirmTest extends TestCase {
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_REQUEST_PW_CHANGE,
-                new \DateTimeImmutable(),
-                new \DateTimeImmutable(),
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
                 Uuid::uuid4()->toString()
             )
         );
 
         $this->assertInstanceOf(IUser::class, $user);
-        $userStateService->clearCarefully($user, IUserState::USER_STATE_REQUEST_PW_CHANGE);
+        $userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
 
         $userStateService->setState(
             new UserState(
                 0,
                 $user,
-                IUserState::USER_STATE_REQUEST_PW_CHANGE,
-                new \DateTimeImmutable(),
-                new \DateTimeImmutable(),
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
                 (string) $hash
             )
         );

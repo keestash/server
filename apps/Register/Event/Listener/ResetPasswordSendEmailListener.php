@@ -23,10 +23,10 @@ namespace KSA\Register\Event\Listener;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\Event\ResetPasswordEvent;
 use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Event\Listener\IListener;
@@ -86,7 +86,7 @@ final readonly class ResetPasswordSendEmailListener implements IListener {
             new UserState(
                 0,
                 $event->getUser(),
-                IUserState::USER_STATE_REQUEST_PW_CHANGE,
+                UserStateName::REQUEST_PW_CHANGE,
                 new DateTimeImmutable(),
                 new DateTimeImmutable(),
                 Uuid::uuid4()->toString()

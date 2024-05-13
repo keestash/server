@@ -22,15 +22,14 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\User;
 
-use KSP\Core\DTO\User\IUserStateName;
-
-enum UserStateName: string implements IUserStateName {
+enum UserStateName: string {
 
     case DELETE = "delete.state.user";
     case LOCK = "lock.state.user";
     case LOCK_CANDIDATE_STAGE_ONE = "one.stage.candidate.lock.state.user";
     case LOCK_CANDIDATE_STAGE_TWO = "two.stage.candidate.lock.state.user";
     case REQUEST_PW_CHANGE = "change.pw.request.state.user";
+    case NULL = "null";
 
 //    public const string  USER_STATE_DELETE                   = "delete.state.user";
 //    public const string  USER_STATE_LOCK                     = "lock.state.user";

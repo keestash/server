@@ -23,10 +23,10 @@ namespace Keestash\Core\Service\User\Event\Listener;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\ScheduleUserStateEvent;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\User\IUserStateService;
@@ -61,19 +61,19 @@ final readonly class ScheduleUserStateEventListener implements IListener {
             throw new KeestashException();
         }
 
-        switch ($event->getStateType()) {
-            case IUserState::USER_STATE_DELETE:
+        switch ($event->getStateName()) {
+            case UserStateName::DELETE:
                 $this->userStateService->forceDelete($event->getUser());
                 break;
-            case IUserState::USER_STATE_LOCK:
+            case UserStateName::LOCK:
                 $this->userStateService->forceLock($event->getUser());
                 break;
-            case IUserState::USER_STATE_REQUEST_PW_CHANGE:
+            case UserStateName::REQUEST_PW_CHANGE:
                 $this->userStateService->setState(
                     new UserState(
                         0,
                         $event->getUser(),
-                        IUserState::USER_STATE_REQUEST_PW_CHANGE,
+                        UserStateName::REQUEST_PW_CHANGE,
                         new DateTimeImmutable(),
                         new DateTimeImmutable(),
                         Uuid::uuid4()->toString()

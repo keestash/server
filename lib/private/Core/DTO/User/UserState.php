@@ -30,7 +30,7 @@ final readonly class UserState implements IUserState {
     public function __construct(
         private int               $id,
         private IUser             $user,
-        private string            $state,
+        private UserStateName     $state,
         private DateTimeInterface $validFrom,
         private DateTimeInterface $createTs,
         private string            $stateHash
@@ -48,10 +48,7 @@ final readonly class UserState implements IUserState {
         return $this->user;
     }
 
-    /**
-     * @return string
-     */
-    public function getState(): string {
+    public function getState(): UserStateName {
         return $this->state;
     }
 
@@ -74,19 +71,6 @@ final readonly class UserState implements IUserState {
      */
     public function getStateHash(): ?string {
         return $this->stateHash;
-    }
-
-    public static function isValidState(string $state): bool {
-        return in_array(
-            $state, [
-                IUserState::USER_STATE_DELETE
-                , IUserState::USER_STATE_LOCK
-                , IUserState::USER_STATE_REQUEST_PW_CHANGE
-                , IUserState::USER_STATE_LOCK_CANDIDATE_STAGE_ONE
-                , IUserState::USER_STATE_LOCK_CANDIDATE_STAGE_TWO
-            ]
-            , true
-        );
     }
 
 }

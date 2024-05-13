@@ -24,11 +24,11 @@ namespace KSA\Register\Api\User;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordEvent;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
@@ -121,10 +121,10 @@ final readonly class ResetPassword implements RequestHandlerInterface {
             );
         }
 
-        $userState  = $this->userStateService->getState($user);
+        $userState = $this->userStateService->getState($user);
 
         $alreadyRequested = false;
-        if ($userState->getState() === IUserState::USER_STATE_REQUEST_PW_CHANGE) {
+        if ($userState->getState() === UserStateName::REQUEST_PW_CHANGE) {
             $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
             $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
         }
