@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #FFFFFF;
+            color: black !important;
+        }
+
+        table {
+            border-spacing: 0;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .email-header {
+            background-color: #081A51;
+            padding: 10px;
+            color: white;
+            text-align: center;
+        }
+
+        .email-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .email-footer {
+            padding: 10px;
+            font-size: 0.8em;
+            background-color: #F1F1F1;
+            text-align: center;
+        }
+
+        .response-button {
+            background-color: #081A51;
+            color: white !important;
+            padding: 15px 30px;
+            text-decoration: none !important;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin: 20px 0;
+        }
+
+        .response-button:hover,
+        .response-button:visited,
+        .response-button:active,
+        .response-button:focus {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<table cellpadding="0" cellspacing="0">
+    <tr>
+        <td class="email-header">
+            <img src="https://keestash.com/wp-content/uploads/2022/03/keestash-transparent-1.png" alt="Keestash Logo"
+                 height="50px" width="70px">
+        </td>
+    </tr>
+    <tr>
+        <td class="email-content">
+            <h1>{{ title }}</h1>
+            <p>{{ message }}</p>
+            <a href="mailto:dogan@keestashapps.com?subject=Please%20Unlock%20My%20Keestash%20Account"
+               class="response-button">{{ buttonText }}</a>
+        </td>
+    </tr>
+    <tr>
+        <td class="email-footer">
+            <p>&copy; {{ copyRightText }}</p>
+            <p>{{ unsubscribe }}</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

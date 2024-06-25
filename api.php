@@ -48,10 +48,10 @@ use Psr\Container\ContainerInterface;
 
     $router = $config->get(ConfigProvider::API_ROUTER);
 
-    /** @var IEventService $eventManager */
-    $eventManager = $container->get(IEventService::class);
-    $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
-    $eventManager->execute(new ApplicationStartedEvent(new DateTime()));
+    /** @var IEventService $eventService */
+    $eventService = $container->get(IEventService::class);
+    $eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
+    $eventService->execute(new ApplicationStartedEvent(new DateTime()));
 
     /** @var Config $route */
     foreach ($router[ConfigProvider::ROUTES] as $route) {
