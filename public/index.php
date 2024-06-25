@@ -35,7 +35,7 @@ use Psr\Container\ContainerInterface;
     set_time_limit(0);
 
     /** @var ContainerInterface $container */
-    $container = require __DIR__ . '/lib/start.php';
+    $container = require __DIR__ . '/../lib/start.php';
     /** @var Config $config */
     $config = $container->get(Config::class);
     /** @var Application $app */
@@ -44,14 +44,14 @@ use Psr\Container\ContainerInterface;
     $environmentService = $container->get(IEnvironmentService::class);
     $environmentService->setEnv(ConfigProvider::ENVIRONMENT_API);
 
-    (require __DIR__ . '/lib/config/pipeline/api/pipeline.php')($app);
+    (require __DIR__ . '/../lib/config/pipeline/api/pipeline.php')($app);
 
     $router = $config->get(ConfigProvider::API_ROUTER);
 
-    /** @var IEventService $eventService */
-    $eventService = $container->get(IEventService::class);
-    $eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
-    $eventService->execute(new ApplicationStartedEvent(new DateTime()));
+    /** @var IEventService $eventManager */
+    $eventManager = $container->get(IEventService::class);
+    $eventManager->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
+    $eventManager->execute(new ApplicationStartedEvent(new DateTime()));
 
     /** @var Config $route */
     foreach ($router[ConfigProvider::ROUTES] as $route) {
