@@ -85,25 +85,25 @@ return [
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, PublicShare::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, PublicShare::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => PublicShare::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, PublicShareSingle::class]
+            , IRoute::MIDDLEWARE => [PublicShareSingle::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => PublicShareSingle::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_REMOVE
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, RemoveShare::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, RemoveShare::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => RemoveShare::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE
-            , IRoute::MIDDLEWARE => [DeactivatedRouteMiddleware::class, NodeAccessMiddleware::class, Share::class]
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, Share::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => Share::class
         ],
