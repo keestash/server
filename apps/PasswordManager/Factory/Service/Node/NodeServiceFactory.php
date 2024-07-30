@@ -34,7 +34,6 @@ class NodeServiceFactory {
         return new NodeService(
             $container->get(IUserRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(IUserService::class)
             , $container->get(IEventService::class)
         );
     }

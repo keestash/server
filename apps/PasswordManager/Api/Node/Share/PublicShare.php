@@ -21,72 +21,87 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Share;
 
+use KSA\PasswordManager\Entity\IResponseCodes;
+use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
+use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class PublicShare
  * @package KSA\PasswordManager\Api\Share
  */
-class PublicShare implements RequestHandlerInterface {
-
-    private NodeRepository        $nodeRepository;
-    private ShareService          $shareService;
-    private PublicShareRepository $shareRepository;
+final readonly class PublicShare implements RequestHandlerInterface {
 
     public function __construct(
-        NodeRepository          $nodeRepository
-        , ShareService          $shareService
-        , PublicShareRepository $shareRepository
+        private NodeRepository          $nodeRepository
+        , private ShareService          $shareService
+        , private PublicShareRepository $shareRepository
+        , private LoggerInterface       $logger
+        , private IResponseService      $responseService
     ) {
-        $this->nodeRepository  = $nodeRepository;
-        $this->shareService    = $shareService;
-        $this->shareRepository = $shareRepository;
     }
 
-
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = (array) $request->getParsedBody();
-        $nodeId     = $parameters["node_id"] ?? null;
-
-        if (null === $nodeId) {
-            return new JsonResponse([
-                "message" => "no node found"
-            ], IResponse::BAD_REQUEST);
-        }
-
         try {
-            $node = $this->nodeRepository->getNode((int) $nodeId);
-        } catch (PasswordManagerException $exception) {
+
+            $parameters = (array) $request->getParsedBody();
+            $nodeId     = $parameters["node_id"] ?? null;
+
+            if (null === $nodeId) {
+                return new JsonResponse(
+                    [
+                        "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_INVALID_PAYLOAD)
+                    ],
+                    IResponse::BAD_REQUEST
+                );
+            }
+
+            $node        = $this->nodeRepository->getNode((int) $nodeId);
+            $publicShare = $this->shareService->createPublicShare($node);
+            $node->setPublicShare($publicShare);
+
+            $share = $this->shareRepository->getShareByNode($node);
+
+            if (
+                (!($share instanceof NullShare))
+                || true === $this->shareService->isExpired($share)
+            ) {
+                return new JsonResponse(
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(
+                            IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS
+                        )
+                    ],
+                    IResponse::NOT_FOUND
+                );
+            }
+
+            $node = $this->shareRepository->shareNode($node);
+
             return new JsonResponse(
                 [
-                    "message" => "no node found 2"
+                    "share" => $node->getPublicShare()
                 ]
-                , IResponse::NOT_FOUND
+                , IResponse::OK
+            );
+        } catch (PasswordManagerException $exception) {
+            $this->logger->error('error public share', ['e' => $exception]);
+            return new JsonResponse(
+                [
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NOT_FOUND)
+                ],
+                IResponse::NOT_FOUND
             );
         }
-
-        $publicShare = $this->shareService->createPublicShare($node);
-        $node->setPublicShare($publicShare);
-
-        $share = $this->shareRepository->getShareByNode($node);
-
-        if (null !== $share && false === $share->isExpired()) {
-            // TODO unshare
-        }
-
-        $node = $this->shareRepository->shareNode($node);
-
-        return new JsonResponse([
-            "share" => $node->getPublicShare()
-        ], IResponse::OK);
     }
 
 }

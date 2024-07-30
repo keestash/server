@@ -21,115 +21,74 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Share;
 
-use DateTime;
+use DateTimeImmutable;
+use Exception;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
-use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
-class PublicShareSingle implements RequestHandlerInterface {
-
-    private PublicShareRepository $shareRepository;
-    private NodeRepository        $nodeRepository;
-    private CredentialService     $credentialService;
-    private IL10N         $translator;
-    private IEventService $eventManager;
+final readonly class PublicShareSingle implements RequestHandlerInterface {
 
     public function __construct(
-        IL10N                   $l10n
-        , PublicShareRepository $shareRepository
-        , NodeRepository        $nodeRepository
-        , CredentialService     $credentialService
-        , IEventService         $eventManager
+        private PublicShareRepository $shareRepository
+        , private NodeRepository      $nodeRepository
+        , private CredentialService   $credentialService
+        , private IEventService       $eventManager
+        , private ShareService        $shareService
+        , private LoggerInterface     $logger
     ) {
-        $this->translator        = $l10n;
-        $this->shareRepository   = $shareRepository;
-        $this->nodeRepository    = $nodeRepository;
-        $this->credentialService = $credentialService;
-        $this->eventManager      = $eventManager;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $hash = $request->getAttribute('hash');
-
-        if (null === $hash) {
-            $this->eventManager->execute(
-                new PasswordViewed(
-                    array_merge(
-                        $_SERVER
-                        , ['passwordSeen' => false]
-                    )
-                    , new DateTime()
-                )
-            );
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("no password found for hash")
-                    , "hash"  => $hash
-                ]
-                , IResponse::BAD_REQUEST
-            );
-        }
-
-        $share = $this->shareRepository->getShare($hash);
-
-        if (null === $share || $share->isExpired()) {
-            $this->eventManager->execute(
-                new PasswordViewed(
-                    array_merge(
-                        $_SERVER
-                        , [
-                            'passwordSeen'   => false
-                            , 'shareExists'  => null === $share
-                            , 'shareExpired' => null !== $share ? $share->isExpired() : null
-                        ]
-                    )
-                    , new DateTime()
-                )
-            );
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("no share found")
-                ]
-                , IResponse::NOT_FOUND
-            );
-        }
-
         try {
+            $hash      = (string) $request->getAttribute('hash');
+            $share     = $this->shareRepository->getShare($hash);
+            $isExpired = $this->shareService->isExpired($share);
+
+            if ($share instanceof NullShare || $isExpired) {
+                $this->triggerEvent(false, !($share instanceof NullShare), $isExpired);
+                return new JsonResponse(
+                    []
+                    , IResponse::NOT_FOUND
+                );
+            }
+
             /** @var Credential $node */
             $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
-        } catch (PasswordManagerException $exception) {
+            $this->triggerEvent(true, true, false);
+            return new JsonResponse(
+                [
+                    "decrypted" => $this->credentialService->getDecryptedPassword($node)
+                ]
+                , IResponse::OK
+            );
+        } catch (Exception $exception) {
+            $this->logger->error('error with public share single', ['e' => $exception]);
             return new JsonResponse(['no data found'], IResponse::NOT_FOUND);
         }
+    }
 
+    private function triggerEvent(bool $seen, bool $shareExists, bool $expired): void {
         $this->eventManager->execute(
             new PasswordViewed(
                 array_merge(
                     $_SERVER
-                    , ['passwordSeen' => true]
+                    , ['passwordSeen' => $seen, 'shareExists' => $shareExists, 'expired' => $expired]
                 )
-                , new DateTime()
+                , new DateTimeImmutable()
             )
         );
-
-        return new JsonResponse(
-            [
-                "response_code" => IResponse::OK
-                , "decrypted"   => $this->credentialService->getDecryptedPassword($node)
-            ]
-            , IResponse::OK
-        );
-
-
     }
 
 }

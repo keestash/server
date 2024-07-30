@@ -43,41 +43,20 @@ use Laminas\Validator\EmailAddress as EmailValidator;
 use Laminas\Validator\Uri as UriValidator;
 use TypeError;
 
-class UserService implements IUserService {
-
-    private Application            $legacy;
-    private IDateTimeService       $dateTimeService;
-    private IStringService         $stringService;
-    private IUserRepositoryService $userRepositoryService;
-    private EmailValidator         $emailValidator;
-    private PhoneValidator         $phoneValidator;
-    private UriValidator           $uriValidator;
-    private ILocaleService         $localeService;
-    private ILanguageService       $languageService;
-    private Config                 $config;
+final readonly class UserService implements IUserService {
 
     public function __construct(
-        Application              $legacy
-        , IDateTimeService       $dateTimeService
-        , IStringService         $stringService
-        , IUserRepositoryService $userRepositoryService
-        , EmailValidator         $emailValidator
-        , PhoneValidator         $phoneValidator
-        , UriValidator           $uriValidator
-        , ILocaleService         $localeService
-        , ILanguageService       $languageService
-        , Config                 $config
+        private Application              $legacy
+        , private IDateTimeService       $dateTimeService
+        , private IStringService         $stringService
+        , private IUserRepositoryService $userRepositoryService
+        , private EmailValidator         $emailValidator
+        , private PhoneValidator         $phoneValidator
+        , private UriValidator           $uriValidator
+        , private ILocaleService         $localeService
+        , private ILanguageService       $languageService
+        , private Config                 $config
     ) {
-        $this->legacy                = $legacy;
-        $this->dateTimeService       = $dateTimeService;
-        $this->stringService         = $stringService;
-        $this->userRepositoryService = $userRepositoryService;
-        $this->emailValidator        = $emailValidator;
-        $this->phoneValidator        = $phoneValidator;
-        $this->uriValidator          = $uriValidator;
-        $this->languageService       = $languageService;
-        $this->localeService         = $localeService;
-        $this->config                = $config;
     }
 
     public function verifyPassword(string $password, string $hash): bool {

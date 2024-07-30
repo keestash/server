@@ -131,5 +131,7 @@ interface IPermission extends PermissionInterface, IJsonObject {
     public const PERMISSION_NAME_PASSWORD_SEARCH                            = 'PASSWORD_MANAGER_SEARCH';
     public const PERMISSION_LOGIN_KEY                                       = 57;
     public const PERMISSION_NAME_LOGIN_KEY                                  = 'LOGIN_KEY';
+    public const PERMISSION_PUBLIC_SHARE_PUBLIC                             = 58;
+    public const PERMISSION_NAME_PUBLIC_SHARE_PUBLIC                        = 'PUBLIC_SHARE_PUBLIC';
 
 }

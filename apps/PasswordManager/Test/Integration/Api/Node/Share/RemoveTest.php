@@ -19,10 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Integration\Api\Share;
+namespace Integration\Api\Node\Share;
 
 use KSA\PasswordManager\Api\Node\Share\Remove;
-use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Test\Integration\TestCase;
@@ -54,7 +53,6 @@ class RemoveTest extends TestCase {
         $node = $edge->getNode();
 
         $publicShare = $shareService->createPublicShare($node);
-        $publicShare->setNodeId($node->getId());
         $node->setPublicShare($publicShare);
         $node = $shareRepository->shareNode($node);
 
