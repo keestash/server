@@ -28,12 +28,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Remove implements RequestHandlerInterface {
+final readonly class Remove implements RequestHandlerInterface {
 
-    private NodeRepository $nodeRepository;
-
-    public function __construct(NodeRepository $nodeRepository) {
-        $this->nodeRepository = $nodeRepository;
+    public function __construct(
+        private NodeRepository $nodeRepository
+    ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {

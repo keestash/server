@@ -24,18 +24,18 @@ namespace KSA\PasswordManager\Factory\Api\Node\Share;
 use KSA\PasswordManager\Api\Node\Share\Share;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
 
 class ShareFactory {
 
     public function __invoke(ContainerInterface $container): Share {
         return new Share(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
             , $container->get(IUserRepository::class)
             , $container->get(NodeService::class)
+            , $container->get(ShareService::class)
         );
     }
 

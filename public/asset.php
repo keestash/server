@@ -34,9 +34,9 @@ use Psr\Log\LoggerInterface;
 
 (static function (): void {
 
-    require 'vendor/autoload.php';
+    require __DIR__ .'/../vendor/autoload.php';
     /** @var ContainerInterface $container */
-    $container = require __DIR__ . '/lib/start.php';
+    $container = require __DIR__ . '/../lib/start.php';
     /** @var InstanceDB $instanceDB */
     $instanceDB = $container->get(InstanceDB::class);
     /** @var Config $config */
@@ -88,7 +88,7 @@ use Psr\Log\LoggerInterface;
     $file = null;
     if ($audience->type === IAudience::TYPE_USER) {
 
-        $file       = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "/" . md5($audience->value) . "/profile_image_" . (int) $audience->value;
+        $file       = $config->get(Keestash\ConfigProvider::IMAGE_PATH) . "asset.php/" . md5($audience->value) . "/profile_image_" . (int) $audience->value;
         $files      = glob($file . "*");
         $filesCount = count((array) $files);
 

@@ -60,6 +60,7 @@ return [
         , ConfigProvider::PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE                    => IPermission::PERMISSION_PASSWORD_MANAGER_NODE_PWNED_ACTIVATE
         , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_LIST_ALL                     => IPermission::PERMISSION_PASSWORD_MANAGER_CREDENTIAL_LIST_ALL
         , ConfigProvider::PASSWORD_MANAGER_SEARCH                                  => IPermission::PERMISSION_RESET_PASSWORD_SEARCH
+        , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC                     => IPermission::PERMISSION_PUBLIC_SHARE_PUBLIC
     ]
     , CoreConfigProvider::PERMISSION_FREE    => [
         ConfigProvider::PASSWORD_MANAGER_GENERATE_PASSWORD
@@ -93,6 +94,7 @@ return [
         , IPermission::PERMISSION_PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE      => IPermission::PERMISSION_NAME_PASSWORD_MANAGER_NODE_PWNED_IS_ACTIVE
         , IPermission::PERMISSION_PASSWORD_MANAGER_CREDENTIAL_LIST_ALL       => IPermission::PERMISSION_NAME_PASSWORD_MANAGER_CREDENTIAL_LIST_ALL
         , IPermission::PERMISSION_RESET_PASSWORD_SEARCH                      => IPermission::PERMISSION_NAME_PASSWORD_SEARCH
+        , IPermission::PERMISSION_PUBLIC_SHARE_PUBLIC                        => IPermission::PERMISSION_NAME_PUBLIC_SHARE_PUBLIC
     ],
     CoreConfigProvider::ROLE_PERMISSION_LIST => [
         RoleInterface::DEFAULT_NAME   => [
@@ -116,6 +118,7 @@ return [
             , IPermission::PERMISSION_PASSWORD_MANAGER_CREDENTIAL_LIST_ALL
             , IPermission::PERMISSION_RESET_PASSWORD_SEARCH
             , IPermission::PERMISSION_PASSWORD_MANAGER_NODE_ATTACHMENT_REMOVE
+            , IPermission::PERMISSION_PUBLIC_SHARE_PUBLIC
         ]
         , IRole::ROLE_NAME_USER_ADMIN => [
             IPermission::PERMISSION_PASSWORD_MANAGER_NODE_SHAREABLE_USERS

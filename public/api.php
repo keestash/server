@@ -35,7 +35,7 @@ use Psr\Container\ContainerInterface;
     set_time_limit(0);
 
     /** @var ContainerInterface $container */
-    $container = require __DIR__ . '/lib/start.php';
+    $container = require __DIR__ . '/../lib/start.php';
     /** @var Config $config */
     $config = $container->get(Config::class);
     /** @var Application $app */
@@ -44,7 +44,7 @@ use Psr\Container\ContainerInterface;
     $environmentService = $container->get(IEnvironmentService::class);
     $environmentService->setEnv(ConfigProvider::ENVIRONMENT_API);
 
-    (require __DIR__ . '/lib/config/pipeline/api/pipeline.php')($app);
+    (require __DIR__ . '/../lib/config/pipeline/api/pipeline.php')($app);
 
     $router = $config->get(ConfigProvider::API_ROUTER);
 

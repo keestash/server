@@ -19,14 +19,15 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Integration\Api\Share;
+namespace Integration\Api\Node\Share;
 
 use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
-use KSA\PasswordManager\Entity\Folder\Folder;
+use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IResponse;
 use Ramsey\Uuid\Uuid;
 
 class PublicShareSingleTest extends TestCase {
@@ -55,9 +56,8 @@ class PublicShareSingleTest extends TestCase {
         $node = $edge->getNode();
 
         $publicShare = $shareService->createPublicShare($node);
-        $publicShare->setNodeId($node->getId());
         $node->setPublicShare($publicShare);
-        $node = $shareRepository->shareNode($node);
+        $shareRepository->shareNode($node);
 
         $request  = $this->getRequestService()
             ->getVirtualRequestWithToken($user);
@@ -102,23 +102,23 @@ class PublicShareSingleTest extends TestCase {
             , $user
             , $this->getRootFolder($user)
         );
-        $node   = $edge->getNode();
+        $node = $edge->getNode();
 
         $publicShare = $shareService->createPublicShare($node);
-        $publicShare->setExpireTs((new \DateTime('-10 days')));
-        $publicShare->setNodeId($node->getId());
+        $publicShare = new PublicShare(
+            $publicShare->getId(),
+            $publicShare->getNodeId(),
+            $publicShare->getHash(),
+            (new \DateTime('-10 days'))
+        );
         $node->setPublicShare($publicShare);
-        $node = $shareRepository->shareNode($node);
+        $shareRepository->shareNode($node);
 
         $request  = $this->getRequestService()
             ->getVirtualRequestWithToken($user);
         $response = $publicShareSingle->handle($request->withAttribute("hash", $publicShare->getHash()));
 
-        $data = $this->getResponseService()->getFailedResponseData($response);
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
-        $this->assertArrayHasKey('message', $data);
-        $this->assertTrue($data['message'] === 'no share found');
-
+        $this->assertEquals(IResponse::NOT_FOUND, $response->getStatusCode());
     }
 
 }

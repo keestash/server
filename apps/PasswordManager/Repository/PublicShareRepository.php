@@ -2,12 +2,21 @@
 declare(strict_types=1);
 /**
  * Keestash
- * Copyright (C) 2019 Dogan Ucar <dogan@dogan-ucar.de>
  *
- * End-User License Agreement (EULA) of Keestash
- * This End-User License Agreement ("EULA") is a legal agreement between you and Keestash
- * This EULA agreement governs your acquisition and use of our Keestash software ("Software") directly from Keestash or indirectly through a Keestash authorized reseller or distributor (a "Reseller").
- * Please read this EULA agreement carefully before completing the installation process and using the Keestash software. It provides a license to use the Keestash software and contains warranty information and liability disclaimers.
+ * Copyright (C) <2024> <Dogan Ucar>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 namespace KSA\PasswordManager\Repository;
@@ -16,26 +25,20 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use Psr\Log\LoggerInterface;
 
-class PublicShareRepository {
-
-    private IDateTimeService $dateTimeService;
-    private LoggerInterface  $logger;
-    private IBackend         $backend;
+final readonly class PublicShareRepository {
 
     public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , LoggerInterface  $logger
+        private IBackend           $backend
+        , private IDateTimeService $dateTimeService
+        , private LoggerInterface  $logger
     ) {
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
-        $this->backend         = $backend;
     }
 
     public function shareNode(Node $node): Node {
@@ -65,12 +68,18 @@ class PublicShareRepository {
             throw new PasswordManagerException();
         }
 
-        $share->setId($shareId);
-        $node->setPublicShare($share);
+        $node->setPublicShare(
+            new PublicShare(
+                $shareId,
+                $node->getId(),
+                $share->getHash(),
+                $share->getExpireTs()
+            )
+        );
         return $node;
     }
 
-    public function getShare(string $hash): ?PublicShare {
+    public function getShare(string $hash): PublicShare {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
@@ -88,7 +97,7 @@ class PublicShareRepository {
         $rows   = $result->fetchAllNumeric();
 
         if (0 === count($rows)) {
-            return null;
+            return new NullShare();
         }
 
         $row       = $rows[0];
@@ -97,16 +106,16 @@ class PublicShareRepository {
         $expireTs  = $row[2];
         $nodeId    = $row[3];
 
-        $publicShare = new PublicShare();
-        $publicShare->setId((int) $shareId);
-        $publicShare->setHash((string) $shareHash);
-        $publicShare->setExpireTs($this->dateTimeService->fromFormat($expireTs));
-        $publicShare->setNodeId((int) $nodeId);
+        return new PublicShare(
+            (int) $shareId,
+            (int) $nodeId,
+            (string) $shareHash,
+            $this->dateTimeService->fromFormat($expireTs)
+        );
 
-        return $publicShare;
     }
 
-    public function getShareByNode(Node $node): ?PublicShare {
+    public function getShareByNode(Node $node): PublicShare {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
             [
@@ -124,7 +133,7 @@ class PublicShareRepository {
         $rows   = $result->fetchAllNumeric();
 
         if (0 === count($rows)) {
-            return null;
+            return new NullShare();
         }
 
         $row       = $rows[0];
@@ -133,13 +142,12 @@ class PublicShareRepository {
         $expireTs  = $row[2];
         $nodeId    = $row[3];
 
-        $publicShare = new PublicShare();
-        $publicShare->setId((int) $shareId);
-        $publicShare->setHash((string) $shareHash);
-        $publicShare->setExpireTs($this->dateTimeService->toDateTime((int) $expireTs));
-        $publicShare->setNodeId((int) $nodeId);
-
-        return $publicShare;
+        return new PublicShare(
+            (int) $shareId,
+            (int) $nodeId,
+            (string) $shareHash,
+            $this->dateTimeService->toDateTime((int) $expireTs)
+        );
     }
 
     public function addShareInfo(Node $node): Node {
@@ -171,13 +179,14 @@ class PublicShareRepository {
             $expireTs  = $row[2];
             $nodeId    = $row[3];
 
-            $publicShare = new PublicShare();
-            $publicShare->setId((int) $shareId);
-            $publicShare->setHash((string) $shareHash);
-            $publicShare->setExpireTs($this->dateTimeService->fromFormat($expireTs));
-            $publicShare->setNodeId((int) $nodeId);
-
-            $node->setPublicShare($publicShare);
+            $node->setPublicShare(
+                new PublicShare(
+                    (int) $shareId,
+                    (int) $nodeId,
+                    (string) $shareHash,
+                    $this->dateTimeService->fromFormat($expireTs)
+                )
+            );
             return $node;
         } catch (Exception $e) {
             $this->logger->warning('can not request share info', ['node' => $node, 'exception' => $e]);

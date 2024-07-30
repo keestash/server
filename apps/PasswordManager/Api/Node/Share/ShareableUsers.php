@@ -37,27 +37,17 @@ use Psr\Log\LoggerInterface;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class ShareableUsers implements RequestHandlerInterface {
-
-    private IUserRepository $userRepository;
-    private NodeRepository  $nodeRepository;
-    private LoggerInterface $logger;
-    private IJWTService     $jwtService;
+final readonly class ShareableUsers implements RequestHandlerInterface {
 
     public function __construct(
-        IUserRepository   $userRepository
-        , NodeRepository  $nodeRepository
-        , LoggerInterface $logger
-        , IJWTService     $jwtService
+        private IUserRepository   $userRepository
+        , private NodeRepository  $nodeRepository
+        , private LoggerInterface $logger
+        , private IJWTService     $jwtService
     ) {
-        $this->userRepository = $userRepository;
-        $this->nodeRepository = $nodeRepository;
-        $this->logger         = $logger;
-        $this->jwtService     = $jwtService;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        return new JsonResponse([]);
         $start  = microtime(true);
         $nodeId = $request->getAttribute("nodeId");
         $query  = $request->getAttribute("query");
@@ -72,7 +62,7 @@ class ShareableUsers implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 
-        $all = $this->userRepository->searchUsers($query);
+        $all = $this->userRepository->searchUsers((string) $query);
         $all = $this->excludeInvalidUsers($node, $all);
 
         $duration = microtime(true) - $start;
