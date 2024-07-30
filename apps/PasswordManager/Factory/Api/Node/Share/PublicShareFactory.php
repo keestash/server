@@ -25,7 +25,9 @@ use KSA\PasswordManager\Api\Node\Share\PublicShare;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
+use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class PublicShareFactory {
 
@@ -34,6 +36,8 @@ class PublicShareFactory {
             $container->get(NodeRepository::class)
             , $container->get(ShareService::class)
             , $container->get(PublicShareRepository::class)
+            , $container->get(LoggerInterface::class)
+            , $container->get(IResponseService::class)
         );
     }
 

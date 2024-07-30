@@ -41,37 +41,13 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Event\IEventService;
 
-class NodeService {
+final readonly class NodeService {
 
     public function __construct(
-        private readonly IUserRepository  $userRepository
-        , private readonly NodeRepository $nodeRepository
-        , private readonly UserService    $userService
-        , private readonly IEventService  $eventService
+        private IUserRepository  $userRepository
+        , private NodeRepository $nodeRepository
+        , private IEventService  $eventService
     ) {
-    }
-
-    /**
-     * @param int    $nodeId
-     * @param string $userId
-     *
-     * @return bool
-     *
-     * TODO add more properties
-     */
-    public function isShareable(int $nodeId, string $userId): bool {
-        try {
-            $node = $this->nodeRepository->getNode($nodeId, 0, 1);
-        } catch (PasswordManagerException $exception) {
-            return false;
-        }
-
-        $user = $this->userRepository->getUserById($userId);
-
-        return
-            false === $this->userService->isDisabled($user)
-            && false === $node->getUser()->equals($user)
-            && false === $node->isSharedTo($user);
     }
 
     public function prepareSharedEdge(int $nodeId, string $userId): Edge {

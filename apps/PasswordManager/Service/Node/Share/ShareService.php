@@ -15,9 +15,21 @@ namespace KSA\PasswordManager\Service\Node\Share;
 use DateTime;
 use DateTimeInterface;
 use KSA\PasswordManager\Entity\Node\Node;
+use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Entity\Share\PublicShare;
+use KSA\PasswordManager\Exception\PasswordManagerException;
+use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Service\User\IUserService;
 
-class ShareService {
+final readonly class ShareService {
+
+    public function __construct(
+        private NodeRepository  $nodeRepository,
+        private IUserRepository $userRepository,
+        private IUserService    $userService
+    ) {
+    }
 
     public function generateSharingHash(Node $node): string {
         return hash_hmac(
@@ -33,12 +45,44 @@ class ShareService {
         return $dateTime;
     }
 
+    public function isExpired(PublicShare $publicShare): bool {
+        if ($publicShare instanceof NullShare) {
+            return false;
+        }
+        $today = new DateTime();
+        return $publicShare->getExpireTs()->getTimestamp() < $today->getTimestamp();
+    }
+
     public function createPublicShare(Node $node): PublicShare {
-        $publicShare = new PublicShare();
-        $publicShare->setHash($this->generateSharingHash($node));
-        $publicShare->setExpireTs($this->getDefaultExpireDate());
-        $publicShare->setNodeId($node->getId());
-        return $publicShare;
+        return new PublicShare(
+            0,
+            $node->getId(),
+            $this->generateSharingHash($node),
+            $this->getDefaultExpireDate()
+        );
+    }
+
+    /**
+     * @param int    $nodeId
+     * @param string $userId
+     *
+     * @return bool
+     *
+     * TODO add more properties
+     */
+    public function isShareable(int $nodeId, string $userId): bool {
+        try {
+            $node = $this->nodeRepository->getNode($nodeId, 0, 1);
+        } catch (PasswordManagerException $exception) {
+            return false;
+        }
+
+        $user = $this->userRepository->getUserById($userId);
+
+        return
+            false === $this->userService->isDisabled($user)
+            && false === $node->getUser()->equals($user)
+            && false === $node->isSharedTo($user);
     }
 
 }

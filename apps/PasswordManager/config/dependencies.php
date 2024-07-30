@@ -116,6 +116,7 @@ use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbService
 use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\PwnedServiceFactory;
+use KSA\PasswordManager\Factory\Service\Node\Share\ShareServiceFactory;
 use KSA\PasswordManager\Factory\Service\NodeEncryptionServiceFactory;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSA\PasswordManager\Repository\CommentRepository;
@@ -134,7 +135,6 @@ use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\Node\PwnedService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
-use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     ConfigProvider::FACTORIES => [
@@ -218,7 +218,7 @@ return [
         NodeService::class                                                                   => NodeServiceFactory::class,
         BreadCrumbService::class                                                             => BreadCrumbServiceFactory::class,
         CredentialService::class                                                             => CredentialServiceFactory::class,
-        ShareService::class                                                                  => InvokableFactory::class,
+        ShareService::class                                                                  => ShareServiceFactory::class,
         AccessService::class                                                                 => AccessServiceFactory::class,
         PwnedService::class                                                                  => PwnedServiceFactory::class,
         \KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService::class => \KSA\PasswordManager\Factory\Service\Node\Credential\AdditionalData\EncryptionServiceFactory::class,
