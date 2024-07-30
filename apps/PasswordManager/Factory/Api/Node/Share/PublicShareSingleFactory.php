@@ -25,19 +25,21 @@ use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\L10N\IL10N;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class PublicShareSingleFactory {
 
     public function __invoke(ContainerInterface $container): PublicShareSingle {
         return new PublicShareSingle(
-            $container->get(IL10N::class)
-            , $container->get(PublicShareRepository::class)
+            $container->get(PublicShareRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)
             , $container->get(IEventService::class)
+            , $container->get(ShareService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

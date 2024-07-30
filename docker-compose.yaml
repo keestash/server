@@ -1,7 +1,6 @@
 version: '3.3'
 services:
-  keestash-web:
-    container_name: keestash-web
+  keestash-api:
     build:
       context: ./config/docker/web
       dockerfile: Dockerfile
@@ -16,14 +15,11 @@ services:
       - '8080:443'
     networks:
       - keestash-network
-  db:
-    container_name: mysql8
+  keestash-db:
     build:
       context: ./config/docker/db
       dockerfile: Dockerfile
     platform: linux/amd64
-    command:
-      - --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: keestash
@@ -40,14 +36,12 @@ services:
 
   keestash-redis:
     image: redis:latest
-    container_name: keestash-redis
     ports:
       - "6379:6379"
     networks:
       - keestash-network
 
-  prometheus:
-    container_name: prometheus
+  keestash-prometheus:
     build:
       context: ./config/docker/prometheus
       dockerfile: Dockerfile
@@ -59,9 +53,8 @@ services:
     ports:
       - '9090:9090'
 
-  grafana:
+  keestash-grafana:
     image: grafana/grafana:latest
-    container_name: grafana
     ports:
       - "3000:3000"
     environment:
@@ -71,15 +64,14 @@ services:
       - grafana-data:/var/lib/grafana
       - ./config/docker/grafana:/etc/grafana/provisioning  # Grafana provisioning files
     depends_on:
-      - prometheus
+      - keestash-prometheus
     networks:
       - keestash-network
 
-  stripe-cli:
+  keestash-stripe-cli:
     build:
       context: ./config/docker/stripe
       dockerfile: Dockerfile
-    container_name: stripe-cli
     environment:
       STRIPE_CLI_TELEMETRY_OPTOUT: true
     networks:

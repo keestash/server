@@ -24,13 +24,14 @@ namespace KSA\PasswordManager;
 
 final class ConfigProvider {
 
-    public const string PASSWORD_MANAGER_ORGANIZATION_NODE_ADD    = "/password_manager/organization/node/add[/]";
-    public const string PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE = "/password_manager/organization/node/update[/]";
-    public const string PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE = "/password_manager/organization/node/remove/";
-    public const string PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT     = "/password_manager/public_share/decrypt/:hash[/]";
-    public const string PASSWORD_MANAGER_PUBLIC_SHARE             = '/password_manager/share[/]';
-    public const string PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC      = "/password_manager/share/public[/]";
-    public const string PASSWORD_MANAGER_PUBLIC_SHARE_REMOVE      = '/password_manager/share/remove[/]';
+    public const string PASSWORD_MANAGER_ORGANIZATION_NODE_ADD    = "/password_manager/organization/node/add";
+    public const string PASSWORD_MANAGER_ORGANIZATION_NODE_UPDATE = "/password_manager/organization/node/update";
+    public const string PASSWORD_MANAGER_ORGANIZATION_NODE_REMOVE = "/password_manager/organization/node/remove";
+
+    public const string PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT = "/password_manager/public_share/decrypt/:hash";
+    public const string PASSWORD_MANAGER_PUBLIC_SHARE         = '/password_manager/share';
+    public const string PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC  = "/password_manager/share/public";
+    public const string PASSWORD_MANAGER_PUBLIC_SHARE_REMOVE  = '/password_manager/share/remove';
 
     public const string PASSWORD_MANAGER_NODE_DELETE                             = '/password_manager/node/delete';
     public const string PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE              = "/password_manager/credential/password/update/";

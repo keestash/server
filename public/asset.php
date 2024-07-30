@@ -34,9 +34,9 @@ use Psr\Log\LoggerInterface;
 
 (static function (): void {
 
-    require 'vendor/autoload.php';
+    require __DIR__ .'/../vendor/autoload.php';
     /** @var ContainerInterface $container */
-    $container = require __DIR__ . '/lib/start.php';
+    $container = require __DIR__ . '/../lib/start.php';
     /** @var InstanceDB $instanceDB */
     $instanceDB = $container->get(InstanceDB::class);
     /** @var Config $config */
