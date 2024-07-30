@@ -41,5 +41,11 @@ interface IResponseCodes {
     public const string RESPONSE_NAME_NODE_ACCESS_UNAUTHORIZED          = 'unauthorized.access.node';
     public const int    RESPONSE_CODE_NODE_ATTACHMENT_ADD_NO_NODE_FOUND = 891256;
     public const string RESPONSE_NAME_NODE_ATTACHMENT_ADD_NO_NODE_FOUND = 'found.no.node.add.attachment.node';
+    public const int    RESPONSE_CODE_NODE_SHARE_PUBLIC_INVALID_PAYLOAD = 7902345;
+    public const string RESPONSE_NAME_NODE_SHARE_PUBLIC_INVALID_PAYLOAD = 'payload.invalid.public.share.node';
+    public const int    RESPONSE_CODE_NODE_SHARE_PUBLIC_NOT_FOUND       = 5672487;
+    public const string RESPONSE_NAME_NODE_SHARE_PUBLIC_NOT_FOUND       = 'found.not.public.share.node';
+    public const int    RESPONSE_CODE_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS = 7893576;
+    public const string RESPONSE_NAME_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS = 'exists.share.no.public.share.node';
 
 }

@@ -31,6 +31,7 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\PasswordManager\Test\Unit\TestCase;
 use KSP\Core\DTO\User\IUser;
@@ -42,6 +43,7 @@ class NodeServiceTest extends TestCase {
     private NodeRepository        $nodeRepository;
     private CredentialService     $credentialService;
     private NodeEncryptionService $nodeEncryptionService;
+    private ShareService          $shareService;
 
     protected function setUp(): void {
         parent::setUp();
@@ -53,6 +55,8 @@ class NodeServiceTest extends TestCase {
             ->get(CredentialService::class);
         $this->nodeEncryptionService = $this->getServiceManager()
             ->get(NodeEncryptionService::class);
+        $this->shareService          = $this->getServiceManager()
+            ->get(ShareService::class);
     }
 
     /**
@@ -65,7 +69,7 @@ class NodeServiceTest extends TestCase {
         );
         $credential = $this->provideCredential($user);
         $this->nodeRepository->addCredential($credential);
-        $shareable = $this->nodeService->isShareable($credential->getId(), (string) $user->getId());
+        $shareable = $this->shareService->isShareable($credential->getId(), (string) $user->getId());
         $this->assertTrue(false === $shareable);
     }
 

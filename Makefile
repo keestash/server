@@ -1,7 +1,7 @@
 login-app:
-	 docker exec -it server-keestash-api-1 bash
+	 docker exec -it keestash-api bash
 login-db:
-	 docker exec -it keestash-db bash
+	 docker exec -it server-keestash-db bash
 stripe-login:
 	 docker exec -it stripe-cli stripe login
 stripe-listen:

@@ -21,96 +21,72 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Share;
 
+use Exception;
 use Keestash\Api\Response\JsonResponse;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
+use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Share implements RequestHandlerInterface {
-
-    private NodeRepository  $nodeRepository;
-    private IUserRepository $userRepository;
-    private NodeService     $nodeService;
-    private IL10N           $translator;
+final readonly class Share implements RequestHandlerInterface {
 
     public function __construct(
-        IL10N             $l10n
-        , NodeRepository  $nodeRepository
-        , IUserRepository $userRepository
-        , NodeService     $nodeService
+        private NodeRepository    $nodeRepository
+        , private IUserRepository $userRepository
+        , private NodeService     $nodeService
+        , private ShareService    $shareService
     ) {
-        $this->nodeRepository = $nodeRepository;
-        $this->userRepository = $userRepository;
-        $this->nodeService    = $nodeService;
-        $this->translator     = $l10n;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = (array) $request->getParsedBody();
-        $nodeId     = $parameters['node_id'] ?? null;
-        $userId     = $parameters['user_id_to_share'] ?? null;
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
+        try {
+            $parameters = (array) $request->getParsedBody();
+            $nodeId     = $parameters['node_id'] ?? null;
+            $userId     = $parameters['user_id_to_share'] ?? null;
 
-        if (null === $nodeId) {
-            return new JsonResponse([
-                "message" => "no node found"
-            ], IResponse::BAD_REQUEST
+            if (null === $nodeId || null === $userId) {
+                return new JsonResponse([], IResponse::BAD_REQUEST);
+            }
+
+            $shareable = $this->shareService->isShareable((int) $nodeId, (string) $userId);
+
+            if (false === $shareable) {
+                return new JsonResponse(
+                    []
+                    , IResponse::BAD_REQUEST
+                );
+            }
+
+            $this->nodeRepository->addEdge(
+                $this->nodeService->prepareSharedEdge(
+                    (int) $nodeId
+                    , (string) $userId
+                )
             );
-        }
+            $node  = $this->nodeRepository->getNode((int) $nodeId);
+            $user  = $this->userRepository->getUserById((string) $userId);
+            $share = $node->getShareByUser($user);
 
-        if (null === $userId) {
             return new JsonResponse(
                 [
-                    "message" => "no user found"
+                    "share" => $share
                 ]
-                , IResponse::BAD_REQUEST
+                , IResponse::OK
             );
-        }
-
-        $shareable = $this->nodeService->isShareable((int) $nodeId, (string) $userId);
-
-        if (false === $shareable) {
+        } catch (PasswordManagerException) {
             return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("can not share with owner / already shared")
-                ]
-                , IResponse::BAD_REQUEST
-            );
-        }
-
-        $edge = $this->nodeRepository->addEdge(
-            $this->nodeService->prepareSharedEdge(
-                (int) $nodeId
-                , (string) $userId
-            )
-        );
-
-        if ($edge->getId() === 0) {
-            return new JsonResponse(
-                [
-                    "message" => $this->translator->translate("could not insert")
-                ]
+                []
                 , IResponse::INTERNAL_SERVER_ERROR
             );
+        } catch (Exception) {
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $node  = $this->nodeRepository->getNode((int) $nodeId);
-        $user  = $this->userRepository->getUserById((string) $userId);
-        $share = $node->getShareByUser($user);
-
-        return new JsonResponse(
-            [
-                "share" => $share
-            ]
-            , IResponse::OK
-        );
     }
 
 }
