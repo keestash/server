@@ -29,7 +29,7 @@ use Laminas\Config\Config;
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
 
-(static function () {
+(static function (): void {
     chdir(dirname(__DIR__));
 
     set_time_limit(0);

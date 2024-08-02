@@ -142,6 +142,7 @@ class PublicShareTest extends TestCase {
                 )
             );
 
+
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
 
         $body = json_decode(
@@ -190,7 +191,7 @@ class PublicShareTest extends TestCase {
                 )
             );
 
-        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
+        $this->assertStatusCode(IResponse::OK, $response);
 
         $body = json_decode(
             (string) $response->getBody()
@@ -199,8 +200,9 @@ class PublicShareTest extends TestCase {
             , JSON_THROW_ON_ERROR
         );
 
-        $this->assertEquals(IResponseCodes::RESPONSE_CODE_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS, $body['responseCode']);
+        $this->assertArrayHasKey('share', $body);
         $this->logout($headers, $user);
+        $credentialService->removeCredential($credential);
         $this->removeUser($user);
     }
 

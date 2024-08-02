@@ -84,16 +84,16 @@ return [
             , IRoute::NAME       => Quality::class
         ],
         [
-            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
-            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, PublicShare::class]
-            , IRoute::METHOD     => IVerb::POST
-            , IRoute::NAME       => PublicShare::class
-        ],
-        [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
             , IRoute::MIDDLEWARE => [PublicShareSingle::class]
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => PublicShareSingle::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, PublicShare::class]
+            , IRoute::METHOD     => IVerb::POST
+            , IRoute::NAME       => PublicShare::class
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_REMOVE
@@ -289,6 +289,7 @@ return [
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [
-        ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD
+        ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD,
+        ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT,
     ]
 ];

@@ -28,10 +28,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class ExceptionHandlerMiddleware implements MiddlewareInterface {
+final readonly class ExceptionHandlerMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly IExceptionHandlerService $exceptionHandlerService
+        private IExceptionHandlerService $exceptionHandlerService
     ) {
     }
 
