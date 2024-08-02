@@ -196,4 +196,8 @@ class CredentialService {
         return $credential->getUsername()->getPlain();
     }
 
+    public function removeCredential(Credential $credential): void {
+        $this->nodeRepository->remove($credential);
+    }
+
 }

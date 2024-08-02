@@ -30,12 +30,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 use RateLimit\Exception\LimitExceeded;
 use RateLimit\RateLimiter;
 
-class RateLimiterMiddleware implements MiddlewareInterface {
+final readonly class RateLimiterMiddleware implements MiddlewareInterface {
 
-    private RateLimiter $rateLimiter;
-
-    public function __construct(RateLimiter $rateLimiter) {
-        $this->rateLimiter = $rateLimiter;
+    public function __construct(private RateLimiter $rateLimiter) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {

@@ -36,13 +36,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class PermissionMiddleware implements MiddlewareInterface {
+final readonly class PermissionMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly IRouterService         $routeService
-        , private readonly Config               $config
-        , private readonly RBACServiceInterface $rbacService
-        , private readonly LoggerInterface $logger
+        private IRouterService         $routeService
+        , private Config               $config
+        , private RBACServiceInterface $rbacService
+        , private LoggerInterface      $logger
     ) {
     }
 
@@ -73,7 +73,7 @@ class PermissionMiddleware implements MiddlewareInterface {
             $this->logger->error(
                 'did not find permissions for path',
                 [
-                    'path' => $request->getUri(),
+                    'path'        => $request->getUri(),
                     'matchedPath' => $path,
                 ]
             );

@@ -23,14 +23,14 @@ namespace KSP\Api;
 
 interface IRequest {
 
-    public const ATTRIBUTE_NAME_APPLICATION_START          = 'start.application.name.attribute';
-    public const ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL = 'install.instance.to.routes.name.attribute';
-    public const ATTRIBUTE_NAME_ROUTES_TO_INSTALL          = 'install.to.routes.name.attribute';
-    public const ATTRIBUTE_NAME_IS_PUBLIC                  = 'public.is.name.attribute';
-    public const ATTRIBUTE_NAME_ENVIRONMENT                = 'environment.name.attribute';
-    public const ATTRIBUTE_NAME_INSTANCE_ID_AND_HASH_GIVEN = 'given.hash.and.id.instance.name.attribute';
-    public const ATTRIBUTE_NAME_DEBUG                      = 'debug.name.attribute';
-    public const ATTRIBUTE_NAME_MATCHED_PATH               = 'path.matched.name.attribute';
-    public const ATTRIBUTE_NAME_REQUEST_ID                 = 'id.request.name.attribute';
+    public const string ATTRIBUTE_NAME_APPLICATION_START          = 'start.application.name.attribute';
+    public const string ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL = 'install.instance.to.routes.name.attribute';
+    public const string ATTRIBUTE_NAME_ROUTES_TO_INSTALL          = 'install.to.routes.name.attribute';
+    public const string ATTRIBUTE_NAME_IS_PUBLIC                  = 'public.is.name.attribute';
+    public const string ATTRIBUTE_NAME_ENVIRONMENT                = 'environment.name.attribute';
+    public const string ATTRIBUTE_NAME_INSTANCE_ID_AND_HASH_GIVEN = 'given.hash.and.id.instance.name.attribute';
+    public const string ATTRIBUTE_NAME_DEBUG                      = 'debug.name.attribute';
+    public const string ATTRIBUTE_NAME_MATCHED_PATH               = 'path.matched.name.attribute';
+    public const string ATTRIBUTE_NAME_REQUEST_ID                 = 'id.request.name.attribute';
 
 }
