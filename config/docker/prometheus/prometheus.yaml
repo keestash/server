@@ -22,7 +22,7 @@ scrape_configs:
   - job_name: "keestash"
     scrape_interval: 5s
     scheme: https  # Use HTTPS instead of HTTP
-    bearer_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIiLCJhdWQiOnsidHlwZSI6ImFwaS50eXBlIiwidmFsdWUiOiJjZjhlNTJmNS1jMmRjLTQ3MDEtYTBjMi0xMTljYWI4ZDM2YjcifSwiaWF0IjoxNzA5NjU3NDYwLCJuYmYiOjE3MDk2NTc0NTl9.v2tfq5wDDG6ab0exot-UebcCQrRwXu8sVJ1C9lxLay8
+    bearer_token: <token>
     metrics_path: /api.php/metrics
     static_configs:
       - targets: ["keestash-web"]
