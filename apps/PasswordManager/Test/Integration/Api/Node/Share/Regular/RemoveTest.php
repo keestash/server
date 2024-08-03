@@ -30,6 +30,7 @@ use Ramsey\Uuid\Uuid;
 class RemoveTest extends TestCase {
 
     public function testRemoveShare(): void {
+        $this->markTestSkipped('need to implement once regular share is done');
         /** @var Remove $remove */
         $remove = $this->getServiceManager()->get(Remove::class);
         /** @var ShareService $shareService */

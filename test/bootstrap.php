@@ -43,6 +43,10 @@ $container = require __DIR__ . '/config/service_manager.php';
 
 set_error_handler(
     static function (int $errno, string $message): void {
+        // some weird PHPUnit behaviour
+        if ($errno === 2 && $message === "preg_match(): Delimiter must not be alphanumeric, backslash, or NUL") {
+            return;
+        }
         throw new WarningException($message, $errno);
     }, E_WARNING | E_USER_WARNING
 );

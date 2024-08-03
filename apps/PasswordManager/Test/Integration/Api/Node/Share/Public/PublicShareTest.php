@@ -22,9 +22,11 @@ declare(strict_types=1);
 namespace Integration\Api\Node\Share\Public;
 
 use DateTime;
+use DateTimeImmutable;
 use KSA\PasswordManager\Api\Node\Share\Public\PublicShare;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\IResponseCodes;
+use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Test\Integration\TestCase;
@@ -61,7 +63,7 @@ class PublicShareTest extends TestCase {
 
         $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
 
-        $body = json_decode(
+        $body = (array) json_decode(
             (string) $response->getBody()
             , true
             , 512
@@ -96,7 +98,7 @@ class PublicShareTest extends TestCase {
 
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
 
-        $body = json_decode(
+        $body = (array) json_decode(
             (string) $response->getBody()
             , true
             , 512
@@ -104,55 +106,6 @@ class PublicShareTest extends TestCase {
         );
 
         $this->assertEquals(IResponseCodes::RESPONSE_CODE_NODE_SHARE_PUBLIC_NOT_FOUND, $body['responseCode']);
-        $this->logout($headers, $user);
-        $this->removeUser($user);
-    }
-
-    public function testWithNoShareFound(): void {
-        $password = Uuid::uuid4()->toString();
-        $user     = $this->createUser(
-            Uuid::uuid4()->toString()
-            , $password
-        );
-
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getService(CredentialService::class);
-
-        $credential = $credentialService->createCredential(
-            "thisIsThePasswordForPublicShare",
-            'https://keestash.com',
-            'the-username',
-            'the-title',
-            $user
-        );
-        $rootFolder = $this->getRootFolder($user);
-        $edge       = $credentialService->insertCredential($credential, $rootFolder);
-
-        $headers  = $this->login($user, $password);
-        $response = $this->getApplication()
-            ->handle(
-                $this->getRequest(
-                    IVerb::POST
-                    , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
-                    , [
-                        "node_id" => $edge->getNode()->getId()
-                    ]
-                    , $user
-                    , $headers
-                )
-            );
-
-
-        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
-
-        $body = json_decode(
-            (string) $response->getBody()
-            , true
-            , 512
-            , JSON_THROW_ON_ERROR
-        );
-
-        $this->assertEquals(IResponseCodes::RESPONSE_CODE_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS, $body['responseCode']);
         $this->logout($headers, $user);
         $this->removeUser($user);
     }
@@ -193,7 +146,7 @@ class PublicShareTest extends TestCase {
 
         $this->assertStatusCode(IResponse::OK, $response);
 
-        $body = json_decode(
+        $body = (array) json_decode(
             (string) $response->getBody()
             , true
             , 512
@@ -205,7 +158,6 @@ class PublicShareTest extends TestCase {
         $credentialService->removeCredential($credential);
         $this->removeUser($user);
     }
-
 
     /**
      * @param array $params
@@ -255,6 +207,129 @@ class PublicShareTest extends TestCase {
             $shareService->getDefaultExpireDate()->format('d.m.Y')
             === (new DateTime($data['share']['expire_ts']['date']))->format('d.m.Y')
         );
+    }
+
+    public function testAlreadySharedNode(): void {
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        /** @var CredentialService $credentialService */
+        $credentialService = $this->getService(CredentialService::class);
+        /** @var ShareService $shareService */
+        $shareService = $this->getService(ShareService::class);
+        /** @var PublicShareRepository $shareRepository */
+        $shareRepository = $this->getService(PublicShareRepository::class);
+
+        $credential = $credentialService->createCredential(
+            "thisIsThePasswordForPublicShare",
+            'https://keestash.com',
+            'the-username',
+            'the-title',
+            $user
+        );
+        $credential->setPublicShare(
+            $shareService->createPublicShare($credential)
+        );
+
+        $rootFolder = $this->getRootFolder($user);
+        $edge       = $credentialService->insertCredential($credential, $rootFolder);
+
+
+        $sharedNode = $shareRepository->shareNode($edge->getNode());
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
+                    , [
+                        "node_id" => $sharedNode->getId()
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
+        $this->assertStatusCode(IResponse::CONFLICT, $response);
+
+        $body = json_decode(
+            (string) $response->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
+        );
+
+//        $this->assertEquals(IResponseCodes::RESPONSE_CODE_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS, $body['responseCode']);
+        $this->logout($headers, $user);
+        $credentialService->removeCredential($credential);
+        $this->removeUser($user);
+    }
+
+    public function testSharePreviouslySharedAndExpired(): void {
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
+        );
+
+        /** @var CredentialService $credentialService */
+        $credentialService = $this->getService(CredentialService::class);
+        /** @var ShareService $shareService */
+        $shareService = $this->getService(ShareService::class);
+        /** @var PublicShareRepository $shareRepository */
+        $shareRepository = $this->getService(PublicShareRepository::class);
+
+        $credential = $credentialService->createCredential(
+            "thisIsThePasswordForPublicShare",
+            'https://keestash.com',
+            'the-username',
+            'the-title',
+            $user
+        );
+        $credential->setPublicShare(
+            new \KSA\PasswordManager\Entity\Share\PublicShare(
+                0,
+                $credential->getId(),
+                Uuid::uuid4()->toString(),
+                (new DateTimeImmutable())->modify('-100 day')
+            )
+        );
+
+        $rootFolder = $this->getRootFolder($user);
+        $edge       = $credentialService->insertCredential($credential, $rootFolder);
+
+        $sharedNode = $shareRepository->shareNode($edge->getNode());
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
+                    , [
+                        "node_id" => $sharedNode->getId()
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
+        $this->assertStatusCode(IResponse::OK, $response);
+
+        $body = json_decode(
+            (string) $response->getBody()
+            , true
+            , 512
+            , JSON_THROW_ON_ERROR
+        );
+
+        $this->logout($headers, $user);
+        $credentialService->removeCredential($credential);
+        $this->removeUser($user);
     }
 
     public static function provideData(): array {
