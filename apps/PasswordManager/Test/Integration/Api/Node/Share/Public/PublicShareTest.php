@@ -19,10 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Integration\Api\Node\Share;
+namespace Integration\Api\Node\Share\Public;
 
 use DateTime;
-use KSA\PasswordManager\Api\Node\Share\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShare;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;

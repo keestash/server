@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Share;
 
-use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShareSingle;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;

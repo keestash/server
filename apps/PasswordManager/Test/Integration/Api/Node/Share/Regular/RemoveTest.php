@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Integration\Api\Node\Share;
+namespace Integration\Api\Node\Share\Regular;
 
-use KSA\PasswordManager\Api\Node\Share\Remove;
+use KSA\PasswordManager\Api\Node\Share\Regular\Remove;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Test\Integration\TestCase;

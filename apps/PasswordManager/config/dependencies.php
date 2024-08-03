@@ -44,10 +44,10 @@ use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\IsActive;
 use KSA\PasswordManager\Api\Node\Search;
-use KSA\PasswordManager\Api\Node\Share\PublicShare;
-use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
-use KSA\PasswordManager\Api\Node\Share\Share;
-use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\Regular\Share;
+use KSA\PasswordManager\Api\Node\Share\Regular\ShareableUsers;
 use KSA\PasswordManager\Command\Node\Credential\CreateCredential;
 use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Command\Node\DumpAll;
@@ -140,28 +140,28 @@ return [
     ConfigProvider::FACTORIES => [
         // api
         // ---- comment
-        AddComment::class                                                                    => AddCommentFactory::class
-        , Get::class                                                                         => GetFactory::class
-        , Remove::class                                                                      => RemoveFactory::class
+        AddComment::class                                           => AddCommentFactory::class
+        , Get::class                                                => GetFactory::class
+        , Remove::class                                             => RemoveFactory::class
 
         // ---- generate
-        , Generate::class                                                                    => GenerateFactory::class
-        , Quality::class                                                                     => QualityFactory::class
+        , Generate::class                                           => GenerateFactory::class
+        , Quality::class                                            => QualityFactory::class
 
         // ---- PublicShare
-        , PublicShare::class                                                                 => PublicShareFactory::class
-        , PublicShareSingle::class                                                           => PublicShareSingleFactory::class
-        , \KSA\PasswordManager\Api\Node\Share\Remove::class                                  => \KSA\PasswordManager\Factory\Api\Node\Share\RemoveFactory::class
-        , Share::class                                                                       => ShareFactory::class
+        , PublicShare::class                                        => PublicShareFactory::class
+        , PublicShareSingle::class                                  => PublicShareSingleFactory::class
+        , \KSA\PasswordManager\Api\Node\Share\Regular\Remove::class => \KSA\PasswordManager\Factory\Api\Node\Share\RemoveFactory::class
+        , Share::class                                              => ShareFactory::class
 
         // ---- Node
-        , \KSA\PasswordManager\Api\Node\Get\Get::class                                       => \KSA\PasswordManager\Factory\Api\Node\Get\GetFactory::class
-        , Alpha::class                                                                       => AlphaFactory::class
-        , Beta::class                                                                        => BetaFactory::class
-        , GetByName::class                                                                   => GetByNameFactory::class
-        , Move::class                                                                        => MoveFactory::class
-        , ShareableUsers::class                                                              => ShareableUsersFactory::class
-        , Delete::class                                                                      => DeleteFactory::class
+        , \KSA\PasswordManager\Api\Node\Get\Get::class              => \KSA\PasswordManager\Factory\Api\Node\Get\GetFactory::class
+        , Alpha::class                                              => AlphaFactory::class
+        , Beta::class                                               => BetaFactory::class
+        , GetByName::class                                          => GetByNameFactory::class
+        , Move::class                                               => MoveFactory::class
+        , ShareableUsers::class                                     => ShareableUsersFactory::class
+        , Delete::class                                             => DeleteFactory::class
         , \KSA\PasswordManager\Api\Node\Folder\Update::class                                 => \KSA\PasswordManager\Factory\Api\Node\UpdateFactory::class
         , ListAll::class                                                                     => ListAllFactory::class
 

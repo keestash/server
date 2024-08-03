@@ -41,11 +41,11 @@ use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
 use KSA\PasswordManager\Api\Node\Pwned\IsActive;
 use KSA\PasswordManager\Api\Node\Search;
-use KSA\PasswordManager\Api\Node\Share\PublicShare;
-use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
-use KSA\PasswordManager\Api\Node\Share\Remove as RemoveShare;
-use KSA\PasswordManager\Api\Node\Share\Share;
-use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\Regular\Remove as RemoveShare;
+use KSA\PasswordManager\Api\Node\Share\Regular\Share;
+use KSA\PasswordManager\Api\Node\Share\Regular\ShareableUsers;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
 use KSP\Api\IRoute;
@@ -94,6 +94,12 @@ return [
             , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, PublicShare::class]
             , IRoute::METHOD     => IVerb::POST
             , IRoute::NAME       => PublicShare::class
+        ],
+        [
+            IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
+            , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, PublicShare::class]
+            , IRoute::METHOD     => IVerb::DELETE
+            , IRoute::NAME       => PublicShare::class . '@' . IVerb::DELETE
         ],
         [
             IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_REMOVE
