@@ -99,7 +99,6 @@ final readonly class PublicShare implements RequestHandlerInterface {
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface {
         try {
-
             $parameters = (array) $request->getParsedBody();
             $nodeId     = $parameters["node_id"] ?? null;
 
@@ -118,18 +117,8 @@ final readonly class PublicShare implements RequestHandlerInterface {
 
             $share = $this->shareRepository->getShareByNode($node);
 
-            if (
-                (!($share instanceof NullShare))
-                || true === $this->shareService->isExpired($share)
-            ) {
-                return new JsonResponse(
-                    [
-                        'responseCode' => $this->responseService->getResponseCode(
-                            IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS
-                        )
-                    ],
-                    IResponse::NOT_FOUND
-                );
+            if (!($share instanceof NullShare) && false === $this->shareService->isExpired($share)) {
+                return new JsonResponse([], IResponse::CONFLICT);
             }
 
             $node = $this->shareRepository->shareNode($node);
