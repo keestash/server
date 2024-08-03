@@ -216,24 +216,9 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Pwned/IsActive.php
 
 		-
-			message: "#^Parameter \\#1 \\$hash of method KSA\\\\PasswordManager\\\\Repository\\\\PublicShareRepository\\:\\:getShare\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Share/PublicShareSingle.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Share/ShareableUsers.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Share\\\\ShareableUsers\\:\\:excludeInvalidUsers\\(\\) is unused\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Share/ShareableUsers.php
-
-		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Share/ShareableUsers.php
+			path: ../../apps/PasswordManager/Api/Node/Share/Regular/ShareableUsers.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method KSP\\\\Core\\\\Repository\\\\User\\\\IUserRepository\\:\\:getUserById\\(\\) expects string, mixed given\\.$#"
@@ -636,9 +621,9 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDataTest.php
 
 		-
-			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Share\\\\PublicShare\\|null\\.$#"
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Share/RemoveTest.php
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Share/Regular/RemoveTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:setId\\(\\) expects int, int\\|null given\\.$#"
@@ -702,6 +687,11 @@ parameters:
 
 		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\NodeServiceTest\\:\\:\\$nodeService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\NodeService\\) does not accept mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
+
+		-
+			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\NodeServiceTest\\:\\:\\$shareService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Share\\\\ShareService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
 

@@ -30,10 +30,8 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
-use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IResponseService;
-use KST\Service\Service\UserService;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
@@ -155,13 +153,15 @@ class GetTest extends TestCase {
     public function testWithInValidNodeId(): void {
         /** @var IResponseService $responseService */
         $responseService = $this->getService(IResponseService::class);
-        $password        = Uuid::uuid4()->toString();
-        $user            = $this->createUser(
+        /** @var LoggerInterface $logger */
+        $logger   = $this->getService(LoggerInterface::class);
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
             Uuid::uuid4()->toString()
             , $password
         );
-        $headers         = $this->login($user, $password);
-        $response        = $this->getApplication()
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
             ->handle(
                 $this->getRequest(
                     IVerb::GET
@@ -173,6 +173,8 @@ class GetTest extends TestCase {
             );
 
         $data = $this->getDecodedData($response);
+
+        $logger->debug(Get::class . "::testWithInValidNodeId", ['response' => $response, 'body' => (string) $response->getBody()]);
         $this->assertStatusCode(IResponse::BAD_REQUEST, $response);
         $this->assertTrue($data['responseCode'] === $responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID));
         $this->logout($headers, $user);
