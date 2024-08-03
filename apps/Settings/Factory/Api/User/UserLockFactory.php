@@ -23,17 +23,17 @@ namespace KSA\Settings\Factory\Api\User;
 
 use KSA\Settings\Api\User\UserLock;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class UserLockFactory {
 
     public function __invoke(ContainerInterface $container): UserLock {
         return new UserLock(
             $container->get(IUserRepository::class)
-            , $container->get(IUserStateRepository::class)
+            , $container->get(IUserStateService::class)
             , $container->get(IEventService::class)
             , $container->get(LoggerInterface::class)
         );

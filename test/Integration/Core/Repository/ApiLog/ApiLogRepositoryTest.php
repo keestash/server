@@ -24,10 +24,11 @@ namespace KST\Integration\Core\Repository\ApiLog;
 use DateTime;
 use Keestash\Core\DTO\Instance\Request\APIRequest;
 use Keestash\Core\DTO\Token\Token;
+use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KST\Service\Service\UserService;
 use KST\Integration\TestCase;
+use KST\Service\Service\UserService;
 
 class ApiLogRepositoryTest extends TestCase {
 
@@ -42,19 +43,20 @@ class ApiLogRepositoryTest extends TestCase {
         $token->setValue(ApiLogRepositoryTest::class);
         $token->setName(ApiLogRepositoryTest::class);
         $token->setUser(
-            $userRepository->getUserById((string)UserService::TEST_USER_ID_2)
+            $userRepository->getUserById((string) UserService::TEST_USER_ID_2)
         );
 
         /** @var IApiLogRepository $apiLogRepository */
         $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);
-        $request          = new APIRequest();
-        $request->setRoute("my/awesome/route");
-        $request->setStart(time() - 3600);
-        $request->setEnd(time());
-        $request->setToken($token);
+        $request          = new APIRequest(
+            $token,
+            time() - 3600,
+            time(),
+            "my/awesome/route"
+        );
 
-        $id = $apiLogRepository->log($request);
-        $this->assertEquals(1, $id);
+        $request = $apiLogRepository->log($request);
+        $this->assertInstanceOf(IAPIRequest::class, $request); // no exception is thrown
     }
 
 //    public function testRemoveForUser(): void {

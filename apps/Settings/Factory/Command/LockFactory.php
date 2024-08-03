@@ -23,7 +23,7 @@ namespace KSA\Settings\Factory\Command;
 
 use KSA\Settings\Command\Lock;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
@@ -36,7 +36,7 @@ class LockFactory implements FactoryInterface {
     ): Lock {
         return new Lock(
             $container->get(IUserRepository::class)
-            , $container->get(IUserStateRepository::class)
+            , $container->get(IUserStateService::class)
         );
     }
 

@@ -23,6 +23,7 @@ namespace Keestash\Factory\Core\Service\User\Event\Listener;
 
 use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
 use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,6 +38,7 @@ class ScheduleUserStateEventListenerListenerFactory implements FactoryInterface 
         return new ScheduleUserStateEventListener(
             $container->get(LoggerInterface::class)
             , $container->get(IUserStateRepository::class)
+            , $container->get(IUserStateService::class)
         );
     }
 

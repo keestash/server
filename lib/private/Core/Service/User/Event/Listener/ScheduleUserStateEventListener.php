@@ -22,20 +22,23 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\User\Event\Listener;
 
 use DateTimeImmutable;
+use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\ScheduleUserStateEvent;
 use Keestash\Exception\KeestashException;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\Listener\IListener;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
-class ScheduleUserStateEventListener implements IListener {
+final readonly class ScheduleUserStateEventListener implements IListener {
 
     public function __construct(
-        private readonly LoggerInterface        $logger
-        , private readonly IUserStateRepository $userStateRepository
+        private LoggerInterface        $logger
+        , private IUserStateRepository $userStateRepository
+        , private IUserStateService    $userStateService
     ) {
     }
 
@@ -58,15 +61,24 @@ class ScheduleUserStateEventListener implements IListener {
             throw new KeestashException();
         }
 
-        switch ($event->getStateType()) {
-            case IUserState::USER_STATE_DELETE:
-                $this->userStateRepository->delete($event->getUser());
+        switch ($event->getStateName()) {
+            case UserStateName::DELETE:
+                $this->userStateService->forceDelete($event->getUser());
                 break;
-            case IUserState::USER_STATE_LOCK:
-                $this->userStateRepository->lock($event->getUser());
+            case UserStateName::LOCK:
+                $this->userStateService->forceLock($event->getUser());
                 break;
-            case IUserState::USER_STATE_REQUEST_PW_CHANGE:
-                $this->userStateRepository->requestPasswordReset($event->getUser(), Uuid::uuid4()->toString());
+            case UserStateName::REQUEST_PW_CHANGE:
+                $this->userStateService->setState(
+                    new UserState(
+                        0,
+                        $event->getUser(),
+                        UserStateName::REQUEST_PW_CHANGE,
+                        new DateTimeImmutable(),
+                        new DateTimeImmutable(),
+                        Uuid::uuid4()->toString()
+                    )
+                );
                 break;
             default:
                 $this->logger->error('no handler for state type', ['event' => $event]);

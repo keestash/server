@@ -21,14 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\Register\Test\Integration\Api\User;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\ConfigProvider;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\User\IUserStateRepository;
-use KSP\Core\Service\Encryption\Password\IPasswordService;
+use KSP\Core\DTO\User\IUserState;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -51,8 +54,8 @@ class ResetPasswordConfirmTest extends TestCase {
 
     public function testWithMinimumPasswordsAreNotSet(): void {
         $hash = (string) Uuid::uuid4();
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
 
         $user = $this->createUser(
             Uuid::uuid4()->toString()
@@ -60,7 +63,16 @@ class ResetPasswordConfirmTest extends TestCase {
         );
         $this->assertInstanceOf(IUser::class, $user);
 
-        $userStateRepository->requestPasswordReset($user, $hash);
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                $hash
+            )
+        );
 
         $response = $this->getApplication()
             ->handle(
@@ -81,10 +93,8 @@ class ResetPasswordConfirmTest extends TestCase {
 
     public function testRegularCase(): void {
         $hash = Uuid::uuid4();
-        /** @var IPasswordService $passwordService */
-        $passwordService = $this->getService(IPasswordService::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
         /** @var LoggerInterface $logger */
         $logger = $this->getService(LoggerInterface::class);
 
@@ -94,10 +104,30 @@ class ResetPasswordConfirmTest extends TestCase {
             , $password
         );
 
-        $userStateRepository->requestPasswordReset($user, Uuid::uuid4()->toString());
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                Uuid::uuid4()->toString()
+            )
+        );
+
         $this->assertInstanceOf(IUser::class, $user);
-        $userStateRepository->revertPasswordChangeRequest($user);
-        $userStateRepository->requestPasswordReset($user, (string) $hash);
+        $userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
+
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                (string) $hash
+            )
+        );
 
         $headers  = $this->login($user, $password);
         $input    = [

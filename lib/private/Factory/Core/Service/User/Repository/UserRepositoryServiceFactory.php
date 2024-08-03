@@ -27,11 +27,11 @@ use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class UserRepositoryServiceFactory {
 
@@ -41,10 +41,10 @@ class UserRepositoryServiceFactory {
             , $container->get(IFileRepository::class)
             , $container->get(IUserKeyRepository::class)
             , $container->get(IUserRepository::class)
-            , $container->get(IUserStateRepository::class)
             , $container->get(FileService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
+            , $container->get(IUserStateService::class)
         );
     }
 

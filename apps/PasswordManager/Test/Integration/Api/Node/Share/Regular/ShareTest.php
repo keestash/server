@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Integration\Api\Node\Share;
+namespace Integration\Api\Node\Share\Regular;
 
-use KSA\PasswordManager\Api\Node\Share\Share;
+use KSA\PasswordManager\Api\Node\Share\Regular\Share;
 use KSA\PasswordManager\Test\Integration\TestCase;
 use Ramsey\Uuid\Uuid;
 
