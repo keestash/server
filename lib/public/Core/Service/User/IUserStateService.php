@@ -21,4 +21,6 @@ interface IUserStateService {
 
     public function clearCarefully(IUser $user, UserStateName $expectedState): void;
 
+    public function getNextStateName(UserStateName $stateName): UserStateName;
+
 }

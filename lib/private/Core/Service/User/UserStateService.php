@@ -45,6 +45,16 @@ final readonly class UserStateService implements IUserStateService {
         $this->clear($user);
     }
 
+    public function getNextStateName(UserStateName $stateName): UserStateName {
+        return match ($stateName) {
+            UserStateName::NULL => UserStateName::LOCK_CANDIDATE_STAGE_ONE,
+            UserStateName::LOCK_CANDIDATE_STAGE_ONE => UserStateName::LOCK_CANDIDATE_STAGE_TWO,
+            UserStateName::LOCK_CANDIDATE_STAGE_TWO => UserStateName::LOCK,
+            UserStateName::LOCK => UserStateName::DELETE,
+            default => throw new KeestashException(),
+        };
+    }
+
     public function forceLock(IUser $user): void {
         $this->userStateRepository->remove($user);
 //        $this->setState(
