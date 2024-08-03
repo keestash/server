@@ -19,15 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node\Share;
+namespace KSA\PasswordManager\Api\Node\Share\Public;
 
+use Doctrine\DBAL\Exception;
+use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
+use KSP\Api\IVerb;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -47,10 +52,52 @@ final readonly class PublicShare implements RequestHandlerInterface {
         , private PublicShareRepository $shareRepository
         , private LoggerInterface       $logger
         , private IResponseService      $responseService
+        , private AccessService         $accessService
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
+        return match (strtolower($request->getMethod())) {
+            IVerb::POST => $this->handlePost($request),
+            IVerb::DELETE => $this->handleDelete($request),
+            default => new JsonResponse([], IResponse::BAD_REQUEST),
+        };
+    }
+
+    private function handleDelete(ServerRequestInterface $request): ResponseInterface {
+        try {
+            $parameters = (array) $request->getParsedBody();
+            $shareId    = $parameters["shareId"] ?? null;
+            /** @var IToken $token */
+            $token = $request->getAttribute(IToken::class);
+
+            if ($shareId === null) {
+                return new JsonResponse([], IResponse::BAD_REQUEST);
+            }
+
+            $share = $this->shareRepository->getShareById($shareId);
+
+            if (
+                $share instanceof NullShare
+                || $this->shareService->isExpired($share)
+            ) {
+                return new JsonResponse([], IResponse::NOT_FOUND);
+            }
+
+            $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 0);
+            if (false === $this->accessService->hasAccess($node, $token->getUser())) {
+                return new JsonResponse([], IResponse::FORBIDDEN);
+            }
+
+            $this->shareRepository->remove($share);
+            return new JsonResponse([], IResponse::OK);
+        } catch (Exception|PasswordManagerException|UserNotFoundException $e) {
+            $this->logger->error('error deleting public share', ['e' => $e]);
+            return new JsonResponse([], IResponse::NOT_IMPLEMENTED);
+        }
+    }
+
+    private function handlePost(ServerRequestInterface $request): ResponseInterface {
         try {
 
             $parameters = (array) $request->getParsedBody();

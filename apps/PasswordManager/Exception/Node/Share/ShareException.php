@@ -19,24 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node;
+namespace KSA\PasswordManager\Exception\Node\Share;
 
-use KSA\PasswordManager\Api\Node\Share\Regular\ShareableUsers;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\HTTP\IJWTService;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
+use KSA\PasswordManager\Exception\PasswordManagerException;
 
-class ShareableUsersFactory {
-
-    public function __invoke(ContainerInterface $container): ShareableUsers {
-        return new ShareableUsers(
-            $container->get(IUserRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(LoggerInterface::class)
-            , $container->get(IJWTService::class)
-        );
-    }
+class ShareException extends PasswordManagerException {
 
 }
