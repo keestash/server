@@ -21,12 +21,15 @@ declare(strict_types=1);
 
 namespace KST\Integration\Core\Repository\User;
 
+use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Integration\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -36,6 +39,8 @@ class UserStateRepositoryTest extends TestCase {
     public function testLockAndUnlock(): void {
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
         /** @var IUserService $userService */
         $userService = $this->getService(IUserService::class);
         /** @var IUserRepositoryService $userRepositoryService */
@@ -63,8 +68,8 @@ class UserStateRepositoryTest extends TestCase {
         $this->assertTrue($retrievedUser instanceof IUser);
         $this->assertTrue($retrievedUser->getId() === $user->getId());
 
-        $userStateRepository->lock($retrievedUser);
-        $userStateRepository->unlock($retrievedUser);
+        $userStateService->forceLock($retrievedUser);
+        $userStateService->clear($retrievedUser);
         $userRepositoryService->removeUser($retrievedUser);
     }
 
@@ -73,8 +78,8 @@ class UserStateRepositoryTest extends TestCase {
         $userService = $this->getService(IUserService::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
 
         $userList = new HashTable();
         foreach ([1, 2, 3] as $id) {
@@ -93,27 +98,14 @@ class UserStateRepositoryTest extends TestCase {
                     ]
                 )
             );
-            $userStateRepository->lock($user);
+
+            $userStateService->forceLock($user);
             $userList->put($user->getId(), $user);
         }
 
-        $lockedUsers = $userStateRepository->getLockedUsers();
-        $counter     = 0;
-        /** @var IUserState $userState */
-        foreach ($lockedUsers->toArray() as $userState) {
-            $user = $userList->get($userState->getUser()->getId());
-
-            if (null === $user) {
-                continue; // it can be the locked user with id 4
-            }
-
-            $this->assertTrue($userState->getUser()->getId() === $user->getId());
-            $counter++;
-        }
-
-        $this->assertTrue($userList->size() === $counter);
-
-        foreach ($userList as $user) {
+        foreach ($userList->toArray() as $user) {
+            $userState = $userStateService->getState($user);
+            $this->assertTrue($userState->getState() === UserStateName::LOCK);
             $userRepositoryService->removeUser($user);
         }
     }
@@ -125,8 +117,8 @@ class UserStateRepositoryTest extends TestCase {
         $userService = $this->getService(IUserService::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
 
         $user          = $userRepositoryService->createUser(
             $userService->toNewUser(
@@ -147,8 +139,8 @@ class UserStateRepositoryTest extends TestCase {
         $this->assertTrue($retrievedUser instanceof IUser);
         $this->assertTrue($retrievedUser->getId() === $user->getId());
 
-        $userStateRepository->delete($retrievedUser);
-        $userStateRepository->revertDelete($retrievedUser);
+        $userStateService->forceDelete($retrievedUser);
+        $userStateService->clear($retrievedUser);
         $userRepositoryService->removeUser($retrievedUser);
     }
 
@@ -157,8 +149,8 @@ class UserStateRepositoryTest extends TestCase {
         $userService = $this->getService(IUserService::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
 
         $userList = new HashTable();
         foreach ([1, 2, 3] as $id) {
@@ -177,29 +169,16 @@ class UserStateRepositoryTest extends TestCase {
                     ]
                 )
             );
-            $userStateRepository->delete($user);
+            $userStateService->forceDelete($user);
             $userList->put($user->getId(), $user);
         }
 
-        $deletedUsers = $userStateRepository->getDeletedUsers();
-        $counter      = 0;
-        /** @var IUserState $userState */
-        foreach ($deletedUsers->toArray() as $userState) {
-            $user = $userList->get($userState->getUser()->getId());
-
-            if (null === $user) {
-                continue; // it can be the locked user with id 4
-            }
-
-            $this->assertTrue($userState->getUser()->getId() === $user->getId());
-            $counter++;
-        }
-
-        $this->assertTrue($userList->size() === $counter);
-
-        foreach ($userList as $user) {
+        foreach ($userList->toArray() as $user) {
+            $userState = $userStateService->getState($user);
+            $this->assertTrue($userState->getState() === UserStateName::DELETE);
             $userRepositoryService->removeUser($user);
         }
+
     }
 
     public function testRequestPasswordChangeAndRevert(): void {
@@ -209,8 +188,8 @@ class UserStateRepositoryTest extends TestCase {
         $userService = $this->getService(IUserService::class);
         /** @var IUserRepositoryService $userRepositoryService */
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
 
         $user          = $userRepositoryService->createUser(
             $userService->toNewUser(
@@ -232,13 +211,20 @@ class UserStateRepositoryTest extends TestCase {
         $this->assertTrue($retrievedUser->getId() === $user->getId());
 
         $hash = Uuid::uuid4()->toString();
-        $userStateRepository->requestPasswordReset($retrievedUser, $hash);
-        $userStateRepository->revertPasswordChangeRequest($retrievedUser);
-
+        $userStateService->setState(
+            new UserState(
+                0,
+                $retrievedUser,
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                $hash
+            )
+        );
+        $userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
         $userRepositoryService->removeUser($retrievedUser);
     }
 
-//
     public function testUsersWithPasswordReset(): void {
         /** @var IUserService $userService */
         $userService = $this->getService(IUserService::class);
@@ -246,6 +232,8 @@ class UserStateRepositoryTest extends TestCase {
         $userRepositoryService = $this->getService(IUserRepositoryService::class);
         /** @var IUserStateRepository $userStateRepository */
         $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
 
         $userList = new HashTable();
         foreach ([1, 2, 3] as $id) {
@@ -264,29 +252,26 @@ class UserStateRepositoryTest extends TestCase {
                     ]
                 )
             );
-            $userStateRepository->requestPasswordReset($user, Uuid::uuid4()->toString());
+            $userStateService->setState(
+                new UserState(
+                    0,
+                    $user,
+                    UserStateName::REQUEST_PW_CHANGE,
+                    new DateTimeImmutable(),
+                    new DateTimeImmutable(),
+                    Uuid::uuid4()->toString()
+                )
+            );
+
             $userList->put($user->getId(), $user);
         }
 
-        $usersWithPasswordResetRequest = $userStateRepository->getUsersWithPasswordResetRequest();
-        $counter                       = 0;
-        /** @var IUserState $userState */
-        foreach ($usersWithPasswordResetRequest->toArray() as $userState) {
-            $user = $userList->get($userState->getUser()->getId());
-
-            if (null === $user) {
-                continue; // it can be the locked user with id 4
-            }
-
-            $this->assertTrue($userState->getUser()->getId() === $user->getId());
-            $counter++;
-        }
-
-        $this->assertTrue($userList->size() === $counter);
-
-        foreach ($userList as $user) {
+        foreach ($userList->toArray() as $user) {
+            $userState = $userStateRepository->getByUser($user);
+            $this->assertTrue($userState->getState() === UserStateName::REQUEST_PW_CHANGE);
             $userRepositoryService->removeUser($user);
         }
+
     }
 
 }

@@ -22,24 +22,22 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTimeInterface;
+use Keestash\Core\DTO\User\UserStateName;
 use KSP\Core\DTO\Entity\IObject;
 
 interface IUserState extends IObject {
 
-    /** @var string USER_STATE_DELETE */
-    public const USER_STATE_DELETE = "delete.state.user";
-    /** @var string USER_STATE_LOCK */
-    public const USER_STATE_LOCK = "lock.state.user";
-    /** @var string USER_STATE_REQUEST_PW_CHANGE */
-    public const USER_STATE_REQUEST_PW_CHANGE = "change.pw.request.state.user";
-
-    public static function isValidState(string $state): bool;
+    public const string  USER_STATE_DELETE                   = "delete.state.user";
+    public const string  USER_STATE_LOCK                     = "lock.state.user";
+    public const string  USER_STATE_LOCK_CANDIDATE_STAGE_ONE = "one.stage.candidate.lock.state.user";
+    public const string  USER_STATE_LOCK_CANDIDATE_STAGE_TWO = "two.stage.candidate.lock.state.user";
+    public const string  USER_STATE_REQUEST_PW_CHANGE        = "change.pw.request.state.user";
 
     public function getId(): int;
 
     public function getUser(): IUser;
 
-    public function getState(): string;
+    public function getState(): UserStateName;
 
     public function getValidFrom(): DateTimeInterface;
 

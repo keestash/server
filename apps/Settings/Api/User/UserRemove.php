@@ -22,27 +22,27 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class UserRemove implements RequestHandlerInterface {
+final readonly class UserRemove implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IUserRepository        $userRepository
-        , private readonly IUserStateRepository $userStateRepository
-        , private readonly IEventService        $eventManager
-        , private readonly LoggerInterface      $logger
+        private IUserRepository     $userRepository
+        , private IUserStateService $userStateService
+        , private IEventService     $eventManager
+        , private LoggerInterface   $logger
     ) {
     }
 
@@ -85,7 +85,7 @@ class UserRemove implements RequestHandlerInterface {
         }
 
         try {
-            $this->userStateRepository->delete($user);
+            $this->userStateService->forceDelete($user);
             return new JsonResponse(
                 [
                     "message" => "user remove"
@@ -97,7 +97,7 @@ class UserRemove implements RequestHandlerInterface {
             $this->eventManager
                 ->execute(
                     new UserStateDeleteEvent(
-                        IUserState::USER_STATE_DELETE
+                        UserStateName::DELETE
                         , $user
                     )
                 );

@@ -27,8 +27,6 @@ use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\Service\User\Event\UserUpdatedEvent;
 use Keestash\Exception\File\FileNotCreatedException;
 use Keestash\Exception\File\FileNotDeletedException;
-use Keestash\Exception\User\State\UserStateException;
-use Keestash\Exception\User\State\UserStateNotInsertedException;
 use Keestash\Exception\User\State\UserStateNotRemovedException;
 use Keestash\Exception\User\UserException;
 use Keestash\Exception\User\UserNotCreatedException;
@@ -41,22 +39,22 @@ use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Log\LoggerInterface;
 
-class UserRepositoryService implements IUserRepositoryService {
+final readonly class UserRepositoryService implements IUserRepositoryService {
 
     public function __construct(
-        private readonly IApiLogRepository      $apiLogRepository
-        , private readonly IFileRepository      $fileRepository
-        , private readonly IUserKeyRepository   $keyRepository
-        , private readonly IUserRepository      $userRepository
-        , private readonly IUserStateRepository $userStateRepository
-        , private readonly FileService          $fileService
-        , private readonly LoggerInterface      $logger
-        , private readonly IEventService        $eventManager
+        private IApiLogRepository    $apiLogRepository
+        , private IFileRepository    $fileRepository
+        , private IUserKeyRepository $keyRepository
+        , private IUserRepository    $userRepository
+        , private FileService        $fileService
+        , private LoggerInterface    $logger
+        , private IEventService      $eventManager
+        , private IUserStateService  $userStateService
     ) {
     }
 
@@ -66,19 +64,17 @@ class UserRepositoryService implements IUserRepositoryService {
      * @return IUser
      * @throws UserNotCreatedException
      * @throws FileNotCreatedException
-     * @throws UserStateException
-     * @throws UserStateNotInsertedException
      */
     public function createUser(IUser $user, ?IFile $file = null): IUser {
         $user = $this->userRepository->insert($user);
         $this->eventManager->execute(new UserCreatedEvent($user));
 
         if (true === $user->isLocked()) {
-            $this->userStateRepository->lock($user);
+            $this->userStateService->forceLock($user);
         }
 
         if (true === $user->isDeleted()) {
-            $this->userStateRepository->delete($user);
+            $this->userStateService->forceDelete($user);
         }
 
         if (null === $file) return $user;
@@ -99,7 +95,7 @@ class UserRepositoryService implements IUserRepositoryService {
             $this->fileRepository->removeForUser($user);
             $this->fileService->removeProfileImage($user);
             $this->keyRepository->remove($user);
-            $this->userStateRepository->removeAll($user);
+            $this->userStateService->clear($user);
             $this->userRepository->remove($user);
         } catch (UserNotDeletedException|UserStateNotRemovedException|FileNotDeletedException $exception) {
             $this->logger->error('error while deleting', ['exception' => $exception]);

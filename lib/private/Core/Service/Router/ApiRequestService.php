@@ -25,29 +25,16 @@ use Keestash\Core\DTO\Instance\Request\APIRequest;
 use KSP\Api\IRequest;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Instance\IInstallerService;
 use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ApiRequestService implements IApiRequestService {
-
-    private IEnvironmentService $environmentService;
-    private IApiLogRepository   $apiLogRepository;
-    private IInstallerService   $installerService;
-    private IRouterService      $routerService;
+final readonly class ApiRequestService implements IApiRequestService {
 
     public function __construct(
-        IEnvironmentService $environmentService
-        , IApiLogRepository $apiLogRepository
-        , IInstallerService $installerService
-        , IRouterService    $routerService
+        private IApiLogRepository $apiLogRepository
+        , private IRouterService  $routerService
     ) {
-        $this->environmentService = $environmentService;
-        $this->apiLogRepository   = $apiLogRepository;
-        $this->installerService   = $installerService;
-        $this->routerService      = $routerService;
     }
 
     /**
@@ -56,28 +43,18 @@ class ApiRequestService implements IApiRequestService {
      * @return void
      */
     public function log(ServerRequestInterface $request, float $end): void {
-        if (false === $this->environmentService->isApi()) {
-            return;
-        }
-        if (false === $this->installerService->hasIdAndHash()) {
-            // we can not check for this, the instance is
-            // not installed and there is no DB
-            return;
-        }
-
         if (true === $this->routerService->isPublicRoute($request)) {
             return;
         }
 
-        /** @var IToken $token */
-        $token = $request->getAttribute(IToken::class);
-
-        $apiRequest = new APIRequest();
-        $apiRequest->setStart((float) $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START));
-        $apiRequest->setEnd($end);
-        $apiRequest->setRoute($this->routerService->getMatchedPath($request));
-        $apiRequest->setToken($token);
-        $this->apiLogRepository->log($apiRequest);
+        $this->apiLogRepository->log(
+            new APIRequest(
+                $request->getAttribute(IToken::class),
+                (float) $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START),
+                $end,
+                $this->routerService->getMatchedPath($request)
+            )
+        );
     }
 
 }

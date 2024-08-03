@@ -24,7 +24,7 @@ namespace KSA\Settings\Test\Integration\Api\User;
 use KSA\Settings\Api\User\UserLock;
 use KSA\Settings\Test\Integration\TestCase;
 use KSP\Api\IResponse;
-use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserStateService;
 use Ramsey\Uuid\Uuid;
 
 class UserLockTest extends TestCase {
@@ -58,8 +58,8 @@ class UserLockTest extends TestCase {
     }
 
     public function testRegularCase(): void {
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
         /** @var UserLock $userLock */
         $userLock = $this->getService(UserLock::class);
         $user     = $this->createUser(
@@ -77,7 +77,7 @@ class UserLockTest extends TestCase {
         );
 
         $this->assertStatusCode(IResponse::OK, $response);
-        $userStateRepository->unlock($user);
+        $userStateService->clear($user);
         $this->removeUser($user);
     }
 

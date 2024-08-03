@@ -65,6 +65,7 @@ return [
     , CoreConfigProvider::PERMISSION_FREE    => [
         ConfigProvider::PASSWORD_MANAGER_GENERATE_PASSWORD
         , ConfigProvider::PASSWORD_MANAGER_GENERATE_QUALITY
+        , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
     ]
     , CoreConfigProvider::PERMISSION_LIST    => [
         IPermission::PERMISSION_PASSWORD_MANAGER_NODE_COMMENT_ADD            => IPermission::PERMISSION_NAME_PASSWORD_MANAGER_NODE_COMMENT_ADD

@@ -29,11 +29,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class EnvironmentMiddleware implements MiddlewareInterface {
+final readonly class EnvironmentMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly InstanceDB         $instanceDb
-        , private readonly ISettingsService $settingsService
+        private InstanceDB         $instanceDb
+        , private ISettingsService $settingsService
     ) {
     }
 

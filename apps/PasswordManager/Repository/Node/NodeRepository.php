@@ -90,7 +90,6 @@ class NodeRepository {
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): Root {
         $type         = Node::ROOT;
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $this->logger->debug('requesting root for user', ['user' => $user]);
         try {
             $queryBuilder->select(
                 [

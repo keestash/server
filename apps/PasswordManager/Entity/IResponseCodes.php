@@ -47,5 +47,4 @@ interface IResponseCodes {
     public const string RESPONSE_NAME_NODE_SHARE_PUBLIC_NOT_FOUND       = 'found.not.public.share.node';
     public const int    RESPONSE_CODE_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS = 7893576;
     public const string RESPONSE_NAME_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS = 'exists.share.no.public.share.node';
-
 }

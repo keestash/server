@@ -22,25 +22,27 @@ declare(strict_types=1);
 namespace KSA\Register\Event\Listener;
 
 use DateTimeImmutable;
+use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\Event\ResetPasswordEvent;
 use KSA\Register\Exception\RegisterException;
 use KSP\Core\DTO\Event\IEvent;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\User\IUserStateService;
 use Mezzio\Template\TemplateRendererInterface;
 use Ramsey\Uuid\Uuid;
 
-class ResetPasswordSendEmailListener implements IListener {
+final readonly class ResetPasswordSendEmailListener implements IListener {
 
     public function __construct(
-        private readonly TemplateRendererInterface $templateRenderer
-        , private readonly IL10N                   $translator
-        , private readonly IEmailService           $emailService
-        , private readonly IUserStateRepository    $userStateRepository
-        , private readonly IConfigService          $configService
+        private TemplateRendererInterface $templateRenderer
+        , private IL10N                   $translator
+        , private IEmailService           $emailService
+        , private IConfigService          $configService
+        , private IUserStateService       $userStateService
     ) {
     }
 
@@ -80,7 +82,16 @@ class ResetPasswordSendEmailListener implements IListener {
         );
         $this->emailService->send();
 
-        $this->userStateRepository->requestPasswordReset($event->getUser(), $hash);
+        $this->userStateService->setState(
+            new UserState(
+                0,
+                $event->getUser(),
+                UserStateName::REQUEST_PW_CHANGE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                Uuid::uuid4()->toString()
+            )
+        );
     }
 
 }

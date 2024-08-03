@@ -23,8 +23,8 @@ namespace KSA\Settings\Factory\Api\User;
 
 use KSA\Settings\Api\User\UserRemove;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -33,7 +33,7 @@ class UserRemoveFactory {
     public function __invoke(ContainerInterface $container): UserRemove {
         return new UserRemove(
             $container->get(IUserRepository::class)
-            , $container->get(IUserStateRepository::class)
+            , $container->get(IUserStateService::class)
             , $container->get(IEventService::class)
             , $container->get(LoggerInterface::class)
         );

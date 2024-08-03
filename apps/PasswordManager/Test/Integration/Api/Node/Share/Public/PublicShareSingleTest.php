@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Integration\Api\Node\Share;
+namespace Integration\Api\Node\Share\Public;
 
-use KSA\PasswordManager\Api\Node\Share\PublicShareSingle;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShareSingle;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
