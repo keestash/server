@@ -31,22 +31,22 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CSPHeaderMiddleware implements MiddlewareInterface {
 
-    public const DIRECTIVE_NAME_DEFAULT_SRC               = 'default-src';
-    public const DIRECTIVE_NAME_SCRIPT_SRC                = 'script-src';
-    public const DIRECTIVE_NAME_STYLE_SRC                 = 'style-src';
-    public const DIRECTIVE_NAME_IMG_SRC                   = 'img-src';
-    public const DIRECTIVE_NAME_CONNECT_SRC               = 'connect-src';
-    public const DIRECTIVE_NAME_FONT_SRC                  = 'font-src';
-    public const DIRECTIVE_NAME_OBJECT_SRC                = 'object-src';
-    public const DIRECTIVE_NAME_MEDIA_SRC                 = 'media-src';
-    public const DIRECTIVE_NAME_FRAME_SRC                 = 'frame-src';
-    public const DIRECTIVE_NAME_FORM_ACTION               = 'form-action';
-    public const DIRECTIVE_NAME_WORKER_SRC                = 'worker-src';
-    public const DIRECTIVE_NAME_MANIFEST_SRC              = 'manifest-src';
-    public const DIRECTIVE_NAME_PREFETCH_SRC              = 'prefetch-src';
-    public const DIRECTIVE_NAME_REQUIRE_TRUSTED_TYPES_FOR = 'require-trusted-types-for';
+    public const string DIRECTIVE_NAME_DEFAULT_SRC               = 'default-src';
+    public const string DIRECTIVE_NAME_SCRIPT_SRC                = 'script-src';
+    public const string DIRECTIVE_NAME_STYLE_SRC                 = 'style-src';
+    public const string DIRECTIVE_NAME_IMG_SRC                   = 'img-src';
+    public const string DIRECTIVE_NAME_CONNECT_SRC               = 'connect-src';
+    public const string DIRECTIVE_NAME_FONT_SRC                  = 'font-src';
+    public const string DIRECTIVE_NAME_OBJECT_SRC                = 'object-src';
+    public const string DIRECTIVE_NAME_MEDIA_SRC                 = 'media-src';
+    public const string DIRECTIVE_NAME_FRAME_SRC                 = 'frame-src';
+    public const string DIRECTIVE_NAME_FORM_ACTION               = 'form-action';
+    public const string DIRECTIVE_NAME_WORKER_SRC                = 'worker-src';
+    public const string DIRECTIVE_NAME_MANIFEST_SRC              = 'manifest-src';
+    public const string DIRECTIVE_NAME_PREFETCH_SRC              = 'prefetch-src';
+    public const string DIRECTIVE_NAME_REQUIRE_TRUSTED_TYPES_FOR = 'require-trusted-types-for';
 
-    public const CSP_FIELD_DIRECTIVES = [
+    public const array CSP_FIELD_DIRECTIVES = [
         CSPHeaderMiddleware::DIRECTIVE_NAME_DEFAULT_SRC,
         CSPHeaderMiddleware::DIRECTIVE_NAME_STYLE_SRC,
         CSPHeaderMiddleware::DIRECTIVE_NAME_SCRIPT_SRC,

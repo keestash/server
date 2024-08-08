@@ -27,6 +27,7 @@ use doganoo\DI\DateTime\IDateTimeService;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Entity\Share\PublicShare;
+use KSA\PasswordManager\Exception\Node\Share\ShareException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
@@ -101,6 +102,38 @@ final readonly class PublicShareRepository {
         }
 
         $row       = $rows[0];
+
+        return new PublicShare(
+            (int) $row[0],
+            (int) $row[3],
+            (string) $row[1],
+            $this->dateTimeService->fromFormat((string)$row[2])
+        );
+
+    }
+
+    public function getShareById(int $id): PublicShare {
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $queryBuilder->select(
+            [
+                's.id'
+                , 's.hash'
+                , 's.expire_ts'
+                , 's.node_id'
+            ]
+        )
+            ->from('pwm_public_share', 's')
+            ->where('s.`id` = ?')
+            ->setParameter(0, $id);
+
+        $result = $queryBuilder->executeQuery();
+        $rows   = $result->fetchAllNumeric();
+
+        if (0 === count($rows)) {
+            return new NullShare();
+        }
+
+        $row       = $rows[0];
         $shareId   = $row[0];
         $shareHash = $row[1];
         $expireTs  = $row[2];
@@ -136,17 +169,13 @@ final readonly class PublicShareRepository {
             return new NullShare();
         }
 
-        $row       = $rows[0];
-        $shareId   = $row[0];
-        $shareHash = $row[1];
-        $expireTs  = $row[2];
-        $nodeId    = $row[3];
+        $row = $rows[0];
 
         return new PublicShare(
-            (int) $shareId,
-            (int) $nodeId,
-            (string) $shareHash,
-            $this->dateTimeService->toDateTime((int) $expireTs)
+            (int) $row[0],
+            (int) $row[3],
+            (string) $row[1],
+            $this->dateTimeService->fromFormat($row[2])
         );
     }
 
@@ -184,7 +213,7 @@ final readonly class PublicShareRepository {
                     (int) $shareId,
                     (int) $nodeId,
                     (string) $shareHash,
-                    $this->dateTimeService->fromFormat($expireTs)
+                    $this->dateTimeService->fromFormat((string) $expireTs)
                 )
             );
             return $node;
@@ -206,6 +235,20 @@ final readonly class PublicShareRepository {
         } catch (Exception $e) {
             $this->logger->warning('can not remove users public share', ['user' => $user, 'exception' => $e]);
             return false;
+        }
+    }
+
+    public function remove(PublicShare $share): PublicShare {
+        try {
+            $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+            $queryBuilder->delete('pwm_public_share', 'pps')
+                ->where('id = ?')
+                ->setParameter(0, $share->getId())
+                ->executeStatement();
+            return $share;
+        } catch (Exception $e) {
+            $this->logger->warning('can not remove users public share', ['share' => $share, 'exception' => $e]);
+            throw new ShareException();
         }
     }
 

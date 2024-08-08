@@ -31,11 +31,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class InstanceInstalledMiddleware implements MiddlewareInterface {
+final readonly class InstanceInstalledMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly InstanceDB        $instanceDB
-        , private readonly LoggerInterface $logger
+        private InstanceDB        $instanceDB
+        , private LoggerInterface $logger
     ) {
     }
 

@@ -22,22 +22,20 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\User\Event;
 
 use Keestash\Core\DTO\Event\Event;
+use Keestash\Core\DTO\User\UserStateName;
 use KSP\Core\DTO\User\IUser;
 
 class UserStateDeleteEvent extends Event {
 
     public function __construct(
-        private readonly string  $stateType
-        , private readonly IUser $user
-        , private readonly int   $priority = 99999999
+        private readonly UserStateName $stateName
+        , private readonly IUser       $user
+        , private readonly int         $priority = 99999999
     ) {
     }
 
-    /**
-     * @return string
-     */
-    public function getStateType(): string {
-        return $this->stateType;
+    public function getStateName(): UserStateName {
+        return $this->stateName;
     }
 
     /**
@@ -56,7 +54,7 @@ class UserStateDeleteEvent extends Event {
 
     public function jsonSerialize(): array {
         return [
-            'stateType'  => $this->getStateType()
+            'stateName'  => $this->getStateName()
             , 'user'     => $this->getUser()
             , 'priority' => $this->getPriority()
         ];

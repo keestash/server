@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node\Share;
+namespace KSA\PasswordManager\Api\Node\Share\Regular;
 
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;

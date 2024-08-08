@@ -26,6 +26,7 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -40,6 +41,7 @@ class ResetPasswordConfirmFactory {
             , $container->get(IEventService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IResponseService::class)
+            , $container->get(IUserStateService::class)
         );
     }
 

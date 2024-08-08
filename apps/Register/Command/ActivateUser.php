@@ -24,14 +24,13 @@ namespace KSA\Register\Command;
 use DateTimeImmutable;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\Derivation\Derivation;
-use Keestash\Exception\User\State\UserStateException;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputArgument;
@@ -42,11 +41,11 @@ class ActivateUser extends KeestashCommand {
 
     public function __construct(
         private readonly IUserRepository         $userRepository
-        , private readonly IUserStateRepository  $userStateRepository
         , private readonly IDerivationRepository $derivationRepository
         , private readonly IDerivationService    $derivationService
         , private readonly LoggerInterface       $logger
         , private readonly IEventService         $eventService
+        , private readonly IUserStateService     $userStateService
     ) {
         parent::__construct();
     }
@@ -61,11 +60,12 @@ class ActivateUser extends KeestashCommand {
         $userId = (string) $input->getArgument('userId');
         $user   = $this->userRepository->getUserById($userId);
 
-        try {
-            $this->userStateRepository->unlock($user);
-        } catch (UserStateException $exception) {
-            $this->logger->warning('user was not locked', ['userId' => $user->getId(), 'exception' => $exception]);
+        if (false === $user->isLocked()) {
+            $this->logger->warning('user was not locked', ['userId' => $user->getId()]);
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
+
+        $this->userStateService->clear($user);
 
         $this->derivationRepository->clear($user);
         $derivation = new Derivation(
@@ -87,7 +87,7 @@ class ActivateUser extends KeestashCommand {
         $this->derivationRepository->add($derivation);
 
         $this->eventService->execute(
-            new UserRegistrationConfirmedEvent($user,1)
+            new UserRegistrationConfirmedEvent($user, 1)
         );
 
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;

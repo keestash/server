@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node;
 
-use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
+use KSA\PasswordManager\Api\Node\Share\Regular\ShareableUsers;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;

@@ -30,11 +30,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class SanitizeInputMiddleware implements MiddlewareInterface {
+final readonly class SanitizeInputMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly LoggerInterface  $logger
-        , private readonly IRouterService $routerService
+        private LoggerInterface  $logger
+        , private IRouterService $routerService
     ) {
     }
 

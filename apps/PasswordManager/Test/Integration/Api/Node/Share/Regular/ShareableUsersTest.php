@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Test\Integration\Api\Node;
+namespace Integration\Api\Node\Share\Regular;
 
-use KSA\PasswordManager\Api\Node\Share\ShareableUsers;
+use KSA\PasswordManager\Api\Node\Share\Regular\ShareableUsers;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Test\Integration\TestCase;

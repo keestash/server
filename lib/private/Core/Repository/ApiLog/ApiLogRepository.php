@@ -21,20 +21,22 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\ApiLog;
 
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Core\DTO\Instance\Request\APIRequest;
+use Keestash\Core\DTO\Token\NullToken;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 
-class ApiLogRepository implements IApiLogRepository {
+final readonly class ApiLogRepository implements IApiLogRepository {
 
-    private IBackend $backend;
-
-    public function __construct(IBackend $backend) {
-        $this->backend = $backend;
+    public function __construct(
+        private IBackend $backend
+    ) {
     }
 
-    public function log(IAPIRequest $request): ?int {
+    public function log(IAPIRequest $request): IAPIRequest {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`apilog`")
             ->values(
@@ -57,8 +59,11 @@ class ApiLogRepository implements IApiLogRepository {
 
         $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
 
-        if (0 === $lastInsertId) return null;
-        return $lastInsertId;
+        if ($lastInsertId === 0) {
+            throw new \Exception();
+        }
+
+        return $request;
     }
 
     public function removeForUser(IUser $user): bool {
@@ -67,6 +72,39 @@ class ApiLogRepository implements IApiLogRepository {
                 ->where('user_id = ?')
                 ->setParameter(0, $user->getId())
                 ->executeStatement() !== 0;
+    }
+
+    public function read(IUser $user): ArrayList {
+        $userLogs     = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $users        = $queryBuilder->select(
+            [
+                "`id`"           => '?'
+                , "`token_name`" => '?'
+                , "`token`"      => '?'
+                , "`user_id`"    => '?'
+                , "`start_ts`"   => '?'
+                , "`end_ts`"     => '?'
+                , "`route`"      => '?'
+
+            ]
+        )
+            ->from('apilog')
+            ->where('user_id = ?')
+            ->setParameter(0, $user->getId())
+            ->fetchAllAssociative();
+
+        foreach ($users as $user) {
+            $userLogs->add(
+                new APIRequest(
+                    new NullToken(),
+                    (float) $user['start_ts'],
+                    (float) $user['end_ts'],
+                    $user['token_name']
+                )
+            );
+        }
+        return $userLogs;
     }
 
 }

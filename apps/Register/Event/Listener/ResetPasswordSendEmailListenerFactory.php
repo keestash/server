@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Register\Event\Listener;
 
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\L10N\IL10N;
+use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
@@ -40,8 +40,8 @@ class ResetPasswordSendEmailListenerFactory implements FactoryInterface {
             $container->get(TemplateRendererInterface::class)
             , $container->get(IL10N::class)
             , $container->get(IEmailService::class)
-            , $container->get(IUserStateRepository::class)
             , $container->get(IConfigService::class)
+            , $container->get(IUserStateService::class)
         );
     }
 

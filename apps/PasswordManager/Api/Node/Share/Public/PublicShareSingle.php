@@ -19,11 +19,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node\Share;
+namespace KSA\PasswordManager\Api\Node\Share\Public;
 
 use DateTimeImmutable;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
+use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
@@ -33,6 +34,7 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -47,6 +49,7 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
         , private IEventService       $eventManager
         , private ShareService        $shareService
         , private LoggerInterface     $logger
+        , private IResponseService    $responseService
     ) {
     }
 
@@ -59,7 +62,9 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
             if ($share instanceof NullShare || $isExpired) {
                 $this->triggerEvent(false, !($share instanceof NullShare), $isExpired);
                 return new JsonResponse(
-                    []
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS)
+                    ]
                     , IResponse::NOT_FOUND
                 );
             }
@@ -69,7 +74,10 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
             $this->triggerEvent(true, true, false);
             return new JsonResponse(
                 [
-                    "decrypted" => $this->credentialService->getDecryptedPassword($node)
+                    "decrypted" => [
+                        'userName' => $this->credentialService->getDecryptedUsername($node),
+                        'password' => $this->credentialService->getDecryptedPassword($node)
+                    ]
                 ]
                 , IResponse::OK
             );

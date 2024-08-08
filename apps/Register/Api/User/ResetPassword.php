@@ -24,17 +24,18 @@ namespace KSA\Register\Api\User;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordEvent;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -50,6 +51,7 @@ final readonly class ResetPassword implements RequestHandlerInterface {
         , private IEventService        $eventManager
         , private IResponseService     $responseService
         , private ICollectorService    $collectorService
+        , private IUserStateService    $userStateService
     ) {
     }
 
@@ -119,15 +121,12 @@ final readonly class ResetPassword implements RequestHandlerInterface {
             );
         }
 
-        $userStates       = $this->userStateRepository->getUsersWithPasswordResetRequest();
-        $alreadyRequested = false;
+        $userState = $this->userStateService->getState($user);
 
-        /** @var IUserState $userState */
-        foreach ($userStates->toArray() as $userState) {
-            if ($user->getId() === $userState->getUser()->getId()) {
-                $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
-                $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
-            }
+        $alreadyRequested = false;
+        if ($userState->getState() === UserStateName::REQUEST_PW_CHANGE) {
+            $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
+            $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
         }
 
         if (true === $alreadyRequested) {

@@ -21,10 +21,14 @@ declare(strict_types=1);
 
 namespace KSA\Login\Test\Integration\Command;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\User\UserState;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Test\Integration\TestCase;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\DTO\User\IUserState;
+use KSP\Core\Service\User\IUserStateService;
 use Ramsey\Uuid\Uuid;
 
 class LoginTest extends TestCase {
@@ -62,16 +66,48 @@ class LoginTest extends TestCase {
 
     public function testWithDisabledUser(): void {
         $this->expectException(UserNotFoundException::class);
-        /** @var IUserStateRepository $userStateRepository */
-        $userStateRepository = $this->getService(IUserStateRepository::class);
-        $username            = Uuid::uuid4()->toString();
-        $password            = Uuid::uuid4()->toString();
-        $user                = $this->createUser(
+        /** @var IUserStateService $userStateService */
+        $userStateService = $this->getService(IUserStateService::class);
+        $username         = Uuid::uuid4()->toString();
+        $password         = Uuid::uuid4()->toString();
+        $user             = $this->createUser(
             $username
             , $password
         );
 
-        $userStateRepository->lock($user);
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                UserStateName::LOCK_CANDIDATE_STAGE_ONE,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                Uuid::uuid4()->toString()
+            )
+        );
+
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                UserStateName::LOCK_CANDIDATE_STAGE_TWO,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                Uuid::uuid4()->toString()
+            )
+        );
+
+        $userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                UserStateName::LOCK,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                Uuid::uuid4()->toString()
+            )
+        );
+
         $command = $this->getCommandTester("login:login");
         $command->setInputs(
             [
