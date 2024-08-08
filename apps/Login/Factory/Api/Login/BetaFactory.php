@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2024> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
 namespace KSA\Login\Factory\Api\Login;
 
 use KSA\Login\Api\Login\Alpha;
 use KSA\Login\Api\Login\Beta;
-use KSA\Login\Api\Login\Login;
-use KSP\Core\Service\Metric\ICollectorService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
-class LoginFactory {
+class BetaFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): Login {
-        return new Login(
+    public function __invoke(
+        ContainerInterface $container
+        ,                  $requestedName
+        , ?array           $options = null
+    ): Beta {
+        return new Beta(
             $container->get(Alpha::class)
-            , $container->get(Beta::class)
-            , $container->get(ICollectorService::class)
         );
     }
 

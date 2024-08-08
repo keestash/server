@@ -1,6 +1,7 @@
 version: '3.3'
 services:
   keestash-api:
+    container_name: keestash-api
     build:
       context: ./config/docker/web
       dockerfile: Dockerfile

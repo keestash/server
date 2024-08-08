@@ -26,11 +26,11 @@ use KSP\Core\Service\Derivation\IDerivationService;
 use Laminas\Crypt\Key\Derivation\Scrypt;
 use Psr\Log\LoggerInterface;
 
-class DerivationService implements IDerivationService {
+final readonly class DerivationService implements IDerivationService {
 
     public function __construct(
-        private readonly InstanceDB        $instanceDb
-        , private readonly LoggerInterface $logger
+        private InstanceDB        $instanceDb
+        , private LoggerInterface $logger
     ) {
     }
 
