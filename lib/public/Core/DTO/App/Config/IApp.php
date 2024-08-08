@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\App\Config;
 
 use DateTimeInterface;
-use doganoo\Backgrounder\BackgroundJob\JobList;
 use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\DTO\Entity\IJsonObject;
 

@@ -69,13 +69,10 @@
     "symfony/ldap": "^5.4",
     "symfony/mime": "^4.4",
     "symfony/string": "^5.4",
-    "twig/twig": "3.4.3",
-    "twitter/bootstrap": "^4.5"
+    "twig/twig": "3.4.3"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.8",
-    "filp/whoops": "^2.7",
-    "mockery/mockery": "^1.4",
     "phpcompatibility/php-compatibility": "^9.3",
     "phpstan/phpstan": "^1.0",
     "phpstan/phpstan-deprecation-rules": "^1.1",

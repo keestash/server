@@ -32,24 +32,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class UpdatePassword extends KeestashCommand {
-
-    public const OPTION_NAME_WITH_EVENTS = 'with-events';
-
-    private IUserRepository        $userRepository;
-    private IUserService           $userService;
-    private IUserRepositoryService $userRepositoryService;
+final class UpdatePassword extends KeestashCommand {
 
     public function __construct(
-        IUserRepository          $userRepository
-        , IUserService           $userService
-        , IUserRepositoryService $userRepositoryService
+        private readonly IUserRepository          $userRepository
+        , private readonly IUserService           $userService
+        , private readonly IUserRepositoryService $userRepositoryService
     ) {
         parent::__construct();
-
-        $this->userRepository        = $userRepository;
-        $this->userService           = $userService;
-        $this->userRepositoryService = $userRepositoryService;
     }
 
     protected function configure(): void {
