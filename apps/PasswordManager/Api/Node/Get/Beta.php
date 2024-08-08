@@ -88,7 +88,7 @@ final readonly class Beta {
                     'userName' => base64_encode($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : '')
                 ];
                 $result[] = [
-                    'id'       => $edge->getNode()->getId()+1,
+                    'id'       => $edge->getNode()->getId() + 10000,
                     'name'     => $edge->getNode()->getName(),
                     'type'     => $edge->getNode()->getType(),
                     'userName' => base64_encode($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : '')

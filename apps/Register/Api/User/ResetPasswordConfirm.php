@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KSA\Register\Api\User;
 
 use DateTime;
+use Keestash\Core\DTO\User\NullUserState;
+use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordConfirmEvent;
 use KSP\Api\IResponse;
@@ -30,6 +32,7 @@ use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -37,15 +40,16 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class ResetPasswordConfirm implements RequestHandlerInterface {
+readonly final class ResetPasswordConfirm implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IUserStateRepository     $userStateRepository
-        , private readonly IUserService           $userService
-        , private readonly IUserRepositoryService $userRepositoryService
-        , private readonly IEventService          $eventManager
-        , private readonly LoggerInterface        $logger
-        , private readonly IResponseService       $responseService
+        private IUserStateRepository     $userStateRepository
+        , private IUserService           $userService
+        , private IUserRepositoryService $userRepositoryService
+        , private IEventService          $eventManager
+        , private LoggerInterface        $logger
+        , private IResponseService       $responseService
+        , private IUserStateService      $userStateService
     ) {
     }
 
@@ -62,7 +66,7 @@ class ResetPasswordConfirm implements RequestHandlerInterface {
 
         $userState = $this->findCandidate($hash);
 
-        if (null === $userState) {
+        if ($userState instanceof NullUserState) {
             return new JsonResponse(
                 [
                     "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_CONFIRM_USER_BY_HASH_NOT_FOUND)
@@ -89,7 +93,7 @@ class ResetPasswordConfirm implements RequestHandlerInterface {
         );
 
         $this->userRepositoryService->updateUser($updateUser, $user);
-        $this->userStateRepository->revertPasswordChangeRequest($user);
+        $this->userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
 
         $this->eventManager->execute(new ResetPasswordConfirmEvent(2));
 
@@ -106,27 +110,12 @@ class ResetPasswordConfirm implements RequestHandlerInterface {
 
     }
 
-    private function findCandidate(string $hash, bool $debug = false): ?IUserState {
-        if ("" === $hash) {
-            return null;
+    private function findCandidate(string $hash): IUserState {
+        $userState = $this->userStateRepository->getByHash($hash);
+        if ($userState->getCreateTs()->diff(new DateTime())->i < 2) {
+            return $userState;
         }
-        $userStates = $this->userStateRepository->getUsersWithPasswordResetRequest();
-
-        foreach ($userStates->keySet() as $userStateId) {
-            /** @var IUserState $userState */
-            $userState = $userStates->get($userStateId);
-
-            if (
-                true === $debug
-                || ($userState->getStateHash() === $hash
-                    && $userState->getCreateTs()->diff(new DateTime())->i < 2)
-            ) {
-                return $userState;
-            }
-
-        }
-
-        return null;
+        return new NullUserState();
     }
 
 }

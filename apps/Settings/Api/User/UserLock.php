@@ -22,37 +22,28 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
-use Psr\Log\LoggerInterface;
+use KSP\Core\Service\User\IUserStateService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
-class UserLock implements RequestHandlerInterface {
-
-    private IUserRepository      $userRepository;
-    private IUserStateRepository $userStateRepository;
-    private IEventService        $eventManager;
-    private LoggerInterface              $logger;
+readonly class UserLock implements RequestHandlerInterface {
 
     public function __construct(
-        IUserRepository        $userRepository
-        , IUserStateRepository $userStateRepository
-        , IEventService        $eventManager
-        , LoggerInterface              $logger
+        private IUserRepository     $userRepository
+        , private IUserStateService $userStateService
+        , private IEventService     $eventManager
+        , private LoggerInterface   $logger
     ) {
-        $this->userRepository      = $userRepository;
-        $this->userStateRepository = $userStateRepository;
-        $this->eventManager        = $eventManager;
-        $this->logger              = $logger;
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
@@ -77,11 +68,11 @@ class UserLock implements RequestHandlerInterface {
         }
 
         try {
-            $this->userStateRepository->lock($user);
+            $this->userStateService->forceLock($user);
             $this->eventManager
                 ->execute(
                     new UserStateLockEvent(
-                        IUserState::USER_STATE_LOCK
+                        UserStateName::LOCK
                         , $user
                     )
                 );

@@ -12,7 +12,7 @@ declare(strict_types=1);
  * the Keestash software and contains warranty information and liability disclaimers.
  */
 
-namespace KSA\PasswordManager\Api\Node\Share;
+namespace KSA\PasswordManager\Api\Node\Share\Regular;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Http\JWT\Audience;

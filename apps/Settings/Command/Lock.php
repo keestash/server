@@ -27,25 +27,20 @@ use Keestash\Exception\User\State\UserStateNotInsertedException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\User\IUserStateService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Lock extends KeestashCommand {
+final class Lock extends KeestashCommand {
 
-    public const ARGUMENT_NAME_USER_ID = 'user-id';
-
-    private IUserRepository      $userRepository;
-    private IUserStateRepository $userStateRepository;
+    public const string ARGUMENT_NAME_USER_ID = 'user-id';
 
     public function __construct(
-        IUserRepository        $userRepository
-        , IUserStateRepository $userStateRepository
+        private readonly IUserRepository     $userRepository
+        , private readonly IUserStateService $userStateService
     ) {
         parent::__construct();
-        $this->userRepository      = $userRepository;
-        $this->userStateRepository = $userStateRepository;
     }
 
     protected function configure(): void {
@@ -64,7 +59,7 @@ class Lock extends KeestashCommand {
         foreach ($userIds as $id) {
             try {
                 $user = $this->userRepository->getUserById((string) $id);
-                $this->userStateRepository->lock($user);
+                $this->userStateService->forceLock($user);
                 $this->writeInfo('locked user ' . $user->getName() . ' (' . $user->getId() . ')', $output);
             } catch (UserNotFoundException $e) {
                 $this->writeError('user with id ' . $id . ' not found', $output);

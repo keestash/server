@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Share;
 
-use KSA\PasswordManager\Api\Node\Share\Remove;
+use KSA\PasswordManager\Api\Node\Share\Regular\Remove;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use Psr\Container\ContainerInterface;
 

@@ -27,12 +27,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class DispatchMiddleware implements MiddlewareInterface {
+final readonly class DispatchMiddleware implements MiddlewareInterface {
 
 
     public function __construct(
-        private readonly IApiRequestService                             $requestService
-        , private readonly \Mezzio\Router\Middleware\DispatchMiddleware $dispatchMiddleware
+        private IApiRequestService                             $requestService
+        , private \Mezzio\Router\Middleware\DispatchMiddleware $dispatchMiddleware
     ) {
     }
 

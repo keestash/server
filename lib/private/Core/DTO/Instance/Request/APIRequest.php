@@ -28,27 +28,22 @@ use KSP\Core\DTO\Token\IToken;
  * Class APIRequest
  * @package Keestash\Core\DTO
  */
-class APIRequest implements IAPIRequest {
+final readonly class APIRequest implements IAPIRequest {
 
-    private IToken $token;
-    private float  $start;
-    private float  $end;
-    private string $route;
+    public function __construct(
+        private IToken $token,
+        private float  $start,
+        private float  $end,
+        private string $route
+    ) {
+    }
 
     public function getToken(): IToken {
         return $this->token;
     }
 
-    public function setToken(IToken $token): void {
-        $this->token = $token;
-    }
-
     public function getRoute(): string {
         return $this->route;
-    }
-
-    public function setRoute(string $route): void {
-        $this->route = $route;
     }
 
     public function getDuration(): int {
@@ -59,17 +54,10 @@ class APIRequest implements IAPIRequest {
         return $this->end;
     }
 
-    public function setEnd(float $end): void {
-        $this->end = $end;
-    }
-
     public function getStart(): float {
         return $this->start;
     }
 
-    public function setStart(float $start): void {
-        $this->start = $start;
-    }
 
     /**
      * Specify data which should be serialized to JSON

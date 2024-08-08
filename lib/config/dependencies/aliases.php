@@ -90,6 +90,7 @@ use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\Service\User\UserStateService;
 use Keestash\Queue\Handler\EventHandler;
 use Keestash\ThirdParty\Mezzio\Cors\UriFactory;
 use Keestash\ThirdParty\nikolaposa\RateLimit\FileRateLimiter;
@@ -153,6 +154,7 @@ use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\Router\IVerificationService;
 use KSP\Core\Service\User\IUserService;
+use KSP\Core\Service\User\IUserStateService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KSP\Queue\Handler\IEventHandler;
 use Mezzio\Cors\Configuration\ConfigurationInterface;
@@ -184,6 +186,7 @@ return [
 
     // service
     , IUserService::class                               => UserService::class
+    , IUserStateService::class                          => UserStateService::class
     , IConfigService::class                             => ConfigService::class
     , IDateTimeService::class                           => DateTimeService::class
     , IKeyService::class                                => KeyService::class

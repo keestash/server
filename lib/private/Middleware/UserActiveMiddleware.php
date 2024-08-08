@@ -31,12 +31,9 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class UserActiveMiddleware implements MiddlewareInterface {
+final readonly class UserActiveMiddleware implements MiddlewareInterface {
 
-    private IUserService $userService;
-
-    public function __construct(IUserService $userService) {
-        $this->userService = $userService;
+    public function __construct(private IUserService $userService) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {

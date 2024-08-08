@@ -24,6 +24,7 @@ namespace KSA\Register\Factory\Api;
 use KSA\Register\Api\User\Confirm;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Event\IEventService;
+use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -37,6 +38,7 @@ class ConfirmFactory implements FactoryInterface {
     ): Confirm {
         return new Confirm(
             $container->get(IUserStateRepository::class)
+            , $container->get(IUserStateService::class)
             , $container->get(IEventService::class)
             , $container->get(LoggerInterface::class)
         );

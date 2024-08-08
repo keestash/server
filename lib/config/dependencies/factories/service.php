@@ -72,6 +72,7 @@ use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
 use Keestash\Core\Service\User\UserService;
+use Keestash\Core\Service\User\UserStateService;
 use Keestash\Core\System\Application;
 use Keestash\Factory\Core\Builder\Validator\EmailValidatorFactory;
 use Keestash\Factory\Core\Builder\Validator\PhoneValidatorFactory;
@@ -113,6 +114,7 @@ use Keestash\Factory\Core\Service\Router\VerificationFactory;
 use Keestash\Factory\Core\Service\User\Event\Listener\ScheduleUserStateEventListenerListenerFactory;
 use Keestash\Factory\Core\Service\User\Repository\UserRepositoryServiceFactory;
 use Keestash\Factory\Core\Service\User\UserServiceFactory;
+use Keestash\Factory\Core\Service\User\UserStateServiceFactory;
 use Keestash\Factory\Queue\Handler\EventHandlerFactory;
 use Keestash\Factory\ThirdParty\Doctrine\ConnectionFactory;
 use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
@@ -129,6 +131,7 @@ use Psr\Log\LoggerInterface;
 return [
     UserService::class                                        => UserServiceFactory::class
     , ConfigService::class                                    => ConfigServiceFactory::class
+    , UserStateService::class                                 => UserStateServiceFactory::class
     , KeyService::class                                       => KeyServiceFactory::class
     , KeestashEncryptionService::class                        => KeestashEncryptionServiceFactory::class
     , FileService::class                                      => FileServiceFactory::class

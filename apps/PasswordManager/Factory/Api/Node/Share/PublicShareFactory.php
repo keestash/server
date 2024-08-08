@@ -21,9 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Share;
 
-use KSA\PasswordManager\Api\Node\Share\PublicShare;
+use KSA\PasswordManager\Api\Node\Share\Public\PublicShare;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Core\Service\HTTP\IResponseService;
 use Psr\Container\ContainerInterface;
@@ -38,6 +39,7 @@ class PublicShareFactory {
             , $container->get(PublicShareRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IResponseService::class)
+            , $container->get(AccessService::class)
         );
     }
 
