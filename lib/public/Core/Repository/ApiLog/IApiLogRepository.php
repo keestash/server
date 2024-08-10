@@ -34,4 +34,6 @@ interface IApiLogRepository extends IRepository {
 
     public function read(IUser $user): ArrayList;
 
+    public function getAll(): ArrayList;
+
 }

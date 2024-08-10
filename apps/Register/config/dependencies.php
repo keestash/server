@@ -28,6 +28,7 @@ use KSA\Register\Api\User\ResetPassword;
 use KSA\Register\Api\User\ResetPasswordConfirm;
 use KSA\Register\Api\User\ResetPasswordRetrieve;
 use KSA\Register\Command\ActivateUser;
+use KSA\Register\Command\CheckInactiveUsers;
 use KSA\Register\Command\CreateUser;
 use KSA\Register\Command\DeleteUser;
 use KSA\Register\Event\Listener\ResetPasswordSendEmailListener;
@@ -40,6 +41,7 @@ use KSA\Register\Factory\Api\ResetPasswordConfirmFactory;
 use KSA\Register\Factory\Api\ResetPasswordFactory;
 use KSA\Register\Factory\Api\ResetPasswordRetrieveFactory;
 use KSA\Register\Factory\Command\ActivateUserFactory;
+use KSA\Register\Factory\Command\CheckInactiveUsersFactory;
 use KSA\Register\Factory\Command\CreateUserFactory;
 use KSA\Register\Factory\Command\DeleteUserFactory;
 use KSA\Register\Factory\Event\Listener\UserRegisteredEventListenerFactory;
@@ -60,6 +62,7 @@ return [
         , CreateUser::class                     => CreateUserFactory::class
         , DeleteUser::class                     => DeleteUserFactory::class
         , ActivateUser::class                   => ActivateUserFactory::class
+        , CheckInactiveUsers::class             => CheckInactiveUsersFactory::class
 
         // event
         // ---- listener

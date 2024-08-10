@@ -50,7 +50,7 @@ class LocaleService implements ILocaleService {
      * @return string
      */
     public function getLocale(): string {
-        return Locale::getRegion(Locale::getDefault());
+        return (string) Locale::getRegion(Locale::getDefault());
     }
 
     /**
@@ -60,7 +60,7 @@ class LocaleService implements ILocaleService {
      * @return string
      */
     public function getPrimaryLanguageForUser(IUser $user): string {
-        return Locale::getPrimaryLanguage($user->getLocale());
+        return (string) Locale::getPrimaryLanguage($user->getLocale());
     }
 
 }

@@ -28,6 +28,7 @@ return [
     , ConfigProvider::API_ROUTER     => require __DIR__ . '/api_router.php'
     , ConfigProvider::PERMISSIONS    => require __DIR__ . '/permissions.php'
     , ConfigProvider::COMMANDS       => require __DIR__ . '/commands.php'
+    , ConfigProvider::EVENTS         => require __DIR__ . '/events.php'
     , ConfigProvider::RESPONSE_CODES => require __DIR__ . '/response_codes.php'
     , ConfigProvider::APP_LIST       => [
         LoginConfigProvider::APP_ID => [

@@ -27,12 +27,14 @@ use KSA\Login\Api\Login\Alpha;
 use KSA\Login\Api\Login\Beta;
 use KSA\Login\Api\Login\Login;
 use KSA\Login\Api\Logout;
+use KSA\Login\Event\ApplicationEndedEventListener;
 use KSA\Login\Factory\Api\ConfigurationFactory;
 use KSA\Login\Factory\Api\Key\KeyFactory;
 use KSA\Login\Factory\Api\Login\AlphaFactory;
 use KSA\Login\Factory\Api\Login\BetaFactory;
 use KSA\Login\Factory\Api\Login\LoginFactory;
 use KSA\Login\Factory\Api\LogoutFactory;
+use KSA\Login\Factory\Event\ApplicationEndedEventListenerFactory;
 use KSA\Login\Service\TokenService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
@@ -40,20 +42,23 @@ return [
     ConfigProvider::FACTORIES => [
         // api
         // -- login
-        Login::class                       => LoginFactory::class
-        , Alpha::class                     => AlphaFactory::class
-        , Beta::class                      => BetaFactory::class
+        Login::class                           => LoginFactory::class
+        , Alpha::class                         => AlphaFactory::class
+        , Beta::class                          => BetaFactory::class
 
         // -- key
-        , Key::class                       => KeyFactory::class
-        , Configuration::class             => ConfigurationFactory::class
-        , Logout::class                    => LogoutFactory::class
+        , Key::class                           => KeyFactory::class
+        , Configuration::class                 => ConfigurationFactory::class
+        , Logout::class                        => LogoutFactory::class
 
         // service
-        , TokenService::class              => InvokableFactory::class
+        , TokenService::class                  => InvokableFactory::class
 
         // command
-        , \KSA\Login\Command\Login::class  => \KSA\Login\Factory\Command\LoginFactory::class
-        , \KSA\Login\Command\Logout::class => \KSA\Login\Factory\Command\LogoutFactory::class
+        , \KSA\Login\Command\Login::class      => \KSA\Login\Factory\Command\LoginFactory::class
+        , \KSA\Login\Command\Logout::class     => \KSA\Login\Factory\Command\LogoutFactory::class
+
+        // event
+        , ApplicationEndedEventListener::class => ApplicationEndedEventListenerFactory::class
     ]
 ];

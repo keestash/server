@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /**
  * Keestash
  *
@@ -19,26 +20,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KST\Integration\Core\Service\Router;
+use Keestash\Core\DTO\Event\ApplicationEndedEvent;
+use KSA\Login\Event\ApplicationEndedEventListener;
 
-use KSP\Core\Service\Router\IApiRequestService;
-use KST\Integration\TestCase;
-
-class ApiRequestServiceTest extends TestCase {
-
-    private IApiRequestService $apiRequestService;
-
-    protected function setUp(): void {
-        parent::setUp();
-        $this->apiRequestService = $this->getService(IApiRequestService::class);
-    }
-
-    public function testLog(): void {
-        $this->apiRequestService->log(
-            $this->getVirtualRequest([])
-            , time()
-        );
-        $this->assertTrue(true === true);
-    }
-
-}
+return [
+    ApplicationEndedEvent::class => [
+        ApplicationEndedEventListener::class
+    ]
+];

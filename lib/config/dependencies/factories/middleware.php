@@ -23,7 +23,6 @@ declare(strict_types=1);
 use Keestash\Factory\Middleware\ApplicationStartedMiddlewareFactory;
 use Keestash\Factory\Middleware\CSPHeaderMiddlewareFactory;
 use Keestash\Factory\Middleware\DeactivatedRouteMiddlewareFactory;
-use Keestash\Factory\Middleware\DispatchMiddlewareFactory;
 use Keestash\Factory\Middleware\EnvironmentMiddlewareFactory;
 use Keestash\Factory\Middleware\ExceptionHandlerMiddlewareFactory;
 use Keestash\Factory\Middleware\InstanceInstalledMiddlewareFactory;
@@ -36,7 +35,6 @@ use Keestash\Middleware\ApiVersionMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\CSPHeaderMiddleware;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
-use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\EnvironmentMiddleware;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
@@ -49,7 +47,6 @@ use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     InstanceInstalledMiddleware::class    => InstanceInstalledMiddlewareFactory::class
-    , DispatchMiddleware::class           => DispatchMiddlewareFactory::class
     , ApplicationStartedMiddleware::class => ApplicationStartedMiddlewareFactory::class
     , RateLimiterMiddleware::class        => RateLimiterMiddlewareFactory::class
     , PermissionMiddleware::class         => PermissionMiddlewareFactory::class

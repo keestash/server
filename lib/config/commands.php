@@ -99,4 +99,5 @@ return [
     , ResponseCodeListAll::class
     , Verify::class
     , WorkerSingleShow::class
+    , \Keestash\Command\ApiLog\ListAll::class
 ];

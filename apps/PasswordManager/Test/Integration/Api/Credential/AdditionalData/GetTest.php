@@ -30,6 +30,7 @@ use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService
 use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class GetTest extends TestCase {
@@ -186,6 +187,10 @@ class GetTest extends TestCase {
                     , $headers
                 )
             );
+        /** @var LoggerInterface $logger */
+        $logger = $this->getService(LoggerInterface::class);
+
+        $logger->debug(GetTest::class . '@::testNonExisting', ['response' => ['statusCode'=>$response->getStatusCode(), 'body'=>(string)$response->getBody()]]);
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
         $this->logout($headers, $user);
         $this->removeUser($user);

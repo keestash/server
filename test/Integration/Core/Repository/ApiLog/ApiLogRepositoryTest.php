@@ -50,8 +50,8 @@ class ApiLogRepositoryTest extends TestCase {
         $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);
         $request          = new APIRequest(
             $token,
-            time() - 3600,
-            time(),
+            new \DateTimeImmutable(),
+            (new \DateTimeImmutable())->modify('+3 minutes'),
             "my/awesome/route"
         );
 

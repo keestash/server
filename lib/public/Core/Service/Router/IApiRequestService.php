@@ -27,9 +27,8 @@ interface IApiRequestService {
 
     /**
      * @param ServerRequestInterface $request
-     * @param float                  $end
      * @return void
      */
-    public function log(ServerRequestInterface $request, float $end): void;
+    public function log(ServerRequestInterface $request): void;
 
 }

@@ -20,15 +20,11 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Test\Service\Factory\Repository\Node\NodeRepositoryFactory;
 use KSA\PasswordManager\Test\Service\RequestService;
 use KSA\PasswordManager\Test\Service\ResponseService;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    NodeRepository::class    => NodeRepositoryFactory::class,
-
     // service
     RequestService::class    => InvokableFactory::class
     , ResponseService::class => InvokableFactory::class

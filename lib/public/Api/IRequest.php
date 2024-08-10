@@ -24,6 +24,7 @@ namespace KSP\Api;
 interface IRequest {
 
     public const string ATTRIBUTE_NAME_APPLICATION_START          = 'start.application.name.attribute';
+    public const string ATTRIBUTE_NAME_APPLICATION_END            = 'end.application.name.attribute';
     public const string ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL = 'install.instance.to.routes.name.attribute';
     public const string ATTRIBUTE_NAME_ROUTES_TO_INSTALL          = 'install.to.routes.name.attribute';
     public const string ATTRIBUTE_NAME_IS_PUBLIC                  = 'public.is.name.attribute';

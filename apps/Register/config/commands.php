@@ -21,6 +21,7 @@ declare(strict_types=1);
  */
 
 use KSA\Register\Command\ActivateUser;
+use KSA\Register\Command\CheckInactiveUsers;
 use KSA\Register\Command\CreateUser;
 use KSA\Register\Command\DeleteUser;
 
@@ -28,4 +29,5 @@ return [
     CreateUser::class
     , DeleteUser::class
     , ActivateUser::class
+    , CheckInactiveUsers::class
 ];

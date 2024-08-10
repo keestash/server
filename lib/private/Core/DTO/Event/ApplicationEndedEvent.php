@@ -19,20 +19,32 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+namespace Keestash\Core\DTO\Event;
 
-use Keestash\Middleware\DispatchMiddleware;
-use KSP\Core\Service\Router\IApiRequestService;
-use Psr\Container\ContainerInterface;
-use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-class DispatchMiddlewareFactory {
+class ApplicationEndedEvent extends Event {
 
-    public function __invoke(ContainerInterface $container): MiddlewareInterface {
-        return new DispatchMiddleware(
-            $container->get(IApiRequestService::class)
-            , $container->get(\Mezzio\Router\Middleware\DispatchMiddleware::class)
-        );
+    public function __construct(
+        private readonly ServerRequestInterface $request
+    ) {
+    }
+
+    /**
+     * @return ServerRequestInterface
+     */
+    public function getRequest(): ServerRequestInterface {
+        return $this->request;
+    }
+
+    public function getPriority(): int {
+        return 2;
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'priority' => $this->getPriority(),
+        ];
     }
 
 }

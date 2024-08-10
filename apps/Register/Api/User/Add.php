@@ -222,7 +222,7 @@ readonly final class Add implements RequestHandlerInterface {
     }
 
     private function getParameter(string $name, ServerRequestInterface $request): string {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         return (string) ($body[$name] ?? null);
     }
 

@@ -26,35 +26,45 @@ use KSP\Api\IRequest;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Service\Router\IApiRequestService;
-use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 final readonly class ApiRequestService implements IApiRequestService {
 
     public function __construct(
         private IApiLogRepository $apiLogRepository
-        , private IRouterService  $routerService
+        , private LoggerInterface $logger
     ) {
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param float                  $end
      * @return void
      */
-    public function log(ServerRequestInterface $request, float $end): void {
-        if (true === $this->routerService->isPublicRoute($request)) {
+    public function log(ServerRequestInterface $request): void {
+        $isPublic = $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC);
+
+        if (true === $isPublic) {
+            $this->logger->debug('route is public, no log inserted');
             return;
         }
 
-        $this->apiLogRepository->log(
+        $token = $request->getAttribute(IToken::class);
+
+        if (null === $token) {
+            $this->logger->emergency('route is not public but token not found', ['route'=>$request->getAttribute(IRequest::ATTRIBUTE_NAME_MATCHED_PATH)]);
+            return;
+        }
+
+        $logged = $this->apiLogRepository->log(
             new APIRequest(
                 $request->getAttribute(IToken::class),
-                (float) $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START),
-                $end,
-                $this->routerService->getMatchedPath($request)
+                $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START),
+                $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_END),
+                $request->getAttribute(IRequest::ATTRIBUTE_NAME_MATCHED_PATH)
             )
         );
+        $this->logger->debug('api request log created', ['log' => $logged]);
     }
 
 }

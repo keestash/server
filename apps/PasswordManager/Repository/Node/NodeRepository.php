@@ -56,35 +56,18 @@ use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\HTTP\IJWTService;
 use Psr\Log\LoggerInterface;
 
-class NodeRepository {
-
-    private IUserRepository         $userRepository;
-    private PublicShareRepository   $publicShareRepository;
-    private DateTimeService         $dateTimeService;
-    private LoggerInterface         $logger;
-    private IOrganizationRepository $organizationRepository;
-    private IJWTService             $jwtService;
-    private IBackend                $backend;
-    private IEnvironmentService     $environmentService;
+final readonly class NodeRepository {
 
     public function __construct(
-        IBackend                  $backend
-        , IUserRepository         $userRepository
-        , PublicShareRepository   $shareRepository
-        , DateTimeService         $dateTimeService
-        , LoggerInterface         $logger
-        , IOrganizationRepository $organizationRepository
-        , IJWTService             $jwtService
-        , IEnvironmentService     $environmentService
+        private IBackend                  $backend
+        , private IUserRepository         $userRepository
+        , private PublicShareRepository   $publicShareRepository
+        , private DateTimeService         $dateTimeService
+        , private LoggerInterface         $logger
+        , private IOrganizationRepository $organizationRepository
+        , private IJWTService             $jwtService
+        , private IEnvironmentService     $environmentService
     ) {
-        $this->userRepository         = $userRepository;
-        $this->publicShareRepository  = $shareRepository;
-        $this->dateTimeService        = $dateTimeService;
-        $this->logger                 = $logger;
-        $this->organizationRepository = $organizationRepository;
-        $this->jwtService             = $jwtService;
-        $this->backend                = $backend;
-        $this->environmentService     = $environmentService;
     }
 
     public function getRootForUser(IUser $user, int $depth = 0, int $maxDepth = PHP_INT_MAX): Root {

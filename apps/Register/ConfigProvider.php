@@ -23,13 +23,13 @@ namespace KSA\Register;
 
 final class ConfigProvider {
 
-    public const REGISTER_ADD            = '/register/add';
-    public const REGISTER_CONFIRM        = '/register/confirm';
-    public const REGISTER_CONFIGURATION  = '/register/configuration';
-    public const APP_ID                  = 'register';
-    public const RESET_PASSWORD          = '/register/reset-password';
-    public const RESET_PASSWORD_CONFIRM  = '/register/reset-password/confirm';
-    public const RESET_PASSWORD_RETRIEVE = '/register/reset-password/retrieve/:hash';
+    public const string REGISTER_ADD            = '/register/add';
+    public const string REGISTER_CONFIRM        = '/register/confirm';
+    public const string REGISTER_CONFIGURATION  = '/register/configuration';
+    public const string APP_ID                  = 'register';
+    public const string RESET_PASSWORD          = '/register/reset-password';
+    public const string RESET_PASSWORD_CONFIRM  = '/register/reset-password/confirm';
+    public const string RESET_PASSWORD_RETRIEVE = '/register/reset-password/retrieve/:hash';
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';
