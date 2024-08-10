@@ -217,7 +217,7 @@ possible cases:
 
         $this->emailService->setSubject($subject);
         $this->emailService->setBody($rendered);
-        $this->emailService->send();
+//        $this->emailService->send();
         $this->collectorService->addCounter(
             'inactiveusercheck',
             1,

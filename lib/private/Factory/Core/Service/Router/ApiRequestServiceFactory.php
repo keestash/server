@@ -26,13 +26,14 @@ use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Service\Router\IApiRequestService;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ApiRequestServiceFactory {
 
     public function __invoke(ContainerInterface $container): IApiRequestService {
         return new ApiRequestService(
             $container->get(IApiLogRepository::class)
-            , $container->get(IRouterService::class)
+            , $container->get(LoggerInterface::class)
         );
     }
 

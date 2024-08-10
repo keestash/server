@@ -21,18 +21,21 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
-use Keestash\ConfigProvider;
+use DateTime;
+use Keestash\Core\DTO\Event\ApplicationEndedEvent;
+use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use Keestash\Core\Service\Instance\InstallerService;
 use KSP\Api\IRequest;
+use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Metric\ICollectorService;
+use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 final readonly class ApplicationStartedMiddleware implements MiddlewareInterface {
@@ -42,13 +45,14 @@ final readonly class ApplicationStartedMiddleware implements MiddlewareInterface
         , private IEnvironmentService $environmentService
         , private InstallerService    $installerService
         , private IConfigService      $configService
-        , private ICollectorService   $collector
-        , private Config              $config
+        , private IEventService       $eventService
+        , private LoggerInterface     $logger
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $start    = microtime(true);
+        $start = new DateTime();
+        $this->eventService->execute(new ApplicationStartedEvent($start));
         $path     = $this->routerService->getMatchedPath($request);
         $request  = $request->withAttribute(
             IRequest::ATTRIBUTE_NAME_APPLICATION_START
@@ -80,24 +84,16 @@ final readonly class ApplicationStartedMiddleware implements MiddlewareInterface
         );
         $response = $handler->handle($request);
 
-        $this->addToHistogram($start, $path);
-        return $response;
-    }
-
-    private function addToHistogram(float $start, string $path): void {
-        $metricDisallowList = $this->config->get(ConfigProvider::METRIC_DISALLOW_LIST, new Config([]))->toArray();
-        if (true === in_array($path, $metricDisallowList, true)) {
-            return;
-        }
-
-        $this->collector->addHistogram(
-            'api_performance',
-            (microtime(true) - $start),
-            [
-                'path' => $path
-            ]
+        $this->logger->debug('request info !!!', ['hasToken'=>$request->getAttribute(IToken::class) !== null, 'route'=>$path]);
+        $request = $request->withAttribute(
+            IRequest::ATTRIBUTE_NAME_APPLICATION_END,
+            new DateTime()
         );
 
+        $this->eventService->execute(
+            new ApplicationEndedEvent($request)
+        );
+        return $response;
     }
 
 }

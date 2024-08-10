@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\Instance\Request;
 
+use DateTimeInterface;
 use KSP\Core\DTO\Instance\Request\IAPIRequest;
 use KSP\Core\DTO\Token\IToken;
 
@@ -31,10 +32,10 @@ use KSP\Core\DTO\Token\IToken;
 final readonly class APIRequest implements IAPIRequest {
 
     public function __construct(
-        private IToken $token,
-        private float  $start,
-        private float  $end,
-        private string $route
+        private IToken            $token,
+        private DateTimeInterface $start,
+        private DateTimeInterface $end,
+        private string            $route
     ) {
     }
 
@@ -47,17 +48,16 @@ final readonly class APIRequest implements IAPIRequest {
     }
 
     public function getDuration(): int {
-        return (int) abs($this->getEnd() - $this->getStart());
+        return (int) abs($this->getEnd()->getTimestamp() - $this->getStart()->getTimestamp());
     }
 
-    public function getEnd(): float {
+    public function getEnd(): DateTimeInterface {
         return $this->end;
     }
 
-    public function getStart(): float {
+    public function getStart(): DateTimeInterface {
         return $this->start;
     }
-
 
     /**
      * Specify data which should be serialized to JSON

@@ -21,7 +21,6 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use KSP\Api\IVerb;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
@@ -51,7 +50,6 @@ use Psr\Container\ContainerInterface;
     /** @var IEventService $eventService */
     $eventService = $container->get(IEventService::class);
     $eventService->registerAll($config->get(ConfigProvider::EVENTS)->toArray());
-    $eventService->execute(new ApplicationStartedEvent(new DateTime()));
 
     /** @var Config $route */
     foreach ($router[ConfigProvider::ROUTES] as $route) {

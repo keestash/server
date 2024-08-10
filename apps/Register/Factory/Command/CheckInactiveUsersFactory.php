@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -18,33 +20,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Middleware;
+namespace KSA\Register\Factory\Command;
 
-use Interop\Container\ContainerInterface;
-use Keestash\Core\Service\Instance\InstallerService;
-use Keestash\Middleware\ApplicationStartedMiddleware;
-use KSP\Core\Service\Config\IConfigService;
-use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use KSP\Core\Service\Event\IEventService;
-use KSP\Core\Service\Router\IRouterService;
+use KSA\Register\Command\CheckInactiveUsers;
+use KSP\Core\Repository\ApiLog\IApiLogRepository;
+use KSP\Core\Repository\User\IUserRepository;
+use KSP\Core\Repository\User\IUserStateRepository;
+use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Metric\ICollectorService;
+use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Http\Server\MiddlewareInterface;
+use Mezzio\Template\TemplateRendererInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Sentry\CheckIn;
 
-class ApplicationStartedMiddlewareFactory implements FactoryInterface {
+class CheckInactiveUsersFactory implements FactoryInterface {
 
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
         , ?array           $options = null
-    ): MiddlewareInterface {
-        return new ApplicationStartedMiddleware(
-            $container->get(IRouterService::class)
-            , $container->get(IEnvironmentService::class)
-            , $container->get(InstallerService::class)
-            , $container->get(IConfigService::class)
-            , $container->get(IEventService::class)
+    ): CheckInactiveUsers {
+        return new CheckInactiveUsers(
+            $container->get(IApiLogRepository::class)
+            , $container->get(IUserRepository::class)
+            , $container->get(IUserStateService::class)
             , $container->get(LoggerInterface::class)
+            , $container->get(TemplateRendererInterface::class)
+            , $container->get(IEmailService::class)
+            , $container->get(ICollectorService::class)
         );
     }
 

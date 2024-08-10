@@ -25,7 +25,6 @@ use DateTimeInterface;
 
 class ApplicationStartedEvent extends Event {
 
-
     public function __construct(
         private readonly DateTimeInterface $dateTime
         , private readonly int             $priority = 99999999

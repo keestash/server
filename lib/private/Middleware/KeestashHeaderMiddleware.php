@@ -31,11 +31,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 final readonly class KeestashHeaderMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private IVerificationService $verificationService
+        private IVerificationService $verificationService,
+        private LoggerInterface      $logger
     ) {
     }
 
@@ -62,6 +64,7 @@ final readonly class KeestashHeaderMiddleware implements MiddlewareInterface {
             );
         }
 
+        $this->logger->debug('added token to route', ['route' => $request->getAttribute(IRequest::ATTRIBUTE_NAME_MATCHED_PATH)]);
         return $handler->handle(
             $request->withAttribute(IToken::class, $token)
         );

@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\Instance\Request;
 
+use DateTimeInterface;
 use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\Token\IToken;
 
@@ -28,9 +29,9 @@ interface IAPIRequest extends IJsonObject {
 
     public function getToken(): IToken;
 
-    public function getStart(): float;
+    public function getStart(): DateTimeInterface;
 
-    public function getEnd(): float;
+    public function getEnd(): DateTimeInterface;
 
     public function getRoute(): string; // TODO maybe route object?
 

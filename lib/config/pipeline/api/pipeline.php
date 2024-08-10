@@ -23,7 +23,6 @@ declare(strict_types=1);
 use Keestash\Middleware\ApiVersionMiddleware;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use Keestash\Middleware\CSPHeaderMiddleware;
-use Keestash\Middleware\DispatchMiddleware;
 use Keestash\Middleware\EnvironmentMiddleware;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use Keestash\Middleware\InstanceInstalledMiddleware;
@@ -63,5 +62,5 @@ return function (Application $app) {
     $app->pipe(ImplicitOptionsMiddleware::class);
     $app->pipe(MethodNotAllowedMiddleware::class);
     $app->pipe(UrlHelperMiddleware::class);
-    $app->pipe(DispatchMiddleware::class);
+    $app->pipe(\Mezzio\Router\Middleware\DispatchMiddleware::class);
 };

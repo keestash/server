@@ -24,12 +24,14 @@ namespace Keestash\Factory\Middleware;
 use Keestash\Middleware\KeestashHeaderMiddleware;
 use KSP\Core\Service\Router\IVerificationService;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class KeestashHeaderMiddlewareFactory {
 
     public function __invoke(ContainerInterface $container): KeestashHeaderMiddleware {
         return new KeestashHeaderMiddleware(
-            $container->get(IVerificationService::class)
+            $container->get(IVerificationService::class),
+            $container->get(LoggerInterface::class)
         );
     }
 

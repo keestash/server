@@ -52,8 +52,8 @@ final readonly class ApiLogRepository implements IApiLogRepository {
             ->setParameter(0, $request->getToken()->getName())
             ->setParameter(1, $request->getToken()->getValue())
             ->setParameter(2, $request->getToken()->getUser()->getId())
-            ->setParameter(3, $request->getStart())
-            ->setParameter(4, $request->getEnd())
+            ->setParameter(3, $request->getStart()->getTimestamp())
+            ->setParameter(4, $request->getEnd()->getTimestamp())
             ->setParameter(5, $request->getRoute())
             ->executeStatement();
 
@@ -79,13 +79,13 @@ final readonly class ApiLogRepository implements IApiLogRepository {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $users        = $queryBuilder->select(
             [
-                "`id`"           => '?'
-                , "`token_name`" => '?'
-                , "`token`"      => '?'
-                , "`user_id`"    => '?'
-                , "`start_ts`"   => '?'
-                , "`end_ts`"     => '?'
-                , "`route`"      => '?'
+                "`id`"
+                , "`token_name`"
+                , "`token`"
+                , "`user_id`"
+                , "`start_ts`"
+                , "`end_ts`"
+                , "`route`"
 
             ]
         )
@@ -98,8 +98,39 @@ final readonly class ApiLogRepository implements IApiLogRepository {
             $userLogs->add(
                 new APIRequest(
                     new NullToken(),
-                    (float) $user['start_ts'],
-                    (float) $user['end_ts'],
+                    (new \DateTimeImmutable())->setTimestamp((int) $user['start_ts']),
+                    (new \DateTimeImmutable())->setTimestamp((int) $user['end_ts']),
+                    $user['token_name']
+                )
+            );
+        }
+        return $userLogs;
+    }
+
+    public function getAll(): ArrayList {
+        $userLogs     = new ArrayList();
+        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
+        $users        = $queryBuilder->select(
+            [
+                "`id`"
+                , "`token_name`"
+                , "`token`"
+                , "`user_id`"
+                , "`start_ts`"
+                , "`end_ts`"
+                , "`route`"
+
+            ]
+        )
+            ->from('apilog')
+            ->fetchAllAssociative();
+
+        foreach ($users as $user) {
+            $userLogs->add(
+                new APIRequest(
+                    new NullToken(),
+                    (new \DateTimeImmutable())->setTimestamp((int) $user['start_ts']),
+                    (new \DateTimeImmutable())->setTimestamp((int) $user['end_ts']),
                     $user['token_name']
                 )
             );

@@ -33,8 +33,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Routes extends KeestashCommand {
 
-    public const OPTION_NAME_PATH                = 'path';
-    public const OPTION_NAME_EXCLUDE_DEACTIVATED = 'exclude-deactivated';
+    public const string OPTION_NAME_PATH                = 'path';
+    public const string OPTION_NAME_EXCLUDE_DEACTIVATED = 'exclude-deactivated';
 
     public function __construct(
         private readonly Config $config
