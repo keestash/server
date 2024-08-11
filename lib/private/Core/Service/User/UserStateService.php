@@ -21,11 +21,14 @@ final readonly class UserStateService implements IUserStateService {
     ) {
     }
 
-    #[\Override] public function getState(IUser $user): IUserState {
+    #[\Override]
+    public function getState(IUser $user): IUserState {
         return $this->userStateRepository->getByUser($user);
     }
 
-    #[\Override] public function setState(IUserState $userState): void {
+    #[\Override]
+    public function setState(IUserState $userState): void {
+        $this->clear($userState->getUser());
         $this->userStateRepository->insert(
             $userState->getUser(),
             $userState->getState()->value,
@@ -47,7 +50,8 @@ final readonly class UserStateService implements IUserStateService {
 
     public function getNextStateName(UserStateName $stateName): UserStateName {
         return match ($stateName) {
-            UserStateName::NULL => UserStateName::LOCK_CANDIDATE_STAGE_ONE,
+            UserStateName::NULL => UserStateName::NEVER_LOGGED_IN,
+            UserStateName::NEVER_LOGGED_IN => UserStateName::LOCK_CANDIDATE_STAGE_ONE,
             UserStateName::LOCK_CANDIDATE_STAGE_ONE => UserStateName::LOCK_CANDIDATE_STAGE_TWO,
             UserStateName::LOCK_CANDIDATE_STAGE_TWO => UserStateName::LOCK,
             UserStateName::LOCK => UserStateName::DELETE,

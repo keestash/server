@@ -4,7 +4,7 @@ declare(strict_types=1);
 use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 
-final class ExtendUserStateLock extends KeestashMigration {
+final class ExtendUserStateNeverLoggedIn extends KeestashMigration {
 
     /**
      * Change Method.
@@ -31,6 +31,7 @@ final class ExtendUserStateLock extends KeestashMigration {
                         UserStateName::REQUEST_PW_CHANGE->value,
                         UserStateName::LOCK_CANDIDATE_STAGE_ONE->value,
                         UserStateName::LOCK_CANDIDATE_STAGE_TWO->value,
+                        UserStateName::NEVER_LOGGED_IN->value,
                     ]
                     , "after"                               => "user_id"
                 ]

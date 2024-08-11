@@ -91,7 +91,6 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      */
     public function removeUser(IUser $user): array {
         try {
-            $this->apiLogRepository->removeForUser($user);
             $this->fileRepository->removeForUser($user);
             $this->fileService->removeProfileImage($user);
             $this->keyRepository->remove($user);

@@ -25,15 +25,15 @@ namespace KSA\Register\Factory\Command;
 use KSA\Register\Command\CheckInactiveUsers;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Metric\ICollectorService;
+use KSP\Core\Service\Router\ApiLogServiceInterface;
+use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Sentry\CheckIn;
 
 class CheckInactiveUsersFactory implements FactoryInterface {
 
@@ -50,6 +50,8 @@ class CheckInactiveUsersFactory implements FactoryInterface {
             , $container->get(TemplateRendererInterface::class)
             , $container->get(IEmailService::class)
             , $container->get(ICollectorService::class)
+            , $container->get(ApiLogServiceInterface::class)
+            , $container->get(IUserService::class)
         );
     }
 

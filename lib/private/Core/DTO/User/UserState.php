@@ -25,7 +25,7 @@ use DateTimeInterface;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\DTO\User\IUserState;
 
-final readonly class UserState implements IUserState {
+readonly class UserState implements IUserState {
 
     public function __construct(
         private int               $id,

@@ -185,7 +185,8 @@ final readonly class UserStateRepository implements IUserStateRepository {
      * @return void
      * @throws UserStateNotInsertedException
      */
-    #[\Override] public function insert(IUser $user, string $state, ?string $hash = null): void {
+    #[\Override]
+    public function insert(IUser $user, string $state, ?string $hash = null): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
             $queryBuilder->insert('user_state')

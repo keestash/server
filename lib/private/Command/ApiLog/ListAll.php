@@ -5,7 +5,7 @@ namespace Keestash\Command\ApiLog;
 use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Command\KeestashCommand;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\DTO\Instance\Request\IAPIRequest;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -14,10 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class ListAll extends KeestashCommand {
 
-    public const OPTION_NAME_FORCE = 'force';
-
     public function __construct(
-        private readonly IApiLogRepository $apiLogRepository
+        private readonly IApiLogRepository $apiLogRepository,
+        private readonly IDateTimeService  $dateTimeService
     ) {
         parent::__construct();
     }
@@ -31,24 +30,19 @@ final class ListAll extends KeestashCommand {
         $userLogs = $this->apiLogRepository->getAll();
 
         $table = new Table($output);
-        $table->setHeaders(['user', 'token ts', 'token name', 'route', 'start', 'end', 'duration']);
+        $table->setHeaders(['id', 'request id', 'start', 'end', 'data', 'create ts']);
 
-        $routeCount = 0;
-        /** @var IAPIRequest $log */
+        /** @var ApiLogInterface $log */
         foreach ($userLogs as $log) {
-            $log->getToken()->getName();
-            $log->getRoute();
-            $log->getStart();
-            $log->getEnd();
 
             $table->addRow(
                 [
-                    $log->getToken()->getUser()->getName(),
-                    $log->getToken()->getCreateTs()->format(IDateTimeService::FORMAT_YMD_HIS),
-                    $log->getRoute(),
-                    $log->getStart()->format(IDateTimeService::FORMAT_YMD_HIS),
-                    $log->getEnd()->format(IDateTimeService::FORMAT_YMD_HIS),
-                    $log->getDuration()
+                    $log->getId(),
+                    $log->getRequestId(),
+                    $this->dateTimeService->toYMDHIS($log->getStart()),
+                    $this->dateTimeService->toYMDHIS($log->getEnd()),
+                    $log->getData(),
+                    $this->dateTimeService->toYMDHIS($log->getCreateTs()),
                 ]
             );
             $table->addRow(new TableSeparator());

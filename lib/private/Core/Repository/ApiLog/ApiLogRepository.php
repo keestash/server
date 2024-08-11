@@ -21,117 +21,70 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\ApiLog;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use Keestash\Core\DTO\Instance\Request\APIRequest;
-use Keestash\Core\DTO\Token\NullToken;
+use Keestash\Core\DTO\Instance\Request\ApiLog;
 use KSP\Core\Backend\IBackend;
-use KSP\Core\DTO\Instance\Request\IAPIRequest;
-use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 
 final readonly class ApiLogRepository implements IApiLogRepository {
 
     public function __construct(
-        private IBackend $backend
+        private IBackend         $backend,
+        private IDateTimeService $dateTimeService
     ) {
     }
 
-    public function log(IAPIRequest $request): IAPIRequest {
+    public function log(ApiLogInterface $request): ApiLogInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`apilog`")
             ->values(
                 [
-                    "`token_name`" => '?'
-                    , "`token`"    => '?'
-                    , "`user_id`"  => '?'
-                    , "`start_ts`" => '?'
-                    , "`end_ts`"   => '?'
-                    , "`route`"    => '?'
+                    "`id`"           => '?'
+                    , "`request_id`" => '?'
+                    , "`data`"       => '?'
+                    , "`start`"      => '?'
+                    , "`end`"        => '?'
+                    , "`create_ts`"  => '?'
                 ]
             )
-            ->setParameter(0, $request->getToken()->getName())
-            ->setParameter(1, $request->getToken()->getValue())
-            ->setParameter(2, $request->getToken()->getUser()->getId())
-            ->setParameter(3, $request->getStart()->getTimestamp())
-            ->setParameter(4, $request->getEnd()->getTimestamp())
-            ->setParameter(5, $request->getRoute())
+            ->setParameter(0, $request->getId())
+            ->setParameter(1, $request->getRequestId())
+            ->setParameter(2, $request->getData())
+            ->setParameter(3, $request->getStart()->format(\DateTimeInterface::ATOM))
+            ->setParameter(4, $request->getEnd()->format(\DateTimeInterface::ATOM))
+            ->setParameter(5, $this->dateTimeService->toYMDHIS($request->getCreateTs()))
             ->executeStatement();
 
-        $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
-
-        if ($lastInsertId === 0) {
-            throw new \Exception();
-        }
-
         return $request;
-    }
-
-    public function removeForUser(IUser $user): bool {
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        return $queryBuilder->delete('apilog')
-                ->where('user_id = ?')
-                ->setParameter(0, $user->getId())
-                ->executeStatement() !== 0;
-    }
-
-    public function read(IUser $user): ArrayList {
-        $userLogs     = new ArrayList();
-        $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $users        = $queryBuilder->select(
-            [
-                "`id`"
-                , "`token_name`"
-                , "`token`"
-                , "`user_id`"
-                , "`start_ts`"
-                , "`end_ts`"
-                , "`route`"
-
-            ]
-        )
-            ->from('apilog')
-            ->where('user_id = ?')
-            ->setParameter(0, $user->getId())
-            ->fetchAllAssociative();
-
-        foreach ($users as $user) {
-            $userLogs->add(
-                new APIRequest(
-                    new NullToken(),
-                    (new \DateTimeImmutable())->setTimestamp((int) $user['start_ts']),
-                    (new \DateTimeImmutable())->setTimestamp((int) $user['end_ts']),
-                    $user['token_name']
-                )
-            );
-        }
-        return $userLogs;
     }
 
     public function getAll(): ArrayList {
         $userLogs     = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
-        $users        = $queryBuilder->select(
+        $logs         = $queryBuilder->select(
             [
                 "`id`"
-                , "`token_name`"
-                , "`token`"
-                , "`user_id`"
-                , "`start_ts`"
-                , "`end_ts`"
-                , "`route`"
-
+                , "`request_id`"
+                , "`data`"
+                , "`start`"
+                , "`end`"
+                , "`create_ts`"
             ]
         )
-            ->from('apilog')
+            ->from('`apilog`')
             ->fetchAllAssociative();
 
-        foreach ($users as $user) {
+        foreach ($logs as $log) {
             $userLogs->add(
-                new APIRequest(
-                    new NullToken(),
-                    (new \DateTimeImmutable())->setTimestamp((int) $user['start_ts']),
-                    (new \DateTimeImmutable())->setTimestamp((int) $user['end_ts']),
-                    $user['token_name']
+                new ApiLog(
+                    $log['id'],
+                    $log['request_id'],
+                    $log['data'],
+                    $this->dateTimeService->fromFormat((string) $log['start']),
+                    $this->dateTimeService->fromFormat((string) $log['end']),
+                    $this->dateTimeService->fromFormat((string) $log['create_ts'])
                 )
             );
         }

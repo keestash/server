@@ -28,7 +28,7 @@ use KSP\Api\IRequest;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\Metric\ICollectorService;
-use KSP\Core\Service\Router\IApiRequestService;
+use KSP\Core\Service\Router\ApiLogServiceInterface;
 use Laminas\Config\Config;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
@@ -36,10 +36,10 @@ use Psr\Log\LoggerInterface;
 final readonly class ApplicationEndedEventListener implements IListener {
 
     public function __construct(
-        private LoggerInterface    $logger,
-        private IApiRequestService $apiRequestService,
-        private Config             $config,
-        private ICollectorService  $collectorService
+        private LoggerInterface        $logger,
+        private ApiLogServiceInterface $apiRequestService,
+        private Config                 $config,
+        private ICollectorService      $collectorService
     ) {
     }
 
@@ -76,6 +76,5 @@ final readonly class ApplicationEndedEventListener implements IListener {
         );
 
     }
-
 
 }

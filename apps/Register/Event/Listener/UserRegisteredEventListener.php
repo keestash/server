@@ -78,7 +78,7 @@ class UserRegisteredEventListener implements IListener {
 
             $this->emailService->setBody(
                 $this->templateRenderer->render(
-                    'registerEmail::confirmation_mail', [
+                    'register::confirmation_mail', [
                         'hello'       => $this->translator->translate(
                             sprintf("Hey %s,", $event->getUser()->getName())
                         ),

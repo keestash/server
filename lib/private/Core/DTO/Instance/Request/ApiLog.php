@@ -22,58 +22,54 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\Instance\Request;
 
 use DateTimeInterface;
-use KSP\Core\DTO\Instance\Request\IAPIRequest;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
 
 /**
  * Class APIRequest
  * @package Keestash\Core\DTO
  */
-final readonly class APIRequest implements IAPIRequest {
+readonly class ApiLog implements ApiLogInterface {
 
     public function __construct(
-        private IToken            $token,
+        private string            $id,
+        private string            $requestId,
+        private string            $data,
         private DateTimeInterface $start,
         private DateTimeInterface $end,
-        private string            $route
+        private DateTimeInterface $createTs
     ) {
     }
 
-    public function getToken(): IToken {
-        return $this->token;
+    public function getId(): string {
+        return $this->id;
     }
 
-    public function getRoute(): string {
-        return $this->route;
+    public function getRequestId(): string {
+        return $this->requestId;
     }
 
-    public function getDuration(): int {
-        return (int) abs($this->getEnd()->getTimestamp() - $this->getStart()->getTimestamp());
-    }
-
-    public function getEnd(): DateTimeInterface {
-        return $this->end;
+    public function getData(): string {
+        return $this->data;
     }
 
     public function getStart(): DateTimeInterface {
         return $this->start;
     }
 
-    /**
-     * Specify data which should be serialized to JSON
-     * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return array data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
-     */
+    public function getEnd(): DateTimeInterface {
+        return $this->end;
+    }
+
+    public function getCreateTs(): DateTimeInterface {
+        return $this->createTs;
+    }
+
+    public function getDuration(): int {
+        return (int) abs($this->getEnd()->getTimestamp() - $this->getStart()->getTimestamp());
+    }
+
     public function jsonSerialize(): array {
-        return [
-            "token"      => $this->getToken()
-            , "route"    => $this->getRoute()
-            , "duration" => $this->getDuration()
-            , "start"    => $this->getStart()
-            , "end"      => $this->getEnd()
-        ];
+        return [];
     }
 
 }

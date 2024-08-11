@@ -64,7 +64,7 @@ final readonly class ResetPasswordSendEmailListener implements IListener {
         $hash = Uuid::uuid4()->toString();
         $this->emailService->setBody(
             $this->templateRenderer->render(
-                'registerEmail::forgot_password', [
+                'register::forgot_password', [
                     'hello'       => $this->translator->translate(
                         sprintf("Hey %s,", $event->getUser()->getName())
                     ),

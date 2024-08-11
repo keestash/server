@@ -4,7 +4,7 @@ namespace KSA\Login\Factory\Event;
 
 use KSA\Login\Event\ApplicationEndedEventListener;
 use KSP\Core\Service\Metric\ICollectorService;
-use KSP\Core\Service\Router\IApiRequestService;
+use KSP\Core\Service\Router\ApiLogServiceInterface;
 use Laminas\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -19,7 +19,7 @@ class ApplicationEndedEventListenerFactory implements FactoryInterface {
     ): ApplicationEndedEventListener {
         return new ApplicationEndedEventListener(
             $container->get(LoggerInterface::class),
-            $container->get(IApiRequestService::class),
+            $container->get(ApiLogServiceInterface::class),
             $container->get(Config::class),
             $container->get(ICollectorService::class)
         );

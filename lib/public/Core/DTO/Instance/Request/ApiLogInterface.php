@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2019> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,16 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Router;
+namespace KSP\Core\DTO\Instance\Request;
 
-use Psr\Http\Message\ServerRequestInterface;
+use DateTimeInterface;
+use KSP\Core\DTO\Entity\IJsonObject;
 
-interface IApiRequestService {
+interface ApiLogInterface extends IJsonObject {
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return void
-     */
-    public function log(ServerRequestInterface $request): void;
+    public function getId(): string;
+
+    public function getRequestId(): string;
+
+    public function getData(): string;
+
+    public function getStart(): DateTimeInterface;
+
+    public function getEnd(): DateTimeInterface;
+
+    public function getCreateTs(): DateTimeInterface;
 
 }
