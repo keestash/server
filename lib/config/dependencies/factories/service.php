@@ -66,7 +66,8 @@ use Keestash\Core\Service\Permission\RoleService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
-use Keestash\Core\Service\Router\ApiRequestService;
+use Keestash\Core\Service\Router\ApiLogService;
+use Keestash\Core\Service\Router\ApiLogServiceInterface;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
@@ -108,7 +109,7 @@ use Keestash\Factory\Core\Service\Permission\PermissionServiceFactory;
 use Keestash\Factory\Core\Service\Permission\RoleServiceFactory;
 use Keestash\Factory\Core\Service\Phinx\MigratorFactory;
 use Keestash\Factory\Core\Service\Queue\QueueServiceFactory;
-use Keestash\Factory\Core\Service\Router\ApiRequestServiceFactory;
+use Keestash\Factory\Core\Service\Router\ApiLogServiceFactory;
 use Keestash\Factory\Core\Service\Router\RouterServiceFactory;
 use Keestash\Factory\Core\Service\Router\VerificationFactory;
 use Keestash\Factory\Core\Service\User\Event\Listener\ScheduleUserStateEventListenerListenerFactory;
@@ -147,7 +148,7 @@ return [
     , UserRepositoryService::class                            => UserRepositoryServiceFactory::class
     , \Keestash\Core\Service\File\Upload\FileService::class   => \Keestash\Factory\Core\Service\Upload\FileServiceFactory::class
     , SanitizerService::class                                 => SanitizerServiceFactory::class
-    , ApiRequestService::class                                => ApiRequestServiceFactory::class
+    , ApiLogService::class                                    => ApiLogServiceFactory::class
     , NullService::class                                      => InvokableFactory::class
     , ReflectionService::class                                => InvokableFactory::class
     , LocaleService::class                                    => InvokableFactory::class

@@ -68,15 +68,18 @@
     <tr>
         <td class="email-content">
             <h1>{{ title }}</h1>
-            <p>{{ message }}</p>
-            <a href="{{ buttonLink }}" class="response-button">{{ buttonText
-                }}</a>
+            <p>Dear {{ customerName }},</p>
+            <p>{{ messagePartOne }}</p>
+            <p>{{ messagePartTwo }}</p>
+            <p>{{ messagePartThree }}</p>
+            <a href="{{ buttonLink }}"
+               class="response-button">{{ buttonText }}</a>
         </td>
     </tr>
     <tr>
         <td class="email-footer">
             <p>&copy; {{ copyRightText }}</p>
-            <p>{{unsubscribe}}</p>
+            <p>{{ unsubscribe }}</p>
         </td>
     </tr>
 </table>

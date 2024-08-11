@@ -85,7 +85,7 @@ use Keestash\Core\Service\Permission\PermissionService;
 use Keestash\Core\Service\Permission\RoleService;
 use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
-use Keestash\Core\Service\Router\ApiRequestService;
+use Keestash\Core\Service\Router\ApiLogService;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Repository\UserRepositoryService;
@@ -150,7 +150,7 @@ use KSP\Core\Service\Permission\IPermissionService;
 use KSP\Core\Service\Permission\IRoleService;
 use KSP\Core\Service\Phinx\IMigrator;
 use KSP\Core\Service\Queue\IQueueService;
-use KSP\Core\Service\Router\IApiRequestService;
+use KSP\Core\Service\Router\ApiLogServiceInterface;
 use KSP\Core\Service\Router\IRouterService;
 use KSP\Core\Service\Router\IVerificationService;
 use KSP\Core\Service\User\IUserService;
@@ -208,7 +208,7 @@ return [
     , IJWTService::class                                => JWTService::class
     , IHTTPService::class                               => HTTPService::class
     , IInstallerService::class                          => InstallerService::class
-    , IApiRequestService::class                         => ApiRequestService::class
+    , ApiLogServiceInterface::class                     => ApiLogService::class
     , IAccessService::class                             => AccessService::class
     , \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class
     , IPasswordService::class                           => PasswordService::class

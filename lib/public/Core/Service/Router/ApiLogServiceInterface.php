@@ -19,22 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Factory\Core\Service\Router;
+namespace KSP\Core\Service\Router;
 
-use Keestash\Core\Service\Router\ApiRequestService;
-use KSP\Core\Repository\ApiLog\IApiLogRepository;
-use KSP\Core\Service\Router\IApiRequestService;
-use KSP\Core\Service\Router\IRouterService;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use KSP\Core\DTO\User\IUser;
+use Psr\Http\Message\ServerRequestInterface;
 
-class ApiRequestServiceFactory {
+interface ApiLogServiceInterface {
 
-    public function __invoke(ContainerInterface $container): IApiRequestService {
-        return new ApiRequestService(
-            $container->get(IApiLogRepository::class)
-            , $container->get(LoggerInterface::class)
-        );
-    }
+    /**
+     * @param ServerRequestInterface $request
+     * @return void
+     */
+    public function log(ServerRequestInterface $request): void;
+
+    public function filterUser(IUser $user, ArrayList $logs): ArrayList;
 
 }

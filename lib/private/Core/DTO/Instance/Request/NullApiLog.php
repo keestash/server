@@ -19,22 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Instance\Request;
+namespace Keestash\Core\DTO\Instance\Request;
 
 use DateTimeInterface;
-use KSP\Core\DTO\Entity\IJsonObject;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
 
-interface IAPIRequest extends IJsonObject {
+/**
+ * Class APIRequest
+ * @package Keestash\Core\DTO
+ */
+final readonly class NullApiLog extends ApiLog {
 
-    public function getToken(): IToken;
-
-    public function getStart(): DateTimeInterface;
-
-    public function getEnd(): DateTimeInterface;
-
-    public function getRoute(): string; // TODO maybe route object?
-
-    public function getDuration(): int;
+    public function __construct() {
+        parent::__construct(
+            '',
+            '',
+            '',
+            (new \DateTimeImmutable())->setTimestamp(0),
+            (new \DateTimeImmutable())->setTimestamp(0),
+            new \DateTimeImmutable()
+        );
+    }
 
 }

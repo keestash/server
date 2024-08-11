@@ -55,4 +55,6 @@ interface IUserService extends IService {
 
     public function validateNewUser(IUser $user): ArrayList;
 
+    public function isSystemUser(IUser $user): bool;
+
 }

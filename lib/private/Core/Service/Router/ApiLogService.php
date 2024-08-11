@@ -21,15 +21,19 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Router;
 
-use Keestash\Core\DTO\Instance\Request\APIRequest;
+use DateTimeImmutable;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Core\DTO\Instance\Request\ApiLog;
 use KSP\Api\IRequest;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
+use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
-use KSP\Core\Service\Router\IApiRequestService;
+use KSP\Core\Service\Router\ApiLogServiceInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
-final readonly class ApiRequestService implements IApiRequestService {
+final readonly class ApiLogService implements ApiLogServiceInterface {
 
     public function __construct(
         private IApiLogRepository $apiLogRepository
@@ -49,22 +53,50 @@ final readonly class ApiRequestService implements IApiRequestService {
             return;
         }
 
-        $token = $request->getAttribute(IToken::class);
-
-        if (null === $token) {
-            $this->logger->emergency('route is not public but token not found', ['route'=>$request->getAttribute(IRequest::ATTRIBUTE_NAME_MATCHED_PATH)]);
-            return;
-        }
-
         $logged = $this->apiLogRepository->log(
-            new APIRequest(
-                $request->getAttribute(IToken::class),
+            new ApiLog(
+                Uuid::uuid4()->toString(),
+                $request->getAttribute(IRequest::ATTRIBUTE_NAME_REQUEST_ID),
+                (string) json_encode(
+                    array_merge(
+                        [
+                            'method'      => $request->getMethod(),
+                            'matchedPath' => $request->getAttribute(IRequest::ATTRIBUTE_NAME_MATCHED_PATH)
+                        ],
+                        $request->getHeaders()
+                    )
+                ),
                 $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_START),
                 $request->getAttribute(IRequest::ATTRIBUTE_NAME_APPLICATION_END),
-                $request->getAttribute(IRequest::ATTRIBUTE_NAME_MATCHED_PATH)
+                new DateTimeImmutable()
             )
         );
         $this->logger->debug('api request log created', ['log' => $logged]);
+    }
+
+    public function filterUser(IUser $user, ArrayList $logs): ArrayList {
+        $list = new ArrayList();
+
+        /** @var ApiLogInterface $log */
+        foreach ($logs as $log) {
+            $data     = json_decode($log->getData(), true, 512, JSON_THROW_ON_ERROR);
+            $userHash = $data[VerificationService::FIELD_NAME_USER_HASH][0] ?? null;
+
+            if ($user->getHash() === $userHash) {
+                $list->add(
+                    new ApiLog(
+                        $log->getId(),
+                        $log->getRequestId(),
+                        $log->getData(),
+                        clone $log->getStart(),
+                        clone $log->getEnd(),
+                        clone $log->getCreateTs()
+                    )
+                );
+            }
+        }
+
+        return $list;
     }
 
 }

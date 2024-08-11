@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\ApiLogRepository;
 
+use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
@@ -30,7 +31,8 @@ class ApiLogRepositoryFactory {
 
     public function __invoke(ContainerInterface $container): IApiLogRepository {
         return new ApiLogRepository(
-            $container->get(IBackend::class)
+            $container->get(IBackend::class),
+            $container->get(IDateTimeService::class)
         );
     }
 

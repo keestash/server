@@ -335,4 +335,8 @@ final readonly class UserService implements IUserService {
         return null === $user || true === $user->isLocked();
     }
 
+    public function isSystemUser(IUser $user): bool {
+        return $user->getId() === IUser::SYSTEM_USER_ID;
+    }
+
 }

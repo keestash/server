@@ -22,13 +22,14 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Repository\ApiLog;
 
 use DateTime;
-use Keestash\Core\DTO\Instance\Request\APIRequest;
+use Keestash\Core\DTO\Instance\Request\ApiLog;
 use Keestash\Core\DTO\Token\Token;
-use KSP\Core\DTO\Instance\Request\IAPIRequest;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KST\Integration\TestCase;
 use KST\Service\Service\UserService;
+use Ramsey\Uuid\Uuid;
 
 class ApiLogRepositoryTest extends TestCase {
 
@@ -48,15 +49,17 @@ class ApiLogRepositoryTest extends TestCase {
 
         /** @var IApiLogRepository $apiLogRepository */
         $apiLogRepository = $this->getServiceManager()->get(IApiLogRepository::class);
-        $request          = new APIRequest(
-            $token,
+        $request          = new ApiLog(
+            Uuid::uuid4()->toString(),
+            Uuid::uuid4()->toString(),
+            '',
             new \DateTimeImmutable(),
             (new \DateTimeImmutable())->modify('+3 minutes'),
-            "my/awesome/route"
+            new \DateTimeImmutable(),
         );
 
         $request = $apiLogRepository->log($request);
-        $this->assertInstanceOf(IAPIRequest::class, $request); // no exception is thrown
+        $this->assertInstanceOf(ApiLogInterface::class, $request); // no exception is thrown
     }
 
 //    public function testRemoveForUser(): void {

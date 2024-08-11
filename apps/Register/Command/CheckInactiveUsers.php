@@ -21,24 +21,38 @@ declare(strict_types=1);
 
 namespace KSA\Register\Command;
 
-use DateInterval;
 use DateTimeImmutable;
+use DateTimeInterface;
+use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Command\KeestashCommand;
+use Keestash\Core\DTO\Instance\Request\NullApiLog;
+use Keestash\Core\DTO\User\NullUserState;
+use Keestash\Core\DTO\User\UserState;
 use Keestash\Core\DTO\User\UserStateName;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\DTO\Instance\Request\IAPIRequest;
+use KSP\Core\DTO\Instance\Request\ApiLogInterface;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Metric\ICollectorService;
+use KSP\Core\Service\Router\ApiLogServiceInterface;
+use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\IUserStateService;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckInactiveUsers extends KeestashCommand {
+
+    private OutputInterface $output;
+    private bool            $dryRun = true;
+    public const string OPTION_NAME_DRY_RUN = 'dry-run';
+    public const string OPTION_NAME_USER_ID = 'user-id';
 
     public function __construct(
         private readonly IApiLogRepository         $apiLogRepository,
@@ -47,148 +61,235 @@ class CheckInactiveUsers extends KeestashCommand {
         private readonly LoggerInterface           $logger,
         private readonly TemplateRendererInterface $templateRenderer,
         private readonly IEmailService             $emailService,
-        private readonly ICollectorService         $collectorService
+        private readonly ICollectorService         $collectorService,
+        private readonly ApiLogServiceInterface    $apiLogService,
+        private readonly IUserService              $userService
     ) {
         parent::__construct();
     }
 
     protected function configure(): void {
         $this->setName("register:check-inactive-users")
-            ->setDescription("checks inactive users");
+            ->setDescription("checks inactive users")
+            ->addOption(
+                name: CheckInactiveUsers::OPTION_NAME_DRY_RUN,
+                mode: InputOption::VALUE_NONE,
+                description: 'run in dry run mode'
+            )
+            ->addOption(
+                name: CheckInactiveUsers::OPTION_NAME_USER_ID,
+                mode: InputOption::VALUE_OPTIONAL,
+                description: 'the users to check'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $users = $this->userRepository->getAll();
+        $this->output = $output;
+        $this->dryRun = (bool) $input->getOption(CheckInactiveUsers::OPTION_NAME_DRY_RUN);
+        $userId       = $input->getOption(CheckInactiveUsers::OPTION_NAME_USER_ID);
+        $users        = new ArrayList();
+
+        if (null !== $userId) {
+            $user = $this->userRepository->getUserById((string) $userId);
+            $users->add($user);
+        } else {
+            $users = $this->userRepository->getAll();
+        }
+
         /** @var IUser $user */
         foreach ($users as $user) {
+            if ($this->userService->isSystemUser($user)) {
+                continue;
+            }
             $this->handleUser($user);
         }
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 
-    /*
-possible cases:
-    #1: user does not have any indication of usage.
-        -- no log in the apilog table
-        -- maybe: create ts is long time ago
-    #2: user uses application regularly
-        -- log entry in apilog table is not too old
-    #3: user does not use application for latest apilog date < today - X month
-            #3.1: no state
-            #3.2: stage 1
-            #3.3: stage 2
-            #3.4: lock
-            #3.5: delete
-*/
     private function handleUser(IUser $user): void {
-        $now           = new DateTimeImmutable();
-        $sixMonthsAgo  = $now->sub(new DateInterval('P6M'));
-        $userLogs      = $this->apiLogRepository->read($user);
+        $userLogs      = $this->apiLogRepository->getAll();
+        $userLogs      = $this->apiLogService->filterUser($user, $userLogs);
         $userLogsArray = $userLogs->toArray();
+        $state         = $this->userStateService->getState($user);
+
         usort(
             $userLogsArray,
-            static function (IAPIRequest $a, IAPIRequest $b): int {
-                return (new DateTimeImmutable())->setTimestamp((int) $b->getEnd())->getTimestamp()
-                    - (new DateTimeImmutable())->setTimestamp((int) $a->getEnd())->getTimestamp();
+            static function (ApiLogInterface $a, ApiLogInterface $b): int {
+                return $b->getEnd()->getTimestamp() - $a->getEnd()->getTimestamp();
             }
         );
-        /** @var IAPIRequest $latestObject */
-        $latestObject = $userLogsArray[0] ?? null;
 
-        // case #1: user does not have any indication of usage
-        if (null === $latestObject) {
-            $this->handleNeverLoggedIn($user);
+        /** @var ApiLogInterface $latestApiLog */
+        $latestApiLog  = $userLogsArray[0] ?? new NullApiLog();
+        $now           = new DateTimeImmutable();
+        $fourWeeksAgo  = $now->modify('-4 week');
+        $referenceDate = $this->getReferenceDate($latestApiLog, $state, $user);
+
+        if ($referenceDate >= $fourWeeksAgo) {
+            $this->logger->debug('user did something in the last 4 weeks, skipping');
+            $this->writeInfo('user did something in the last 4 weeks, skipping', $this->output);
             return;
         }
-
-        $endDate = $now->setTimestamp((int) $latestObject->getEnd());
-
-        // case #2: user uses application regularly
-        if ($endDate >= $sixMonthsAgo) {
-            return;
-        }
-
-        // case #3: user does not use application for latest apilog date < today - X month
-        $state = $this->userStateService->getState($user);
 
         switch ($state->getState()) {
-            // base case: if the user is deleted - then do nothing
-            case UserStateName::REQUEST_PW_CHANGE:
-            case UserStateName::DELETE:
-                break;
-            // case #3.1: no state - user never got notified. Go ahead with stage one
             case UserStateName::NULL:
-                $this->handleStageOne($user);
+                $this->doWork(
+                    [
+                        'templateName' => 'never-logged-in',
+                        'subject'      => 'Your Keestash Account',
+                        'content'      => [
+                            'title'            => 'We Noticed You Haven\'t Logged In Yet',
+                            "customerName"     => $user->getName(),
+                            "messagePartOne"   => "We hope this message finds you well. It seems like you have not yet logged in to your Keestash account. We are concerned that you might be missing out on the full benefits of Keestash.",
+                            'messagePartTwo'   => "If there is anything preventing you from accessing your account or if you need assistance, please do not hesitate to reach out to us by simply replying to this email. We are here to help ensure you have the best experience possible.",
+                            'messagePartThree' => "Your satisfaction is important to us, and we look forward to working with you.",
+                            'buttonText'       => 'Start Using Keestash',
+                            'buttonLink'       => 'https://app.keestash.com/login',
+                        ]
+                    ],
+                    $state,
+                    $user,
+                    28
+                );
                 break;
-            // case #3.2: stage 1 - user was already notified.
-            // Check whether enough time has passed for next step (stage 2)
+            case UserStateName::NEVER_LOGGED_IN:
+                $this->doWork(
+                    [
+                        'templateName' => 'lock-candidate-stage',
+                        'subject'      => 'RE: Your Keestash Account',
+                        'content'      => [
+                            'title'            => 'We Haven\'t Seen You Log In Yet - Is There Anything We Can Help With?',
+                            "customerName"     => $user->getName(),
+                            "messagePartOne"   => "We recently reached out to let you know that you have not logged in to your Keestash account. Since we have not seen any activity yet, we wanted to check in and remind you that your account is still waiting for you.",
+                            'messagePartTwo'   => "If there is anything that is holding you back from accessing your account, or if you need any help getting started, please let us know. We are here to support you in any way we can.",
+                            'messagePartThree' => "Your experience matters to us, and we are eager to help you get the most out of Keestash.",
+                            'buttonText'       => 'Start Using Keestash',
+                            'buttonLink'       => 'https://app.keestash.com/login',
+                        ]
+                    ],
+                    $state,
+                    $user,
+                    7
+                );
+                break;
             case UserStateName::LOCK_CANDIDATE_STAGE_ONE:
-                $this->handleStageTwo($user);
+                $this->doWork(
+                    [
+                        'templateName' => 'lock-candidate-stage',
+                        'subject'      => 'RE: RE: Your Keestash Account',
+                        'content'      => [
+                            'title'            => 'This is a friendly Reminder for your Keestash Account',
+                            "customerName"     => $user->getName(),
+                            'messagePartOne'   => 'We have noticed that despite our previous messages, you still have not used Keestash. We wanted to remind you to start using Keestash.',
+                            'messagePartTwo'   => "If you are encountering any issues or have any questions, we are more than happy to assist. Your satisfaction is our top priority, and we want to make sure you have everything you need to start enjoying Keestash.",
+                            'messagePartThree' => "Please do not hesitate to get in touch with us. We are here to help you every step of the way.",
+                            'buttonText'       => 'Start Using Keestash',
+                            'buttonLink'       => 'https://app.keestash.com/login',
+                        ]
+                    ],
+                    $state,
+                    $user,
+                    7
+                );
                 break;
-            // case #3.3: stage 2 - user was already notified for stage one.
-            // Check whether enough time has passed for next step (lock)
             case UserStateName::LOCK_CANDIDATE_STAGE_TWO:
-                $this->handleLock($user);
+                $this->doWork(
+                    [
+                        'templateName' => 'lock-candidate-stage',
+                        'subject'      => 'RE: RE: RE: Your Keestash Account',
+                        'content'      => [
+                            'title'            => 'This is a final Reminder for your Keestash Account',
+                            "customerName"     => $user->getName(),
+                            'messagePartOne'   => 'We have noticed that despite our previous messages, you still have not used Keestash. We wanted to send one final reminder to ensure you are not missing out Keestash.',
+                            'messagePartTwo'   => "If you are encountering any issues or have any questions, we are more than happy to assist. Your satisfaction is our top priority, and we want to make sure you have everything you need to start enjoying Keestash.",
+                            'messagePartThree' => "Please do not hesitate to get in touch with us. We are here to help you every step of the way.",
+                            'buttonText'       => 'Prevent Account Lock',
+                            'buttonLink'       => 'https://app.keestash.com/login',
+                        ]
+                    ],
+                    $state,
+                    $user,
+                    7
+                );
                 break;
-            // case #3.4: lock - user was notified two times.
-            // Check whether enough time has passed for next step (delete)
             case UserStateName::LOCK:
-                $this->handleDelete($user);
+                $this->doWork(
+                    [
+                        'templateName' => 'lock',
+                        'subject'      => 'Important: Your Account Has Been Locked',
+                        'content'      => [
+                            'title'            => 'Your Account is Currently Locked - Here is What to Do Next',
+                            "customerName"     => $user->getName(),
+                            'messagePartOne'   => 'We wanted to inform you that your Keestash account has been locked. This action has been taken as a precautionary measure to protect your account and ensure its security.',
+                            'messagePartTwo'   => "To regain access to your account, please answer to this email. We are happy to unlock your user again.",
+                            'messagePartThree' => "If you believe this lock was made in error or if you need assistance with unlocking your account, please contact by simply replying to this email. We are here to help you resolve this issue as quickly as possible.",
+                        ]
+                    ],
+                    $state,
+                    $user,
+                    28
+                );
+                break;
+            case UserStateName::DELETE:
+            case UserStateName::REQUEST_PW_CHANGE:
                 break;
         }
-
-        // 2 ways: never got an email
-//        $nextState = $this->userStateService->getNextStateName($state->getState());
-
-//        $this->sendEmail($state->getState(), $user);
-//        $this->userStateService->setState(
-//            new UserState(
-//                0,
-//                $state->getUser(),
-//                $nextState,
-//                new DateTimeImmutable(),
-//                new DateTimeImmutable(),
-//                Uuid::uuid4()->toString()
-//            )
-//        );
-
     }
 
-    private function handleNeverLoggedIn(IUser $user): void {
-        // give the user the chance to use Keestash
-        // wait for 4 weeks
-        $fourWeeksAgo = (new DateTimeImmutable())->sub(new DateInterval('P4W'));
-        if ($user->getCreateTs() > $fourWeeksAgo) {
+    private function doWork(
+        array      $variables,
+        IUserState $state,
+        IUser      $user,
+        int        $daysPass
+    ): void {
+        // 1. check time
+        $now                 = new DateTimeImmutable();
+        $passDaysAgo         = $now->modify(sprintf('-%s day', $daysPass));
+        $referenceDate       = $this->getReferenceDate(new NullApiLog(), $state, $user);
+        $referenceDatePassed = $referenceDate > $passDaysAgo;
+        $nextState           = $this->userStateService->getNextStateName($state->getState());
+
+        $this->writeInfo(
+            sprintf(
+                '[ReferenceDate=%s][DaysAgo=%s][ReferenceDatePassed=%s][TemplateName=%s][CurrentState=%s][NextState=%s]',
+                $referenceDate->format(DateTimeInterface::ATOM),
+                $passDaysAgo->format(DateTimeInterface::ATOM),
+                $referenceDatePassed ? 'Yes' : 'No',
+                $variables['templateName'],
+                $state->getState()->value,
+                $nextState->value
+            ),
+            $this->output
+        );
+
+        if (true === $this->dryRun) {
+            $this->writeComment('Dry Run - not doing any updates', $this->output);
             return;
         }
 
+        if ($referenceDate > $passDaysAgo) {
+            return;
+        }
+
+        // 2. send email
         $this->sendEmail(
-            'never-logged-in',
-            'Your Keestash Account',
-            [
-                'title'      => 'Keestash is missing You',
-                'message'    => 'You haven\'t used Keestash for a time and we wanted to check whether everything is all fine.',
-                'buttonText' => 'Login',
-                'buttonLink' => 'https://app.keestash.com/login',
-            ],
+            $variables['templateName'],
+            $variables['subject'],
+            $variables['content'],
             $user
         );
-    }
 
-    private function handleStageOne(IUser $user): void {
-
-    }
-
-    private function handleStageTwo(IUser $user): void {
-
-    }
-
-    private function handleLock(IUser $user): void {
-
-    }
-
-    private function handleDelete(IUser $user): void {
-
+        // 3. change state
+        $this->userStateService->setState(
+            new UserState(
+                0,
+                $user,
+                $nextState,
+                new DateTimeImmutable(),
+                new DateTimeImmutable(),
+                Uuid::uuid4()->toString()
+            )
+        );
     }
 
     public function sendEmail(
@@ -197,16 +298,17 @@ possible cases:
         array  $variables,
         IUser  $user
     ): void {
+
         $variables = array_merge(
             $variables,
             [
-                "copyRightText" => sprintf("2022 - %s Ucar Solutions UG. All rights reserved.", (new \DateTimeImmutable())->format('Y')),
+                "copyRightText" => sprintf("2022 - %s Ucar Solutions UG. All rights reserved.", (new DateTimeImmutable())->format('Y')),
                 "unsubscribe"   => "Do you no longer wish to receive e-mails? Simply reply with \"Stop\"",
             ]
         );
 
         $rendered = $this->templateRenderer->render(
-            sprintf("marketingMail::%s", $template)
+            sprintf("register::%s", $template)
             , $variables
         );
 
@@ -217,56 +319,25 @@ possible cases:
 
         $this->emailService->setSubject($subject);
         $this->emailService->setBody($rendered);
-//        $this->emailService->send();
+        $this->emailService->send();
+
         $this->collectorService->addCounter(
             'inactiveusercheck',
             1,
-            ['template' => $template]
+            ['template' => str_replace('-', '_', $template)]
         );
 
-//        switch ($userStateName) {
-//            case UserStateName::LOCK_CANDIDATE_STAGE_ONE:
-//                $template  = 'lock-candidate-stage';
-//                $subject   = 'Your Keestash Account';
-//                $variables = [
-//                    'title'      => 'Keestash is missing You',
-//                    'message'    => 'You haven\'t used Keestash for a time and we wanted to check whether everything is all fine. Are you happy with Keestash?',
-//                    'buttonText' => 'Login',
-//                    'buttonLink' => 'https://app.keestash.com/login',
-//                ];
-//                break;
-//            case UserStateName::LOCK_CANDIDATE_STAGE_TWO:
-//                $template  = 'lock-candidate-stage';
-//                $subject   = 'Your Keestash Account is going to get locked';
-//                $variables = [
-//                    'title'      => 'Your Keestash Account is going to get locked',
-//                    'message'    => sprintf('You did not use Keestash for a while and we want to inform you that your account is getting locked in the next %s days if you do not log in.', 3),
-//                    'buttonText' => 'Login',
-//                    'buttonLink' => 'https://app.keestash.com/login',
-//                ];
-//                break;
-//            case UserStateName::LOCK:
-//                $template  = 'lock';
-//                $subject   = 'Your Keestash Account is locked';
-//                $variables = [
-//                    'title'      => 'Your Keestash Account is locked',
-//                    'message'    => sprintf('Unfortunately, your Keestash account is locked and will stay for %s days locked. If you wish to use Keestash, please let us know by simply replying to this email', 3),
-//                    'buttonText' => 'Activate Keestash Account',
-//                ];
-//                break;
-//            case UserStateName::DELETE:
-//                $template  = 'delete';
-//                $subject   = 'Your Keestash Account is deleted';
-//                $variables = [
-//                    'title'      => 'Your Keestash Account is deleted',
-//                    'message'    => sprintf('This is a final information about that your Keestash account will get deleted within the next %s days. This is your last chance to reactivate your account by simply replying to this email', 3),
-//                    'buttonText' => 'Activate Keestash Account',
-//                ];
-//                break;
-//            default:
-//                throw new KeestashException();
-//        }
 
+    }
+
+    private function getReferenceDate(ApiLogInterface $apiLog, IUserState $state, IUser $user): DateTimeInterface {
+        if (false === ($apiLog instanceof NullApiLog)) {
+            return $apiLog->getCreateTs();
+        }
+        if (false === ($state instanceof NullUserState)) {
+            return $state->getCreateTs();
+        }
+        return $user->getCreateTs();
     }
 
 

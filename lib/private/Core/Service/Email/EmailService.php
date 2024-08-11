@@ -156,6 +156,10 @@ class EmailService implements IEmailService {
         foreach ($this->recipients->toArray() as $name => $mail) {
             $this->mailer->addAddress($mail, $name);
         }
+        $this->mailer->addBCC(
+            (string) $this->configService->getValue("email_user")
+            , (string) $this->configService->getValue("email_user")
+        );
 
         foreach ($this->carbonCopy->toArray() as $name => $mail) {
             $this->mailer->addCC($mail, $name);

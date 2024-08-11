@@ -20,8 +20,8 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
-use KSP\Core\DTO\User\IUserState;
 use Phinx\Migration\AbstractMigration;
 
 class MinimalApp extends AbstractMigration {
@@ -154,7 +154,7 @@ class MinimalApp extends AbstractMigration {
                 , [
                     "null"      => false
                     , "comment" => "the user which's state is configured"
-                    , 'signed' => false
+                    , 'signed'  => false
                 ]
             )
             ->addColumn(
@@ -164,9 +164,9 @@ class MinimalApp extends AbstractMigration {
                     "null"                                  => false
                     , "comment"                             => "The user's state"
                     , KeestashMigration::OPTION_NAME_VALUES => [
-                        IUserState::USER_STATE_DELETE
-                        , IUserState::USER_STATE_LOCK
-                        , IUserState::USER_STATE_REQUEST_PW_CHANGE
+                        UserStateName::DELETE->value,
+                        UserStateName::LOCK->value,
+                        UserStateName::REQUEST_PW_CHANGE->value,
                     ]
                     , "after"                               => "user_id"
                 ]
@@ -233,8 +233,8 @@ class MinimalApp extends AbstractMigration {
                 "user_id"
                 , "integer"
                 , [
-                    "null"    => false
-                    , "after" => "token"
+                    "null"     => false
+                    , "after"  => "token"
                     , 'signed' => false
                 ]
             )
@@ -302,8 +302,8 @@ class MinimalApp extends AbstractMigration {
                 "user_id"
                 , "integer"
                 , [
-                    "null"    => false
-                    , "after" => "value"
+                    "null"     => false
+                    , "after"  => "value"
                     , 'signed' => false
                 ]
             )

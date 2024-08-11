@@ -39,7 +39,7 @@ return [
     , CoreConfigProvider::RESPONSE_CODES => require __DIR__ . '/response_codes.php'
     , CoreConfigProvider::TEMPLATES      => [
         'paths' => [
-            'registerEmail' => [__DIR__ . '/../template/email']
+            'register' => [__DIR__ . '/../template/email']
         ]
     ]
 ];

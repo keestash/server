@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2024> <Dogan Ucar>
+ * Copyright (C) <2021> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,17 +19,20 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Keestash\Factory\Core\Service\Router;
 
-namespace Keestash\Core\DTO\User;
+use Keestash\Core\Service\Router\ApiLogService;
+use KSP\Core\Repository\ApiLog\IApiLogRepository;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-enum UserStateName: string {
+class ApiLogServiceFactory {
 
-    case DELETE = "delete.state.user";
-    case LOCK = "lock.state.user";
-    case NEVER_LOGGED_IN = "in.logged.never.state.user";
-    case LOCK_CANDIDATE_STAGE_ONE = "one.stage.candidate.lock.state.user";
-    case LOCK_CANDIDATE_STAGE_TWO = "two.stage.candidate.lock.state.user";
-    case REQUEST_PW_CHANGE = "change.pw.request.state.user";
-    case NULL = "null";
+    public function __invoke(ContainerInterface $container): ApiLogService {
+        return new ApiLogService(
+            $container->get(IApiLogRepository::class)
+            , $container->get(LoggerInterface::class)
+        );
+    }
 
 }

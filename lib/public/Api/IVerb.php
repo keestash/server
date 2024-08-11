@@ -23,9 +23,10 @@ namespace KSP\Api;
 
 interface IVerb {
 
-    public const GET    = 'get';
-    public const POST   = 'post';
-    public const PUT    = 'put';
-    public const DELETE = 'delete';
+    public const string GET     = 'get';
+    public const string POST    = 'post';
+    public const string PUT     = 'put';
+    public const string DELETE  = 'delete';
+    public const string OPTIONS = 'options';
 
 }

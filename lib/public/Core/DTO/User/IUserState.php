@@ -27,12 +27,6 @@ use KSP\Core\DTO\Entity\IObject;
 
 interface IUserState extends IObject {
 
-    public const string  USER_STATE_DELETE                   = "delete.state.user";
-    public const string  USER_STATE_LOCK                     = "lock.state.user";
-    public const string  USER_STATE_LOCK_CANDIDATE_STAGE_ONE = "one.stage.candidate.lock.state.user";
-    public const string  USER_STATE_LOCK_CANDIDATE_STAGE_TWO = "two.stage.candidate.lock.state.user";
-    public const string  USER_STATE_REQUEST_PW_CHANGE        = "change.pw.request.state.user";
-
     public function getId(): int;
 
     public function getUser(): IUser;
