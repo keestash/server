@@ -44,7 +44,7 @@ use Psr\Log\LoggerInterface;
  * Class PublicShare
  * @package KSA\PasswordManager\Api\Share
  */
-final readonly class PublicShare implements RequestHandlerInterface {
+final readonly class PublicSharePassword implements RequestHandlerInterface {
 
     public function __construct(
         private NodeRepository          $nodeRepository
@@ -57,47 +57,6 @@ final readonly class PublicShare implements RequestHandlerInterface {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        return match (strtolower($request->getMethod())) {
-            IVerb::POST => $this->handlePost($request),
-            IVerb::DELETE => $this->handleDelete($request),
-            default => new JsonResponse([], IResponse::BAD_REQUEST),
-        };
-    }
-
-    private function handleDelete(ServerRequestInterface $request): ResponseInterface {
-        try {
-            $parameters = (array) $request->getParsedBody();
-            $shareId    = $parameters["shareId"] ?? null;
-            /** @var IToken $token */
-            $token = $request->getAttribute(IToken::class);
-
-            if ($shareId === null) {
-                return new JsonResponse([], IResponse::BAD_REQUEST);
-            }
-
-            $share = $this->shareRepository->getShareById($shareId);
-
-            if (
-                $share instanceof NullShare
-                || $this->shareService->isExpired($share)
-            ) {
-                return new JsonResponse([], IResponse::NOT_FOUND);
-            }
-
-            $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 0);
-            if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-                return new JsonResponse([], IResponse::FORBIDDEN);
-            }
-
-            $this->shareRepository->remove($share);
-            return new JsonResponse([], IResponse::OK);
-        } catch (Exception|PasswordManagerException|UserNotFoundException $e) {
-            $this->logger->error('error deleting public share', ['e' => $e]);
-            return new JsonResponse([], IResponse::NOT_IMPLEMENTED);
-        }
-    }
-
-    private function handlePost(ServerRequestInterface $request): ResponseInterface {
         try {
             $parameters = (array) $request->getParsedBody();
             $nodeId     = $parameters["node_id"] ?? null;
