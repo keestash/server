@@ -69,7 +69,7 @@
     "symfony/ldap": "^5.4",
     "symfony/mime": "^4.4",
     "symfony/string": "^5.4",
-    "twig/twig": "3.4.3"
+    "twig/twig": "3.14.0"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.8",
