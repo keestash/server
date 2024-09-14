@@ -66,7 +66,7 @@ class AssignRoleToUser extends KeestashCommand {
 
         try {
             $user = $this->userRepository->getUserById((string) $userId);
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             $this->writeError('no user found', $output);
             return 0;
         }

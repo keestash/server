@@ -15,4 +15,10 @@ return RectorConfig::configure()
     ])
     // uncomment to reach your current PHP version
      ->withPhpSets(php83: true)
+    ->withRules(
+        [
+            \Rector\DeadCode\Rector\Property\RemoveUselessReadOnlyTagRector::class,
+            \Rector\Php82\Rector\Class_\ReadOnlyClassRector::class
+        ]
+    )
     ->withTypeCoverageLevel(0);
