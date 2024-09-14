@@ -29,7 +29,7 @@ use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
 use KSA\PasswordManager\Event\Listener\NodeRemovedEventListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PasswordsListener;
-use KSA\PasswordManager\Event\Listener\RemoveExpired;
+use KSA\PasswordManager\Event\Listener\RemoveExpiredPublicShare;
 use KSA\PasswordManager\Event\Node\Credential\CredentialCreatedEvent;
 use KSA\PasswordManager\Event\Node\Credential\CredentialUpdatedEvent;
 use KSA\PasswordManager\Event\Node\NodeAddedToOrganizationEvent;
@@ -46,7 +46,7 @@ return [
         AfterPasswordChanged::class
     ]
     , ApplicationStartedEvent::class          => [
-        RemoveExpired::class
+        RemoveExpiredPublicShare::class
         , BreachesListener::class
         , PasswordsListener::class
     ]

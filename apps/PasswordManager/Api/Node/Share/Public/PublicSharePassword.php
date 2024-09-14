@@ -21,8 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Share\Public;
 
-use Doctrine\DBAL\Exception;
-use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -31,14 +29,13 @@ use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
-use KSP\Api\IVerb;
-use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * Class PublicShare
@@ -74,7 +71,7 @@ final readonly class PublicSharePassword implements RequestHandlerInterface {
             }
 
             $node        = $this->nodeRepository->getNode((int) $nodeId);
-            $publicShare = $this->shareService->createPublicShare($node, $expireDate);
+            $publicShare = $this->shareService->createPublicShare($node, $expireDate, (string) Uuid::uuid4());
             $node->setPublicShare($publicShare);
 
             $share = $this->shareRepository->getShareByNode($node);

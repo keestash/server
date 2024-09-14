@@ -30,4 +30,5 @@ return [
     IExtension::JPG,
     IExtension::PDF,
     IExtension::JSON,
+    IExtension::TXT,
 ];

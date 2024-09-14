@@ -79,7 +79,8 @@ final readonly class ApiLogService implements ApiLogServiceInterface {
 
         /** @var ApiLogInterface $log */
         foreach ($logs as $log) {
-            $data     = json_decode($log->getData(), true, 512, JSON_THROW_ON_ERROR);
+            /** @var array<string|array> $data */
+            $data     = (array) json_decode($log->getData(), true, 512, JSON_THROW_ON_ERROR);
             $userHash = $data[VerificationService::FIELD_NAME_USER_HASH][0] ?? null;
 
             if ($user->getHash() === $userHash) {

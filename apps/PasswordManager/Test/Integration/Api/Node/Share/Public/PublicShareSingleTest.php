@@ -28,6 +28,8 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
+use KSP\Core\Service\User\IUserService;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class PublicShareSingleTest extends TestCase {
@@ -39,6 +41,8 @@ class PublicShareSingleTest extends TestCase {
         $shareService = $this->getServiceManager()->get(ShareService::class);
         /** @var PublicShareRepository $shareRepository */
         $shareRepository = $this->getServiceManager()->get(PublicShareRepository::class);
+        /** @var IUserService $userService */
+        $userService = $this->getServiceManager()->get(IUserService::class);
 
         $user = $this->createUser(
             Uuid::uuid4()->toString()
@@ -55,14 +59,18 @@ class PublicShareSingleTest extends TestCase {
 
         $node = $edge->getNode();
 
-        $publicShare = $shareService->createPublicShare($node);
+        $password    = (string) Uuid::uuid4();
+        $publicShare = $shareService->createPublicShare($node, new \DateTimeImmutable(), $userService->hashPassword($password));
         $node->setPublicShare($publicShare);
         $shareRepository->shareNode($node);
 
         $request  = $this->getRequestService()
-            ->getVirtualRequestWithToken($user);
+            ->getVirtualRequestWithToken(user: $user, body: ['password' => $password]);
         $response = $publicShareSingle->handle($request->withAttribute("hash", $publicShare->getHash()));
 
+        /** @var LoggerInterface $logger */
+        $logger = $this->getService(LoggerInterface::class);
+        $logger->debug(PublicShareSingleTest::class . '::testPublicShareSingle', ['response' => (string) $response->getBody()]);
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
     }
 
@@ -104,12 +112,13 @@ class PublicShareSingleTest extends TestCase {
         );
         $node = $edge->getNode();
 
-        $publicShare = $shareService->createPublicShare($node);
+        $publicShare = $shareService->createPublicShare($node, new \DateTimeImmutable(), (string) Uuid::uuid4());
         $publicShare = new PublicShare(
             $publicShare->getId(),
             $publicShare->getNodeId(),
             $publicShare->getHash(),
-            (new \DateTime('-10 days'))
+            (new \DateTime('-10 days')),
+            (string) Uuid::uuid4()
         );
         $node->setPublicShare($publicShare);
         $shareRepository->shareNode($node);

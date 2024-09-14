@@ -33,7 +33,7 @@ return [
     [
         IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT
         , IRoute::MIDDLEWARE => [PublicShareSingle::class]
-        , IRoute::METHOD     => IVerb::GET
+        , IRoute::METHOD     => IVerb::POST
         , IRoute::NAME       => PublicShareSingle::class
     ],
     [

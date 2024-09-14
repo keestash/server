@@ -60,7 +60,7 @@ use KSA\PasswordManager\Event\Listener\CredentialChangedListener;
 use KSA\PasswordManager\Event\Listener\NodeRemovedEventListener;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Event\Listener\PasswordsListener;
-use KSA\PasswordManager\Event\Listener\RemoveExpired;
+use KSA\PasswordManager\Event\Listener\RemoveExpiredPublicShare;
 use KSA\PasswordManager\Factory\Api\Node\Attachment\DownloadFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\GetValueFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\AddFactory as AddCommentFactory;
@@ -227,7 +227,7 @@ return [
         // ---- listener
         AfterRegistration::class                                                             => AfterRegistrationFactory::class,
         AfterPasswordChanged::class                                                          => AfterPasswordChangedListenerFactory::class,
-        RemoveExpired::class                                                                 => RemoveExpiredFactory::class,
+        RemoveExpiredPublicShare::class                                                      => RemoveExpiredFactory::class,
         OrganizationChangeListener::class                                                    => OrganizationAddListenerFactory::class,
         CredentialChangedListener::class                                                     => CredentialChangedListenerFactory::class,
         NodeRemovedEventListener::class                                                      => NodeRemovedEventListenerFactory::class,

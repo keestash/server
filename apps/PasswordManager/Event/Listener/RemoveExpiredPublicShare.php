@@ -23,33 +23,23 @@ namespace KSA\PasswordManager\Event\Listener;
 
 use Exception;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
-use Keestash\Core\Service\Instance\InstallerService;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
 
-class RemoveExpired implements IListener {
-
-    private PublicShareRepository $publicShareRepository;
-    private InstallerService      $installerService;
-    private LoggerInterface               $logger;
+final readonly class RemoveExpiredPublicShare implements IListener {
 
     public function __construct(
-        PublicShareRepository $publicShareRepository
-        , InstallerService $installerService
-        , LoggerInterface $logger
+        private PublicShareRepository $publicShareRepository
+        , private LoggerInterface     $logger
     ) {
-        $this->publicShareRepository = $publicShareRepository;
-        $this->installerService      = $installerService;
-        $this->logger                = $logger;
     }
 
     /**
      * @param ApplicationStartedEvent $event
      */
     public function execute(IEvent $event): void {
-        if (false === $this->installerService->hasIdAndHash()) return;
         try {
             $this->publicShareRepository->removeOutdated();
         } catch (Exception $exception) {

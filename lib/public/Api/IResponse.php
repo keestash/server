@@ -23,27 +23,27 @@ namespace KSP\Api;
 
 interface IResponse {
 
-    public const HEADER_CONTENT_TYPE                        = "Content-Type";
-    public const HEADER_X_KEESTASH_AUTHENTICATION           = "x-keestash-authentication";
-    public const HEADER_X_KEESTASH_USER                     = "x-keestash-user";
-    public const HEADER_X_KEESTASH_TOKEN                    = "x-keestash-token";
-    public const HEADER_CONTENT_SECURITY_POLICY             = "Content-Security-Policy";
-    public const HEADER_CONTENT_SECURITY_POLICY_REPORT_ONLY = "Content-Security-Policy-Report-Only";
+    public const string HEADER_CONTENT_TYPE                        = "Content-Type";
+    public const string HEADER_X_KEESTASH_AUTHENTICATION           = "x-keestash-authentication";
+    public const string HEADER_X_KEESTASH_USER                     = "x-keestash-user";
+    public const string HEADER_X_KEESTASH_TOKEN                    = "x-keestash-token";
+    public const string HEADER_CONTENT_SECURITY_POLICY             = "Content-Security-Policy";
+    public const string HEADER_CONTENT_SECURITY_POLICY_REPORT_ONLY = "Content-Security-Policy-Report-Only";
 
-    public const OK                    = 200;
-    public const CREATED               = 201;
-    public const NOT_MODIFIED          = 304;
-    public const BAD_REQUEST           = 400;
-    public const UNAUTHORIZED          = 401;
-    public const FORBIDDEN             = 403;
-    public const NOT_FOUND             = 404;
-    public const NOT_ALLOWED           = 405;
-    public const NOT_ACCEPTABLE        = 406;
-    public const CONFLICT              = 409;
-    public const TOO_MANY_REQUESTS     = 429;
-    public const INTERNAL_SERVER_ERROR = 500;
-    public const NOT_IMPLEMENTED       = 501;
-    public const SERVICE_UNAVAILABLE   = 503;
+    public const int OK                    = 200;
+    public const int CREATED               = 201;
+    public const int NOT_MODIFIED          = 304;
+    public const int BAD_REQUEST           = 400;
+    public const int UNAUTHORIZED          = 401;
+    public const int FORBIDDEN             = 403;
+    public const int NOT_FOUND             = 404;
+    public const int NOT_ALLOWED           = 405;
+    public const int NOT_ACCEPTABLE        = 406;
+    public const int CONFLICT              = 409;
+    public const int TOO_MANY_REQUESTS     = 429;
+    public const int INTERNAL_SERVER_ERROR = 500;
+    public const int NOT_IMPLEMENTED       = 501;
+    public const int SERVICE_UNAVAILABLE   = 503;
 
 
 }

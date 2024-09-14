@@ -91,6 +91,11 @@ parameters:
 			path: ../../apps/Login/Api/Login/Alpha.php
 
 		-
+			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
+			count: 1
+			path: ../../apps/Login/Event/ApplicationEndedEventListener.php
+
+		-
 			message: "#^Property KSA\\\\Login\\\\Test\\\\Unit\\\\Service\\\\TokenServiceTest\\:\\:\\$tokenService \\(KSA\\\\Login\\\\Service\\\\TokenService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/Login/Test/Unit/Service/TokenServiceTest.php
@@ -629,16 +634,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:setId\\(\\) expects int, int\\|null given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/TestCase.php
-
-		-
-			message: "#^Call to an undefined method Mockery\\\\ExpectationInterface\\|Mockery\\\\HigherOrderMessage\\:\\:andReturn\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/Factory/Repository/Node/NodeRepositoryFactory.php
-
-		-
-			message: "#^Method KSA\\\\PasswordManager\\\\Test\\\\Service\\\\Factory\\\\Repository\\\\Node\\\\NodeRepositoryFactory\\:\\:__invoke\\(\\) should return KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository but returns Mockery\\\\LegacyMockInterface\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Service/Factory/Repository/Node/NodeRepositoryFactory.php
 
 		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Credential\\\\CredentialServiceTest\\:\\:\\$credentialService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\) does not accept mixed\\.$#"
@@ -1199,11 +1194,6 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Factory/ThirdParty/nikolaposa/RateLimit/FileRateLimiterFactory.php
-
-		-
-			message: "#^Cannot call method toArray\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../lib/private/Middleware/ApplicationStartedMiddleware.php
 
 		-
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"

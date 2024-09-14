@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Share\Public;
 
+use DateTime;
 use Doctrine\DBAL\Exception;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\IResponseCodes;
@@ -34,6 +35,7 @@ use KSP\Api\IResponse;
 use KSP\Api\IVerb;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\User\IUserService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -53,6 +55,7 @@ final readonly class PublicShare implements RequestHandlerInterface {
         , private LoggerInterface       $logger
         , private IResponseService      $responseService
         , private AccessService         $accessService
+        , private IUserService          $userService
     ) {
     }
 
@@ -62,6 +65,51 @@ final readonly class PublicShare implements RequestHandlerInterface {
             IVerb::DELETE => $this->handleDelete($request),
             default => new JsonResponse([], IResponse::BAD_REQUEST),
         };
+    }
+
+    private function handlePost(ServerRequestInterface $request): ResponseInterface {
+        try {
+            $parameters = (array) $request->getParsedBody();
+            $nodeId     = $parameters["node_id"] ?? null;
+            $expireDate = $parameters["expire_date"] ?? 'now';
+            $password   = $parameters["password"] ?? null;
+            $expireDate = new DateTime($expireDate);
+
+            $this->logger->error("public share payload", ['payload' => $parameters]);
+            if (null === $nodeId) {
+                return new JsonResponse(
+                    [
+                        "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_INVALID_PAYLOAD)
+                    ],
+                    IResponse::BAD_REQUEST
+                );
+            }
+            $node  = $this->nodeRepository->getNode((int) $nodeId);
+            $share = $this->shareRepository->getShareByNode($node);
+
+            if (!($share instanceof NullShare) && false === $this->shareService->isExpired($share)) {
+                return new JsonResponse([], IResponse::CONFLICT);
+            }
+
+            $publicShare = $this->shareService->createPublicShare($node, $expireDate, $this->userService->hashPassword((string) $password));
+            $node->setPublicShare($publicShare);
+            $node = $this->shareRepository->shareNode($node);
+
+            return new JsonResponse(
+                [
+                    "share" => $node->getPublicShare()
+                ]
+                , IResponse::OK
+            );
+        } catch (PasswordManagerException $exception) {
+            $this->logger->error('error public share', ['e' => $exception]);
+            return new JsonResponse(
+                [
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NOT_FOUND)
+                ],
+                IResponse::NOT_FOUND
+            );
+        }
     }
 
     private function handleDelete(ServerRequestInterface $request): ResponseInterface {
@@ -97,50 +145,5 @@ final readonly class PublicShare implements RequestHandlerInterface {
         }
     }
 
-    private function handlePost(ServerRequestInterface $request): ResponseInterface {
-        try {
-            $parameters = (array) $request->getParsedBody();
-            $nodeId     = $parameters["node_id"] ?? null;
-            $expireDate = $parameters["expire_date"] ?? null;
-            $expireDate = new \DateTime($expireDate);
-
-            $this->logger->error("public share payload", ['payload' => $parameters]);
-            if (null === $nodeId) {
-                return new JsonResponse(
-                    [
-                        "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_INVALID_PAYLOAD)
-                    ],
-                    IResponse::BAD_REQUEST
-                );
-            }
-
-            $node        = $this->nodeRepository->getNode((int) $nodeId);
-            $publicShare = $this->shareService->createPublicShare($node, $expireDate);
-            $node->setPublicShare($publicShare);
-
-            $share = $this->shareRepository->getShareByNode($node);
-
-            if (!($share instanceof NullShare) && false === $this->shareService->isExpired($share)) {
-                return new JsonResponse([], IResponse::CONFLICT);
-            }
-
-            $node = $this->shareRepository->shareNode($node);
-
-            return new JsonResponse(
-                [
-                    "share" => $node->getPublicShare()
-                ]
-                , IResponse::OK
-            );
-        } catch (PasswordManagerException $exception) {
-            $this->logger->error('error public share', ['e' => $exception]);
-            return new JsonResponse(
-                [
-                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NOT_FOUND)
-                ],
-                IResponse::NOT_FOUND
-            );
-        }
-    }
 
 }

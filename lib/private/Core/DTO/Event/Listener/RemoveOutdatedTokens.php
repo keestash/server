@@ -32,12 +32,12 @@ use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
 
-class RemoveOutdatedTokens implements IListener {
+final readonly class RemoveOutdatedTokens implements IListener {
 
     public function __construct(
-        private readonly ITokenRepository        $tokenRepository
-        , private readonly IDerivationRepository $derivationRepository
-        , private readonly LoggerInterface       $logger
+        private ITokenRepository        $tokenRepository
+        , private IDerivationRepository $derivationRepository
+        , private LoggerInterface       $logger
     ) {
 
     }

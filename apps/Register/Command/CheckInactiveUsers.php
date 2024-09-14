@@ -96,11 +96,13 @@ class CheckInactiveUsers extends KeestashCommand {
             $users = $this->userRepository->getAll();
         }
 
+        $this->writeInfo(sprintf('in total %s users', $users->length() - 1), $this->output);
         /** @var IUser $user */
         foreach ($users as $user) {
             if ($this->userService->isSystemUser($user)) {
                 continue;
             }
+            $this->writeInfo(sprintf('processing user: %s', $user->getName()), $this->output);
             $this->handleUser($user);
         }
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
@@ -231,8 +233,23 @@ class CheckInactiveUsers extends KeestashCommand {
                 );
                 break;
             case UserStateName::DELETE:
-            case UserStateName::REQUEST_PW_CHANGE:
+                $this->writeInfo('user is deleted, doing nothing', $this->output);
                 break;
+            case UserStateName::REQUEST_PW_CHANGE:
+                $now         = new DateTimeImmutable();
+                $passDaysAgo = $now->modify(sprintf('-%s day', 14));
+                $this->writeInfo(
+                    sprintf(
+                        'pw change for user: %s, time passed: %s, dryrun: %s',
+                        $user->getName(),
+                        $state->getCreateTs() < $passDaysAgo ? 'true' : 'false',
+                        $this->dryRun ? 'true' : 'false'
+                    ), $this->output);
+                if ($state->getCreateTs() < $passDaysAgo && false === $this->dryRun) {
+                    $this->userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
+                }
+                break;
+
         }
     }
 
