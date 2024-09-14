@@ -118,7 +118,7 @@ class UpdateProfileImage implements RequestHandlerInterface {
             $oldImage = $this->fileRepository->getByName($coreFile->getName());
             $this->fileRepository->remove($oldImage);
             $this->uploadFileService->removeUploadedFile($oldImage);
-        } catch (FileNotFoundException $exception) {
+        } catch (FileNotFoundException) {
             // TODO maybe log
         }
 

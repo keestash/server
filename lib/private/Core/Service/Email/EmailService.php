@@ -35,7 +35,7 @@ final class EmailService implements IEmailService {
     public const bool HAS_EXCEPTIONS = true;
     public const bool IS_HTML        = true;
 
-    private PHPMailer $mailer;
+    private readonly PHPMailer $mailer;
     private HashTable $recipients;
     private HashTable $carbonCopy;
     private HashTable $blindCarbonCopy;

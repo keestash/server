@@ -60,7 +60,7 @@ class CreateFolder extends KeestashCommand {
 
         try {
             $user = $this->userRepository->getUserById($userId);
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             $this->writeError("No User found for $userId. Aborting!", $output);
             exit(1);
         }
