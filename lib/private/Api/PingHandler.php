@@ -27,7 +27,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class PingHandler implements RequestHandlerInterface {
+final readonly class PingHandler implements RequestHandlerInterface {
 
     public function __construct(
         private LoggerInterface $logger

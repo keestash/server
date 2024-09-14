@@ -30,16 +30,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Uninstall extends KeestashCommand {
 
-    private InstanceRepository $instanceRepository;
-    private Config             $config;
 
     public function __construct(
-        InstanceRepository $instanceRepository
-        , Config           $config
+        private readonly InstanceRepository $instanceRepository
+        , private readonly Config           $config
     ) {
         parent::__construct();
-        $this->instanceRepository = $instanceRepository;
-        $this->config             = $config;
     }
 
     protected function configure(): void {

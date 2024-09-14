@@ -30,20 +30,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PermissionsByRole extends KeestashCommand {
+final class PermissionsByRole extends KeestashCommand {
 
-    public const ARGUMENT_NAME_ROLE_ID = 'role-id';
-
-    private RBACRepositoryInterface $rbacRepository;
-    private IDateTimeService        $dateTimeService;
+    public const string ARGUMENT_NAME_ROLE_ID = 'role-id';
 
     public function __construct(
-        RBACRepositoryInterface $rbacRepository
-        , IDateTimeService      $dateTimeService
+        private readonly RBACRepositoryInterface $rbacRepository
+        , private readonly IDateTimeService      $dateTimeService
     ) {
         parent::__construct();
-        $this->rbacRepository  = $rbacRepository;
-        $this->dateTimeService = $dateTimeService;
     }
 
     protected function configure(): void {

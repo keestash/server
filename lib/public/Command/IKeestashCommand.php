@@ -25,9 +25,9 @@ use Symfony\Component\Console\Command\Command;
 
 interface IKeestashCommand {
 
-    public const RETURN_CODE_NOT_RAN_SUCCESSFUL = Command::FAILURE;
-    public const RETURN_CODE_INVALID_ARGUMENT   = Command::INVALID;
-    public const RETURN_CODE_RAN_SUCCESSFUL     = Command::SUCCESS;
-    public const OPTION_NAME_SILENT             = 'silent';
+    public const int    RETURN_CODE_NOT_RAN_SUCCESSFUL = Command::FAILURE;
+    public const int    RETURN_CODE_INVALID_ARGUMENT   = Command::INVALID;
+    public const int    RETURN_CODE_RAN_SUCCESSFUL     = Command::SUCCESS;
+    public const string OPTION_NAME_SILENT             = 'silent';
 
 }

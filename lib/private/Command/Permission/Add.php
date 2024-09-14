@@ -34,16 +34,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Add extends KeestashCommand {
 
-    private RBACRepositoryInterface $rbacRepository;
-    private IDateTimeService        $dateTimeService;
-
     public function __construct(
-        RBACRepositoryInterface $rbacRepository
-        , IDateTimeService      $dateTimeService
+        private readonly RBACRepositoryInterface $rbacRepository
+        , private readonly IDateTimeService      $dateTimeService
     ) {
         parent::__construct();
-        $this->rbacRepository  = $rbacRepository;
-        $this->dateTimeService = $dateTimeService;
     }
 
     protected function configure(): void {

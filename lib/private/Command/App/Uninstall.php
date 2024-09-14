@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Uninstall extends KeestashCommand {
 
-    public const ARGUMENT_NAME_APP_ID = 'app_id';
+    public const string ARGUMENT_NAME_APP_ID = 'app_id';
 
     public function __construct(
         private readonly IAppRepository    $appRepository

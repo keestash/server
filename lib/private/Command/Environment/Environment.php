@@ -31,9 +31,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Environment extends KeestashCommand {
 
-    public const OPTION_NAME_FORCE   = 'force';
-    public const ARGUMENT_NAME_NAME  = 'name';
-    public const ARGUMENT_NAME_VALUE = 'value';
+    public const string OPTION_NAME_FORCE   = 'force';
+    public const string ARGUMENT_NAME_NAME  = 'name';
+    public const string ARGUMENT_NAME_VALUE = 'value';
 
     public function __construct(
         private readonly InstanceDB $instanceDB

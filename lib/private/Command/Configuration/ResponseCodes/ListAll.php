@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListAll extends KeestashCommand {
 
-    public const OPTION_NAME_CODE_OR_NAME = 'code-or-name';
+    public const string OPTION_NAME_CODE_OR_NAME = 'code-or-name';
 
     public function __construct(
         private readonly Config $config

@@ -32,8 +32,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AssignPermissionToRole extends KeestashCommand {
 
-    public const ARGUMENT_NAME_PERMISSION_ID = 'permission-id';
-    public const ARGUMENT_NAME_ROLE_ID       = 'role-id';
+    public const string ARGUMENT_NAME_PERMISSION_ID = 'permission-id';
+    public const string ARGUMENT_NAME_ROLE_ID       = 'role-id';
 
     private RBACRepositoryInterface $rbacRepository;
 

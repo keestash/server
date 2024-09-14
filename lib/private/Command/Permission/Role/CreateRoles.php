@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateRoles extends KeestashCommand {
 
-    public const OPTION_NAME_FORCE = 'force';
+    public const string OPTION_NAME_FORCE = 'force';
 
     public function __construct(
         private readonly IRoleService $roleService

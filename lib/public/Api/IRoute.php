@@ -23,9 +23,9 @@ namespace KSP\Api;
 
 interface IRoute {
 
-    public const PATH       = 'path';
-    public const MIDDLEWARE = 'middleware';
-    public const METHOD     = 'method';
-    public const NAME       = 'name';
+    public const string PATH       = 'path';
+    public const string MIDDLEWARE = 'middleware';
+    public const string METHOD     = 'method';
+    public const string NAME       = 'name';
 
 }

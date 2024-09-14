@@ -37,8 +37,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateConfig extends KeestashCommand {
 
-    public const DEFAULT_USER_LIFETIME = 15 * 24 * 60 * 60;
-    public const OPTION_NAME_FORCE     = 'force';
+    public const int    DEFAULT_USER_LIFETIME = 15 * 24 * 60 * 60;
+    public const string OPTION_NAME_FORCE     = 'force';
 
     public function __construct(
         private readonly Config            $config
