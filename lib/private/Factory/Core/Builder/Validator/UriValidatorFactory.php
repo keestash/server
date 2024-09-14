@@ -28,6 +28,7 @@ use Psr\Container\ContainerInterface;
 
 class UriValidatorFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

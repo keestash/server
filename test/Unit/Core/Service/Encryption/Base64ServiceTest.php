@@ -29,6 +29,7 @@ class Base64ServiceTest extends TestCase {
 
     private Base64Service $base64Service;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->base64Service = $this->getService(IBase64Service::class);

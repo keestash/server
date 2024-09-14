@@ -32,23 +32,11 @@ use Psr\Log\LoggerInterface;
 
 class RouterService implements IRouterService {
 
-    private RouterInterface     $router;
-    private Config              $config;
-    private LoggerInterface     $logger;
-    private IEnvironmentService $environmentService;
-
-    public function __construct(
-        RouterInterface       $router
-        , Config              $config
-        , LoggerInterface     $logger
-        , IEnvironmentService $environmentService
-    ) {
-        $this->router             = $router;
-        $this->config             = $config;
-        $this->logger             = $logger;
-        $this->environmentService = $environmentService;
+    public function __construct(private readonly RouterInterface       $router, private readonly Config              $config, private readonly LoggerInterface     $logger, private readonly IEnvironmentService $environmentService)
+    {
     }
 
+    #[\Override]
     public function getMatchedPath(ServerRequestInterface $request): string {
         $matchedRoute = $this->router->match($request)->getMatchedRoute();
 
@@ -58,6 +46,7 @@ class RouterService implements IRouterService {
         return '';
     }
 
+    #[\Override]
     public function getRouteByPath(string $path): array {
         /** @var Config $webRoutes */
         $webRoutes = $this->config->get(ConfigProvider::WEB_ROUTER);
@@ -73,10 +62,12 @@ class RouterService implements IRouterService {
         return [];
     }
 
+    #[\Override]
     public function getUri(string $name): string {
         return $this->router->generateUri($name);
     }
 
+    #[\Override]
     public function isPublicRoute(ServerRequestInterface $request): bool {
         $path   = $this->getMatchedPath($request);
         $routes = $this->config

@@ -41,6 +41,7 @@ class Quality implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $value = $request->getAttribute('value');
 

@@ -31,6 +31,7 @@ use Psr\Container\ContainerInterface;
 
 class PwnedBreachesRepositoryFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

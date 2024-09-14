@@ -39,6 +39,7 @@ class CreateRoles extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:role:create")
             ->setDescription("creates/restores the permissions")
@@ -50,6 +51,7 @@ class CreateRoles extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force = (bool) $input->getOption(CreateRoles::OPTION_NAME_FORCE);
         if (true === $force) {

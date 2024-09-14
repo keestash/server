@@ -30,6 +30,7 @@ class FileList extends ArrayList {
      * @param $item
      * @return bool
      */
+    #[\Override]
     public function add($item): bool {
         if ($item instanceof IFile) {
             return parent::add($item);
@@ -37,6 +38,7 @@ class FileList extends ArrayList {
         return false;
     }
 
+    #[\Override]
     public function addAll(ArrayList $arrayList): bool {
         if ($arrayList instanceof FileList) {
             return parent::addAll($arrayList);
@@ -44,6 +46,7 @@ class FileList extends ArrayList {
         return false;
     }
 
+    #[\Override]
     public function addAllArray(array $array): bool {
         return false;
     }
@@ -53,6 +56,7 @@ class FileList extends ArrayList {
      * @param mixed $item
      * @return bool
      */
+    #[\Override]
     public function addToIndex(int $index, $item): bool {
         if ($item instanceof IFile) {
             return parent::addToIndex($index, $item);

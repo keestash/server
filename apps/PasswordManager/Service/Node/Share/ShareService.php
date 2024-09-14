@@ -74,7 +74,7 @@ final readonly class ShareService {
     public function isShareable(int $nodeId, string $userId): bool {
         try {
             $node = $this->nodeRepository->getNode($nodeId, 0, 1);
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             return false;
         }
 

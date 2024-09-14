@@ -31,6 +31,7 @@ use Psr\Log\LoggerInterface;
 
 final readonly class KeyFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

@@ -33,31 +33,18 @@ class IconService implements IIconService {
      *
      * @return string
      */
+    #[\Override]
     public function getIconForExtension(string $extension): string {
         $icon = null;
 
-        switch ($extension) {
-            case IExtension::JPEG:
-            case IExtension::JPG:
-                $icon = IICon::JPEG;
-                break;
-            case IExtension::PNG:
-                $icon = IICon::PNG;
-                break;
-            case IExtension::PDF:
-                $icon = IICon::PDF;
-                break;
-            case IExtension::DOCX:
-            case IExtension::DOC:
-                $icon = IICon::DOC;
-                break;
-            case IExtension::TEXT:
-                $icon = IICon::TXT;
-                break;
-            default:
-                $icon = IICon::PDF;
-                break;
-        }
+        $icon = match ($extension) {
+            IExtension::JPEG, IExtension::JPG => IICon::JPEG,
+            IExtension::PNG => IICon::PNG,
+            IExtension::PDF => IICon::PDF,
+            IExtension::DOCX, IExtension::DOC => IICon::DOC,
+            IExtension::TEXT => IICon::TXT,
+            default => IICon::PDF,
+        };
 
         return $icon;
 

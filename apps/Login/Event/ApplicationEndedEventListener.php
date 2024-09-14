@@ -43,6 +43,7 @@ final readonly class ApplicationEndedEventListener implements IListener {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
         if (false === ($event instanceof ApplicationEndedEvent)) {
             $this->logger->warning('listening to incorrect event', ['expected' => ApplicationEndedEvent::class, 'current' => $event::class]);

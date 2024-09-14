@@ -34,6 +34,7 @@ class QueueServiceTest extends TestCase {
 
     private IQueueService $queueService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->queueService = $this->getService(IQueueService::class);
@@ -50,7 +51,7 @@ class QueueServiceTest extends TestCase {
                 'listener' => QueueServiceTest::class
                 , 'event'  => [
                 'serialized' => QueueServiceTest::class
-                , 'name'     => get_class($this)
+                , 'name'     => static::class
             ]
             ]
         );

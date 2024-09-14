@@ -46,6 +46,7 @@ final readonly class ResetPasswordSendEmailListener implements IListener {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
 
         if (false === ($event instanceof ResetPasswordEvent)) {

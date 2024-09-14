@@ -54,6 +54,7 @@ class Setting implements IJsonObject {
         return $this->createTs;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'key'         => $this->getKey()

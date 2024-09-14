@@ -35,21 +35,8 @@ use Psr\Log\LoggerInterface;
 
 class PwnedBreachesRepository {
 
-    private IBackend         $backend;
-    private LoggerInterface  $logger;
-    private IDateTimeService $dateTimeService;
-    private NodeRepository   $nodeRepository;
-
-    public function __construct(
-        IBackend           $backend
-        , LoggerInterface  $logger
-        , IDateTimeService $dateTimeService
-        , NodeRepository   $nodeRepository
-    ) {
-        $this->backend         = $backend;
-        $this->logger          = $logger;
-        $this->dateTimeService = $dateTimeService;
-        $this->nodeRepository  = $nodeRepository;
+    public function __construct(private readonly IBackend           $backend, private readonly LoggerInterface  $logger, private readonly IDateTimeService $dateTimeService, private readonly NodeRepository   $nodeRepository)
+    {
     }
 
     public function replace(Breaches $breaches): Breaches {
@@ -126,7 +113,7 @@ class PwnedBreachesRepository {
             $pwned = new Breaches(
                 $this->nodeRepository->getNode((int) $row['node_id'], 0, 0)
                 , null !== $row['hibp_data']
-                ? json_decode($row['hibp_data'], true)
+                ? json_decode((string) $row['hibp_data'], true)
                 : null
                 , $this->dateTimeService->fromFormat($row['create_ts'])
                 , null !== $row['update_ts']
@@ -183,7 +170,7 @@ class PwnedBreachesRepository {
                 $this->nodeRepository->getNode((int) $row['node_id'], 0, 0)
                 , null === $row['hibp_data']
                 ? null
-                : json_decode($row['hibp_data'], true)
+                : json_decode((string) $row['hibp_data'], true)
                 , $this->dateTimeService->fromFormat($row['create_ts'])
                 , null !== $row['update_ts']
                 ? $this->dateTimeService->fromFormat($row['update_ts'])

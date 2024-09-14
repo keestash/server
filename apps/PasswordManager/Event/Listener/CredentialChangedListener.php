@@ -27,19 +27,15 @@ use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
 
-class CredentialChangedListener implements IListener {
-
-    private PwnedPasswordsRepository $pwnedPasswordsRepository;
-    private PwnedBreachesRepository  $pwnedBreachesRepository;
+final readonly class CredentialChangedListener implements IListener {
 
     public function __construct(
-        PwnedPasswordsRepository  $pwnedPasswordsRepository
-        , PwnedBreachesRepository $pwnedBreachesRepository
+        private PwnedPasswordsRepository $pwnedPasswordsRepository,
+        private PwnedBreachesRepository  $pwnedBreachesRepository
     ) {
-        $this->pwnedPasswordsRepository = $pwnedPasswordsRepository;
-        $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
         if (!($event instanceof CredentialChangedEvent)) {
             return;

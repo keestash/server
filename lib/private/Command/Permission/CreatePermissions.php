@@ -39,6 +39,7 @@ class CreatePermissions extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:create")
             ->setDescription("creates/restores the permissions")
@@ -50,6 +51,7 @@ class CreatePermissions extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force = (bool) $input->getOption(CreatePermissions::OPTION_NAME_FORCE);
         if (true === $force) {

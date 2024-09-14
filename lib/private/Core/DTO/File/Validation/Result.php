@@ -26,12 +26,13 @@ use KSP\Core\DTO\File\Validation\IResult;
 
 class Result implements IResult {
 
-    private ArrayList $result;
+    private readonly ArrayList $result;
 
     public function __construct() {
         $this->result = new ArrayList();
     }
 
+    #[\Override]
     public function getResults(): ArrayList {
         return $this->result;
     }
@@ -40,6 +41,7 @@ class Result implements IResult {
         $this->result->add($message);
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return $this->result->toArray();
     }

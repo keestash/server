@@ -35,6 +35,7 @@ use Psr\Log\LoggerInterface;
 
 class WorkerRunnerFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container,
                            $requestedName,

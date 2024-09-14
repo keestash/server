@@ -36,10 +36,12 @@ final readonly class UserStateService implements IUserStateService {
         );
     }
 
+    #[\Override]
     public function clear(IUser $user): void {
         $this->userStateRepository->remove($user);
     }
 
+    #[\Override]
     public function clearCarefully(IUser $user, UserStateName $expectedState): void {
         $userState = $this->getState($user);
         if ($userState->getState() !== $expectedState) {
@@ -48,6 +50,7 @@ final readonly class UserStateService implements IUserStateService {
         $this->clear($user);
     }
 
+    #[\Override]
     public function getNextStateName(UserStateName $stateName): UserStateName {
         return match ($stateName) {
             UserStateName::NULL => UserStateName::NEVER_LOGGED_IN,
@@ -59,6 +62,7 @@ final readonly class UserStateService implements IUserStateService {
         };
     }
 
+    #[\Override]
     public function forceLock(IUser $user): void {
         $this->userStateRepository->remove($user);
 //        $this->setState(
@@ -93,6 +97,7 @@ final readonly class UserStateService implements IUserStateService {
         );
     }
 
+    #[\Override]
     public function forceDelete(IUser $user): void {
         $this->userStateRepository->remove($user);
 //        $this->setState(

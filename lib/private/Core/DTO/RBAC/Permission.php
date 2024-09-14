@@ -10,32 +10,26 @@ use KSP\Core\DTO\RBAC\IPermission;
 
 class Permission implements IPermission {
 
-    private int               $id;
-    private string            $name;
-    private DateTimeInterface $createTs;
-
-    public function __construct(
-        int                 $id
-        , string            $name
-        , DateTimeInterface $createTs
-    ) {
-        $this->id       = $id;
-        $this->name     = $name;
-        $this->createTs = $createTs;
+    public function __construct(private readonly int                 $id, private readonly string            $name, private readonly DateTimeInterface $createTs)
+    {
     }
 
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
 
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
+    #[\Override]
     public function compareTo($object): int {
         if (!$object instanceof PermissionInterface) {
             return IComparable::IS_LESS;
@@ -52,6 +46,7 @@ class Permission implements IPermission {
         return IComparable::IS_LESS;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'          => $this->getId()

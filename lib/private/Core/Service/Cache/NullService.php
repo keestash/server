@@ -29,6 +29,7 @@ use KSP\Core\Service\Cache\ICacheService;
  */
 class NullService implements ICacheService {
 
+    #[\Override]
     public function connect(): void {
 
     }
@@ -38,14 +39,17 @@ class NullService implements ICacheService {
      * @param mixed  $value
      * @return bool
      */
+    #[\Override]
     public function set(string $key, $value): bool {
         return true;
     }
 
+    #[\Override]
     public function get(string $key) {
         return null;
     }
 
+    #[\Override]
     public function exists(string $key): bool {
         return false;
     }

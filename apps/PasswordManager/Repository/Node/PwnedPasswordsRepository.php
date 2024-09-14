@@ -35,21 +35,8 @@ use Psr\Log\LoggerInterface;
 
 class PwnedPasswordsRepository {
 
-    private IBackend         $backend;
-    private LoggerInterface          $logger;
-    private IDateTimeService $dateTimeService;
-    private NodeRepository   $nodeRepository;
-
-    public function __construct(
-        IBackend           $backend
-        , LoggerInterface          $logger
-        , IDateTimeService $dateTimeService
-        , NodeRepository   $nodeRepository
-    ) {
-        $this->backend         = $backend;
-        $this->logger          = $logger;
-        $this->dateTimeService = $dateTimeService;
-        $this->nodeRepository  = $nodeRepository;
+    public function __construct(private readonly IBackend           $backend, private readonly LoggerInterface          $logger, private readonly IDateTimeService $dateTimeService, private readonly NodeRepository   $nodeRepository)
+    {
     }
 
     public function replace(Passwords $passwords): Passwords {

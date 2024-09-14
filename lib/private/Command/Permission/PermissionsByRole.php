@@ -41,6 +41,7 @@ final class PermissionsByRole extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:role:get")
             ->setDescription("lists all permissions by a given role")
@@ -51,6 +52,7 @@ final class PermissionsByRole extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $roleId      = $input->getArgument(PermissionsByRole::ARGUMENT_NAME_ROLE_ID);
         $role        = $this->rbacRepository->getRole((int) $roleId);

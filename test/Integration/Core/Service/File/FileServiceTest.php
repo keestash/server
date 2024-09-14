@@ -34,6 +34,7 @@ class FileServiceTest extends TestCase {
 
     private IFileService $fileService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->fileService = $this->getService(IFileService::class);

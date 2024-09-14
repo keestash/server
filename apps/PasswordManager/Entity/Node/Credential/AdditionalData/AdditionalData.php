@@ -70,6 +70,7 @@ class AdditionalData implements IJsonObject {
         return $this->createTs;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'         => $this->getId()

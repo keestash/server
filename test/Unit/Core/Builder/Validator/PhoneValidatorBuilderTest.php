@@ -28,6 +28,7 @@ class PhoneValidatorBuilderTest extends TestCase {
 
     private PhoneNumber $phoneNumberValidator;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         /** @var PhoneNumber $uriValidator */

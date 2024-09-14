@@ -38,11 +38,13 @@ class InstallApps extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("app:install")
             ->setDescription("installs all apps");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         /** @var Config $appList */
         $appList       = $this->config->get(ConfigProvider::APP_LIST, new Config([]));

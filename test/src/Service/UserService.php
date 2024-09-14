@@ -34,35 +34,35 @@ use Ramsey\Uuid\Uuid;
 
 final class UserService {
 
-    public const TEST_USER_ID_2          = 2;
-    public const TEST_USER_ID_2_NAME     = 'TestUser2';
-    public const TEST_USER_ID_2_PASSWORD = 'ec1ce427dde12ca6e4f7c2853dce60ba';
-    public const TEST_USER_ID_2_EMAIL    = '82e92302cbe5ea70f9d4e24f740c58f8@keestash.com';
+    public const int TEST_USER_ID_2          = 2;
+    public const string TEST_USER_ID_2_NAME     = 'TestUser2';
+    public const string TEST_USER_ID_2_PASSWORD = 'ec1ce427dde12ca6e4f7c2853dce60ba';
+    public const string TEST_USER_ID_2_EMAIL    = '82e92302cbe5ea70f9d4e24f740c58f8@keestash.com';
 
-    public const TEST_USER_ID_3          = 3;
-    public const TEST_USER_ID_3_NAME     = 'TestUser3';
-    public const TEST_USER_ID_3_PASSWORD = 'a7bf5114650d3b43a5db14088251570c';
-    public const TEST_USER_ID_3_EMAIL    = 'fd7eea1db9b486aedd38f607484d4f3e@keestash.com';
+    public const int TEST_USER_ID_3          = 3;
+    public const string TEST_USER_ID_3_NAME     = 'TestUser3';
+    public const string TEST_USER_ID_3_PASSWORD = 'a7bf5114650d3b43a5db14088251570c';
+    public const string TEST_USER_ID_3_EMAIL    = 'fd7eea1db9b486aedd38f607484d4f3e@keestash.com';
 
-    public const TEST_LOCKED_USER_ID_4          = 4;
-    public const TEST_LOCKED_USER_ID_4_NAME     = 'TestUser4';
-    public const TEST_LOCKED_USER_ID_4_PASSWORD = '35718b4a649d8a1f303b5be19e00c301';
-    public const TEST_LOCKED_USER_ID_4_EMAIL    = '82806459c099e7e1ccfe709a3c5e0548@keestash.com';
+    public const int TEST_LOCKED_USER_ID_4          = 4;
+    public const string TEST_LOCKED_USER_ID_4_NAME     = 'TestUser4';
+    public const string TEST_LOCKED_USER_ID_4_PASSWORD = '35718b4a649d8a1f303b5be19e00c301';
+    public const string TEST_LOCKED_USER_ID_4_EMAIL    = '82806459c099e7e1ccfe709a3c5e0548@keestash.com';
 
-    public const TEST_PASSWORD_RESET_USER_ID_5          = 5;
-    public const TEST_PASSWORD_RESET_USER_ID_5_NAME     = 'TestUser5';
-    public const TEST_PASSWORD_RESET_USER_ID_5_PASSWORD = '368ef001d16adc04a76ff6266b1ce0f6';
-    public const TEST_PASSWORD_RESET_USER_ID_5_EMAIL    = '5af9f426673ee8fdab6959e685557520@keestash.com';
+    public const int TEST_PASSWORD_RESET_USER_ID_5          = 5;
+    public const string TEST_PASSWORD_RESET_USER_ID_5_NAME     = 'TestUser5';
+    public const string TEST_PASSWORD_RESET_USER_ID_5_PASSWORD = '368ef001d16adc04a76ff6266b1ce0f6';
+    public const string TEST_PASSWORD_RESET_USER_ID_5_EMAIL    = '5af9f426673ee8fdab6959e685557520@keestash.com';
 
-    public const TEST_PASSWORD_FORGOT_USER_ID_6          = 6;
-    public const TEST_PASSWORD_FORGOT_USER_ID_6_NAME     = 'TestUser6';
-    public const TEST_PASSWORD_FORGOT_USER_ID_6_PASSWORD = 'e4ab34b63a6f671a69a06623bf57c258';
-    public const TEST_PASSWORD_FORGOT_USER_ID_6_EMAIL    = 'c02864952954089b844239e969b1eb14@keestash.com';
+    public const int TEST_PASSWORD_FORGOT_USER_ID_6          = 6;
+    public const string TEST_PASSWORD_FORGOT_USER_ID_6_NAME     = 'TestUser6';
+    public const string TEST_PASSWORD_FORGOT_USER_ID_6_PASSWORD = 'e4ab34b63a6f671a69a06623bf57c258';
+    public const string TEST_PASSWORD_FORGOT_USER_ID_6_EMAIL    = 'c02864952954089b844239e969b1eb14@keestash.com';
 
-    public const TEST_RESET_PASSWORD_USER_ID_7           = 7;
-    public const TEST_RESET_PASSWORD_USER_ID_7_NAME      = 'TestUser7';
-    public const TEST_PASSWORD_FORGOT_USER_ID_7_PASSWORD = 'a9e80d53c775abec87b8fbffa306b79c';
-    public const TEST_PASSWORD_FORGOT_USER_ID_7_EMAIL    = 'bcf5cfb513064cf4f2859ee84e1d3bea@keestash.com';
+    public const int TEST_RESET_PASSWORD_USER_ID_7           = 7;
+    public const string TEST_RESET_PASSWORD_USER_ID_7_NAME      = 'TestUser7';
+    public const string TEST_PASSWORD_FORGOT_USER_ID_7_PASSWORD = 'a9e80d53c775abec87b8fbffa306b79c';
+    public const string TEST_PASSWORD_FORGOT_USER_ID_7_EMAIL    = 'bcf5cfb513064cf4f2859ee84e1d3bea@keestash.com';
 
     private array $userData = [
         [

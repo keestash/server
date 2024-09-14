@@ -53,6 +53,7 @@ readonly final class ResetPasswordConfirm implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $this->logger->debug(
             'reset password flow',

@@ -44,6 +44,7 @@ class UpdateTest extends TestCase {
     private NodeRepository             $nodeRepository;
     private CredentialService          $credentialService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->logger                     = $this->getService(LoggerInterface::class);

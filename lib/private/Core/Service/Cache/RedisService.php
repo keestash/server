@@ -35,18 +35,15 @@ class RedisService implements ICacheService {
 
     private bool          $connected = false;
     private Redis         $instance;
-    private LoggerInterface       $logger;
-    private ConfigService $config;
 
     public function __construct(
-        LoggerInterface         $logger
-        , ConfigService $config
+        private readonly LoggerInterface         $logger
+        , private readonly ConfigService $config
     ) {
-        $this->logger = $logger;
-        $this->config = $config;
         $this->connect();
     }
 
+    #[\Override]
     public function connect(): void {
         if (true === $this->connected) return;
         if (false === class_exists("Redis")) return;
@@ -68,16 +65,19 @@ class RedisService implements ICacheService {
      * @return bool
      * @throws \RedisException
      */
+    #[\Override]
     public function set(string $key, $value): bool {
         if (false === $this->connected) return false;
         return $this->instance->set($key, $value);
     }
 
+    #[\Override]
     public function get(string $key) {
         if (false === $this->connected) return null;
         return $this->instance->get($key);
     }
 
+    #[\Override]
     public function exists(string $key): bool {
         if (false === $this->connected || $this->config->getValue('debug', false)) return false;
         return (bool) $this->instance->exists($key);

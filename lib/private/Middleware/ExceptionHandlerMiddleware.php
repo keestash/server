@@ -35,6 +35,7 @@ final readonly class ExceptionHandlerMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $this->exceptionHandlerService->registerHandler(
             (string) $request->getAttribute(IRequest::ATTRIBUTE_NAME_REQUEST_ID, 'unknown request id')

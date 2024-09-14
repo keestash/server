@@ -28,6 +28,7 @@ class GetTextTest extends TestCase {
 
     private IL10N $translator;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->translator = $this->getService(IL10N::class);

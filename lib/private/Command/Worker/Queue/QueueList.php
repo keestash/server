@@ -32,23 +32,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class QueueList extends KeestashCommand {
 
-    private IQueueService    $queueService;
-    private IDateTimeService $dateTimeService;
-
     public function __construct(
-        IQueueService      $queueService
-        , IDateTimeService $dateTimeService
+        private readonly IQueueService      $queueService
+        , private readonly IDateTimeService $dateTimeService
     ) {
         parent::__construct();
-        $this->queueService    = $queueService;
-        $this->dateTimeService = $dateTimeService;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("worker:queue:list")
             ->setDescription("lists the current queue entries");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $queue = $this->queueService->getQueue(true);
 

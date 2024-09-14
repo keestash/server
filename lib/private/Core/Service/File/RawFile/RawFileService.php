@@ -34,10 +34,8 @@ use KSP\Core\Service\File\RawFile\IRawFileService;
 
 class RawFileService implements IRawFileService {
 
-    private IMimeTypeService $mimeTypeService;
-
-    public function __construct(IMimeTypeService $mimeTypeService) {
-        $this->mimeTypeService = $mimeTypeService;
+    public function __construct(private readonly IMimeTypeService $mimeTypeService)
+    {
     }
 
     /**
@@ -45,6 +43,7 @@ class RawFileService implements IRawFileService {
      * @return string
      * @throws KeestashException
      */
+    #[\Override]
     public function getMimeType(string $path): string {
         $path = realpath($path);
         if (false === $path) {
@@ -73,10 +72,11 @@ class RawFileService implements IRawFileService {
      * @throws IndexOutOfBoundsException
      * @throws UnknownExtensionException
      */
+    #[\Override]
     public function getFileExtensions(string $path): array {
         try {
             $mimeType = $this->getMimeType($path);
-        } catch (KeestashException $exception) {
+        } catch (KeestashException) {
             return [];
         }
         return $this->mimeTypeService->getExtension($mimeType);
@@ -88,6 +88,7 @@ class RawFileService implements IRawFileService {
      * @return IUniformResourceIdentifier
      * @throws FileNotExistsException
      */
+    #[\Override]
     public function stringToUri(string $path, bool $strict = true): IUniformResourceIdentifier {
 
         if (true === $strict) {
@@ -109,6 +110,7 @@ class RawFileService implements IRawFileService {
      * @throws FileNotCreatedException
      * @throws FileNotFoundException
      */
+    #[\Override]
     public function stringToBase64(string $path, bool $rawBase64 = false): string {
 
         $content = @file_get_contents($path);

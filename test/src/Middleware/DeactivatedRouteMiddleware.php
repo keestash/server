@@ -36,6 +36,7 @@ class DeactivatedRouteMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $this->logger->info(
             'deactivated route called'

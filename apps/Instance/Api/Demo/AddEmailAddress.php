@@ -47,6 +47,7 @@ final readonly class AddEmailAddress implements RequestHandlerInterface {
      * @throws ValidationFailedException
      * @throws RowNotInsertedException
      */
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $email      = $parameters['email'] ?? '';

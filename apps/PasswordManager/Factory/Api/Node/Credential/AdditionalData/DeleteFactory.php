@@ -31,6 +31,7 @@ use Psr\Container\ContainerInterface;
 
 class DeleteFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

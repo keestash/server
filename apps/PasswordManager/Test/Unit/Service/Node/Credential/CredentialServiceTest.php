@@ -41,6 +41,7 @@ class CredentialServiceTest extends TestCase {
     private NodeEncryptionService $nodeEncryptionService;
     private NodeRepository        $nodeRepository;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->credentialService     = $this->getServiceManager()->get(CredentialService::class);

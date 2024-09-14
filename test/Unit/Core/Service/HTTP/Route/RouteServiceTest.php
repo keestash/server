@@ -28,6 +28,7 @@ class RouteServiceTest extends TestCase {
 
     private IRouteService $routeService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->routeService = $this->getService(IRouteService::class);

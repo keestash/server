@@ -37,6 +37,7 @@ readonly class UserState implements IUserState {
     ) {
     }
 
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
@@ -44,10 +45,12 @@ readonly class UserState implements IUserState {
     /**
      * @return IUser
      */
+    #[\Override]
     public function getUser(): IUser {
         return $this->user;
     }
 
+    #[\Override]
     public function getState(): UserStateName {
         return $this->state;
     }
@@ -55,6 +58,7 @@ readonly class UserState implements IUserState {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getValidFrom(): DateTimeInterface {
         return $this->validFrom;
     }
@@ -62,6 +66,7 @@ readonly class UserState implements IUserState {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -69,6 +74,7 @@ readonly class UserState implements IUserState {
     /**
      * @return string|null
      */
+    #[\Override]
     public function getStateHash(): ?string {
         return $this->stateHash;
     }

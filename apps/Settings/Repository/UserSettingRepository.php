@@ -48,6 +48,7 @@ class UserSettingRepository implements IUserSettingRepository {
      * @return void
      * @throws SettingsException
      */
+    #[\Override]
     public function add(UserSetting $userSetting): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -77,6 +78,7 @@ class UserSettingRepository implements IUserSettingRepository {
      * @return void
      * @throws SettingNotDeletedException
      */
+    #[\Override]
     public function remove(UserSetting $userSetting): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -101,6 +103,7 @@ class UserSettingRepository implements IUserSettingRepository {
      * @throws SettingNotFoundException
      * @throws SettingsException
      */
+    #[\Override]
     public function get(string $key, IUser $user): UserSetting {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -138,6 +141,7 @@ class UserSettingRepository implements IUserSettingRepository {
         }
     }
 
+    #[\Override]
     public function getAll(): ArrayList {
         try {
             $list = new ArrayList();

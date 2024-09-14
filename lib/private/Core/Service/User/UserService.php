@@ -59,10 +59,12 @@ final readonly class UserService implements IUserService {
     ) {
     }
 
+    #[\Override]
     public function verifyPassword(string $password, string $hash): bool {
         return true === password_verify($password, $hash);
     }
 
+    #[\Override]
     public function passwordHasMinimumRequirements(string $password): bool {
         $passwordLength = strlen($password);
 
@@ -70,30 +72,32 @@ final readonly class UserService implements IUserService {
 
         // minimum 1 number
         /** @phpstan-ignore-next-line */
-        if (strlen(preg_replace('/([^0-9]*)/', '', $password)) < 1) return false;
+        if (strlen((string) preg_replace('/([^0-9]*)/', '', $password)) < 1) return false;
 
         /** @phpstan-ignore-next-line */
-        if (strlen(preg_replace('/([^a-zA-Z]*)/', '', $password)) < 1) return false;
+        if (strlen((string) preg_replace('/([^a-zA-Z]*)/', '', $password)) < 1) return false;
 
         // Check the number of lower case letters in the password
         /** @phpstan-ignore-next-line */
-        if (strlen(preg_replace('/([^a-z]*)/', '', $password)) < 1) return false;
+        if (strlen((string) preg_replace('/([^a-z]*)/', '', $password)) < 1) return false;
 
         // Check the number of upper case letters in the password
         /** @phpstan-ignore-next-line */
-        if (strlen(preg_replace('/([^A-Z]*)/', '', $password)) < 1) return false;
+        if (strlen((string) preg_replace('/([^A-Z]*)/', '', $password)) < 1) return false;
 
         // Check the minimum number of symbols in the password.
         /** @phpstan-ignore-next-line */
-        if (strlen(preg_replace('/([a-zA-Z0-9]*)/', '', $password)) < 1) return false;
+        if (strlen((string) preg_replace('/([a-zA-Z0-9]*)/', '', $password)) < 1) return false;
 
         return true;
     }
 
+    #[\Override]
     public function validEmail(string $email): bool {
         return false !== filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
+    #[\Override]
     public function validWebsite(string $email): bool {
         return false !== filter_var($email, FILTER_VALIDATE_URL);
     }
@@ -101,6 +105,7 @@ final readonly class UserService implements IUserService {
     /**
      * @return IUser
      */
+    #[\Override]
     public function getSystemUser(): IUser {
         $user = new User();
         $user->setName((string) $this->legacy->getMetaData()->get("name"));
@@ -131,6 +136,7 @@ final readonly class UserService implements IUserService {
     /**
      * @return IUser
      */
+    #[\Override]
     public function getDemoUser(): IUser {
         $user = new User();
         $user->setName(IUser::DEMO_USER_NAME);
@@ -156,10 +162,12 @@ final readonly class UserService implements IUserService {
         return $user;
     }
 
+    #[\Override]
     public function getRandomHash(): string {
         return hash("sha256", uniqid("", true));
     }
 
+    #[\Override]
     public function hashPassword(string $plain): string {
         /** @var string|false|null $hashed */
         $hashed = password_hash($plain, PASSWORD_BCRYPT);
@@ -174,6 +182,7 @@ final readonly class UserService implements IUserService {
      * @return IUser
      * @throws TypeError
      */
+    #[\Override]
     public function toUser(array $userArray): IUser {
         $user = new User();
         $user->setId((int) $userArray['id']);
@@ -209,6 +218,7 @@ final readonly class UserService implements IUserService {
         return $user;
     }
 
+    #[\Override]
     public function toNewUser(array $userArray): IUser {
         $user = new User();
         $user->setCreateTs(new DateTime());
@@ -254,6 +264,7 @@ final readonly class UserService implements IUserService {
      * @param string $passwordRepeat
      * @return ArrayList
      */
+    #[\Override]
     public function validatePasswords(string $password, string $passwordRepeat): ArrayList {
         $resultList = new ArrayList();
         if (true === $this->stringService->isEmpty($password)) {
@@ -280,6 +291,7 @@ final readonly class UserService implements IUserService {
      * @param IUser $user
      * @return ArrayList
      */
+    #[\Override]
     public function validateNewUser(IUser $user): ArrayList {
         $result = new ArrayList();
         if (true === $this->stringService->isEmpty($user->getFirstName())) {
@@ -331,10 +343,12 @@ final readonly class UserService implements IUserService {
         return false;
     }
 
+    #[\Override]
     public function isDisabled(?IUser $user): bool {
         return null === $user || true === $user->isLocked();
     }
 
+    #[\Override]
     public function isSystemUser(IUser $user): bool {
         return $user->getId() === IUser::SYSTEM_USER_ID;
     }

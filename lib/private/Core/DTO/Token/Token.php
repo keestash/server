@@ -34,6 +34,7 @@ class Token implements IToken {
     private string            $name;
     private IUser             $user;
 
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
@@ -42,6 +43,7 @@ class Token implements IToken {
         $this->id = $id;
     }
 
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
@@ -50,6 +52,7 @@ class Token implements IToken {
         $this->name = $name;
     }
 
+    #[\Override]
     public function getUser(): IUser {
         return $this->user;
     }
@@ -58,11 +61,13 @@ class Token implements IToken {
         $this->user = $user;
     }
 
+    #[\Override]
     public function equals(IToken $token): bool {
         $string = new StringClass($token->getValue());
         return $string->equals($this->getValue());
     }
 
+    #[\Override]
     public function getValue(): string {
         return $this->value;
     }
@@ -75,15 +80,18 @@ class Token implements IToken {
         $this->timestamp = $createTs;
     }
 
+    #[\Override]
     public function valid(): bool {
         return false === $this->expired();
     }
 
+    #[\Override]
     public function expired(): bool {
 //        return $this->getCreateTs()->getTimestamp() - 0; // TODO implement
         return false;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->timestamp;
     }
@@ -95,6 +103,7 @@ class Token implements IToken {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

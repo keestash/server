@@ -44,6 +44,7 @@ class CreateSystemUser extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("keestash:create-system-user")
             ->setDescription("creates the system user")
@@ -55,6 +56,7 @@ class CreateSystemUser extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force         = (bool) $input->getOption(CreateSystemUser::OPTION_NAME_FORCE);
         $systemUser    = $this->userService->getSystemUser();

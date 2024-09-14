@@ -35,6 +35,7 @@ final readonly class Remove implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $shareId    = $parameters["shareId"] ?? null;

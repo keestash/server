@@ -38,11 +38,13 @@ class Verify extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName('keestash:response-codes:verify')
             ->setDescription('verifies response codes are all valid and unique');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $responseCodes = $this->config

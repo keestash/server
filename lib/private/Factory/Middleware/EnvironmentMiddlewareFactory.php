@@ -23,13 +23,13 @@ namespace Keestash\Factory\Middleware;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Middleware\EnvironmentMiddleware;
-use KSA\Settings\Repository\SettingsRepository;
 use KSA\Settings\Service\ISettingsService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
 class EnvironmentMiddlewareFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

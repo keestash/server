@@ -30,18 +30,22 @@ class GetText implements IL10N {
 
     }
 
+    #[\Override]
     public function translate(string $text): string {
         return $text;
     }
 
+    #[\Override]
     public function localize(string $text): string {
         return $text;
     }
 
+    #[\Override]
     public function getLanguageCode(): string {
         return "de-DE";
     }
 
+    #[\Override]
     public function getLocaleCode(): string {
         return "de-DE";
     }

@@ -42,6 +42,7 @@ class Routes extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName('keestash:list-routes')
             ->setDescription('lists all routes and their corresponding info')
@@ -62,6 +63,7 @@ class Routes extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $paths              = (array) $input->getOption(Routes::OPTION_NAME_PATH);
@@ -122,7 +124,7 @@ class Routes extends KeestashCommand {
         }
 
         foreach ($filterPaths as $filterPath) {
-            if (true === str_contains($path, $filterPath)) {
+            if (true === str_contains($path, (string) $filterPath)) {
                 return true;
             }
         }

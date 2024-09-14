@@ -40,10 +40,12 @@ class FileService implements IFileService {
     ) {
     }
 
+    #[\Override]
     public function toFile(UploadedFileInterface $file): IFile {
         return $this->fileService->toFile($file);
     }
 
+    #[\Override]
     public function validateUploadedFile(IFile $file): IResult {
         $result = new Result();
         /** @var UploadedFile|IFile $file */
@@ -69,9 +71,7 @@ class FileService implements IFileService {
             $result->add(
                 sprintf('file %s has a total size of %s and is larger than allowed (%s)'
                     , $tmpName
-                    , null === $size
-                        ? 'null'
-                        : $size
+                    , $size ?? 'null'
                     , $maxSize
                 )
             );
@@ -84,14 +84,17 @@ class FileService implements IFileService {
         return $result;
     }
 
+    #[\Override]
     public function toCoreFile(IFile $file): ICoreFile {
         return $this->fileService->toCoreFile($file);
     }
 
+    #[\Override]
     public function moveUploadedFile(ICoreFile $file): bool {
         return true;
     }
 
+    #[\Override]
     public function removeUploadedFile(ICoreFile $file): bool {
         return $this->fileService->removeUploadedFile($file);
     }

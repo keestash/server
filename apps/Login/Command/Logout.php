@@ -44,11 +44,13 @@ class Logout extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("login:logout")
             ->setDescription("logs out a user");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a credential");

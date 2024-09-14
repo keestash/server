@@ -30,8 +30,8 @@ use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
 
 class CredentialChangedEvent extends Event {
 
-    private Passwords $passwords;
-    private Breaches  $breaches;
+    private readonly Passwords $passwords;
+    private readonly Breaches  $breaches;
 
     public function __construct(
         Credential             $credential
@@ -65,10 +65,12 @@ class CredentialChangedEvent extends Event {
     /**
      * @return int
      */
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'passwords'  => $this->getPasswords()

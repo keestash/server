@@ -41,6 +41,7 @@ final readonly class KeestashHeaderMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
 
         if (true === $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC, false)) {

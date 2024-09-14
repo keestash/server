@@ -39,6 +39,7 @@ class WorkerLocker extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("worker:lock")
             ->setDescription("locks or unlocks the worker")
@@ -49,6 +50,7 @@ class WorkerLocker extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $mode          = (string) $input->getArgument(WorkerLocker::ARGUMENT_NAME_MODE);
         $workerLogFile = $this->dataService->getPath() . '/' . WorkerRunner::WORKER_LOG_FILE;

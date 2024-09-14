@@ -39,12 +39,14 @@ class CredentialService implements ICredentialService {
     ) {
     }
 
+    #[\Override]
     public function createCredential(IKeyHolder $keyHolder): ICredential {
         // since users exist on short term in tests, we can just create
         // them on the fly
         return $this->createCredentialFromDerivation($keyHolder);
     }
 
+    #[\Override]
     public function createCredentialFromDerivation(IKeyHolder $keyHolder): ICredential {
         return $this->derivedCredentialService->createCredentialFromDerivation($keyHolder);
     }

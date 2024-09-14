@@ -25,6 +25,7 @@ use KSP\Core\Service\HTTP\Route\IRouteService;
 
 class RouteService implements IRouteService {
 
+    #[\Override]
     public function routeToAppId(string $route): string {
         $route = str_replace("/", "", $route);
         $route = str_replace("_", "", $route);

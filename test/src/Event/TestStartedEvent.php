@@ -35,6 +35,7 @@ class TestStartedEvent extends Event {
     /**
      * @return int
      */
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
@@ -46,6 +47,7 @@ class TestStartedEvent extends Event {
         return $this->dateTime;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
         ];

@@ -33,6 +33,7 @@ class Stamp implements IStamp {
     /**
      * @return string
      */
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
@@ -44,10 +45,7 @@ class Stamp implements IStamp {
         $this->name = $name;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setValue($value): void {
+    public function setValue(mixed $value): void {
         $this->value = $value;
     }
 
@@ -61,6 +59,7 @@ class Stamp implements IStamp {
     /**
      * @return mixed
      */
+    #[\Override]
     public function getValue() {
         return $this->value;
     }
@@ -68,6 +67,7 @@ class Stamp implements IStamp {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -75,6 +75,7 @@ class Stamp implements IStamp {
     /**
      * @return array
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'value'       => $this->getValue()

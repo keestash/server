@@ -47,6 +47,7 @@ class ActivityRepository implements IActivityRepository {
      * @return IActivity
      * @throws ActivityException|ActivityNotFoundException
      */
+    #[\Override]
     public function get(string $activityId): IActivity {
         try {
             $queryBuilder  = $this->backend->getConnection()->createQueryBuilder();
@@ -95,6 +96,7 @@ class ActivityRepository implements IActivityRepository {
         return $activity;
     }
 
+    #[\Override]
     public function insert(IActivity $activity): IActivity {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -157,6 +159,7 @@ class ActivityRepository implements IActivityRepository {
         }
     }
 
+    #[\Override]
     public function getAll(string $appId, string $referenceKey): ArrayList {
         $list = new ArrayList();
         try {
@@ -246,6 +249,7 @@ class ActivityRepository implements IActivityRepository {
         return $list;
     }
 
+    #[\Override]
     public function remove(string $appId, string $referenceKey): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->delete('activity')

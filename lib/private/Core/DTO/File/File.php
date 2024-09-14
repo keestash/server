@@ -39,6 +39,7 @@ class File implements IFile {
     private IUser             $owner;
     private DateTimeInterface $createTs;
 
+    #[\Override]
     public function getFullPath(): string {
         $name      = $this->getName();
         $dir       = $this->getDirectory();
@@ -53,6 +54,7 @@ class File implements IFile {
 
     }
 
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
@@ -61,6 +63,7 @@ class File implements IFile {
         $this->name = $name;
     }
 
+    #[\Override]
     public function getDirectory(): string {
         return $this->directory;
     }
@@ -69,6 +72,7 @@ class File implements IFile {
         $this->directory = $directory;
     }
 
+    #[\Override]
     public function getExtension(): string {
         return $this->extension;
     }
@@ -77,6 +81,7 @@ class File implements IFile {
         $this->extension = $extension;
     }
 
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
@@ -85,6 +90,7 @@ class File implements IFile {
         $this->id = $id;
     }
 
+    #[\Override]
     public function getTemporaryPath(): ?string {
         return $this->temporaryPath;
     }
@@ -93,6 +99,7 @@ class File implements IFile {
         $this->temporaryPath = $temporaryPath;
     }
 
+    #[\Override]
     public function getMimeType(): string {
         return $this->mimeType;
     }
@@ -101,6 +108,7 @@ class File implements IFile {
         $this->mimeType = $mimeType;
     }
 
+    #[\Override]
     public function getHash(): string {
         return $this->hash;
     }
@@ -109,6 +117,7 @@ class File implements IFile {
         $this->hash = $hash;
     }
 
+    #[\Override]
     public function getSize(): int {
         return $this->size;
     }
@@ -117,6 +126,7 @@ class File implements IFile {
         $this->size = $size;
     }
 
+    #[\Override]
     public function getOwner(): IUser {
         return $this->owner;
     }
@@ -125,6 +135,7 @@ class File implements IFile {
         $this->owner = $owner;
     }
 
+    #[\Override]
     public function getContent(): ?string {
         return $this->content;
     }
@@ -133,6 +144,7 @@ class File implements IFile {
         $this->content = $content;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -149,6 +161,7 @@ class File implements IFile {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

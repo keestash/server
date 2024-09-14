@@ -42,21 +42,8 @@ use Psr\Log\LoggerInterface;
 
 class TokenRepository implements ITokenRepository {
 
-    private IUserRepository  $userRepository;
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface  $logger;
-
-    public function __construct(
-        IBackend           $backend
-        , IUserRepository  $userRepository
-        , IDateTimeService $dateTimeService
-        , LoggerInterface  $logger
-    ) {
-        $this->userRepository  = $userRepository;
-        $this->dateTimeService = $dateTimeService;
-        $this->backend         = $backend;
-        $this->logger          = $logger;
+    public function __construct(private readonly IBackend           $backend, private readonly IUserRepository  $userRepository, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface  $logger)
+    {
     }
 
     public function get(int $id): ?IToken {
@@ -113,6 +100,7 @@ class TokenRepository implements ITokenRepository {
      * @return IToken
      * @throws TokenNotFoundException
      */
+    #[\Override]
     public function getByValue(string $hash): IToken {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -174,6 +162,7 @@ class TokenRepository implements ITokenRepository {
      * @return IToken
      * @throws TokenNotCreatedException
      */
+    #[\Override]
     public function add(IToken $token): IToken {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -211,6 +200,7 @@ class TokenRepository implements ITokenRepository {
      * @return IToken
      * @throws TokenNotDeletedException
      */
+    #[\Override]
     public function remove(IToken $token): IToken {
         try {
 
@@ -231,6 +221,7 @@ class TokenRepository implements ITokenRepository {
     /**
      * @throws TokenNotDeletedException
      */
+    #[\Override]
     public function removeAll(): void {
         try {
 
@@ -250,6 +241,7 @@ class TokenRepository implements ITokenRepository {
      * @return void
      * @throws TokenNotDeletedException
      */
+    #[\Override]
     public function removeForUser(IUser $user): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -265,6 +257,7 @@ class TokenRepository implements ITokenRepository {
         }
     }
 
+    #[\Override]
     public function getOlderThan(DateTimeInterface $reference): ArrayList {
         $list         = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

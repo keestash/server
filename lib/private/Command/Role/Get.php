@@ -33,20 +33,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Get extends KeestashCommand {
 
-    public const ARGUMENT_NAME_ROLE_IDENTIFIER = 'role-identifier';
-
-    private RBACRepositoryInterface $rbacRepository;
-    private IDateTimeService        $dateTimeService;
+    public const string ARGUMENT_NAME_ROLE_IDENTIFIER = 'role-identifier';
 
     public function __construct(
-        RBACRepositoryInterface $rbacRepository
-        , IDateTimeService      $dateTimeService
+        private readonly RBACRepositoryInterface $rbacRepository
+        , private readonly IDateTimeService      $dateTimeService
     ) {
         parent::__construct();
-        $this->rbacRepository  = $rbacRepository;
-        $this->dateTimeService = $dateTimeService;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("role:get")
             ->setDescription("lists one, a list or all roles including permissions")
@@ -57,6 +53,7 @@ class Get extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $roleIdentifier = (array) $input->getArgument(Get::ARGUMENT_NAME_ROLE_IDENTIFIER);
         $allRoles       = $this->rbacRepository->getAllRoles();

@@ -51,6 +51,7 @@ class DataServiceBuilder implements IDataServiceBuilder {
 
     }
 
+    #[\Override]
     public function build(): IDataService {
         return new DataService(
             $this->appId

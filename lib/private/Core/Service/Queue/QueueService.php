@@ -35,23 +35,11 @@ use Psr\Log\LoggerInterface;
 
 class QueueService implements IQueueService {
 
-    private IQueueRepository $queueRepository;
-    private IDateTimeService $dateTimeService;
-    private IBase64Service   $base64Service;
-    private LoggerInterface  $logger;
-
-    public function __construct(
-        IQueueRepository   $queueRepository
-        , IDateTimeService $dateTimeService
-        , IBase64Service   $base64Service
-        , LoggerInterface  $logger
-    ) {
-        $this->queueRepository = $queueRepository;
-        $this->dateTimeService = $dateTimeService;
-        $this->base64Service   = $base64Service;
-        $this->logger          = $logger;
+    public function __construct(private readonly IQueueRepository   $queueRepository, private readonly IDateTimeService $dateTimeService, private readonly IBase64Service   $base64Service, private readonly LoggerInterface  $logger)
+    {
     }
 
+    #[\Override]
     public function getQueue(bool $forceAll = false): ArrayList {
 
         $messageList = new ArrayList();
@@ -105,6 +93,7 @@ class QueueService implements IQueueService {
      * @throws JsonException
      * @throws NoRowsFoundException
      */
+    #[\Override]
     public function getByUuid(string $uuid): Message {
         try {
             $messageArray = $this->queueRepository->getByUuid($uuid);
@@ -146,10 +135,12 @@ class QueueService implements IQueueService {
         }
     }
 
+    #[\Override]
     public function remove(string $uuid): void {
         $this->queueRepository->deleteByUuid($uuid);
     }
 
+    #[\Override]
     public function updateAttempts(string $uuid, int $attempts): void {
         $this->queueRepository->updateAttempts($uuid, $attempts);
     }

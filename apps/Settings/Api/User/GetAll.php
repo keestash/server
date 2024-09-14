@@ -30,12 +30,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class GetAll implements RequestHandlerInterface {
 
-    private IUserRepository $userRepository;
-
-    public function __construct(IUserRepository $userRepository) {
-        $this->userRepository = $userRepository;
+    public function __construct(private readonly IUserRepository $userRepository)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         return new JsonResponse(
             [

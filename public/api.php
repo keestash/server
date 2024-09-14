@@ -62,38 +62,29 @@ use Psr\Container\ContainerInterface;
             $middleware = $middleware->toArray();
         }
 
-        switch ($method) {
-            case IVerb::GET:
-                $app->get(
-                    $path
-                    , $middleware
-                    , $name
-                );
-                break;
-            case IVerb::POST:
-                $app->post(
-                    $path
-                    , $middleware
-                    , $name
-                );
-                break;
-            case IVerb::PUT:
-                $app->put(
-                    $path
-                    , $middleware
-                    , $name
-                );
-                break;
-            case IVerb::DELETE:
-                $app->delete(
-                    $path
-                    , $middleware
-                    , $name
-                );
-                break;
-            default:
-                throw new Exception('unknown method ' . $method);
-        }
+        match ($method) {
+            IVerb::GET => $app->get(
+                $path
+                , $middleware
+                , $name
+            ),
+            IVerb::POST => $app->post(
+                $path
+                , $middleware
+                , $name
+            ),
+            IVerb::PUT => $app->put(
+                $path
+                , $middleware
+                , $name
+            ),
+            IVerb::DELETE => $app->delete(
+                $path
+                , $middleware
+                , $name
+            ),
+            default => throw new Exception('unknown method ' . $method),
+        };
     }
     $app->run();
 })();

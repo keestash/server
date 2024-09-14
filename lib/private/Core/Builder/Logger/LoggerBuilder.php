@@ -99,6 +99,7 @@ class LoggerBuilder implements ILoggerBuilder {
         return $instance;
     }
 
+    #[\Override]
     public function build(): LoggerInterface {
         $logger = new Logger(ILoggerManager::FILE_LOGGER);
 

@@ -35,11 +35,13 @@ class ListAll extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("app:list")
             ->setDescription("lists all installed apps");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $apps      = $this->loaderService->getApps();
         $tableRows = [];

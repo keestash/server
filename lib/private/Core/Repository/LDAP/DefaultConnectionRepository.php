@@ -29,26 +29,32 @@ use KSP\Core\Repository\LDAP\IConnectionRepository;
 
 class DefaultConnectionRepository implements IConnectionRepository {
 
+    #[\Override]
     public function add(IConnection $connection): void {
         throw new ConnectionNotCreatedException();
     }
 
+    #[\Override]
     public function getConnection(string $host): IConnection {
         throw new LDAPException();
     }
 
+    #[\Override]
     public function getActiveConnection(): IConnection {
         throw new LDAPException();
     }
 
+    #[\Override]
     public function getConnectionByUser(IUser $user): IConnection {
         throw new LDAPException();
     }
 
+    #[\Override]
     public function remove(IConnection $connection): void {
         // silence is golden
     }
 
+    #[\Override]
     public function deactivate(IConnection $connection): void {
         // silence is golden
     }

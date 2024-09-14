@@ -32,13 +32,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Reset extends KeestashCommand {
 
     public const ARGUMENT_NAME_UUID = 'uuid';
-    private IQueueService $queueService;
 
-    public function __construct(IQueueService $queueService) {
+    public function __construct(private readonly IQueueService $queueService) {
         parent::__construct();
-        $this->queueService = $queueService;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("worker:queue:reset")
             ->setDescription("resets attempts of a single message or all, if no id is given")
@@ -50,6 +49,7 @@ class Reset extends KeestashCommand {
     }
 
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $uuid   = (array) $input->getArgument(Reset::ARGUMENT_NAME_UUID);
         $answer = true;

@@ -22,32 +22,22 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\App;
 
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use Keestash;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\Phinx\IMigrator;
 
-class InstallerService {
+final readonly class InstallerService {
 
-    private IMigrator      $migrator;
-    private IAppRepository $appRepository;
-    private IJobRepository $jobRepository;
-    private IAppService    $appService;
-
-    public const PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
+    public const int PHINX_MIGRATION_EVERYTHING_WENT_FINE = 0;
 
     public function __construct(
-        IMigrator        $migrator
-        , IAppRepository $appRepository
-        , IJobRepository $jobRepository
-        , IAppService    $appService
+        private IMigrator      $migrator,
+        private IAppRepository $appRepository,
+        private IJobRepository $jobRepository,
+        private IAppService    $appService
     ) {
-        $this->migrator      = $migrator;
-        $this->appRepository = $appRepository;
-        $this->jobRepository = $jobRepository;
-        $this->appService    = $appService;
     }
 
     public function runMigrations(): bool {

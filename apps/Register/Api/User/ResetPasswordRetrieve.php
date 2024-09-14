@@ -43,6 +43,7 @@ class ResetPasswordRetrieve implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $hash = (string) $request->getAttribute('hash');
 

@@ -40,26 +40,32 @@ readonly class ApiLog implements ApiLogInterface {
     ) {
     }
 
+    #[\Override]
     public function getId(): string {
         return $this->id;
     }
 
+    #[\Override]
     public function getRequestId(): string {
         return $this->requestId;
     }
 
+    #[\Override]
     public function getData(): string {
         return $this->data;
     }
 
+    #[\Override]
     public function getStart(): DateTimeInterface {
         return $this->start;
     }
 
+    #[\Override]
     public function getEnd(): DateTimeInterface {
         return $this->end;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -68,6 +74,7 @@ readonly class ApiLog implements ApiLogInterface {
         return (int) abs($this->getEnd()->getTimestamp() - $this->getStart()->getTimestamp());
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [];
     }

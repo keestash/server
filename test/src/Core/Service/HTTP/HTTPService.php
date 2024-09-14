@@ -26,26 +26,32 @@ use KSP\Core\Service\HTTP\IHTTPService;
 
 class HTTPService implements IHTTPService {
 
+    #[\Override]
     public function getBaseURL(bool $withScript = true, bool $forceIndex = false): string {
         return "keestash.test";
     }
 
+    #[\Override]
     public function buildWebRoute(string $base): string {
         return "keestash.test";
     }
 
+    #[\Override]
     public function getBaseAPIURL(): ?string {
         return "keestash.test";
     }
 
+    #[\Override]
     public function getAssetURL(): ?string {
         return "keestash.test";
     }
 
+    #[\Override]
     public function getLoginRoute(): string {
         return "keestash.test";
     }
 
+    #[\Override]
     public function getParsedBaseUrl(bool $withScript = true, bool $forceIndex = false): array {
         return [
             'host' => 'keestash.test'

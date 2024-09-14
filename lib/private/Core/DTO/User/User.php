@@ -54,6 +54,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getLocale(): string {
         return $this->locale;
     }
@@ -61,6 +62,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getLanguage(): string {
         return $this->language;
     }
@@ -82,6 +84,7 @@ class User implements IUser {
     /**
      * @return string|null
      */
+    #[\Override]
     public function getJWT(): ?string {
         return $this->jwt;
     }
@@ -96,6 +99,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getPassword(): string {
         return $this->password;
     }
@@ -111,6 +115,7 @@ class User implements IUser {
      * @param object $object
      * @return bool
      */
+    #[\Override]
     public function equals($object): bool {
         if ($object instanceof IUser) {
             return $this->getId() === $object->getId();
@@ -121,6 +126,7 @@ class User implements IUser {
     /**
      * @return int
      */
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
@@ -135,6 +141,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
@@ -149,6 +156,7 @@ class User implements IUser {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -163,6 +171,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getFirstName(): string {
         return $this->firstName;
     }
@@ -177,6 +186,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getLastName(): string {
         return $this->lastName;
     }
@@ -191,6 +201,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getEmail(): string {
         return $this->email;
     }
@@ -205,6 +216,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getPhone(): string {
         return $this->phone;
     }
@@ -219,6 +231,7 @@ class User implements IUser {
     /**
      * @return string
      */
+    #[\Override]
     public function getWebsite(): string {
         return $this->website;
     }
@@ -230,6 +243,7 @@ class User implements IUser {
         $this->website = $website;
     }
 
+    #[\Override]
     public function getHash(): string {
         return $this->hash;
     }
@@ -238,6 +252,7 @@ class User implements IUser {
         $this->hash = $hash;
     }
 
+    #[\Override]
     public function isLocked(): bool {
         return $this->locked;
     }
@@ -246,6 +261,7 @@ class User implements IUser {
         $this->locked = $locked;
     }
 
+    #[\Override]
     public function isDeleted(): bool {
         return $this->deleted;
     }
@@ -254,6 +270,7 @@ class User implements IUser {
         $this->deleted = $deleted;
     }
 
+    #[\Override]
     public function getRoles(): HashTable {
         return $this->roles;
     }
@@ -265,6 +282,7 @@ class User implements IUser {
     /**
      * @return bool
      */
+    #[\Override]
     public function isLdapUser(): bool {
         return $this->ldapUser;
     }
@@ -284,6 +302,7 @@ class User implements IUser {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return
             [

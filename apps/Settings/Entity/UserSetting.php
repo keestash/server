@@ -46,6 +46,7 @@ class UserSetting extends Setting {
         return $this->user;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return parent::jsonSerialize() + [
                 'user' => $this->getUser()

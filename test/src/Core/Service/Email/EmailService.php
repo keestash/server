@@ -23,40 +23,50 @@ namespace KST\Service\Core\Service\Email;
 use KSP\Core\Service\Email\IEmailService;
 use Psr\Log\LoggerInterface;
 
-class EmailService implements IEmailService {
+final readonly class EmailService implements IEmailService {
 
-    public function __construct(private readonly LoggerInterface $logger) {
+    public function __construct(
+        private LoggerInterface $logger
+    ) {
     }
 
+    #[\Override]
     public function addRecipient(string $name, string $email): void {
         // silence is golden
     }
 
+    #[\Override]
     public function addCarbonCopy(string $name, string $email): void {
         // silence is golden
     }
 
+    #[\Override]
     public function addBlindCarbonCopy(string $name, string $email): void {
         // silence is golden
     }
 
+    #[\Override]
     public function addAttachment(string $path, string $name = ""): void {
         // silence is golden
     }
 
+    #[\Override]
     public function setSubject(string $subject): void {
         // silence is golden
     }
 
+    #[\Override]
     public function send(int $delay = 0): bool {
         $this->logger->debug('I should normally send a mail, but thanks to DI, I was overriden by a stub class and so I did not :)');
         return false;
     }
 
+    #[\Override]
     public function setBody(string $body): void {
         // silence is golden
     }
 
+    #[\Override]
     public function setAlternativeBody(string $body): void {
         // silence is golden
     }

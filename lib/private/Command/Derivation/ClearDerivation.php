@@ -42,6 +42,7 @@ class ClearDerivation extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("derivation:clear")
             ->setDescription("clears a key derivation for a given user")
@@ -52,6 +53,7 @@ class ClearDerivation extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = $input->getArgument(ClearDerivation::ARGUMENT_NAME_USER_ID);
 

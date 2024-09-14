@@ -32,14 +32,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Configuration implements RequestHandlerInterface {
 
-    private Config $config;
-
-    public function __construct(
-        Config $config
-    ) {
-        $this->config = $config;
+    public function __construct(private readonly Config $config)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         return new JsonResponse(
             [

@@ -33,6 +33,7 @@ class UploadFileServiceTest extends TestCase {
 
     public const TMP_TEST_FILE = __DIR__ . '/uploadedfileservicetestfile.txt';
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->fileService = $this->getService(IFileService::class);

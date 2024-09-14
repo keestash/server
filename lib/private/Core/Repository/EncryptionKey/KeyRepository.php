@@ -31,18 +31,8 @@ use Psr\Log\LoggerInterface;
 
 abstract class KeyRepository {
 
-    private IDateTimeService $dateTimeService;
-    private LoggerInterface          $logger;
-    private IBackend         $backend;
-
-    public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
-    ) {
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
-        $this->backend         = $backend;
+    public function __construct(private readonly IBackend           $backend, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface          $logger)
+    {
     }
 
     /**

@@ -31,6 +31,7 @@ class URI implements IUniformResourceIdentifier {
         $this->identifier = $identifier;
     }
 
+    #[\Override]
     public function getIdentifier(): string {
         return $this->identifier;
     }
@@ -42,6 +43,7 @@ class URI implements IUniformResourceIdentifier {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "identifier" => $this->getIdentifier()

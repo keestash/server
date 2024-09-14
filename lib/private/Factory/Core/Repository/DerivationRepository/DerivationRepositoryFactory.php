@@ -32,6 +32,7 @@ use Psr\Log\LoggerInterface;
 
 class DerivationRepositoryFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

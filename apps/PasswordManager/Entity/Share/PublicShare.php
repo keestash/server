@@ -55,6 +55,7 @@ readonly class PublicShare implements IJsonObject {
         return $this->password;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

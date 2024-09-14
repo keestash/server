@@ -61,6 +61,7 @@ class AfterPasswordChanged implements IListener {
      * @throws KeyNotFoundException
      * @throws KeyNotUpdatedException
      */
+    #[\Override]
     public function execute(IEvent $event): void {
         $this->logger->debug('start AfterPasswordChange');
         if ($event->getUpdatedUser()->getPassword() === $event->getUser()->getPassword()) {

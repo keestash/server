@@ -37,10 +37,12 @@ class ApplicationEndedEvent extends Event {
         return $this->request;
     }
 
+    #[\Override]
     public function getPriority(): int {
         return 2;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'priority' => $this->getPriority(),

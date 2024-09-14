@@ -36,11 +36,13 @@ class InstanceData extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("install:instance-data")
             ->setDescription("creates the instance-data");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $hasIdAndHash = $this->installerService->hasIdAndHash();
         if (true === $hasIdAndHash) {

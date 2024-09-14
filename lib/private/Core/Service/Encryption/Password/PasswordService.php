@@ -30,12 +30,10 @@ use KSP\Core\Service\Encryption\Password\IPasswordService;
 
 class PasswordService implements IPasswordService {
 
-    private HashTable      $characterTable;
-    private IStringService $stringService;
+    private readonly HashTable      $characterTable;
 
-    public function __construct(IStringService $stringService) {
+    public function __construct(private readonly IStringService $stringService) {
         $this->characterTable = new HashTable();
-        $this->stringService  = $stringService;
         $this->initCharTable();
     }
 
@@ -43,6 +41,7 @@ class PasswordService implements IPasswordService {
      * @param string $password
      * @return array
      */
+    #[\Override]
     public function findCharacterSet(string $password): array {
         $characterSet = [];
         if (strlen($this->stringService->intersect($password, IPasswordService::DIGITS)) > 0) {
@@ -71,6 +70,7 @@ class PasswordService implements IPasswordService {
      *
      * TODO pay credit to https://stackoverflow.com/questions/1837432/how-to-generate-random-password-with-php
      */
+    #[\Override]
     public function generatePassword(int $length, bool $hasUpperCase, bool $hasLowerCase, bool $hasDigits, bool $hasSpecialChars): Password {
         $password           = new Password();
         $possibleCharacters = "";
@@ -125,6 +125,7 @@ class PasswordService implements IPasswordService {
 
     }
 
+    #[\Override]
     public function measureQuality(IPassword $password): IPassword {
         $entropy = $this->getPasswordEntropy($password);
         $password->setEntropy($entropy);

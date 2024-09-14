@@ -10,6 +10,7 @@ use Psr\Container\ContainerInterface;
 
 class ListAllFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

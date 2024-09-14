@@ -42,11 +42,13 @@ class AddDerivation extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("derivation:add")
             ->setDescription("adds a new derivation for a user");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = $this->askQuestion('user id', $input, $output);
 

@@ -36,6 +36,7 @@ final readonly class Log implements ILog {
     /**
      * @return string
      */
+    #[\Override]
     public function getKey(): string {
         return $this->key;
     }
@@ -43,6 +44,7 @@ final readonly class Log implements ILog {
     /**
      * @return array
      */
+    #[\Override]
     public function getLog(): array {
         return $this->log;
     }
@@ -50,6 +52,7 @@ final readonly class Log implements ILog {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }

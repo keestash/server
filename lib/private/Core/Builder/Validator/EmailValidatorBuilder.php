@@ -56,6 +56,7 @@ class EmailValidatorBuilder implements IValidatorBuilder {
         return $instance;
     }
 
+    #[\Override]
     public function build(): Validator {
         return new Validator(
             [

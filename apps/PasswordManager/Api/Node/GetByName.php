@@ -47,6 +47,7 @@ class GetByName implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $name = $request->getAttribute('name');
         /** @var IToken $token */

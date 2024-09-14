@@ -35,6 +35,7 @@ class OrganizationService implements IOrganizationService {
     ) {
     }
 
+    #[\Override]
     public function add(IOrganization $organization): IOrganization {
         $organization = $this->organizationRepository->insert($organization);
         $this->eventService->execute(

@@ -47,6 +47,7 @@ final readonly class CollectorService implements ICollectorService {
      * @param string $helpText    Descriptive text to assist understanding of the metric
      * @throws MetricsRegistrationException
      */
+    #[\Override]
     public function addCounter(
         string $name,
         int    $incrementBy = 1,
@@ -76,6 +77,7 @@ final readonly class CollectorService implements ICollectorService {
      * @param string $helpText Descriptive text providing assistance in understanding the metric
      * @throws MetricsRegistrationException
      */
+    #[\Override]
     public function addGauge(
         string $name,
         float  $value,
@@ -105,6 +107,7 @@ final readonly class CollectorService implements ICollectorService {
      * @param string  $helpText Descriptive text aiding in the metric's understanding
      * @throws MetricsRegistrationException
      */
+    #[\Override]
     public function addHistogram(
         string $name,
         float  $value,
@@ -131,6 +134,7 @@ final readonly class CollectorService implements ICollectorService {
      *
      * @return RegistryInterface
      */
+    #[\Override]
     public function getRegistry(): RegistryInterface {
         return $this->registry;
     }
@@ -141,6 +145,7 @@ final readonly class CollectorService implements ICollectorService {
      *
      * @return string
      */
+    #[\Override]
     public function getNamespace(): string {
         return $this->namespace;
     }
@@ -150,6 +155,7 @@ final readonly class CollectorService implements ICollectorService {
      *
      * @return string
      */
+    #[\Override]
     public function getPrefix(): string {
         return $this->prefix;
     }

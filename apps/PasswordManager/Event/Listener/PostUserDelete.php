@@ -29,20 +29,11 @@ use KSP\Core\Service\Event\Listener\IListener;
 
 class PostUserDelete implements IListener {
 
-    private CommentRepository $commentRepository;
-    private NodeRepository $nodeRepository;
-    private IDataService   $dataManager;
-
-    public function __construct(
-        CommentRepository $commentRepository
-        , NodeRepository  $nodeRepository
-        , IDataService    $dataManager
-    ) {
-        $this->commentRepository = $commentRepository;
-        $this->nodeRepository    = $nodeRepository;
-        $this->dataManager       = $dataManager;
+    public function __construct(private readonly CommentRepository $commentRepository, private readonly NodeRepository  $nodeRepository, private readonly IDataService    $dataManager)
+    {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
 //        /** @var string $type */
 //        $type = $parameters[0][0];

@@ -50,12 +50,14 @@ class ActivateUser extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("register:user:activate")
             ->setDescription("activates a given user")
             ->addArgument('userId', InputArgument::REQUIRED, "whether the user is locked");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = (string) $input->getArgument('userId');
         $user   = $this->userRepository->getUserById($userId);

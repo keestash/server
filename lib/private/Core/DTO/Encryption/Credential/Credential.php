@@ -38,6 +38,7 @@ class Credential implements ICredential {
     private DateTimeInterface $createTs;
     private IKeyHolder        $keyHolder;
 
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
@@ -46,6 +47,7 @@ class Credential implements ICredential {
         $this->id = $id;
     }
 
+    #[\Override]
     public function getSecret(): string {
         return $this->secret;
     }
@@ -54,6 +56,7 @@ class Credential implements ICredential {
         $this->secret = $secret;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -62,6 +65,7 @@ class Credential implements ICredential {
         $this->createTs = $createTs;
     }
 
+    #[\Override]
     public function getKeyHolder(): IKeyHolder {
         return $this->keyHolder;
     }
@@ -78,6 +82,7 @@ class Credential implements ICredential {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

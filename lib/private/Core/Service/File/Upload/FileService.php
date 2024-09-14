@@ -36,21 +36,15 @@ use Symfony\Component\Mime\MimeTypes;
 
 class FileService implements IFileService {
 
-    private IniConfigService $iniConfigService;
-    private LoggerInterface  $logger;
-
-    public function __construct(
-        IniConfigService  $iniConfigService
-        , LoggerInterface $logger
-    ) {
-        $this->iniConfigService = $iniConfigService;
-        $this->logger           = $logger;
+    public function __construct(private readonly IniConfigService  $iniConfigService, private readonly LoggerInterface $logger)
+    {
     }
 
     /**
      * @param UploadedFileInterface $file
      * @return IFile
      */
+    #[\Override]
     public function toFile(UploadedFileInterface $file): IFile {
         $uri = (string) $file->getStream()->getMetadata('uri');
 
@@ -67,6 +61,7 @@ class FileService implements IFileService {
      * @param IFile $file
      * @return IResult
      */
+    #[\Override]
     public function validateUploadedFile(IFile $file): IResult {
         $result = new Result();
         /** @var UploadedFile|IFile $file */
@@ -99,9 +94,7 @@ class FileService implements IFileService {
             $result->add(
                 sprintf('file %s has a total size of %s and is larger than allowed (%s)'
                     , $tmpName
-                    , null === $size
-                        ? 'null'
-                        : $size
+                    , $size ?? 'null'
                     , $maxSize
                 )
             );
@@ -118,6 +111,7 @@ class FileService implements IFileService {
      * @param IFile $file
      * @return ICoreFile
      */
+    #[\Override]
     public function toCoreFile(IFile $file): ICoreFile {
         $mimeTypes  = new MimeTypes();
         $extensions = $mimeTypes->getExtensions($file->getType());
@@ -138,6 +132,7 @@ class FileService implements IFileService {
      * @param ICoreFile $file
      * @return bool
      */
+    #[\Override]
     public function moveUploadedFile(ICoreFile $file): bool {
         $temporaryPath = $file->getTemporaryPath();
         if (null === $temporaryPath) return false;
@@ -148,6 +143,7 @@ class FileService implements IFileService {
      * @param ICoreFile $file
      * @return bool
      */
+    #[\Override]
     public function removeUploadedFile(ICoreFile $file): bool {
         return @unlink($file->getFullPath());
     }

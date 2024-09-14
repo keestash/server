@@ -29,6 +29,7 @@ use Psr\Log\LoggerInterface;
 
 class IsActiveFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

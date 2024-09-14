@@ -34,6 +34,7 @@ class VerificationTest extends TestCase {
 
     private IVerificationService $verificationService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->verificationService = $this->getService(IVerificationService::class);

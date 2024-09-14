@@ -32,6 +32,7 @@ class UserRepositoryServiceTest extends TestCase {
     private IUserRepositoryService $userRepositoryService;
     private IUserService           $userService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->userRepositoryService = $this->getService(IUserRepositoryService::class);

@@ -45,6 +45,7 @@ final readonly class ApiLogService implements ApiLogServiceInterface {
      * @param ServerRequestInterface $request
      * @return void
      */
+    #[\Override]
     public function log(ServerRequestInterface $request): void {
         $isPublic = $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC);
 
@@ -74,6 +75,7 @@ final readonly class ApiLogService implements ApiLogServiceInterface {
         $this->logger->debug('api request log created', ['log' => $logged]);
     }
 
+    #[\Override]
     public function filterUser(IUser $user, ArrayList $logs): ArrayList {
         $list = new ArrayList();
 

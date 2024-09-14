@@ -34,6 +34,7 @@ abstract class TestCase extends \KST\TestCase {
     private IStringMaskService  $stringMaskService;
     private LoggerInterface     $logger;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->application       = $this->getService(Application::class);
@@ -57,38 +58,29 @@ abstract class TestCase extends \KST\TestCase {
                 $middleware = $middleware->toArray();
             }
 
-            switch ($method) {
-                case IVerb::GET:
-                    $this->application->get(
-                        $path
-                        , $middleware
-                        , $name
-                    );
-                    break;
-                case IVerb::POST:
-                    $this->application->post(
-                        $path
-                        , $middleware
-                        , $name
-                    );
-                    break;
-                case IVerb::PUT:
-                    $this->application->put(
-                        $path
-                        , $middleware
-                        , $name
-                    );
-                    break;
-                case IVerb::DELETE:
-                    $this->application->delete(
-                        $path
-                        , $middleware
-                        , $name
-                    );
-                    break;
-                default:
-                    throw new Exception('unknown method ' . $method);
-            }
+            match ($method) {
+                IVerb::GET => $this->application->get(
+                    $path
+                    , $middleware
+                    , $name
+                ),
+                IVerb::POST => $this->application->post(
+                    $path
+                    , $middleware
+                    , $name
+                ),
+                IVerb::PUT => $this->application->put(
+                    $path
+                    , $middleware
+                    , $name
+                ),
+                IVerb::DELETE => $this->application->delete(
+                    $path
+                    , $middleware
+                    , $name
+                ),
+                default => throw new Exception('unknown method ' . $method),
+            };
         }
     }
 

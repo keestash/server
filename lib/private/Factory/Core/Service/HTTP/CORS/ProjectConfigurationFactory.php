@@ -28,6 +28,7 @@ use Mezzio\Cors\Configuration\ConfigurationInterface;
 
 class ProjectConfigurationFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

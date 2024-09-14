@@ -38,6 +38,7 @@ class AssignPermissionsToRoles extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:role:assign-all")
             ->setDescription("assigns permissions to roles")
@@ -49,6 +50,7 @@ class AssignPermissionsToRoles extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force = $input->getOption(AssignPermissionsToRoles::OPTION_NAME_FORCE);
         if (true === $force) {

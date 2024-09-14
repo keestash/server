@@ -28,7 +28,7 @@ use Laminas\Config\Config;
 
 class Migrator extends \Keestash\Core\Service\Phinx\Migrator {
 
-    private Config $config;
+    private readonly Config $config;
 
     public function __construct(
         LoggerInterface $logger
@@ -39,6 +39,7 @@ class Migrator extends \Keestash\Core\Service\Phinx\Migrator {
         $this->config = $config;
     }
 
+    #[\Override]
     protected function getFilePath(): string {
         return $this->config->get(ConfigProvider::TEST_PATH) . '/config/phinx/';
     }

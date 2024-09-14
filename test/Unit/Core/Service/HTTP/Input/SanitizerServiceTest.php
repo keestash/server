@@ -28,6 +28,7 @@ class SanitizerServiceTest extends TestCase {
 
     private ISanitizerService $sanitizerService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->sanitizerService = $this->getService(ISanitizerService::class);

@@ -37,23 +37,19 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package KSA\Register\Command
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class DeleteUser extends KeestashCommand {
+final class DeleteUser extends KeestashCommand {
 
-    public const ARGUMENT_NAME_USER_ID = 'user_id';
-    public const OPTION_NAME_FORCE     = 'force';
-
-    private IUserRepositoryService $userRepositoryService;
-    private IUserRepository        $userRepository;
+    public const string ARGUMENT_NAME_USER_ID = 'user_id';
+    public const string OPTION_NAME_FORCE     = 'force';
 
     public function __construct(
-        IUserRepositoryService $userRepositoryService
-        , IUserRepository      $userRepository
+        private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IUserRepository      $userRepository
     ) {
         parent::__construct();
-        $this->userRepositoryService = $userRepositoryService;
-        $this->userRepository        = $userRepository;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("register:delete-user")
             ->setDescription("delete a new user")
@@ -77,6 +73,7 @@ class DeleteUser extends KeestashCommand {
      * @return int
      * @throws UserException
      */
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $userId    = (string) $input->getArgument(DeleteUser::ARGUMENT_NAME_USER_ID);
@@ -113,7 +110,7 @@ class DeleteUser extends KeestashCommand {
 
         try {
             $user = $this->userRepository->getUserById($userId);
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             $this->writeError('no user found for ' . $userId, $output);
             return 1;
         }

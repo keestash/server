@@ -54,6 +54,7 @@ class UpdateProfileImage implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $userHash   = $parameters['user_hash'] ?? '';
@@ -129,7 +130,7 @@ class UpdateProfileImage implements RequestHandlerInterface {
 
         try {
             $f = $this->fileRepository->add($coreFile);
-        } catch (FileNotCreatedException $exception) {
+        } catch (FileNotCreatedException) {
             $this->removeFile($coreFile);
             return new JsonResponse([], IResponse::INTERNAL_SERVER_ERROR);
         }

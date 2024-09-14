@@ -50,6 +50,7 @@ class PasswordsListener implements IListener {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
         return;
         $candidates = $this->pwnedPasswordsRepository->getOlderThan(
@@ -83,12 +84,12 @@ class PasswordsListener implements IListener {
                 $passwordsNode = $passwordTree->search(
                     new Passwords(
                         strtoupper(substr(
-                            sha1($plainPassword)
+                            sha1((string) $plainPassword)
                             , 0
                             , 5
                         ))
                         , strtoupper(substr(
-                            sha1($plainPassword)
+                            sha1((string) $plainPassword)
                             , 5
                         ))
                         , 0

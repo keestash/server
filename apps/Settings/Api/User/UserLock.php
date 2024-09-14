@@ -46,6 +46,7 @@ readonly class UserLock implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $userId     = (int) ($parameters['user_id'] ?? -1);

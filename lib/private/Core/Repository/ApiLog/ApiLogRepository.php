@@ -36,6 +36,7 @@ final readonly class ApiLogRepository implements IApiLogRepository {
     ) {
     }
 
+    #[\Override]
     public function log(ApiLogInterface $request): ApiLogInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert("`apilog`")
@@ -60,6 +61,7 @@ final readonly class ApiLogRepository implements IApiLogRepository {
         return $request;
     }
 
+    #[\Override]
     public function getAll(): ArrayList {
         $userLogs     = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

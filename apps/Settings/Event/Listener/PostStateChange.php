@@ -29,10 +29,8 @@ use Psr\Log\LoggerInterface;
 
 class PostStateChange implements IListener {
 
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger) {
-        $this->logger = $logger;
+    public function __construct(private readonly LoggerInterface $logger)
+    {
     }
 
     private function handleDelete(): bool {
@@ -48,6 +46,7 @@ class PostStateChange implements IListener {
     /**
      * @param UserStateDeleteEvent $event
      */
+    #[\Override]
     public function execute(IEvent $event): void {
         switch ($event->getStateName()) {
             case UserStateName::LOCK:

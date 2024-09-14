@@ -35,6 +35,7 @@ final readonly class RateLimiterMiddleware implements MiddlewareInterface {
     public function __construct(private RateLimiter $rateLimiter) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $ipAddress    = '127.0.0.1';
         $serverParams = $request->getServerParams();
@@ -53,7 +54,7 @@ final readonly class RateLimiterMiddleware implements MiddlewareInterface {
 
         try {
             $this->rateLimiter->limit($ipAddress);
-        } catch (LimitExceeded $exception) {
+        } catch (LimitExceeded) {
             return new JsonResponse(['error' => 'Too many requests'], IResponse::TOO_MANY_REQUESTS);
         }
 

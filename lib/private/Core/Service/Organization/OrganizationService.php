@@ -35,6 +35,7 @@ class OrganizationService implements IOrganizationService {
      * @return IOrganization
      * @throws IndexNotFoundException
      */
+    #[\Override]
     public function toOrganization(array $data): IOrganization {
         try {
             $organization = new Organization();

@@ -40,6 +40,7 @@ use Psr\Log\LoggerInterface;
 
 class AlphaFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

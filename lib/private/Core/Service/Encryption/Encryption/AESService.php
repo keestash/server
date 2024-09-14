@@ -37,10 +37,8 @@ abstract class AESService implements IEncryptionService {
     public const HASH_ALGORITHM = "sha256";
     public const IV_LENGTH      = 16;
 
-    private LoggerInterface $logger;
-
-    public function __construct(LoggerInterface $logger) {
-        $this->logger = $logger;
+    public function __construct(private readonly LoggerInterface $logger)
+    {
     }
 
     /**
@@ -48,6 +46,7 @@ abstract class AESService implements IEncryptionService {
      * @param string      $raw
      * @return string
      */
+    #[\Override]
     public function encrypt(ICredential $credential, string $raw): string {
         $key = hash(
             AESService::HASH_ALGORITHM
@@ -81,6 +80,7 @@ abstract class AESService implements IEncryptionService {
      * @return string
      * @throws EncryptionFailedException
      */
+    #[\Override]
     public function decrypt(ICredential $credential, string $encrypted): string {
         $iv = substr(
             $encrypted

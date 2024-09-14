@@ -35,23 +35,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Add extends KeestashCommand {
 
-    private RBACRepositoryInterface $rbacRepository;
-    private IDateTimeService        $dateTimeService;
-
     public function __construct(
-        RBACRepositoryInterface $rbacRepository
-        , IDateTimeService      $dateTimeService
+        private readonly RBACRepositoryInterface $rbacRepository
+        , private readonly IDateTimeService      $dateTimeService
     ) {
         parent::__construct();
-        $this->rbacRepository  = $rbacRepository;
-        $this->dateTimeService = $dateTimeService;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("role:add")
             ->setDescription("add a new role");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $style = new SymfonyStyle($input, $output);

@@ -36,6 +36,7 @@ final readonly class UserActiveMiddleware implements MiddlewareInterface {
     public function __construct(private IUserService $userService) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $routesToInstanceInstall = $request->getAttribute(IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTANCE_INSTALL, false);
         $routesToInstall         = $request->getAttribute(IRequest::ATTRIBUTE_NAME_ROUTES_TO_INSTALL, false);

@@ -50,6 +50,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
      * @throws Exception
      * @throws KeestashException
      */
+    #[\Override]
     public function storeKey(IOrganization $organization, IKey $key): IKey {
         $key = $this->_storeKey($key);
 
@@ -72,6 +73,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         return $key;
     }
 
+    #[\Override]
     public function updateKey(IKey $key): bool {
         return $this->_update($key);
     }
@@ -83,6 +85,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws Exception
      */
+    #[\Override]
     public function getKey(IOrganization $organization): IKey {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -122,6 +125,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
         return $key;
     }
 
+    #[\Override]
     public function remove(IOrganization $organization): bool {
         $key          = $this->getKey($organization);
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

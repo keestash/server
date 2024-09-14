@@ -27,17 +27,11 @@ use Psr\Log\LoggerInterface;
 
 class InstanceRepository implements IInstanceRepository {
 
-    private LoggerInterface  $logger;
-    private IBackend $backend;
-
-    public function __construct(
-        IBackend  $backend
-        , LoggerInterface $logger
-    ) {
-        $this->logger  = $logger;
-        $this->backend = $backend;
+    public function __construct(private readonly IBackend  $backend, private readonly LoggerInterface $logger)
+    {
     }
 
+    #[\Override]
     public function dropSchema(bool $includeSchema = false): bool {
 
         if (true === $includeSchema) {
@@ -64,6 +58,7 @@ class InstanceRepository implements IInstanceRepository {
         return true;
     }
 
+    #[\Override]
     public function execute(string $query): void {
         $this->backend->getConnection()->prepare($query)->execute();
     }

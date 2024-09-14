@@ -27,6 +27,7 @@ use KSP\Core\Service\Core\Access\IAccessService;
 
 class AccessService implements IAccessService {
 
+    #[\Override]
     public function hasAccess(IAccessable $accessable, IUser $user): bool {
         return $user->getId() === $accessable->getUser()->getId()
             || (null !== $accessable->getOrganization()

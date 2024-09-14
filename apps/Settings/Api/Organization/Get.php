@@ -33,17 +33,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private IOrganizationRepository $organizationRepository;
-    private IUserRepository         $userRepository;
-
     public function __construct(
-        IOrganizationRepository $organizationRepository
-        , IUserRepository       $userRepository
+        private readonly IOrganizationRepository $organizationRepository,
+        private readonly IUserRepository         $userRepository
     ) {
-        $this->organizationRepository = $organizationRepository;
-        $this->userRepository         = $userRepository;
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $id = (int) $request->getAttribute('id', 0);
 

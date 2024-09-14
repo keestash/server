@@ -33,6 +33,7 @@ class RemoveReferenceListener implements IListener {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent|ReferenceRemovedEvent $event): void {
         $this->activityRepository->remove($event->getAppId(), $event->getReferenceKey());
     }

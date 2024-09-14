@@ -34,10 +34,12 @@ final class ClearRateLimiterFile extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("keestash:ratelimit:delete-file");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $fileName = $this->dataService->getPath() . '/' . FileRateLimiter::FILE_NAME;
 

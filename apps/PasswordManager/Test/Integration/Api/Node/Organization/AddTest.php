@@ -41,6 +41,7 @@ class AddTest extends TestCase {
     private NodeRepository             $nodeRepository;
     private CredentialService          $credentialService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->userService                = $this->getService(IUserService::class);

@@ -38,6 +38,7 @@ readonly final class Login implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IVersion $version */
         $version = $request->getAttribute(IVersion::class);

@@ -23,12 +23,12 @@ namespace KSA\Instance;
 
 final class ConfigProvider {
 
-    public const DEMO_USERS_ADD                 = '/demo_users/add';
-    public const INSTALL_INSTANCE               = '/install_instance';
-    public const INSTALL_INSTANCE_CONFIG_DATA   = '/install_instance/config_data';
-    public const INSTALL_INSTANCE_END_UPDATE    = '/install_instance/end_update';
-    public const INSTALL_INSTANCE_UPDATE_CONFIG = '/install_instance/update_config';
-    public const APP_ID                         = "instance";
+    public const string DEMO_USERS_ADD                 = '/demo_users/add';
+    public const string INSTALL_INSTANCE               = '/install_instance';
+    public const string INSTALL_INSTANCE_CONFIG_DATA   = '/install_instance/config_data';
+    public const string INSTALL_INSTANCE_END_UPDATE    = '/install_instance/end_update';
+    public const string INSTALL_INSTANCE_UPDATE_CONFIG = '/install_instance/update_config';
+    public const string APP_ID                         = "instance";
 
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';

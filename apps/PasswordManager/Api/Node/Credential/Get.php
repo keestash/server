@@ -42,6 +42,7 @@ class Get implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $nodeId = (int) $request->getAttribute("node_id", 0);
 

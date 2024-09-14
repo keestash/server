@@ -34,6 +34,7 @@ final readonly class DerivationService implements IDerivationService {
     ) {
     }
 
+    #[\Override]
     public function derive(string $raw): string {
         return Scrypt::calc(
             $raw

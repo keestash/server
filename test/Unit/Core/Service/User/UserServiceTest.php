@@ -33,6 +33,7 @@ class UserServiceTest extends TestCase {
 
     private IUserService $userService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         /** @var IUserService @userService */

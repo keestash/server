@@ -30,18 +30,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListEvents extends KeestashCommand {
 
-    private Config $config;
-
-    public function __construct(Config $config) {
+    public function __construct(private readonly Config $config) {
         parent::__construct();
-        $this->config = $config;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("event:list")
             ->setDescription("lists all events and their listener");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $tableRows = [];
 

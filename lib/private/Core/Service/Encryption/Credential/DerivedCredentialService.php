@@ -59,6 +59,7 @@ class DerivedCredentialService implements ICredentialService {
      * @throws DerivationException
      * @throws UserException
      */
+    #[\Override]
     public function createCredential(IKeyHolder $keyHolder): ICredential {
         if (!($keyHolder instanceof IUser)) {
             throw new UserException('currently, we support users only');
@@ -84,6 +85,7 @@ class DerivedCredentialService implements ICredentialService {
      * @return ICredential
      * @throws UserException
      */
+    #[\Override]
     public function createCredentialFromDerivation(IKeyHolder $keyHolder): ICredential {
         $derivation = new Derivation(
             Uuid::uuid4()->toString()

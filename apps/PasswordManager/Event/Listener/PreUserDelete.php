@@ -28,20 +28,11 @@ use KSP\Core\Service\Event\Listener\IListener;
 
 class PreUserDelete implements IListener {
 
-    /** @var FileRepository */
-    private $fileRepository;
-
-    /** @var IFileRepository */
-    private $coreFileRepository;
-
-    public function __construct(
-        FileRepository    $fileRepository
-        , IFileRepository $coreFileRepository
-    ) {
-        $this->fileRepository     = $fileRepository;
-        $this->coreFileRepository = $coreFileRepository;
+    public function __construct(private readonly FileRepository    $fileRepository, private readonly IFileRepository $coreFileRepository)
+    {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
 //        /** @var IUser $user */
 //        $type = $parameters[0][0];

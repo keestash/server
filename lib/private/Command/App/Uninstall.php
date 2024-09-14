@@ -41,6 +41,7 @@ class Uninstall extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("app:uninstall")
             ->setDescription("uninstalls an app")
@@ -51,6 +52,7 @@ class Uninstall extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $appId = (string) $input->getArgument(Uninstall::ARGUMENT_NAME_APP_ID);
         $app   = null;

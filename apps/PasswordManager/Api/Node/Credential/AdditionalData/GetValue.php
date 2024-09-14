@@ -50,6 +50,7 @@ class GetValue implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $id = (string) $request->getAttribute('advid', 0);
         /** @var IToken $token */

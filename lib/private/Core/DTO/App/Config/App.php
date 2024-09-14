@@ -29,6 +29,7 @@ class App implements IApp {
         $this->jobs = new JobList();
     }
 
+    #[\Override]
     public function getId(): string {
         return $this->id;
     }
@@ -37,6 +38,7 @@ class App implements IApp {
         $this->id = $id;
     }
 
+    #[\Override]
     public function isEnabled(): bool {
         return $this->enabled;
     }
@@ -45,6 +47,7 @@ class App implements IApp {
         $this->enabled = $enabled;
     }
 
+    #[\Override]
     public function getVersion(): int {
         return $this->version;
     }
@@ -53,6 +56,7 @@ class App implements IApp {
         $this->version = $version;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -61,6 +65,7 @@ class App implements IApp {
         $this->createTs = $createTs;
     }
 
+    #[\Override]
     public function getBackgroundJobs(): IJobList {
         return $this->jobs;
     }
@@ -69,6 +74,7 @@ class App implements IApp {
         $this->jobs = $jobs;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'          => $this->getId()

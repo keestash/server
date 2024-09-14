@@ -34,6 +34,7 @@ class SettingsService implements ISettingsService {
     ) {
     }
 
+    #[\Override]
     public function isRegisterEnabled(): bool {
         try {
             $setting = $this->settingsRepository->get(

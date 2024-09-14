@@ -32,6 +32,7 @@ class ExceptionHandlerService implements IExceptionHandlerService {
     ) {
     }
 
+    #[\Override]
     public function registerHandler(string $requestId): void {
         $this->setErrorHandler($requestId);
         $this->setExceptionHandler($requestId);

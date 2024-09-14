@@ -31,6 +31,7 @@ use Psr\Log\LoggerInterface;
 
 class DerivedCredentialServiceFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

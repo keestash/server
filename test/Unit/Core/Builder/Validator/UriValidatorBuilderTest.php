@@ -28,6 +28,7 @@ class UriValidatorBuilderTest extends TestCase {
 
     private Uri $uriValidator;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         /** @var Uri $uriValidator */

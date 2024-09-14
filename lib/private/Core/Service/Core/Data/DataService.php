@@ -35,29 +35,25 @@ use Laminas\Config\Config;
  *
  * @package Keestash\Core\Manager\DataManager
  */
-class DataService implements IDataService {
+final readonly class DataService implements IDataService {
 
-    private string  $appId;
-    private ?string $context;
-    private string  $path;
-    private Config  $config;
+    private string $path;
 
     public function __construct(
-        string    $appId
-        , Config  $config
-        , ?string $context = null
+        private string    $appId
+        , private Config  $config
+        , private ?string $context = null
     ) {
-        $this->appId   = $appId;
-        $this->context = $context;
-        $this->config  = $config;
         $this->buildPath();
         $this->createDir($this->path);
     }
 
+    #[\Override]
     public function getPath(): string {
         return $this->path;
     }
 
+    #[\Override]
     public function store(IFile $file): bool {
 
         $isFile = is_file($file->getFullPath());
@@ -79,6 +75,7 @@ class DataService implements IDataService {
      * @throws FileNotDeletedException
      * @throws FileNotFoundException
      */
+    #[\Override]
     public function remove(IFile $file): void {
         $fullPath   = $file->getFullPath();
         $isFile     = is_file($fullPath);
@@ -99,6 +96,7 @@ class DataService implements IDataService {
         }
     }
 
+    #[\Override]
     public function get(IFile $file): IFile {
         $file   = new File();
         $isFile = is_file($file->getFullPath());

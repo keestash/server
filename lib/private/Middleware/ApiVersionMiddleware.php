@@ -31,6 +31,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final readonly class ApiVersionMiddleware implements MiddlewareInterface {
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $version = (int) $request->getHeaderLine('x-keestash-api-version');
 

@@ -33,6 +33,7 @@ class ShareServiceTest extends TestCase {
     private ShareService      $shareService;
     private CredentialService $credentialService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->shareService      = $this->getServiceManager()->get(ShareService::class);

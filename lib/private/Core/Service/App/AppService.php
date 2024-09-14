@@ -32,6 +32,7 @@ use KSP\Core\Service\App\IAppService;
 
 class AppService implements IAppService {
 
+    #[\Override]
     public function toApp(string $id, array $data): IApp {
         $app = new App();
         $app->setId($id);
@@ -41,6 +42,7 @@ class AppService implements IAppService {
         return $app;
     }
 
+    #[\Override]
     public function toConfigApp(IApp $app): InstalledApp {
         $configApp = new \Keestash\Core\DTO\App\Config\App();
         $configApp->setId($app->getId());
@@ -53,6 +55,7 @@ class AppService implements IAppService {
         return $configApp;
     }
 
+    #[\Override]
     public function getAppsThatNeedAUpgrade(HashTable $loadedApps, HashTable $installedApps): HashTable {
         $result = new HashTable();
         foreach ($loadedApps->keySet() as $key) {
@@ -79,6 +82,7 @@ class AppService implements IAppService {
         return $result;
     }
 
+    #[\Override]
     public function getNewlyAddedApps(HashTable $loadedApps, HashTable $installedApps): HashTable {
         $result = new HashTable();
         foreach ($loadedApps->keySet() as $key) {
@@ -94,6 +98,7 @@ class AppService implements IAppService {
         return $result;
     }
 
+    #[\Override]
     public function removeDisabledApps(HashTable $loadedApps, HashTable $installedApps): HashTable {
         foreach ($installedApps->keySet() as $key) {
             /** @var InstalledApp $app */

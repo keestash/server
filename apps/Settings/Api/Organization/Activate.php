@@ -35,21 +35,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Activate implements RequestHandlerInterface {
 
-    private IOrganizationRepository $organizationRepository;
-    private LoggerInterface       $logger;
-    private IEventService $eventManager;
-
-    public function __construct(
-        IOrganizationRepository $organizationRepository
-        , LoggerInterface               $logger
-        , IEventService         $eventManager
-    ) {
-        $this->organizationRepository = $organizationRepository;
-        $this->logger                 = $logger;
-        $this->eventManager           = $eventManager;
+    public function __construct(private readonly IOrganizationRepository $organizationRepository, private readonly LoggerInterface               $logger, private readonly IEventService         $eventManager)
+    {
     }
 
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $id         = (int) ($parameters['id'] ?? 0);

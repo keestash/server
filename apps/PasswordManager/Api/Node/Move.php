@@ -56,6 +56,7 @@ class Move implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters   = (array) $request->getParsedBody();
         $nodeId       = $parameters["node_id"] ?? null;

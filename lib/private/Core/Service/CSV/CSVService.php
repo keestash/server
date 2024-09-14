@@ -38,6 +38,7 @@ class CSVService implements ICSVService {
      * @throws Exception
      * @throws InvalidArgument
      */
+    #[\Override]
     public function readFile(
         string   $path
         , bool   $hasOffset = true
@@ -63,6 +64,7 @@ class CSVService implements ICSVService {
      * @return array
      * @throws Exception
      */
+    #[\Override]
     public function readString(
         string   $content
         , bool   $hasOffset = true

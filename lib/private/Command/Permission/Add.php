@@ -41,11 +41,13 @@ class Add extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:add")
             ->setDescription("add a new permission");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $style = new SymfonyStyle($input, $output);

@@ -38,11 +38,13 @@ class Uninstall extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("install:uninstall")
             ->setDescription("uninstalls the instance");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $output->writeln("unlinking instance db file");
         $this->removeInstanceDB($output);

@@ -60,6 +60,7 @@ readonly final class OrganizationChangeListener implements IListener {
      * @param IEvent $event
      * @throws PasswordManagerException
      */
+    #[\Override]
     public function execute(IEvent $event): void {
 
         if (
@@ -78,10 +79,8 @@ readonly final class OrganizationChangeListener implements IListener {
         );
 
         $this->handleEdges(
-            get_class($event),
-            null !== $event->getOrganization()
-                ? $event->getOrganization()
-                : $event->getNode()->getUser(),
+            $event::class,
+            $event->getOrganization() ?? $event->getNode()->getUser(),
             $event->getNode()
         );
 
@@ -123,9 +122,7 @@ readonly final class OrganizationChangeListener implements IListener {
         // 1. we need first to decrypt the data. Decryption is done by
         // the previous key. So we either need the previous organization
         // or the user to whom the credential belongs to
-        $keyHolder = null !== $credential->getOrganization()
-            ? $credential->getOrganization()
-            : $credential->getUser();
+        $keyHolder = $credential->getOrganization() ?? $credential->getUser();
         $this->nodeEncryptionService->decryptNode($credential, $keyHolder);
 
         // 2. as we want to encrypt with the new owner, we
@@ -133,9 +130,7 @@ readonly final class OrganizationChangeListener implements IListener {
         // The organization can be null if the organization
         // has been removed from the node.
         // If this is the case, encrpyt with the user again.
-        $keyHolder = null !== $organization
-            ? $organization
-            : $credential->getUser();
+        $keyHolder = $organization ?? $credential->getUser();
         $credential->setOrganization(null); // unset the organization in order to encrypt with the new key
         $this->nodeEncryptionService->encryptNode($credential, $keyHolder);
         $this->nodeRepository->updateCredential($credential);

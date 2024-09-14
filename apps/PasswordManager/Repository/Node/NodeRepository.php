@@ -222,19 +222,12 @@ final readonly class NodeRepository {
             ? $this->dateTimeService->fromString($row[5])
             : null;
 
-        switch ($type) {
-            case Node::CREDENTIAL:
-                $node = new Credential();
-                break;
-            case Node::FOLDER:
-                $node = new Folder();
-                break;
-            case Node::ROOT:
-                $node = new Root();
-                break;
-            default:
-                throw new InvalidNodeTypeException("no type for $type found for id $id");
-        }
+        $node = match ($type) {
+            Node::CREDENTIAL => new Credential(),
+            Node::FOLDER => new Folder(),
+            Node::ROOT => new Root(),
+            default => throw new InvalidNodeTypeException("no type for $type found for id $id"),
+        };
 
         $user = $this->userRepository->getUserById((string) $userId);
 
@@ -296,9 +289,7 @@ final readonly class NodeRepository {
         if (null === $nodeOrganization && null === $parentOrganization) {
             return $node;
         }
-        $organization = $nodeOrganization === null
-            ? $parentOrganization
-            : $nodeOrganization;
+        $organization = $nodeOrganization ?? $parentOrganization;
 
         $node->setOrganization($this->organizationRepository->get((int) $organization));
 
@@ -541,7 +532,7 @@ final readonly class NodeRepository {
     public function exists(int $id): bool {
         try {
             $this->getNode($id, 0, 1);
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             return false;
         }
         return true;

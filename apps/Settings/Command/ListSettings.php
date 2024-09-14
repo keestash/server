@@ -40,6 +40,7 @@ class ListSettings extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("settings:list")
             ->setDescription("lists one or all settings")
@@ -50,6 +51,7 @@ class ListSettings extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $settingKeys = (array) $input->getArgument(ListSettings::ARGUMENT_NAME_KEY);
         $settingList = new ArrayList();

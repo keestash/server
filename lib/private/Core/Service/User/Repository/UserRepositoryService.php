@@ -65,6 +65,7 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @throws UserNotCreatedException
      * @throws FileNotCreatedException
      */
+    #[\Override]
     public function createUser(IUser $user, ?IFile $file = null): IUser {
         $user = $this->userRepository->insert($user);
         $this->eventManager->execute(new UserCreatedEvent($user));
@@ -89,6 +90,7 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @return array
      * @throws UserException
      */
+    #[\Override]
     public function removeUser(IUser $user): array {
         try {
             $this->fileRepository->removeForUser($user);
@@ -114,6 +116,7 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @param IUser $user
      * @return bool
      */
+    #[\Override]
     public function createSystemUser(IUser $user): bool {
         $user->setLocked(true);
         $file = $this->fileService->getDefaultImage();
@@ -131,11 +134,12 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @param string $name
      * @return bool
      */
+    #[\Override]
     public function userExistsByName(string $name): bool {
         try {
             $this->userRepository->getUser($name);
             return true;
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             return false;
         }
     }
@@ -144,11 +148,12 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @param string $id
      * @return bool
      */
+    #[\Override]
     public function userExistsById(string $id): bool {
         try {
             $this->userRepository->getUserById($id);
             return true;
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             return false;
         }
     }
@@ -157,11 +162,12 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @param string $email
      * @return bool
      */
+    #[\Override]
     public function userExistsByEmail(string $email): bool {
         try {
             $this->userRepository->getUserByEmail($email);
             return true;
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             return false;
         }
     }
@@ -172,6 +178,7 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @return IUser
      * @throws UserNotUpdatedException
      */
+    #[\Override]
     public function updateUser(IUser $updatedUser, IUser $user): IUser {
         $this->userRepository->update($updatedUser);
 

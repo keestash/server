@@ -41,6 +41,7 @@ class Environment extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("environment:add")
             ->setDescription("sets the app environment")
@@ -62,6 +63,7 @@ class Environment extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force = true === $input->getOption(Environment::OPTION_NAME_FORCE);
         $name  = $input->getArgument(Environment::ARGUMENT_NAME_NAME);
@@ -86,9 +88,7 @@ class Environment extends KeestashCommand {
             sprintf(
                 "updated value for %s from %s to %s",
                 $name
-                , null !== $oldOption
-                ? $oldOption
-                : 'null'
+                , $oldOption ?? 'null'
                 , $value
             )
         );

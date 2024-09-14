@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Entity\Node\Credential\Password;
 
 class Username extends Encryptable {
 
+    #[\Override]
     public function jsonSerialize(): array {
         return parent::jsonSerialize() + [
                 'plain' => $this->getPlain()

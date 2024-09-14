@@ -41,7 +41,7 @@ use Mezzio\Router\Middleware\ImplicitOptionsMiddleware;
 use Mezzio\Router\Middleware\MethodNotAllowedMiddleware;
 use Mezzio\Router\Middleware\RouteMiddleware;
 
-return function (Application $app) {
+return function (Application $app): void {
     $app->pipe(ApplicationStartedMiddleware::class);
     $app->pipe(ApiVersionMiddleware::class);
     $app->pipe(ExceptionHandlerMiddleware::class);

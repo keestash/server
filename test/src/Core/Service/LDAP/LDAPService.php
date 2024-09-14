@@ -30,14 +30,17 @@ class LDAPService implements ILDAPService {
     public function __construct(private readonly \Keestash\Core\Service\LDAP\LDAPService $ldapService) {
     }
 
+    #[\Override]
     public function listUsers(IConnection $connection): array {
         return [];
     }
 
+    #[\Override]
     public function decryptLdapConnection(IConnection $connection): IConnection {
         return $this->ldapService->decryptLdapConnection($connection);
     }
 
+    #[\Override]
     public function verifyUser(IUser $user, IConnection $connection, string $plainPassword): bool {
         return true;
     }

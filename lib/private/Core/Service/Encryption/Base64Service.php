@@ -25,32 +25,36 @@ use KSP\Core\Service\Encryption\IBase64Service;
 
 class Base64Service implements IBase64Service {
 
+    #[\Override]
     public function encrypt(string $value): string {
         return base64_encode($value);
     }
 
+    #[\Override]
     public function decrypt(string $encrypted): string {
         return base64_decode($encrypted);
     }
 
+    #[\Override]
     public function encryptArrayRecursive(array $array): array {
         foreach ($array as $key => $value) {
             if (true === is_array($value)) {
                 $array[$key] = $this->encryptArrayRecursive($value);
                 continue;
             }
-            $array[$key] = base64_encode($value);
+            $array[$key] = base64_encode((string) $value);
         }
         return $array;
     }
 
+    #[\Override]
     public function decryptArrayRecursive(array $array): array {
         foreach ($array as $key => $value) {
             if (true === is_array($value)) {
                 $array[$key] = $this->decryptArrayRecursive($value);
                 continue;
             }
-            $array[$key] = base64_decode($value);
+            $array[$key] = base64_decode((string) $value);
         }
         return $array;
     }

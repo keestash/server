@@ -23,7 +23,7 @@ namespace KSA\Activity;
 
 final class ConfigProvider {
 
-    public const APP_ID = 'activity';
+    public const string APP_ID = 'activity';
     public function __invoke(): array {
         return require __DIR__ . '/config/config.php';
     }

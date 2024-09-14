@@ -37,26 +37,19 @@ use Laminas\Config\Config;
 
 class FileService implements IFileService {
 
-    public const DEFAULT_IMAGE_FILE_ID   = 1;
-    public const DEFAULT_AVATAR_FILE_ID  = 2;
-    public const DEFAULT_NODE_AVATAR     = "default-avatar";
-    public const DEFAULT_PROFILE_PICTURE = "profile-picture";
-
-    // TODO include default ?!
-    private IRawFileService $rawFileService;
-    private Config          $config;
-    private IFileRepository $fileRepository;
+    public const int    DEFAULT_IMAGE_FILE_ID   = 1;
+    public const int    DEFAULT_AVATAR_FILE_ID  = 2;
+    public const string DEFAULT_NODE_AVATAR     = "default-avatar";
+    public const string DEFAULT_PROFILE_PICTURE = "profile-picture";
 
     public function __construct(
-        IRawFileService   $rawFileService
-        , Config          $config
-        , IFileRepository $fileRepository
+        private readonly IRawFileService $rawFileService,
+        private readonly Config          $config,
+        private readonly IFileRepository $fileRepository
     ) {
-        $this->rawFileService = $rawFileService;
-        $this->config         = $config;
-        $this->fileRepository = $fileRepository;
     }
 
+    #[\Override]
     public function getProfileImagePath(IUser $user): IUniformResourceIdentifier {
         $imagePath = $this->getProfileImage($user);
         $imagePath = realpath($imagePath->getIdentifier());
@@ -70,6 +63,7 @@ class FileService implements IFileService {
         return $url;
     }
 
+    #[\Override]
     public function getDefaultImage(): IFile {
         $name = FileService::DEFAULT_PROFILE_PICTURE;
         $dir  = $this->config->get(Keestash\ConfigProvider::ASSET_PATH) . '/img/';
@@ -91,6 +85,7 @@ class FileService implements IFileService {
         return $file;
     }
 
+    #[\Override]
     public function getProfileImage(IUser $user): IUniformResourceIdentifier {
         $url       = new URL();
         $name      = $this->getProfileImageName($user);
@@ -100,10 +95,12 @@ class FileService implements IFileService {
         return $url;
     }
 
+    #[\Override]
     public function getProfileImageName(IUser $user): string {
         return "profile_image_{$user->getId()}";
     }
 
+    #[\Override]
     public function read(IUniformResourceIdentifier $uri): IFile {
         $path = $uri->getIdentifier();
         if (false === is_file($path)) {
@@ -112,6 +109,7 @@ class FileService implements IFileService {
         return $this->fileRepository->getByUri($uri);
     }
 
+    #[\Override]
     public function removeProfileImage(IUser $user): void {
         $imagePath = $this->getProfileImage($user);
         $imagePath = realpath($imagePath->getIdentifier());

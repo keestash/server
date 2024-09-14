@@ -32,6 +32,7 @@ use Psr\Log\LoggerInterface;
 
 class QueueServiceFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

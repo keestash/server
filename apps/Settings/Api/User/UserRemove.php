@@ -46,6 +46,7 @@ final readonly class UserRemove implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
 
         $parameters = (array) $request->getParsedBody();

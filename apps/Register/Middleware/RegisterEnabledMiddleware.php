@@ -41,6 +41,7 @@ class RegisterEnabledMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $registerEnabled = $this->settingsService->isRegisterEnabled();
 

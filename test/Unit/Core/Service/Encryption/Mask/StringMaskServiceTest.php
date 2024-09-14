@@ -28,6 +28,7 @@ class StringMaskServiceTest extends TestCase {
 
     private IStringMaskService $stringMaskService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->stringMaskService = $this->getService(IStringMaskService::class);

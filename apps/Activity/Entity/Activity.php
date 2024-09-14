@@ -38,6 +38,7 @@ class Activity implements IActivity {
     /**
      * @return string
      */
+    #[\Override]
     public function getActivityId(): string {
         return $this->activityId;
     }
@@ -45,6 +46,7 @@ class Activity implements IActivity {
     /**
      * @return string
      */
+    #[\Override]
     public function getAppId(): string {
         return $this->appId;
     }
@@ -52,6 +54,7 @@ class Activity implements IActivity {
     /**
      * @return string
      */
+    #[\Override]
     public function getReferenceKey(): string {
         return $this->referenceKey;
     }
@@ -59,6 +62,7 @@ class Activity implements IActivity {
     /**
      * @return ArrayList
      */
+    #[\Override]
     public function getData(): ArrayList {
         return $this->data;
     }
@@ -66,11 +70,13 @@ class Activity implements IActivity {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'activity_id'     => $this->getActivityId()

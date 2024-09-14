@@ -40,11 +40,13 @@ class PermissionService implements IPermissionService {
     ) {
     }
 
+    #[\Override]
     public function recreatePermissions(): void {
         $this->rbacRepository->clearPermissions();
         $this->createPermissions();
     }
 
+    #[\Override]
     public function createPermissions(): void {
         /** @var Config $permissions */
         $permissions = $this->config

@@ -39,6 +39,7 @@ class IsActive implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public
     function handle(ServerRequestInterface $request): ResponseInterface {
 

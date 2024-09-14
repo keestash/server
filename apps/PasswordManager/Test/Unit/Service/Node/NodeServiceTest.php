@@ -45,6 +45,7 @@ class NodeServiceTest extends TestCase {
     private NodeEncryptionService $nodeEncryptionService;
     private ShareService          $shareService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->nodeService           = $this->getServiceManager()

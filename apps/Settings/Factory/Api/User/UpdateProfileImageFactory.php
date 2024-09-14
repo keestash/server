@@ -32,6 +32,7 @@ use Psr\Container\ContainerInterface;
 
 class UpdateProfileImageFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null) {
         return new UpdateProfileImage(
             $container->get(Config::class)

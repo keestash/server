@@ -28,6 +28,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RoutesFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

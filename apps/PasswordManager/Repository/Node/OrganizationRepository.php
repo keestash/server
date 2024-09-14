@@ -29,15 +29,8 @@ use Psr\Log\LoggerInterface;
 
 class OrganizationRepository {
 
-    private IBackend $backend;
-    private LoggerInterface  $logger;
-
-    public function __construct(
-        IBackend  $backend
-        , LoggerInterface $logger
-    ) {
-        $this->backend = $backend;
-        $this->logger  = $logger;
+    public function __construct(private readonly IBackend  $backend, private readonly LoggerInterface $logger)
+    {
     }
 
     /**

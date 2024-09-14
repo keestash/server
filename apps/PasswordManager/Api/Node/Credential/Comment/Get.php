@@ -25,17 +25,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Get implements RequestHandlerInterface {
 
-    private CommentRepository $commentRepository;
-    private NodeRepository    $nodeRepository;
-
     public function __construct(
-        CommentRepository $commentRepository
-        , NodeRepository  $nodeRepository
+        private readonly CommentRepository $commentRepository,
+        private readonly NodeRepository    $nodeRepository
     ) {
-        $this->commentRepository = $commentRepository;
-        $this->nodeRepository    = $nodeRepository;
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $nodeId    = $request->getAttribute("nodeId");
         $sortField = $request->getAttribute("sortField");
@@ -47,7 +43,7 @@ class Get implements RequestHandlerInterface {
 
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId);
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             return new JsonResponse('no node found', IResponse::NOT_FOUND);
         }
 

@@ -37,7 +37,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class Get extends KeestashCommand {
 
-    public const ARGUMENT_NAME_USER_ID = 'user-id';
+    public const string ARGUMENT_NAME_USER_ID = 'user-id';
 
     public function __construct(
         private readonly IUserRepository      $userRepository
@@ -48,6 +48,7 @@ final class Get extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("users:list")
             ->setDescription("lists one or all users")
@@ -58,6 +59,7 @@ final class Get extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userIds   = (array) $input->getArgument(Get::ARGUMENT_NAME_USER_ID);
         $userList  = new ArrayList();

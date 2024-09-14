@@ -33,18 +33,8 @@ use Psr\Log\LoggerInterface;
 
 class MailLogRepository implements IMailLogRepository {
 
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface  $logger;
-
-    public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , LoggerInterface  $logger
-    ) {
-        $this->dateTimeService = $dateTimeService;
-        $this->backend         = $backend;
-        $this->logger          = $logger;
+    public function __construct(private readonly IBackend           $backend, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface  $logger)
+    {
     }
 
     /**
@@ -52,6 +42,7 @@ class MailLogRepository implements IMailLogRepository {
      * @return IMailLog
      * @throws KeestashException
      */
+    #[\Override]
     public function insert(IMailLog $mailLog): IMailLog {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -80,6 +71,7 @@ class MailLogRepository implements IMailLogRepository {
      * @throws KeestashException
      * @throws NoRowsFoundException
      */
+    #[\Override]
     public function getLatestBySubject(string $subject): IMailLog {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

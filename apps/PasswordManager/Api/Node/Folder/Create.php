@@ -52,6 +52,7 @@ class Create implements RequestHandlerInterface {
     }
 
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
@@ -71,7 +72,7 @@ class Create implements RequestHandlerInterface {
 
         try {
             $parentNode = $this->nodeService->getParentNode((string) $parent, $token->getUser());
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 

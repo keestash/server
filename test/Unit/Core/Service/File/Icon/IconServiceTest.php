@@ -30,6 +30,7 @@ class IconServiceTest extends TestCase {
 
     private IIconService $iconService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->iconService = $this->getService(IIconService::class);

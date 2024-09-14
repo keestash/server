@@ -33,6 +33,7 @@ final readonly class Version implements IVersion {
     /**
      * @return int
      */
+    #[\Override]
     public function getVersion(): int {
         return $this->version;
     }

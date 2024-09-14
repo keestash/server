@@ -39,11 +39,13 @@ class TestEmail extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName('keestash:test-email')
             ->setDescription('sends an test email to the administrator');
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $timeStamp = $this->dateTimeService->toYMDHIS(new DateTimeImmutable());
         $this->emailService->setSubject(

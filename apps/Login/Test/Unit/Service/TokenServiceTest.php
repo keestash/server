@@ -31,6 +31,7 @@ class TokenServiceTest extends TestCase {
 
     private TokenService $tokenService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->tokenService = $this->getServiceManager()->get(TokenService::class);

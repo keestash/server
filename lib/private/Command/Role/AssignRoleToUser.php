@@ -33,21 +33,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AssignRoleToUser extends KeestashCommand {
 
-    public const ARGUMENT_NAME_USER_ID = 'user-id';
-    public const ARGUMENT_NAME_ROLE_ID = 'role-id';
-
-    private IUserRepository         $userRepository;
-    private RBACRepositoryInterface $rbacRepository;
+    public const string ARGUMENT_NAME_USER_ID = 'user-id';
+    public const string ARGUMENT_NAME_ROLE_ID = 'role-id';
 
     public function __construct(
-        IUserRepository           $userRepository
-        , RBACRepositoryInterface $rbacRepository
+        private readonly IUserRepository           $userRepository
+        , private readonly RBACRepositoryInterface $rbacRepository
     ) {
         parent::__construct();
-        $this->userRepository = $userRepository;
-        $this->rbacRepository = $rbacRepository;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("role:assign-user")
             ->setDescription("adds a user to role")
@@ -63,6 +59,7 @@ class AssignRoleToUser extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = $input->getArgument(AssignRoleToUser::ARGUMENT_NAME_USER_ID);
         $roleId = $input->getArgument(AssignRoleToUser::ARGUMENT_NAME_ROLE_ID);
@@ -97,7 +94,7 @@ class AssignRoleToUser extends KeestashCommand {
                 )
                 , $output
             );
-        } catch (KeestashException $exception) {
+        } catch (KeestashException) {
             $this->writeError('user could not be assigned', $output);
         }
 

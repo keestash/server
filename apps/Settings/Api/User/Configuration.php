@@ -34,6 +34,7 @@ class Configuration implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         return new OkResponse(
             [

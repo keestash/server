@@ -31,10 +31,12 @@ class Folder extends Node {
         $this->edges->add($node);
     }
 
+    #[\Override]
     public function getType(): string {
         return Node::FOLDER;
     }
 
+    #[\Override]
     public function getIcon(): string {
         return Node::ICON_FOLDER;
     }
@@ -47,6 +49,7 @@ class Folder extends Node {
         $this->edges = $edges;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return parent::jsonSerialize() + [
                 "edges"       => $this->getEdges()

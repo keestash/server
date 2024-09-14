@@ -33,6 +33,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class KeestashCommand extends Command implements IKeestashCommand {
 
+    #[\Override]
     protected function configure(): void {
         $this->addOption(
             IKeestashCommand::OPTION_NAME_SILENT
@@ -130,6 +131,7 @@ abstract class KeestashCommand extends Command implements IKeestashCommand {
         return (string) ($style->ask($question) ?? null);
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         return parent::execute($input, $output);
     }

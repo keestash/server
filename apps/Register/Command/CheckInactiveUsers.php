@@ -68,6 +68,7 @@ class CheckInactiveUsers extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("register:check-inactive-users")
             ->setDescription("checks inactive users")
@@ -83,6 +84,7 @@ class CheckInactiveUsers extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $this->output = $output;
         $this->dryRun = (bool) $input->getOption(CheckInactiveUsers::OPTION_NAME_DRY_RUN);

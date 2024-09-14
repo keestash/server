@@ -28,6 +28,7 @@ use RateLimit\RateLimiter;
 
 class RateLimiterMiddlewareFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

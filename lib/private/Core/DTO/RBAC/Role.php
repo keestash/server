@@ -29,39 +29,31 @@ use KSP\Core\DTO\RBAC\IRole;
 
 class Role implements IRole {
 
-    private int               $id;
-    private string            $name;
-    private HashTable         $permissions;
-    private DateTimeInterface $createTs;
-
-    public function __construct(
-        int                 $id
-        , string            $name
-        , HashTable         $permissions
-        , DateTimeInterface $createTs
-    ) {
-        $this->id          = $id;
-        $this->name        = $name;
-        $this->permissions = $permissions;
-        $this->createTs    = $createTs;
+    public function __construct(private readonly int                 $id, private readonly string            $name, private readonly HashTable         $permissions, private readonly DateTimeInterface $createTs)
+    {
     }
 
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
 
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
 
+    #[\Override]
     public function getPermissions(): HashTable {
         return $this->permissions;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
+    #[\Override]
     public function compareTo($object): int {
         if (!$object instanceof RoleInterface) {
             return IComparable::IS_LESS;
@@ -78,6 +70,7 @@ class Role implements IRole {
         return IComparable::IS_LESS;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'            => $this->getId()

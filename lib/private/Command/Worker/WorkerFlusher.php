@@ -52,6 +52,7 @@ class WorkerFlusher extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         parent::configure();
         $this->setName("worker:flush")
@@ -64,6 +65,7 @@ class WorkerFlusher extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force         = (bool) $input->getOption(WorkerFlusher::OPTION_NAME_FORCE);
         $workerLogFile = $this->dataService->getPath() . '/' . WorkerRunner::WORKER_LOG_FILE;
@@ -111,16 +113,11 @@ class WorkerFlusher extends KeestashCommand {
                 $this->writeError('error while processing ' . $message->getId(), $output);
             }
 
-            switch ($result->getCode()) {
-                case IResult::RETURN_CODE_OK:
-                    $this->queueRepository->delete($message);
-                    break;
-                case IResult::RETURN_CODE_NOT_OK:
-                    $this->updateAttempts($message);
-                    break;
-                default:
-                    throw new KeestashException();
-            }
+            match ($result->getCode()) {
+                IResult::RETURN_CODE_OK => $this->queueRepository->delete($message),
+                IResult::RETURN_CODE_NOT_OK => $this->updateAttempts($message),
+                default => throw new KeestashException(),
+            };
             $this->writeInfo('ended successfully', $output);
 
         }
