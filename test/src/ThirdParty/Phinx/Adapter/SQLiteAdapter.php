@@ -53,10 +53,12 @@ class SQLiteAdapter extends ParentAdapter {
         AdapterInterface::PHINX_TYPE_VARBINARY     => 'varbinary_blob',
     ];
 
+    #[\Override]
     public function getColumnTypes(): array {
         return array_keys(SQLiteAdapter::$supportedColumnTypes);
     }
 
+    #[\Override]
     public function getSqlType($type, ?int $limit = null): array {
         $typeLC = strtolower($type);
         if ($type instanceof Literal) {
@@ -72,6 +74,7 @@ class SQLiteAdapter extends ParentAdapter {
         return ['name' => $name, 'limit' => $limit];
     }
 
+    #[\Override]
     protected function getColumnSqlDefinition(Column $column): string {
         $column->setUpdate("");
         return parent::getColumnSqlDefinition($column);

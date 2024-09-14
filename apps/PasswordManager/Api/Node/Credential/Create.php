@@ -62,6 +62,7 @@ class Create implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);

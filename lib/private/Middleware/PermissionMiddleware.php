@@ -46,6 +46,7 @@ final readonly class PermissionMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);

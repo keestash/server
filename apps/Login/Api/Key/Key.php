@@ -43,6 +43,7 @@ readonly final class Key implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
             /** @var IToken $token */

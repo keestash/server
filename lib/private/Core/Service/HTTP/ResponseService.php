@@ -33,6 +33,7 @@ class ResponseService implements IResponseService {
     ) {
     }
 
+    #[\Override]
     public function getResponseCode(string $name): int {
         /** @var null|Config $responseCodes */
         $responseCodes = $this->config->get(ConfigProvider::RESPONSE_CODES);

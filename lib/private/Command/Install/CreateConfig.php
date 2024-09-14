@@ -47,6 +47,7 @@ class CreateConfig extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("install:config")
             ->setDescription("writes the instance config file")
@@ -58,6 +59,7 @@ class CreateConfig extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $force      = (bool) $input->getOption(CreateConfig::OPTION_NAME_FORCE);
         $configFile = realpath($this->config->get(ConfigProvider::CONFIG_PATH) . "/config.php");

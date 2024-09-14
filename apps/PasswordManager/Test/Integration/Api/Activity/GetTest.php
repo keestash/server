@@ -110,7 +110,7 @@ class GetTest extends TestCase {
         $this->assertTrue($body['activityList'][0]['app_id'] === $activity->getAppId());
         $this->assertTrue($body['activityList'][0]['reference_key'] === $activity->getReferenceKey());
         $this->assertTrue($body['activityList'][0]['data'][0] === $activity->getData()->get(0));
-        $this->assertTrue(strtotime($body['activityList'][0]['create_ts']['date']) === $activity->getCreateTs()->getTimestamp());
+        $this->assertTrue(strtotime((string) $body['activityList'][0]['create_ts']['date']) === $activity->getCreateTs()->getTimestamp());
         $this->logout($headers, $user);
         $this->removeUser($user);
     }

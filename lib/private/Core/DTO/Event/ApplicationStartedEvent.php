@@ -35,10 +35,12 @@ class ApplicationStartedEvent extends Event {
         return $this->dateTime;
     }
 
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'dateTime'   => $this->getDateTime()

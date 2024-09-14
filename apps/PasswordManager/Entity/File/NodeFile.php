@@ -107,6 +107,7 @@ class NodeFile implements JWT {
     /**
      * @return string|null
      */
+    #[\Override]
     public function getJwt(): ?string {
         return $this->jwt;
     }
@@ -118,6 +119,7 @@ class NodeFile implements JWT {
         $this->jwt = $jwt;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'file'          => $this->getFile()

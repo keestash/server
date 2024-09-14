@@ -28,36 +28,35 @@ use KSP\Core\Service\Config\IConfigService;
 
 class MySQLBackend implements ISQLBackend {
 
-    private Connection     $connection;
-    private IConfigService $configService;
-
     public function __construct(
-        Connection       $connection
-        , IConfigService $configService
+        private readonly Connection       $connection
+        , private readonly IConfigService $configService
     ) {
-        $this->connection    = $connection;
-        $this->configService = $configService;
         try {
             $this->connect();
-        } catch (\Exception $exception) {
+        } catch (\Exception) {
 
         }
     }
 
+    #[\Override]
     public function connect(): bool {
         $this->connection->connect();
         return true;
     }
 
+    #[\Override]
     public function disconnect(): bool {
         $this->connection->close();
         return true;
     }
 
+    #[\Override]
     public function isConnected(): bool {
         return $this->connection->isConnected();
     }
 
+    #[\Override]
     public function getSchemaName(): string {
         return (string) $this->configService->getValue("db_name");
     }
@@ -67,14 +66,17 @@ class MySQLBackend implements ISQLBackend {
      *
      * @return Connection
      */
+    #[\Override]
     public function getConnection(): Connection {
         return $this->connection;
     }
 
+    #[\Override]
     public function getTables(): array {
         return $this->connection->createSchemaManager()->listTableNames();
     }
 
+    #[\Override]
     public function startTransaction(): bool {
         if (true === $this->connection->isTransactionActive()) {
             return true;
@@ -82,6 +84,7 @@ class MySQLBackend implements ISQLBackend {
         return $this->connection->beginTransaction();
     }
 
+    #[\Override]
     public function endTransaction(): bool {
         if (false === $this->connection->isTransactionActive()) {
             return true;
@@ -89,6 +92,7 @@ class MySQLBackend implements ISQLBackend {
         return $this->connection->commit();
     }
 
+    #[\Override]
     public function rollbackTransaction(): void {
         if (false === $this->connection->isTransactionActive()) {
             return;

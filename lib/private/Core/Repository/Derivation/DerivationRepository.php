@@ -55,6 +55,7 @@ class DerivationRepository implements IDerivationRepository {
      * @throws DerivationNotDeletedException
      * @throws Exception
      */
+    #[\Override]
     public function clear(IUser $user): void {
         try {
             $this->backend->getConnection()->beginTransaction();
@@ -76,6 +77,7 @@ class DerivationRepository implements IDerivationRepository {
      * @throws DerivationNotDeletedException
      * @throws Exception
      */
+    #[\Override]
     public function clearAll(): void {
         try {
             $this->backend->getConnection()->beginTransaction();
@@ -96,6 +98,7 @@ class DerivationRepository implements IDerivationRepository {
      * @throws DerivationNotAddedException
      * @throws Exception
      */
+    #[\Override]
     public function add(IDerivation $derivation): void {
         try {
             $this->backend->getConnection()->beginTransaction();
@@ -127,6 +130,7 @@ class DerivationRepository implements IDerivationRepository {
      * @return IDerivation
      * @throws DerivationNotFoundException
      */
+    #[\Override]
     public function get(IUser $user): IDerivation {
         try {
             $this->backend->getConnection()->beginTransaction();
@@ -184,6 +188,7 @@ class DerivationRepository implements IDerivationRepository {
      * @throws DerivationNotFoundException
      * @throws Exception
      */
+    #[\Override]
     public function getAll(): ArrayList {
         try {
             $this->backend->getConnection()->beginTransaction();
@@ -229,6 +234,7 @@ class DerivationRepository implements IDerivationRepository {
      * @throws DerivationNotDeletedException
      * @throws Exception
      */
+    #[\Override]
     public function remove(IDerivation $derivation): void {
         try {
             $this->backend->getConnection()->beginTransaction();
@@ -251,6 +257,7 @@ class DerivationRepository implements IDerivationRepository {
      * @throws Exception
      * @throws UserNotFoundException
      */
+    #[\Override]
     public function getOlderThan(DateTimeInterface $reference): ArrayList {
         $list         = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

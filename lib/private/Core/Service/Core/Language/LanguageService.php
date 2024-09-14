@@ -28,18 +28,18 @@ use Locale;
 
 class LanguageService implements ILanguageService {
 
-    private ILocaleService $localeService;
-
-    public function __construct(ILocaleService $localeService) {
-        $this->localeService = $localeService;
+    public function __construct(private readonly ILocaleService $localeService)
+    {
     }
 
+    #[\Override]
     public function getLanguage(): string {
         return Locale::getDisplayLanguage(
             $this->localeService->getLocale()
         );
     }
 
+    #[\Override]
     public function getLanguageForUser(IUser $user): string {
         return Locale::getDisplayLanguage(
             $this->localeService->getLocaleForUser($user)

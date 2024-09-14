@@ -43,10 +43,12 @@ class Credential extends Node {
     private int        $credentialId = 0;
     private Entropy    $entropy;
 
+    #[\Override]
     public function getType(): string {
         return Node::CREDENTIAL;
     }
 
+    #[\Override]
     public function getIcon(): string {
         return Node::ICON_KEY;
     }
@@ -151,6 +153,7 @@ class Credential extends Node {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return parent::jsonSerialize() + [
                 "username"        => $this->getUsername()

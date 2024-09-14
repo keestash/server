@@ -52,7 +52,7 @@ class ConfigurationTest extends TestCase {
         $this->assertFalse($data['registerEnabled']);
         $this->assertArrayHasKey('forgotPasswordEnabled', $data);
         $this->assertFalse($data['forgotPasswordEnabled']);
-        $instanceDb->addOption('demo', null === $demo ? "false" : $demo);
+        $instanceDb->addOption('demo', $demo ?? "false");
     }
 
     public function testGetConfigurationNonDemoMode(): void {
@@ -78,7 +78,7 @@ class ConfigurationTest extends TestCase {
         $this->assertTrue($data['registerEnabled']);
         $this->assertArrayHasKey('forgotPasswordEnabled', $data);
         $this->assertTrue($data['forgotPasswordEnabled']);
-        $instanceDb->addOption('demo', null === $demo ? "false" : $demo);
+        $instanceDb->addOption('demo', $demo ?? "false");
     }
 
 }

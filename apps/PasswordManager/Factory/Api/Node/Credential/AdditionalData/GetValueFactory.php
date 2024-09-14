@@ -33,6 +33,7 @@ use Psr\Log\LoggerInterface;
 
 class GetValueFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

@@ -33,38 +33,47 @@ class SQLiteBackend implements ISQLBackend {
         $this->backend->getConnection()->executeStatement('PRAGMA foreign_keys = ON;');
     }
 
+    #[\Override]
     public function connect(): bool {
         return $this->backend->connect();
     }
 
+    #[\Override]
     public function disconnect(): bool {
         return $this->backend->disconnect();
     }
 
+    #[\Override]
     public function isConnected(): bool {
         return $this->backend->isConnected();
     }
 
+    #[\Override]
     public function getConnection(): Connection {
         return $this->backend->getConnection();
     }
 
+    #[\Override]
     public function getSchemaName(): string {
         return $this->backend->getSchemaName();
     }
 
+    #[\Override]
     public function getTables(): array {
         return $this->backend->getTables();
     }
 
+    #[\Override]
     public function startTransaction(): bool {
         return $this->backend->startTransaction();
     }
 
+    #[\Override]
     public function endTransaction(): bool {
         return $this->backend->endTransaction();
     }
 
+    #[\Override]
     public function rollbackTransaction(): void {
         $this->backend->rollbackTransaction();
     }

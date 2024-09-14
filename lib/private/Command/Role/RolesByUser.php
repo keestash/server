@@ -35,18 +35,14 @@ class RolesByUser extends KeestashCommand {
 
     public const ARGUMENT_NAME_USER_ID = 'user-id';
 
-    private IUserRepository  $userRepository;
-    private IDateTimeService $dateTimeService;
-
     public function __construct(
-        IUserRepository    $userRepository
-        , IDateTimeService $dateTimeService
+        private readonly IUserRepository    $userRepository
+        , private readonly IDateTimeService $dateTimeService
     ) {
         parent::__construct();
-        $this->userRepository  = $userRepository;
-        $this->dateTimeService = $dateTimeService;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("role:get-user")
             ->setDescription("lists all roles by a given user")
@@ -57,13 +53,14 @@ class RolesByUser extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId    = $input->getArgument(RolesByUser::ARGUMENT_NAME_USER_ID);
         $tableRows = [];
 
         try {
             $user = $this->userRepository->getUserById((string) $userId);
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             $this->writeError('no user found', $output);
             return 0;
         }

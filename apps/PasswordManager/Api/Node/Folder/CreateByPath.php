@@ -54,6 +54,7 @@ class CreateByPath implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $this->logger->debug('start create by path');
         /** @var IToken $token */
@@ -76,7 +77,7 @@ class CreateByPath implements RequestHandlerInterface {
             );
         }
 
-        $folderNames = explode($delimiter, $path);
+        $folderNames = explode($delimiter, (string) $path);
         $folderCount = count($folderNames);
 
         $parent = $this->nodeService->getFolder($parentNodeId, $user, 0, $folderCount);

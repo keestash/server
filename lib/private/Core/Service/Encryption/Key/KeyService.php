@@ -56,6 +56,7 @@ class KeyService implements IKeyService {
      * @return IKey
      * @throws KeyNotCreatedException
      */
+    #[\Override]
     public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey {
         // Step 1: we create a random secret
         $secret = openssl_random_pseudo_bytes(4096);
@@ -84,6 +85,7 @@ class KeyService implements IKeyService {
      * @return IKey
      * @throws UnsupportedKeyException
      */
+    #[\Override]
     public function storeKey(IKeyHolder $keyHolder, IKey $key): IKey {
         if ($keyHolder instanceof IUser) {
             return $this->userKeyRepository->storeKey($keyHolder, $key);
@@ -100,6 +102,7 @@ class KeyService implements IKeyService {
      * @return IKey
      * @throws KeestashException
      */
+    #[\Override]
     public function getKey(IKeyHolder $keyHolder): IKey {
         if ($keyHolder instanceof IUser) {
             return $this->userKeyRepository->getKey($keyHolder);
@@ -120,6 +123,7 @@ class KeyService implements IKeyService {
      * @see IKeyService::storeKey()
      * @see IKeyService::createKey()
      */
+    #[\Override]
     public function createAndStoreKey(IKeyHolder $keyHolder): IKey {
         $key = $this->createKey(
             $this->credentialService->createCredentialFromDerivation($keyHolder)
@@ -133,6 +137,7 @@ class KeyService implements IKeyService {
      * @return void
      * @throws KeestashException
      */
+    #[\Override]
     public function remove(IKeyHolder $keyHolder): void {
         if ($keyHolder instanceof IUser) {
             $this->userKeyRepository->remove($keyHolder);

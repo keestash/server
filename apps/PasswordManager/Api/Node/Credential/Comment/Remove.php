@@ -33,20 +33,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Remove implements RequestHandlerInterface {
 
-    private CommentRepository $commentRepository;
-    private IL10N             $translator;
-    private NodeRepository    $nodeRepository;
-
-    public function __construct(
-        IL10N               $l10n
-        , CommentRepository $commentRepository
-        , NodeRepository    $nodeRepository
-    ) {
-        $this->commentRepository = $commentRepository;
-        $this->translator        = $l10n;
-        $this->nodeRepository    = $nodeRepository;
+    public function __construct(private readonly IL10N               $translator, private readonly CommentRepository $commentRepository, private readonly NodeRepository    $nodeRepository)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $commentId  = $parameters["commentId"] ?? null;

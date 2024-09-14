@@ -32,23 +32,11 @@ use Psr\Log\LoggerInterface;
 
 class OrganizationUserRepository implements IOrganizationUserRepository {
 
-    private IUserRepository  $userRepository;
-    private LoggerInterface          $logger;
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-
-    public function __construct(
-        IUserRepository    $userRepository
-        , IBackend         $backend
-        , LoggerInterface          $logger
-        , IDateTimeService $dateTimeService
-    ) {
-        $this->userRepository  = $userRepository;
-        $this->logger          = $logger;
-        $this->dateTimeService = $dateTimeService;
-        $this->backend         = $backend;
+    public function __construct(private readonly IUserRepository    $userRepository, private readonly IBackend         $backend, private readonly LoggerInterface          $logger, private readonly IDateTimeService $dateTimeService)
+    {
     }
 
+    #[\Override]
     public function getByOrganization(IOrganization $organization): IOrganization {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
@@ -73,6 +61,7 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
         return $organization;
     }
 
+    #[\Override]
     public function insert(IUser $user, IOrganization $organization): IOrganization {
 
         /** @var IUser $user */
@@ -102,6 +91,7 @@ class OrganizationUserRepository implements IOrganizationUserRepository {
         return $organization;
     }
 
+    #[\Override]
     public function remove(IUser $user, IOrganization $organization): bool {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         return $queryBuilder->delete('user_organization')

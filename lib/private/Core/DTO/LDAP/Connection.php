@@ -24,37 +24,23 @@ namespace Keestash\Core\DTO\LDAP;
 use DateTimeInterface;
 use KSP\Core\DTO\LDAP\IConnection;
 
-class Connection implements IConnection {
-
-    private string             $host;
-    private string             $port;
-    private string             $userDn;
-    private string             $password;
-    private string             $baseDn;
-    private ?DateTimeInterface $activeTs;
-    private DateTimeInterface  $createTs;
+readonly final class Connection implements IConnection {
 
     public function __construct(
-        string               $host
-        , string             $port
-        , string             $userDn
-        , string             $password
-        , string             $baseDn
-        , ?DateTimeInterface $activeTs
-        , DateTimeInterface  $createTs
+        private string             $host,
+        private string             $port,
+        private string             $userDn,
+        private string             $password,
+        private string             $baseDn,
+        private ?DateTimeInterface $activeTs,
+        private DateTimeInterface  $createTs
     ) {
-        $this->host     = $host;
-        $this->port     = $port;
-        $this->userDn   = $userDn;
-        $this->password = $password;
-        $this->baseDn   = $baseDn;
-        $this->activeTs = $activeTs;
-        $this->createTs = $createTs;
     }
 
     /**
      * @return string
      */
+    #[\Override]
     public function getHost(): string {
         return $this->host;
     }
@@ -62,6 +48,7 @@ class Connection implements IConnection {
     /**
      * @return string
      */
+    #[\Override]
     public function getPort(): string {
         return $this->port;
     }
@@ -69,6 +56,7 @@ class Connection implements IConnection {
     /**
      * @return string
      */
+    #[\Override]
     public function getUserDn(): string {
         return $this->userDn;
     }
@@ -76,6 +64,7 @@ class Connection implements IConnection {
     /**
      * @return string
      */
+    #[\Override]
     public function getPassword(): string {
         return $this->password;
     }
@@ -83,6 +72,7 @@ class Connection implements IConnection {
     /**
      * @return string
      */
+    #[\Override]
     public function getBaseDn(): string {
         return $this->baseDn;
     }
@@ -90,6 +80,7 @@ class Connection implements IConnection {
     /**
      * @return ?DateTimeInterface
      */
+    #[\Override]
     public function getActiveTs(): ?DateTimeInterface {
         return $this->activeTs;
     }
@@ -97,10 +88,12 @@ class Connection implements IConnection {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'host'        => $this->getHost()

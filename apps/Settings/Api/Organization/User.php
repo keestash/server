@@ -39,23 +39,11 @@ class User implements RequestHandlerInterface {
     public const MODE_ADD    = 'add.mode';
     public const MODE_REMOVE = 'remove.mode';
 
-    private IOrganizationRepository     $organizationRepository;
-    private IOrganizationUserRepository $organizationUserRepository;
-    private IUserRepository $userRepository;
-    private IEventService   $eventManager;
-
-    public function __construct(
-        IOrganizationRepository       $organizationRepository
-        , IOrganizationUserRepository $organizationUserRepository
-        , IUserRepository             $userRepository
-        , IEventService               $eventManager
-    ) {
-        $this->organizationUserRepository = $organizationUserRepository;
-        $this->organizationRepository     = $organizationRepository;
-        $this->userRepository             = $userRepository;
-        $this->eventManager               = $eventManager;
+    public function __construct(private readonly IOrganizationRepository       $organizationRepository, private readonly IOrganizationUserRepository $organizationUserRepository, private readonly IUserRepository             $userRepository, private readonly IEventService               $eventManager)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters     = (array) $request->getParsedBody();
         $mode           = (string) ($parameters["mode"] ?? '');
@@ -72,7 +60,7 @@ class User implements RequestHandlerInterface {
         $organization = $this->organizationRepository->get($organizationId);
         try {
             $user = $this->userRepository->getUserById($userId);
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 

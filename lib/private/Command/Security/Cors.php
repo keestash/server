@@ -43,6 +43,7 @@ class Cors extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("security:cors")
             ->setDescription("sets the cors hosts")
@@ -64,6 +65,7 @@ class Cors extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $forceWrite   = true === $input->getOption(Cors::OPTION_NAME_FORCE_WRITE);
         $forceBackup  = true === $input->getOption(Cors::OPTION_NAME_SKIP_FORCE_BACKUP);

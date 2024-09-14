@@ -34,17 +34,11 @@ use Symfony\Component\Ldap\Ldap;
 
 class LDAPService implements ILDAPService {
 
-    private KeestashEncryptionService $encryptionService;
-    private InstanceDB                $instanceDB;
-
-    public function __construct(
-        KeestashEncryptionService $encryptionService
-        , InstanceDB              $instanceDB
-    ) {
-        $this->encryptionService = $encryptionService;
-        $this->instanceDB        = $instanceDB;
+    public function __construct(private readonly KeestashEncryptionService $encryptionService, private readonly InstanceDB              $instanceDB)
+    {
     }
 
+    #[\Override]
     public function listUsers(IConnection $connection): array {
         $ldap = Ldap::create(
             'ext_ldap',
@@ -67,6 +61,7 @@ class LDAPService implements ILDAPService {
         return $query->execute()->toArray();
     }
 
+    #[\Override]
     public function decryptLdapConnection(IConnection $connection): IConnection {
         $instanceHash = $this->instanceDB->getOption(
             InstanceDB::OPTION_NAME_INSTANCE_HASH
@@ -103,6 +98,7 @@ class LDAPService implements ILDAPService {
         );
     }
 
+    #[\Override]
     public function verifyUser(
         IUser         $user
         , IConnection $connection
@@ -124,7 +120,7 @@ class LDAPService implements ILDAPService {
             );
             $ldap->bind('uid=' . $user->getName() . ',' . $decryptedConnection->getBaseDn(), $plainPassword);
             return true;
-        } catch (ConnectionException $exception) {
+        } catch (ConnectionException) {
             return false;
         }
     }

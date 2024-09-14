@@ -42,8 +42,9 @@ class EventService implements IEventService {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
-        $listeners  = $this->listeners[get_class($event)] ?? [];
+        $listeners  = $this->listeners[$event::class] ?? [];
         $serializer = new PhpSerialize();
 
         $messageList = new ArrayList();
@@ -61,7 +62,7 @@ class EventService implements IEventService {
                         'listener' => $listener
                         , 'event'  => [
                         'serialized' => $serializer->serialize($event)
-                        , 'name'     => get_class($event)
+                        , 'name'     => $event::class
                     ]
                     ]
                 )
@@ -81,6 +82,7 @@ class EventService implements IEventService {
 
     }
 
+    #[\Override]
     public function registerAll(array $events): void {
         foreach ($events as $event => $listeners) {
             foreach ($listeners as $listener) {
@@ -89,6 +91,7 @@ class EventService implements IEventService {
         }
     }
 
+    #[\Override]
     public function register(string $event, string $listener): void {
         $this->listeners[$event][] = $listener;
     }

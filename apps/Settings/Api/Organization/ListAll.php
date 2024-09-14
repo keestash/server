@@ -33,17 +33,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ListAll implements RequestHandlerInterface {
 
-    private IOrganizationRepository $organizationRepository;
-    private IUserRepository         $userRepository;
-
-    public function __construct(
-        IOrganizationRepository $organizationRepository
-        , IUserRepository       $userRepository
-    ) {
-        $this->organizationRepository = $organizationRepository;
-        $this->userRepository         = $userRepository;
+    public function __construct(private readonly IOrganizationRepository $organizationRepository, private readonly IUserRepository       $userRepository)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $includeActive = $request->getAttribute('includeInactive', false);
         $includeActive = true === $includeActive || 'true' === $includeActive;

@@ -59,6 +59,7 @@ final readonly class PublicShare implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         return match (strtolower($request->getMethod())) {
             IVerb::POST => $this->handlePost($request),

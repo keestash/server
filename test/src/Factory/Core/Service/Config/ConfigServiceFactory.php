@@ -29,6 +29,7 @@ use Psr\Log\LogLevel;
 
 class ConfigServiceFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

@@ -53,6 +53,7 @@ final readonly class PublicSharePassword implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
             $parameters = (array) $request->getParsedBody();

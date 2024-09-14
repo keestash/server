@@ -45,6 +45,7 @@ class Delete implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
             $id = (string) $request->getAttribute('advid', 0);

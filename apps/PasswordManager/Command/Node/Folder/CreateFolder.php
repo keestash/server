@@ -36,19 +36,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateFolder extends KeestashCommand {
 
-    private NodeRepository  $nodeRepository;
-    private IUserRepository $userRepository;
-
     public function __construct(
-        NodeRepository    $nodeRepository
-        , IUserRepository $userRepository
+        private readonly NodeRepository    $nodeRepository
+        , private readonly IUserRepository $userRepository
     ) {
         parent::__construct();
-
-        $this->nodeRepository = $nodeRepository;
-        $this->userRepository = $userRepository;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("password-manager:create-folder")
             ->setDescription("Creates a folder for a given user")
@@ -57,6 +52,7 @@ class CreateFolder extends KeestashCommand {
             ->addArgument("parent", InputArgument::REQUIRED, "The parent node. Must be a folder or root (default)");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId = (string) $input->getArgument("user_id");
         $name   = $input->getArgument("name");
@@ -71,7 +67,7 @@ class CreateFolder extends KeestashCommand {
 
         try {
             $parentNode = $this->nodeRepository->getNode($parent);
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             $this->writeError("No parent id found for $parent. Aborting!", $output);
             exit(1);
         }

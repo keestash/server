@@ -31,6 +31,7 @@ class MimeTypeServiceTest extends TestCase {
 
     private IMimeTypeService $mimeTypeService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->mimeTypeService = $this->getService(IMimeTypeService::class);

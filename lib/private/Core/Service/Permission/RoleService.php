@@ -42,6 +42,7 @@ class RoleService implements IRoleService {
     ) {
     }
 
+    #[\Override]
     public function createRoles(): void {
         $roles = $this->config
             ->get(ConfigProvider::PERMISSIONS, new Config([]))
@@ -85,11 +86,13 @@ class RoleService implements IRoleService {
         }
     }
 
+    #[\Override]
     public function recreateRoles(): void {
         $this->rbacRepository->clearRoles();
         $this->createRoles();
     }
 
+    #[\Override]
     public function assignAllRoles(): void {
         $permissionsToRoles =
             $this->config->get(ConfigProvider::PERMISSIONS, new Config([]))
@@ -123,6 +126,7 @@ class RoleService implements IRoleService {
         return !($permission instanceof NullRole);
     }
 
+    #[\Override]
     public function reassignAllRoles(): void {
         $this->rbacRepository->clearRolePermissions();
         $this->assignAllRoles();

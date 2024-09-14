@@ -34,6 +34,7 @@ use Psr\Log\NullLogger;
 
 class ConnectionFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

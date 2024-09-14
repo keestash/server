@@ -28,6 +28,7 @@ class IniConfigServiceTest extends TestCase {
 
     private IIniConfigService $configService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->configService = $this->getService(IIniConfigService::class);

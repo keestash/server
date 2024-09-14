@@ -31,6 +31,7 @@ use Psr\Log\LoggerInterface;
 
 class DumpAllFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

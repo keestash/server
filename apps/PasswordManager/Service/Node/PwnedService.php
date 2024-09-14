@@ -110,7 +110,7 @@ class PwnedService {
         );
 
         foreach ($this->csvService->readString((string) $response->getBody(), false) as $row) {
-            $exploded = explode(":", $row[0]);
+            $exploded = explode(":", (string) $row[0]);
             $suffix   = $exploded[0];
             $count    = $exploded[1];
 

@@ -30,7 +30,7 @@ use Psr\Log\LoggerInterface;
 
 class BreadCrumbService {
 
-    private const ROOT_CACHE_KEY = 'key.cache.root.{userId}';
+    private const string ROOT_CACHE_KEY = 'key.cache.root.{userId}';
 
     public function __construct(
         private readonly ICacheService     $cacheService

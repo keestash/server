@@ -39,11 +39,13 @@ class DerivationList extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("derivation:list")
             ->setDescription("lists all derivation entries");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $derivations = $this->derivationRepository->getAll();
         $tableRows   = [];

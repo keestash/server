@@ -31,6 +31,7 @@ class ActivityServiceTest extends TestCase {
     private IActivityService    $activityService;
     private IActivityRepository $activityRepository;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->activityService    = $this->getService(IActivityService::class);

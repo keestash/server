@@ -21,9 +21,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Keestash\Core\Service\Config\ConfigService;
-
-(function () {
+(static function (): void {
 
     chdir(dirname(__DIR__));
 

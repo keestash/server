@@ -42,21 +42,8 @@ use Psr\Log\LoggerInterface;
 
 class FileRepository implements IFileRepository {
 
-    private IUserRepository  $userRepository;
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface          $logger;
-
-    public function __construct(
-        IBackend           $backend
-        , IUserRepository  $userRepository
-        , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
-    ) {
-        $this->userRepository  = $userRepository;
-        $this->dateTimeService = $dateTimeService;
-        $this->backend         = $backend;
-        $this->logger          = $logger;
+    public function __construct(private readonly IBackend           $backend, private readonly IUserRepository  $userRepository, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface          $logger)
+    {
     }
 
     /**
@@ -64,6 +51,7 @@ class FileRepository implements IFileRepository {
      * @return FileList
      * @throws FileNotCreatedException
      */
+    #[\Override]
     public function addAll(FileList $files): FileList {
         /** @var IFile $file */
         foreach ($files as $key => $file) {
@@ -79,6 +67,7 @@ class FileRepository implements IFileRepository {
      * @return IFile
      * @throws FileNotCreatedException
      */
+    #[\Override]
     public function add(IFile $file): IFile {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -126,6 +115,7 @@ class FileRepository implements IFileRepository {
      * @return FileList
      * @throws FileNotDeletedException
      */
+    #[\Override]
     public function removeAll(FileList $files): FileList {
         foreach ($files as $file) {
             $this->remove($file);
@@ -138,6 +128,7 @@ class FileRepository implements IFileRepository {
      * @return IFile
      * @throws FileNotDeletedException
      */
+    #[\Override]
     public function remove(IFile $file): IFile {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -158,6 +149,7 @@ class FileRepository implements IFileRepository {
      * @throws FileNotFoundException
      * @throws KeestashException
      */
+    #[\Override]
     public function get(int $id): IFile {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -232,6 +224,7 @@ class FileRepository implements IFileRepository {
      * @throws FileNotFoundException
      * @throws UserNotFoundException
      */
+    #[\Override]
     public function getByName(string $name): IFile {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -302,6 +295,7 @@ class FileRepository implements IFileRepository {
      * @return IFile
      * @throws FileNotFoundException
      */
+    #[\Override]
     public function getByUri(IUniformResourceIdentifier $uri): IFile {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -371,6 +365,7 @@ class FileRepository implements IFileRepository {
      * @return void
      * @throws FileNotDeletedException
      */
+    #[\Override]
     public function removeForUser(IUser $user): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -389,6 +384,7 @@ class FileRepository implements IFileRepository {
      * @return IFile
      * @throws FileNotUpdatedException
      */
+    #[\Override]
     public function update(IFile $file): IFile {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -423,14 +419,17 @@ class FileRepository implements IFileRepository {
         }
     }
 
+    #[\Override]
     public function startTransaction(): void {
         $this->backend->startTransaction();
     }
 
+    #[\Override]
     public function endTransaction(): void {
         $this->backend->endTransaction();
     }
 
+    #[\Override]
     public function rollBack(): void {
         $this->backend->rollbackTransaction();
     }

@@ -25,16 +25,16 @@ use Keestash\Core\Service\Config\IniConfigService as CoreIniConfigService;
 
 class IniConfigService extends CoreIniConfigService {
 
-    private array $mockedIniConfig;
-
-    public function __construct(array $mockedIniConfig) {
-        $this->mockedIniConfig = $mockedIniConfig;
+    public function __construct(private array $mockedIniConfig)
+    {
     }
 
+    #[\Override]
     public function getValue(string $key, $default = null) {
         return $this->mockedIniConfig[$key] ?? $default;
     }
 
+    #[\Override]
     public function getAll(): array {
         return $this->mockedIniConfig;
     }

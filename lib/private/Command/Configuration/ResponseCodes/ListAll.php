@@ -40,6 +40,7 @@ class ListAll extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName('keestash:response-codes:list')
             ->setDescription('lists all response codes and their corresponding info')
@@ -51,6 +52,7 @@ class ListAll extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $codeOrName    = (array) $input->getOption(ListAll::OPTION_NAME_CODE_OR_NAME);
@@ -84,7 +86,7 @@ class ListAll extends KeestashCommand {
         }
 
         foreach ($codeOrName as $cn) {
-            if (true === str_contains($name, $cn) || true === str_contains((string) $code, $cn)) {
+            if (true === str_contains($name, (string) $cn) || true === str_contains((string) $code, (string) $cn)) {
                 return true;
             }
         }

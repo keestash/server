@@ -60,6 +60,7 @@ class SendSummaryMail implements IListener {
      * @throws KeestashException
      * @throws UserException
      */
+    #[\Override]
     public function execute(IEvent $event): void {
         $referenceDate = new DateTimeImmutable();
         $referenceDate = $referenceDate->modify('-24 hour');

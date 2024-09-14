@@ -27,12 +27,11 @@ use KSP\Core\Service\HTTP\IHTTPService;
 
 class HTTPService implements IHTTPService {
 
-    private IEnvironmentService $environmentService;
-
-    public function __construct(IEnvironmentService $environmentService) {
-        $this->environmentService = $environmentService;
+    public function __construct(private readonly IEnvironmentService $environmentService)
+    {
     }
 
+    #[\Override]
     public function getBaseURL(bool $withScript = true, bool $forceIndex = false): string {
         if (true === $this->environmentService->isConsole()) return "";
         $scriptName          = "index.php";
@@ -57,6 +56,7 @@ class HTTPService implements IHTTPService {
         }
     }
 
+    #[\Override]
     public function buildWebRoute(string $base): string {
         $scriptName          = "index.php";
         $scriptNameToReplace = $scriptName;
@@ -66,18 +66,21 @@ class HTTPService implements IHTTPService {
         return substr($url, 0, $position) . $scriptNameToReplace . "/" . $base;
     }
 
+    #[\Override]
     public function getBaseAPIURL(): ?string {
         $baseURL = $this->getBaseURL();
         if ("" === $baseURL) return null;
         return str_replace("index.php", "api.php", $baseURL);
     }
 
+    #[\Override]
     public function getAssetURL(): ?string {
         $baseURL = $this->getBaseURL();
         if ("" === $baseURL) return null;
         return str_replace("index.php", "asset.php", $baseURL);
     }
 
+    #[\Override]
     public function getLoginRoute(): string {
         return $this->buildWebRoute("login");
     }
@@ -87,6 +90,7 @@ class HTTPService implements IHTTPService {
      * @param bool $forceIndex
      * @return array<string, int|string>
      */
+    #[\Override]
     public function getParsedBaseUrl(bool $withScript = true, bool $forceIndex = false): array {
         $parsed = parse_url($this->getBaseURL($withScript, $forceIndex));
 

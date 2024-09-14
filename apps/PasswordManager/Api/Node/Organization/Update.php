@@ -38,26 +38,11 @@ use Psr\Log\LoggerInterface;
 
 class Update implements RequestHandlerInterface {
 
-    private NodeRepository             $nodeRepository;
-    private IOrganizationRepository    $organizationRepository;
-    private LoggerInterface                    $logger;
-    private OrganizationNodeRepository $organizationNodeRepository;
-    private IEventService              $eventManager;
-
-    public function __construct(
-        NodeRepository               $nodeRepository
-        , IOrganizationRepository    $organizationRepository
-        , LoggerInterface                    $logger
-        , OrganizationNodeRepository $organizationNodeRepository
-        , IEventService              $eventManager
-    ) {
-        $this->nodeRepository             = $nodeRepository;
-        $this->organizationRepository     = $organizationRepository;
-        $this->logger                     = $logger;
-        $this->organizationNodeRepository = $organizationNodeRepository;
-        $this->eventManager               = $eventManager;
+    public function __construct(private readonly NodeRepository               $nodeRepository, private readonly IOrganizationRepository    $organizationRepository, private readonly LoggerInterface                    $logger, private readonly OrganizationNodeRepository $organizationNodeRepository, private readonly IEventService              $eventManager)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
 

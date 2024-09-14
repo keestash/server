@@ -37,6 +37,7 @@ class Generate implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $length       = (string) $request->getAttribute("length");
         $upperCase    = (string) $request->getAttribute("upperCase");

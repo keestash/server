@@ -26,18 +26,8 @@ use doganoo\PHPAlgorithms\Common\Util\Comparator;
 
 class Passwords implements IComparable {
 
-    private string $prefix;
-    private string $suffix;
-    private int    $count;
-
-    public function __construct(
-        string   $prefix
-        , string $suffix
-        , int    $count
-    ) {
-        $this->prefix = $prefix;
-        $this->suffix = $suffix;
-        $this->count  = $count;
+    public function __construct(private readonly string   $prefix, private readonly string $suffix, private readonly int    $count)
+    {
     }
 
     /**
@@ -65,6 +55,7 @@ class Passwords implements IComparable {
         return $this->count;
     }
 
+    #[\Override]
     public function compareTo($object): int {
         if ($object instanceof Passwords) {
             if (Comparator::equals($this->getFullHash(), $object->getFullHash())) return IComparable::EQUAL;

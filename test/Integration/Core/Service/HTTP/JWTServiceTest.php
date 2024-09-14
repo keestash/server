@@ -30,6 +30,7 @@ class JWTServiceTest extends TestCase {
 
     private IJWTService $jwtService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->jwtService = $this->getService(IJWTService::class);

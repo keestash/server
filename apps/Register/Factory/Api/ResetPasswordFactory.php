@@ -35,6 +35,7 @@ use Psr\Log\LoggerInterface;
 
 class ResetPasswordFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

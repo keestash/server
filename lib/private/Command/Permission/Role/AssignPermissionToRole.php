@@ -35,13 +35,11 @@ class AssignPermissionToRole extends KeestashCommand {
     public const string ARGUMENT_NAME_PERMISSION_ID = 'permission-id';
     public const string ARGUMENT_NAME_ROLE_ID       = 'role-id';
 
-    private RBACRepositoryInterface $rbacRepository;
-
-    public function __construct(RBACRepositoryInterface $rbacRepository) {
+    public function __construct(private readonly RBACRepositoryInterface $rbacRepository) {
         parent::__construct();
-        $this->rbacRepository = $rbacRepository;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:role:assign")
             ->setDescription("adds a permission to role")
@@ -57,6 +55,7 @@ class AssignPermissionToRole extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $permissionId = $input->getArgument(AssignPermissionToRole::ARGUMENT_NAME_PERMISSION_ID);
         $roleId       = $input->getArgument(AssignPermissionToRole::ARGUMENT_NAME_ROLE_ID);
@@ -91,7 +90,7 @@ class AssignPermissionToRole extends KeestashCommand {
                 )
                 , $output
             );
-        } catch (KeestashException $exception) {
+        } catch (KeestashException) {
             $this->writeError('user could not be assigned', $output);
         }
 

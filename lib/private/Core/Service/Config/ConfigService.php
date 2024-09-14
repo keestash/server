@@ -24,17 +24,14 @@ namespace Keestash\Core\Service\Config;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\Service\Config\IConfigService;
 
-class ConfigService implements IConfigService {
-
-    private HashTable $config;
+final readonly class ConfigService implements IConfigService {
 
     /**
      * ConfigService constructor.
      *
      * @param HashTable $config
      */
-    public function __construct(HashTable $config) {
-        $this->config = $config;
+    public function __construct(private HashTable $config) {
     }
 
     /**
@@ -43,6 +40,7 @@ class ConfigService implements IConfigService {
      *
      * @return mixed|null
      */
+    #[\Override]
     public function getValue(string $key, $default = null) {
 
         if (true === $this->config->containsKey($key)) {
@@ -54,6 +52,7 @@ class ConfigService implements IConfigService {
     /**
      * @return array
      */
+    #[\Override]
     public function getAll(): array {
         return $this->config->toArray();
     }

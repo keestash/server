@@ -59,6 +59,7 @@ class CreateUser extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("register:create-user")
             ->setDescription("creates a new user")
@@ -73,6 +74,7 @@ class CreateUser extends KeestashCommand {
      * @throws KeestashException
      * @throws JsonException
      */
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a user");

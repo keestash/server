@@ -36,20 +36,11 @@ use TypeError;
 
 class UserAdd implements RequestHandlerInterface {
 
-    private UserService            $userService;
-    private IUserRepositoryService $userRepositoryService;
-    private LoggerInterface        $logger;
-
-    public function __construct(
-        UserService              $userService
-        , IUserRepositoryService $userRepositoryService
-        , LoggerInterface        $logger
-    ) {
-        $this->userService           = $userService;
-        $this->userRepositoryService = $userRepositoryService;
-        $this->logger                = $logger;
+    public function __construct(private readonly UserService              $userService, private readonly IUserRepositoryService $userRepositoryService, private readonly LoggerInterface        $logger)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
 

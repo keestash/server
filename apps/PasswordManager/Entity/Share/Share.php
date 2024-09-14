@@ -27,6 +27,7 @@ class Share implements IJsonObject {
     /**
      * @return array
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

@@ -44,6 +44,7 @@ class ChangeState implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parsedBody = (array) $request->getParsedBody();
         $activate   = $parsedBody['activate'];

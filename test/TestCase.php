@@ -43,6 +43,7 @@ class TestCase extends FrameworkTestCase {
     private ServiceManager $serviceManager;
     private float          $start;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->start          = microtime(true);
@@ -127,6 +128,7 @@ class TestCase extends FrameworkTestCase {
         $userRepositoryService->removeUser($user);
     }
 
+    #[\Override]
     protected function tearDown(): void {
         $end = microtime(true);
         /** @var Config $config */

@@ -29,21 +29,20 @@ use KSP\Core\Service\Event\Listener\IListener;
 
 class OrganizationAddedEventListener implements IListener {
 
-    private IKeyService $keyService;
-
-    public function __construct(IKeyService $keyService) {
-        $this->keyService = $keyService;
+    public function __construct(private readonly IKeyService $keyService)
+    {
     }
 
     /**
      * @param IEvent $event
      * @throws SettingsException
      */
+    #[\Override]
     public function execute(IEvent $event): void {
 
         if (false === $event instanceof OrganizationAddedEvent) {
             throw new SettingsException(
-                'was expecting ' . OrganizationAddedEvent::class . ', got ' . get_class($event)
+                'was expecting ' . OrganizationAddedEvent::class . ', got ' . $event::class
             );
         }
 

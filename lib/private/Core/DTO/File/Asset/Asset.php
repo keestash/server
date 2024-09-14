@@ -39,6 +39,7 @@ class Asset extends File implements IAsset {
         $this->url = $url;
     }
 
+    #[\Override]
     public function getURL(): IUniformResourceLocator {
         return $this->url;
     }
@@ -50,6 +51,7 @@ class Asset extends File implements IAsset {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return parent::jsonSerialize() + [
                 "url" => $this->getURL()

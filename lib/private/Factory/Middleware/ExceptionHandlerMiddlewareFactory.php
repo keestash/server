@@ -25,10 +25,10 @@ use Interop\Container\ContainerInterface;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Log\LoggerInterface;
 
 class ExceptionHandlerMiddlewareFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

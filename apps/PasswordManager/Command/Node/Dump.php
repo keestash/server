@@ -36,9 +36,9 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 final class Dump extends KeestashCommand {
 
-    public const ARGUMENT_NAME_NODE_ID     = 'nodeId';
-    public const OPTION_NAME_SHOW_PASSWORD = 'show-password';
-    public const OPTION_NAME_FORCE         = 'force';
+    public const string ARGUMENT_NAME_NODE_ID     = 'nodeId';
+    public const string OPTION_NAME_SHOW_PASSWORD = 'show-password';
+    public const string OPTION_NAME_FORCE         = 'force';
 
     public function __construct(
         private readonly NodeRepository          $nodeRepository
@@ -48,6 +48,7 @@ final class Dump extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("password-manager:dump")
             ->setDescription("show an node")
@@ -71,6 +72,7 @@ final class Dump extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $nodeId       = $input->getArgument(Dump::ARGUMENT_NAME_NODE_ID);
         $showPassword = (bool) $input->getOption(Dump::OPTION_NAME_SHOW_PASSWORD);

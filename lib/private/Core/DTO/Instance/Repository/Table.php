@@ -37,6 +37,7 @@ class Table implements ITable {
     /**
      * @return string
      */
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
@@ -51,6 +52,7 @@ class Table implements ITable {
     /**
      * @return string
      */
+    #[\Override]
     public function getColumn(): string {
         return $this->column;
     }
@@ -65,6 +67,7 @@ class Table implements ITable {
     /**
      * @return string
      */
+    #[\Override]
     public function getReferencedTable(): string {
         return $this->referencedTable;
     }
@@ -79,6 +82,7 @@ class Table implements ITable {
     /**
      * @return string
      */
+    #[\Override]
     public function getReferencedColumn(): string {
         return $this->referencedColumn;
     }
@@ -93,6 +97,7 @@ class Table implements ITable {
     /**
      * @inheritDoc
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "name"                => $this->getName()

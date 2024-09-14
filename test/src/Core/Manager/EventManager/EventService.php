@@ -28,16 +28,15 @@ use Psr\Container\ContainerInterface;
 
 class EventService implements IEventService {
 
-    private ContainerInterface $container;
-
     private array $listeners = [];
 
-    public function __construct(ContainerInterface $container) {
-        $this->container = $container;
+    public function __construct(private readonly ContainerInterface $container)
+    {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
-        $listeners = $this->listeners[get_class($event)] ?? [];
+        $listeners = $this->listeners[$event::class] ?? [];
 
         foreach ($listeners as $listener) {
 
@@ -53,6 +52,7 @@ class EventService implements IEventService {
 
     }
 
+    #[\Override]
     public function registerAll(array $events): void {
         foreach ($events as $event => $listeners) {
             foreach ($listeners as $listener) {
@@ -61,6 +61,7 @@ class EventService implements IEventService {
         }
     }
 
+    #[\Override]
     public function register(string $event, string $listener): void {
         $this->listeners[$event][] = $listener;
     }

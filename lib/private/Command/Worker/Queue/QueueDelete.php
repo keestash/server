@@ -31,13 +31,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class QueueDelete extends KeestashCommand {
 
     public const ARGUMENT_NAME_UUID = 'uuid';
-    private IQueueService $queueService;
 
-    public function __construct(IQueueService $queueService) {
+    public function __construct(private readonly IQueueService $queueService) {
         parent::__construct();
-        $this->queueService = $queueService;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("worker:queue:delete")
             ->setDescription("deletes a single message")
@@ -48,6 +47,7 @@ class QueueDelete extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $uuid = (string) $input->getArgument(QueueDelete::ARGUMENT_NAME_UUID);
         $this->queueService->remove($uuid);

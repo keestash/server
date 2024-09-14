@@ -28,6 +28,7 @@ class EmailValidatorBuilderTest extends TestCase {
 
     private EmailAddress $emailAddress;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         /** @var EmailAddress $uriValidator */

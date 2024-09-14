@@ -103,6 +103,7 @@ class Comment implements IJsonObject, JWT {
         $this->jwt = $jwt;
     }
 
+    #[\Override]
     public function getJWT(): ?string {
         return $this->jwt;
     }
@@ -115,6 +116,7 @@ class Comment implements IJsonObject, JWT {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

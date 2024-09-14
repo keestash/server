@@ -33,24 +33,15 @@ use Phinx\Wrapper\TextWrapper;
 
 class Migrator implements IMigrator {
 
-    private LoggerInterface        $logger;
-    private Config         $config;
-    private IConfigService $configService;
-
-    public function __construct(
-        LoggerInterface          $logger
-        , Config         $config
-        , IConfigService $configService
-    ) {
-        $this->logger        = $logger;
-        $this->config        = $config;
-        $this->configService = $configService;
+    public function __construct(private readonly LoggerInterface          $logger, private readonly Config         $config, private readonly IConfigService $configService)
+    {
     }
 
     protected function getFilePath(): string {
         return (string) $this->config->get(Keestash\ConfigProvider::PHINX_PATH);
     }
 
+    #[\Override]
     public function runCore(): bool {
         $file   = $this->getFilePath() . "/instance.php";
         $exists = $this->checkFile($file);
@@ -61,6 +52,7 @@ class Migrator implements IMigrator {
         return $this->run($file);
     }
 
+    #[\Override]
     public function runApps(): bool {
         $file   = $this->getFilePath() . "/apps.php";
         $exists = $this->checkFile($file);

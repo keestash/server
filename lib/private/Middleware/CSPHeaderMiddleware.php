@@ -67,6 +67,7 @@ class CSPHeaderMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $backendUrl  = $this->httpService->getBaseURL(false);
         $frontendUrl = $this->configService->getValue('frontend_url');

@@ -43,6 +43,7 @@ final class Lock extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("users:lock")
             ->setDescription("locks one or more users")
@@ -53,6 +54,7 @@ final class Lock extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userIds = (array) $input->getArgument(Lock::ARGUMENT_NAME_USER_ID);
 
@@ -61,11 +63,11 @@ final class Lock extends KeestashCommand {
                 $user = $this->userRepository->getUserById((string) $id);
                 $this->userStateService->forceLock($user);
                 $this->writeInfo('locked user ' . $user->getName() . ' (' . $user->getId() . ')', $output);
-            } catch (UserNotFoundException $e) {
+            } catch (UserNotFoundException) {
                 $this->writeError('user with id ' . $id . ' not found', $output);
-            } catch (UserStateNotInsertedException $e) {
+            } catch (UserStateNotInsertedException) {
                 $this->writeError('user state for user with id ' . $id . ' not found', $output);
-            } catch (UserStateException $e) {
+            } catch (UserStateException) {
                 $this->writeError('user state exception', $output);
             }
         }

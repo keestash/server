@@ -33,6 +33,7 @@ class MimeTypeService implements IMimeTypeService {
      * @throws IndexOutOfBoundsException
      * @throws UnknownExtensionException
      */
+    #[\Override]
     public function getExtension(string $mimeType): array {
         $position = strpos($mimeType, "/");
 

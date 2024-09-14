@@ -31,26 +31,32 @@ use KSP\Core\Repository\Payment\IPaymentLogRepository;
 
 class DefaultPaymentLogRepository implements IPaymentLogRepository {
 
+    #[\Override]
     public function insert(ILog $log): void {
         throw new PaymentNotCreatedException();
     }
 
+    #[\Override]
     public function update(ILog $log): ILog {
         throw new PaymentException();
     }
 
+    #[\Override]
     public function get(string $key): ILog {
         throw new PaymentException();
     }
 
+    #[\Override]
     public function getByUser(IUser $user): ILog {
         throw new PaymentException();
     }
 
+    #[\Override]
     public function getAll(): ArrayList {
         throw new PaymentException();
     }
 
+    #[\Override]
     public function getByType(Type $type): ILog {
         throw new PaymentException();
     }

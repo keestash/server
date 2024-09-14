@@ -26,24 +26,26 @@ use KSP\Core\Service\Cache\ICacheService;
 
 class RedisService implements ICacheService {
 
-    private ICacheService $cacheService;
-
-    public function __construct(NullService $nullService) {
-        $this->cacheService = $nullService;
+    public function __construct(private readonly ICacheService $cacheService)
+    {
     }
 
+    #[\Override]
     public function connect(): void {
         $this->cacheService->connect();
     }
 
+    #[\Override]
     public function set(string $key, $value): bool {
         return $this->cacheService->set($key, $value);
     }
 
+    #[\Override]
     public function get(string $key) {
         return $this->cacheService->get($key);
     }
 
+    #[\Override]
     public function exists(string $key): bool {
         return $this->cacheService->exists($key);
     }

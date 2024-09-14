@@ -30,6 +30,7 @@ class AppServiceTest extends TestCase {
 
     private IAppService $appService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->appService = $this->getServiceManager()->get(IAppService::class);

@@ -49,31 +49,18 @@ class ImportPwned extends KeestashCommand {
 
     public const ARGUMENT_NAME_TYPE = 'type';
 
-    private PwnedService             $pwnedService;
-    private PwnedPasswordsRepository $pwnedPasswordsRepository;
-    private PwnedBreachesRepository  $pwnedBreachesRepository;
-    private NodeRepository           $nodeRepository;
-    private NodeEncryptionService    $nodeEncryptionService;
-    private LoggerInterface          $logger;
-
     public function __construct(
-        PwnedService               $pwnedService
-        , PwnedPasswordsRepository $pwnedRepository
-        , PwnedBreachesRepository  $pwnedBreachesRepository
-        , NodeRepository           $nodeRepository
-        , NodeEncryptionService    $nodeEncryptionService
-        , LoggerInterface          $logger
+        private readonly PwnedService               $pwnedService
+        , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
+        , private readonly PwnedBreachesRepository  $pwnedBreachesRepository
+        , private readonly NodeRepository           $nodeRepository
+        , private readonly NodeEncryptionService    $nodeEncryptionService
+        , private readonly LoggerInterface          $logger
     ) {
         parent::__construct();
-
-        $this->pwnedService             = $pwnedService;
-        $this->pwnedPasswordsRepository = $pwnedRepository;
-        $this->nodeRepository           = $nodeRepository;
-        $this->nodeEncryptionService    = $nodeEncryptionService;
-        $this->pwnedBreachesRepository  = $pwnedBreachesRepository;
-        $this->logger                   = $logger;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("password-manager:pwned:import")
             ->setDescription("imports hbip data import")
@@ -84,6 +71,7 @@ class ImportPwned extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         $type = $input->getArgument(ImportPwned::ARGUMENT_NAME_TYPE);
@@ -189,12 +177,12 @@ class ImportPwned extends KeestashCommand {
                 $passwordsNode = $passwordTree->search(
                     new Passwords(
                         strtoupper(substr(
-                            sha1($plainPassword)
+                            sha1((string) $plainPassword)
                             , 0
                             , 5
                         ))
                         , strtoupper(substr(
-                            sha1($plainPassword)
+                            sha1((string) $plainPassword)
                             , 5
                         ))
                         , 0

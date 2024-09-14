@@ -39,6 +39,7 @@ final readonly class RemoveExpiredPublicShare implements IListener {
     /**
      * @param ApplicationStartedEvent $event
      */
+    #[\Override]
     public function execute(IEvent $event): void {
         try {
             $this->publicShareRepository->removeOutdated();

@@ -41,6 +41,7 @@ final class Get extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("permission:get")
             ->setDescription("lists one, a list or all permissions")
@@ -51,6 +52,7 @@ final class Get extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $permissionIdentifier = (array) $input->getArgument(Get::ARGUMENT_NAME_PERMISSION_IDENTIFIER);
         $allPermissions       = $this->rbacRepository->getAllPermissions();

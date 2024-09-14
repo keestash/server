@@ -26,12 +26,14 @@ use KSP\Core\Service\Config\IIniConfigService;
 
 class IniConfigService implements IIniConfigService {
 
+    #[\Override]
     public function getValue(string $key, $default = null) {
         $ini = ini_get($key);
         if ("" === $ini || false === $ini) return $default;
         return $ini;
     }
 
+    #[\Override]
     public function toBytes(string $value): int {
         $value = trim($value);
         $last  = strtolower($value[strlen($value) - 1]);
@@ -48,6 +50,7 @@ class IniConfigService implements IIniConfigService {
         return (int) $value;
     }
 
+    #[\Override]
     public function getAll(): array {
         return (array) ini_get_all();
     }

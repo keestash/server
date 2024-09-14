@@ -34,6 +34,7 @@ use Psr\Log\LoggerInterface;
 
 class UserRegisteredEventListenerFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

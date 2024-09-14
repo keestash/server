@@ -165,6 +165,7 @@ final readonly class UserStateRepository implements IUserStateRepository {
      * @return void
      * @throws UserStateNotRemovedException
      */
+    #[\Override]
     public function remove(IUser $user): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

@@ -45,10 +45,8 @@ class AccessServiceTest extends TestCase {
 
         $accessable = new class($user) implements IAccessable {
 
-            private IUser $user;
-
-            public function __construct(IUser $user) {
-                $this->user = $user;
+            public function __construct(private readonly IUser $user)
+            {
             }
 
             public function getUser(): IUser {
@@ -90,12 +88,8 @@ class AccessServiceTest extends TestCase {
 
         $accessable = new class($user, $organization) implements IAccessable {
 
-            private IUser         $user;
-            private IOrganization $organization;
-
-            public function __construct(IUser $user, IOrganization $organization) {
-                $this->user         = $user;
-                $this->organization = $organization;
+            public function __construct(private readonly IUser $user, private readonly IOrganization $organization)
+            {
             }
 
             public function getUser(): IUser {

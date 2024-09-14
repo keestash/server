@@ -41,6 +41,7 @@ class ListEnvironment extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("environment:list")
             ->setDescription("lists the app environment")
@@ -53,6 +54,7 @@ class ListEnvironment extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $verbose = $input->getOption(ListEnvironment::OPTION_NAME_ALL);
 

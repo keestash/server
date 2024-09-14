@@ -48,13 +48,14 @@ class Delete implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $id         = (int) ($parameters["node_id"] ?? -1);
 
         try {
             $node = $this->nodeRepository->getNode($id);
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             return new JsonResponse(
                 [
                     $this->translator->translate("no node found")

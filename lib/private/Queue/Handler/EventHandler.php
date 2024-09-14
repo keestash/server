@@ -33,19 +33,15 @@ use Laminas\Serializer\Adapter\PhpSerialize;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-class EventHandler implements IEventHandler {
-
-    private ContainerInterface $container;
-    private LoggerInterface    $logger;
+final readonly class EventHandler implements IEventHandler {
 
     public function __construct(
-        ContainerInterface $container
-        , LoggerInterface  $logger
+        private ContainerInterface $container,
+        private LoggerInterface    $logger
     ) {
-        $this->container = $container;
-        $this->logger    = $logger;
     }
 
+    #[\Override]
     public function handle(IMessage $message): IResult {
 
         // todo implement rate limiting
@@ -76,7 +72,7 @@ class EventHandler implements IEventHandler {
                         , [
                             'message'         => $message
                             , 'listener'      => $listener
-                            , 'event'         => get_class($event)
+                            , 'event'         => $event::class
                             , 'traceAsString' => $exception->getTraceAsString()
                             , 'exception'     => $exception
                         ]

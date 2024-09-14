@@ -29,6 +29,7 @@ use Psr\Container\ContainerInterface;
 
 class CredentialChangedListenerFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

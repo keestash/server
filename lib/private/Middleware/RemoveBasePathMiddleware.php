@@ -27,14 +27,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use function preg_replace;
 
-final class RemoveBasePathMiddleware implements MiddlewareInterface {
+final readonly class RemoveBasePathMiddleware implements MiddlewareInterface {
 
-    private string $basePath;
-
-    public function __construct(string $basePath) {
-        $this->basePath = $basePath;
+    public function __construct(private string $basePath)
+    {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         return $handler->handle($this->removeBasePathFromRequest($request));
     }

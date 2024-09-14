@@ -21,11 +21,13 @@ final class ListAll extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("apiLog:list")
             ->setDescription("lists apilog");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userLogs = $this->apiLogRepository->getAll();
 

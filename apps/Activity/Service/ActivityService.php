@@ -41,6 +41,7 @@ class ActivityService implements IActivityService {
      * @param ArrayList $data
      * @return void
      */
+    #[\Override]
     public function insertActivity(string $appId, string $referenceKey, ArrayList $data): void {
         $this->eventService->execute(
             new ActivityTriggeredEvent(
@@ -61,6 +62,7 @@ class ActivityService implements IActivityService {
      * @param string $description
      * @return void
      */
+    #[\Override]
     public function insertActivityWithSingleMessage(string $appId, string $referenceKey, string $description): void {
         $list = new ArrayList();
         $list->add($description);

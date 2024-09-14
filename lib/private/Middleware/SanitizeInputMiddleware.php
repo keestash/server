@@ -38,6 +38,7 @@ final readonly class SanitizeInputMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $path = $this->routerService->getMatchedPath($request);
         if (in_array($path, [IPaymentService::PAYMENT_WEBHOOK_ENDPOINT], true)) {

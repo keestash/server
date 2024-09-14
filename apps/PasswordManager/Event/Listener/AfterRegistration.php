@@ -79,6 +79,7 @@ class AfterRegistration implements IListener {
     /**
      * @param UserCreatedEvent $event
      */
+    #[\Override]
     public function execute(IEvent $event): void {
         $this->logger->debug('start after registration', ['event' => $event::class]);
         // base case: we do not create stuff for the system user

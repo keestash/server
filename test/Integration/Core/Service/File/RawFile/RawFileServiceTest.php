@@ -31,6 +31,7 @@ class RawFileServiceTest extends TestCase {
 
     private IRawFileService $rawFileService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->rawFileService = $this->getService(IRawFileService::class);

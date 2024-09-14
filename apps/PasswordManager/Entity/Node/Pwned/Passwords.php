@@ -27,21 +27,8 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 class Passwords implements IJsonObject {
 
-    private Node               $node;
-    private int                $severity;
-    private DateTimeInterface  $createTs;
-    private ?DateTimeInterface $updateTs;
-
-    public function __construct(
-        Node                 $node
-        , int                $severity
-        , DateTimeInterface  $createTs
-        , ?DateTimeInterface $updateTs
-    ) {
-        $this->node     = $node;
-        $this->severity = $severity;
-        $this->createTs = $createTs;
-        $this->updateTs = $updateTs;
+    public function __construct(private readonly Node                 $node, private readonly int                $severity, private readonly DateTimeInterface  $createTs, private readonly ?DateTimeInterface $updateTs)
+    {
     }
 
     /**
@@ -72,6 +59,7 @@ class Passwords implements IJsonObject {
         return $this->updateTs;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'nodeId'     => $this->getNode()->getId()

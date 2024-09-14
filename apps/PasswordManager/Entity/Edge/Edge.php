@@ -100,6 +100,7 @@ class Edge implements IJsonObject, IComparable {
         $this->sharee = $sharee;
     }
 
+    #[\Override]
     public function compareTo($object): int {
         if ($object instanceof Edge) {
             if (Comparator::equals($this->getCreateTs(), $object->getCreateTs())) return IComparable::EQUAL;
@@ -117,6 +118,7 @@ class Edge implements IJsonObject, IComparable {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"          => $this->getId()

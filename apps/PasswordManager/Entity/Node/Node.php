@@ -80,6 +80,7 @@ abstract class Node implements
         $this->name = $name;
     }
 
+    #[\Override]
     public function getUser(): IUser {
         return $this->user;
     }
@@ -123,6 +124,7 @@ abstract class Node implements
     /**
      * @return ?IOrganization
      */
+    #[\Override]
     public function getOrganization(): ?IOrganization {
         return $this->organization;
     }
@@ -156,6 +158,7 @@ abstract class Node implements
         $this->publicShare = $publicShare;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"             => $this->getId()

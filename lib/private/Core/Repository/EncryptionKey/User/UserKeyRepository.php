@@ -39,9 +39,9 @@ use Psr\Log\LoggerInterface;
  */
 class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface          $logger;
+    private readonly IDateTimeService $dateTimeService;
+    private readonly IBackend         $backend;
+    private readonly LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
@@ -54,6 +54,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         $this->logger          = $logger;
     }
 
+    #[\Override]
     public function storeKey(IUser $user, IKey $key): IKey {
         $key = $this->_storeKey($key);
 
@@ -76,6 +77,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         return $key;
     }
 
+    #[\Override]
     public function updateKey(IKey $key): bool {
         return $this->_update($key);
     }
@@ -86,6 +88,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
      * @throws Exception
      * @throws KeyNotFoundException
      */
+    #[\Override]
     public function getKey(IUser $user): IKey {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -125,6 +128,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
         return $key;
     }
 
+    #[\Override]
     public function remove(IUser $user): bool {
         try {
             $key          = $this->getKey($user);

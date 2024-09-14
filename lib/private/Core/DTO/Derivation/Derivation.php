@@ -35,18 +35,22 @@ class Derivation implements IDerivation {
     ) {
     }
 
+    #[\Override]
     public function getId(): string {
         return $this->id;
     }
 
+    #[\Override]
     public function getKeyHolder(): IKeyHolder {
         return $this->keyHolder;
     }
 
+    #[\Override]
     public function getDerived(): string {
         return $this->derived;
     }
 
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }

@@ -23,6 +23,7 @@ namespace KSA\Instance\Test\Integration;
 
 class TestCase extends \KST\Integration\TestCase {
 
+    #[\Override]
     public function testByPassMeaninglessRestrictions(): void {
         // https://github.com/sebastianbergmann/phpunit/issues/5132
         $this->assertIsString('Because PHPUnit thinks it must dictate how I organize my tests, I had to switch from abstract to regular class and this test');

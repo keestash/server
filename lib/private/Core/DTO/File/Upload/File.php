@@ -33,6 +33,7 @@ class File extends UploadedFile implements IFile {
     /**
      * @return string
      */
+    #[\Override]
     public function getType(): string {
         return $this->type;
     }
@@ -47,6 +48,7 @@ class File extends UploadedFile implements IFile {
     /**
      * @return string
      */
+    #[\Override]
     public function getTmpName(): string {
         return $this->tmpName;
     }

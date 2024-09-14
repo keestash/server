@@ -36,6 +36,7 @@ class ActivityTriggeredListener implements IListener {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent|ActivityTriggeredEvent $event): void {
         try {
             $this->logger->debug('retrieving the activity', ['activity' => $event->getActivity()]);

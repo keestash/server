@@ -32,6 +32,7 @@ class ActivityTest extends TestCase {
 
     private Activity $activity;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->activity = new Activity(

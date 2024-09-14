@@ -67,6 +67,7 @@ readonly final class Add implements RequestHandlerInterface {
 
     // TODO restrict numeric usernames only
     // TODO no blanks in usernames
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $this->logger->debug('start add user');
         $isSaas             = (bool) $request->getAttribute(CoreConfigProvider::ENVIRONMENT_SAAS);

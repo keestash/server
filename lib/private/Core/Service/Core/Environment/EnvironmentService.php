@@ -28,6 +28,7 @@ class EnvironmentService implements IEnvironmentService {
 
     private ?string $env = null;
 
+    #[\Override]
     public function getEnv(bool $force = false): string {
         if (null === $this->env || true === $force) {
             $this->env = (string) getenv(ConfigProvider::ENVIRONMENT_KEY);
@@ -35,22 +36,27 @@ class EnvironmentService implements IEnvironmentService {
         return $this->env;
     }
 
+    #[\Override]
     public function isApi(): bool {
         return $this->getEnv() === ConfigProvider::ENVIRONMENT_API;
     }
 
+    #[\Override]
     public function isWeb(): bool {
         return $this->getEnv() === ConfigProvider::ENVIRONMENT_WEB;
     }
 
+    #[\Override]
     public function isConsole(): bool {
         return $this->getEnv() === ConfigProvider::ENVIRONMENT_CONSOLE;
     }
 
+    #[\Override]
     public function isUnitTest(): bool {
         return $this->getEnv() === ConfigProvider::ENVIRONMENT_UNIT_TEST;
     }
 
+    #[\Override]
     public function setEnv(string $env): bool {
         return putenv(ConfigProvider::ENVIRONMENT_KEY . "=" . $env);
     }

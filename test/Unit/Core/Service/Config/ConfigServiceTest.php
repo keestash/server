@@ -28,6 +28,7 @@ class ConfigServiceTest extends TestCase {
 
     private IConfigService $configService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->configService = $this->getService(IConfigService::class);

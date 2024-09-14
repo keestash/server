@@ -43,27 +43,16 @@ use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\Core\Service\Event\IEventService;
 use Psr\Log\LoggerInterface;
 
-class CredentialService {
-
-    private EdgeService           $edgeService;
-    private NodeRepository        $nodeRepository;
-    private NodeEncryptionService $nodeEncryptionService;
-    private IPasswordService      $passwordService;
-    private IEventService         $eventManager;
+final readonly class CredentialService {
 
     public function __construct(
-        EdgeService                        $edgeService
-        , NodeRepository                   $nodeRepository
-        , NodeEncryptionService            $nodeEncryptionService
-        , IPasswordService                 $passwordService
-        , IEventService                    $eventManager
-        , private readonly LoggerInterface $logger
+        private EdgeService           $edgeService,
+        private NodeRepository        $nodeRepository,
+        private NodeEncryptionService $nodeEncryptionService,
+        private IPasswordService      $passwordService,
+        private IEventService         $eventManager,
+        private LoggerInterface       $logger
     ) {
-        $this->edgeService           = $edgeService;
-        $this->nodeRepository        = $nodeRepository;
-        $this->nodeEncryptionService = $nodeEncryptionService;
-        $this->passwordService       = $passwordService;
-        $this->eventManager          = $eventManager;
     }
 
     public function createCredential(

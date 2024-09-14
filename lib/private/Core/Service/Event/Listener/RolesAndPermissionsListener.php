@@ -33,6 +33,7 @@ class RolesAndPermissionsListener implements IListener {
     public function __construct(private readonly RBACRepositoryInterface $rbacRepository) {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
         if (false === ($event instanceof UserCreatedEvent)) {
             return;

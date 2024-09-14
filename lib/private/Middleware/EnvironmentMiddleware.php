@@ -37,6 +37,7 @@ final readonly class EnvironmentMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $isSaas          = 'true' === $this->instanceDb->getOption(InstanceDB::OPTION_NAME_SAAS);
         $registerEnabled = $this->settingsService->isRegisterEnabled();

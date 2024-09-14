@@ -31,24 +31,13 @@ use KSP\Core\Service\HTTP\IJWTService;
 
 class CommentRepository implements IRepository {
 
-    private NodeRepository  $nodeRepository;
-    private UserRepository  $userRepository;
-    private DateTimeService $dateTimeService;
-    private IJWTService     $jwtService;
-    private IBackend        $backend;
-
     public function __construct(
-        IBackend          $backend
-        , NodeRepository  $nodeRepository
-        , UserRepository  $userRepository
-        , DateTimeService $dateTimeService
-        , IJWTService     $jwtService
+        private readonly IBackend        $backend,
+        private readonly NodeRepository  $nodeRepository,
+        private readonly UserRepository  $userRepository,
+        private readonly DateTimeService $dateTimeService,
+        private readonly IJWTService     $jwtService
     ) {
-        $this->nodeRepository  = $nodeRepository;
-        $this->userRepository  = $userRepository;
-        $this->dateTimeService = $dateTimeService;
-        $this->jwtService      = $jwtService;
-        $this->backend         = $backend;
     }
 
     /**

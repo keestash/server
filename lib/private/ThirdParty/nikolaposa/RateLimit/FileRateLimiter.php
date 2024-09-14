@@ -81,6 +81,7 @@ class FileRateLimiter extends ConfigurableRateLimiter implements RateLimiter {
         );
     }
 
+    #[\Override]
     public function limit(string $identifier): void {
         $this->loadStore();
         $key = $this->key($identifier);

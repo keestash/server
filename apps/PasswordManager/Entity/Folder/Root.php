@@ -16,10 +16,12 @@ use KSA\PasswordManager\Entity\Node\Node;
 
 class Root extends Folder {
 
+    #[\Override]
     public function getType(): string {
         return Node::ROOT;
     }
 
+    #[\Override]
     public function getIcon(): string {
         return Node::ICON_ROOT;
     }

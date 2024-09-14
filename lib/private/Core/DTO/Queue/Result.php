@@ -30,6 +30,7 @@ class Result implements IResult {
     /**
      * @return int
      */
+    #[\Override]
     public function getCode(): int {
         return $this->code;
     }

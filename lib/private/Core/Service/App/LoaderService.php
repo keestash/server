@@ -36,21 +36,18 @@ use Laminas\Config\Config;
  */
 class LoaderService implements ILoaderService {
 
-    private HashTable   $apps;
-    private LRUCache    $lruAppCache;
-    private Config      $config;
-    private IAppService $appService;
+    private readonly HashTable   $apps;
+    private readonly LRUCache    $lruAppCache;
 
     public function __construct(
-        Config $config
-        , IAppService $appService
+        private readonly Config $config
+        , private readonly IAppService $appService
     ) {
         $this->apps        = new HashTable();
         $this->lruAppCache = new LRUCache();
-        $this->config      = $config;
-        $this->appService  = $appService;
     }
 
+    #[\Override]
     public function getApps(): HashTable {
         $this->loadApps();
         return $this->apps;
@@ -87,6 +84,7 @@ class LoaderService implements ILoaderService {
         }
     }
 
+    #[\Override]
     public function getDefaultApp(): ?IApp {
         $this->loadApps();
         return $this->lruAppCache->get(
@@ -94,11 +92,13 @@ class LoaderService implements ILoaderService {
         );
     }
 
+    #[\Override]
     public function hasApp(string $name): bool {
         $this->loadApps();
         return $this->apps->containsKey($name);
     }
 
+    #[\Override]
     public function unloadApp(string $key): bool {
         return true;
     }

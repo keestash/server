@@ -36,27 +36,15 @@ use Psr\Log\LoggerInterface;
 
 class OrganizationRepository implements IOrganizationRepository {
 
-    private IDateTimeService            $dateTimeService;
-    private IOrganizationUserRepository $organizationUserRepository;
-    private IBackend                    $backend;
-    private LoggerInterface                     $logger;
-
-    public function __construct(
-        IOrganizationUserRepository $organizationUserRepository
-        , IDateTimeService          $dateTimeService
-        , IBackend                  $backend
-        , LoggerInterface                   $logger
-    ) {
-        $this->dateTimeService            = $dateTimeService;
-        $this->organizationUserRepository = $organizationUserRepository;
-        $this->backend                    = $backend;
-        $this->logger                     = $logger;
+    public function __construct(private readonly IOrganizationUserRepository $organizationUserRepository, private readonly IDateTimeService          $dateTimeService, private readonly IBackend                  $backend, private readonly LoggerInterface                   $logger)
+    {
     }
 
     /**
      * @return ArrayList<IOrganization>
      * @throws Exception
      */
+    #[\Override]
     public function getAll(): ArrayList {
         $list         = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -95,6 +83,7 @@ class OrganizationRepository implements IOrganizationRepository {
      * @return ArrayList<IOrganization>
      * @throws Exception
      */
+    #[\Override]
     public function getAllForUser(IUser $user): ArrayList {
         $list         = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -138,6 +127,7 @@ class OrganizationRepository implements IOrganizationRepository {
      * @return IOrganization
      * @throws OrganizationNotUpdatedException
      */
+    #[\Override]
     public function update(IOrganization $organization): IOrganization {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -165,6 +155,7 @@ class OrganizationRepository implements IOrganizationRepository {
         }
     }
 
+    #[\Override]
     public function insert(IOrganization $organization): IOrganization {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('organization')
@@ -207,6 +198,7 @@ class OrganizationRepository implements IOrganizationRepository {
      * @throws Exception
      * @throws OrganizationNotFoundException
      */
+    #[\Override]
     public function getByName(string $name): IOrganization {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder = $queryBuilder->select(
@@ -244,6 +236,7 @@ class OrganizationRepository implements IOrganizationRepository {
         return $this->organizationUserRepository->getByOrganization($organization);
     }
 
+    #[\Override]
     public function get(int $id): ?IOrganization {
         $organization = null;
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -280,6 +273,7 @@ class OrganizationRepository implements IOrganizationRepository {
         return $organization;
     }
 
+    #[\Override]
     public function remove(IOrganization $organization): IOrganization {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

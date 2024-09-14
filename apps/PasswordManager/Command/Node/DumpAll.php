@@ -52,6 +52,7 @@ class DumpAll extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("password-manager:dump-all")
             ->setDescription("shows all passwords for the given user")
@@ -68,6 +69,7 @@ class DumpAll extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $userId       = $input->getArgument(DumpAll::ARGUMENT_NAME_USER_ID);
         $showPassword = (bool) $input->getOption(DumpAll::OPTION_NAME_SHOW_PASSWORD);

@@ -38,8 +38,8 @@ class InstanceDB {
     public const OPTION_NAME_HIBP_API_REQUEST_ENABLED   = 'enabled.request.api.hibp';
     public const OPTION_NAME_QUERY_LOG_ENABLED          = 'enabled.log.query';
 
-    private string $path;
-    private PDO    $database;
+    private readonly string $path;
+    private readonly PDO    $database;
 
     public function __construct(Config $config) {
         $this->path     = (string) $config->get(ConfigProvider::INSTANCE_DB_PATH);

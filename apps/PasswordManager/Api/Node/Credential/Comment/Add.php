@@ -44,22 +44,8 @@ use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    private CommentRepository $commentRepository;
-    private NodeRepository    $nodeRepository;
-    private LoggerInterface   $logger;
-    private IJWTService       $jwtService;
-
-    public function __construct(
-        CommentRepository                    $commentRepository
-        , NodeRepository                     $nodeRepository
-        , LoggerInterface                    $logger
-        , IJWTService                        $jwtService
-        , private readonly ISanitizerService $sanitizerService
-    ) {
-        $this->commentRepository = $commentRepository;
-        $this->nodeRepository    = $nodeRepository;
-        $this->logger            = $logger;
-        $this->jwtService        = $jwtService;
+    public function __construct(private readonly CommentRepository                    $commentRepository, private readonly NodeRepository                     $nodeRepository, private readonly LoggerInterface                    $logger, private readonly IJWTService                        $jwtService, private readonly ISanitizerService $sanitizerService)
+    {
     }
 
     /**
@@ -69,12 +55,13 @@ class Add implements RequestHandlerInterface {
      * @throws CommentRepositoryException
      * @throws UserNotFoundException
      */
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters    = (array) $request->getParsedBody();
         $commentString = $parameters['comment'] ?? null;
         $nodeId        = $parameters['node_id'] ?? null;
 
-        if (null === $commentString || "" === trim($commentString)) {
+        if (null === $commentString || "" === trim((string) $commentString)) {
             throw new CommentException();
         }
 

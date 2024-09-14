@@ -31,22 +31,27 @@ use Stripe\Subscription;
 
 class DefaultPaymentService implements IPaymentService {
 
+    #[\Override]
     public function createSubscription(string $priceId): Session {
         throw new ServiceNotImplementedException();
     }
 
+    #[\Override]
     public function constructWebhookEvent(ServerRequestInterface $request): Event {
         throw new ServiceNotImplementedException();
     }
 
+    #[\Override]
     public function cancelSubscriptionImmediately(string $subscriptionId): Subscription {
         throw new ServiceNotImplementedException();
     }
 
+    #[\Override]
     public function cancelSubscriptionToTheEndOfThePeriod(string $subscriptionId): Subscription {
         throw new ServiceNotImplementedException();
     }
 
+    #[\Override]
     public function getCustomer(string $id): Customer {
         throw new ServiceNotImplementedException();
     }

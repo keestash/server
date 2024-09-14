@@ -52,22 +52,22 @@ use Psr\Log\LoggerInterface;
 
 class Add implements RequestHandlerInterface {
 
-    public const FIELD_NAME_NAME     = "name";
-    public const FIELD_NAME_TYPE     = "type";
-    public const FIELD_NAME_TMP_NAME = "tmp_name";
-    public const FIELD_NAME_ERROR    = "error";
-    public const FIELD_NAME_SIZE     = "size";
+    public const string FIELD_NAME_NAME     = "name";
+    public const string FIELD_NAME_TYPE     = "type";
+    public const string FIELD_NAME_TMP_NAME = "tmp_name";
+    public const string FIELD_NAME_ERROR    = "error";
+    public const string FIELD_NAME_SIZE     = "size";
 
-    private const REQUIRED_FIELDS          = [
+    private const array        REQUIRED_FIELDS          = [
         0   => Add::FIELD_NAME_NAME
         , 1 => Add::FIELD_NAME_TYPE
         , 2 => Add::FIELD_NAME_TMP_NAME
         , 3 => Add::FIELD_NAME_ERROR
         , 4 => Add::FIELD_NAME_SIZE
     ];
-    public const  CONTEXT                  = "node_attachments";
-    private const ERROR_NOT_INSERTED_IN_DB = 0;
-    private const ERROR_NOT_CONNECTED      = 1;
+    public const  string       CONTEXT                  = "node_attachments";
+    private const int          ERROR_NOT_INSERTED_IN_DB = 0;
+    private const int          ERROR_NOT_CONNECTED      = 1;
 
     public function __construct(
         private readonly IFileRepository    $uploadFileRepository
@@ -83,6 +83,7 @@ class Add implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $nodeId     = $parameters["node_id"] ?? null;

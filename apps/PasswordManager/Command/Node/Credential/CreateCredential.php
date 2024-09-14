@@ -41,22 +41,15 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class CreateCredential extends KeestashCommand {
 
-    private IUserRepository   $userRepository;
-    private CredentialService $credentialService;
-    private NodeRepository    $nodeRepository;
-
     public function __construct(
-        IUserRepository     $userRepository
-        , CredentialService $credentialService
-        , NodeRepository    $nodeRepository
+        private readonly IUserRepository     $userRepository
+        , private readonly CredentialService $credentialService
+        , private readonly NodeRepository    $nodeRepository
     ) {
         parent::__construct();
-
-        $this->userRepository    = $userRepository;
-        $this->credentialService = $credentialService;
-        $this->nodeRepository    = $nodeRepository;
     }
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("password-manager:credential:create")
             ->setDescription("creates a new credential");
@@ -69,6 +62,7 @@ class CreateCredential extends KeestashCommand {
      * @return int
      * @throws Exception
      */
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $style = new SymfonyStyle($input, $output);
         $style->title("Please provide the data required to create a credential");

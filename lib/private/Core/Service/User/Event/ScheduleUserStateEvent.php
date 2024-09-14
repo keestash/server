@@ -44,6 +44,7 @@ class ScheduleUserStateEvent extends ReservedEvent {
         return $this->user;
     }
 
+    #[\Override]
     public function getReservedTs(): DateTimeInterface {
         return $this->reservedTs;
     }
@@ -52,10 +53,12 @@ class ScheduleUserStateEvent extends ReservedEvent {
         return $this->stateName;
     }
 
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'user'         => $this->getUser()

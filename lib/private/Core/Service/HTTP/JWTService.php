@@ -32,17 +32,11 @@ use KSP\Core\Service\HTTP\IJWTService;
 
 class JWTService implements IJWTService {
 
-    private IHTTPService $httpService;
-    private InstanceDB   $instanceDB;
-
-    public function __construct(
-        IHTTPService $httpService
-        , InstanceDB $instanceDB
-    ) {
-        $this->httpService = $httpService;
-        $this->instanceDB  = $instanceDB;
+    public function __construct(private readonly IHTTPService $httpService, private readonly InstanceDB $instanceDB)
+    {
     }
 
+    #[\Override]
     public function getJWT(IAudience $audience): string {
         $payLoad = [
             'iss'   => $this->httpService->getBaseURL(false, false)
@@ -62,6 +56,7 @@ class JWTService implements IJWTService {
 
     }
 
+    #[\Override]
     public function decodeJwt(string $jwt): IAudience {
         $object = JWT::decode(
             $jwt

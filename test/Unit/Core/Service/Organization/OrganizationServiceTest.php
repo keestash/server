@@ -31,6 +31,7 @@ class OrganizationServiceTest extends TestCase {
 
     private IOrganizationService $organizationService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->organizationService = $this->getService(IOrganizationService::class);

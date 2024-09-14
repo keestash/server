@@ -44,6 +44,7 @@ readonly final class Confirm implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $body  = (array)$request->getParsedBody();
         $token = $body['token'] ?? null;

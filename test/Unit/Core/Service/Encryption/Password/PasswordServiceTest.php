@@ -31,6 +31,7 @@ class PasswordServiceTest extends TestCase {
 
     private IPasswordService $passwordService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->passwordService = $this->getService(IPasswordService::class);

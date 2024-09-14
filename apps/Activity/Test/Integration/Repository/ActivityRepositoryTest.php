@@ -33,6 +33,7 @@ class ActivityRepositoryTest extends TestCase {
 
     private IActivityRepository $activityRepository;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->activityRepository = $this->getService(IActivityRepository::class);

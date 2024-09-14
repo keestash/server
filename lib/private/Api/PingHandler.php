@@ -34,6 +34,7 @@ final readonly class PingHandler implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $time = time();
         $this->logger->debug('ping handler called', ['time' => $time]);

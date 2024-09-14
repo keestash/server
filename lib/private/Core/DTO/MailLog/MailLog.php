@@ -33,6 +33,7 @@ class MailLog implements IMailLog {
     /**
      * @return string
      */
+    #[\Override]
     public function getId(): string {
         return $this->id;
     }
@@ -47,6 +48,7 @@ class MailLog implements IMailLog {
     /**
      * @return string
      */
+    #[\Override]
     public function getSubject(): string {
         return $this->subject;
     }
@@ -61,6 +63,7 @@ class MailLog implements IMailLog {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }

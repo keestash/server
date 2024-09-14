@@ -30,6 +30,7 @@ use Psr\Container\ContainerInterface;
 
 class LDAPServiceFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

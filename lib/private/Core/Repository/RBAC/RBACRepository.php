@@ -48,6 +48,7 @@ class RBACRepository implements RBACRepositoryInterface {
     ) {
     }
 
+    #[\Override]
     public function getRolesByUser(UserInterface $user): HashTable {
         $roles        = new HashTable();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -78,6 +79,7 @@ class RBACRepository implements RBACRepositoryInterface {
         return $roles;
     }
 
+    #[\Override]
     public function getPermissionsByRoleId(int $roleId): HashTable {
         $permissions  = new HashTable();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -106,6 +108,7 @@ class RBACRepository implements RBACRepositoryInterface {
         return $permissions;
     }
 
+    #[\Override]
     public function getAllPermissions(): ArrayList {
         $permissions  = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -131,6 +134,7 @@ class RBACRepository implements RBACRepositoryInterface {
         return $permissions;
     }
 
+    #[\Override]
     public function getAllRoles(): ArrayList {
         $roles        = new ArrayList();
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -157,6 +161,7 @@ class RBACRepository implements RBACRepositoryInterface {
         return $roles;
     }
 
+    #[\Override]
     public function getRole(int $roleId): RoleInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -226,6 +231,7 @@ class RBACRepository implements RBACRepositoryInterface {
             ->executeStatement();
     }
 
+    #[\Override]
     public function getPermission(int $permissionId): PermissionInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -254,6 +260,7 @@ class RBACRepository implements RBACRepositoryInterface {
         );
     }
 
+    #[\Override]
     public function getPermissionByName(string $name): PermissionInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -282,6 +289,7 @@ class RBACRepository implements RBACRepositoryInterface {
         );
     }
 
+    #[\Override]
     public function getRoleByName(string $name): RoleInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->select(
@@ -310,6 +318,7 @@ class RBACRepository implements RBACRepositoryInterface {
         );
     }
 
+    #[\Override]
     public function createRole(RoleInterface $role): RoleInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('`role`')
@@ -341,6 +350,7 @@ class RBACRepository implements RBACRepositoryInterface {
         );
     }
 
+    #[\Override]
     public function assignRoleToUser(UserInterface $user, RoleInterface $role): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -385,6 +395,7 @@ class RBACRepository implements RBACRepositoryInterface {
 
     }
 
+    #[\Override]
     public function assignPermissionToRole(PermissionInterface $permission, RoleInterface $role): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('`role_permission`')
@@ -410,6 +421,7 @@ class RBACRepository implements RBACRepositoryInterface {
 
     }
 
+    #[\Override]
     public function createPermission(PermissionInterface $permission): PermissionInterface {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->insert('`permission`')

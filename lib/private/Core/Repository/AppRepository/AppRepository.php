@@ -41,6 +41,7 @@ class AppRepository implements IAppRepository {
     ) {
     }
 
+    #[\Override]
     public function getAllApps(): HashTable {
         $map = new HashTable();
 
@@ -81,6 +82,7 @@ class AppRepository implements IAppRepository {
      * @return IApp
      * @throws AppNotFoundException
      */
+    #[\Override]
     public function getApp(string $id): IApp {
         try {
             $app          = null;
@@ -129,6 +131,7 @@ class AppRepository implements IAppRepository {
         }
     }
 
+    #[\Override]
     public function replace(IApp $app): bool {
         // notice that we can not use any doctrine
         // support here as this seems to be an
@@ -151,6 +154,7 @@ class AppRepository implements IAppRepository {
         return true;
     }
 
+    #[\Override]
     public function remove(IApp $app): void {
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
         $queryBuilder->delete('`app_config`')

@@ -25,6 +25,7 @@ use KSP\Core\Service\Encryption\IStringMaskService;
 
 class StringMaskService implements IStringMaskService {
 
+    #[\Override]
     public function mask(string $plain): string {
         $length = strlen($plain);
         if ($length <= 4) {

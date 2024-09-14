@@ -55,6 +55,7 @@ final readonly class ResetPassword implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $input      = $parameters["input"] ?? null;
@@ -87,9 +88,7 @@ final readonly class ResetPassword implements RequestHandlerInterface {
             $this->logger->warning('no users found', ['exception' => $exception]);
         }
 
-        $user = null === $userByMail
-            ? $userByName
-            : $userByMail;
+        $user = $userByMail ?? $userByName;
 
         if (null === $user) {
 

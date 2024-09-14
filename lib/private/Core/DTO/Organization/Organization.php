@@ -34,8 +34,8 @@ class Organization implements IOrganization {
     private string             $password;
     private DateTimeInterface  $createTs;
     private ?DateTimeInterface $activeTs = null;
-    private ArrayList          $users;
-    private HashTable          $hashTable;
+    private readonly ArrayList          $users;
+    private readonly HashTable          $hashTable;
 
     public function __construct() {
         $this->users     = new ArrayList();
@@ -45,6 +45,7 @@ class Organization implements IOrganization {
     /**
      * @return int
      */
+    #[\Override]
     public function getId(): int {
         return $this->id;
     }
@@ -59,6 +60,7 @@ class Organization implements IOrganization {
     /**
      * @return string
      */
+    #[\Override]
     public function getName(): string {
         return $this->name;
     }
@@ -73,6 +75,7 @@ class Organization implements IOrganization {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -87,6 +90,7 @@ class Organization implements IOrganization {
     /**
      * @return ?DateTimeInterface
      */
+    #[\Override]
     public function getActiveTs(): ?DateTimeInterface {
         return $this->activeTs;
     }
@@ -103,6 +107,7 @@ class Organization implements IOrganization {
         $this->hashTable->put($user->getId(), true);
     }
 
+    #[\Override]
     public function getUsers(): ArrayList {
         return $this->users;
     }
@@ -114,6 +119,7 @@ class Organization implements IOrganization {
     /**
      * @return string
      */
+    #[\Override]
     public function getPassword(): string {
         return $this->password;
     }
@@ -125,10 +131,12 @@ class Organization implements IOrganization {
         $this->password = $password;
     }
 
+    #[\Override]
     public function hasUser(IUser $user): bool {
          return $this->hashTable->containsKey($user->getId());
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'          => $this->getId()

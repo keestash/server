@@ -101,7 +101,7 @@ class GetTest extends TestCase {
         $this->assertArrayHasKey('nodeId', $data['data'][0]);
         $this->assertTrue($data['data'][0]['nodeId'] === $additionalData->getNodeId());
         $this->assertArrayHasKey('createTs', $data['data'][0]);
-        $this->assertTrue(strtotime($data['data'][0]['createTs']['date']) === $additionalData->getCreateTs()->getTimestamp());
+        $this->assertTrue(strtotime((string) $data['data'][0]['createTs']['date']) === $additionalData->getCreateTs()->getTimestamp());
         $this->logout($headers, $user);
         $this->removeUser($user);
     }

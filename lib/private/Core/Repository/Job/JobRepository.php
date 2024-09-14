@@ -36,18 +36,8 @@ use Psr\Log\LoggerInterface;
 
 class JobRepository implements IJobRepository {
 
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
-    private LoggerInterface          $logger;
-
-    public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
-        , LoggerInterface          $logger
-    ) {
-        $this->backend         = $backend;
-        $this->dateTimeService = $dateTimeService;
-        $this->logger          = $logger;
+    public function __construct(private readonly IBackend           $backend, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface          $logger)
+    {
     }
 
     private function updateJob(IJob $job): IJob {
@@ -82,6 +72,7 @@ class JobRepository implements IJobRepository {
         return $job;
     }
 
+    #[\Override]
     public function replaceJobs(IJobList $jobList): IJobList {
         /** @var Job $job */
         foreach ($jobList as $job) {
@@ -108,6 +99,7 @@ class JobRepository implements IJobRepository {
 
     }
 
+    #[\Override]
     public function getJobList(): IJobList {
         $list = new JobList();
 
@@ -195,6 +187,7 @@ class JobRepository implements IJobRepository {
 
     }
 
+    #[\Override]
     public function removeAll(): void {
         /** @var IJob $job */
         foreach ($this->getJobList() as $job) {

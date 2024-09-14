@@ -30,10 +30,8 @@ use KSP\Core\Service\HTTP\Input\ISanitizerService;
  */
 class SanitizerService implements ISanitizerService {
 
-    private HTMLPurifier $purifier;
-
-    public function __construct(HTMLPurifier $purifier) {
-        $this->purifier = $purifier;
+    public function __construct(private readonly HTMLPurifier $purifier)
+    {
     }
 
     /**
@@ -43,6 +41,7 @@ class SanitizerService implements ISanitizerService {
      * @return string The sanitized input value
      *
      */
+    #[\Override]
     public function sanitize(string $input): string {
         return $this->purifier->purify($input);
     }
@@ -55,6 +54,7 @@ class SanitizerService implements ISanitizerService {
      *
      * TODO implement
      */
+    #[\Override]
     public function sanitizeAll(array $all): array {
         foreach ($all as $key => $input) {
             $all[$key] = $this->sanitize($input);

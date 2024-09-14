@@ -54,6 +54,7 @@ class BreachesListener implements IListener {
     ) {
     }
 
+    #[\Override]
     public function execute(IEvent $event): void {
         return;
         $this->logger->debug('start handle breaches');

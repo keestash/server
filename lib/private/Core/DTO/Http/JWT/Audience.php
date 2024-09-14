@@ -25,17 +25,14 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 
 class Audience implements IAudience {
 
-    private string $type;
-    private string $value;
-
-    public function __construct(string $type, string $value) {
-        $this->type  = $type;
-        $this->value = $value;
+    public function __construct(private string $type, private string $value)
+    {
     }
 
     /**
      * @return string
      */
+    #[\Override]
     public function getType(): string {
         return $this->type;
     }
@@ -50,6 +47,7 @@ class Audience implements IAudience {
     /**
      * @return string
      */
+    #[\Override]
     public function getValue(): string {
         return $this->value;
     }

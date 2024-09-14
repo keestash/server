@@ -39,6 +39,7 @@ class BulkInsert implements IBulkInsert {
      * @return void
      * @throws Exception
      */
+    #[\Override]
     public function insert(string $table, array $data, array $types = []): void {
         $dataCount = count($data);
         if (0 === $dataCount) {
@@ -75,9 +76,7 @@ class BulkInsert implements IBulkInsert {
 
     private function quote(AbstractPlatform $platform, array $columns): array {
         return array_map(
-            static function (string $column) use ($platform): string {
-                return (new Identifier($column))->getQuotedName($platform);
-            }, $columns);
+            static fn(string $column): string => (new Identifier($column))->getQuotedName($platform), $columns);
     }
 
     function extract(array $data): array {

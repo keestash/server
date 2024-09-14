@@ -26,17 +26,12 @@ use doganoo\DI\DateTime\IDateTimeService;
 use Keestash\Exception\Repository\RowNotInsertedException;
 use KSP\Core\Backend\IBackend;
 
-class DemoUsersRepository {
-
-    private IDateTimeService $dateTimeService;
-    private IBackend         $backend;
+final readonly class DemoUsersRepository {
 
     public function __construct(
-        IBackend           $backend
-        , IDateTimeService $dateTimeService
+        private IBackend         $backend,
+        private IDateTimeService $dateTimeService
     ) {
-        $this->dateTimeService = $dateTimeService;
-        $this->backend         = $backend;
     }
 
     public function add(string $email): string {

@@ -33,6 +33,7 @@ use Psr\Container\ContainerInterface;
 
 class ImportPwnedFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

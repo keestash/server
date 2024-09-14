@@ -39,10 +39,12 @@ class UserCreatedEvent extends Event {
         return $this->user;
     }
 
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'user'       => $this->getUser()

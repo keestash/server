@@ -42,6 +42,7 @@ final readonly class Get implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         /** @var IVersion $version */
         $version = $request->getAttribute(IVersion::class);

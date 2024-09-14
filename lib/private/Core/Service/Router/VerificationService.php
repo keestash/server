@@ -34,17 +34,11 @@ class VerificationService implements IVerificationService {
     public const FIELD_NAME_USER_HASH = IResponse::HEADER_X_KEESTASH_USER;
     public const FIELD_NAME_TOKEN     = IResponse::HEADER_X_KEESTASH_TOKEN;
 
-    private ITokenRepository $tokenRepository;
-    private IUserRepository  $userRepository;
-
-    public function __construct(
-        ITokenRepository  $tokenRepository
-        , IUserRepository $userRepository
-    ) {
-        $this->tokenRepository = $tokenRepository;
-        $this->userRepository  = $userRepository;
+    public function __construct(private readonly ITokenRepository  $tokenRepository, private readonly IUserRepository $userRepository)
+    {
     }
 
+    #[\Override]
     public function verifyToken(array $parameters): ?IToken {
         try {
 
@@ -58,7 +52,7 @@ class VerificationService implements IVerificationService {
 
             try {
                 $token = $this->tokenRepository->getByValue((string) $tokenString);
-            } catch (TokenNotFoundException $exception) {
+            } catch (TokenNotFoundException) {
                 return null;
             }
 
@@ -66,7 +60,7 @@ class VerificationService implements IVerificationService {
             if (true === $token->expired()) return null;
 
             return $token;
-        } catch (UserNotFoundException $exception) {
+        } catch (UserNotFoundException) {
             return null;
         }
     }

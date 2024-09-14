@@ -50,6 +50,7 @@ final readonly class ApplicationStartedMiddleware implements MiddlewareInterface
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         $start = new DateTime();
         $this->eventService->execute(new ApplicationStartedEvent($start));

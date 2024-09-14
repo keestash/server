@@ -42,10 +42,12 @@ class NodeRemovedEvent extends Event {
     /**
      * @return int
      */
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'node'       => $this->getNodeId()

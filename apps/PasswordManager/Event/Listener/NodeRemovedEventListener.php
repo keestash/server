@@ -41,6 +41,7 @@ class NodeRemovedEventListener implements IListener {
      * @return void
      * @throws PasswordManagerException
      */
+    #[\Override]
     public function execute(IEvent|NodeRemovedEvent $event): void {
         if (false === ($event instanceof NodeRemovedEvent)) {
             throw new PasswordManagerException();

@@ -30,6 +30,7 @@ class App implements IApp {
     private string $name;
     private int    $version;
 
+    #[\Override]
     public function getId(): string {
         return $this->id;
     }
@@ -38,6 +39,7 @@ class App implements IApp {
         $this->id = $id;
     }
 
+    #[\Override]
     public function getOrder(): int {
         return $this->order;
     }
@@ -46,6 +48,7 @@ class App implements IApp {
         $this->order = $order;
     }
 
+    #[\Override]
     public function getName(): string {
         return (string) $this->name;
     }
@@ -57,6 +60,7 @@ class App implements IApp {
     /**
      * @return int
      */
+    #[\Override]
     public function getVersion(): int {
         return $this->version;
     }
@@ -68,6 +72,7 @@ class App implements IApp {
         $this->version = $version;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'        => $this->getId()

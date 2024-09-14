@@ -34,6 +34,7 @@ readonly final class Configuration implements RequestHandlerInterface {
 
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $isDemoMode = $this->instanceDB->getOption("demo") === "true";
         $demo       = $isDemoMode

@@ -82,13 +82,13 @@ final readonly class Beta {
                     'id'       => $edge->getNode()->getId(),
                     'name'     => $edge->getNode()->getName(),
                     'type'     => $edge->getNode()->getType(),
-                    'userName' => base64_encode($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : '')
+                    'userName' => base64_encode((string) ($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : ''))
                 ];
                 $result[] = [
                     'id'       => $edge->getNode()->getId() + 10000,
                     'name'     => $edge->getNode()->getName(),
                     'type'     => $edge->getNode()->getType(),
-                    'userName' => base64_encode($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : '')
+                    'userName' => base64_encode((string) ($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : ''))
                 ];
             }
         } catch (PasswordManagerException|InvalidNodeTypeException $exception) {

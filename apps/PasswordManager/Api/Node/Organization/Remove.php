@@ -34,20 +34,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class Remove implements RequestHandlerInterface {
 
-    private NodeRepository             $nodeRepository;
-    private OrganizationNodeRepository $organizationNodeRepository;
-    private IEventService              $eventManager;
-
-    public function __construct(
-        NodeRepository               $nodeRepository
-        , OrganizationNodeRepository $organizationNodeRepository
-        , IEventService              $eventManager
-    ) {
-        $this->nodeRepository             = $nodeRepository;
-        $this->organizationNodeRepository = $organizationNodeRepository;
-        $this->eventManager               = $eventManager;
+    public function __construct(private readonly NodeRepository               $nodeRepository, private readonly OrganizationNodeRepository $organizationNodeRepository, private readonly IEventService              $eventManager)
+    {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
 

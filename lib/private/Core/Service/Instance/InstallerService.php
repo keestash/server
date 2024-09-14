@@ -32,16 +32,19 @@ class InstallerService implements IInstallerService {
     public function __construct(private readonly InstanceDB $instanceDB) {
     }
 
+    #[\Override]
     public function updateInstaller(string $key, string $value): bool {
         return $array = $this->instanceDB->updateOption($key, $value);
     }
 
+    #[\Override]
     public function hasIdAndHash(): bool {
         $hash = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH);
         $id   = $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_ID);
         return true === is_string($hash) && true === is_int((int) $id);
     }
 
+    #[\Override]
     public function writeIdAndHash(): bool {
         $addedId   = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_ID, (string) hexdec(uniqid()));
         $addedHash = $this->instanceDB->addOption(InstanceDB::OPTION_NAME_INSTANCE_HASH, bin2hex(random_bytes(16)));

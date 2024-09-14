@@ -43,6 +43,7 @@ class WorkerSingleShow extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         parent::configure();
         $this->setName("worker:single:show")
@@ -55,6 +56,7 @@ class WorkerSingleShow extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $uuid    = (string) $input->getOption(WorkerSingleShow::OPTION_NAME_UUID);
         $message = null;

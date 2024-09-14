@@ -45,6 +45,7 @@ final readonly class Get implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $credentialId = (int) $request->getAttribute('credentialId', 0);
 

@@ -44,6 +44,7 @@ class Get implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
             $appId        = $request->getAttribute('appId');

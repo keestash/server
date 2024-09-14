@@ -27,14 +27,17 @@ use KSP\Core\Repository\LDAP\ILDAPUserRepository;
 
 class DefaultLDAPRepository implements ILDAPUserRepository {
 
+    #[\Override]
     public function add(IConnection $connection, IUser $user): void {
         // silence is golden
     }
 
+    #[\Override]
     public function removeByConnection(IConnection $connection): void {
         // silence is golden
     }
 
+    #[\Override]
     public function isLDAPUser(IUser $user): bool {
         return false;
     }

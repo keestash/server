@@ -30,10 +30,10 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use Psr\Log\LoggerInterface;
 
-class EmailService implements IEmailService {
+final class EmailService implements IEmailService {
 
-    public const HAS_EXCEPTIONS = true;
-    public const IS_HTML        = true;
+    public const bool HAS_EXCEPTIONS = true;
+    public const bool IS_HTML        = true;
 
     private PHPMailer $mailer;
     private HashTable $recipients;
@@ -72,7 +72,7 @@ class EmailService implements IEmailService {
             (string) $this->configService->getValue("email_user")
             , (string) $this->configService->getValue("email_user_name")
         );
-        $this->mailer->Debugoutput = function ($message) {
+        $this->mailer->Debugoutput = function ($message): void {
             $this->logger->debug($message);
         };
 
@@ -81,27 +81,33 @@ class EmailService implements IEmailService {
     }
 
 
+    #[\Override]
     public function addRecipient(string $name, string $email): void {
         $this->recipients->put($name, $email);
     }
 
+    #[\Override]
     public function addCarbonCopy(string $name, string $email): void {
         $this->carbonCopy->put($name, $email);
     }
 
+    #[\Override]
     public function addBlindCarbonCopy(string $name, string $email): void {
         $this->blindCarbonCopy->put($name, $email);
     }
 
+    #[\Override]
     public function addAttachment(string $path, string $name = ""): void {
         // Attachments
         $this->mailer->addAttachment($path, $name);    // Optional name
     }
 
+    #[\Override]
     public function setSubject(string $subject): void {
         $this->mailer->Subject = $subject;
     }
 
+    #[\Override]
     public function send(int $delay = 0): bool {
 
         try {
@@ -191,10 +197,12 @@ class EmailService implements IEmailService {
         $this->setSubject('');
     }
 
+    #[\Override]
     public function setBody(string $body): void {
         $this->mailer->Body = $body;
     }
 
+    #[\Override]
     public function setAlternativeBody(string $body): void {
         $this->mailer->AltBody = $body;
     }

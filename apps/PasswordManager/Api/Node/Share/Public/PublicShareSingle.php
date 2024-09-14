@@ -55,6 +55,7 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
             $body      = (array) $request->getParsedBody();

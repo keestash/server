@@ -28,6 +28,7 @@ use Psr\Container\ContainerInterface;
 
 class NodeRemovedEventListenerFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

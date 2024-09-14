@@ -40,6 +40,7 @@ class Password implements IPassword {
         $this->characterSet = [];
     }
 
+    #[\Override]
     public function getLength(): int {
         return strlen($this->getValue());
     }
@@ -47,6 +48,7 @@ class Password implements IPassword {
     /**
      * @return string
      */
+    #[\Override]
     public function getValue(): string {
         return $this->value;
     }
@@ -65,6 +67,7 @@ class Password implements IPassword {
     /**
      * @return array
      */
+    #[\Override]
     public function getCharacterSet(): array {
         return $this->characterSet;
     }
@@ -79,6 +82,7 @@ class Password implements IPassword {
     /**
      * @return float
      */
+    #[\Override]
     public function getEntropy(): float {
         return $this->entropy;
     }
@@ -93,6 +97,7 @@ class Password implements IPassword {
     /**
      * @return int
      */
+    #[\Override]
     public function getQuality(): int {
         return $this->quality;
     }
@@ -112,6 +117,7 @@ class Password implements IPassword {
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "value"           => $this->getValue()

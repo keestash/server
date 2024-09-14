@@ -27,11 +27,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Ping extends KeestashCommand {
 
+    #[\Override]
     protected function configure(): void {
         $this->setName("keestash:ping")
             ->setDescription("pings the app");
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $data = json_encode([(string) time()], JSON_THROW_ON_ERROR);
         $this->writeInfo($data, $output);

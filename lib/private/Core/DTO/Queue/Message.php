@@ -44,6 +44,7 @@ abstract class Message implements IMessage {
     /**
      * @return string
      */
+    #[\Override]
     public function getId(): string {
         return $this->id;
     }
@@ -58,6 +59,7 @@ abstract class Message implements IMessage {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }
@@ -72,6 +74,7 @@ abstract class Message implements IMessage {
     /**
      * @return int
      */
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
@@ -86,6 +89,7 @@ abstract class Message implements IMessage {
     /**
      * @return int
      */
+    #[\Override]
     public function getAttempts(): int {
         return $this->attempts;
     }
@@ -100,6 +104,7 @@ abstract class Message implements IMessage {
     /**
      * @return DateTimeInterface
      */
+    #[\Override]
     public function getReservedTs(): DateTimeInterface {
         return $this->reservedTs;
     }
@@ -114,6 +119,7 @@ abstract class Message implements IMessage {
     /**
      * @return array
      */
+    #[\Override]
     public function getPayload(): array {
         return $this->payload;
     }
@@ -125,6 +131,7 @@ abstract class Message implements IMessage {
         $this->payload = $payload;
     }
 
+    #[\Override]
     public function getStamps(): HashTable {
         return $this->stamps;
     }
@@ -137,6 +144,7 @@ abstract class Message implements IMessage {
         $this->stamps->add($stamp->getName(), $stamp);
     }
 
+    #[\Override]
     public function getStamp(string $name): ?IStamp {
         return $this->stamps->get($name);
     }
@@ -144,6 +152,7 @@ abstract class Message implements IMessage {
     /**
      * @return array
      */
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             "id"            => $this->getId()

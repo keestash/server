@@ -47,6 +47,7 @@ class NodeAccessMiddleware implements MiddlewareInterface {
     ) {
     }
 
+    #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
         if (true === $request->getAttribute(IRequest::ATTRIBUTE_NAME_IS_PUBLIC)) {
             return $handler->handle($request);

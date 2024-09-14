@@ -47,6 +47,7 @@ final readonly class ShareableUsers implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $start  = microtime(true);
         $nodeId = $request->getAttribute("nodeId");
@@ -58,7 +59,7 @@ final readonly class ShareableUsers implements RequestHandlerInterface {
 
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId);
-        } catch (PasswordManagerException $exception) {
+        } catch (PasswordManagerException) {
             return new JsonResponse([], IResponse::NOT_FOUND);
         }
 

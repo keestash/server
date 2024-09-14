@@ -39,10 +39,12 @@ class OrganizationAddedEvent extends Event {
     /**
      * @return int
      */
+    #[\Override]
     public function getPriority(): int {
         return $this->priority;
     }
 
+    #[\Override]
     public function jsonSerialize(): array {
         return [
             'organization' => $this->getOrganization()

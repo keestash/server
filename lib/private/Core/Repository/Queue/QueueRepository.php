@@ -50,6 +50,7 @@ class QueueRepository implements IQueueRepository {
      * @return array
      * @throws QueueException
      */
+    #[\Override]
     public function getQueue(): array {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -80,6 +81,7 @@ class QueueRepository implements IQueueRepository {
      * @return array
      * @throws QueueException
      */
+    #[\Override]
     public function getSchedulableMessages(): array {
         try {
             $queryBuilder   = $this->backend->getConnection()->createQueryBuilder();
@@ -117,6 +119,7 @@ class QueueRepository implements IQueueRepository {
      * @throws QueueException
      * @throws NoRowsFoundException
      */
+    #[\Override]
     public function getByUuid(string $uuid): array {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -155,6 +158,7 @@ class QueueRepository implements IQueueRepository {
      * @return void
      * @throws QueueNotDeletedException
      */
+    #[\Override]
     public function delete(IMessage $message): void {
         $this->deleteByUuid($message->getId());
     }
@@ -164,6 +168,7 @@ class QueueRepository implements IQueueRepository {
      * @return void
      * @throws QueueNotDeletedException
      */
+    #[\Override]
     public function deleteByUuid(string $uuid): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -185,6 +190,7 @@ class QueueRepository implements IQueueRepository {
      * @throws Exception
      * @throws JsonException
      */
+    #[\Override]
     public function bulkInsert(ArrayList $messageList): void {
         $list = [];
 
@@ -209,10 +215,12 @@ class QueueRepository implements IQueueRepository {
         $bulkInsert->insert('`queue`', $list);
     }
 
+    #[\Override]
     public function connect(): void {
         $this->backend->connect();
     }
 
+    #[\Override]
     public function disconnect(): void {
         $this->backend->disconnect();
     }
@@ -222,6 +230,7 @@ class QueueRepository implements IQueueRepository {
      * @return IMessage
      * @throws QueueNotCreatedException
      */
+    #[\Override]
     public function insert(IMessage $message): IMessage {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -267,6 +276,7 @@ class QueueRepository implements IQueueRepository {
      * @return IMessage
      * @throws QueueNotUpdatedException
      */
+    #[\Override]
     public function update(IMessage $message): IMessage {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -305,6 +315,7 @@ class QueueRepository implements IQueueRepository {
      * @return void
      * @throws QueueNotUpdatedException
      */
+    #[\Override]
     public function updateAttempts(string $uuid, int $attempts): void {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();

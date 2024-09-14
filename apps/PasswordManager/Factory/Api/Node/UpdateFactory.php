@@ -30,6 +30,7 @@ use Psr\Log\LoggerInterface;
 
 class UpdateFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName

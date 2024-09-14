@@ -33,6 +33,7 @@ class EdgeServiceTest extends TestCase {
 
     private EdgeService $edgeService;
 
+    #[\Override]
     protected function setUp(): void {
         parent::setUp();
         $this->edgeService = $this->getServiceManager()->get(EdgeService::class);

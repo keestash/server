@@ -47,6 +47,7 @@ final readonly class RemoveOutdatedTokens implements IListener {
      * @return void
      * @throws Exception
      */
+    #[\Override]
     public function execute(IEvent|ApplicationStartedEvent $event): void {
         $reference   = $event->getDateTime()->modify('-1 day');
         $tokens      = $this->tokenRepository->getOlderThan($reference);

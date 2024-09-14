@@ -55,6 +55,7 @@ class UserEdit implements RequestHandlerInterface {
     ) {
     }
 
+    #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters   = (array) $request->getParsedBody();
         $userArray    = $parameters['user'] ?? [];
@@ -95,7 +96,7 @@ class UserEdit implements RequestHandlerInterface {
             $languageUpdated = false;
 
             if (null !== $param && "" !== $param) {
-                $splittedParam   = explode('_', $param);
+                $splittedParam   = explode('_', (string) $param);
                 $language        = strtolower($splittedParam[0] ?? '');
                 $locale          = strtolower($splittedParam[1] ?? '');
                 $languageUpdated =

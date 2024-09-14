@@ -55,6 +55,7 @@ class WorkerSingleRun extends KeestashCommand {
         parent::__construct();
     }
 
+    #[\Override]
     protected function configure(): void {
         parent::configure();
         $this->setName("worker:single:run")
@@ -73,6 +74,7 @@ class WorkerSingleRun extends KeestashCommand {
             );
     }
 
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
         $uuid          = (string) $input->getOption(WorkerSingleRun::OPTION_NAME_UUID);
         $force         = (bool) $input->getOption(WorkerSingleRun::OPTION_NAME_FORCE);

@@ -30,6 +30,7 @@ use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class UpdatePasswordFactory implements FactoryInterface {
 
+    #[\Override]
     public function __invoke(
         ContainerInterface $container
         ,                  $requestedName
