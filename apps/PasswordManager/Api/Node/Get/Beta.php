@@ -22,14 +22,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Get;
 
-use DateTime;
-use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\JsonResponse;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\IResponseCodes;
-use KSA\PasswordManager\Entity\Navigation\DefaultEntry;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
@@ -124,9 +121,6 @@ final readonly class Beta {
      * @throws InvalidNodeTypeException
      */
     private function prepareNode(string $id, IToken $token): Node {
-
-        // base case 1: we are requesting a regular node.
-        //      select and return
         if (true === is_numeric($id)) {
             return $this->nodeRepository->getNode(
                 (int) $id
@@ -135,62 +129,11 @@ final readonly class Beta {
             );
         }
 
-        $root = $this->nodeRepository->getRootForUser(
+        return $this->nodeRepository->getRootForUser(
             $token->getUser()
             , 0
             , 2
         );
-
-        // base case 2: we are requesting the root. No need to do the following stuff
-        if (Node::ROOT === $id) {
-            return $root;
-        }
-
-        // regular cases: we are requesting one of the defaults. Check!
-        // @codeCoverageIgnoreStart
-        switch ($id) {
-            case DefaultEntry::DEFAULT_ENTRY_RECENTLY_MODIFIED:
-
-                $edges = $root->getEdges()->toArray();
-
-                usort(
-                    $edges
-                    , static function (Edge $current, Edge $next): int {
-                    /** @var DateTime $currentTs */
-                    $currentTs = null !== $current->getNode()->getUpdateTs()
-                        ? $current->getNode()->getUpdateTs()
-                        : new DateTime();
-                    /** @var DateTime $nextTs */
-                    $nextTs = null !== $next->getNode()->getUpdateTs()
-                        ? $next->getNode()->getUpdateTs()
-                        : new DateTime();
-                    return $nextTs->getTimestamp() - $currentTs->getTimestamp();
-                });
-
-                $edgez = new ArrayList();
-                $edgez->addAllArray($edges);
-                $root->setEdges($edgez);
-                break;
-
-            case DefaultEntry::DEFAULT_ENTRY_SHARED_WITH_ME:
-
-                $newEdges = new ArrayList();
-                /** @var Edge $edge */
-                foreach ($root->getEdges() as $edge) {
-
-                    $node = $edge->getNode();
-                    if (true === $node->isSharedTo($token->getUser())) {
-                        $newEdges->add($node);
-                    }
-                }
-                $root->setEdges($newEdges);
-                break;
-            default:
-                throw new PasswordManagerException('unknown operation ' . $id);
-        }
-        // @codeCoverageIgnoreEnd
-
-        return $root;
     }
 
 }

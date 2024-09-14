@@ -23,18 +23,18 @@ namespace KSP\Core\DTO\Country;
 
 interface IPrefix {
 
-    public const BELGIUM       = '+32';
-    public const DENMARK       = '+45';
-    public const FINLAND       = '+358';
-    public const FRANCE        = '+33';
-    public const GERMANY       = '+49';
-    public const GREECE        = '+30';
-    public const ITALY         = '+39';
-    public const MONACO        = '+377';
-    public const NETHERLANDS   = '+31';
-    public const NORWAY        = '+47';
-    public const TURKEY        = '+90';
-    public const UNITED_STATES = '+1';
-    public const GREAT_BRITAIN = '+44';
+    public const string BELGIUM       = '+32';
+    public const string DENMARK       = '+45';
+    public const string FINLAND       = '+358';
+    public const string FRANCE        = '+33';
+    public const string GERMANY       = '+49';
+    public const string GREECE        = '+30';
+    public const string ITALY         = '+39';
+    public const string MONACO        = '+377';
+    public const string NETHERLANDS   = '+31';
+    public const string NORWAY        = '+47';
+    public const string TURKEY        = '+90';
+    public const string UNITED_STATES = '+1';
+    public const string GREAT_BRITAIN = '+44';
 
 }

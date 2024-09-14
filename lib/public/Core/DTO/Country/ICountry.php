@@ -26,18 +26,18 @@ namespace KSP\Core\DTO\Country;
  */
 interface ICountry {
 
-    public const BELGIUM       = 'BE';
-    public const DENMARK       = 'DK';
-    public const FINLAND       = 'FI';
-    public const FRANCE        = 'FR';
-    public const GERMANY       = 'DE';
-    public const GREECE        = 'GR';
-    public const ITALY         = 'IT';
-    public const MONACO        = 'MC';
-    public const NETHERLANDS   = 'NL';
-    public const NORWAY        = 'NO';
-    public const TURKEY        = 'TR';
-    public const UNITED_STATES = 'US';
-    public const GREAT_BRITAIN = 'GB';
+    public const string BELGIUM       = 'BE';
+    public const string DENMARK       = 'DK';
+    public const string FINLAND       = 'FI';
+    public const string FRANCE        = 'FR';
+    public const string GERMANY       = 'DE';
+    public const string GREECE        = 'GR';
+    public const string ITALY         = 'IT';
+    public const string MONACO        = 'MC';
+    public const string NETHERLANDS   = 'NL';
+    public const string NORWAY        = 'NO';
+    public const string TURKEY        = 'TR';
+    public const string UNITED_STATES = 'US';
+    public const string GREAT_BRITAIN = 'GB';
 
 }

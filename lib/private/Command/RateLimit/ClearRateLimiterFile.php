@@ -28,7 +28,7 @@ use KSP\Core\Service\Core\Data\IDataService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ClearRateLimiterFile extends KeestashCommand {
+final class ClearRateLimiterFile extends KeestashCommand {
 
     public function __construct(private readonly IDataService $dataService) {
         parent::__construct();

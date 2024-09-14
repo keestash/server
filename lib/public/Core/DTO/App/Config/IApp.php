@@ -27,8 +27,8 @@ use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IApp extends IJsonObject {
 
-    public const ENABLED_TRUE  = "true";
-    public const ENABLED_FALSE = "false";
+    public const string ENABLED_TRUE  = "true";
+    public const string ENABLED_FALSE = "false";
 
     public function getId(): string;
 

@@ -596,6 +596,11 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetValueTest.php
 
 		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Get/GetTest.php
+
+		-
 			message: "#^Cannot call method getId\\(\\) on KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\|null\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/MoveTest.php
@@ -624,6 +629,11 @@ parameters:
 			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
 			count: 3
 			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Pwned/ChartDataTest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Test/Integration/Api/Node/Share/Public/PublicShareTest.php
 
 		-
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"

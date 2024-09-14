@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ListEnvironment extends KeestashCommand {
 
-    public const OPTION_NAME_ALL = 'all';
+    public const string OPTION_NAME_ALL = 'all';
 
     public function __construct(
         private readonly InstanceDB         $instanceDB

@@ -30,7 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AssignPermissionsToRoles extends KeestashCommand {
 
-    public const OPTION_NAME_FORCE = 'force';
+    public const string OPTION_NAME_FORCE = 'force';
 
     public function __construct(
         private readonly IRoleService $roleService

@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ClearDerivation extends KeestashCommand {
 
-    public const ARGUMENT_NAME_USER_ID = 'user-id';
+    public const string ARGUMENT_NAME_USER_ID = 'user-id';
 
     public function __construct(
         private readonly IDerivationRepository $derivationRepository
