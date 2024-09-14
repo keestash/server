@@ -190,7 +190,16 @@ class GetTest extends TestCase {
         /** @var LoggerInterface $logger */
         $logger = $this->getService(LoggerInterface::class);
 
-        $logger->debug(GetTest::class . '@::testNonExisting', ['response' => ['statusCode'=>$response->getStatusCode(), 'body'=>(string)$response->getBody()]]);
+        $logger->debug(
+            GetTest::class . '@::testNonExisting',
+            [
+                'response' => [
+                    'statusCode' => $response->getStatusCode(),
+                    'body'       => (string) $response->getBody(),
+                    'headers'    => $response->getHeaders()
+                ]
+            ]
+        );
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
         $this->logout($headers, $user);
         $this->removeUser($user);

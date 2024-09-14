@@ -28,6 +28,7 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\User\IUserService;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -43,6 +44,7 @@ class PublicShareSingleFactory {
             , $container->get(ShareService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IResponseService::class)
+            , $container->get(IUserService::class)
         );
     }
 

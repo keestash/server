@@ -52,7 +52,7 @@ final readonly class UserStateService implements IUserStateService {
         return match ($stateName) {
             UserStateName::NULL => UserStateName::NEVER_LOGGED_IN,
             UserStateName::NEVER_LOGGED_IN => UserStateName::LOCK_CANDIDATE_STAGE_ONE,
-            UserStateName::LOCK_CANDIDATE_STAGE_ONE => UserStateName::LOCK_CANDIDATE_STAGE_TWO,
+            UserStateName::LOCK_CANDIDATE_STAGE_ONE, UserStateName::REQUEST_PW_CHANGE => UserStateName::LOCK_CANDIDATE_STAGE_TWO,
             UserStateName::LOCK_CANDIDATE_STAGE_TWO => UserStateName::LOCK,
             UserStateName::LOCK => UserStateName::DELETE,
             default => throw new KeestashException(),

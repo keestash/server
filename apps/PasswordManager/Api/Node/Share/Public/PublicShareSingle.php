@@ -35,6 +35,7 @@ use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
+use KSP\Core\Service\User\IUserService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -50,17 +51,20 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
         , private ShareService        $shareService
         , private LoggerInterface     $logger
         , private IResponseService    $responseService
+        , private IUserService        $userService
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
+            $body      = (array) $request->getParsedBody();
             $hash      = (string) $request->getAttribute('hash');
+            $password  = $body['password'] ?? '';
             $share     = $this->shareRepository->getShare($hash);
             $isExpired = $this->shareService->isExpired($share);
 
             if ($share instanceof NullShare || $isExpired) {
-                $this->triggerEvent(false, !($share instanceof NullShare), $isExpired);
+                $this->triggerEvent(false, !($share instanceof NullShare), $isExpired, false);
                 return new JsonResponse(
                     [
                         'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_NO_SHARE_EXISTS)
@@ -69,9 +73,22 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
                 );
             }
 
+            $verified = $this->userService->verifyPassword($password, $share->getPassword());
+
+            $this->logger->error('log stuff', ['pass'=>$password, 'sha'=>$share->getPassword()]);
+            if (false === $verified) {
+                $this->triggerEvent(false, true, false, false);
+                return new JsonResponse(
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_INCORRECT_PASSWORD)
+                    ]
+                    , IResponse::NOT_FOUND
+                );
+            }
+
             /** @var Credential $node */
             $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
-            $this->triggerEvent(true, true, false);
+            $this->triggerEvent(true, true, false, true);
             return new JsonResponse(
                 [
                     "decrypted" => [
@@ -87,12 +104,22 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
         }
     }
 
-    private function triggerEvent(bool $seen, bool $shareExists, bool $expired): void {
+    private function triggerEvent(
+        bool $seen,
+        bool $shareExists,
+        bool $expired,
+        bool $passwordCorrect
+    ): void {
         $this->eventManager->execute(
             new PasswordViewed(
                 array_merge(
                     $_SERVER
-                    , ['passwordSeen' => $seen, 'shareExists' => $shareExists, 'expired' => $expired]
+                    , [
+                        'passwordSeen'    => $seen,
+                        'shareExists'     => $shareExists,
+                        'expired'         => $expired,
+                        'passwordCorrect' => $passwordCorrect
+                    ]
                 )
                 , new DateTimeImmutable()
             )

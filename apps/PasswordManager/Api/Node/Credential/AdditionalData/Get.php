@@ -35,13 +35,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class Get implements RequestHandlerInterface {
+final readonly class Get implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly AdditionalDataRepository $additionalDataRepository
-        , private readonly NodeRepository         $nodeRepository
-        , private readonly AccessService          $accessService
-        , private readonly IActivityService       $activityService
+        private AdditionalDataRepository $additionalDataRepository
+        , private NodeRepository         $nodeRepository
+        , private AccessService          $accessService
+        , private IActivityService       $activityService
     ) {
     }
 
@@ -62,7 +62,7 @@ class Get implements RequestHandlerInterface {
         }
 
         if (false === $this->accessService->hasAccess($node, $token->getUser())) {
-            return new JsonResponse([], IResponse::FORBIDDEN);
+            return new JsonResponse(['access denied'], IResponse::FORBIDDEN);
         }
 
         $data = $this->additionalDataRepository->getByNode($node);

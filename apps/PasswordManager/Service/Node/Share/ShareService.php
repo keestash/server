@@ -53,12 +53,13 @@ final readonly class ShareService {
         return $publicShare->getExpireTs()->getTimestamp() < $today->getTimestamp();
     }
 
-    public function createPublicShare(Node $node, DateTimeInterface $dateTime): PublicShare {
+    public function createPublicShare(Node $node, DateTimeInterface $dateTime, string $password): PublicShare {
         return new PublicShare(
             0,
             $node->getId(),
             $this->generateSharingHash($node),
-            $dateTime
+            $dateTime,
+            $password
         );
     }
 

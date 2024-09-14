@@ -231,7 +231,7 @@ class PublicShareTest extends TestCase {
             $user
         );
         $credential->setPublicShare(
-            $shareService->createPublicShare($credential)
+            $shareService->createPublicShare($credential, new DateTimeImmutable(), (string) Uuid::uuid4())
         );
 
         $rootFolder = $this->getRootFolder($user);
@@ -295,7 +295,8 @@ class PublicShareTest extends TestCase {
                 0,
                 $credential->getId(),
                 Uuid::uuid4()->toString(),
-                (new DateTimeImmutable())->modify('-100 day')
+                (new DateTimeImmutable())->modify('-100 day'),
+                (string) Uuid::uuid4()
             )
         );
 
@@ -311,7 +312,7 @@ class PublicShareTest extends TestCase {
                     IVerb::POST
                     , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
                     , [
-                        "node_id" => $sharedNode->getId()
+                        "node_id" => $sharedNode->getId(),
                     ]
                     , $user
                     , $headers
