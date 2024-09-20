@@ -24,8 +24,8 @@ namespace KSA\Register\Api\User;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\DTO\User\UserStateName;
-use Keestash\Exception\User\UserNotFoundException;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordEvent;
 use KSP\Api\IResponse;
@@ -75,28 +75,22 @@ final readonly class ResetPassword implements RequestHandlerInterface {
             );
         }
 
-        $userByMail = null;
-        $userByName = null;
-        try {
-            $userByMail = $this->userRepository->getUserByEmail($input);
-        } catch (UserNotFoundException $exception) {
-            $this->logger->warning('no users found', ['exception' => $exception]);
+        $userByMail = $this->userRepository->getUserByEmail($input);
+        if ($userByMail instanceof NullUser) {
+            $this->logger->warning('no users found', ['input' => $input, 'type' => 'bymail']);
         }
-        try {
-            $userByName = $this->userRepository->getUser($input);
-        } catch (UserNotFoundException $exception) {
-            $this->logger->warning('no users found', ['exception' => $exception]);
+        $userByName = $this->userRepository->getUser($input);
+        if ($userByName instanceof NullUser) {
+            $this->logger->warning('no users found', ['input' => $input, 'type' => 'byname']);
         }
 
-        $user = $userByMail ?? $userByName;
+        $user = $userByMail instanceof NullUser ? $userByName : $userByMail;
 
-        if (null === $user) {
-
+        if ($user instanceof NullUser) {
             $this->collectorService->addCounter(
                 name: 'invalidResetPassword'
                 , labels: ['noUserFound']
             );
-
             return new JsonResponse(
                 [
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_NOT_FOUND)

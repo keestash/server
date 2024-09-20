@@ -21,9 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Login\Command;
 
-use Exception;
 use Keestash\Command\KeestashCommand;
-use Keestash\Exception\User\UserNotFoundException;
+use Keestash\Core\DTO\User\NullUser;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
@@ -56,11 +55,10 @@ class Logout extends KeestashCommand {
         $style->title("Please provide the data required to create a credential");
         $userName = (string) ($style->ask("username") ?? "");
 
-        try {
-            $user = $this->userRepository->getUser($userName);
-        } catch (UserNotFoundException $exception) {
-            $this->logger->error('error retrieving user', ['exception' => $exception, 'userName' => $userName]);
-            throw new UserNotFoundException("No User Found");
+        $user = $this->userRepository->getUser($userName);
+        if ($user instanceof NullUser) {
+            $this->logger->error('error retrieving user', ['userName' => $userName]);
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
         $this->tokenRepository->removeForUser($user);

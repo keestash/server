@@ -26,10 +26,9 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\UserService;
-use Keestash\Exception\Token\TokenNotCreatedException;
-use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Entity\IResponseCodes;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
@@ -68,26 +67,19 @@ final readonly class Alpha {
     ) {
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
-     * @throws TokenNotCreatedException
-     * TODO add demo mode
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface {
         $parameters = (array) $request->getParsedBody();
         $userName   = $parameters["user"] ?? "";
         $password   = $parameters["password"] ?? "";
         $isSaas     = $request->getAttribute(ConfigProvider::ENVIRONMENT_SAAS);
 
-        try {
-            $user = $this->userRepository->getUser($userName);
-        } catch (UserNotFoundException $exception) {
+        $user = $this->userRepository->getUser($userName);
+
+        if ($user instanceof NullUser) {
             $this->logger->error(
                 'error retrieving user',
                 [
-                    'userName'  => $userName,
-                    'exception' => $exception,
+                    'userName' => $userName
                 ]
             );
             return new JsonResponse(
@@ -102,7 +94,7 @@ final readonly class Alpha {
             $this->logger->error(
                 'tried to log in with an disabled user',
                 [
-                    'userName'  => $userName,
+                    'userName' => $userName,
                 ]
             );
             return new JsonResponse(

@@ -22,6 +22,7 @@ declare(strict_types=1);
  */
 
 use doganoo\PHPAlgorithms\Datastructure\Stackqueue\Queue;
+use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\Repository\User\UserRepository;
 use Keestash\Core\Service\User\UserService;
 use KSA\PasswordManager\Entity\Edge\Edge;
@@ -64,7 +65,7 @@ use Psr\Container\ContainerInterface;
 
     $user = $userRepository->getUser("doganooo");
 
-    if (null === $user) {
+    if ($user instanceof NullUser) {
 
         $user = new \Keestash\Core\DTO\User\User();
         $user->setCreateTs(new DateTime());
