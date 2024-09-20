@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Login\Api\Configuration;
-use KSA\Login\Api\Key\Key;
 use KSA\Login\Api\Login\Login;
 use KSA\Login\Api\Logout;
 use KSA\Login\ConfigProvider;
@@ -48,12 +47,6 @@ return [
             , IRoute::MIDDLEWARE => Configuration::class
             , IRoute::METHOD     => IVerb::GET
             , IRoute::NAME       => Configuration::class
-        ],
-        [
-            IRoute::PATH         => ConfigProvider::LOGIN_KEY
-            , IRoute::MIDDLEWARE => Key::class
-            , IRoute::METHOD     => IVerb::GET
-            , IRoute::NAME       => Key::class
         ],
     ],
     CoreConfigProvider::PUBLIC_ROUTES => [

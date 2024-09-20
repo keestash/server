@@ -40,7 +40,7 @@ interface IUserRepository extends IRepository {
     /**
      * @param string $name
      * @return IUser
-     * @throws UserNotFoundException
+     * @throws UserException
      */
     public function getUser(string $name): IUser;
 

@@ -22,10 +22,9 @@ declare(strict_types=1);
 namespace KSA\Login\Command;
 
 use DateTimeImmutable;
-use Exception;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\Derivation\Derivation;
-use Keestash\Exception\User\UserNotFoundException;
+use Keestash\Core\DTO\User\NullUser;
 use KSA\Login\Service\TokenService;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\Derivation\IDerivationRepository;
@@ -70,15 +69,14 @@ class Login extends KeestashCommand {
         $userName = (string) ($style->ask("username") ?? "");
         $password = (string) ($style->askHidden("password") ?? "");
 
-        try {
-            $user = $this->userRepository->getUser($userName);
-        } catch (UserNotFoundException $exception) {
-            $this->logger->error('error retrieving user', ['exception' => $exception, 'userName' => $userName]);
-            throw new UserNotFoundException("No User Found");
+        $user = $this->userRepository->getUser($userName);
+        if ($user instanceof NullUser) {
+            $this->logger->error('error retrieving user', ['userName' => $userName]);
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
         if (true === $this->userService->isDisabled($user)) {
-            throw new UserNotFoundException("No User Found");
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
         $verified = false;

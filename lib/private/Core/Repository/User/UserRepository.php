@@ -25,7 +25,7 @@ use Doctrine\DBAL\Exception;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
-use Keestash;
+use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\DTO\User\User;
 use Keestash\Exception\Repository\TooManyRowsException;
 use Keestash\Exception\User\UserException;
@@ -37,6 +37,7 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\LDAP\ILDAPUserRepository;
 use KSP\Core\Repository\User\IUserRepository;
+use Override;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -45,10 +46,15 @@ use Psr\Log\LoggerInterface;
  * @package Keestash\Core\Repository\User
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class UserRepository implements IUserRepository {
+final readonly class UserRepository implements IUserRepository {
 
-    public function __construct(private readonly IBackend                  $backend, private readonly IDateTimeService        $dateTimeService, private readonly LoggerInterface         $logger, private readonly RBACRepositoryInterface $rbacRepository, private readonly ILDAPUserRepository     $ldapUserRepository)
-    {
+    public function __construct(
+        private IBackend                $backend,
+        private IDateTimeService        $dateTimeService,
+        private LoggerInterface         $logger,
+        private RBACRepositoryInterface $rbacRepository,
+        private ILDAPUserRepository     $ldapUserRepository
+    ) {
     }
 
     /**
@@ -57,9 +63,9 @@ class UserRepository implements IUserRepository {
      * @param string $name The name of the user
      *
      * @return IUser
-     * @throws UserNotFoundException
+     * @throws UserException
      */
-    #[\Override]
+    #[Override]
     public function getUser(string $name): IUser {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -89,7 +95,7 @@ class UserRepository implements IUserRepository {
             $userCount    = count($users);
 
             if (0 === $userCount) {
-                throw new UserNotFoundException();
+                return new NullUser();
             }
 
             if ($userCount > 1) {
@@ -130,7 +136,7 @@ class UserRepository implements IUserRepository {
                 $message
                 , ['exception' => $exception]
             );
-            throw new UserNotFoundException($message);
+            throw new UserException(message: $message, previous: $exception);
         } catch (TooManyRowsException $exception) {
             $message = 'too many users found';
             $this->logger->error(
@@ -140,7 +146,7 @@ class UserRepository implements IUserRepository {
                     , 'userName' => $name
                 ]
             );
-            throw new UserNotFoundException($message);
+            throw new UserException(message: $message, previous: $exception);
         }
         return $user;
     }
@@ -151,7 +157,7 @@ class UserRepository implements IUserRepository {
      * @return ArrayList
      * @throws UserException
      */
-    #[\Override]
+    #[Override]
     public function getAll(): ArrayList {
         try {
             $list = new ArrayList();
@@ -228,7 +234,7 @@ class UserRepository implements IUserRepository {
      * @return IUser
      * @throws UserNotCreatedException
      */
-    #[\Override]
+    #[Override]
     public function insert(IUser $user): IUser {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -282,7 +288,7 @@ class UserRepository implements IUserRepository {
      *
      * TODO update roles and permissions
      */
-    #[\Override]
+    #[Override]
     public function update(IUser $user): IUser {
 
         $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -335,7 +341,7 @@ class UserRepository implements IUserRepository {
      * @return IUser
      * @throws UserNotFoundException
      */
-    #[\Override]
+    #[Override]
     public function getUserById(string $id): IUser {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -413,7 +419,7 @@ class UserRepository implements IUserRepository {
      * @return IUser
      * @throws UserNotFoundException
      */
-    #[\Override]
+    #[Override]
     public function getUserByEmail(string $email): IUser {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -507,7 +513,7 @@ class UserRepository implements IUserRepository {
      * @return IUser
      * @throws UserNotFoundException
      */
-    #[\Override]
+    #[Override]
     public function getUserByHash(string $hash): IUser {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -605,7 +611,7 @@ class UserRepository implements IUserRepository {
      * @return IUser
      * @throws UserNotDeletedException
      */
-    #[\Override]
+    #[Override]
     public function remove(IUser $user): IUser {
         try {
             $queryBuilder = $this->backend->getConnection()->createQueryBuilder();
@@ -625,7 +631,7 @@ class UserRepository implements IUserRepository {
      * @return ArrayList
      * @throws UserException
      */
-    #[\Override]
+    #[Override]
     public function searchUsers(string $name): ArrayList {
 
         try {

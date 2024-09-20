@@ -21,6 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Exception\User;
 
+/**
+ * @deprecated
+ */
 final class UserNotFoundException extends UserException {
 
 }
