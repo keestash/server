@@ -30,17 +30,15 @@ use KSP\Core\DTO\Entity\IJsonObject;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 
-abstract class Node implements
-    IJsonObject
-    , IAccessable {
+abstract class Node implements IJsonObject, IAccessable {
 
-    public const ROOT       = "root";
-    public const FOLDER     = "folder";
-    public const CREDENTIAL = "credential";
+    public const string ROOT       = "root";
+    public const string FOLDER     = "folder";
+    public const string CREDENTIAL = "credential";
 
-    public const ICON_FOLDER = "fas fa-folder";
-    public const ICON_ROOT   = "fas fa-tree";
-    public const ICON_KEY    = "fas fa-key";
+    public const string ICON_FOLDER = "fas fa-folder";
+    public const string ICON_ROOT   = "fas fa-tree";
+    public const string ICON_KEY    = "fas fa-key";
 
     private int                $id           = 0;
     private string             $name         = "";

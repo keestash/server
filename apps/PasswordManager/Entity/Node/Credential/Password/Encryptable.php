@@ -77,7 +77,8 @@ abstract class Encryptable implements IJsonObject {
     #[\Override]
     public function jsonSerialize(): array {
         return [
-            "placeholder" => $this->getPlaceholder()
+            "placeholder" => $this->getPlaceholder(),
+            'encrypted' => $this->getEncrypted() === null ? null : base64_encode($this->getEncrypted())
         ];
     }
 

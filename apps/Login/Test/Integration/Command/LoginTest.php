@@ -24,10 +24,8 @@ namespace KSA\Login\Test\Integration\Command;
 use DateTimeImmutable;
 use Keestash\Core\DTO\User\UserState;
 use Keestash\Core\DTO\User\UserStateName;
-use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Test\Integration\TestCase;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\DTO\User\IUserState;
 use KSP\Core\Service\User\IUserStateService;
 use Ramsey\Uuid\Uuid;
 
@@ -53,7 +51,6 @@ class LoginTest extends TestCase {
     }
 
     public function testNonExistingUser(): void {
-        $this->expectException(UserNotFoundException::class);
         $command = $this->getCommandTester("login:login");
         $command->setInputs(
             [
@@ -61,11 +58,11 @@ class LoginTest extends TestCase {
                 , 'password' => Uuid::uuid4()->toString()
             ]
         );
-        $command->execute([]);
+        $result = $command->execute([]);
+        $this->assertTrue($result === IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL);
     }
 
     public function testWithDisabledUser(): void {
-        $this->expectException(UserNotFoundException::class);
         /** @var IUserStateService $userStateService */
         $userStateService = $this->getService(IUserStateService::class);
         $username         = Uuid::uuid4()->toString();
@@ -115,8 +112,9 @@ class LoginTest extends TestCase {
                 , 'password' => $password
             ]
         );
-        $command->execute([]);
+        $result = $command->execute([]);
         $this->removeUser($user);
+        $this->assertTrue($result === IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL);
     }
 
     public function testWithInvalidCredentials(): void {

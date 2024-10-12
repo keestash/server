@@ -21,10 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Login\Test\Integration\Command;
 
-use Keestash\Exception\User\UserNotFoundException;
 use KSA\Login\Test\Integration\TestCase;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Repository\User\IUserStateRepository;
 use Ramsey\Uuid\Uuid;
 
 class LogoutTest extends TestCase {
@@ -49,14 +47,14 @@ class LogoutTest extends TestCase {
     }
 
     public function testNonExistingUser(): void {
-        $this->expectException(UserNotFoundException::class);
         $command = $this->getCommandTester("login:logout");
         $command->setInputs(
             [
                 'username' => Uuid::uuid4()->toString()
             ]
         );
-        $command->execute([]);
+        $result = $command->execute([]);
+        $this->assertTrue($result === IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL);
     }
 
 }

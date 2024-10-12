@@ -37,13 +37,13 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 
-class KeyService implements IKeyService {
+final readonly class KeyService implements IKeyService {
 
     public function __construct(
-        private readonly IUserKeyRepository           $userKeyRepository
-        , private readonly IEncryptionService         $encryptionService
-        , private readonly IOrganizationKeyRepository $organizationKeyRepository
-        , private readonly ICredentialService         $credentialService
+        private IUserKeyRepository           $userKeyRepository
+        , private IEncryptionService         $encryptionService
+        , private IOrganizationKeyRepository $organizationKeyRepository
+        , private ICredentialService         $credentialService
     ) {
     }
 

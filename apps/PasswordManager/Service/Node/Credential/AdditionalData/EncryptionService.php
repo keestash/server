@@ -24,13 +24,14 @@ namespace KSA\PasswordManager\Service\Node\Credential\AdditionalData;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\Value;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
+use KSA\PasswordManager\Service\Encryption\EncryptionService as PasswordManagerEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 
-class EncryptionService {
+final readonly class EncryptionService {
 
     public function __construct(
-        private readonly \KSA\PasswordManager\Service\Encryption\EncryptionService $encryptionService
-        , private readonly IKeyService                                             $keyService
+        private PasswordManagerEncryptionService $encryptionService
+        , private IKeyService                    $keyService
     ) {
     }
 

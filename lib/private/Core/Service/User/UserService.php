@@ -344,8 +344,8 @@ final readonly class UserService implements IUserService {
     }
 
     #[\Override]
-    public function isDisabled(?IUser $user): bool {
-        return null === $user || true === $user->isLocked();
+    public function isDisabled(IUser $user): bool {
+        return true === $user->isLocked();
     }
 
     #[\Override]

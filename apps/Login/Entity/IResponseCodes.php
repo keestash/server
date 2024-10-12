@@ -23,11 +23,11 @@ namespace KSA\Login\Entity;
 
 interface IResponseCodes {
 
-    public const RESPONSE_CODE_USER_NOT_FOUND = 785561;
-    public const RESPONSE_NAME_USER_NOT_FOUND = 'found.not.user.name.response';
-    public const RESPONSE_CODE_USER_DISABLED  = 786561;
-    public const RESPONSE_NAME_USER_DISABLED  = 'disabled.user.name.response';
-    public const RESPONSE_CODE_INVALID_CREDENTIALS  = 787561;
-    public const RESPONSE_NAME_INVALID_CREDENTIALS  = 'credentials.invalid.name.response';
+    public const int    RESPONSE_CODE_USER_NOT_FOUND      = 785561;
+    public const string RESPONSE_NAME_USER_NOT_FOUND      = 'found.not.user.name.response';
+    public const int    RESPONSE_CODE_USER_DISABLED       = 786561;
+    public const string RESPONSE_NAME_USER_DISABLED       = 'disabled.user.name.response';
+    public const int    RESPONSE_CODE_INVALID_CREDENTIALS = 787561;
+    public const string RESPONSE_NAME_INVALID_CREDENTIALS = 'credentials.invalid.name.response';
 
 }

@@ -26,7 +26,8 @@ class Username extends Encryptable {
     #[\Override]
     public function jsonSerialize(): array {
         return parent::jsonSerialize() + [
-                'plain' => $this->getPlain()
+                'plain'     => $this->getPlain(),
+                'encrypted' => $this->getEncrypted() === null ? null : base64_encode($this->getEncrypted())
             ];
     }
 

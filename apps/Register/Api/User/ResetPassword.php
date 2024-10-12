@@ -26,6 +26,7 @@ use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\DTO\User\UserStateName;
+use Keestash\Exception\User\UserException;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordEvent;
 use KSP\Api\IResponse;
@@ -57,101 +58,105 @@ final readonly class ResetPassword implements RequestHandlerInterface {
 
     #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters = (array) $request->getParsedBody();
-        $input      = $parameters["input"] ?? null;
+        try {
+            $parameters = (array) $request->getParsedBody();
+            $input      = $parameters["input"] ?? null;
 
-        if (null === $input || "" === $input) {
+            if (null === $input || "" === $input) {
+
+                $this->collectorService->addCounter(
+                    name: 'invalidResetPassword'
+                    , labels: ['noInputGiven']
+                );
+
+                return new JsonResponse(
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_INVALID_INPUT)
+                    ]
+                    , IResponse::BAD_REQUEST
+                );
+            }
+
+            $userByMail = $this->userRepository->getUserByEmail($input);
+            if ($userByMail instanceof NullUser) {
+                $this->logger->warning('no users found', ['input' => $input, 'type' => 'bymail']);
+            }
+            $userByName = $this->userRepository->getUser($input);
+            if ($userByName instanceof NullUser) {
+                $this->logger->warning('no users found', ['input' => $input, 'type' => 'byname']);
+            }
+
+            $user = $userByMail instanceof NullUser ? $userByName : $userByMail;
+
+            if ($user instanceof NullUser) {
+                $this->collectorService->addCounter(
+                    name: 'invalidResetPassword'
+                    , labels: ['noUserFound']
+                );
+                return new JsonResponse(
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_NOT_FOUND)
+                    ]
+                    , IResponse::NOT_FOUND
+                );
+            }
+
+            if (true === $this->userService->isDisabled($user)) {
+
+                $this->collectorService->addCounter(
+                    name: 'invalidResetPassword'
+                    , labels: ['disabledUserRequested']
+                );
+
+                return new JsonResponse(
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_DISABLED)
+                    ]
+                    , IResponse::FORBIDDEN
+                );
+            }
+
+            $userState = $this->userStateService->getState($user);
+
+            $alreadyRequested = false;
+            if ($userState->getState() === UserStateName::REQUEST_PW_CHANGE) {
+                $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
+                $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
+            }
+
+            if (true === $alreadyRequested) {
+
+                $this->collectorService->addCounter(
+                    name: 'invalidResetPassword'
+                    , labels: ['alreadyRequested']
+                );
+
+                return new JsonResponse(
+                    [
+                        "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_ALREADY_SENT)
+                    ]
+                    , IResponse::NOT_ACCEPTABLE
+                );
+
+            }
+
+            $this->eventManager->execute(
+                new ResetPasswordEvent($user)
+            );
 
             $this->collectorService->addCounter(
-                name: 'invalidResetPassword'
-                , labels: ['noInputGiven']
+                name: 'resetPasswordSuccess'
             );
 
             return new JsonResponse(
                 [
-                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_INVALID_INPUT)
+                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_SENT)
                 ]
-                , IResponse::BAD_REQUEST
+                , IResponse::OK
             );
+        } catch (UserException $exception) {
+            return new JsonResponse([], 404);
         }
-
-        $userByMail = $this->userRepository->getUserByEmail($input);
-        if ($userByMail instanceof NullUser) {
-            $this->logger->warning('no users found', ['input' => $input, 'type' => 'bymail']);
-        }
-        $userByName = $this->userRepository->getUser($input);
-        if ($userByName instanceof NullUser) {
-            $this->logger->warning('no users found', ['input' => $input, 'type' => 'byname']);
-        }
-
-        $user = $userByMail instanceof NullUser ? $userByName : $userByMail;
-
-        if ($user instanceof NullUser) {
-            $this->collectorService->addCounter(
-                name: 'invalidResetPassword'
-                , labels: ['noUserFound']
-            );
-            return new JsonResponse(
-                [
-                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_NOT_FOUND)
-                ]
-                , IResponse::NOT_FOUND
-            );
-        }
-
-        if (true === $this->userService->isDisabled($user)) {
-
-            $this->collectorService->addCounter(
-                name: 'invalidResetPassword'
-                , labels: ['disabledUserRequested']
-            );
-
-            return new JsonResponse(
-                [
-                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_USER_DISABLED)
-                ]
-                , IResponse::FORBIDDEN
-            );
-        }
-
-        $userState = $this->userStateService->getState($user);
-
-        $alreadyRequested = false;
-        if ($userState->getState() === UserStateName::REQUEST_PW_CHANGE) {
-            $difference       = $userState->getCreateTs()->diff(new DateTimeImmutable());
-            $alreadyRequested = $difference->i < 2; // not requested within the last 2 minutes
-        }
-
-        if (true === $alreadyRequested) {
-
-            $this->collectorService->addCounter(
-                name: 'invalidResetPassword'
-                , labels: ['alreadyRequested']
-            );
-
-            return new JsonResponse(
-                [
-                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_ALREADY_SENT)
-                ]
-                , IResponse::NOT_ACCEPTABLE
-            );
-
-        }
-
-        $this->eventManager->execute(
-            new ResetPasswordEvent($user)
-        );
-
-        $this->collectorService->addCounter(
-            name: 'resetPasswordSuccess'
-        );
-
-        return new JsonResponse(
-            [
-                "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_RESET_PASSWORD_RESET_MAIL_SENT)
-            ]
-            , IResponse::OK
-        );
     }
 
 }

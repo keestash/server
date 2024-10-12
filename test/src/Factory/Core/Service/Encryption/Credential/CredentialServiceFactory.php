@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2021> <Dogan Ucar>
+ * Copyright (C) <2020> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,23 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Service\Encryption;
+namespace KST\Service\Factory\Core\Service\Encryption\Credential;
 
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
+use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KSP\Core\Service\Encryption\IEncryptionService;
+use KST\Service\Core\Service\Encryption\Credential\CredentialService;
+use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
-class EncryptionServiceFactory {
+class CredentialServiceFactory implements FactoryInterface {
 
-    public function __invoke(ContainerInterface $container): EncryptionService {
-        return new EncryptionService(
-            $container->get(IEncryptionService::class),
-            $container->get(ICredentialService::class),
-            $container->get(LoggerInterface::class),
+    public function __invoke(
+        ContainerInterface $container,
+                           $requestedName,
+        ?array             $options = null
+    ): ICredentialService {
+        return new CredentialService(
+            $container->get(IDerivationService::class)
         );
     }
 

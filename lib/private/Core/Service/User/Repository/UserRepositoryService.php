@@ -161,12 +161,8 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      */
     #[\Override]
     public function userExistsByEmail(string $email): bool {
-        try {
-            $this->userRepository->getUserByEmail($email);
-            return true;
-        } catch (UserNotFoundException) {
-            return false;
-        }
+        $user = $this->userRepository->getUserByEmail($email);
+        return (!($user instanceof NullUser));
     }
 
     /**

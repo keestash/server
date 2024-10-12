@@ -42,6 +42,7 @@
     "guzzlehttp/guzzle": "^7.0",
     "laminas/laminas-config": "^3.5",
     "laminas/laminas-config-aggregator": "^1.5",
+    "laminas/laminas-crypt": "^3.12",
     "laminas/laminas-diactoros": "^2.5",
     "laminas/laminas-escaper": "^2.12",
     "laminas/laminas-i18n": "^2.15",

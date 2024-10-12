@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KST\Service\Core\Service\Encryption\Credential;
+namespace Keestash\Core\Service\Encryption\Credential;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\Derivation\Derivation;
@@ -32,12 +32,6 @@ use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use Override;
 use Ramsey\Uuid\Uuid;
 
-/**
- * Class CredentialService
- *
- * @package Keestash\Core\Service\Encryption\Credential
- * @author  Dogan Ucar <dogan@dogan-ucar.de>
- */
 final readonly class CredentialService implements ICredentialService {
 
     public function __construct(
