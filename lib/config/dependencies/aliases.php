@@ -59,7 +59,7 @@ use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Derivation\DerivationService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
-use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Mask\StringMaskService;
@@ -192,7 +192,7 @@ return [
     , IKeyService::class                                => KeyService::class
     , IEncryptionService::class                         => KeestashEncryptionService::class
     , IFileService::class                               => FileService::class
-    , ICredentialService::class                         => DerivedCredentialService::class
+    , ICredentialService::class                         => CredentialService::class
     , ICacheService::class                              => NullService::class
     , IEmailService::class                              => EmailService::class
     , IOrganizationService::class                       => OrganizationService::class

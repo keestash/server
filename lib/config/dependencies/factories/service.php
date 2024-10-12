@@ -40,7 +40,7 @@ use Keestash\Core\Service\CSV\CSVService;
 use Keestash\Core\Service\Derivation\DerivationService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
-use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use Keestash\Core\Service\Encryption\Mask\StringMaskService;
@@ -90,7 +90,7 @@ use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
 use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
 use Keestash\Factory\Core\Service\Derivation\DerivationServiceFactory;
 use Keestash\Factory\Core\Service\Email\EmailServiceFactory;
-use Keestash\Factory\Core\Service\Encryption\Credential\DerivedCredentialServiceFactory;
+use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Key\KeyServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Password\PasswordServiceFactory;
@@ -131,13 +131,13 @@ use Psr\Log\LoggerInterface;
 
 return [
     UserService::class                                        => UserServiceFactory::class
+    , CredentialService::class                                => CredentialServiceFactory::class
     , ConfigService::class                                    => ConfigServiceFactory::class
     , UserStateService::class                                 => UserStateServiceFactory::class
     , KeyService::class                                       => KeyServiceFactory::class
     , KeestashEncryptionService::class                        => KeestashEncryptionServiceFactory::class
     , FileService::class                                      => FileServiceFactory::class
     , RawFileService::class                                   => RawFileServiceFactory::class
-    , DerivedCredentialService::class                         => DerivedCredentialServiceFactory::class
     , EmailService::class                                     => EmailServiceFactory::class
     , OrganizationService::class                              => OrganizationServiceFactory::class
     , InstallerService::class                                 => InstallerServiceFactory::class

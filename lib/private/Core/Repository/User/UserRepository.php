@@ -448,7 +448,7 @@ final readonly class UserRepository implements IUserRepository {
             $userCount = count($users);
 
             if (0 === $userCount) {
-                throw new UserNotFoundException();
+                return new NullUser();
             }
 
             if ($userCount > 1) {

@@ -49,7 +49,7 @@ interface IUserService extends IService {
 
     public function toNewUser(array $userArray): IUser;
 
-    public function isDisabled(?IUser $user): bool;
+    public function isDisabled(IUser $user): bool;
 
     public function validatePasswords(string $password, string $passwordRepeat): ArrayList;
 

@@ -115,14 +115,14 @@ class AddTest extends TestCase {
                     IVerb::POST
                     , ConfigProvider::REGISTER_ADD
                     , [
-                        'first_name'             => Uuid::uuid4()->toString(),
-                        'last_name'              => Uuid::uuid4()->toString(),
-                        'email'                  => Uuid::uuid4()->toString() . '@keestash.com',
-                        'user_name'              => Uuid::uuid4()->toString(),
-                        'password'               => '1E]U_t"0Xh&}gtTPA`|?'
-                        , 'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?'
-                        , 'phone'                => '1e9691234566'
-                        , 'terms_and_conditions' => true
+                        'first_name'           => Uuid::uuid4()->toString(),
+                        'last_name'            => Uuid::uuid4()->toString(),
+                        'email'                => Uuid::uuid4()->toString() . '@keestash.com',
+                        'user_name'            => Uuid::uuid4()->toString(),
+                        'password'             => '1E]U_t"0Xh&}gtTPA`|?',
+                        'password_repeat'      => '1E]U_t"0Xh&}gtTPA`|?',
+                        'phone'                => '1e9691234566',
+                        'terms_and_conditions' => true
                     ]
                 )
             );

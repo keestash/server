@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Repository\User;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use Keestash\Core\DTO\User\NullUser;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\User\IUserRepository;
@@ -45,10 +46,10 @@ class UserRepositoryTest extends TestCase {
     }
 
     public function testGetNonExistingUser(): void {
-        $this->expectException(UserNotFoundException::class);
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
-        $userRepository->getUser(md5((string) time()));
+        $user           = $userRepository->getUser(md5((string) time()));
+        $this->assertInstanceOf(NullUser::class, $user);
     }
 
     public function testGetUserByEmail(): void {
@@ -70,10 +71,10 @@ class UserRepositoryTest extends TestCase {
     }
 
     public function testGetNonExistingUserByEmail(): void {
-        $this->expectException(UserNotFoundException::class);
         /** @var IUserRepository $userRepository */
         $userRepository = $this->getService(IUserRepository::class);
-        $userRepository->getUserByEmail(md5((string) time()));
+        $user           = $userRepository->getUserByEmail(md5((string) time()));
+        $this->assertInstanceOf(NullUser::class, $user);
     }
 
     public function testGetUserByHash(): void {

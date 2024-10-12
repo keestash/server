@@ -19,24 +19,10 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KST\Service\Factory\Core\Service\Encryption;
+namespace KSA\Login\Exception;
 
-use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
-use KST\Service\Core\Service\Encryption\Credential\CredentialService;
-use Laminas\ServiceManager\Factory\FactoryInterface;
-use Psr\Container\ContainerInterface;
+use Keestash\Exception\KeestashException;
 
-class CredentialServiceFactory implements FactoryInterface {
-
-    #[\Override]
-    public function __invoke(
-        ContainerInterface $container
-        ,                  $requestedName
-        , ?array           $options = null
-    ): CredentialService {
-        return new CredentialService(
-            $container->get(DerivedCredentialService::class)
-        );
-    }
+class LoginException extends KeestashException {
 
 }

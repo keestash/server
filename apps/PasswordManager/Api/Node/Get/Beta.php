@@ -25,9 +25,7 @@ namespace KSA\PasswordManager\Api\Node\Get;
 use Keestash\Api\Response\JsonResponse;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
-use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\IResponseCodes;
-use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -73,32 +71,7 @@ final readonly class Beta {
             );
         }
 
-        try {
-            $root   = $this->prepareNode($rootId, $token);
-            $result = [];
-            /** @var Edge $edge */
-            foreach ($root->getEdges() as $edge) {
-                $result[] = [
-                    'id'       => $edge->getNode()->getId(),
-                    'name'     => $edge->getNode()->getName(),
-                    'type'     => $edge->getNode()->getType(),
-                    'userName' => base64_encode((string) ($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : ''))
-                ];
-                $result[] = [
-                    'id'       => $edge->getNode()->getId() + 10000,
-                    'name'     => $edge->getNode()->getName(),
-                    'type'     => $edge->getNode()->getType(),
-                    'userName' => base64_encode((string) ($edge->getNode() instanceof Credential ? $edge->getNode()->getUserName()->getEncrypted() : ''))
-                ];
-            }
-        } catch (PasswordManagerException|InvalidNodeTypeException $exception) {
-            $this->logger->error($exception->getMessage());
-            return new JsonResponse(
-                ['no data found']
-                , IResponse::NOT_FOUND
-            );
-        }
-
+        $root = $this->prepareNode($rootId, $token);
         $this->activityService->insertActivityWithSingleMessage(
             ConfigProvider::APP_ID
             , (string) $root->getId()
@@ -107,7 +80,7 @@ final readonly class Beta {
 
         return new JsonResponse(
             [
-                "node" => $result
+                "node" => $root
             ]
             , IResponse::OK
         );

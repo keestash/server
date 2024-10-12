@@ -46,6 +46,7 @@ return
             , 'User-Agent'
             , IResponse::HEADER_X_KEESTASH_TOKEN
             , IResponse::HEADER_X_KEESTASH_USER
+            , IResponse::HEADER_X_KEESTASH_API_VERSION
             , 'Authorization'
         ], // Tell client that the API will always return this header
     ];

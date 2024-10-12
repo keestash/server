@@ -37,7 +37,7 @@ class ConfigServiceFactory implements FactoryInterface {
     ): ConfigService {
         $table = new HashTable();
         $table->put('test.config', true);
-        $table->put('log_level', LogLevel::DEBUG);
+        $table->put('log_level', LogLevel::ERROR);
         return new ConfigService(
             $table
         );

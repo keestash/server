@@ -27,6 +27,7 @@ interface IResponse {
     public const string HEADER_X_KEESTASH_AUTHENTICATION           = "x-keestash-authentication";
     public const string HEADER_X_KEESTASH_USER                     = "x-keestash-user";
     public const string HEADER_X_KEESTASH_TOKEN                    = "x-keestash-token";
+    public const string HEADER_X_KEESTASH_API_VERSION                    = "x-keestash-api-version";
     public const string HEADER_CONTENT_SECURITY_POLICY             = "Content-Security-Policy";
     public const string HEADER_CONTENT_SECURITY_POLICY_REPORT_ONLY = "Content-Security-Policy-Report-Only";
 

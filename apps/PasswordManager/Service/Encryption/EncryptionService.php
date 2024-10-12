@@ -38,12 +38,12 @@ use Psr\Log\LoggerInterface;
  *
  * @package KSA\PasswordManager\Service\Encryption
  */
-class EncryptionService {
+final readonly class EncryptionService {
 
     public function __construct(
-        private readonly IEncryptionService   $encryptionService
-        , private readonly ICredentialService $credentialService
-        , private readonly LoggerInterface    $logger
+        private IEncryptionService   $encryptionService
+        , private ICredentialService $credentialService
+        , private LoggerInterface    $logger
     ) {
     }
 

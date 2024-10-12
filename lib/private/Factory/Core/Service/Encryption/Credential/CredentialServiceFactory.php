@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2024> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -21,26 +21,16 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Encryption\Credential;
 
-use Keestash\Core\Service\Encryption\Credential\DerivedCredentialService;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
+use Keestash\Core\Service\Encryption\Credential\CredentialService;
 use KSP\Core\Service\Derivation\IDerivationService;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
-class DerivedCredentialServiceFactory implements FactoryInterface {
+final readonly class CredentialServiceFactory implements FactoryInterface {
 
-    #[\Override]
-    public function __invoke(
-        ContainerInterface $container
-        ,                  $requestedName
-        , ?array           $options = null
-    ): ICredentialService {
-        return new DerivedCredentialService(
-            $container->get(IDerivationRepository::class)
-            , $container->get(LoggerInterface::class)
-            , $container->get(IDerivationService::class)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): CredentialService {
+        return new CredentialService(
+            $container->get(IDerivationService::class)
         );
     }
 

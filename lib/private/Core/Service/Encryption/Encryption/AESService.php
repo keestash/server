@@ -37,8 +37,7 @@ abstract class AESService implements IEncryptionService {
     public const HASH_ALGORITHM = "sha256";
     public const IV_LENGTH      = 16;
 
-    public function __construct(private readonly LoggerInterface $logger)
-    {
+    public function __construct(private readonly LoggerInterface $logger) {
     }
 
     /**

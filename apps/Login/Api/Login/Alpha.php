@@ -21,10 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Login\Api\Login;
 
-use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
-use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\Service\Router\VerificationService;
@@ -33,20 +31,19 @@ use KSA\Login\Entity\IResponseCodes;
 use KSA\Login\Service\TokenService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Http\JWT\IAudience;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Derivation\IDerivationService;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\LDAP\ILDAPService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 
 final readonly class Alpha {
 
@@ -61,9 +58,9 @@ final readonly class Alpha {
         , private LoggerInterface       $logger
         , private ILDAPService          $ldapService
         , private IConnectionRepository $connectionRepository
-        , private IDerivationRepository $derivationRepository
         , private IDerivationService    $derivationService
         , private IResponseService      $responseService
+        , private IKeyService           $keyService
     ) {
     }
 
@@ -128,15 +125,6 @@ final readonly class Alpha {
         $token = $this->tokenService->generate("login", $user);
         $this->tokenRepository->add($token);
 
-        $this->derivationRepository->clear($user);
-        $derivation = new Derivation(
-            Uuid::uuid4()->toString()
-            , $user
-            , $this->derivationService->derive($user->getPassword())
-            , new DateTimeImmutable()
-        );
-
-        $this->derivationRepository->add($derivation);
 
         $user->setJWT(
             $this->jwtService->getJWT(
@@ -146,19 +134,23 @@ final readonly class Alpha {
                 )
             )
         );
+
+        $key = $this->keyService->getKey($user);
         return new JsonResponse(
-            [
-                "settings" => [
-                    "locale"     => $this->localeService->getLocaleForUser($user)
-                    , "language" => $this->languageService->getLanguageForUser($user)
-                    , "isSaas"   => true === $isSaas
+            data: [
+                "settings"   => [
+                    "locale"   => $this->localeService->getLocaleForUser($user),
+                    "language" => $this->languageService->getLanguageForUser($user),
+                    "isSaas"   => true === $isSaas
                 ],
-                "user"     => $user
+                "user"       => $user,
+                'derivation' => base64_encode($this->derivationService->derive($user->getPassword())),
+                'key'        => base64_encode($key->getSecret())
             ],
-            IResponse::OK
-            , [
-                VerificationService::FIELD_NAME_TOKEN       => $token->getValue()
-                , VerificationService::FIELD_NAME_USER_HASH => $user->getHash()
+            statusCode: IResponse::OK,
+            headers: [
+                VerificationService::FIELD_NAME_TOKEN     => $token->getValue(),
+                VerificationService::FIELD_NAME_USER_HASH => $user->getHash()
             ]
         );
 

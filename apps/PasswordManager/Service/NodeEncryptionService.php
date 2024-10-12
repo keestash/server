@@ -33,12 +33,12 @@ use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Psr\Log\LoggerInterface;
 
-class NodeEncryptionService {
+final readonly class NodeEncryptionService {
 
     public function __construct(
-        private readonly EncryptionService $encryptionService
-        , private readonly IKeyService     $keyService
-        , private readonly LoggerInterface $logger
+        private EncryptionService $encryptionService
+        , private IKeyService     $keyService
+        , private LoggerInterface $logger
     ) {
     }
 

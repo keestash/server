@@ -24,13 +24,13 @@ namespace KSA\Login\Factory\Api\Login;
 use Keestash\Core\Service\User\UserService;
 use KSA\Login\Api\Login\Alpha;
 use KSA\Login\Service\TokenService;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\Derivation\IDerivationService;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\LDAP\ILDAPService;
@@ -57,9 +57,9 @@ class AlphaFactory implements FactoryInterface {
             , $container->get(LoggerInterface::class)
             , $container->get(ILDAPService::class)
             , $container->get(IConnectionRepository::class)
-            , $container->get(IDerivationRepository::class)
             , $container->get(IDerivationService::class)
             , $container->get(IResponseService::class)
+            , $container->get(IKeyService::class)
         );
     }
 
