@@ -30,6 +30,7 @@ use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Unit\TestCase;
 use KSP\Core\DTO\User\IUser;
+use Override;
 use Ramsey\Uuid\Uuid;
 
 class CredentialServiceTest extends TestCase {
@@ -39,7 +40,7 @@ class CredentialServiceTest extends TestCase {
     private KeyService        $keyService;
     private NodeRepository    $nodeRepository;
 
-    #[\Override]
+    #[Override]
     protected function setUp(): void {
         parent::setUp();
         $this->credentialService = $this->getServiceManager()->get(CredentialService::class);
@@ -79,30 +80,9 @@ class CredentialServiceTest extends TestCase {
         $credential = $this->getCredential($user, true);
         $key        = $this->keyService->getKey($user);
 
-        $this->assertTrue($credential instanceof Credential);
-        $this->assertTrue($credential instanceof Node);
-        $this->assertTrue($credential->getPassword()->getPlain() === $password);
-        $this->assertTrue($credential->getPassword()->getLength() === strlen($password));
-        $this->assertTrue(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $credential->getPassword()->getEncrypted()
-            ) === $password
-        );
-        /**
-         * @see \KSA\PasswordManager\Service\Node\Credential\CredentialService::generatePasswordPlaceholder()
-         */
-        $this->assertTrue($credential->getPassword()->getPlaceholder() === "************");
-        $this->assertTrue(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $credential->getUrl()->getEncrypted()
-            ) === $url);
-        $this->assertTrue(
-            $this->encryptionService->decrypt(
-                $key
-                , (string) $credential->getUsername()->getEncrypted()
-            ) === $userName);
+        $this->assertTrue($credential->getPassword() === $password);
+        $this->assertTrue($credential->getUrl() === $url);
+        $this->assertTrue($credential->getUsername() === $userName);
         $this->assertTrue($credential->getName() === $title);
         $this->assertTrue($credential->getUser()->getId() === $user->getId());
         $this->assertTrue($credential->getType() === Node::CREDENTIAL);
@@ -138,7 +118,7 @@ class CredentialServiceTest extends TestCase {
 
         $credential = $this->credentialService->updatePassword($credential, $newPassword);
 
-        $this->assertTrue($credential->getPassword()->getPlain() === $newPassword);
+        $this->assertTrue($credential->getPassword() === $newPassword);
     }
 
 }

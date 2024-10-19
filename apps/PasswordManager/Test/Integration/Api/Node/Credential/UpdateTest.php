@@ -21,10 +21,11 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential;
 
-use KSA\PasswordManager\Api\Node\Credential\Update\Update;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IVerb;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -36,73 +37,111 @@ use Ramsey\Uuid\Uuid;
 class UpdateTest extends TestCase {
 
     public function testUpdate(): void {
-        /** @var Update $update */
-        $update = $this->getServiceManager()->get(Update::class);
         /** @var CredentialService $credentialService */
         $credentialService = $this->getServiceManager()->get(CredentialService::class);
-        $user           = $this->createUser(
-            Uuid::uuid4()->toString()
-            , Uuid::uuid4()->toString()
+        $password          = Uuid::uuid4()->toString();
+        $user              = $this->createUser(
+            Uuid::uuid4()->toString(),
+            $password
         );
-        $root           = $this->getRootFolder($user);
-        $node           = $credentialService->createCredential(
+        $root              = $this->getRootFolder($user);
+        $node              = $credentialService->createCredential(
             "deleteTestPassword"
             , "keestash.test"
             , "deletetest.test"
             , "Deletetest"
             , $user
         );
-        $edge           = $credentialService->insertCredential($node, $root);
-        $node           = $edge->getNode();
+        $edge              = $credentialService->insertCredential($node, $root);
+        $node              = $edge->getNode();
 
-        $response = $update->handle(
-            $this->getVirtualRequest([
-                'name'       => 'TestUpdateNewName'
-                , 'username' => [
-                    "plain" => 'TestUpdateNewUsername'
-                ]
-                , 'url'      => [
-                    "plain" => 'TestUpdateNewUrl'
-                ]
-                , 'nodeId'   => $node->getId()
-            ])
-        );
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE
+                    , [
+                        'name'       => 'TestUpdateNewName'
+                        , 'username' => [
+                            "plain" => 'TestUpdateNewUsername'
+                        ]
+                        , 'url'      => [
+                            "plain" => 'TestUpdateNewUrl'
+                        ]
+                        , 'nodeId'   => $node->getId()
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
 
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
         $this->removeUser($user);
+        $this->logout($headers, $user);
     }
 
     public function testUpdateInvalidNodeId(): void {
         $this->expectException(PasswordManagerException::class);
-        /** @var Update $update */
-        $update = $this->getServiceManager()->get(Update::class);
 
-        $response = $update->handle(
-            $this->getVirtualRequest([
-                'name'       => 'TestUpdateNewName'
-                , 'username' => 'TestUpdateNewUsername'
-                , 'url'      => 'TestUpdateNewUrl'
-                , 'nodeId'   => 9999
-            ])
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
 
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE
+                    , [
+                        'name'       => 'TestUpdateNewName'
+                        , 'username' => 'TestUpdateNewUsername'
+                        , 'url'      => 'TestUpdateNewUrl'
+                        , 'nodeId'   => 9999
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+
     }
 
     public function testUpdateNoNodeId(): void {
         $this->expectException(PasswordManagerException::class);
-        /** @var Update $update */
-        $update = $this->getServiceManager()->get(Update::class);
 
-        $response = $update->handle(
-            $this->getVirtualRequest([
-                'name'       => 'TestUpdateNewName'
-                , 'username' => 'TestUpdateNewUsername'
-                , 'url'      => 'TestUpdateNewUrl'
-            ])
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
 
+        $headers = $this->login($user, $password);
+
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE
+                    , [
+                        'name'       => 'TestUpdateNewName'
+                        , 'username' => 'TestUpdateNewUsername'
+                        , 'url'      => 'TestUpdateNewUrl'
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $this->logout($headers, $user);
+        $this->removeUser($user);
+
     }
 
 }

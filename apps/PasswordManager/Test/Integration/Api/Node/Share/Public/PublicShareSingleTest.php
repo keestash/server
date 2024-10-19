@@ -21,10 +21,11 @@ declare(strict_types=1);
 
 namespace Integration\Api\Node\Share\Public;
 
+use Keestash\Core\DTO\Encryption\Credential\Credential;
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSA\PasswordManager\Api\Node\Share\Public\PublicShareSingle;
 use KSA\PasswordManager\Entity\Share\PublicShare;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
@@ -43,6 +44,8 @@ class PublicShareSingleTest extends TestCase {
         $shareRepository = $this->getServiceManager()->get(PublicShareRepository::class);
         /** @var IUserService $userService */
         $userService = $this->getServiceManager()->get(IUserService::class);
+        /** @var KeestashEncryptionService $encryptionService */
+        $encryptionService = $this->getServiceManager()->get(KeestashEncryptionService::class);
 
         $user = $this->createUser(
             Uuid::uuid4()->toString()
@@ -59,8 +62,16 @@ class PublicShareSingleTest extends TestCase {
 
         $node = $edge->getNode();
 
-        $password    = (string) Uuid::uuid4();
-        $publicShare = $shareService->createPublicShare($node, new \DateTimeImmutable(), $userService->hashPassword($password));
+        $password = (string) Uuid::uuid4();
+        $c        = new Credential();
+        $c->setSecret($password);
+        $publicShare = $shareService->createPublicShare(
+            $node,
+            new \DateTimeImmutable(),
+            $userService->hashPassword($password),
+            base64_encode($encryptionService->encrypt($c, (string) json_encode(['username' => Uuid::uuid4(), 'password' => Uuid::uuid4()])))
+        );
+
         $node->setPublicShare($publicShare);
         $shareRepository->shareNode($node);
 
@@ -97,8 +108,6 @@ class PublicShareSingleTest extends TestCase {
         $publicShareSingle = $this->getServiceManager()->get(PublicShareSingle::class);
         /** @var ShareService $shareService */
         $shareService = $this->getServiceManager()->get(ShareService::class);
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getServiceManager()->get(CredentialService::class);
         /** @var PublicShareRepository $shareRepository */
         $shareRepository = $this->getServiceManager()->get(PublicShareRepository::class);
 
@@ -112,12 +121,18 @@ class PublicShareSingleTest extends TestCase {
         );
         $node = $edge->getNode();
 
-        $publicShare = $shareService->createPublicShare($node, new \DateTimeImmutable(), (string) Uuid::uuid4());
+        $publicShare = $shareService->createPublicShare(
+            $node,
+            new \DateTimeImmutable(),
+            (string) Uuid::uuid4(),
+            (string) Uuid::uuid4()
+        );
         $publicShare = new PublicShare(
             $publicShare->getId(),
             $publicShare->getNodeId(),
             $publicShare->getHash(),
             (new \DateTime('-10 days')),
+            (string) Uuid::uuid4(),
             (string) Uuid::uuid4()
         );
         $node->setPublicShare($publicShare);

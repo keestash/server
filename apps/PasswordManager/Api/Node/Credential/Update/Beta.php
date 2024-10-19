@@ -27,7 +27,6 @@ use Keestash\Core\DTO\Encryption\Password\Password;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
-use KSA\PasswordManager\Entity\Node\Credential\Password\Entropy;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Event\Node\Credential\CredentialUpdatedEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -37,7 +36,6 @@ use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Update
@@ -52,7 +50,6 @@ final readonly class Beta implements RequestHandlerInterface {
 
     public function __construct(
         private NodeRepository     $nodeRepository
-        , private LoggerInterface  $logger
         , private IActivityService $activityService
         , private IEventService    $eventService
     ) {
@@ -77,34 +74,26 @@ final readonly class Beta implements RequestHandlerInterface {
         $node->setName($name);
 
         if (null !== $username) {
-            $usernameObject = $node->getUsername();
-            $usernameObject->setEncrypted(base64_decode($username));
-            $node->setUsername($usernameObject);
+            $node->setUsername(base64_decode($username));
             $node->setUpdateTs(new DateTimeImmutable());
             $hasChanges = true;
         }
 
         if (null !== $url) {
-            $urlObject = $node->getUrl();
-            $urlObject->setEncrypted(base64_decode($username));
-            $node->setUrl($urlObject);
+            $node->setUrl(base64_decode($username));
             $node->setUpdateTs(new DateTimeImmutable());
             $hasChanges = true;
         }
 
         if (null !== $password) {
-            $passwordObject = $node->getPassword();
-            $passwordObject->setEncrypted(base64_decode($password));
-            $node->setPassword($passwordObject);
+            $node->setPassword(base64_decode($password));
 
             $corePassword = new Password();
-            $corePassword->setValue((string) $node->getPassword()->getEncrypted());
+            $corePassword->setValue((string) $node->getPassword());
             $corePassword->setCharacterSet([]);
 
-            $entropy = new Entropy();
             // todo currently, there is no entropy measured
-            $entropy->setEncrypted(base64_decode(''));
-            $node->setEntropy($entropy);
+            $node->setEntropy(base64_decode(''));
 
             $node->setUpdateTs(new DateTimeImmutable());
             $hasChanges = true;

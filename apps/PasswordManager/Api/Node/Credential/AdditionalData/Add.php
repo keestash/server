@@ -26,7 +26,6 @@ use Keestash\Api\Response\JsonResponse;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
-use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\Value;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
@@ -72,9 +71,7 @@ class Add implements RequestHandlerInterface {
         $additionalData = new AdditionalData(
             Uuid::uuid4()->toString()
             , $key
-            , new Value(
-                encrypted: $value
-            )
+            , $value
             , $node->getId()
             , new DateTimeImmutable()
         );

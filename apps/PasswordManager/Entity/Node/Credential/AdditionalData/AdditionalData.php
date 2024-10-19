@@ -24,14 +24,14 @@ namespace KSA\PasswordManager\Entity\Node\Credential\AdditionalData;
 use DateTimeInterface;
 use KSP\Core\DTO\Entity\IJsonObject;
 
-class AdditionalData implements IJsonObject {
+final readonly class AdditionalData implements IJsonObject {
 
     public function __construct(
-        private readonly string            $id,
-        private readonly string            $key,
-        private readonly Value             $value,
-        private readonly int               $nodeId,
-        private readonly DateTimeInterface $createTs
+        private string            $id,
+        private string            $key,
+        private string            $value,
+        private int               $nodeId,
+        private DateTimeInterface $createTs
     ) {
     }
 
@@ -42,30 +42,18 @@ class AdditionalData implements IJsonObject {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string {
         return $this->key;
     }
 
-    /**
-     * @return Value
-     */
-    public function getValue(): Value {
+    public function getValue(): string {
         return $this->value;
     }
 
-    /**
-     * @return int
-     */
     public function getNodeId(): int {
         return $this->nodeId;
     }
 
-    /**
-     * @return DateTimeInterface
-     */
     public function getCreateTs(): DateTimeInterface {
         return $this->createTs;
     }

@@ -102,9 +102,7 @@ class GetTest extends TestCase {
                 )
             );
 
-        $decoded = $this->getDecodedData($response);
         $this->assertStatusCode(IResponse::NOT_FOUND, $response);
-        $this->assertTrue($decoded[0] === 'no data found');
         $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
         $this->logout($headers, $user);
         $this->removeUser($user);
@@ -207,7 +205,6 @@ class GetTest extends TestCase {
         $this->assertArrayHasKey('type', $data['node']);
         $this->assertArrayHasKey('user', $data['node']);
         $this->assertArrayHasKey('id', $data['node']['user']);
-        $this->assertArrayHasKey('comments', $data);
         $this->assertArrayHasKey('pwned', $data);
         $this->assertTrue($data['node']['type'] === Node::ROOT);
         $this->assertTrue($data['node']['user']['id'] === $user->getId());

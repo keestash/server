@@ -114,6 +114,10 @@
       "Composer\\Config::disableProcessTimeout",
       "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1"
     ],
+    "test-single": [
+      "Composer\\Config::disableProcessTimeout",
+      "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --filter testNonExistingWithId apps/PasswordManager/Test/Integration/Api/Node/Get/GetTest.php"
+    ],
     "test-coverage": [
       "Composer\\Config::disableProcessTimeout",
       "php -d xdebug.mode=coverage ./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --coverage-html test/code-coverage/"

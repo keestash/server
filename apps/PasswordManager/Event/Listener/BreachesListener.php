@@ -78,7 +78,7 @@ class BreachesListener implements IListener {
                 }
 
                 // TODO find a way
-                $breachFound = $this->pwnedService->importBreaches($node->getUsername()->getEncrypted());
+                $breachFound = $this->pwnedService->importBreaches($node->getUsername());
 
             } catch (ClientException|RequestException $e) {
 

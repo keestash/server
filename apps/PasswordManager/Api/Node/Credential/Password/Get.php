@@ -78,7 +78,7 @@ final readonly class Get implements RequestHandlerInterface {
 
         return new OkResponse(
             [
-                "password" => base64_encode($node->getPassword()->getEncrypted())
+                "password" => base64_encode($node->getPassword())
             ]
         );
 

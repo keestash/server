@@ -181,23 +181,8 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
 
 		-
-			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\\\Alpha\\:\\:prepareNode\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Get/Alpha.php
-
-		-
-			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Get/Beta.php
-
-		-
 			message: "#^Parameter \\#1 \\$id of method KSA\\\\PasswordManager\\\\Api\\\\Node\\\\Get\\\\Beta\\:\\:prepareNode\\(\\) expects string, mixed given\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Get/Beta.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function base64_encode expects string, string\\|null given\\.$#"
-			count: 2
 			path: ../../apps/PasswordManager/Api/Node/Get/Beta.php
 
 		-
@@ -219,6 +204,16 @@ parameters:
 			message: "#^Cannot call method getUser\\(\\) on mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Pwned/IsActive.php
+
+		-
+			message: "#^Cannot access offset 'password' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Share/Public/PublicShareSingle.php
+
+		-
+			message: "#^Cannot access offset 'username' on mixed\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Api/Node/Share/Public/PublicShareSingle.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setJWT\\(\\)\\.$#"
@@ -249,16 +244,6 @@ parameters:
 			message: "#^Part \\$name \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Command/Node/Credential/CreateCredential.php
-
-		-
-			message: "#^Cannot call method ask\\(\\) on mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Command/Node/Dump.php
-
-		-
-			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getPassword\\(\\)\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Command/Node/DumpAll.php
 
 		-
 			message: "#^Cannot call method getCount\\(\\) on mixed\\.$#"
@@ -341,11 +326,6 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$encrypted of method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Password\\\\Encryptable\\:\\:setEncrypted\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
-
-		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DIP\\\\DateTime\\\\DateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 3
 			path: ../../apps/PasswordManager/Repository/Node/NodeRepository.php
@@ -378,11 +358,6 @@ parameters:
 		-
 			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 4
-			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
-
-		-
-			message: "#^Parameter \\#1 \\$json of function json_decode expects string, mixed given\\.$#"
-			count: 2
 			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
 
 		-
@@ -426,34 +401,9 @@ parameters:
 			path: ../../apps/PasswordManager/Service/Node/BreadCrumb/BreadCrumbService.php
 
 		-
-			message: "#^Parameter \\#2 \\$encrypted of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:decrypt\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Service/Node/Credential/AdditionalData/EncryptionService.php
-
-		-
-			message: "#^Parameter \\#2 \\$raw of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Service/Node/Credential/AdditionalData/EncryptionService.php
-
-		-
 			message: "#^Method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\PwnedService\\:\\:importBreaches\\(\\) should return array but returns mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Service/Node/PwnedService.php
-
-		-
-			message: "#^Call to an undefined method KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node\\:\\:getEdges\\(\\)\\.$#"
-			count: 3
-			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
-
-		-
-			message: "#^Parameter \\#2 \\$encrypted of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:decrypt\\(\\) expects string, string\\|null given\\.$#"
-			count: 3
-			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
-
-		-
-			message: "#^Parameter \\#2 \\$raw of method KSA\\\\PasswordManager\\\\Service\\\\Encryption\\\\EncryptionService\\:\\:encrypt\\(\\) expects string, string\\|null given\\.$#"
-			count: 3
-			path: ../../apps/PasswordManager/Service/NodeEncryptionService.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\User\\\\IUser\\:\\:setPassword\\(\\)\\.$#"
@@ -501,11 +451,6 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$datetime of function strtotime expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
@@ -519,11 +464,6 @@ parameters:
 			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$credential of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\AdditionalData\\\\EncryptionService\\:\\:encrypt\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
-			count: 2
-			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/DeleteTest.php
 
 		-
 			message: "#^Cannot access offset 'createTs' on mixed\\.$#"
@@ -561,18 +501,8 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
 
 		-
-			message: "#^Parameter \\#1 \\$datetime of function strtotime expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
 			count: 5
-			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$credential of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\AdditionalData\\\\EncryptionService\\:\\:encrypt\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
-			count: 2
 			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetTest.php
 
 		-
@@ -588,11 +518,6 @@ parameters:
 		-
 			message: "#^Parameter \\#2 \\$array of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, mixed given\\.$#"
 			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetValueTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$credential of method KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\AdditionalData\\\\EncryptionService\\:\\:encrypt\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
-			count: 2
 			path: ../../apps/PasswordManager/Test/Integration/Api/Credential/AdditionalData/GetValueTest.php
 
 		-
@@ -661,11 +586,6 @@ parameters:
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Credential/CredentialServiceTest.php
 
 		-
-			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Credential\\\\CredentialServiceTest\\:\\:\\$nodeEncryptionService \\(KSA\\\\PasswordManager\\\\Service\\\\NodeEncryptionService\\) does not accept mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Credential/CredentialServiceTest.php
-
-		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\Credential\\\\CredentialServiceTest\\:\\:\\$nodeRepository \\(KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/Credential/CredentialServiceTest.php
@@ -677,11 +597,6 @@ parameters:
 
 		-
 			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\NodeServiceTest\\:\\:\\$credentialService \\(KSA\\\\PasswordManager\\\\Service\\\\Node\\\\Credential\\\\CredentialService\\) does not accept mixed\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
-
-		-
-			message: "#^Property KSA\\\\PasswordManager\\\\Test\\\\Unit\\\\Service\\\\Node\\\\NodeServiceTest\\:\\:\\$nodeEncryptionService \\(KSA\\\\PasswordManager\\\\Service\\\\NodeEncryptionService\\) does not accept mixed\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Test/Unit/Service/Node/NodeServiceTest.php
 
@@ -976,6 +891,11 @@ parameters:
 			path: ../../lib/private/Command/Worker/WorkerRunner.php
 
 		-
+			message: "#^While loop condition is always true\\.$#"
+			count: 1
+			path: ../../lib/private/Command/Worker/WorkerRunner.php
+
+		-
 			message: "#^Call to an undefined method Monolog\\\\Handler\\\\HandlerInterface\\:\\:setFormatter\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Builder/Logger/LoggerBuilder.php
@@ -1079,6 +999,11 @@ parameters:
 			message: "#^Binary operation \"\\*\\=\" between string and 1024 results in an error\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Config/IniConfigService.php
+
+		-
+			message: "#^Readonly property Keestash\\\\Core\\\\Service\\\\Core\\\\Data\\\\DataService\\:\\:\\$path is assigned outside of the constructor\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Core/Data/DataService.php
 
 		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"
@@ -1209,4 +1134,9 @@ parameters:
 			message: "#^Cannot call method get\\(\\) on mixed\\.$#"
 			count: 2
 			path: ../../lib/private/Middleware/PermissionMiddleware.php
+
+		-
+			message: "#^Interface KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList extends generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: ../../lib/public/Core/DTO/BackgroundJob/IJobList.php
 

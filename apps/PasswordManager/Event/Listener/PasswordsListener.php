@@ -70,7 +70,7 @@ class PasswordsListener implements IListener {
                 }
 
                 // TODO find a way
-                $plainPassword = $credential->getPassword()->getEncrypted();
+                $plainPassword = $credential->getPassword();
 
                 $searchHash = $this->pwnedService->generateSearchHash($plainPassword);
                 $this->logger->debug(sprintf('Search Hash %s', $searchHash));
