@@ -50,7 +50,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class Add implements RequestHandlerInterface {
+final readonly class Add implements RequestHandlerInterface {
 
     public const string FIELD_NAME_NAME     = "name";
     public const string FIELD_NAME_TYPE     = "type";
@@ -70,16 +70,16 @@ class Add implements RequestHandlerInterface {
     private const int          ERROR_NOT_CONNECTED      = 1;
 
     public function __construct(
-        private readonly IFileRepository    $uploadFileRepository
-        , private readonly NodeRepository   $nodeRepository
-        , private readonly FileRepository   $nodeFileRepository
-        , private readonly IFileService     $uploadFileService
-        , private readonly LoggerInterface  $logger
-        , private readonly Config           $config
-        , private readonly IJWTService      $jwtService
-        , private readonly IDataService     $dataManager
-        , private readonly IResponseService $responseService
-        , private readonly IActivityService $activityService
+        private IFileRepository    $uploadFileRepository
+        , private NodeRepository   $nodeRepository
+        , private FileRepository   $nodeFileRepository
+        , private IFileService     $uploadFileService
+        , private LoggerInterface  $logger
+        , private Config           $config
+        , private IJWTService      $jwtService
+        , private IDataService     $dataManager
+        , private IResponseService $responseService
+        , private IActivityService $activityService
     ) {
     }
 

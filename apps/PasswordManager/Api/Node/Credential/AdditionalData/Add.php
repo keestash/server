@@ -31,7 +31,6 @@ use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
@@ -45,7 +44,6 @@ class Add implements RequestHandlerInterface {
     public function __construct(
         private readonly AdditionalDataRepository $additionalDataRepository
         , private readonly NodeRepository         $nodeRepository
-        , private readonly EncryptionService      $encryptionService
         , private readonly LoggerInterface        $logger
         , private readonly IActivityService       $activityService
     ) {
@@ -75,15 +73,13 @@ class Add implements RequestHandlerInterface {
             Uuid::uuid4()->toString()
             , $key
             , new Value(
-                plain: $value,
-                encrypted: null
+                encrypted: $value
             )
             , $node->getId()
             , new DateTimeImmutable()
         );
 
-        $additionalDataEncrypted = $this->encryptionService->encrypt($additionalData, $node);
-        $this->additionalDataRepository->add($additionalDataEncrypted);
+        $this->additionalDataRepository->add($additionalData);
 
         $this->activityService->insertActivityWithSingleMessage(
             ConfigProvider::APP_ID

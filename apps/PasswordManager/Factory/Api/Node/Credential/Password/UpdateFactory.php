@@ -25,7 +25,6 @@ use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Credential\Password\Update;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use Psr\Container\ContainerInterface;
 
 class UpdateFactory {
@@ -34,7 +33,6 @@ class UpdateFactory {
         return new Update(
             $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)
-            , $container->get(NodeEncryptionService::class)
             , $container->get(IActivityService::class)
         );
     }

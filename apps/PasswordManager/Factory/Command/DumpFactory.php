@@ -23,10 +23,9 @@ namespace KSA\PasswordManager\Factory\Command;
 
 use KSA\PasswordManager\Command\Node\Dump;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class DumpFactory implements FactoryInterface {
 
@@ -39,7 +38,6 @@ class DumpFactory implements FactoryInterface {
         return new Dump(
             $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(NodeEncryptionService::class)
         );
     }
 

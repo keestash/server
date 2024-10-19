@@ -30,7 +30,6 @@ use KSA\PasswordManager\Entity\Node\Pwned\Api\Passwords;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Repository\IUserSettingRepository;
 use KSP\Core\DTO\Event\IEvent;
@@ -44,7 +43,6 @@ class PasswordsListener implements IListener {
         private readonly PwnedService               $pwnedService
         , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
         , private readonly NodeRepository           $nodeRepository
-        , private readonly NodeEncryptionService    $nodeEncryptionService
         , private readonly LoggerInterface          $logger
         , private readonly IUserSettingRepository   $userSettingRepository
     ) {
@@ -71,15 +69,12 @@ class PasswordsListener implements IListener {
                     continue;
                 }
 
-                $this->nodeEncryptionService->decryptNode($credential);
-
-                $plainPassword = $credential->getPassword()->getPlain();
+                // TODO find a way
+                $plainPassword = $credential->getPassword()->getEncrypted();
 
                 $searchHash = $this->pwnedService->generateSearchHash($plainPassword);
                 $this->logger->debug(sprintf('Search Hash %s', $searchHash));
                 $passwordTree = $this->pwnedService->importPasswords($searchHash);
-
-                $this->nodeEncryptionService->decryptNode($credential);
 
                 $passwordsNode = $passwordTree->search(
                     new Passwords(

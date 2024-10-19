@@ -37,7 +37,6 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Command\IKeestashCommand;
 use Psr\Log\LoggerInterface;
@@ -45,16 +44,15 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportPwned extends KeestashCommand {
+final class ImportPwned extends KeestashCommand {
 
-    public const ARGUMENT_NAME_TYPE = 'type';
+    public const string ARGUMENT_NAME_TYPE = 'type';
 
     public function __construct(
         private readonly PwnedService               $pwnedService
         , private readonly PwnedPasswordsRepository $pwnedPasswordsRepository
         , private readonly PwnedBreachesRepository  $pwnedBreachesRepository
         , private readonly NodeRepository           $nodeRepository
-        , private readonly NodeEncryptionService    $nodeEncryptionService
         , private readonly LoggerInterface          $logger
     ) {
         parent::__construct();
@@ -102,10 +100,8 @@ class ImportPwned extends KeestashCommand {
                     continue;
                 }
 
-
-                $this->nodeEncryptionService->decryptNode($node);
-
-                $breachFound = $this->pwnedService->importBreaches($node->getUsername()->getPlain());
+                // TODO find a way
+                $breachFound = $this->pwnedService->importBreaches($node->getUsername()->getEncrypted());
 
             } catch (ClientException|RequestException $e) {
 
@@ -164,15 +160,11 @@ class ImportPwned extends KeestashCommand {
                     continue;
                 }
 
-                $this->nodeEncryptionService->decryptNode($credential);
-
-                $plainPassword = $credential->getPassword()->getPlain();
-
-                $searchHash = $this->pwnedService->generateSearchHash($plainPassword);
+                // TODO find a way
+                $plainPassword = $credential->getPassword()->getEncrypted();
+                $searchHash    = $this->pwnedService->generateSearchHash($plainPassword);
                 $this->writeInfo(sprintf('Search Hash %s', $searchHash), $output);
                 $passwordTree = $this->pwnedService->importPasswords($searchHash);
-
-                $this->nodeEncryptionService->decryptNode($credential);
 
                 $passwordsNode = $passwordTree->search(
                     new Passwords(

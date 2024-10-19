@@ -27,7 +27,6 @@ use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\Token\IToken;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -39,30 +38,28 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @package KSA\PasswordManager\Api\Node\Credential\Password
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Update implements RequestHandlerInterface {
+final readonly class Update implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly NodeRepository          $nodeRepository
-        , private readonly CredentialService     $credentialService
-        , private readonly NodeEncryptionService $nodeEncryptionService
-        , private readonly IActivityService      $activityService
+        private NodeRepository      $nodeRepository
+        , private CredentialService $credentialService
+        , private IActivityService  $activityService
     ) {
     }
 
     #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        $parameters    = (array) $request->getParsedBody();
-        $passwordPlain = $parameters['passwordPlain'] ?? null;
-        $nodeId        = $parameters['nodeId'] ?? null;
+        $parameters = (array) $request->getParsedBody();
+        $password   = $parameters['password'] ?? null;
+        $nodeId     = $parameters['nodeId'] ?? null;
         /** @var IToken $token */
         $token = $request->getAttribute(IToken::class);
 
-        if (null === $nodeId || null === $passwordPlain) {
+        if (null === $nodeId || null === $password) {
             throw new PasswordManagerException('passwordPlain or nodeId is empty');
         }
 
         $credential = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
-        $this->nodeEncryptionService->decryptNode($credential);
 
         if (!($credential instanceof Credential)) {
             throw new PasswordManagerException('node is not a credential');
@@ -70,7 +67,7 @@ class Update implements RequestHandlerInterface {
 
         $this->credentialService->updatePassword(
             $credential
-            , $passwordPlain
+            , $password
         );
 
         $this->activityService->insertActivityWithSingleMessage(

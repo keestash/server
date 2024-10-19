@@ -34,7 +34,6 @@ use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Repository\IUserSettingRepository;
 use KSP\Api\IResponse;
@@ -48,7 +47,6 @@ class BreachesListener implements IListener {
     public function __construct(
         private readonly PwnedService              $pwnedService
         , private readonly PwnedBreachesRepository $pwnedBreachesRepository
-        , private readonly NodeEncryptionService   $nodeEncryptionService
         , private readonly LoggerInterface         $logger
         , private readonly IUserSettingRepository  $userSettingRepository
     ) {
@@ -79,10 +77,8 @@ class BreachesListener implements IListener {
                     continue;
                 }
 
-
-                $this->nodeEncryptionService->decryptNode($node);
-
-                $breachFound = $this->pwnedService->importBreaches($node->getUsername()->getPlain());
+                // TODO find a way
+                $breachFound = $this->pwnedService->importBreaches($node->getUsername()->getEncrypted());
 
             } catch (ClientException|RequestException $e) {
 

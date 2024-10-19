@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node\Credential;
+namespace KSA\PasswordManager\Api\Node\Credential\Update;
 
 use DateTimeImmutable;
 use doganoo\DI\Object\String\IStringService;
@@ -28,7 +28,6 @@ use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
-use KSA\PasswordManager\Exception\Node\Credential\CredentialException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Api\IResponse;
@@ -36,7 +35,6 @@ use KSP\Core\Service\L10N\IL10N;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class Update
@@ -47,15 +45,14 @@ use Psr\Log\LoggerInterface;
  *      handle non existent parameters
  *      handle more fields
  */
-class Update implements RequestHandlerInterface {
+final readonly class Alpha implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IL10N               $translator
-        , private readonly NodeRepository    $nodeRepository
-        , private readonly IStringService    $stringService
-        , private readonly CredentialService $credentialService
-        , private readonly LoggerInterface   $logger
-        , private readonly IActivityService  $activityService
+        private IL10N               $translator
+        , private NodeRepository    $nodeRepository
+        , private IStringService    $stringService
+        , private CredentialService $credentialService
+        , private IActivityService  $activityService
     ) {
     }
 
@@ -74,7 +71,7 @@ class Update implements RequestHandlerInterface {
         $node = $this->nodeRepository->getNode((int) $nodeId);
 
         if (false === ($node instanceof Credential)) {
-            throw new CredentialException('node is not instance of credential');
+            return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
         if (false === $this->stringService->isEmpty($username)) {
@@ -93,7 +90,10 @@ class Update implements RequestHandlerInterface {
             $hasChanges = true;
         }
 
-        // TODO abort when no changes?!
+        if (false === $hasChanges) {
+            return new JsonResponse([], IResponse::NOT_MODIFIED);
+        }
+
         $this->credentialService->updateCredential(
             $node
             , $username
@@ -101,7 +101,6 @@ class Update implements RequestHandlerInterface {
             , $name
         );
 
-        $this->logger->info('update password', ['update' => $savePassword]);
         if (true === $savePassword) {
             $this->credentialService->updatePassword($node, $password);
         }
@@ -122,11 +121,10 @@ class Update implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                "message"           => $this->translator->translate("updated")
-                , "has_changes"     => $hasChanges
-                , "passwordChanged" => $savePassword
-            ]
-            , IResponse::OK
+                "message"         => $this->translator->translate("updated"),
+                "passwordChanged" => $savePassword
+            ],
+            IResponse::OK
         );
 
 

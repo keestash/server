@@ -28,27 +28,24 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\PasswordManager\Test\Unit\TestCase;
 use KSP\Core\DTO\User\IUser;
 use Ramsey\Uuid\Uuid;
 
 class CredentialServiceTest extends TestCase {
 
-    private CredentialService     $credentialService;
-    private EncryptionService     $encryptionService;
-    private KeyService            $keyService;
-    private NodeEncryptionService $nodeEncryptionService;
-    private NodeRepository        $nodeRepository;
+    private CredentialService $credentialService;
+    private EncryptionService $encryptionService;
+    private KeyService        $keyService;
+    private NodeRepository    $nodeRepository;
 
     #[\Override]
     protected function setUp(): void {
         parent::setUp();
-        $this->credentialService     = $this->getServiceManager()->get(CredentialService::class);
-        $this->encryptionService     = $this->getServiceManager()->get(EncryptionService::class);
-        $this->keyService            = $this->getServiceManager()->get(KeyService::class);
-        $this->nodeRepository        = $this->getServiceManager()->get(NodeRepository::class);
-        $this->nodeEncryptionService = $this->getServiceManager()->get(NodeEncryptionService::class);
+        $this->credentialService = $this->getServiceManager()->get(CredentialService::class);
+        $this->encryptionService = $this->getServiceManager()->get(EncryptionService::class);
+        $this->keyService        = $this->getServiceManager()->get(KeyService::class);
+        $this->nodeRepository    = $this->getServiceManager()->get(NodeRepository::class);
     }
 
     private function getCredential(IUser $user, bool $encrypt = false): Credential {
@@ -65,9 +62,6 @@ class CredentialServiceTest extends TestCase {
             , $user
         );
 
-        if (true === $encrypt) {
-            $this->nodeEncryptionService->encryptNode($credential);
-        }
         return $credential;
     }
 

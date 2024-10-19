@@ -31,7 +31,8 @@ readonly class PublicShare implements IJsonObject {
         private int               $nodeId,
         private string            $hash,
         private DateTimeInterface $expireTs,
-        private string            $password
+        private string            $password,
+        private string            $secret
     ) {
     }
 
@@ -55,6 +56,13 @@ readonly class PublicShare implements IJsonObject {
         return $this->password;
     }
 
+    /**
+     * @return string
+     */
+    public function getSecret(): string {
+        return $this->secret;
+    }
+
     #[\Override]
     public function jsonSerialize(): array {
         return [
@@ -62,7 +70,6 @@ readonly class PublicShare implements IJsonObject {
             , "hash"      => $this->getHash()
             , "expire_ts" => $this->getExpireTs()
             , "node_id"   => $this->getNodeId()
-            , 'password'  => $this->getPassword()
         ];
     }
 

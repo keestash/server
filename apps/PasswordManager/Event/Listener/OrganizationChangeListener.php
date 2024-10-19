@@ -32,13 +32,11 @@ use KSA\PasswordManager\Event\Node\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Event\Listener\IListener;
-use Psr\Log\LoggerInterface;
 
 /**
  * Class OrganizationChangeListener
@@ -49,10 +47,8 @@ use Psr\Log\LoggerInterface;
 readonly final class OrganizationChangeListener implements IListener {
 
     public function __construct(
-        private NodeRepository          $nodeRepository
-        , private NodeEncryptionService $nodeEncryptionService
-        , private LoggerInterface       $logger
-        , private EdgeService           $edgeService
+        private NodeRepository $nodeRepository
+        , private EdgeService  $edgeService
     ) {
     }
 
@@ -122,8 +118,8 @@ readonly final class OrganizationChangeListener implements IListener {
         // 1. we need first to decrypt the data. Decryption is done by
         // the previous key. So we either need the previous organization
         // or the user to whom the credential belongs to
+        // TODO removed decryption, adjust for frontend
         $keyHolder = $credential->getOrganization() ?? $credential->getUser();
-        $this->nodeEncryptionService->decryptNode($credential, $keyHolder);
 
         // 2. as we want to encrypt with the new owner, we
         // need to check whether an organization is given.
@@ -132,7 +128,6 @@ readonly final class OrganizationChangeListener implements IListener {
         // If this is the case, encrpyt with the user again.
         $keyHolder = $organization ?? $credential->getUser();
         $credential->setOrganization(null); // unset the organization in order to encrypt with the new key
-        $this->nodeEncryptionService->encryptNode($credential, $keyHolder);
         $this->nodeRepository->updateCredential($credential);
 
         $type =

@@ -25,10 +25,7 @@ use KSA\PasswordManager\Entity\Node\Credential\Password\Encryptable;
 
 class Value extends Encryptable {
 
-    public function __construct(?string $plain = null, ?string $encrypted = null) {
-        if (null !== $plain) {
-            $this->setPlain($plain);
-        }
+    public function __construct(?string $encrypted = null) {
         if (null !== $encrypted) {
             $this->setEncrypted($encrypted);
         }

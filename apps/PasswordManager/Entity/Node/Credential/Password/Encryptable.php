@@ -26,26 +26,6 @@ use KSP\Core\DTO\Entity\IJsonObject;
 abstract class Encryptable implements IJsonObject {
 
     private ?string $encrypted = null;
-    private ?string $plain     = null;
-
-    /**
-     * @return string|null
-     */
-    public function getPlain(): ?string {
-        return $this->plain;
-    }
-
-    /**
-     * @param string|null $plain
-     */
-    public function setPlain(?string $plain): void {
-        $this->plain = $plain;
-    }
-
-    public function getLength(): int {
-        if (null === $this->getPlain()) return -1;
-        return strlen($this->getPlain());
-    }
 
     public function getEncrypted(): ?string {
         return $this->encrypted;
@@ -63,10 +43,6 @@ abstract class Encryptable implements IJsonObject {
         return null !== $this->getEncrypted();
     }
 
-    public function isDecrypted(): bool {
-        return null !== $this->getPlain();
-    }
-
     /**
      * Specify data which should be serialized to JSON
      * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -78,7 +54,7 @@ abstract class Encryptable implements IJsonObject {
     public function jsonSerialize(): array {
         return [
             "placeholder" => $this->getPlaceholder(),
-            'encrypted' => $this->getEncrypted() === null ? null : base64_encode($this->getEncrypted())
+            'encrypted'   => $this->getEncrypted() === null ? null : base64_encode($this->getEncrypted())
         ];
     }
 

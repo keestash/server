@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Factory\Event\Listener;
 use KSA\PasswordManager\Event\Listener\BreachesListener;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Repository\IUserSettingRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -41,7 +40,6 @@ class BreachesListenerFactory implements FactoryInterface {
         return new BreachesListener(
             $container->get(PwnedService::class)
             , $container->get(PwnedBreachesRepository::class)
-            , $container->get(NodeEncryptionService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IUserSettingRepository::class)
         );

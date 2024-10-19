@@ -29,7 +29,6 @@ use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,13 +41,12 @@ use Psr\Log\LoggerInterface;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Get implements RequestHandlerInterface {
+final readonly class Get implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly CredentialService  $credentialService
-        , private readonly NodeRepository   $nodeRepository
-        , private readonly LoggerInterface  $logger
-        , private readonly IActivityService $activityService
+        private NodeRepository     $nodeRepository
+        , private LoggerInterface  $logger
+        , private IActivityService $activityService
     ) {
     }
 
@@ -80,7 +78,7 @@ class Get implements RequestHandlerInterface {
 
         return new OkResponse(
             [
-                "decrypted" => $this->credentialService->getDecryptedPassword($node)
+                "password" => base64_encode($node->getPassword()->getEncrypted())
             ]
         );
 

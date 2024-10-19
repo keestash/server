@@ -25,7 +25,6 @@ use KSA\PasswordManager\Event\Listener\PasswordsListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\Settings\Repository\IUserSettingRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -43,7 +42,6 @@ class PasswordsListenerFactory implements FactoryInterface {
             $container->get(PwnedService::class)
             , $container->get(PwnedPasswordsRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(NodeEncryptionService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IUserSettingRepository::class)
         );

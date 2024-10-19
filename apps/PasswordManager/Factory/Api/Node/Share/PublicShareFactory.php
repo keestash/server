@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Share;
 
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSA\PasswordManager\Api\Node\Share\Public\PublicShare;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
@@ -42,6 +43,7 @@ class PublicShareFactory {
             , $container->get(IResponseService::class)
             , $container->get(AccessService::class)
             , $container->get(IUserService::class)
+            , $container->get(KeestashEncryptionService::class)
         );
     }
 

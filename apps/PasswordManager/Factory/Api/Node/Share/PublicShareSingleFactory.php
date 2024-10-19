@@ -21,10 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Share;
 
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSA\PasswordManager\Api\Node\Share\Public\PublicShareSingle;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
@@ -38,13 +37,12 @@ class PublicShareSingleFactory {
         return new
         PublicShareSingle(
             $container->get(PublicShareRepository::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(CredentialService::class)
             , $container->get(IEventService::class)
             , $container->get(ShareService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IResponseService::class)
             , $container->get(IUserService::class)
+            , $container->get(KeestashEncryptionService::class)
         );
     }
 

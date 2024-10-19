@@ -90,8 +90,7 @@ class AdditionalDataRepository {
                     $row['id'],
                     $row['key'],
                     new Value(
-                        plain: null
-                        , encrypted: $row['value']
+                        encrypted: $row['value']
                     ),
                     $node->getId(),
                     $this->dateTimeService->fromFormat((string) $row['create_ts'])
@@ -132,8 +131,7 @@ class AdditionalDataRepository {
             $rows[0]['id'],
             $rows[0]['key'],
             new Value(
-                plain: null
-                , encrypted: $rows[0]['value']
+                encrypted: $rows[0]['value']
             ),
             $rows[0]['node_id'],
             $this->dateTimeService->fromFormat((string) $rows[0]['create_ts'])

@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Factory\Command;
 
 use KSA\PasswordManager\Command\Node\DumpAll;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -40,7 +39,6 @@ class DumpAllFactory implements FactoryInterface {
         return new DumpAll(
             $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(NodeEncryptionService::class)
             , $container->get(IUserRepository::class)
         );
     }

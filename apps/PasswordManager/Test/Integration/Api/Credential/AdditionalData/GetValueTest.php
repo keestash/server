@@ -61,7 +61,6 @@ class GetValueTest extends TestCase {
             Uuid::uuid4()->toString()
             , $key
             , new Value(
-                plain: $value,
                 encrypted: null
             )
             , $edge->getNode()->getId()
@@ -128,7 +127,6 @@ class GetValueTest extends TestCase {
             Uuid::uuid4()->toString()
             , $key
             , new Value(
-                plain: $value,
                 encrypted: null
             )
             , $edge->getNode()->getId()

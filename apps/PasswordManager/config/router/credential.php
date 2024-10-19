@@ -28,7 +28,6 @@ use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
-use KSA\PasswordManager\Api\Node\Credential\ListAll;
 use KSA\PasswordManager\Api\Node\Credential\Password\Update;
 use KSA\PasswordManager\Api\Node\Pwned\ChangeState;
 use KSA\PasswordManager\Api\Node\Pwned\ChartData;
@@ -70,16 +69,10 @@ return [
         , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Password\Get::class
     ],
     [
-        IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_NODE_CREDENTIAL_GET_BY_NODE_ID
-        , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Get::class]
-        , IRoute::METHOD     => IVerb::GET
-        , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Get::class
-    ],
-    [
         IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE
-        , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Update::class]
+        , IRoute::MIDDLEWARE => [NodeAccessMiddleware::class, \KSA\PasswordManager\Api\Node\Credential\Update\Update::class]
         , IRoute::METHOD     => IVerb::POST
-        , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Update::class
+        , IRoute::NAME       => \KSA\PasswordManager\Api\Node\Credential\Update\Update::class
     ],
     [
         IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
@@ -123,11 +116,4 @@ return [
         , IRoute::METHOD     => IVerb::DELETE
         , IRoute::NAME       => Delete::class
     ],
-    [
-        IRoute::PATH         => ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_LIST_ALL
-        , IRoute::MIDDLEWARE => ListAll::class
-        , IRoute::METHOD     => IVerb::GET
-        , IRoute::NAME       => ListAll::class
-    ],
-
 ];
