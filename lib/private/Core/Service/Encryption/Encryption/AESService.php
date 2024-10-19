@@ -33,9 +33,9 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AESService implements IEncryptionService {
 
-    public const METHOD         = "AES-256-CBC";
-    public const HASH_ALGORITHM = "sha256";
-    public const IV_LENGTH      = 16;
+    public const string METHOD         = "AES-256-CBC";
+    public const string HASH_ALGORITHM = "sha256";
+    public const int    IV_LENGTH      = 16;
 
     public function __construct(private readonly LoggerInterface $logger) {
     }

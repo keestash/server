@@ -25,7 +25,6 @@ use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\Add;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -41,7 +40,6 @@ class AddFactory implements FactoryInterface {
         return new Add(
             $container->get(AdditionalDataRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(EncryptionService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IActivityService::class)
         );

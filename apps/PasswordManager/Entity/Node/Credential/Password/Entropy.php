@@ -23,11 +23,4 @@ namespace KSA\PasswordManager\Entity\Node\Credential\Password;
 
 class Entropy extends Encryptable {
 
-    #[\Override]
-    public function jsonSerialize(): array {
-        return parent::jsonSerialize() + [
-                'plain' => $this->getPlain()
-            ];
-    }
-
 }

@@ -23,6 +23,8 @@ namespace KSA\PasswordManager\Api\Node\Share\Public;
 
 use DateTime;
 use Doctrine\DBAL\Exception;
+use Keestash\Core\DTO\Encryption\Credential\Credential;
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSA\PasswordManager\Entity\Share\NullShare;
@@ -49,13 +51,14 @@ use Psr\Log\LoggerInterface;
 final readonly class PublicShare implements RequestHandlerInterface {
 
     public function __construct(
-        private NodeRepository          $nodeRepository
-        , private ShareService          $shareService
-        , private PublicShareRepository $shareRepository
-        , private LoggerInterface       $logger
-        , private IResponseService      $responseService
-        , private AccessService         $accessService
-        , private IUserService          $userService
+        private NodeRepository              $nodeRepository
+        , private ShareService              $shareService
+        , private PublicShareRepository     $shareRepository
+        , private LoggerInterface           $logger
+        , private IResponseService          $responseService
+        , private AccessService             $accessService
+        , private IUserService              $userService
+        , private KeestashEncryptionService $encryptionService
     ) {
     }
 
@@ -70,14 +73,17 @@ final readonly class PublicShare implements RequestHandlerInterface {
 
     private function handlePost(ServerRequestInterface $request): ResponseInterface {
         try {
-            $parameters = (array) $request->getParsedBody();
-            $nodeId     = $parameters["node_id"] ?? null;
-            $expireDate = $parameters["expire_date"] ?? 'now';
-            $password   = $parameters["password"] ?? null;
-            $expireDate = new DateTime($expireDate);
+            $parameters   = (array) $request->getParsedBody();
+            $expireDate   = $parameters["expire_date"] ?? 'now';
+            $expireDate   = new DateTime($expireDate);
+            $acknowledged = $parameters["acknowledged"] ?? false;
+            $password     = $parameters["password"] ?? null;
+            $nodeData     = $parameters['node'] ?? [];
+            $nodeUsername = $nodeData['username'] ?? null;
+            $nodePassword = $nodeData['password'] ?? null;
+            $nodeId       = $nodeData["id"] ?? null;
 
-            $this->logger->error("public share payload", ['payload' => $parameters]);
-            if (null === $nodeId) {
+            if (null === $nodeId || false === $acknowledged) {
                 return new JsonResponse(
                     [
                         "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_NODE_SHARE_PUBLIC_INVALID_PAYLOAD)
@@ -85,6 +91,7 @@ final readonly class PublicShare implements RequestHandlerInterface {
                     IResponse::BAD_REQUEST
                 );
             }
+
             $node  = $this->nodeRepository->getNode((int) $nodeId);
             $share = $this->shareRepository->getShareByNode($node);
 
@@ -92,7 +99,16 @@ final readonly class PublicShare implements RequestHandlerInterface {
                 return new JsonResponse([], IResponse::CONFLICT);
             }
 
-            $publicShare = $this->shareService->createPublicShare($node, $expireDate, $this->userService->hashPassword((string) $password));
+            $c = new Credential();
+            $c->setSecret($password);
+
+            $publicShare = $this->shareService->createPublicShare(
+                $node,
+                $expireDate,
+                $this->userService->hashPassword((string) $password),
+                base64_encode($this->encryptionService->encrypt($c, json_encode(['username' => $nodeUsername, 'password' => $nodePassword])))
+            );
+
             $node->setPublicShare($publicShare);
             $node = $this->shareRepository->shareNode($node);
 

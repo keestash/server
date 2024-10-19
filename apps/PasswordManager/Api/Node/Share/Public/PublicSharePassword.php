@@ -61,7 +61,6 @@ final readonly class PublicSharePassword implements RequestHandlerInterface {
             $expireDate = $parameters["expire_date"] ?? null;
             $expireDate = new \DateTime($expireDate);
 
-            $this->logger->error("public share payload", ['payload' => $parameters]);
             if (null === $nodeId) {
                 return new JsonResponse(
                     [

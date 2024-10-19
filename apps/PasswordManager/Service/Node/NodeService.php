@@ -25,7 +25,6 @@ use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Doctrine\DBAL\Exception;
-use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\User\UserNotFoundException;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;

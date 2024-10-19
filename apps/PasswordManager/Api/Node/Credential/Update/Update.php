@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2022> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,40 +19,41 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Api\Node;
+namespace KSA\PasswordManager\Api\Node\Credential\Update;
 
 use Keestash\Api\Response\JsonResponse;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
-use KSP\Core\DTO\Token\IToken;
+use KSP\Api\Version\IVersion;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
 
-final readonly class Search implements RequestHandlerInterface {
+/**
+ * Class Update
+ *
+ * @package KSA\PasswordManager\Api\Node
+ * @author  Dogan Ucar <dogan@dogan-ucar.de>
+ * TODO
+ *      handle non existent parameters
+ *      handle more fields
+ */
+final readonly class Update implements RequestHandlerInterface {
 
     public function __construct(
-        private NodeRepository    $nodeRepository
-        , private LoggerInterface $logger
+        private Alpha $alpha,
+        private Beta  $beta
     ) {
     }
 
     #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token  = $request->getAttribute(IToken::class);
-        $search = (string) $request->getAttribute('search');
-        // TODO how to search with encrypted values?
-        $nodes = $this->nodeRepository->search($search, $token->getUser());
-
-        $this->logger->error('nodes', ['nodes' => $nodes->toArray()]);
-        return new JsonResponse(
-            [
-                'result' => $nodes->toArray()
-            ],
-            IResponse::OK
-        );
+        /** @var IVersion $version */
+        $version = $request->getAttribute(IVersion::class);
+        return match ($version->getVersion()) {
+            1 => $this->alpha->handle($request),
+            2 => $this->beta->handle($request),
+            default => new JsonResponse([], IResponse::NOT_FOUND),
+        };
     }
 
 }

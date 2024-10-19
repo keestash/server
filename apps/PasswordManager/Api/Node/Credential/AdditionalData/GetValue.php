@@ -30,7 +30,6 @@ use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
-use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use Psr\Http\Message\ResponseInterface;
@@ -38,15 +37,14 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class GetValue implements RequestHandlerInterface {
+final readonly class GetValue implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly AdditionalDataRepository $additionalDataRepository
-        , private readonly NodeRepository         $nodeRepository
-        , private readonly AccessService          $accessService
-        , private readonly EncryptionService      $encryptionService
-        , private readonly LoggerInterface        $logger
-        , private readonly IActivityService       $activityService
+        private AdditionalDataRepository $additionalDataRepository
+        , private NodeRepository         $nodeRepository
+        , private AccessService          $accessService
+        , private LoggerInterface        $logger
+        , private IActivityService       $activityService
     ) {
     }
 
@@ -79,7 +77,6 @@ class GetValue implements RequestHandlerInterface {
         if (false === $this->accessService->hasAccess($node, $token->getUser())) {
             return new JsonResponse([], IResponse::FORBIDDEN);
         }
-        $data = $this->encryptionService->decrypt($data, $node);
 
         $this->activityService->insertActivityWithSingleMessage(
             ConfigProvider::APP_ID
@@ -92,7 +89,7 @@ class GetValue implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                'value' => $data->getValue()->getPlain()
+                'value' => $data->getValue()->getEncrypted()
             ]
             , IResponse::OK
         );

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2024> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,27 +19,26 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\PasswordManager\Factory\Api\Node\Credential;
+namespace KSA\PasswordManager\Factory\Api\Node\Credential\Update;
 
-use KSA\PasswordManager\Api\Node\Credential\Get;
+use doganoo\DI\Object\String\IStringService;
+use KSA\Activity\Service\IActivityService;
+use KSA\PasswordManager\Api\Node\Credential\Update\Alpha;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
+use KSP\Core\Service\L10N\IL10N;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
-class GetFactory implements FactoryInterface {
+class AlphaFactory implements FactoryInterface {
 
-    #[\Override]
-    public function __invoke(
-        ContainerInterface $container
-        ,                  $requestedName
-        , ?array           $options = null
-    ): Get {
-        return new Get(
-            $container->get(CredentialService::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(LoggerInterface::class)
+    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): Alpha {
+        return new Alpha(
+            $container->get(IL10N::class),
+            $container->get(NodeRepository::class),
+            $container->get(IStringService::class),
+            $container->get(CredentialService::class),
+            $container->get(IActivityService::class)
         );
     }
 

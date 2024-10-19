@@ -24,16 +24,14 @@ namespace KSA\PasswordManager\Factory\Api\Node\Credential\Password;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Credential\Password\Get;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use Psr\Log\LoggerInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class GetFactory {
 
     public function __invoke(ContainerInterface $container): Get {
         return new Get(
-            $container->get(CredentialService::class)
-            , $container->get(NodeRepository::class)
+            $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IActivityService::class)
         );

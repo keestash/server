@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Factory\Api\Node;
 
 use KSA\PasswordManager\Api\Node\Search;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -39,7 +38,6 @@ class SearchFactory implements FactoryInterface {
         return new Search(
             $container->get(NodeRepository::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(NodeEncryptionService::class)
         );
     }
 

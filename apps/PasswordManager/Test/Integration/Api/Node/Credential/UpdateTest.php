@@ -21,9 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential;
 
-use KSA\PasswordManager\Api\Node\Credential\Update;
+use KSA\PasswordManager\Api\Node\Credential\Update\Update;
 use KSA\PasswordManager\Exception\PasswordManagerException;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Integration\TestCase;
 use Ramsey\Uuid\Uuid;

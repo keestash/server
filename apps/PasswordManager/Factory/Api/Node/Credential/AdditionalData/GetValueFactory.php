@@ -26,7 +26,6 @@ use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
-use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -43,7 +42,6 @@ class GetValueFactory implements FactoryInterface {
             $container->get(AdditionalDataRepository::class)
             , $container->get(NodeRepository::class)
             , $container->get(AccessService::class)
-            , $container->get(EncryptionService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IActivityService::class)
         );

@@ -28,26 +28,22 @@ use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DumpAll extends KeestashCommand {
 
-    public const ARGUMENT_NAME_USER_ID     = 'userId';
-    public const OPTION_NAME_SHOW_PASSWORD = 'show-passwords';
+    public const string ARGUMENT_NAME_USER_ID = 'userId';
 
     public function __construct(
-        private readonly NodeRepository          $nodeRepository
-        , private readonly LoggerInterface       $logger
-        , private readonly NodeEncryptionService $nodeEncryptionService
-        , private readonly IUserRepository       $userRepository
+        private readonly NodeRepository    $nodeRepository
+        , private readonly LoggerInterface $logger
+        , private readonly IUserRepository $userRepository
     ) {
         parent::__construct();
     }
@@ -60,19 +56,12 @@ class DumpAll extends KeestashCommand {
                 DumpAll::ARGUMENT_NAME_USER_ID
                 , InputArgument::REQUIRED
                 , 'The user id to dump'
-            )
-            ->addOption(
-                DumpAll::OPTION_NAME_SHOW_PASSWORD
-                , 's'
-                , InputOption::VALUE_NONE
-                , 'whether the passwords should be shown'
             );
     }
 
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $userId       = $input->getArgument(DumpAll::ARGUMENT_NAME_USER_ID);
-        $showPassword = (bool) $input->getOption(DumpAll::OPTION_NAME_SHOW_PASSWORD);
+        $userId = $input->getArgument(DumpAll::ARGUMENT_NAME_USER_ID);
 
         try {
             $user = $this->userRepository->getUserById((string) $userId);
@@ -90,7 +79,7 @@ class DumpAll extends KeestashCommand {
         }
 
         $results = [];
-        $this->work($root, $output, $showPassword, $results);
+        $this->work($root, $output, $results);
 
         $table = new Table($output);
         $table
@@ -104,14 +93,12 @@ class DumpAll extends KeestashCommand {
     private function work(
         Folder            $folder
         , OutputInterface $output
-        , bool            $showPasswords
         , array           &$results
     ): void {
         $results[] = [
-            'id'         => $folder->getId()
-            , 'name'     => $folder->getName()
-            , 'password' => 'n.a.'
-            , 'type'     => $folder instanceof Root
+            'id'     => $folder->getId()
+            , 'name' => $folder->getName()
+            , 'type' => $folder instanceof Root
                 ? 'Root'
                 : 'folder'
         ];
@@ -124,22 +111,15 @@ class DumpAll extends KeestashCommand {
                 $this->work(
                     $node
                     , $output
-                    , $showPasswords
                     , $results
                 );
             }
 
-            if (true === $showPasswords) {
-                $this->nodeEncryptionService->decryptNode($node);
-            }
 
             $results[] = [
-                'id'         => $edge->getNode()->getId()
-                , 'name'     => $edge->getNode()->getName()
-                , 'password' => $showPasswords
-                    ? $edge->getNode()->getPassword()->getPlain()
-                    : '*** censored ***'
-                , 'type'     => 'Credential'
+                'id'     => $edge->getNode()->getId()
+                , 'name' => $edge->getNode()->getName()
+                , 'type' => 'Credential'
             ];
         }
     }

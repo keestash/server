@@ -21,17 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Get;
 
-use KSA\PasswordManager\Api\Node\Get\Get;
-use KSA\PasswordManager\Api\Node\Get\Alpha;
 use KSA\PasswordManager\Api\Node\Get\Beta;
+use KSA\PasswordManager\Api\Node\Get\Get;
 use Psr\Container\ContainerInterface;
 
 class GetFactory {
 
     public function __invoke(ContainerInterface $container): Get {
         return new Get(
-            $container->get(Alpha::class)
-            , $container->get(Beta::class)
+            $container->get(Beta::class)
         );
     }
 

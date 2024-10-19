@@ -21,25 +21,15 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential;
 
-use doganoo\DI\Object\String\IStringService;
-use KSA\Activity\Service\IActivityService;
-use KSA\PasswordManager\Api\Node\Credential\Update;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSP\Core\Service\L10N\IL10N;
+use KSA\PasswordManager\Api\Node\Credential\Update\Update;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 class UpdateFactory {
 
     public function __invoke(ContainerInterface $container): Update {
         return new Update(
-            $container->get(IL10N::class)
-            , $container->get(NodeRepository::class)
-            , $container->get(IStringService::class)
-            , $container->get(CredentialService::class)
-            , $container->get(LoggerInterface::class)
-            , $container->get(IActivityService::class)
+            $container->get(Update\Alpha::class)
+            , $container->get(Update\Beta::class)
         );
     }
 

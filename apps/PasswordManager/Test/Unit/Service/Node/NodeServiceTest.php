@@ -32,31 +32,27 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSA\PasswordManager\Test\Unit\TestCase;
 use KSP\Core\DTO\User\IUser;
 use Ramsey\Uuid\Uuid;
 
 class NodeServiceTest extends TestCase {
 
-    private NodeService           $nodeService;
-    private NodeRepository        $nodeRepository;
-    private CredentialService     $credentialService;
-    private NodeEncryptionService $nodeEncryptionService;
-    private ShareService          $shareService;
+    private NodeService       $nodeService;
+    private NodeRepository    $nodeRepository;
+    private CredentialService $credentialService;
+    private ShareService      $shareService;
 
     #[\Override]
     protected function setUp(): void {
         parent::setUp();
-        $this->nodeService           = $this->getServiceManager()
+        $this->nodeService       = $this->getServiceManager()
             ->get(NodeService::class);
-        $this->nodeRepository        = $this->getServiceManager()
+        $this->nodeRepository    = $this->getServiceManager()
             ->get(NodeRepository::class);
-        $this->credentialService     = $this->getServiceManager()
+        $this->credentialService = $this->getServiceManager()
             ->get(CredentialService::class);
-        $this->nodeEncryptionService = $this->getServiceManager()
-            ->get(NodeEncryptionService::class);
-        $this->shareService          = $this->getServiceManager()
+        $this->shareService      = $this->getServiceManager()
             ->get(ShareService::class);
     }
 
@@ -75,15 +71,13 @@ class NodeServiceTest extends TestCase {
     }
 
     private function provideCredential(IUser $user): Credential {
-        $credential = $this->credentialService->createCredential(
+        return $this->credentialService->createCredential(
             "topsecret"
             , "myawsome.route"
             , "keestash.com"
             , "keestash"
             , $user
         );
-        $this->nodeEncryptionService->encryptNode($credential);
-        return $credential;
     }
 
     public function testPrepareSharedEdge(): void {

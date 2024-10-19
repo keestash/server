@@ -24,18 +24,18 @@ namespace KSA\PasswordManager\Api\Node\Share\Public;
 use DateTimeImmutable;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
+use Keestash\Core\DTO\Encryption\Credential\Credential;
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSA\PasswordManager\Entity\IResponseCodes;
-use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Event\PublicShare\PasswordViewed;
-use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\Share\ShareService;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\HTTP\IResponseService;
 use KSP\Core\Service\User\IUserService;
+use Override;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -44,18 +44,17 @@ use Psr\Log\LoggerInterface;
 final readonly class PublicShareSingle implements RequestHandlerInterface {
 
     public function __construct(
-        private PublicShareRepository $shareRepository
-        , private NodeRepository      $nodeRepository
-        , private CredentialService   $credentialService
-        , private IEventService       $eventManager
-        , private ShareService        $shareService
-        , private LoggerInterface     $logger
-        , private IResponseService    $responseService
-        , private IUserService        $userService
+        private PublicShareRepository       $shareRepository
+        , private IEventService             $eventManager
+        , private ShareService              $shareService
+        , private LoggerInterface           $logger
+        , private IResponseService          $responseService
+        , private IUserService              $userService
+        , private KeestashEncryptionService $encryptionService
     ) {
     }
 
-    #[\Override]
+    #[Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
         try {
             $body      = (array) $request->getParsedBody();
@@ -76,7 +75,6 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
 
             $verified = $this->userService->verifyPassword($password, $share->getPassword());
 
-            $this->logger->error('log stuff', ['pass'=>$password, 'sha'=>$share->getPassword()]);
             if (false === $verified) {
                 $this->triggerEvent(false, true, false, false);
                 return new JsonResponse(
@@ -87,14 +85,22 @@ final readonly class PublicShareSingle implements RequestHandlerInterface {
                 );
             }
 
-            /** @var Credential $node */
-            $node = $this->nodeRepository->getNode($share->getNodeId(), 0, 1);
             $this->triggerEvent(true, true, false, true);
+
+            $decryptedSecret = base64_decode($share->getSecret());
+            $c               = new Credential();
+            $c->setSecret($password);
+            $decrypted = $this->encryptionService->decrypt(
+                $c,
+                $decryptedSecret
+            );
+
+            $decrypted = json_decode($decrypted, true, JSON_THROW_ON_ERROR);
             return new JsonResponse(
                 [
                     "decrypted" => [
-                        'userName' => $this->credentialService->getDecryptedUsername($node),
-                        'password' => $this->credentialService->getDecryptedPassword($node)
+                        'userName' => $decrypted['username'],
+                        'password' => $decrypted['password']
                     ]
                 ]
                 , IResponse::OK

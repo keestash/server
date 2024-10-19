@@ -27,8 +27,7 @@ use KSP\Core\Service\Core\Access\IAccessService;
 
 class AccessService {
 
-    public function __construct(private readonly IAccessService $accessService)
-    {
+    public function __construct(private readonly IAccessService $accessService) {
     }
 
     public function hasAccess(Node $node, IUser $user): bool {

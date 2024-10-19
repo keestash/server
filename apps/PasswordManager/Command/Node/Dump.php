@@ -26,24 +26,18 @@ use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 final class Dump extends KeestashCommand {
 
-    public const string ARGUMENT_NAME_NODE_ID     = 'nodeId';
-    public const string OPTION_NAME_SHOW_PASSWORD = 'show-password';
-    public const string OPTION_NAME_FORCE         = 'force';
+    public const string ARGUMENT_NAME_NODE_ID = 'nodeId';
 
     public function __construct(
-        private readonly NodeRepository          $nodeRepository
-        , private readonly LoggerInterface       $logger
-        , private readonly NodeEncryptionService $nodeEncryptionService
+        private readonly NodeRepository    $nodeRepository
+        , private readonly LoggerInterface $logger
     ) {
         parent::__construct();
     }
@@ -56,27 +50,12 @@ final class Dump extends KeestashCommand {
                 Dump::ARGUMENT_NAME_NODE_ID
                 , InputArgument::REQUIRED
                 , 'The node to dump'
-            )
-            ->addOption(
-                Dump::OPTION_NAME_SHOW_PASSWORD
-                , 's'
-                , InputOption::VALUE_NONE
-                , 'whether the password should be shown for a credential node'
-            )
-            ->
-            addOption(
-                Dump::OPTION_NAME_FORCE
-                , 'f'
-                , InputOption::VALUE_NONE
-                , 'bypass question'
             );
     }
 
     #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int {
-        $nodeId       = $input->getArgument(Dump::ARGUMENT_NAME_NODE_ID);
-        $showPassword = (bool) $input->getOption(Dump::OPTION_NAME_SHOW_PASSWORD);
-        $force        = (bool) $input->getOption(Dump::OPTION_NAME_FORCE);
+        $nodeId = $input->getArgument(Dump::ARGUMENT_NAME_NODE_ID);
         try {
             $node = $this->nodeRepository->getNode((int) $nodeId, 0, 1);
         } catch (PasswordManagerException $exception) {
@@ -92,7 +71,7 @@ final class Dump extends KeestashCommand {
         }
 
         if ($node instanceof Credential) {
-            $this->dumpCredential($node, $input, $output, $showPassword, $force);
+            $this->dumpCredential($node, $output);
         } else if ($node instanceof Folder) {
             $this->dumpFolder($node, $output);
         } else {
@@ -101,36 +80,14 @@ final class Dump extends KeestashCommand {
         return 0;
     }
 
-    private function dumpCredential(
-        Credential        $credential
-        , InputInterface  $input
-        , OutputInterface $output
-        , bool            $showPassword = false
-        , bool            $force = false
-    ): void {
-
-        if (true === $showPassword && false === $force) {
-            $helper   = $this->getHelper('question');
-            $question = new ConfirmationQuestion('!! Warning !! Do you want to show this sensitive data?', false);
-
-            if (!$helper->ask($input, $output, $question)) {
-                $showPassword = false;
-            }
-        }
-
-        if (true === $showPassword || true === $force) {
-            $this->nodeEncryptionService->decryptNode($credential);
-        }
+    private function dumpCredential(Credential $credential, OutputInterface $output): void {
 
         $this->writeInfo(
             "\n" .
             json_encode(
                 [
-                    'id'         => $credential->getId()
-                    , 'name'     => $credential->getName()
-                    , 'password' => $showPassword
-                    ? $credential->getPassword()->getPlain()
-                    : 'censored'
+                    'id'     => $credential->getId()
+                    , 'name' => $credential->getName()
                 ]
                 , JSON_PRETTY_PRINT
             )

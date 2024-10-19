@@ -26,14 +26,12 @@ use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\IResponseCodes;
-use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Node\Node as NodeObject;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\HTTP\IResponseService;
@@ -49,16 +47,15 @@ use Throwable;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
-class Create implements RequestHandlerInterface {
+final readonly class Create implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly NodeRepository          $nodeRepository
-        , private readonly CredentialService     $credentialService
-        , private readonly LoggerInterface       $logger
-        , private readonly NodeEncryptionService $nodeEncryptionService
-        , private readonly AccessService         $accessService
-        , private readonly IActivityService      $activityService
-        , private readonly IResponseService      $responseService
+        private NodeRepository      $nodeRepository
+        , private CredentialService $credentialService
+        , private LoggerInterface   $logger
+        , private AccessService     $accessService
+        , private IActivityService  $activityService
+        , private IResponseService  $responseService
     ) {
     }
 
@@ -111,7 +108,6 @@ class Create implements RequestHandlerInterface {
 
         try {
             $edge = $this->credentialService->insertCredential($credential, $parent);
-            $this->nodeEncryptionService->decryptNode($credential);
             $edge->setNode($credential);
 
             $this->activityService->insertActivityWithSingleMessage(

@@ -57,12 +57,14 @@ final readonly class PublicShareRepository {
                     , "`hash`"      => '?'
                     , "`expire_ts`" => '?'
                     , "`password`"  => '?'
+                    , "`secret`"    => '?'
                 ]
             )
             ->setParameter(0, $node->getId())
             ->setParameter(1, $share->getHash())
             ->setParameter(2, $this->dateTimeService->toYMDHIS($share->getExpireTs()))
             ->setParameter(3, $share->getPassword())
+            ->setParameter(4, $share->getSecret())
             ->executeStatement();
 
         $shareId = (int) $this->backend->getConnection()->lastInsertId();
@@ -77,7 +79,8 @@ final readonly class PublicShareRepository {
                 $node->getId(),
                 $share->getHash(),
                 $share->getExpireTs(),
-                $share->getPassword()
+                $share->getPassword(),
+                $share->getSecret()
             )
         );
         return $node;
@@ -92,6 +95,7 @@ final readonly class PublicShareRepository {
                 , 's.expire_ts'
                 , 's.node_id'
                 , 's.password'
+                , 's.secret'
             ]
         )
             ->from('pwm_public_share', 's')
@@ -112,7 +116,8 @@ final readonly class PublicShareRepository {
             (int) $row[3],
             (string) $row[1],
             $this->dateTimeService->fromFormat((string) $row[2]),
-            (string) $row[4]
+            (string) $row[4],
+            (string) $row[5],
         );
 
     }
@@ -126,6 +131,7 @@ final readonly class PublicShareRepository {
                 , 's.expire_ts'
                 , 's.node_id'
                 , 's.password'
+                , 's.secret'
             ]
         )
             ->from('pwm_public_share', 's')
@@ -145,13 +151,15 @@ final readonly class PublicShareRepository {
         $expireTs  = $row[2];
         $nodeId    = $row[3];
         $password  = $row[4];
+        $secret    = $row[5];
 
         return new PublicShare(
             (int) $shareId,
             (int) $nodeId,
             (string) $shareHash,
             $this->dateTimeService->fromFormat($expireTs),
-            (string) $password
+            (string) $password,
+            (string) $secret,
         );
 
     }
@@ -165,6 +173,7 @@ final readonly class PublicShareRepository {
                 , 's.expire_ts'
                 , 's.node_id'
                 , 's.password'
+                , 's.secret'
             ]
         )
             ->from('pwm_public_share', 's')
@@ -186,6 +195,7 @@ final readonly class PublicShareRepository {
             (string) $row[1],
             $this->dateTimeService->fromFormat($row[2]),
             (string) $row[4],
+            (string) $row[5],
         );
     }
 
@@ -199,10 +209,12 @@ final readonly class PublicShareRepository {
                     , 's.expire_ts'
                     , 's.node_id'
                     , 's.password'
+                    , 's.secret'
                 ]
             )
                 ->from('pwm_public_share', 's')
                 ->where('s.`node_id` = ?')
+                ->andWhere('s.`expire_ts` >= CURRENT_TIMESTAMP')
                 ->setParameter(0, $node->getId());
 
             $result = $queryBuilder->executeQuery();
@@ -219,6 +231,7 @@ final readonly class PublicShareRepository {
             $expireTs  = $row[2];
             $nodeId    = $row[3];
             $password  = $row[4];
+            $secret    = $row[5];
 
             $node->setPublicShare(
                 new PublicShare(
@@ -226,7 +239,8 @@ final readonly class PublicShareRepository {
                     (int) $nodeId,
                     (string) $shareHash,
                     $this->dateTimeService->fromFormat((string) $expireTs),
-                    (string) $password
+                    (string) $password,
+                    (string) $secret
                 )
             );
             return $node;

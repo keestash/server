@@ -26,10 +26,9 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Service\Node\PwnedService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class ImportPwnedFactory implements FactoryInterface {
 
@@ -44,7 +43,6 @@ class ImportPwnedFactory implements FactoryInterface {
             , $container->get(PwnedPasswordsRepository::class)
             , $container->get(PwnedBreachesRepository::class)
             , $container->get(NodeRepository::class)
-            , $container->get(NodeEncryptionService::class)
             , $container->get(LoggerInterface::class)
         );
     }

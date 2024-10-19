@@ -25,8 +25,6 @@ use Interop\Container\ContainerInterface;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
-use KSA\PasswordManager\Service\NodeEncryptionService;
-use Psr\Log\LoggerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class OrganizationAddListenerFactory implements FactoryInterface {
@@ -39,8 +37,6 @@ class OrganizationAddListenerFactory implements FactoryInterface {
     ): OrganizationChangeListener {
         return new OrganizationChangeListener(
             $container->get(NodeRepository::class)
-            , $container->get(NodeEncryptionService::class)
-            , $container->get(LoggerInterface::class)
             , $container->get(EdgeService::class)
         );
     }
