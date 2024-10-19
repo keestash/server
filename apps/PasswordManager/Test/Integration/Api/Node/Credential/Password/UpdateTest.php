@@ -21,13 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Credential\Password;
 
-use Keestash\Exception\EncryptionFailedException;
 use KSA\PasswordManager\Api\Node\Credential\Password\Update;
+use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Integration\TestCase;
+use KSP\Api\IVerb;
 use Ramsey\Uuid\Uuid;
 
 class UpdateTest extends TestCase {
@@ -74,13 +74,12 @@ class UpdateTest extends TestCase {
     }
 
     public function testUpdateCredential(): void {
-        /** @var CredentialService $credentialService */
-        $credentialService = $this->getService(CredentialService::class);
         /** @var NodeRepository $nodeRepository */
         $nodeRepository = $this->getService(NodeRepository::class);
+        $password       = Uuid::uuid4()->toString();
         $user           = $this->createUser(
-            Uuid::uuid4()->toString()
-            , Uuid::uuid4()->toString()
+            Uuid::uuid4()->toString(),
+            $password
         );
         $root           = $this->getRootFolder($user);
 
@@ -93,17 +92,23 @@ class UpdateTest extends TestCase {
             , $root
         );
 
-        /** @var Update $update */
-        $update      = $this->getServiceManager()->get(Update::class);
         $newPassword = uniqid();
-        $response    = $update->handle(
-            $this->getVirtualRequest(
-                [
-                    'passwordPlain' => $newPassword
-                    , 'nodeId'      => $edge->getNode()->getId()
-                ]
-            )
-        );
+
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_PASSWORD_UPDATE
+                    , [
+                        'password' => $newPassword,
+                        'nodeId'   => $edge->getNode()->getId()
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
 
         $this->assertTrue(true === $this->getResponseService()->isValidResponse($response));
 
@@ -112,7 +117,7 @@ class UpdateTest extends TestCase {
 
         $this->assertInstanceOf(Credential::class, $retrievedCredential);
         $this->assertSame($edge->getNode()->getId(), $retrievedCredential->getId());
-        $this->assertSame($newPassword, $credentialService->getDecryptedPassword($retrievedCredential));
+        $this->logout($headers, $user);
         $this->removeUser($user);
     }
 

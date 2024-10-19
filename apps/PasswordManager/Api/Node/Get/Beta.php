@@ -30,6 +30,9 @@ use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
+use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
@@ -41,49 +44,64 @@ use Psr\Log\LoggerInterface;
 final readonly class Beta {
 
     public function __construct(
-        private NodeRepository     $nodeRepository
-        , private LoggerInterface  $logger
-        , private NodeService      $nodeService
-        , private IResponseService $responseService
-        , private IActivityService $activityService
+        private NodeRepository             $nodeRepository
+        , private LoggerInterface          $logger
+        , private NodeService              $nodeService
+        , private IResponseService         $responseService
+        , private IActivityService         $activityService
+        , private BreadCrumbService        $breadCrumbService
+        , private PwnedPasswordsRepository $pwnedPasswordsRepository
+        , private PwnedBreachesRepository  $pwnedBreachesRepository
     ) {
     }
 
     public function handle(ServerRequestInterface $request): ResponseInterface {
-        /** @var IToken $token */
-        $token  = $request->getAttribute(IToken::class);
-        $rootId = $request->getAttribute("node_id");
+        try {
 
-        if (null === $rootId) {
-            return new JsonResponse(
-                ["no node id given. Could not retrieve data"]
-                , IResponse::BAD_REQUEST
+
+            /** @var IToken $token */
+            $token  = $request->getAttribute(IToken::class);
+            $rootId = $request->getAttribute("node_id");
+
+            if (null === $rootId) {
+                return new JsonResponse(
+                    ["no node id given. Could not retrieve data"]
+                    , IResponse::BAD_REQUEST
+                );
+            }
+
+            if (false === $this->nodeService->isValidNodeId((string) $rootId)) {
+                $this->logger->info('invalid node id', ['nodeId' => $rootId]);
+                return new JsonResponse(
+                    [
+                        "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID)
+                    ]
+                    , IResponse::BAD_REQUEST
+                );
+            }
+
+            $root = $this->prepareNode($rootId, $token);
+            $this->activityService->insertActivityWithSingleMessage(
+                ConfigProvider::APP_ID
+                , (string) $root->getId()
+                , sprintf('read by %s', $token->getUser()->getName())
             );
-        }
 
-        if (false === $this->nodeService->isValidNodeId((string) $rootId)) {
-            $this->logger->info('invalid node id', ['nodeId' => $rootId]);
             return new JsonResponse(
                 [
-                    "responseCode" => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_NODE_ID)
+                    "breadCrumb" => $this->breadCrumbService->getBreadCrumbs($root, $token->getUser()),
+                    "node"       => $root,
+                    "pwned"      => [
+                        'passwords' => $this->pwnedPasswordsRepository->getPwnedByNode($root)->toArray(),
+                        'breaches'  => $this->pwnedBreachesRepository->getPwnedByNode($root)->toArray()
+                    ],
                 ]
-                , IResponse::BAD_REQUEST
+                , IResponse::OK
             );
+        } catch (PasswordManagerException $e) {
+            $this->logger->error('error with getting passwords', ['e' => $e]);
+            return new JsonResponse([], IResponse::NOT_FOUND);
         }
-
-        $root = $this->prepareNode($rootId, $token);
-        $this->activityService->insertActivityWithSingleMessage(
-            ConfigProvider::APP_ID
-            , (string) $root->getId()
-            , sprintf('read by %s', $token->getUser()->getName())
-        );
-
-        return new JsonResponse(
-            [
-                "node" => $root
-            ]
-            , IResponse::OK
-        );
     }
 
     /**

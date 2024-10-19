@@ -25,15 +25,13 @@ use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 class EncryptionServiceFactory {
 
     public function __invoke(ContainerInterface $container): EncryptionService {
         return new EncryptionService(
             $container->get(IEncryptionService::class),
-            $container->get(ICredentialService::class),
-            $container->get(LoggerInterface::class),
+            $container->get(ICredentialService::class)
         );
     }
 

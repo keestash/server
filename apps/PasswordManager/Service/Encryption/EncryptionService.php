@@ -29,7 +29,6 @@ use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
-use Psr\Log\LoggerInterface;
 
 /**
  * Wrapper class for the core encryption service.
@@ -43,7 +42,6 @@ final readonly class EncryptionService {
     public function __construct(
         private IEncryptionService   $encryptionService
         , private ICredentialService $credentialService
-        , private LoggerInterface    $logger
     ) {
     }
 

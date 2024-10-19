@@ -100,13 +100,13 @@ final readonly class PublicShare implements RequestHandlerInterface {
             }
 
             $c = new Credential();
-            $c->setSecret($password);
+            $c->setSecret((string) $password);
 
             $publicShare = $this->shareService->createPublicShare(
                 $node,
                 $expireDate,
                 $this->userService->hashPassword((string) $password),
-                base64_encode($this->encryptionService->encrypt($c, json_encode(['username' => $nodeUsername, 'password' => $nodePassword])))
+                base64_encode($this->encryptionService->encrypt($c, (string) json_encode(['username' => $nodeUsername, 'password' => $nodePassword])))
             );
 
             $node->setPublicShare($publicShare);

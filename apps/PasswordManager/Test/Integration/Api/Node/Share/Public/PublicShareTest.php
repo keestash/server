@@ -89,7 +89,10 @@ class PublicShareTest extends TestCase {
                     IVerb::POST
                     , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
                     , [
-                        "node_id" => "blablablub"
+                        "node"         => [
+                            "id" => "blablablub",
+                        ],
+                        'acknowledged' => true
                     ]
                     , $user
                     , $headers
@@ -137,7 +140,10 @@ class PublicShareTest extends TestCase {
                     IVerb::POST
                     , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
                     , [
-                        "node_id" => $edge->getNode()->getId()
+                        "node"         => [
+                            "id" => $edge->getNode()->getId(),
+                        ],
+                        'acknowledged' => true
                     ]
                     , $user
                     , $headers
@@ -279,8 +285,6 @@ class PublicShareTest extends TestCase {
 
         /** @var CredentialService $credentialService */
         $credentialService = $this->getService(CredentialService::class);
-        /** @var ShareService $shareService */
-        $shareService = $this->getService(ShareService::class);
         /** @var PublicShareRepository $shareRepository */
         $shareRepository = $this->getService(PublicShareRepository::class);
 
@@ -297,6 +301,7 @@ class PublicShareTest extends TestCase {
                 $credential->getId(),
                 Uuid::uuid4()->toString(),
                 (new DateTimeImmutable())->modify('-100 day'),
+                (string) Uuid::uuid4(),
                 (string) Uuid::uuid4()
             )
         );
@@ -313,7 +318,10 @@ class PublicShareTest extends TestCase {
                     IVerb::POST
                     , ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_PUBLIC
                     , [
-                        "node_id" => $sharedNode->getId(),
+                        "node"         => [
+                            'id' => $sharedNode->getId()
+                        ],
+                        "acknowledged" => true
                     ]
                     , $user
                     , $headers
@@ -321,13 +329,6 @@ class PublicShareTest extends TestCase {
             );
 
         $this->assertStatusCode(IResponse::OK, $response);
-
-        $body = json_decode(
-            (string) $response->getBody()
-            , true
-            , 512
-            , JSON_THROW_ON_ERROR
-        );
 
         $this->logout($headers, $user);
         $credentialService->removeCredential($credential);

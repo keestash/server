@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Repository\Node\Credential\AdditionalData;
 use doganoo\DI\DateTime\IDateTimeService;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
-use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\Value;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Exception\Node\NotFoundException;
 use KSP\Core\Backend\IBackend;
@@ -54,7 +53,7 @@ class AdditionalDataRepository {
             )
             ->setParameter(0, $additionalData->getId())
             ->setParameter(1, $additionalData->getKey())
-            ->setParameter(2, $additionalData->getValue()->getEncrypted())
+            ->setParameter(2, $additionalData->getValue())
             ->setParameter(3, $additionalData->getNodeId())
             ->setParameter(4, $this->dateTimeService->toYMDHIS($additionalData->getCreateTs()));
 
@@ -89,9 +88,7 @@ class AdditionalDataRepository {
                 new AdditionalData(
                     $row['id'],
                     $row['key'],
-                    new Value(
-                        encrypted: $row['value']
-                    ),
+                    $row['value'],
                     $node->getId(),
                     $this->dateTimeService->fromFormat((string) $row['create_ts'])
                 )
@@ -130,9 +127,7 @@ class AdditionalDataRepository {
         return new AdditionalData(
             $rows[0]['id'],
             $rows[0]['key'],
-            new Value(
-                encrypted: $rows[0]['value']
-            ),
+            $rows[0]['value'],
             $rows[0]['node_id'],
             $this->dateTimeService->fromFormat((string) $rows[0]['create_ts'])
         );

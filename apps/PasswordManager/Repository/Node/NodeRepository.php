@@ -31,10 +31,6 @@ use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
 use KSA\PasswordManager\Entity\Folder\Root;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
-use KSA\PasswordManager\Entity\Node\Credential\Password\Entropy;
-use KSA\PasswordManager\Entity\Node\Credential\Password\Password;
-use KSA\PasswordManager\Entity\Node\Credential\Password\URL;
-use KSA\PasswordManager\Entity\Node\Credential\Password\Username;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\Share;
 use KSA\PasswordManager\Exception\Edge\EdgeNotCreatedException;
@@ -318,18 +314,10 @@ final readonly class NodeRepository {
         $row       = $rows[0];
 
         $credential->setCredentialId((int) $row[0]);
+        $credential->setUsername((string) $row[2]);
+        $credential->setUrl((string) $row[4]);
+        $credential->setPassword((string) $row[3]);
 
-        $userName = new Username();
-        $userName->setEncrypted((string) $row[2]);
-        $credential->setUsername($userName);
-
-        $url = new URL();
-        $url->setEncrypted((string) $row[4]);
-        $credential->setUrl($url);
-
-        $password = new Password();
-        $password->setEncrypted($row[3]);
-        $credential->setPassword($password);
         // TODO remove createTs on credential level, rely only on node level
         $credential->setCreateTs(
             $this->dateTimeService->fromFormat(
@@ -337,9 +325,7 @@ final readonly class NodeRepository {
             )
         );
 
-        $entropy = new Entropy();
-        $entropy->setEncrypted((string) $row[7]);
-        $credential->setEntropy($entropy);
+        $credential->setEntropy((string) $row[7]);
 
         return $credential;
     }
@@ -511,10 +497,10 @@ final readonly class NodeRepository {
                 ]
             )
             ->setParameter(0, $nodeId)
-            ->setParameter(1, $credential->getUsername()->getEncrypted())
-            ->setParameter(2, $credential->getPassword()->getEncrypted())
-            ->setParameter(3, $credential->getUrl()->getEncrypted())
-            ->setParameter(4, $credential->getEntropy()->getEncrypted())
+            ->setParameter(1, $credential->getUsername())
+            ->setParameter(2, $credential->getPassword())
+            ->setParameter(3, $credential->getUrl())
+            ->setParameter(4, $credential->getEntropy())
             ->executeStatement();
 
         $lastInsertId = $this->backend->getConnection()->lastInsertId();
@@ -749,21 +735,11 @@ ORDER BY d.`level`;
             ->set('url', '?')
             ->set('entropy', '?')
             ->where('id = ?')
-            ->setParameter(0,
-                $credential->getUsername()->getEncrypted()
-            )
-            ->setParameter(1,
-                $credential->getPassword()->getEncrypted()
-            )
-            ->setParameter(2,
-                $credential->getUrl()->getEncrypted()
-            )
-            ->setParameter(3,
-                $credential->getEntropy()->getEncrypted()
-            )
-            ->setParameter(4,
-                $credential->getCredentialId()
-            );
+            ->setParameter(0, $credential->getUsername())
+            ->setParameter(1, $credential->getPassword())
+            ->setParameter(2, $credential->getUrl())
+            ->setParameter(3, $credential->getEntropy())
+            ->setParameter(4, $credential->getCredentialId());
         $queryBuilder->executeStatement();
         $this->backend->endTransaction();
         return $credential;
@@ -942,24 +918,11 @@ ORDER BY d.`level`;
             $credential->setCreateTs($createTs);
             $credential->setUpdateTs($updateTs);
             $credential->setType((string) $type);
-
             $credential->setCredentialId((int) $row[6]);
-
-            $userName = new Username();
-            $userName->setEncrypted((string) $row[7]);
-            $credential->setUsername($userName);
-
-            $password = new Password();
-            $password->setEncrypted((string) $row[8]);
-            $credential->setPassword($password);
-
-            $entropy = new Entropy();
-            $entropy->setEncrypted((string) $row[9]);
-            $credential->setEntropy($entropy);
-
-            $url = new URL();
-            $url->setEncrypted((string) $row[10]);
-            $credential->setUrl($url);
+            $credential->setUsername((string) $row[7]);
+            $credential->setPassword((string) $row[8]);
+            $credential->setEntropy((string) $row[9]);
+            $credential->setUrl((string) $row[10]);
 
             // TODO remove createTs on credential level, rely only on node level
             $credential->setCreateTs(

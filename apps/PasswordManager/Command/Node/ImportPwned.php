@@ -101,7 +101,7 @@ final class ImportPwned extends KeestashCommand {
                 }
 
                 // TODO find a way
-                $breachFound = $this->pwnedService->importBreaches($node->getUsername()->getEncrypted());
+                $breachFound = $this->pwnedService->importBreaches($node->getUsername());
 
             } catch (ClientException|RequestException $e) {
 
@@ -161,7 +161,7 @@ final class ImportPwned extends KeestashCommand {
                 }
 
                 // TODO find a way
-                $plainPassword = $credential->getPassword()->getEncrypted();
+                $plainPassword = $credential->getPassword();
                 $searchHash    = $this->pwnedService->generateSearchHash($plainPassword);
                 $this->writeInfo(sprintf('Search Hash %s', $searchHash), $output);
                 $passwordTree = $this->pwnedService->importPasswords($searchHash);

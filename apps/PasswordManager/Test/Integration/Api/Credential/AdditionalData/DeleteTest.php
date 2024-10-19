@@ -24,9 +24,7 @@ namespace KSA\PasswordManager\Test\Integration\Api\Credential\AdditionalData;
 use DateTimeImmutable;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
-use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\Value;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
-use KSA\PasswordManager\Service\Node\Credential\AdditionalData\EncryptionService;
 use KSA\PasswordManager\Test\Integration\TestCase;
 use KSP\Api\IResponse;
 use KSP\Api\IVerb;
@@ -35,8 +33,6 @@ use Ramsey\Uuid\Uuid;
 class DeleteTest extends TestCase {
 
     public function testRegularCase(): void {
-        /** @var EncryptionService $encryptionService */
-        $encryptionService = $this->getService(EncryptionService::class);
         /** @var AdditionalDataRepository $additionalDataRepository */
         $additionalDataRepository = $this->getService(AdditionalDataRepository::class);
 
@@ -46,7 +42,7 @@ class DeleteTest extends TestCase {
             , $password
         );
 
-        $edge  = $this->createAndInsertCredential(
+        $edge = $this->createAndInsertCredential(
             Uuid::uuid4()->toString()
             , Uuid::uuid4()->toString()
             , Uuid::uuid4()->toString()
@@ -54,20 +50,16 @@ class DeleteTest extends TestCase {
             , $user
             , $this->getRootFolder($user)
         );
-        $key   = Uuid::uuid4()->toString();
-        $value = Uuid::uuid4()->toString();
+        $key  = Uuid::uuid4()->toString();
 
         $additionalData = new AdditionalData(
             Uuid::uuid4()->toString()
             , $key
-            , new Value(
-                encrypted: null
-            )
+            , ''
             , $edge->getNode()->getId()
             , new DateTimeImmutable()
         );
 
-        $additionalData = $encryptionService->encrypt($additionalData, $edge->getNode());
         $additionalDataRepository->add($additionalData);
 
         $headers  = $this->login($user, $password);
@@ -88,8 +80,6 @@ class DeleteTest extends TestCase {
     }
 
     public function testForbidden(): void {
-        /** @var EncryptionService $encryptionService */
-        $encryptionService = $this->getService(EncryptionService::class);
         /** @var AdditionalDataRepository $additionalDataRepository */
         $additionalDataRepository = $this->getService(AdditionalDataRepository::class);
 
@@ -103,7 +93,7 @@ class DeleteTest extends TestCase {
             , $password
         );
 
-        $edge  = $this->createAndInsertCredential(
+        $edge = $this->createAndInsertCredential(
             Uuid::uuid4()->toString()
             , Uuid::uuid4()->toString()
             , Uuid::uuid4()->toString()
@@ -111,20 +101,16 @@ class DeleteTest extends TestCase {
             , $otherUser
             , $this->getRootFolder($otherUser)
         );
-        $key   = Uuid::uuid4()->toString();
-        $value = Uuid::uuid4()->toString();
+        $key  = Uuid::uuid4()->toString();
 
         $additionalData = new AdditionalData(
             Uuid::uuid4()->toString()
             , $key
-            , new Value(
-                encrypted: null
-            )
+            , ''
             , $edge->getNode()->getId()
             , new DateTimeImmutable()
         );
 
-        $additionalData = $encryptionService->encrypt($additionalData, $edge->getNode());
         $additionalDataRepository->add($additionalData);
 
         $headers  = $this->login($user, $password);

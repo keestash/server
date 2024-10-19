@@ -27,7 +27,6 @@ use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\Service\Event\IEventService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
 class BetaFactory implements FactoryInterface {
 
@@ -38,7 +37,6 @@ class BetaFactory implements FactoryInterface {
     ): Beta {
         return new Beta(
             $container->get(NodeRepository::class),
-            $container->get(LoggerInterface::class),
             $container->get(IActivityService::class),
             $container->get(IEventService::class),
         );

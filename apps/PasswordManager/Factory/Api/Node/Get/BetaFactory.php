@@ -25,6 +25,9 @@ namespace KSA\PasswordManager\Factory\Api\Node\Get;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\Api\Node\Get\Beta;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
+use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
+use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
+use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\Service\HTTP\IResponseService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -45,6 +48,9 @@ class BetaFactory implements FactoryInterface {
             , $container->get(NodeService::class)
             , $container->get(IResponseService::class)
             , $container->get(IActivityService::class)
+            , $container->get(BreadCrumbService::class)
+            , $container->get(PwnedPasswordsRepository::class)
+            , $container->get(PwnedBreachesRepository::class)
         );
     }
 

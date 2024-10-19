@@ -1,16 +1,15 @@
 includes:
     - %rootDir%/../../../config/phpstan/baseline.neon
 parameters:
-	excludePaths:
-	    - %rootDir%/../../
-	    - %rootDir%/../../../lib/private/Core/Repository/Migration/*
-	    - %rootDir%/../../../apps/*/Repository/Migration/*
-	checkMissingIterableValueType: false
-	treatPhpDocTypesAsCertain: false
-	checkGenericClassInNonGenericObjectType: false
-	reportUnmatchedIgnoredErrors: false
-	ignoreErrors:
-	    - '#Property (.*) is never read, only written+\.#'
-	    - '#Constant (.*) is unused#'
-	    - '#Cannot cast mixed to (.*)#'
-	    - '#Parameter (.*) of class (.*) constructor expects (.*), mixed given\.#'
+    excludePaths:
+        - %rootDir%/../../
+        - %rootDir%/../../../lib/private/Core/Repository/Migration/*
+        - %rootDir%/../../../apps/*/Repository/Migration/*
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#Property (.*) is never read, only written+\.#'
+        - '#Constant (.*) is unused#'
+        - '#Cannot cast mixed to (.*)#'
+        - '#Parameter (.*) of class (.*) constructor expects (.*), mixed given\.#'
+        - identifier: missingType.iterableValue

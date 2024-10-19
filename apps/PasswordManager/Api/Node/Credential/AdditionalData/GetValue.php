@@ -89,7 +89,7 @@ final readonly class GetValue implements RequestHandlerInterface {
 
         return new JsonResponse(
             [
-                'value' => $data->getValue()->getEncrypted()
+                'value' => $data->getValue()
             ]
             , IResponse::OK
         );
