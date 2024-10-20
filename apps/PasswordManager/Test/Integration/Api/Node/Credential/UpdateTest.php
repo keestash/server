@@ -63,12 +63,8 @@ class UpdateTest extends TestCase {
                     , ConfigProvider::PASSWORD_MANAGER_CREDENTIAL_UPDATE
                     , [
                         'name'       => 'TestUpdateNewName'
-                        , 'username' => [
-                            "plain" => 'TestUpdateNewUsername'
-                        ]
-                        , 'url'      => [
-                            "plain" => 'TestUpdateNewUrl'
-                        ]
+                        , 'username' => base64_encode('TestUpdateNewUsername')
+                        , 'url'      => base64_encode('TestUpdateNewUrl')
                         , 'nodeId'   => $node->getId()
                     ]
                     , $user

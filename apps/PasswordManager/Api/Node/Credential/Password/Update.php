@@ -56,7 +56,7 @@ final readonly class Update implements RequestHandlerInterface {
         $token = $request->getAttribute(IToken::class);
 
         if (null === $nodeId || null === $password) {
-            throw new PasswordManagerException('passwordPlain or nodeId is empty');
+            throw new PasswordManagerException('password or nodeId is empty');
         }
 
         $credential = $this->nodeRepository->getNode((int) $nodeId, 0, 1);

@@ -39,10 +39,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 final readonly class Update implements RequestHandlerInterface {
 
-    public function __construct(
-        private Alpha $alpha,
-        private Beta  $beta
-    ) {
+    public function __construct(private Beta $beta) {
     }
 
     #[\Override]
@@ -50,8 +47,7 @@ final readonly class Update implements RequestHandlerInterface {
         /** @var IVersion $version */
         $version = $request->getAttribute(IVersion::class);
         return match ($version->getVersion()) {
-            1 => $this->alpha->handle($request),
-            2 => $this->beta->handle($request),
+            1, 2 => $this->beta->handle($request),
             default => new JsonResponse([], IResponse::NOT_FOUND),
         };
     }

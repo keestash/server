@@ -37,13 +37,13 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class NodeAccessMiddleware implements MiddlewareInterface {
+final readonly class NodeAccessMiddleware implements MiddlewareInterface {
 
     public function __construct(
-        private readonly AccessService      $accessService
-        , private readonly NodeRepository   $nodeRepository
-        , private readonly LoggerInterface  $logger
-        , private readonly IResponseService $responseService
+        private AccessService      $accessService
+        , private NodeRepository   $nodeRepository
+        , private LoggerInterface  $logger
+        , private IResponseService $responseService
     ) {
     }
 

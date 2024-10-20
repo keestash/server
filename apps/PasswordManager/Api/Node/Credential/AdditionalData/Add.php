@@ -38,13 +38,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
-class Add implements RequestHandlerInterface {
+final readonly class Add implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly AdditionalDataRepository $additionalDataRepository
-        , private readonly NodeRepository         $nodeRepository
-        , private readonly LoggerInterface        $logger
-        , private readonly IActivityService       $activityService
+        private AdditionalDataRepository $additionalDataRepository
+        , private NodeRepository         $nodeRepository
+        , private LoggerInterface        $logger
+        , private IActivityService       $activityService
     ) {
     }
 

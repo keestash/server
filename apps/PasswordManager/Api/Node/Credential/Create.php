@@ -64,12 +64,11 @@ final readonly class Create implements RequestHandlerInterface {
         /** @var IToken $token */
         $token      = $request->getAttribute(IToken::class);
         $parameters = (array) $request->getParsedBody();
-        $this->logger->debug('input', ['parsedBody' => $parameters, 'body' => $request->getBody()]);
-        $name     = $parameters["name"] ?? '';
-        $userName = $parameters["username"] ?? '';
-        $password = ($parameters["password"]["value"]) ?? '';
-        $folder   = $parameters["parent"] ?? '';
-        $url      = $parameters["url"] ?? '';
+        $name       = $parameters["name"] ?? '';
+        $userName   = $parameters["username"] ?? '';
+        $password   = $parameters["password"] ?? '';
+        $folder     = $parameters["parent"] ?? '';
+        $url        = $parameters["url"] ?? '';
 
         if (false === $this->isValid($name)) {
             $this->logger->info('invalid name given', ['name' => $name]);
@@ -99,9 +98,9 @@ final readonly class Create implements RequestHandlerInterface {
         }
 
         $credential = $this->credentialService->createCredential(
-            (string) $password
-            , $url
-            , (string) $userName
+            (string) base64_decode($password)
+            , (string) base64_decode($url)
+            , (string) base64_decode($userName)
             , $name
             , $token->getUser()
         );
@@ -123,8 +122,7 @@ final readonly class Create implements RequestHandlerInterface {
         return new JsonResponse(['edge' => $edge], IResponse::OK);
     }
 
-    private function isValid(?string $value): bool {
-        if (null === $value) return false;
+    private function isValid(string $value): bool {
         if ("" === trim($value)) return false;
         return true;
     }

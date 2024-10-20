@@ -29,11 +29,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class Generate implements RequestHandlerInterface {
+final readonly class Generate implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IPasswordService  $passwordService
-        , private readonly LoggerInterface $logger
+        private IPasswordService  $passwordService
+        , private LoggerInterface $logger
     ) {
     }
 

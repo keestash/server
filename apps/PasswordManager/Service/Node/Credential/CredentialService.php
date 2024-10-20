@@ -72,10 +72,9 @@ final readonly class CredentialService {
 
         $corePassword = new Password();
         $corePassword->setValue($password);
-        $corePassword->setCharacterSet(
-            $this->passwordService->findCharacterSet($password) //todo fixme
-        );
+        $corePassword->setCharacterSet([]);
         $corePassword = $this->passwordService->measureQuality($corePassword);
+
         $credential->setEntropy((string) $corePassword->getEntropy());
         return $credential;
     }
