@@ -24,13 +24,9 @@ use Keestash\ConfigProvider;
 use KSA\PasswordManager\Api\Node\Attachment\Add;
 use KSA\PasswordManager\Api\Node\Attachment\Download;
 use KSA\PasswordManager\Api\Node\Credential\AdditionalData\GetValue;
-use KSA\PasswordManager\Api\Node\Credential\Comment\Add as AddComment;
-use KSA\PasswordManager\Api\Node\Credential\Comment\Get;
-use KSA\PasswordManager\Api\Node\Credential\Comment\Remove;
 use KSA\PasswordManager\Api\Node\Credential\Create;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Generate;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
-use KSA\PasswordManager\Api\Node\Credential\Update\Alpha;
 use KSA\PasswordManager\Api\Node\Credential\Update\Update;
 use KSA\PasswordManager\Api\Node\Delete;
 use KSA\PasswordManager\Api\Node\Folder\CreateByPath;
@@ -62,14 +58,10 @@ use KSA\PasswordManager\Event\Listener\PasswordsListener;
 use KSA\PasswordManager\Event\Listener\RemoveExpiredPublicShare;
 use KSA\PasswordManager\Factory\Api\Node\Attachment\DownloadFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\AdditionalData\GetValueFactory;
-use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\AddFactory as AddCommentFactory;
-use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\GetFactory;
-use KSA\PasswordManager\Factory\Api\Node\Credential\Comment\RemoveFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\CreateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Generate\GenerateFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Generate\QualityFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\Password\UpdateFactory as UpdatePasswordFactory;
-use KSA\PasswordManager\Factory\Api\Node\Credential\Update\AlphaFactory;
 use KSA\PasswordManager\Factory\Api\Node\Credential\UpdateFactory;
 use KSA\PasswordManager\Factory\Api\Node\DeleteFactory;
 use KSA\PasswordManager\Factory\Api\Node\Folder\CreateByPathFactory;
@@ -100,7 +92,6 @@ use KSA\PasswordManager\Factory\Event\Listener\OrganizationAddListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\PasswordsListenerFactory;
 use KSA\PasswordManager\Factory\Event\Listener\RemoveExpiredFactory;
 use KSA\PasswordManager\Factory\Middleware\NodeAccessMiddlewareFactory;
-use KSA\PasswordManager\Factory\Repository\CommentRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\Credential\AdditionalData\AdditionalDataRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\FileRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\NodeRepositoryFactory;
@@ -116,7 +107,6 @@ use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\PwnedServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\Share\ShareServiceFactory;
 use KSA\PasswordManager\Middleware\NodeAccessMiddleware;
-use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -135,13 +125,8 @@ use KSA\PasswordManager\Service\Node\Share\ShareService;
 return [
     ConfigProvider::FACTORIES => [
         // api
-        // ---- comment
-        AddComment::class                                                     => AddCommentFactory::class
-        , Get::class                                                          => GetFactory::class
-        , Remove::class                                                       => RemoveFactory::class
-
         // ---- generate
-        , Generate::class                                                     => GenerateFactory::class
+        Generate::class                                                       => GenerateFactory::class
         , Quality::class                                                      => QualityFactory::class
 
         // ---- PublicShare
@@ -185,7 +170,6 @@ return [
         // ---- ---- Credential
         Create::class                                                         => CreateFactory::class,
         Update::class                                                         => UpdateFactory::class,
-        Alpha::class                                                          => AlphaFactory::class,
         \KSA\PasswordManager\Api\Node\Credential\Update\Beta::class           => \KSA\PasswordManager\Factory\Api\Node\Credential\Update\BetaFactory::class,
 
         // ---- Node
@@ -239,7 +223,6 @@ return [
 
         // repository
         PublicShareRepository::class                                          => PublicShareRepositoryFactory::class,
-        CommentRepository::class                                              => CommentRepositoryFactory::class,
 
         // repository
         // ---- node

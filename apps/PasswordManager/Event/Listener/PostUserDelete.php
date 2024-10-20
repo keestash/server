@@ -21,16 +21,17 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Event\Listener;
 
-use KSA\PasswordManager\Repository\CommentRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\Event\Listener\IListener;
 
-class PostUserDelete implements IListener {
+final readonly class PostUserDelete implements IListener {
 
-    public function __construct(private readonly CommentRepository $commentRepository, private readonly NodeRepository  $nodeRepository, private readonly IDataService    $dataManager)
-    {
+    public function __construct(
+        private NodeRepository $nodeRepository,
+        private IDataService   $dataManager
+    ) {
     }
 
     #[\Override]
@@ -45,7 +46,6 @@ class PostUserDelete implements IListener {
 //        if (false === $removed) return true;
 //
 //        $filesRemoved    = true;
-//        $commentsRemoved = $this->commentRepository->removeForUser($user);
 //        $nodeRemoved     = $this->nodeRepository->removeForUser($user);
 //
 //        /** @var FileList|null $fileList */
@@ -57,7 +57,6 @@ class PostUserDelete implements IListener {
 //
 //        return
 //            true === $filesRemoved
-//            && true === $commentsRemoved
 //            && true === $nodeRemoved;
 
     }

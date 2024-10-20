@@ -27,7 +27,6 @@ return [
     CoreConfigProvider::ROUTES        =>
         array_merge(
         // order matters
-            require __DIR__ . '/router/comment.php',
             require __DIR__ . '/router/share/public.php',
             require __DIR__ . '/router/share/regular.php',
             require __DIR__ . '/router/attachments.php',

@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential;
 
-use KSA\PasswordManager\Api\Node\Credential\Update\Alpha;
 use KSA\PasswordManager\Api\Node\Credential\Update\Beta;
 use KSA\PasswordManager\Api\Node\Credential\Update\Update;
 use Psr\Container\ContainerInterface;
@@ -30,8 +29,7 @@ class UpdateFactory {
 
     public function __invoke(ContainerInterface $container): Update {
         return new Update(
-            $container->get(Alpha::class)
-            , $container->get(Beta::class)
+            $container->get(Beta::class)
         );
     }
 

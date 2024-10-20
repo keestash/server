@@ -141,21 +141,6 @@ parameters:
 			path: ../../apps/PasswordManager/Api/Node/Credential/AdditionalData/GetValue.php
 
 		-
-			message: "#^Parameter \\#2 \\$sortField of method KSA\\\\PasswordManager\\\\Repository\\\\CommentRepository\\:\\:getCommentsByNode\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Credential/Comment/Get.php
-
-		-
-			message: "#^Parameter \\#3 \\$sortDir of method KSA\\\\PasswordManager\\\\Repository\\\\CommentRepository\\:\\:getCommentsByNode\\(\\) expects string, mixed given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Credential/Comment/Get.php
-
-		-
-			message: "#^Parameter \\#1 \\$credential of method KSA\\\\PasswordManager\\\\Repository\\\\Node\\\\NodeRepository\\:\\:updateCredential\\(\\) expects KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Credential\\\\Credential, KSA\\\\PasswordManager\\\\Entity\\\\Node\\\\Node given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Api/Node/Credential/Comment/Remove.php
-
-		-
 			message: "#^Call to an undefined method KSP\\\\Core\\\\DTO\\\\Encryption\\\\Password\\\\IPassword\\:\\:setEntropy\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Api/Node/Credential/Generate/Quality.php
@@ -289,6 +274,11 @@ parameters:
 			message: "#^Call to an undefined method KSP\\\\Core\\\\Builder\\\\Data\\\\IDataServiceBuilder\\:\\:withContext\\(\\)\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/RemoveFactory.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int, int\\>\\|string supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: ../../apps/PasswordManager/Middleware/IsEncryptedMiddleware.php
 
 		-
 			message: "#^Parameter \\#1 \\$comment of method KSA\\\\PasswordManager\\\\Entity\\\\Comment\\\\Comment\\:\\:setComment\\(\\) expects string, mixed given\\.$#"
@@ -459,11 +449,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$haystack of method PHPUnit\\\\Framework\\\\Assert\\:\\:assertCount\\(\\) expects Countable\\|iterable, mixed given\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Test/Integration/Api/Activity/GetTest.php
-
-		-
-			message: "#^Parameter \\#1 \\$exception of method PHPUnit\\\\Framework\\\\TestCase\\:\\:expectException\\(\\) expects class\\-string\\<Throwable\\>, string given\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Test/Integration/Api/Comment/AddTest.php
 
 		-
 			message: "#^Cannot access offset 'createTs' on mixed\\.$#"

@@ -32,12 +32,12 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
-class Quality implements RequestHandlerInterface {
+final readonly class Quality implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IPasswordService   $passwordService
-        , private readonly LoggerInterface  $logger
-        , private readonly IResponseService $responseService
+        private IPasswordService   $passwordService
+        , private LoggerInterface  $logger
+        , private IResponseService $responseService
     ) {
     }
 
