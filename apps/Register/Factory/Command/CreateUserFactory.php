@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace KSA\Register\Factory\Command;
 
+use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSA\Register\Command\CreateUser;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
@@ -36,8 +36,8 @@ class CreateUserFactory {
             $container->get(IUserService::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(IEventService::class)
-            , $container->get(IDerivationRepository::class)
             , $container->get(IDerivationService::class)
+            , $container->get(KeestashEncryptionService::class)
         );
     }
 

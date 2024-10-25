@@ -31,6 +31,9 @@ use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\DTO\Derivation\IDerivation;
 use KSP\Core\DTO\User\IUser;
 
+/**
+ * @deprecated
+ */
 interface IDerivationRepository {
 
     /**

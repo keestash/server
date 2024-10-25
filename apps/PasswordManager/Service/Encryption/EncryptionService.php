@@ -54,10 +54,8 @@ final readonly class EncryptionService {
      * @throws UserException
      */
     public function encrypt(ICredential $credential, string $raw): string {
-        return $this->encryptionService->encrypt(
-            $this->prepareKey($credential)
-            , $raw
-        );
+        $key = $this->prepareKey($credential);
+        return $this->encryptionService->encrypt($key, $raw);
     }
 
     /**
@@ -77,12 +75,8 @@ final readonly class EncryptionService {
         );
         $keyHolderCredential = $this->credentialService->createCredentialFromDerivation($credential->getKeyHolder());
 
-        $tempKey->setSecret(
-            $this->encryptionService->decrypt(
-                $keyHolderCredential
-                , $credential->getSecret()
-            )
-        );
+        $decrypted = $this->encryptionService->decrypt($keyHolderCredential, $credential->getSecret());
+        $tempKey->setSecret($decrypted);
         return $tempKey;
     }
 

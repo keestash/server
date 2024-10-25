@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Encryption\Key;
 
 use DateTime;
+use DateTimeImmutable;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\Key\KeyNotCreatedException;
@@ -36,6 +37,7 @@ use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
+use Override;
 
 final readonly class KeyService implements IKeyService {
 
@@ -56,7 +58,7 @@ final readonly class KeyService implements IKeyService {
      * @return IKey
      * @throws KeyNotCreatedException
      */
-    #[\Override]
+    #[Override]
     public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey {
         // Step 1: we create a random secret
         $secret = openssl_random_pseudo_bytes(4096);
@@ -85,7 +87,7 @@ final readonly class KeyService implements IKeyService {
      * @return IKey
      * @throws UnsupportedKeyException
      */
-    #[\Override]
+    #[Override]
     public function storeKey(IKeyHolder $keyHolder, IKey $key): IKey {
         if ($keyHolder instanceof IUser) {
             return $this->userKeyRepository->storeKey($keyHolder, $key);
@@ -102,7 +104,7 @@ final readonly class KeyService implements IKeyService {
      * @return IKey
      * @throws KeestashException
      */
-    #[\Override]
+    #[Override]
     public function getKey(IKeyHolder $keyHolder): IKey {
         if ($keyHolder instanceof IUser) {
             return $this->userKeyRepository->getKey($keyHolder);
@@ -113,22 +115,17 @@ final readonly class KeyService implements IKeyService {
     }
 
     /**
-     *
-     * runs the createKey() and storeKey() methods of this class
-     *
      * @param IKeyHolder $keyHolder
+     * @param string     $secret
      * @return IKey
-     * @throws KeyNotCreatedException
      * @throws UnsupportedKeyException
-     * @see IKeyService::storeKey()
-     * @see IKeyService::createKey()
      */
-    #[\Override]
-    public function createAndStoreKey(IKeyHolder $keyHolder): IKey {
-        $key = $this->createKey(
-            $this->credentialService->createCredentialFromDerivation($keyHolder)
-            , $keyHolder
-        );
+    #[Override]
+    public function createAndStoreKey(IKeyHolder $keyHolder, string $secret): IKey {
+        $key = new Key();
+        $key->setSecret($secret);
+        $key->setKeyHolder($keyHolder);
+        $key->setCreateTs(new DateTimeImmutable());
         return $this->storeKey($keyHolder, $key);
     }
 
@@ -137,7 +134,7 @@ final readonly class KeyService implements IKeyService {
      * @return void
      * @throws KeestashException
      */
-    #[\Override]
+    #[Override]
     public function remove(IKeyHolder $keyHolder): void {
         if ($keyHolder instanceof IUser) {
             $this->userKeyRepository->remove($keyHolder);
