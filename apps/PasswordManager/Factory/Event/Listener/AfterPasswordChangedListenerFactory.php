@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
 use KSA\PasswordManager\Event\Listener\AfterPasswordChanged;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IEncryptionService;
 use Psr\Container\ContainerInterface;
@@ -38,8 +36,6 @@ class AfterPasswordChangedListenerFactory {
             , $container->get(IEncryptionService::class)
             , $container->get(ICredentialService::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(IDerivationRepository::class)
-            , $container->get(IDerivationService::class)
         );
     }
 

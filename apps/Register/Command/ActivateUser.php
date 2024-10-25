@@ -21,18 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\Register\Command;
 
-use DateTimeImmutable;
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\DTO\Derivation\Derivation;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserStateService;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,12 +35,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ActivateUser extends KeestashCommand {
 
     public function __construct(
-        private readonly IUserRepository         $userRepository
-        , private readonly IDerivationRepository $derivationRepository
-        , private readonly IDerivationService    $derivationService
-        , private readonly LoggerInterface       $logger
-        , private readonly IEventService         $eventService
-        , private readonly IUserStateService     $userStateService
+        private readonly IUserRepository     $userRepository
+        , private readonly LoggerInterface   $logger
+        , private readonly IEventService     $eventService
+        , private readonly IUserStateService $userStateService
     ) {
         parent::__construct();
     }
@@ -68,25 +61,6 @@ class ActivateUser extends KeestashCommand {
         }
 
         $this->userStateService->clear($user);
-
-        $this->derivationRepository->clear($user);
-        $derivation = new Derivation(
-            Uuid::uuid4()->toString()
-            , $user
-            , $this->derivationService->derive($user->getPassword())
-            , new DateTimeImmutable()
-        );
-
-        $this->logger->info(
-            'derivation result webhook'
-            , [
-                'id'         => $derivation->getId()
-                , 'user'     => $derivation->getKeyHolder()
-                , 'derived'  => $derivation->getDerived()
-                , 'createTs' => $derivation->getCreateTs()
-            ]
-        );
-        $this->derivationRepository->add($derivation);
 
         $this->eventService->execute(
             new UserRegistrationConfirmedEvent($user, 1)

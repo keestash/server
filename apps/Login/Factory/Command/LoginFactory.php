@@ -23,11 +23,9 @@ namespace KSA\Login\Factory\Command;
 
 use KSA\Login\Command\Login;
 use KSA\Login\Service\TokenService;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\LDAP\ILDAPService;
 use KSP\Core\Service\User\IUserService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -50,8 +48,6 @@ class LoginFactory implements FactoryInterface {
             , $container->get(IConnectionRepository::class)
             , $container->get(TokenService::class)
             , $container->get(ITokenRepository::class)
-            , $container->get(IDerivationRepository::class)
-            , $container->get(IDerivationService::class)
         );
     }
 

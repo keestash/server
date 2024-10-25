@@ -23,7 +23,6 @@ declare(strict_types=1);
 use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
-use Keestash\Core\Repository\Derivation\DerivationRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
@@ -41,7 +40,6 @@ use Keestash\Core\Repository\User\UserStateRepository;
 use Keestash\Factory\Core\Backend\MySQLBackendFactory;
 use Keestash\Factory\Core\Repository\ApiLogRepository\ApiLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\AppRepository\AppRepositoryFactory;
-use Keestash\Factory\Core\Repository\DerivationRepository\DerivationRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositoryFactory;
 use Keestash\Factory\Core\Repository\EncryptionKey\User\UserKeyRepositoryFactory;
 use Keestash\Factory\Core\Repository\File\FileRepositoryFactory;
@@ -72,6 +70,5 @@ return [
     , DefaultConnectionRepository::class => InvokableFactory::class
     , DefaultPaymentLogRepository::class => InvokableFactory::class
     , MailLogRepository::class           => MailLogRepositoryFactory::class
-    , DerivationRepository::class        => DerivationRepositoryFactory::class
     , JobRepository::class               => JobRepositoryFactory::class
 ];

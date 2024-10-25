@@ -25,8 +25,6 @@ use Keestash\Command\App\ListAll;
 use Keestash\Command\Configuration\ResponseCodes\ListAll as ResponseCodeListAll;
 use Keestash\Command\Configuration\ResponseCodes\Verify;
 use Keestash\Command\CreateSystemUser;
-use Keestash\Command\Derivation\AddDerivation;
-use Keestash\Command\Derivation\ClearDerivation;
 use Keestash\Command\Derivation\DerivationList;
 use Keestash\Command\Environment\Environment;
 use Keestash\Command\Environment\ListEnvironment;
@@ -62,8 +60,6 @@ use Keestash\Factory\Command\App\ListAllFactory;
 use Keestash\Factory\Command\Configuration\ResponseCodes\ListAllFactory as ResponseCodeListAllFactory;
 use Keestash\Factory\Command\Configuration\ResponseCodes\VerifyFactory;
 use Keestash\Factory\Command\CreateSystemUserFactory;
-use Keestash\Factory\Command\Derivation\AddDerivationFactory;
-use Keestash\Factory\Command\Derivation\ClearDerivationFactory;
 use Keestash\Factory\Command\Derivation\DerivationListFactory;
 use Keestash\Factory\Command\Environment\EnvironmentFactory;
 use Keestash\Factory\Command\Environment\ListEnvironmentFactory;
@@ -111,10 +107,7 @@ return [
     , QueueDelete::class                      => QueueDeleteFactory::class
     , Reset::class                            => ResetFactory::class
     , ListAll::class                          => ListAllFactory::class
-    , ClearDerivation::class                  => ClearDerivationFactory::class
-    , AddDerivation::class                    => AddDerivationFactory::class
     , Cors::class                             => CorsFactory::class
-    , DerivationList::class                   => DerivationListFactory::class
     , ClearRateLimiterFile::class             => ClearRateLimiterFileFactory::class
     , WorkerLocker::class                     => WorkerLockerFactory::class
     , WorkerFlusher::class                    => WorkerFlusherFactory::class
