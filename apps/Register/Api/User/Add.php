@@ -80,6 +80,7 @@ readonly final class Add implements RequestHandlerInterface {
         $phone              = $this->getParameter("phone", $request);
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
         $website            = $this->getParameter("website", $request);
+        $key                = $this->getParameter("key", $request);
         // TODO fix
         $phone   = '00000000000';
         $website = $this->application->getMetaData()->get('web');
@@ -203,9 +204,10 @@ readonly final class Add implements RequestHandlerInterface {
 
         $this->eventService->execute(
             new UserRegisteredEvent(
-                $user
-                , Type::REGULAR
-                , 1
+                $user,
+                $key,
+                Type::REGULAR,
+                1
             )
         );
 

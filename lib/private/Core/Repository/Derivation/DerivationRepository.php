@@ -39,6 +39,9 @@ use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @deprecated
+ */
 class DerivationRepository implements IDerivationRepository {
 
     public function __construct(

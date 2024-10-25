@@ -34,6 +34,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Repository\User\IUserStateRepository;
 use KSP\Core\Service\Email\IEmailService;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\L10N\IL10N;
@@ -41,16 +42,17 @@ use Mezzio\Template\TemplateRendererInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
-class UserRegisteredEventListener implements IListener {
+final readonly class UserRegisteredEventListener implements IListener {
 
     public function __construct(
-        private readonly IEmailService               $emailService
-        , private readonly TemplateRendererInterface $templateRenderer
-        , private readonly IL10N                     $translator
-        , private readonly LoggerInterface           $logger
-        , private readonly IMailLogRepository        $mailLogRepository
-        , private readonly IUserStateRepository      $userStateRepository
-        , private readonly IEventService             $eventService
+        private IEmailService               $emailService
+        , private TemplateRendererInterface $templateRenderer
+        , private IL10N                     $translator
+        , private LoggerInterface           $logger
+        , private IMailLogRepository        $mailLogRepository
+        , private IUserStateRepository      $userStateRepository
+        , private IEventService             $eventService
+        , private IKeyService               $keyService
     ) {
     }
 
@@ -61,6 +63,11 @@ class UserRegisteredEventListener implements IListener {
             $this->logger->error('unknown event triggered', ['event' => $event]);
             throw new KeestashException();
         }
+
+        $this->keyService->createAndStoreKey(
+            $event->getUser(),
+            base64_decode($event->getKey())
+        );
 
         if ($event->getType() === Type::REGULAR) {
             $this->logger->debug('start regular registration');

@@ -30,7 +30,6 @@ use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Email\IEmailService;
-use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\L10N\IL10N;
 use Mezzio\Template\TemplateRendererInterface;
 use Psr\Container\ContainerInterface;
@@ -40,8 +39,7 @@ class AfterRegistrationFactory {
 
     public function __invoke(ContainerInterface $container): AfterRegistration {
         return new AfterRegistration(
-            $container->get(IKeyService::class)
-            , $container->get(LoggerInterface::class)
+            $container->get(LoggerInterface::class)
             , $container->get(NodeService::class)
             , $container->get(NodeRepository::class)
             , $container->get(CredentialService::class)

@@ -35,8 +35,7 @@ use Psr\Log\LoggerInterface;
 
 class QueueService implements IQueueService {
 
-    public function __construct(private readonly IQueueRepository   $queueRepository, private readonly IDateTimeService $dateTimeService, private readonly IBase64Service   $base64Service, private readonly LoggerInterface  $logger)
-    {
+    public function __construct(private readonly IQueueRepository $queueRepository, private readonly IDateTimeService $dateTimeService, private readonly IBase64Service $base64Service, private readonly LoggerInterface $logger) {
     }
 
     #[\Override]

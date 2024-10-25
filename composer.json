@@ -116,7 +116,7 @@
     ],
     "test-single": [
       "Composer\\Config::disableProcessTimeout",
-      "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --filter testNonExistingWithId apps/PasswordManager/Test/Integration/Api/Node/Get/GetTest.php"
+      "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --filter testRegularCase apps/Settings/Test/Integration/Api/User/UserRemoveTest.php"
     ],
     "test-coverage": [
       "Composer\\Config::disableProcessTimeout",

@@ -60,17 +60,11 @@ interface IKeyService {
     public function getKey(IKeyHolder $keyHolder): IKey;
 
     /**
-     *
-     * runs the createKey() and storeKey() methods of this class
-     *
      * @param IKeyHolder $keyHolder
+     * @param string     $secret
      * @return IKey
-     * @throws KeyNotCreatedException
-     * @throws UnsupportedKeyException
-     * @see IKeyService::storeKey()
-     * @see IKeyService::createKey()
      */
-    public function createAndStoreKey(IKeyHolder $keyHolder): IKey;
+    public function createAndStoreKey(IKeyHolder $keyHolder, string $secret): IKey;
 
     /**
      *

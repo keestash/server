@@ -24,10 +24,13 @@ namespace KST;
 use DateTimeImmutable;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\Organization\Organization;
-use KSA\Register\Event\UserRegistrationConfirmedEvent;
+use KSA\Register\Entity\Register\Event\Type;
+use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Settings\Service\IOrganizationService;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Service\Encryption\Credential\ICredentialService;
+use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -75,6 +78,10 @@ class TestCase extends FrameworkTestCase {
         $userService = $this->getService(IUserService::class);
         /** @var IEventService $eventService */
         $eventService = $this->getService(IEventService::class);
+        /** @var IEncryptionService $encryptionService */
+        $encryptionService = $this->getService(IEncryptionService::class);
+        /** @var ICredentialService $credentialService */
+        $credentialService = $this->getService(ICredentialService::class);
 
         if ($email === '') {
             $email = Uuid::uuid4() . '@keestash.com';
@@ -96,10 +103,17 @@ class TestCase extends FrameworkTestCase {
             )
         );
 
+        $secret = openssl_random_pseudo_bytes(32);
+
+        // encrypting secret with user derivation
+        $c   = $credentialService->createCredentialFromDerivation($user);
+        $key = $encryptionService->encrypt($c, $secret);
         $eventService->execute(
-            new UserRegistrationConfirmedEvent(
-                $user
-                , 1
+            new UserRegisteredEvent(
+                $user,
+                base64_encode($key),
+                Type::CLI,
+                1
             )
         );
 

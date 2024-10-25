@@ -47,7 +47,8 @@ class OrganizationAddedEventListener implements IListener {
         }
 
         $this->keyService->createAndStoreKey(
-            $event->getOrganization()
+            $event->getOrganization(),
+            ''
         );
     }
 

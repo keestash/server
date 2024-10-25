@@ -25,12 +25,13 @@ use Keestash\Core\DTO\Event\Event;
 use KSA\Register\Entity\Register\Event\Type;
 use KSP\Core\DTO\User\IUser;
 
-class UserRegisteredEvent extends Event {
+final class UserRegisteredEvent extends Event {
 
     public function __construct(
-        private readonly IUser  $user
-        , private readonly Type $type
-        , private readonly int  $priority
+        private readonly IUser  $user,
+        private readonly string $key,
+        private readonly Type   $type,
+        private readonly int    $priority
     ) {
     }
 
@@ -54,6 +55,13 @@ class UserRegisteredEvent extends Event {
     #[\Override]
     public function getPriority(): int {
         return $this->priority;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey(): string {
+        return $this->key;
     }
 
     #[\Override]

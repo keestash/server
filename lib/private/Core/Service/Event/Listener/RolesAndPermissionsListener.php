@@ -27,10 +27,10 @@ use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
 
-class RolesAndPermissionsListener implements IListener {
+final readonly class RolesAndPermissionsListener implements IListener {
 
 
-    public function __construct(private readonly RBACRepositoryInterface $rbacRepository) {
+    public function __construct(private RBACRepositoryInterface $rbacRepository) {
     }
 
     #[\Override]

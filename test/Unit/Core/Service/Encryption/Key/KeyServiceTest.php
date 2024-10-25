@@ -104,7 +104,7 @@ class KeyServiceTest extends TestCase {
                 ]
             )
         );
-        $key         = $keyService->createAndStoreKey($user);
+        $key         = $keyService->createAndStoreKey($user, '');
         $this->assertInstanceOf(IKey::class, $key);
     }
 
