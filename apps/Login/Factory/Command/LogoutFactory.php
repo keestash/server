@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Login\Factory\Command;
 
 use KSA\Login\Command\Logout;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -41,7 +40,6 @@ class LogoutFactory implements FactoryInterface {
             $container->get(IUserRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(ITokenRepository::class)
-            , $container->get(IDerivationRepository::class)
         );
     }
 

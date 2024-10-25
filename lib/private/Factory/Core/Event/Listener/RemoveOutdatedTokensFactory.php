@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Event\Listener;
 
 use Keestash\Core\DTO\Event\Listener\RemoveOutdatedTokens;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -38,7 +37,6 @@ class RemoveOutdatedTokensFactory implements FactoryInterface {
     ): RemoveOutdatedTokens {
         return new RemoveOutdatedTokens(
             $container->get(ITokenRepository::class)
-            , $container->get(IDerivationRepository::class)
             , $container->get(LoggerInterface::class)
         );
     }

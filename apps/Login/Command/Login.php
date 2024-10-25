@@ -21,21 +21,16 @@ declare(strict_types=1);
 
 namespace KSA\Login\Command;
 
-use DateTimeImmutable;
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\User\NullUser;
 use KSA\Login\Service\TokenService;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\LDAP\ILDAPService;
 use KSP\Core\Service\User\IUserService;
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -50,8 +45,6 @@ class Login extends KeestashCommand {
         , private readonly IConnectionRepository $connectionRepository
         , private readonly TokenService          $tokenService
         , private readonly ITokenRepository      $tokenRepository
-        , private readonly IDerivationRepository $derivationRepository
-        , private readonly IDerivationService    $derivationService
     ) {
         parent::__construct();
     }
@@ -104,16 +97,6 @@ class Login extends KeestashCommand {
 
         $token = $this->tokenService->generate("login", $user);
         $this->tokenRepository->add($token);
-
-        $this->derivationRepository->clear($user);
-        $this->derivationRepository->add(
-            new Derivation(
-                Uuid::uuid4()->toString()
-                , $user
-                , $this->derivationService->derive($user->getPassword())
-                , new DateTimeImmutable()
-            )
-        );
 
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }

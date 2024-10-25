@@ -182,7 +182,6 @@ return [
     , IConnectionRepository::class                      => DefaultConnectionRepository::class
     , IPaymentLogRepository::class                      => DefaultPaymentLogRepository::class
     , IMailLogRepository::class                         => MailLogRepository::class
-    , IDerivationRepository::class                      => DerivationRepository::class
 
     // service
     , IUserService::class                               => UserService::class

@@ -24,7 +24,6 @@ namespace KSA\Login\Command;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\User\NullUser;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use Psr\Log\LoggerInterface;
@@ -35,10 +34,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class Logout extends KeestashCommand {
 
     public function __construct(
-        private readonly IUserRepository         $userRepository
-        , private readonly LoggerInterface       $logger
-        , private readonly ITokenRepository      $tokenRepository
-        , private readonly IDerivationRepository $derivationRepository
+        private readonly IUserRepository    $userRepository
+        , private readonly LoggerInterface  $logger
+        , private readonly ITokenRepository $tokenRepository
     ) {
         parent::__construct();
     }
@@ -62,7 +60,6 @@ class Logout extends KeestashCommand {
         }
 
         $this->tokenRepository->removeForUser($user);
-        $this->derivationRepository->clear($user);
         return IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL;
     }
 

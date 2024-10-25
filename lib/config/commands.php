@@ -25,9 +25,6 @@ use Keestash\Command\App\ListAll;
 use Keestash\Command\Configuration\ResponseCodes\ListAll as ResponseCodeListAll;
 use Keestash\Command\Configuration\ResponseCodes\Verify;
 use Keestash\Command\CreateSystemUser;
-use Keestash\Command\Derivation\AddDerivation;
-use Keestash\Command\Derivation\ClearDerivation;
-use Keestash\Command\Derivation\DerivationList;
 use Keestash\Command\Environment\Environment;
 use Keestash\Command\Environment\ListEnvironment;
 use Keestash\Command\Event\ListEvents;
@@ -73,10 +70,7 @@ return [
     , QueueDelete::class
     , Reset::class
     , ListAll::class
-    , ClearDerivation::class
-    , AddDerivation::class
     , Cors::class
-    , DerivationList::class
     , ClearRateLimiterFile::class
     , WorkerLocker::class
     , WorkerFlusher::class

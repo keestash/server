@@ -22,9 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Factory\Command;
 
 use KSA\Register\Command\ActivateUser;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\User\IUserRepository;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserStateService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -41,8 +39,6 @@ class ActivateUserFactory implements FactoryInterface {
     ): ActivateUser {
         return new ActivateUser(
             $container->get(IUserRepository::class)
-            , $container->get(IDerivationRepository::class)
-            , $container->get(IDerivationService::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IEventService::class)
             , $container->get(IUserStateService::class)

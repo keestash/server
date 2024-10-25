@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSA\Login\Factory\Api;
 
 use KSA\Login\Api\Logout;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Metric\ICollectorService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -38,7 +37,6 @@ class LogoutFactory implements FactoryInterface {
     ): Logout {
         return new Logout(
             $container->get(ITokenRepository::class)
-            , $container->get(IDerivationRepository::class)
             , $container->get(ICollectorService::class)
         );
     }

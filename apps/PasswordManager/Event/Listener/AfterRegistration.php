@@ -24,7 +24,6 @@ namespace KSA\PasswordManager\Event\Listener;
 use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
-use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\MailLog\MailLog;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use Keestash\Core\System\Application;
@@ -37,9 +36,7 @@ use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\L10N\IL10N;
@@ -71,8 +68,6 @@ class AfterRegistration implements IListener {
         , private readonly TemplateRendererInterface $templateRenderer
         , private readonly IL10N                     $translator
         , private readonly IMailLogRepository        $mailLogRepository
-        , private readonly IDerivationRepository     $derivationRepository
-        , private readonly IDerivationService        $derivationService
     ) {
     }
 
@@ -87,15 +82,6 @@ class AfterRegistration implements IListener {
             $this->logger->debug('systemUser detected. Skipping', ['user' => $event->getUser()]);
             return;
         }
-
-        $this->derivationRepository->clear($event->getUser());
-        $derivation = new Derivation(
-            Uuid::uuid4()->toString()
-            , $event->getUser()
-            , $this->derivationService->derive($event->getUser()->getPassword())
-            , new DateTimeImmutable()
-        );
-        $this->derivationRepository->add($derivation);
 
         try {
             $root = $this->createRootFolder($event);

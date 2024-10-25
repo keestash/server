@@ -23,11 +23,9 @@ namespace Keestash\Core\DTO\Event\Listener;
 
 use Doctrine\DBAL\Exception;
 use Keestash\Core\DTO\Event\ApplicationStartedEvent;
-use Keestash\Exception\Repository\Derivation\DerivationNotDeletedException;
 use Keestash\Exception\Token\TokenNotDeletedException;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\DTO\Token\IToken;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
@@ -35,9 +33,8 @@ use Psr\Log\LoggerInterface;
 final readonly class RemoveOutdatedTokens implements IListener {
 
     public function __construct(
-        private ITokenRepository        $tokenRepository
-        , private IDerivationRepository $derivationRepository
-        , private LoggerInterface       $logger
+        private ITokenRepository  $tokenRepository
+        , private LoggerInterface $logger
     ) {
 
     }
@@ -49,16 +46,14 @@ final readonly class RemoveOutdatedTokens implements IListener {
      */
     #[\Override]
     public function execute(IEvent|ApplicationStartedEvent $event): void {
-        $reference   = $event->getDateTime()->modify('-1 day');
-        $tokens      = $this->tokenRepository->getOlderThan($reference);
-        $derivations = $this->derivationRepository->getOlderThan($reference);
+        $reference = $event->getDateTime()->modify('-1 day');
+        $tokens    = $this->tokenRepository->getOlderThan($reference);
 
         $this->logger->debug(
-            'deleting outdated tokens/derivations'
+            'deleting outdated tokens'
             , [
-                'reference'        => $reference
-                , 'tokenSize'      => $tokens->size()
-                , 'derivationSize' => $derivations->size()
+                'reference'   => $reference
+                , 'tokenSize' => $tokens->size()
             ]
         );
 
@@ -78,20 +73,6 @@ final readonly class RemoveOutdatedTokens implements IListener {
             }
         }
 
-        foreach ($derivations as $derivation) {
-            try {
-                $this->logger->debug(
-                    'removing derivation'
-                    , [
-                        'createTs'    => $derivation->getCreateTs()
-                        , 'reference' => $reference
-                    ]
-                );
-                $this->derivationRepository->remove($derivation);
-            } catch (Exception|DerivationNotDeletedException $e) {
-                $this->logger->error('token not deleted', ['exception' => $e]);
-            }
-        }
     }
 
 }
