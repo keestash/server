@@ -23,13 +23,11 @@ declare(strict_types=1);
 use Keestash\ConfigProvider;
 use KSA\Login\Api\Configuration;
 use KSA\Login\Api\Login\Alpha;
-use KSA\Login\Api\Login\Beta;
 use KSA\Login\Api\Login\Login;
 use KSA\Login\Api\Logout;
 use KSA\Login\Event\ApplicationEndedEventListener;
 use KSA\Login\Factory\Api\ConfigurationFactory;
 use KSA\Login\Factory\Api\Login\AlphaFactory;
-use KSA\Login\Factory\Api\Login\BetaFactory;
 use KSA\Login\Factory\Api\Login\LoginFactory;
 use KSA\Login\Factory\Api\LogoutFactory;
 use KSA\Login\Factory\Event\ApplicationEndedEventListenerFactory;
@@ -42,7 +40,6 @@ return [
         // -- login
         Login::class                           => LoginFactory::class
         , Alpha::class                         => AlphaFactory::class
-        , Beta::class                          => BetaFactory::class
 
         // -- key
         , Configuration::class                 => ConfigurationFactory::class

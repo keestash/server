@@ -33,7 +33,6 @@ readonly final class Login implements RequestHandlerInterface {
 
     public function __construct(
         private Alpha               $alpha
-        , private Beta              $beta
         , private ICollectorService $collector
     ) {
     }
@@ -44,8 +43,7 @@ readonly final class Login implements RequestHandlerInterface {
         $version = $request->getAttribute(IVersion::class);
 
         $response = match ($version->getVersion()) {
-            1 => $this->alpha->handle($request),
-            2 => $this->beta->handle($request),
+            1, 2 => $this->alpha->handle($request),
             default => new JsonResponse([], IResponse::NOT_FOUND),
         };
 
