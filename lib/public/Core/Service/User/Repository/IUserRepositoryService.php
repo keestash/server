@@ -78,6 +78,6 @@ interface IUserRepositoryService {
      * @return IUser
      * @throws UserNotUpdatedException
      */
-    public function updateUser(IUser $updatedUser, IUser $user): IUser;
+    public function updateUser(IUser $updatedUser, IUser $user, string $key): IUser;
 
 }

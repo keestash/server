@@ -25,6 +25,7 @@ use Keestash\Command\KeestashCommand;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -38,6 +39,7 @@ final class UpdatePassword extends KeestashCommand {
         private readonly IUserRepository          $userRepository
         , private readonly IUserService           $userService
         , private readonly IUserRepositoryService $userRepositoryService
+        , private readonly IUserKeyRepository     $userKeyRepository
     ) {
         parent::__construct();
     }
@@ -81,9 +83,11 @@ final class UpdatePassword extends KeestashCommand {
             $this->userService->hashPassword($password)
         );
 
+        $key = $this->userKeyRepository->getKey($user);
         $this->userRepositoryService->updateUser(
             $newUser
             , $user
+            , base64_decode($key->getSecret())
         );
 
         $this->writeInfo('Password Updated', $output);

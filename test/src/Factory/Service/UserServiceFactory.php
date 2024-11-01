@@ -24,6 +24,7 @@ namespace KST\Service\Factory\Service;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\IUserStateService;
@@ -42,6 +43,7 @@ class UserServiceFactory {
             , $container->get(ILanguageService::class)
             , $container->get(IEventService::class)
             , $container->get(IUserStateService::class)
+            , $container->get(IKeyService::class)
         );
     }
 

@@ -64,22 +64,32 @@ class UserEditTest extends TestCase {
     }
 
     public function testWithMissingData(): void {
-        /** @var UserEdit $userEdit */
-        $userEdit = $this->getService(UserEdit::class);
-
-        $response = $userEdit->handle(
-            $this->getVirtualRequest(
-                [
-                    'user' => [
-                        'id'           => 2
-                        , 'first_name' => UserEdit::class
-                    ]
-                ]
-            )
+        $password = Uuid::uuid4()->toString();
+        $user     = $this->createUser(
+            Uuid::uuid4()->toString()
+            , $password
         );
 
-        $this->assertTrue(false === $this->getResponseService()->isValidResponse($response));
+        $headers  = $this->login($user, $password);
+        $response = $this->getApplication()
+            ->handle(
+                $this->getRequest(
+                    IVerb::POST
+                    , ConfigProvider::USER_EDIT
+                    , [
+                        'user' => [
+                            'id'           => $user->getId()
+                            , 'first_name' => UserEdit::class
+                        ]
+                    ]
+                    , $user
+                    , $headers
+                )
+            );
+
         $this->assertTrue(IResponse::BAD_REQUEST === $response->getStatusCode());
+        $this->logout($headers, $user);
+        $this->removeUser($user);
     }
 
     public function testRegularCase(): void {

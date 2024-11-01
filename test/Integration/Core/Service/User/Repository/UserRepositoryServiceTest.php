@@ -22,6 +22,8 @@ declare(strict_types=1);
 namespace KST\Integration\Core\Service\User\Repository;
 
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
+use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Integration\TestCase;
@@ -29,14 +31,20 @@ use Ramsey\Uuid\Uuid;
 
 class UserRepositoryServiceTest extends TestCase {
 
+    /** @var IUserRepositoryService $userRepositoryService */
     private IUserRepositoryService $userRepositoryService;
     private IUserService           $userService;
+    private IUserKeyRepository     $userKeyRepository;
+    private IKeyService            $keyService;
 
     #[\Override]
     protected function setUp(): void {
         parent::setUp();
+        /** @var IUserRepositoryService userRepositoryService */
         $this->userRepositoryService = $this->getService(IUserRepositoryService::class);
         $this->userService           = $this->getService(IUserService::class);
+        $this->userKeyRepository     = $this->getService(IUserKeyRepository::class);
+        $this->keyService            = $this->getService(IKeyService::class);
     }
 
     public function testCreateAndRemoveUserAndUserExistsByNameAndUserExistsByMailAndUpdateUser(): void {
@@ -55,6 +63,7 @@ class UserRepositoryServiceTest extends TestCase {
                 ]
             )
         );
+        $this->keyService->createAndStoreKey($user, base64_encode(uniqid()));
 
         $this->assertInstanceOf(IUser::class, $user);
         $this->assertTrue(
@@ -65,7 +74,8 @@ class UserRepositoryServiceTest extends TestCase {
         );
         $newUser = clone $user;
         $newUser->setName($user->getName() . md5((string) time()));
-        $updatedUser = $this->userRepositoryService->updateUser($newUser, $user);
+        $key         = $this->userKeyRepository->getKey($user);
+        $updatedUser = $this->userRepositoryService->updateUser($newUser, $user, base64_encode($key->getSecret()));
         $this->assertInstanceOf(IUser::class, $updatedUser);
         $result = $this->userRepositoryService->removeUser($user);
         $this->assertTrue(true === $result['success']);

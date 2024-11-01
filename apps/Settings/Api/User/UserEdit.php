@@ -32,6 +32,7 @@ use KSP\Core\DTO\Http\JWT\IAudience;
 use KSP\Core\DTO\RBAC\IPermission;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\DTO\User\IUser;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
@@ -42,16 +43,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use TypeError;
 
-class UserEdit implements RequestHandlerInterface {
+final readonly class UserEdit implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IUserRepository          $userRepository
-        , private readonly UserService            $userService
-        , private readonly IUserRepositoryService $userRepositoryService
-        , private readonly IJWTService            $jwtService
-        , private readonly LoggerInterface        $logger
-        , private readonly RBACServiceInterface   $rbacService
-        , private readonly IResponseService       $responseService
+        private IUserRepository          $userRepository
+        , private UserService            $userService
+        , private IUserRepositoryService $userRepositoryService
+        , private IJWTService            $jwtService
+        , private LoggerInterface        $logger
+        , private RBACServiceInterface   $rbacService
+        , private IResponseService       $responseService
+        , private IUserKeyRepository     $userKeyRepository
     ) {
     }
 
@@ -134,7 +136,8 @@ class UserEdit implements RequestHandlerInterface {
             return new JsonResponse([], IResponse::BAD_REQUEST);
         }
 
-        $repoUser = $this->userRepositoryService->updateUser($repoUser, $oldUser);
+        $key      = $this->userKeyRepository->getKey($user);
+        $repoUser = $this->userRepositoryService->updateUser($repoUser, $oldUser, base64_decode($key->getSecret()));
         return new JsonResponse(
             [
                 "user"              => $repoUser

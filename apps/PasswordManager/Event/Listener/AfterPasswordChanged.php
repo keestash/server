@@ -28,8 +28,6 @@ use KSA\PasswordManager\Exception\KeyNotUpdatedException;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Event\Listener\IListener;
 use Psr\Log\LoggerInterface;
 
@@ -42,10 +40,8 @@ use Psr\Log\LoggerInterface;
 final readonly class AfterPasswordChanged implements IListener {
 
     public function __construct(
-        private IUserKeyRepository   $encryptionKeyRepository
-        , private IEncryptionService $encryptionService
-        , private ICredentialService $credentialService
-        , private LoggerInterface    $logger
+        private IUserKeyRepository $encryptionKeyRepository
+        , private LoggerInterface  $logger
     ) {
     }
 
@@ -62,18 +58,12 @@ final readonly class AfterPasswordChanged implements IListener {
             return;
         }
 
-        $credential        = $this->credentialService->createCredentialFromDerivation($event->getUser());
-        $updatedCredential = $this->credentialService->createCredentialFromDerivation($event->getUpdatedUser());
         $this->logger->debug('retrieved both, old and new credential');
         /** @var IKey|Key $key */
         $key = $this->encryptionKeyRepository->getKey($event->getUser());
         $this->logger->debug('retrieved key');
 
-        $oldSecretPlain = $this->encryptionService->decrypt($credential, $key->getSecret());
-        $newSecret      = $this->encryptionService->encrypt($updatedCredential, $oldSecretPlain);
-        $this->logger->debug('recrypted :)');
-
-        $key->setSecret($newSecret);
+        $key->setSecret(base64_decode($event->getKey()));
         $added = $this->encryptionKeyRepository->updateKey($key);
 
         $this->logger->debug('updated :)');
