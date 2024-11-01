@@ -23,6 +23,7 @@ namespace KSA\Settings\Factory\Command;
 
 use Interop\Container\ContainerInterface;
 use KSA\Settings\Command\UpdatePassword;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -40,6 +41,7 @@ class UpdatePasswordFactory implements FactoryInterface {
             $container->get(IUserRepository::class)
             , $container->get(IUserService::class)
             , $container->get(IUserRepositoryService::class)
+            , $container->get(IUserKeyRepository::class)
         );
     }
 

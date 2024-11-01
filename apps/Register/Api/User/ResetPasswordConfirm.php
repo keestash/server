@@ -64,6 +64,7 @@ readonly final class ResetPasswordConfirm implements RequestHandlerInterface {
         $parameters = (array) $request->getParsedBody();
         $hash       = $parameters["hash"] ?? '';
         $password   = $parameters["password"] ?? '';
+        $key        = $parameters["key"] ?? '';
 
         $userState = $this->findCandidate($hash);
 
@@ -93,7 +94,7 @@ readonly final class ResetPasswordConfirm implements RequestHandlerInterface {
             $this->userService->hashPassword($password)
         );
 
-        $this->userRepositoryService->updateUser($updateUser, $user);
+        $this->userRepositoryService->updateUser($updateUser, $user, base64_encode($key));
         $this->userStateService->clearCarefully($user, UserStateName::REQUEST_PW_CHANGE);
 
         $this->eventManager->execute(new ResetPasswordConfirmEvent(2));

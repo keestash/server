@@ -40,7 +40,8 @@ class Configuration implements RequestHandlerInterface {
             [
                 'uploadMaxFilesize' => $this->iniConfigService->toBytes(
                     (string) $this->iniConfigService->getValue("upload_max_filesize", -1)
-                )
+                ),
+                'passwordChangeEnabled' => true
             ]
         );
     }

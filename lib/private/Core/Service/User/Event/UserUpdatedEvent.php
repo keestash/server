@@ -27,9 +27,10 @@ use KSP\Core\DTO\User\IUser;
 class UserUpdatedEvent extends Event {
 
     public function __construct(
-        private readonly IUser   $updatedUser
-        , private readonly IUser $user
-        , private readonly int   $priority = 99999999
+        private readonly IUser    $updatedUser
+        , private readonly IUser  $user
+        , private readonly string $key
+        , private readonly int    $priority = 99999999
     ) {
     }
 
@@ -53,6 +54,13 @@ class UserUpdatedEvent extends Event {
     #[\Override]
     public function getPriority(): int {
         return $this->priority;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey(): string {
+        return $this->key;
     }
 
     #[\Override]

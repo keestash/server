@@ -41,7 +41,6 @@ class UserRemoveTest extends TestCase {
             , $password
         );
 
-
         $rbacRepository->assignRoleToUser(
             $user
             , $rbacRepository->getRole(IRole::ROLE_USER_ADMIN)

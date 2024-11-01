@@ -172,13 +172,14 @@ final readonly class UserRepositoryService implements IUserRepositoryService {
      * @throws UserNotUpdatedException
      */
     #[\Override]
-    public function updateUser(IUser $updatedUser, IUser $user): IUser {
+    public function updateUser(IUser $updatedUser, IUser $user, string $key): IUser {
         $this->userRepository->update($updatedUser);
 
         $this->eventManager->execute(
             new UserUpdatedEvent(
                 $updatedUser
                 , $user
+                , $key
             )
         );
         return $updatedUser;

@@ -116,7 +116,7 @@
     ],
     "test-single": [
       "Composer\\Config::disableProcessTimeout",
-      "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --filter testRegularCase apps/Settings/Test/Integration/Api/User/UserRemoveTest.php"
+      "./vendor/bin/phpunit --configuration test/phpunit.xml -d memory_limit=-1 --filter testWithMissingData apps/Settings/Test/Integration/Api/User/UserEditTest.php"
     ],
     "test-coverage": [
       "Composer\\Config::disableProcessTimeout",

@@ -19,7 +19,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Api\User;
+namespace KSA\Settings\Api\User\Edit\Password;
 
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
@@ -30,11 +30,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class UpdatePassword implements RequestHandlerInterface {
+final readonly class UpdatePassword implements RequestHandlerInterface {
 
     public function __construct(
-        private readonly IUserService             $userService
-        , private readonly IUserRepositoryService $userRepositoryService
+        private IUserService             $userService
+        , private IUserRepositoryService $userRepositoryService
     ) {
     }
 
@@ -47,6 +47,9 @@ class UpdatePassword implements RequestHandlerInterface {
         $userId      = (int) ($parameters['userId'] ?? 0);
         $oldPassword = $parameters['oldPassword'] ?? '';
         $password    = $parameters['password'] ?? '';
+        $newKey      = $parameters['key'] ?? '';
+
+        // TODO check whether key exists
         if ($user->getId() !== $userId) {
             // TODO change with permission system
             return new JsonResponse([], IResponse::NOT_ALLOWED);
@@ -71,6 +74,7 @@ class UpdatePassword implements RequestHandlerInterface {
         $this->userRepositoryService->updateUser(
             $newUser
             , $user
+            , base64_decode($newKey)
         );
 
         return new JsonResponse([], IResponse::OK);

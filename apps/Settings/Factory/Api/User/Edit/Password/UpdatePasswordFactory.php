@@ -19,9 +19,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSA\Settings\Factory\Api\User;
+namespace KSA\Settings\Factory\Api\User\Edit\Password;
 
-use KSA\Settings\Api\User\UpdatePassword;
+use KSA\Settings\Api\User\Edit\Password\UpdatePassword;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Laminas\ServiceManager\Factory\FactoryInterface;

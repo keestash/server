@@ -24,6 +24,7 @@ namespace KSA\Settings\Factory\Api\User;
 use doganoo\SimpleRBAC\Service\RBACServiceInterface;
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserEdit;
+use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
@@ -42,6 +43,7 @@ class UserEditFactory {
             , $container->get(LoggerInterface::class)
             , $container->get(RBACServiceInterface::class)
             , $container->get(IResponseService::class)
+            , $container->get(IUserKeyRepository::class)
         );
     }
 
