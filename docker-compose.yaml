@@ -23,10 +23,10 @@ services:
     platform: linux/amd64
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: keestash
-      MYSQL_DATABASE: keestash
-      MYSQL_USER: keestash
-      MYSQL_PASSWORD: keestash
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-keestash}
+      MYSQL_USER: ${MYSQL_USER:-keestash}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "6033:3306"
     volumes:
@@ -59,7 +59,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=secret
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false
     volumes:
       - grafana-data:/var/lib/grafana
