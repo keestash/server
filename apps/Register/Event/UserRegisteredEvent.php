@@ -30,6 +30,7 @@ final class UserRegisteredEvent extends Event {
     public function __construct(
         private readonly IUser  $user,
         private readonly string $key,
+        private readonly string $kdfVersion,
         private readonly Type   $type,
         private readonly int    $priority
     ) {
@@ -62,6 +63,13 @@ final class UserRegisteredEvent extends Event {
      */
     public function getKey(): string {
         return $this->key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKdfVersion(): string {
+        return $this->kdfVersion;
     }
 
     #[\Override]

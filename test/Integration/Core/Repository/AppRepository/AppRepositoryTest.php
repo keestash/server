@@ -23,7 +23,6 @@ namespace KST\Integration\Core\Repository\AppRepository;
 
 use DateTimeImmutable;
 use Keestash\Core\DTO\App\Config\App;
-use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
 use KST\Integration\TestCase;
@@ -37,7 +36,7 @@ class AppRepositoryTest extends TestCase {
         $app = new App();
         $app->setId(AppRepositoryTest::class);
         $app->setCreateTs(new DateTimeImmutable());
-        $app->setBackgroundJobs(new JobList());
+
         $app->setEnabled(true);
         $app->setVersion(1);
         $this->assertTrue(
@@ -52,7 +51,7 @@ class AppRepositoryTest extends TestCase {
         $app = new App();
         $app->setId(AppRepositoryTest::class);
         $app->setCreateTs(new DateTimeImmutable());
-        $app->setBackgroundJobs(new JobList());
+
         $app->setEnabled(true);
         $app->setVersion(1);
         $this->assertTrue(
@@ -74,7 +73,7 @@ class AppRepositoryTest extends TestCase {
         $app = new App();
         $app->setId(AppRepositoryTest::class);
         $app->setCreateTs(new DateTimeImmutable());
-        $app->setBackgroundJobs(new JobList());
+
         $app->setEnabled(true);
         $app->setVersion(1);
         $this->assertTrue(

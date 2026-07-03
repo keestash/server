@@ -39,12 +39,7 @@ class LoginTest extends TestCase {
             , $password
         );
         $command  = $this->getCommandTester("login:login");
-        $command->setInputs(
-            [
-                'username'   => $username
-                , 'password' => $password
-            ]
-        );
+        $command->setInputs([$username, $password]);
         $command->execute([]);
         $this->assertTrue(IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL === $command->getStatusCode());
         $this->removeUser($user);
@@ -52,12 +47,7 @@ class LoginTest extends TestCase {
 
     public function testNonExistingUser(): void {
         $command = $this->getCommandTester("login:login");
-        $command->setInputs(
-            [
-                'username'   => Uuid::uuid4()->toString()
-                , 'password' => Uuid::uuid4()->toString()
-            ]
-        );
+        $command->setInputs([Uuid::uuid4()->toString(), Uuid::uuid4()->toString()]);
         $result = $command->execute([]);
         $this->assertTrue($result === IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL);
     }
@@ -106,12 +96,7 @@ class LoginTest extends TestCase {
         );
 
         $command = $this->getCommandTester("login:login");
-        $command->setInputs(
-            [
-                'username'   => $username
-                , 'password' => $password
-            ]
-        );
+        $command->setInputs([$username, $password]);
         $result = $command->execute([]);
         $this->removeUser($user);
         $this->assertTrue($result === IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL);
@@ -126,12 +111,7 @@ class LoginTest extends TestCase {
         );
 
         $command = $this->getCommandTester("login:login");
-        $command->setInputs(
-            [
-                'username'   => $username
-                , 'password' => Uuid::uuid4()->toString()
-            ]
-        );
+        $command->setInputs([$username, Uuid::uuid4()->toString()]);
         $command->execute([]);
         $this->assertTrue(IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL === $command->getStatusCode());
         $this->assertTrue(str_contains($command->getDisplay(), 'Invalid credentials'));

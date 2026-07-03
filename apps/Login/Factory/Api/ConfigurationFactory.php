@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Login\Factory\Api;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSA\Login\Api\Configuration;
 use Laminas\ServiceManager\Factory\FactoryInterface;

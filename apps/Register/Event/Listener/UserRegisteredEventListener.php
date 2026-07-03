@@ -66,7 +66,8 @@ final readonly class UserRegisteredEventListener implements IListener {
 
         $this->keyService->createAndStoreKey(
             $event->getUser(),
-            base64_decode($event->getKey())
+            base64_decode($event->getKey()),
+            $event->getKdfVersion()
         );
 
         if ($event->getType() === Type::REGULAR) {

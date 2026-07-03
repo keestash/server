@@ -25,6 +25,7 @@ namespace KSA\Register\Api\User;
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\User\NullUser;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Exception\User\UserException;
 use KSA\Register\Entity\IResponseCodes;
@@ -42,6 +43,32 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/register/reset-password',
+    operationId: 'registerResetPassword',
+    summary: 'Request a password reset email',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['input'],
+            properties: [
+                new OA\Property(property: 'input', type: 'string', description: 'Username or email address'),
+            ]
+        )
+    ),
+    tags: ['Registration'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Password reset initiated',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'responseCode', type: 'integer'),
+                ]
+            )
+        ),
+    ]
+)]
 final readonly class ResetPassword implements RequestHandlerInterface {
 
     public function __construct(

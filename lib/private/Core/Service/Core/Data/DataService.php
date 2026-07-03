@@ -28,7 +28,7 @@ use Keestash\Exception\File\FileNotFoundException;
 use Keestash\Exception\FolderNotCreatedException;
 use KSP\Core\DTO\File\IFile;
 use KSP\Core\Service\Core\Data\IDataService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 
 /**
  * Class DataManager

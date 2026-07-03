@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Repository\Instance;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class InstanceDBFactory {

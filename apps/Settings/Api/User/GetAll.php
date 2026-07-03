@@ -24,10 +24,29 @@ namespace KSA\Settings\Api\User;
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserRepository;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Get(
+    path: '/users/all',
+    operationId: 'usersGetAll',
+    summary: 'Get all users',
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'List of users',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'users', type: 'array', items: new OA\Items(type: 'object')),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class GetAll implements RequestHandlerInterface {
 
     public function __construct(private readonly IUserRepository $userRepository)

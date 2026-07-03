@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\HTTP;
 use Keestash\ConfigProvider;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Service\HTTP\IResponseService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 
 class ResponseService implements IResponseService {
 

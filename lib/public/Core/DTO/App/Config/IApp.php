@@ -22,7 +22,6 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\App\Config;
 
 use DateTimeInterface;
-use KSP\Core\DTO\BackgroundJob\IJobList;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IApp extends IJsonObject {
@@ -37,7 +36,5 @@ interface IApp extends IJsonObject {
     public function getVersion(): int;
 
     public function getCreateTs(): DateTimeInterface;
-
-    public function getBackgroundJobs(): IJobList;
 
 }

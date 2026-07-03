@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Command\Routes;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 
 class RoutesFactory implements FactoryInterface {

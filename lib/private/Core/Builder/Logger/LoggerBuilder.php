@@ -26,6 +26,7 @@ use KSP\Core\Manager\LoggerManager\ILoggerManager;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Processor\MemoryUsageProcessor;
 use Monolog\Processor\ProcessIdProcessor;
@@ -38,14 +39,14 @@ use function Sentry\init;
 
 class LoggerBuilder implements ILoggerBuilder {
 
-    private int                $logLevel = Logger::ERROR;
+    private Level $logLevel = Level::Error;
     private FormatterInterface $formatter;
     private array              $handlers;
     private string             $path;
 
     public function withLogLevel(int $logLevel): ILoggerBuilder {
         $instance           = clone $this;
-        $instance->logLevel = $logLevel;
+        $instance->logLevel = Level::from($logLevel);
         return $instance;
     }
 
@@ -64,14 +65,15 @@ class LoggerBuilder implements ILoggerBuilder {
     public function withHandler(): ILoggerBuilder {
         $instance             = clone $this;
         $instance->handlers[] = new RotatingFileHandler(
-            filename: $this->path
+            filename: $instance->path
             , maxFiles: 15
-            , level: $this->logLevel
+            , level: $instance->logLevel
         );
         return $instance;
     }
 
     public function withDevHandler(string $sentryDsn, int $logLevel = -1): ILoggerBuilder {
+        /** @phpstan-ignore-next-line */
         $instance = clone $this;
         if ('' === $sentryDsn) {
             return $instance;
@@ -85,13 +87,11 @@ class LoggerBuilder implements ILoggerBuilder {
             ]
         );
 
-        if ($logLevel === -1) {
-            $logLevel = $this->logLevel;
-        }
+        $level = $logLevel === -1 ? $instance->logLevel : Level::from($logLevel);
 
         $instance->handlers[] = new Handler(
             SentrySdk::getCurrentHub()
-            , $logLevel
+            , $level
             , true
             , true
         );

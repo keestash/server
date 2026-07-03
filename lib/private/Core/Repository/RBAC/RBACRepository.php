@@ -23,13 +23,13 @@ namespace Keestash\Core\Repository\RBAC;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\SimpleRBAC\Entity\PermissionInterface;
-use doganoo\SimpleRBAC\Entity\RoleInterface;
-use doganoo\SimpleRBAC\Entity\UserInterface;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\PermissionInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\UserInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Core\DTO\RBAC\NullPermission;
 use Keestash\Core\DTO\RBAC\NullRole;
 use Keestash\Core\DTO\RBAC\Permission;
@@ -43,7 +43,7 @@ class RBACRepository implements RBACRepositoryInterface {
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly LoggerInterface  $logger
     ) {
     }

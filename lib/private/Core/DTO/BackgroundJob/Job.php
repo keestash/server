@@ -21,13 +21,84 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\BackgroundJob;
 
-use doganoo\Backgrounder\BackgroundJob\Job as BackgrounderJob;
+use DateTimeInterface;
 use KSP\Core\DTO\BackgroundJob\IJob;
 
-/**
- * Class Job
- * @package Keestash\Core\DTO\BackgroundJob
- */
-class Job extends BackgrounderJob implements IJob{
+class Job implements IJob {
+
+    public const string JOB_TYPE_ONE_TIME = "time.one.type.job";
+    public const string JOB_TYPE_REGULAR  = "regular.type.job";
+
+    private int                $id       = 0;
+    private string             $name     = '';
+    private int                $interval = 0;
+    private string             $type     = '';
+    private ?DateTimeInterface $lastRun  = null;
+    private ?array             $info     = null;
+    private DateTimeInterface  $createTs;
+
+    public function getId(): int {
+        return $this->id;
+    }
+
+    public function setId(int $id): void {
+        $this->id = $id;
+    }
+
+    public function getName(): string {
+        return $this->name;
+    }
+
+    public function setName(string $name): void {
+        $this->name = $name;
+    }
+
+    public function setType(string $type): void {
+        $this->type = $type;
+    }
+
+    public function getType(): string {
+        return $this->type;
+    }
+
+    public function setInterval(int $interval): void {
+        $this->interval = $interval;
+    }
+
+    public function getInterval(): int {
+        return $this->interval;
+    }
+
+    public function setLastRun(?DateTimeInterface $lastRun): void {
+        $this->lastRun = $lastRun;
+    }
+
+    public function getLastRun(): ?DateTimeInterface {
+        return $this->lastRun;
+    }
+
+    public function setInfo(?array $info): void {
+        $this->info = $info;
+    }
+
+    public function getInfo(): ?array {
+        return $this->info;
+    }
+
+    public function addInfo(string $key, mixed $info): void {
+        $this->info[$key] = $info;
+    }
+
+    public function isOneTime(): bool {
+        return self::JOB_TYPE_ONE_TIME === $this->getType();
+    }
+
+    public function getCreateTs(): DateTimeInterface {
+        return $this->createTs;
+    }
+
+    public function setCreateTs(DateTimeInterface $createTs): void {
+        $this->createTs = $createTs;
+    }
 
 }

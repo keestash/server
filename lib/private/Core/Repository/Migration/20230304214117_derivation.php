@@ -22,7 +22,7 @@ final class Derivation extends KeestashMigration {
                 "id"
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "100"
+                    'length' => 100
                     , "comment" => "The key derivation id"
                     , "null"    => false
                 ]

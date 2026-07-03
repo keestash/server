@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Repository;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationUserRepository;
 use KSP\Core\Backend\IBackend;
@@ -36,7 +36,7 @@ class OrganizationUserRepositoryFactory {
             $container->get(IUserRepository::class),
             $container->get(IBackend::class),
             $container->get(LoggerInterface::class),
-            $container->get(IDateTimeService::class),
+            $container->get(DateTimeServiceInterface::class),
         );
     }
 

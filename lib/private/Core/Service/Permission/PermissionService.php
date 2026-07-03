@@ -22,13 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Permission;
 
 use DateTimeImmutable;
-use doganoo\SimpleRBAC\Entity\PermissionInterface;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\PermissionInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\RBAC\NullPermission;
 use Keestash\Core\DTO\RBAC\Permission;
 use KSP\Core\Service\Permission\IPermissionService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Log\LoggerInterface;
 
 class PermissionService implements IPermissionService {

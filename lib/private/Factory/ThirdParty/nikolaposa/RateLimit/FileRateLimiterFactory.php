@@ -23,7 +23,7 @@ namespace Keestash\Factory\ThirdParty\nikolaposa\RateLimit;
 
 use Keestash\Core\Builder\Data\DataServiceBuilder;
 use Keestash\ThirdParty\nikolaposa\RateLimit\FileRateLimiter;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

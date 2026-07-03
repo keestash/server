@@ -22,4 +22,3 @@ declare(strict_types=1);
 return [
     \Mezzio\Cors\Configuration\ConfigurationInterface::ANY_ORIGIN
 ];
-        

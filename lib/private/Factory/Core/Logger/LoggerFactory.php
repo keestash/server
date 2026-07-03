@@ -27,11 +27,12 @@ use Keestash\Core\Repository\Instance\InstanceDB;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Monolog\Formatter\JsonFormatter;
-use Monolog\Logger;
+use Monolog\Level;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 class LoggerFactory {
 
@@ -52,14 +53,12 @@ class LoggerFactory {
         $nameInternal = $application->getMetaData()->get('name_internal');
         $logFileName  = $this->getFileName($isUnitTest, $isConsole, $nameInternal);
 
-        $logLevel       = (int) $configService->getValue("log_level", Logger::ERROR);
+        $logLevel       = $this->resolveLogLevel((string) $configService->getValue("log_level", LogLevel::DEBUG));
         $sentryLogLevel = $instanceDb->getOption('sentry_log_level');
         $dataRoot       = (string) $config->get(ConfigProvider::DATA_PATH);
 
         return (new LoggerBuilder())
-            ->withLogLevel(
-                (int) $configService->getValue("log_level", Logger::ERROR)
-            )
+            ->withLogLevel($logLevel->value)
             ->withPath(
                 $dataRoot . '/' . $logFileName
             )
@@ -68,11 +67,27 @@ class LoggerFactory {
             ->withDevHandler(
                 $configService->getValue('sentry_dsn', ''),
                 null !== $sentryLogLevel
-                    ? (int) $sentryLogLevel
-                    : $logLevel
+                    ? $this->resolveLogLevel((string) $sentryLogLevel)->value
+                    : $logLevel->value
             )
             ->build();
 
+    }
+
+    private function resolveLogLevel(string $raw): Level {
+        if (is_numeric($raw) && (int) $raw > 0) {
+            try {
+                return Level::from((int) $raw);
+            } catch (\ValueError) {
+                // fall through to name resolution
+            }
+        }
+        try {
+            /** @phpstan-ignore argument.type */
+            return Level::fromName($raw);
+        } catch (\ValueError) {
+            return Level::Error;
+        }
     }
 
     private function getFileName(bool $isUnitTest, bool $isConsole, string $nameInternal): string {

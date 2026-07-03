@@ -25,10 +25,54 @@ use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\Api\Version\IVersion;
 use KSP\Core\Service\Metric\ICollectorService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/login/submit',
+    operationId: 'loginSubmit',
+    summary: 'Authenticate a user and obtain session tokens',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['user', 'password'],
+            properties: [
+                new OA\Property(property: 'user', type: 'string', description: 'Username'),
+                new OA\Property(property: 'password', type: 'string', description: 'Password', format: 'password'),
+            ]
+        )
+    ),
+    tags: ['Authentication'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Login successful',
+            headers: [
+                new OA\Header(header: 'x-keestash-token', description: 'Session token', schema: new OA\Schema(type: 'string')),
+                new OA\Header(header: 'x-keestash-user', description: 'User hash', schema: new OA\Schema(type: 'string')),
+            ],
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'settings', type: 'object'),
+                    new OA\Property(property: 'user', type: 'object'),
+                    new OA\Property(property: 'derivation', type: 'string', format: 'byte', description: 'Base64-encoded derivation'),
+                    new OA\Property(property: 'key', type: 'string', format: 'byte', description: 'Base64-encoded key'),
+                ]
+            )
+        ),
+        new OA\Response(
+            response: 401,
+            description: 'Authentication failed',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'responseCode', type: 'integer'),
+                ]
+            )
+        ),
+    ]
+)]
 readonly final class Login implements RequestHandlerInterface {
 
     public function __construct(

@@ -21,13 +21,34 @@ declare(strict_types=1);
 
 namespace Keestash\Core\DTO\BackgroundJob;
 
-use doganoo\Backgrounder\BackgroundJob\JobList as BackgrounderJobList;
+use ArrayIterator;
+use IteratorAggregate;
+use KSP\Core\DTO\BackgroundJob\IJob;
 use KSP\Core\DTO\BackgroundJob\IJobList;
+use Traversable;
 
 /**
  * Class JobList
  * @package Keestash\Core\DTO\BackgroundJob
  */
-class JobList extends BackgrounderJobList implements IJobList {
+class JobList implements IJobList {
+
+    /** @var list<IJob> */
+    private array $jobs = [];
+
+    public function add(IJob $job): void {
+        $this->jobs[] = $job;
+    }
+
+    /** @return Traversable<int, IJob> */
+    #[\Override]
+    public function getIterator(): Traversable {
+        return new ArrayIterator($this->jobs);
+    }
+
+    #[\Override]
+    public function length(): int {
+        return count($this->jobs);
+    }
 
 }

@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Share\Public;
 
 use DateTime;
 use Doctrine\DBAL\Exception;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use Keestash\Exception\User\UserNotFoundException;
@@ -48,6 +49,67 @@ use Psr\Log\LoggerInterface;
  * Class PublicShare
  * @package KSA\PasswordManager\Api\Share
  */
+#[OA\Post(
+    path: '/password_manager/share/public',
+    operationId: 'passwordManagerPublicShareCreate',
+    summary: 'Create a public share for a credential node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['acknowledged', 'node'],
+            properties: [
+                new OA\Property(property: 'expire_date', type: 'string', format: 'date-time'),
+                new OA\Property(property: 'acknowledged', type: 'boolean'),
+                new OA\Property(property: 'password', type: 'string'),
+                new OA\Property(
+                    property: 'node',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer'),
+                        new OA\Property(property: 'username', type: 'string', format: 'byte'),
+                        new OA\Property(property: 'password', type: 'string', format: 'byte'),
+                    ],
+                    type: 'object'
+                ),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Sharing'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Public share created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'share', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
+#[OA\Delete(
+    path: '/password_manager/share/public',
+    operationId: 'passwordManagerPublicShareDelete',
+    summary: 'Delete a public share',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['shareId'],
+            properties: [
+                new OA\Property(property: 'shareId', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Sharing'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Public share deleted',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class PublicShare implements RequestHandlerInterface {
 
     public function __construct(

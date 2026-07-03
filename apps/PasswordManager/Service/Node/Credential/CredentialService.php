@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Service\Node\Credential;
 
 use DateTime;
 use DateTimeImmutable;
-use Keestash\Core\DTO\Encryption\Password\Password;
 use Keestash\Exception\EncryptionFailedException;
 use Keestash\Exception\Repository\Derivation\DerivationException;
 use Keestash\Exception\User\UserException;
@@ -38,18 +37,16 @@ use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\Core\Service\Event\IEventService;
 use Psr\Log\LoggerInterface;
 
 final readonly class CredentialService {
 
     public function __construct(
-        private EdgeService      $edgeService,
-        private NodeRepository   $nodeRepository,
-        private IPasswordService $passwordService,
-        private IEventService    $eventManager,
-        private LoggerInterface  $logger
+        private EdgeService     $edgeService,
+        private NodeRepository  $nodeRepository,
+        private IEventService   $eventManager,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -70,12 +67,9 @@ final readonly class CredentialService {
         $credential->setName($title);
         $credential->setUser($user);
 
-        $corePassword = new Password();
-        $corePassword->setValue($password);
-        $corePassword->setCharacterSet([]);
-        $corePassword = $this->passwordService->measureQuality($corePassword);
-
-        $credential->setEntropy((string) $corePassword->getEntropy());
+        // Credential fields are encrypted on the client, so the server cannot
+        // measure entropy over the ciphertext. Quality scoring is a client concern.
+        $credential->setEntropy('');
         return $credential;
     }
 
@@ -140,14 +134,9 @@ final readonly class CredentialService {
         $credential->setPassword($password);
         $credential->setUpdateTs(new DateTime());
 
-        $corePassword = new Password();
-        $corePassword->setValue($credential->getPassword());
-        $corePassword->setCharacterSet(
-            $this->passwordService->findCharacterSet($credential->getPassword()) // todo fixme
-        );
-
-        $corePassword = $this->passwordService->measureQuality($corePassword);
-        $credential->setEntropy((string) $corePassword->getEntropy());
+        // Credential fields are encrypted on the client, so the server cannot
+        // measure entropy over the ciphertext. Quality scoring is a client concern.
+        $credential->setEntropy('');
 
         $credential = $this->nodeRepository->updateCredential($credential);
         $this->eventManager->execute(

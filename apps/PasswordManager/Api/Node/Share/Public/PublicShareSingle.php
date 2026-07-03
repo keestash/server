@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Share\Public;
 use DateTimeImmutable;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use Keestash\Core\Service\Encryption\Encryption\KeestashEncryptionService;
 use KSA\PasswordManager\Entity\IResponseCodes;
@@ -41,6 +42,42 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/password_manager/public_share/decrypt/{hash}',
+    operationId: 'passwordManagerPublicShareDecrypt',
+    summary: 'Decrypt a public share with the provided password',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['password'],
+            properties: [
+                new OA\Property(property: 'password', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Sharing'],
+    parameters: [
+        new OA\Parameter(name: 'hash', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Decrypted share data',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'decrypted',
+                        properties: [
+                            new OA\Property(property: 'userName', type: 'string'),
+                            new OA\Property(property: 'password', type: 'string'),
+                        ],
+                        type: 'object'
+                    ),
+                ]
+            )
+        ),
+    ]
+)]
 final readonly class PublicShareSingle implements RequestHandlerInterface {
 
     public function __construct(

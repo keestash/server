@@ -20,7 +20,7 @@
 
 namespace Keestash\Factory\Middleware;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Core\Service\Instance\InstallerService;
 use Keestash\Middleware\ApplicationStartedMiddleware;
 use KSP\Core\Service\Config\IConfigService;

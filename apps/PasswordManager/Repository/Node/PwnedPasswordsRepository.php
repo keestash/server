@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Repository\Node;
 
 use DateTimeInterface;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSA\PasswordManager\Entity\Edge\Edge;
@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
 
 class PwnedPasswordsRepository {
 
-    public function __construct(private readonly IBackend           $backend, private readonly LoggerInterface          $logger, private readonly IDateTimeService $dateTimeService, private readonly NodeRepository   $nodeRepository)
+    public function __construct(private readonly IBackend           $backend, private readonly LoggerInterface          $logger, private readonly DateTimeServiceInterface $dateTimeService, private readonly NodeRepository   $nodeRepository)
     {
     }
 

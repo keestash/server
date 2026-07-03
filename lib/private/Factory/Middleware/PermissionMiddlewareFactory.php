@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Middleware;
 
-use doganoo\SimpleRBAC\Service\RBACServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Service\RBACServiceInterface;
 use Keestash\Middleware\PermissionMiddleware;
 use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

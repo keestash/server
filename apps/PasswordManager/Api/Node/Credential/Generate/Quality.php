@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Credential\Generate;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Encryption\Password\Password;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\Entity\IResponseCodes;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
@@ -32,6 +33,27 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/generate/quality/{value}',
+    operationId: 'passwordManagerGenerateQuality',
+    summary: 'Measure password quality',
+    tags: ['Password Manager - Credentials'],
+    parameters: [
+        new OA\Parameter(name: 'value', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Password quality',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'quality', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Quality implements RequestHandlerInterface {
 
     public function __construct(

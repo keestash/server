@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Repository;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Entity\Share\NullShare;
 use KSA\PasswordManager\Entity\Share\PublicShare;
@@ -37,7 +37,7 @@ final readonly class PublicShareRepository {
 
     public function __construct(
         private IBackend           $backend
-        , private IDateTimeService $dateTimeService
+        , private DateTimeServiceInterface $dateTimeService
         , private LoggerInterface  $logger
     ) {
     }
@@ -67,15 +67,15 @@ final readonly class PublicShareRepository {
             ->setParameter(4, $share->getSecret())
             ->executeStatement();
 
-        $shareId = (int) $this->backend->getConnection()->lastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (0 === $shareId) {
+        if (false === is_numeric($lastInsertId) || 0 === (int) $lastInsertId) {
             throw new PasswordManagerException();
         }
 
         $node->setPublicShare(
             new PublicShare(
-                $shareId,
+                (int) $lastInsertId,
                 $node->getId(),
                 $share->getHash(),
                 $share->getExpireTs(),

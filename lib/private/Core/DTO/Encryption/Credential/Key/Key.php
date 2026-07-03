@@ -32,4 +32,16 @@ use KSP\Core\DTO\Encryption\Credential\Key\IKey;
  */
 class Key extends Credential implements IKey {
 
+    private string $kdfVersion;
+
+    #[\Override]
+    public function getKdfVersion(): string {
+        return $this->kdfVersion;
+    }
+
+    #[\Override]
+    public function setKdfVersion(string $kdfVersion): void {
+        $this->kdfVersion = $kdfVersion;
+    }
+
 }

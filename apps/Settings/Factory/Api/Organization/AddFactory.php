@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Api\Organization;
 
-use doganoo\DI\Encryption\User\IUserService;
+use doganoo\DI\Encryption\User\UserServiceInterface;
 use KSA\Settings\Api\Organization\Add;
 use KSA\Settings\Service\IOrganizationService;
 use Psr\Container\ContainerInterface;
@@ -33,7 +33,7 @@ class AddFactory {
         return new Add(
             $container->get(IOrganizationService::class)
             , $container->get(LoggerInterface::class)
-            , $container->get(IUserService::class)
+            , $container->get(UserServiceInterface::class)
         );
     }
 

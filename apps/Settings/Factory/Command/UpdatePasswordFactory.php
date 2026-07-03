@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Command;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use KSA\Settings\Command\UpdatePassword;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\User\IUserRepository;

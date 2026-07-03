@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Repository\Node\Credential\AdditionalData;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\PasswordManager\Repository\Node\Credential\AdditionalData\AdditionalDataRepository;
 use KSP\Core\Backend\IBackend;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -37,7 +37,7 @@ class AdditionalDataRepositoryFactory implements FactoryInterface {
     ): AdditionalDataRepository {
         return new AdditionalDataRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
         );
     }
 

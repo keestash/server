@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Permission\Role;
 
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\Permission\Role\RemovePermissionFromRole;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

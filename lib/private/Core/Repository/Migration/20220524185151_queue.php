@@ -23,7 +23,7 @@ final class Queue extends KeestashMigration {
                 "id"
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "100"
+                    'length' => 100
                     , "comment" => "The message's id"
                     , "null"    => false
                 ]

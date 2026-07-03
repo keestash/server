@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Repository;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSP\Core\Backend\IBackend;
 use Psr\Log\LoggerInterface;
@@ -32,7 +32,7 @@ class PublicShareRepositoryFactory {
     public function __invoke(ContainerInterface $container): PublicShareRepository {
         return new PublicShareRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

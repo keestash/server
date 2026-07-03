@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Repository\AppRepository;
 
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\AppRepository\AppRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\AppRepository\IAppRepository;
@@ -34,7 +34,7 @@ class AppRepositoryFactory {
     public function __invoke(ContainerInterface $container): IAppRepository {
         return new AppRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

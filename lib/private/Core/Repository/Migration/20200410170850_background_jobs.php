@@ -1,6 +1,5 @@
 <?php
 
-use doganoo\Backgrounder\BackgroundJob\Job;
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
@@ -56,10 +55,10 @@ class BackgroundJobs extends KeestashMigration {
                 "null"      => false
                 , "comment" => "The job's interval type"
                 , "values"  => [
-                    Job::JOB_TYPE_ONE_TIME
-                    , Job::JOB_TYPE_REGULAR
+                    'one_time'
+                    , 'regular'
                 ]
-                , "default" => Job::JOB_TYPE_REGULAR
+                , "default" => 'regular'
                 , "after"   => "interval"
             ])
             ->addColumn(

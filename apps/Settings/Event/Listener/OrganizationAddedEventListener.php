@@ -23,6 +23,7 @@ namespace KSA\Settings\Event\Listener;
 
 use KSA\Settings\Event\Organization\OrganizationAddedEvent;
 use KSA\Settings\Exception\SettingsException;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\Listener\IListener;
@@ -48,7 +49,8 @@ class OrganizationAddedEventListener implements IListener {
 
         $this->keyService->createAndStoreKey(
             $event->getOrganization(),
-            ''
+            '',
+            IKey::KDF_VERSION_SCRYPT_AES_GCM_V1
         );
     }
 

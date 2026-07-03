@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Credential\Password;
 use Keestash\Api\Response\ErrorResponse;
 use Keestash\Api\Response\NotFoundResponse;
 use Keestash\Api\Response\OkResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -41,6 +42,27 @@ use Psr\Log\LoggerInterface;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Get(
+    path: '/password_manager/node/credential/password/get/{node_id}',
+    operationId: 'passwordManagerCredentialPasswordGet',
+    summary: 'Get the decrypted password for a credential node',
+    tags: ['Password Manager - Credentials'],
+    parameters: [
+        new OA\Parameter(name: 'node_id', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Password (base64)',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'password', type: 'string', format: 'byte'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Get implements RequestHandlerInterface {
 
     public function __construct(

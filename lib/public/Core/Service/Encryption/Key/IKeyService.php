@@ -62,9 +62,10 @@ interface IKeyService {
     /**
      * @param IKeyHolder $keyHolder
      * @param string     $secret
+     * @param string     $kdfVersion
      * @return IKey
      */
-    public function createAndStoreKey(IKeyHolder $keyHolder, string $secret): IKey;
+    public function createAndStoreKey(IKeyHolder $keyHolder, string $secret, string $kdfVersion): IKey;
 
     /**
      *

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Middleware;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Middleware\UserActiveMiddleware;
 use KSP\Core\Service\User\IUserService;
 use Laminas\ServiceManager\Factory\FactoryInterface;

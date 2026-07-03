@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\RBAC;
 
-use doganoo\SimpleRBAC\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IRole extends RoleInterface, IJsonObject {

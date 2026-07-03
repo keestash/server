@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Share\Regular;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Exception\InvalidParameterException;
 use KSA\PasswordManager\Entity\Node\Node;
@@ -37,6 +38,29 @@ use Psr\Log\LoggerInterface;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Get(
+    path: '/password_manager/users/shareable/{nodeId}/{query}',
+    operationId: 'passwordManagerShareableUsers',
+    summary: 'Find users eligible to share a node with',
+    tags: ['Password Manager - Sharing'],
+    parameters: [
+        new OA\Parameter(name: 'nodeId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        new OA\Parameter(name: 'query', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Shareable users',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'user_list', type: 'array', items: new OA\Items()),
+                    new OA\Property(property: 'duration', type: 'number', format: 'float'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class ShareableUsers implements RequestHandlerInterface {
 
     public function __construct(

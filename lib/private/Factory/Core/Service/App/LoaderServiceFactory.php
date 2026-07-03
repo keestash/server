@@ -24,7 +24,7 @@ namespace Keestash\Factory\Core\Service\App;
 use Keestash\Core\Service\App\LoaderService;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class LoaderServiceFactory {

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Command;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Command\KeestashCommand;
 use KSA\Settings\Entity\Setting;
@@ -72,7 +72,7 @@ class ListSettings extends KeestashCommand {
             $tableRows[] = [
                 $setting->getKey()
                 , $setting->getValue()
-                , $setting->getCreateTs()->format(IDateTimeService::FORMAT_DMY_HIS)
+                , $setting->getCreateTs()->format(DateTimeServiceInterface::FORMAT_DMY_HIS)
             ];
         }
         $table = new Table($output);

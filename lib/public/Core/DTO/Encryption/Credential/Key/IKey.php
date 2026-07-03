@@ -30,5 +30,11 @@ use KSP\Core\DTO\Encryption\Credential\ICredential;
  */
 interface IKey extends ICredential {
 
+    public const KDF_VERSION_SCRYPT_AES_GCM_V1 = 'scrypt-aes-gcm-v1';
+    public const KDF_VERSION_SCRYPT_AES_CBC_V1 = 'scrypt-aes-cbc-v1';
+
+    public function getKdfVersion(): string;
+
+    public function setKdfVersion(string $kdfVersion): void;
 
 }

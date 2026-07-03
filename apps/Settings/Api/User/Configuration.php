@@ -23,10 +23,30 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\OkResponse;
 use KSP\Core\Service\Config\IIniConfigService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Get(
+    path: '/users/profile/configuration',
+    operationId: 'usersProfileConfiguration',
+    summary: 'Retrieve user profile configuration (upload limits, features)',
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Profile configuration',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'uploadMaxFilesize', type: 'integer'),
+                    new OA\Property(property: 'passwordChangeEnabled', type: 'boolean'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Configuration implements RequestHandlerInterface {
 
     public function __construct(

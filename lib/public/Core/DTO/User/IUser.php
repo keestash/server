@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\User;
 
 use DateTimeInterface;
-use doganoo\SimpleRBAC\Entity\UserInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\UserInterface;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Entity\IComparable;
 use KSP\Core\DTO\Entity\IJsonObject;

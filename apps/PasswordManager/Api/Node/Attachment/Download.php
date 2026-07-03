@@ -21,16 +21,13 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
-use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Common\Exception\NodeNotFoundException;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Hoa\Compiler\Exception\IllegalToken;
-use Keestash\Core\Repository\Instance\InstanceDB;
+use OpenApi\Attributes as OA;
 use Keestash\Exception\File\FileNotFoundException;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Repository\Node\FileRepository;
+use KSA\PasswordManager\Service\AccessService;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
@@ -42,35 +39,41 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/attachments/download/{fileId}',
+    operationId: 'passwordManagerAttachmentDownload',
+    summary: 'Download an attachment the authenticated user has access to',
+    tags: ['Password Manager - Attachments'],
+    parameters: [
+        new OA\Parameter(name: 'fileId', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Binary file stream',
+            content: new OA\MediaType(mediaType: 'application/octet-stream', schema: new OA\Schema(type: 'string', format: 'binary'))
+        ),
+        new OA\Response(response: 403, description: 'Forbidden'),
+        new OA\Response(response: 404, description: 'Not found'),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Download implements RequestHandlerInterface {
 
     public function __construct(
         private readonly IFileRepository    $fileRepository
         , private readonly FileRepository   $nodeFileRepository
+        , private readonly AccessService    $accessService
         , private readonly LoggerInterface  $logger
-        , private readonly InstanceDB       $instanceDB
         , private readonly IActivityService $activityService
     ) {
     }
 
     #[\Override]
     public function handle(ServerRequestInterface $request): ResponseInterface {
-//        /** @var IToken $token */
-//        $token   = $request->getAttribute(IToken::class);
-        $decoded = JWT::decode(
-            (string) $request->getAttribute('jwt')
-            , new Key(
-                (string) $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
-                , 'HS256'
-            )
-        );
-
-        $then = new DateTimeImmutable();
-        $then = $then->setTimestamp((int) $decoded->iat + 60);
-        if ((new DateTimeImmutable()) > $then) {
-            $this->logger->info("outdated key", ['decoded' => $decoded]);
-            return new EmptyResponse(IResponse::NOT_FOUND);
-        }
+        /** @var IToken $token */
+        $token = $request->getAttribute(IToken::class);
+        $user  = $token->getUser();
 
         $fileId = (int) $request->getAttribute('fileId');
         try {
@@ -81,15 +84,19 @@ class Download implements RequestHandlerInterface {
             return new EmptyResponse(IResponse::NOT_FOUND);
         }
 
-//        $this->activityService->insertActivityWithSingleMessage(
-//            ConfigProvider::APP_ID
-//            , (string) $node->getId()
-//            , sprintf(
-//                '%s downloaded by %s'
-//                , $file->getName()
-//                , $token->getUser()->getName()
-//            )
-//        );
+        if (false === $this->accessService->hasAccess($node, $user)) {
+            return new EmptyResponse(IResponse::FORBIDDEN);
+        }
+
+        $this->activityService->insertActivityWithSingleMessage(
+            ConfigProvider::APP_ID
+            , (string) $node->getId()
+            , sprintf(
+                '%s downloaded by %s'
+                , $file->getName()
+                , $user->getName()
+            )
+        );
 
         return new Response(
             new Stream($file->getFullPath()),
@@ -101,7 +108,7 @@ class Download implements RequestHandlerInterface {
                 'Expires'                   => '0',
                 'Content-Transfer-Encoding' => 'binary',
                 'Content-Disposition'       => 'attachment; filename="' . $file->getName() . '.' . $file->getExtension() . '"',
-                'Content-Length'            => $file->getSize(),
+                'Content-Length'            => (string) $file->getSize(),
                 'Pragma'                    => 'public'
             ]
         );

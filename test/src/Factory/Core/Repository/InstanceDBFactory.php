@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KST\Service\Factory\Core\Repository;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

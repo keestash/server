@@ -16,7 +16,7 @@ use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Encryption\IStringMaskService;
 use KST\Service\Exception\KSTException;
 use KST\Service\Service\UserService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Mezzio\Application;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

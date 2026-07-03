@@ -33,7 +33,7 @@ use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
 use KSP\Core\Service\File\RawFile\IRawFileService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 
 class FileService implements IFileService {
 

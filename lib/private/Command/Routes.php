@@ -24,7 +24,7 @@ namespace Keestash\Command;
 use Keestash\ConfigProvider;
 use Keestash\Middleware\DeactivatedRouteMiddleware;
 use KSP\Command\IKeestashCommand;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;

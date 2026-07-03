@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Service;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\Service\Core\Access\IAccessService;
 use Laminas\ServiceManager\Factory\FactoryInterface;

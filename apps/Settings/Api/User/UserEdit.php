@@ -21,8 +21,9 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Api\User;
 
-use doganoo\SimpleRBAC\Service\RBACServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Service\RBACServiceInterface;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\User\UserNotFoundException;
@@ -43,6 +44,47 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use TypeError;
 
+#[OA\Post(
+    path: '/users/edit',
+    operationId: 'usersEdit',
+    summary: 'Edit an existing user',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: 'user',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer'),
+                        new OA\Property(property: 'name', type: 'string'),
+                        new OA\Property(property: 'first_name', type: 'string'),
+                        new OA\Property(property: 'last_name', type: 'string'),
+                        new OA\Property(property: 'email', type: 'string', format: 'email'),
+                        new OA\Property(property: 'phone', type: 'string'),
+                        new OA\Property(property: 'locale', type: 'string'),
+                        new OA\Property(property: 'locked', type: 'boolean'),
+                        new OA\Property(property: 'deleted', type: 'boolean'),
+                    ],
+                    type: 'object'
+                ),
+            ]
+        )
+    ),
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User updated',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'user', type: 'object'),
+                    new OA\Property(property: 'languageUpdated', type: 'boolean'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class UserEdit implements RequestHandlerInterface {
 
     public function __construct(

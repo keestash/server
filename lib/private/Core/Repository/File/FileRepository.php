@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\File;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\File\File;
 use Keestash\Core\DTO\File\FileList;
 use Keestash\Exception\File\FileNotCreatedException;
@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 
 class FileRepository implements IFileRepository {
 
-    public function __construct(private readonly IBackend           $backend, private readonly IUserRepository  $userRepository, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface          $logger)
+    public function __construct(private readonly IBackend           $backend, private readonly IUserRepository  $userRepository, private readonly DateTimeServiceInterface $dateTimeService, private readonly LoggerInterface          $logger)
     {
     }
 
@@ -96,13 +96,13 @@ class FileRepository implements IFileRepository {
                 ->setParameter(8, $file->getDirectory())
                 ->executeStatement();
 
-            $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
+            $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-            if (0 === $lastInsertId) {
+            if (false === is_numeric($lastInsertId) || 0 === (int) $lastInsertId) {
                 throw new FileNotCreatedException();
             }
 
-            $file->setId($lastInsertId);
+            $file->setId((int) $lastInsertId);
             return $file;
         } catch (Exception $exception) {
             $this->logger->error('error creating file', ['exception' => $exception]);

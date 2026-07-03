@@ -23,7 +23,7 @@ namespace Keestash\Core\Repository\Token;
 
 use DateTimeInterface;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash;
 use Keestash\Core\DTO\Token\Token;
@@ -42,7 +42,7 @@ use Psr\Log\LoggerInterface;
 
 class TokenRepository implements ITokenRepository {
 
-    public function __construct(private readonly IBackend           $backend, private readonly IUserRepository  $userRepository, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface  $logger)
+    public function __construct(private readonly IBackend           $backend, private readonly IUserRepository  $userRepository, private readonly DateTimeServiceInterface $dateTimeService, private readonly LoggerInterface  $logger)
     {
     }
 
@@ -181,13 +181,13 @@ class TokenRepository implements ITokenRepository {
                 ->setParameter(3, $this->dateTimeService->toYMDHIS($token->getCreateTs()))
                 ->executeStatement();
 
-            $lastInsertId = (int) $this->backend->getConnection()->lastInsertId();
+            $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-            if (0 === $lastInsertId) {
+            if (false === is_numeric($lastInsertId) || 0 === (int) $lastInsertId) {
                 throw new TokenNotCreatedException();
             }
 
-            $token->setId($lastInsertId);
+            $token->setId((int) $lastInsertId);
             return $token;
         } catch (Exception $exception) {
             $this->logger->error('error inserting token', ['exception' => $exception]);

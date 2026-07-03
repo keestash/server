@@ -28,7 +28,7 @@ use Keestash\Exception\DuplicatedSameOrderException;
 use KSP\Core\DTO\App\IApp;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\App\ILoaderService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 
 /**
  * Class Loader

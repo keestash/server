@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Api\Node\Credential\Generate;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use KSA\PasswordManager\Api\Node\Credential\Generate\Quality;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use KSP\Core\Service\HTTP\IResponseService;

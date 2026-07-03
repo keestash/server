@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Middleware;
 
 use KSP\Api\IResponse;
+use KSP\Core\Service\Config\IConfigService;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -32,25 +33,15 @@ use RateLimit\RateLimiter;
 
 final readonly class RateLimiterMiddleware implements MiddlewareInterface {
 
-    public function __construct(private RateLimiter $rateLimiter) {
+    public function __construct(
+        private RateLimiter    $rateLimiter
+        , private IConfigService $configService
+    ) {
     }
 
     #[\Override]
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-        $ipAddress    = '127.0.0.1';
-        $serverParams = $request->getServerParams();
-
-        if (array_key_exists('HTTP_CLIENT_IP', $serverParams)) {
-            $ipAddress = $serverParams['HTTP_CLIENT_IP'];
-        }
-
-        if (array_key_exists('HTTP_X_FORWARDED_FOR', $serverParams)) {
-            $ipAddress = $serverParams['HTTP_X_FORWARDED_FOR'];
-        }
-
-        if (array_key_exists('REMOTE_ADDR', $serverParams)) {
-            $ipAddress = $serverParams['REMOTE_ADDR'];
-        }
+        $ipAddress = $this->resolveClientIp($request->getServerParams());
 
         try {
             $this->rateLimiter->limit($ipAddress);
@@ -59,6 +50,46 @@ final readonly class RateLimiterMiddleware implements MiddlewareInterface {
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Determine the client IP used as the rate-limit key.
+     *
+     * X-Forwarded-For is client-controlled, so it is only honoured when the
+     * immediate peer (REMOTE_ADDR) is a configured trusted proxy. Otherwise the
+     * header is ignored and REMOTE_ADDR is used directly, so an attacker cannot
+     * bypass the limiter by spoofing the header.
+     *
+     * @param array<string, mixed> $serverParams
+     */
+    private function resolveClientIp(array $serverParams): string {
+        $remoteAddr = (string) ($serverParams['REMOTE_ADDR'] ?? '127.0.0.1');
+
+        /** @var list<string> $trustedProxies */
+        $trustedProxies = (array) $this->configService->getValue('trusted_proxies', []);
+
+        if ([] === $trustedProxies || false === in_array($remoteAddr, $trustedProxies, true)) {
+            return $remoteAddr;
+        }
+
+        $forwardedFor = (string) ($serverParams['HTTP_X_FORWARDED_FOR'] ?? '');
+        if ('' === $forwardedFor) {
+            return $remoteAddr;
+        }
+
+        // Walk right-to-left and return the first hop that is not itself a
+        // trusted proxy — that is the closest client we can attribute.
+        $hops = array_map('trim', explode(',', $forwardedFor));
+        for ($i = count($hops) - 1; $i >= 0; $i--) {
+            if ('' === $hops[$i]) {
+                continue;
+            }
+            if (false === in_array($hops[$i], $trustedProxies, true)) {
+                return $hops[$i];
+            }
+        }
+
+        return $remoteAddr;
     }
 
 }

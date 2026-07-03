@@ -104,7 +104,7 @@ class KeyServiceTest extends TestCase {
                 ]
             )
         );
-        $key         = $keyService->createAndStoreKey($user, '');
+        $key         = $keyService->createAndStoreKey($user, '', IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $this->assertInstanceOf(IKey::class, $key);
     }
 

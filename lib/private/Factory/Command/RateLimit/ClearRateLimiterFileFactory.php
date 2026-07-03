@@ -23,7 +23,7 @@ namespace Keestash\Factory\Command\RateLimit;
 
 use Keestash\Command\RateLimit\ClearRateLimiterFile;
 use Keestash\Core\Builder\Data\DataServiceBuilder;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

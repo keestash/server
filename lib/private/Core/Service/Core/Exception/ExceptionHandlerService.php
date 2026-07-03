@@ -51,7 +51,9 @@ class ExceptionHandlerService implements IExceptionHandlerService {
                             , "message"         => $exception->getMessage()
                             , "file"            => $exception->getFile()
                             , "line"            => $exception->getLine()
-                            , "trace"           => json_encode($exception->getTrace())
+                            // getTrace() would include call arguments, which for a
+                            // password manager can contain plaintext secrets; log the
+                            // string form only.
                             , "trace_as_string" => $exception->getTraceAsString()
                         ]
                     )
@@ -70,6 +72,9 @@ class ExceptionHandlerService implements IExceptionHandlerService {
                 , array          $context = []
             ) use ($self, $requestId): void {
 
+                // Neither $context (local variables at the error site) nor the
+                // argument-bearing backtrace are logged, since for a password
+                // manager they can contain plaintext secrets.
                 $self->logger->error(
                     (string) json_encode(
                         [
@@ -78,11 +83,9 @@ class ExceptionHandlerService implements IExceptionHandlerService {
                             , "message"         => $message
                             , "file"            => $file
                             , "line"            => $line
-                            , "context"         => $context
-                            , "debug_backtrace" => debug_backtrace()
+                            , "debug_backtrace" => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS)
                         ]
-                    ),
-                    $context
+                    )
                 );
 
             });

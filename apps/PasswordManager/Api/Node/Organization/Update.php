@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 use DateTime;
 use Exception;
 use KSA\PasswordManager\Entity\Edge\Edge;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\Event\Node\NodeOrganizationUpdatedEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
@@ -36,6 +37,35 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/password_manager/organization/node/update',
+    operationId: 'passwordManagerOrganizationNodeUpdate',
+    summary: 'Update the organization assignment for a node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['node_id', 'organization_id'],
+            properties: [
+                new OA\Property(property: 'node_id', type: 'integer'),
+                new OA\Property(property: 'organization_id', type: 'integer'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Node organization updated',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'organization', type: 'object'),
+                    new OA\Property(property: 'type', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Update implements RequestHandlerInterface {
 
     public function __construct(private readonly NodeRepository               $nodeRepository, private readonly IOrganizationRepository    $organizationRepository, private readonly LoggerInterface                    $logger, private readonly OrganizationNodeRepository $organizationNodeRepository, private readonly IEventService              $eventManager)

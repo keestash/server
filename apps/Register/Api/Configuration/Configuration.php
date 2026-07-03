@@ -25,11 +25,32 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSP\Api\IResponse;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Get(
+    path: '/register/configuration',
+    operationId: 'registerConfiguration',
+    summary: 'Retrieve registration configuration',
+    tags: ['Registration'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Registration configuration',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'phoneConfig', type: 'array', items: new OA\Items()),
+                    new OA\Property(property: 'registerEnabled', type: 'boolean'),
+                    new OA\Property(property: 'resetEnabled', type: 'boolean'),
+                    new OA\Property(property: 'isSaas', type: 'boolean'),
+                ]
+            )
+        ),
+    ]
+)]
 class Configuration implements RequestHandlerInterface {
 
     public function __construct(private readonly Config $config)

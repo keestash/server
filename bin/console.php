@@ -27,7 +27,7 @@ use Keestash\Core\System\Application as KeestashApplication;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\Metric\ICollectorService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;

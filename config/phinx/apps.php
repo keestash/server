@@ -22,9 +22,8 @@ declare(strict_types=1);
 
 use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 
-/** @noinspection PhpIncludeInspection */
 require realpath(__DIR__ . '/../config.php');
 /** @var \Psr\Container\ContainerInterface $container */
 $container = require __DIR__ . '/../../lib/start.php';

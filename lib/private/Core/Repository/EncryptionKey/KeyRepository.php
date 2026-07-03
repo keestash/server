@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\EncryptionKey;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
 use KSP\Core\Backend\IBackend;
@@ -31,7 +31,7 @@ use Psr\Log\LoggerInterface;
 
 abstract class KeyRepository {
 
-    public function __construct(private readonly IBackend           $backend, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface          $logger)
+    public function __construct(private readonly IBackend           $backend, private readonly DateTimeServiceInterface $dateTimeService, private readonly LoggerInterface          $logger)
     {
     }
 
@@ -46,19 +46,22 @@ abstract class KeyRepository {
         $queryBuilder->insert("`key`")
             ->values(
                 [
-                    "`value`"       => '?'
-                    , "`create_ts`" => '?'
+                    "`value`"           => '?'
+                    , "`kdf_version`"   => '?'
+                    , "`create_ts`"     => '?'
                 ]
             )
             ->setParameter(0, $key->getSecret())
-            ->setParameter(1, $this->dateTimeService->toYMDHIS($key->getCreateTs()))
+            ->setParameter(1, $key->getKdfVersion())
+            ->setParameter(2, $this->dateTimeService->toYMDHIS($key->getCreateTs()))
             ->executeStatement();
 
-        $id = (int) $this->backend->getConnection()->lastInsertId();
+        $lastInsertId = $this->backend->getConnection()->lastInsertId();
 
-        if (0 === $id) {
-            throw new KeestashException('id is not given!! ' . $id);
+        if (false === is_numeric($lastInsertId) || 0 === (int) $lastInsertId) {
+            throw new KeestashException('id is not given!! ' . $lastInsertId);
         }
+        $id = (int) $lastInsertId;
         $key->setId($id);
         return $key;
     }

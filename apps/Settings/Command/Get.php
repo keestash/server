@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Command;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Command\KeestashCommand;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
@@ -43,7 +43,7 @@ final class Get extends KeestashCommand {
         private readonly IUserRepository      $userRepository
         , private readonly IUserKeyRepository $userKeyRepository
         , private readonly LoggerInterface    $logger
-        , private readonly IDateTimeService   $dateTimeService
+        , private readonly DateTimeServiceInterface   $dateTimeService
     ) {
         parent::__construct();
     }

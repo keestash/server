@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace Keestash\Command\Role;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Entity\PermissionInterface;
-use doganoo\SimpleRBAC\Entity\RoleInterface;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\PermissionInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\KeestashCommand;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
@@ -37,7 +37,7 @@ class Get extends KeestashCommand {
 
     public function __construct(
         private readonly RBACRepositoryInterface $rbacRepository
-        , private readonly IDateTimeService      $dateTimeService
+        , private readonly DateTimeServiceInterface      $dateTimeService
     ) {
         parent::__construct();
     }

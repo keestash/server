@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Encryption\Password;
 
-use doganoo\DI\Object\String\IStringService;
 use Keestash\Core\Service\Encryption\Password\PasswordService;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -35,9 +34,7 @@ class PasswordServiceFactory implements FactoryInterface {
         ,                  $requestedName
         , ?array           $options = null
     ): IPasswordService {
-        return new PasswordService(
-            $container->get(IStringService::class)
-        );
+        return new PasswordService();
     }
 
 }

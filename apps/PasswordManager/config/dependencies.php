@@ -100,7 +100,6 @@ use KSA\PasswordManager\Factory\Repository\Node\PwnedBreachesRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\Node\PwnedPasswordsRepositoryFactory;
 use KSA\PasswordManager\Factory\Repository\PublicShareRepositoryFactory;
 use KSA\PasswordManager\Factory\Service\AccessServiceFactory;
-use KSA\PasswordManager\Factory\Service\Encryption\EncryptionServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\BreadCrumbService\BreadCrumbServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\Credential\CredentialServiceFactory;
 use KSA\PasswordManager\Factory\Service\Node\NodeServiceFactory;
@@ -115,7 +114,6 @@ use KSA\PasswordManager\Repository\Node\PwnedBreachesRepository;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\PasswordManager\Service\AccessService;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\BreadCrumb\BreadCrumbService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Service\Node\NodeService;
@@ -192,7 +190,6 @@ return [
         CreateByPath::class                                                   => CreateByPathFactory::class,
 
         // service
-        EncryptionService::class                                              => EncryptionServiceFactory::class,
         NodeService::class                                                    => NodeServiceFactory::class,
         BreadCrumbService::class                                              => BreadCrumbServiceFactory::class,
         CredentialService::class                                              => CredentialServiceFactory::class,

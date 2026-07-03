@@ -24,7 +24,7 @@ namespace KST\Service\Factory\Core\Service\Phinx;
 use KSP\Core\Service\Config\IConfigService;
 use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Phinx\IMigrator;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class MigratorFactory {

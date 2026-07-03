@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\HTTP\CORS;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Core\Service\HTTP\CORS\ProjectConfiguration;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Mezzio\Cors\Configuration\ConfigurationInterface;

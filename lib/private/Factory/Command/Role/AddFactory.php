@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Role;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\Role\Add;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -37,7 +37,7 @@ class AddFactory implements FactoryInterface {
     ): Add {
         return new Add(
             $container->get(RBACRepositoryInterface::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
         );
     }
 

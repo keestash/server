@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Instance\Repository;
 
 use DateTime;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Exception\Repository\RowNotInsertedException;
 use KSP\Core\Backend\IBackend;
 
@@ -30,7 +30,7 @@ final readonly class DemoUsersRepository {
 
     public function __construct(
         private IBackend         $backend,
-        private IDateTimeService $dateTimeService
+        private DateTimeServiceInterface $dateTimeService
     ) {
     }
 

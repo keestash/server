@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Share\Regular;
 
 use Exception;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\NodeService;
@@ -33,6 +34,34 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/password_manager/share',
+    operationId: 'passwordManagerShareCreate',
+    summary: 'Share a node with another user',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['node_id', 'user_id_to_share'],
+            properties: [
+                new OA\Property(property: 'node_id', type: 'integer'),
+                new OA\Property(property: 'user_id_to_share', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Sharing'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Share created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'share', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Share implements RequestHandlerInterface {
 
     public function __construct(

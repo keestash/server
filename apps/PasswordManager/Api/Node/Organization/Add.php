@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Organization;
 use DateTime;
 use Doctrine\DBAL\Exception;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Event\Node\NodeAddedToOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -36,6 +37,35 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Put(
+    path: '/password_manager/organization/node/add',
+    operationId: 'passwordManagerOrganizationNodeAdd',
+    summary: 'Add a node to an organization',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['node_id', 'organization_id'],
+            properties: [
+                new OA\Property(property: 'node_id', type: 'integer'),
+                new OA\Property(property: 'organization_id', type: 'integer'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Node added to organization',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'organization', type: 'object'),
+                    new OA\Property(property: 'type', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Add implements RequestHandlerInterface {
 
     public function __construct(

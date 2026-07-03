@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Activity;
 
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Exception\ActivityNotFoundException;
 use KSA\Activity\Repository\ActivityRepository;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -34,6 +35,28 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/credential/additional_data/get/{referenceKey}/{appId}',
+    operationId: 'passwordManagerActivityGet',
+    summary: 'Get activity log for a credential node',
+    tags: ['Password Manager - Credentials'],
+    parameters: [
+        new OA\Parameter(name: 'referenceKey', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+        new OA\Parameter(name: 'appId', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Activity list',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'activityList', type: 'array', items: new OA\Items()),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Get implements RequestHandlerInterface {
 
     public function __construct(

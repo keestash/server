@@ -28,10 +28,33 @@ use Keestash\Exception\Validator\ValidationFailedException;
 use KSA\Instance\Repository\DemoUsersRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Metric\ICollectorService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/demo_users/add',
+    operationId: 'demoUsersAdd',
+    summary: 'Add a demo user email address (deactivated)',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['email'],
+            properties: [
+                new OA\Property(property: 'email', type: 'string', format: 'email'),
+            ]
+        )
+    ),
+    tags: ['Instance'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Email added',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ]
+)]
 final readonly class AddEmailAddress implements RequestHandlerInterface {
 
     public function __construct(

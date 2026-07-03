@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Command\Role;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Entity\RoleInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Core\Repository\User\IUserRepository;
@@ -37,7 +37,7 @@ class RolesByUser extends KeestashCommand {
 
     public function __construct(
         private readonly IUserRepository    $userRepository
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
     ) {
         parent::__construct();
     }

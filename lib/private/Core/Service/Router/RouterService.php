@@ -24,7 +24,7 @@ namespace Keestash\Core\Service\Router;
 use Keestash\ConfigProvider;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Mezzio\Router\Route;
 use Mezzio\Router\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;

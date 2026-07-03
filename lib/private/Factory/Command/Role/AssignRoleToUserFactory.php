@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Role;
 
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\Role\AssignRoleToUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;

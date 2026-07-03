@@ -24,6 +24,7 @@ namespace KSA\Settings\Api\Organization;
 use DateTimeImmutable;
 use Exception;
 use KSA\Settings\Event\Organization\OrganizationActivatedEvent;
+use OpenApi\Attributes as OA;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Event\IEventService;
@@ -33,6 +34,34 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/organizations/activate',
+    operationId: 'organizationsActivate',
+    summary: 'Activate or deactivate an organization',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['id', 'activate'],
+            properties: [
+                new OA\Property(property: 'id', type: 'integer'),
+                new OA\Property(property: 'activate', type: 'boolean'),
+            ]
+        )
+    ),
+    tags: ['Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Organization activation updated',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'organization', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Activate implements RequestHandlerInterface {
 
     public function __construct(private readonly IOrganizationRepository $organizationRepository, private readonly LoggerInterface               $logger, private readonly IEventService         $eventManager)

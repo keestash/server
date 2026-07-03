@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Register\Factory\Api\Configuration;
 
 use KSA\Register\Api\Configuration\Configuration;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

@@ -24,7 +24,7 @@ namespace Keestash\Core\DTO\RBAC;
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\SimpleRBAC\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
 use KSP\Core\DTO\RBAC\IRole;
 
 class Role implements IRole {

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\File\NodeFile;
@@ -28,6 +29,27 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/attachments/get/{nodeId}',
+    operationId: 'passwordManagerAttachmentGet',
+    summary: 'Get attachments for a node',
+    tags: ['Password Manager - Attachments'],
+    parameters: [
+        new OA\Parameter(name: 'nodeId', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'File list',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'fileList', type: 'array', items: new OA\Items()),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Get implements RequestHandlerInterface {
 
     public function __construct(

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Command\Install;
 
 use Keestash\Command\Install\CreateConfig;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

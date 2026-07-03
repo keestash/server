@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
-use doganoo\SimpleRBAC\Service\RBACServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Service\RBACServiceInterface;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider;
 use Keestash\Exception\KeestashException;
@@ -29,7 +29,7 @@ use KSP\Api\IRequest;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;

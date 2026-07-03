@@ -2,7 +2,7 @@
 
 namespace Keestash\Command\ApiLog;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\KeestashCommand;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\Instance\Request\ApiLogInterface;
@@ -16,7 +16,7 @@ final class ListAll extends KeestashCommand {
 
     public function __construct(
         private readonly IApiLogRepository $apiLogRepository,
-        private readonly IDateTimeService  $dateTimeService
+        private readonly DateTimeServiceInterface  $dateTimeService
     ) {
         parent::__construct();
     }

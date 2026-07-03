@@ -21,21 +21,19 @@ declare(strict_types=1);
  */
 
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\DI\Object\String\IStringService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use doganoo\DI\Object\String\StringServiceInterface;
 use doganoo\DIP\DateTime\DateTimeService;
 use doganoo\DIP\Object\String\StringService;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use Keestash\Core\Backend\SQLBackend\MySQLBackend;
 use Keestash\Core\Repository\ApiLog\ApiLogRepository;
 use Keestash\Core\Repository\AppRepository\AppRepository;
-use Keestash\Core\Repository\Derivation\DerivationRepository;
 use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepository;
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
-use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\LDAP\DefaultConnectionRepository;
 use Keestash\Core\Repository\LDAP\DefaultLDAPRepository;
 use Keestash\Core\Repository\MailLog\MailLogRepository;
@@ -98,11 +96,9 @@ use KSP\Core\Backend\IBackend;
 use KSP\Core\Backend\SQLBackend\ISQLBackend;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Repository\Derivation\IDerivationRepository;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Repository\File\IFileRepository;
-use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Repository\LDAP\IConnectionRepository;
 use KSP\Core\Repository\LDAP\ILDAPUserRepository;
 use KSP\Core\Repository\MailLog\IMailLogRepository;
@@ -174,7 +170,6 @@ return [
     , IOrganizationKeyRepository::class                 => OrganizationKeyRepository::class
     , ITokenRepository::class                           => TokenRepository::class
     , IAppRepository::class                             => AppRepository::class
-    , IJobRepository::class                             => JobRepository::class
     , IQueueRepository::class                           => QueueRepository::class
     , IUserStateRepository::class                       => UserStateRepository::class
     , RBACRepositoryInterface::class                    => RBACRepository::class
@@ -187,7 +182,7 @@ return [
     , IUserService::class                               => UserService::class
     , IUserStateService::class                          => UserStateService::class
     , IConfigService::class                             => ConfigService::class
-    , IDateTimeService::class                           => DateTimeService::class
+    , DateTimeServiceInterface::class                           => DateTimeService::class
     , IKeyService::class                                => KeyService::class
     , IEncryptionService::class                         => KeestashEncryptionService::class
     , IFileService::class                               => FileService::class
@@ -203,13 +198,13 @@ return [
     , IUserRepositoryService::class                     => UserRepositoryService::class
     , IIconService::class                               => IconService::class
     , \KSP\Core\Service\File\Upload\IFileService::class => \Keestash\Core\Service\File\Upload\FileService::class
-    , IStringService::class                             => StringService::class
+    , StringServiceInterface::class                             => StringService::class
     , IJWTService::class                                => JWTService::class
     , IHTTPService::class                               => HTTPService::class
     , IInstallerService::class                          => InstallerService::class
     , ApiLogServiceInterface::class                     => ApiLogService::class
     , IAccessService::class                             => AccessService::class
-    , \doganoo\DI\HTTP\IHTTPService::class              => \doganoo\DIP\HTTP\HTTPService::class
+    , \doganoo\DI\HTTP\HttpServiceInterface::class      => \doganoo\DIP\Http\HttpService::class
     , IPasswordService::class                           => PasswordService::class
     , ICSVService::class                                => CSVService::class
     , IMimeTypeService::class                           => MimeTypeService::class

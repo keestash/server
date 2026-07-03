@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Command\Environment;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Command\IKeestashCommand;
@@ -36,7 +36,7 @@ class ListEnvironment extends KeestashCommand {
 
     public function __construct(
         private readonly InstanceDB         $instanceDB
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
     ) {
         parent::__construct();
     }
@@ -84,7 +84,7 @@ class ListEnvironment extends KeestashCommand {
                 , 'value'     => $value
                 , 'create_ts' => $this->dateTimeService->
                 fromFormat($option['create_ts'])
-                    ->format(IDateTimeService::FORMAT_DMY_HIS)
+                    ->format(DateTimeServiceInterface::FORMAT_DMY_HIS)
             ];
 
         }

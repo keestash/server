@@ -38,7 +38,7 @@ class MinimalApp extends AbstractMigration {
                 "name"
                 , "string"
                 , [
-                    "length"    => "500"
+                    'length' => 500
                     , "comment" => "The user's name"
                     , "null"    => false
                     , "after"   => "id"
@@ -57,7 +57,7 @@ class MinimalApp extends AbstractMigration {
                 "password"
                 , "string"
                 , [
-                    "length"    => "500"
+                    'length' => 500
                     , "comment" => "The user's password"
                     , "null"    => false
                     , "after"   => "id"
@@ -117,7 +117,7 @@ class MinimalApp extends AbstractMigration {
                 "locale"
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "20"
+                    'length' => 20
                     , "null"    => false
                     , "default" => "US"
                     , "after"   => 'website'
@@ -127,7 +127,7 @@ class MinimalApp extends AbstractMigration {
                 "language"
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "20"
+                    'length' => 20
                     , "null"    => false
                     , "default" => "en_US"
                     , "after"   => 'locale'

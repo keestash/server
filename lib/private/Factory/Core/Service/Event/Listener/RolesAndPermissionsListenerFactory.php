@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Event\Listener;
 
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Core\Service\Event\Listener\RolesAndPermissionsListener;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;

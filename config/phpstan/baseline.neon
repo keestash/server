@@ -276,12 +276,7 @@ parameters:
 			path: ../../apps/PasswordManager/Factory/Api/Node/Attachment/RemoveFactory.php
 
 		-
-			message: "#^Argument of an invalid type array\\<int, int\\>\\|string supplied for foreach, only iterables are supported\\.$#"
-			count: 1
-			path: ../../apps/PasswordManager/Middleware/IsEncryptedMiddleware.php
-
-		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\DateTimeServiceInterface\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../apps/PasswordManager/Repository/Node/FileRepository.php
 
@@ -336,7 +331,7 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\DateTimeServiceInterface\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 4
 			path: ../../apps/PasswordManager/Repository/Node/PwnedBreachesRepository.php
 
@@ -346,12 +341,12 @@ parameters:
 			path: ../../apps/PasswordManager/Repository/Node/PwnedPasswordsRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\DateTimeServiceInterface\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 4
 			path: ../../apps/PasswordManager/Repository/Node/PwnedPasswordsRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\DateTimeServiceInterface\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 2
 			path: ../../apps/PasswordManager/Repository/PublicShareRepository.php
 
@@ -846,7 +841,7 @@ parameters:
 			path: ../../lib/private/Command/KeestashCommand.php
 
 		-
-			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:removePermissionFromRole\\(\\)\\.$#"
+			message: "#^Call to an undefined method Keestash\\\\ThirdParty\\\\SimpleRbac\\\\Repository\\\\RBACRepositoryInterface\\:\\:removePermissionFromRole\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Command/Permission/Role/RemovePermissionFromRole.php
 
@@ -921,7 +916,7 @@ parameters:
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$info of method doganoo\\\\Backgrounder\\\\BackgroundJob\\\\Job\\:\\:setInfo\\(\\) expects array\\|null, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$info of method Keestash\\\\Core\\\\DTO\\\\BackgroundJob\\\\Job\\:\\:setInfo\\(\\) expects array\\|null, mixed given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/Job/JobRepository.php
 
@@ -931,7 +926,7 @@ parameters:
 			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\IDateTimeService\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
+			message: "#^Parameter \\#1 \\$format of method doganoo\\\\DI\\\\DateTime\\\\DateTimeServiceInterface\\:\\:fromFormat\\(\\) expects string, mixed given\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Repository/Token/TokenRepository.php
 
@@ -996,7 +991,7 @@ parameters:
 			path: ../../lib/private/Core/Service/File/Upload/FileService.php
 
 		-
-			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearPermissions\\(\\)\\.$#"
+			message: "#^Call to an undefined method Keestash\\\\ThirdParty\\\\SimpleRbac\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearPermissions\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Permission/PermissionService.php
 
@@ -1006,12 +1001,12 @@ parameters:
 			path: ../../lib/private/Core/Service/Permission/PermissionService.php
 
 		-
-			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRolePermissions\\(\\)\\.$#"
+			message: "#^Call to an undefined method Keestash\\\\ThirdParty\\\\SimpleRbac\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRolePermissions\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Permission/RoleService.php
 
 		-
-			message: "#^Call to an undefined method doganoo\\\\SimpleRBAC\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRoles\\(\\)\\.$#"
+			message: "#^Call to an undefined method Keestash\\\\ThirdParty\\\\SimpleRbac\\\\Repository\\\\RBACRepositoryInterface\\:\\:clearRoles\\(\\)\\.$#"
 			count: 1
 			path: ../../lib/private/Core/Service/Permission/RoleService.php
 
@@ -1109,4 +1104,24 @@ parameters:
 			message: "#^Interface KSP\\\\Core\\\\DTO\\\\BackgroundJob\\\\IJobList extends generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
 			count: 1
 			path: ../../lib/public/Core/DTO/BackgroundJob/IJobList.php
+
+		-
+			message: "#^Used function scrypt not found\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Derivation/Scrypt.php
+
+		-
+			message: "#^Function scrypt not found\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Derivation/Scrypt.php
+
+		-
+			message: "#^Method Keestash\\\\Core\\\\Service\\\\Derivation\\\\Scrypt\\:\\:calc\\(\\) should return string but returns string\\|false\\.$#"
+			count: 1
+			path: ../../lib/private/Core/Service/Derivation/Scrypt.php
+
+		-
+			message: "#^Cannot use array destructuring on array\\|false\\.$#"
+			count: 3
+			path: ../../lib/private/Core/Service/Derivation/Scrypt.php
 

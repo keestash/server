@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node;
 
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Node;
@@ -38,6 +39,27 @@ use Psr\Http\Server\RequestHandlerInterface;
  * Class GetByName
  * @package KSA\PasswordManager\Api\Node
  */
+#[OA\Get(
+    path: '/password_manager/node/name/{name}',
+    operationId: 'passwordManagerNodeGetByName',
+    summary: 'Get nodes by name',
+    tags: ['Password Manager - Nodes'],
+    parameters: [
+        new OA\Parameter(name: 'name', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Matching nodes',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'message', type: 'array', items: new OA\Items()),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class GetByName implements RequestHandlerInterface {
 
     public function __construct(

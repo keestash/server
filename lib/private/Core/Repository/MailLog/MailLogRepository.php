@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\MailLog;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\MailLog\MailLog;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\Repository\NoRowsFoundException;
@@ -33,7 +33,7 @@ use Psr\Log\LoggerInterface;
 
 class MailLogRepository implements IMailLogRepository {
 
-    public function __construct(private readonly IBackend           $backend, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface  $logger)
+    public function __construct(private readonly IBackend           $backend, private readonly DateTimeServiceInterface $dateTimeService, private readonly LoggerInterface  $logger)
     {
     }
 

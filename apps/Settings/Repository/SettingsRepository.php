@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Repository;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Exception\Queue\QueueNotCreatedException;
 use KSA\Settings\Entity\Setting;
@@ -37,7 +37,7 @@ class SettingsRepository
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly LoggerInterface  $logger
     )
     {

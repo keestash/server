@@ -13,9 +13,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\App\Config;
 
 use DateTimeInterface;
-use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\App\Config\IApp;
-use KSP\Core\DTO\BackgroundJob\IJobList;
 
 class App implements IApp {
 
@@ -23,10 +21,8 @@ class App implements IApp {
     private bool              $enabled;
     private int               $version;
     private DateTimeInterface $createTs;
-    private IJobList          $jobs;
 
     public function __construct() {
-        $this->jobs = new JobList();
     }
 
     #[\Override]
@@ -66,22 +62,12 @@ class App implements IApp {
     }
 
     #[\Override]
-    public function getBackgroundJobs(): IJobList {
-        return $this->jobs;
-    }
-
-    public function setBackgroundJobs(IJobList $jobs): void {
-        $this->jobs = $jobs;
-    }
-
-    #[\Override]
     public function jsonSerialize(): array {
         return [
             'id'          => $this->getId()
             , 'enabled'   => $this->isEnabled()
             , 'version'   => $this->getVersion()
             , 'create_ts' => $this->getCreateTs()
-            , 'jobs'      => $this->getBackgroundJobs()
         ];
     }
 

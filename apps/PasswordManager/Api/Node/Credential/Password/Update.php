@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential\Password;
 
 use KSA\Activity\Service\IActivityService;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Exception\PasswordManagerException;
@@ -38,6 +39,30 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @package KSA\PasswordManager\Api\Node\Credential\Password
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Post(
+    path: '/password_manager/credential/password/update',
+    operationId: 'passwordManagerCredentialPasswordUpdate',
+    summary: 'Update the password of a credential node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['nodeId', 'password'],
+            properties: [
+                new OA\Property(property: 'nodeId', type: 'integer'),
+                new OA\Property(property: 'password', type: 'string', format: 'byte', description: 'Base64-encoded password'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Credentials'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Password updated',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Update implements RequestHandlerInterface {
 
     public function __construct(

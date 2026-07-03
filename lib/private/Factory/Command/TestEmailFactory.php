@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\TestEmail;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
@@ -38,7 +38,7 @@ class TestEmailFactory implements FactoryInterface {
     ): TestEmail {
         return new TestEmail(
             $container->get(IEmailService::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(IConfigService::class)
         );
     }

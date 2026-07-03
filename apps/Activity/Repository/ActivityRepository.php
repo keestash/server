@@ -23,7 +23,7 @@ namespace KSA\Activity\Repository;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\Activity\Entity\Activity;
 use KSA\Activity\Entity\IActivity;
@@ -37,7 +37,7 @@ class ActivityRepository implements IActivityRepository {
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly LoggerInterface  $logger
     ) {
     }

@@ -44,8 +44,8 @@ class LoginTest extends TestCase {
                     ]
                 )
             );
-        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
-        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_USER_NOT_FOUND, $response);
+        $this->assertStatusCode(IResponse::UNAUTHORIZED, $response);
+        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_INVALID_CREDENTIALS, $response);
     }
 
     public function testWithNotExistingUser(): void {
@@ -61,8 +61,8 @@ class LoginTest extends TestCase {
                 )
             );
 
-        $this->assertStatusCode(IResponse::NOT_FOUND, $response);
-        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_USER_NOT_FOUND, $response);
+        $this->assertStatusCode(IResponse::UNAUTHORIZED, $response);
+        $this->assertResponseCode(IResponseCodes::RESPONSE_CODE_INVALID_CREDENTIALS, $response);
     }
 
     public function testWithDisabledUser(): void {

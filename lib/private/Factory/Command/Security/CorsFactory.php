@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Security;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\Security\Cors;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -35,7 +35,7 @@ class CorsFactory implements FactoryInterface {
         , ?array           $options = null
     ): Cors {
         return new Cors(
-            $container->get(IDateTimeService::class)
+            $container->get(DateTimeServiceInterface::class)
         );
     }
 

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\Job;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\Job\JobRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Job\IJobRepository;
@@ -33,7 +33,7 @@ class JobRepositoryFactory {
     public function __invoke(ContainerInterface $container): IJobRepository {
         return new JobRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

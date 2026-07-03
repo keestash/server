@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSP\Core\DTO\RBAC;
 
-use doganoo\SimpleRBAC\Entity\PermissionInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\PermissionInterface;
 use KSP\Core\DTO\Entity\IJsonObject;
 
 interface IPermission extends PermissionInterface, IJsonObject {

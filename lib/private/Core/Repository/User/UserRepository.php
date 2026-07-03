@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\User;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Core\DTO\User\NullUser;
 use Keestash\Core\DTO\User\User;
 use Keestash\Exception\Repository\TooManyRowsException;
@@ -50,7 +50,7 @@ final readonly class UserRepository implements IUserRepository {
 
     public function __construct(
         private IBackend                $backend,
-        private IDateTimeService        $dateTimeService,
+        private DateTimeServiceInterface        $dateTimeService,
         private LoggerInterface         $logger,
         private RBACRepositoryInterface $rbacRepository,
         private ILDAPUserRepository     $ldapUserRepository

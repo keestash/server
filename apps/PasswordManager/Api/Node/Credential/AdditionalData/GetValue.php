@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential\AdditionalData;
 
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -37,6 +38,27 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/credential/additional_data/get/value/{advid}',
+    operationId: 'passwordManagerAdditionalDataGetValue',
+    summary: 'Get the decrypted value of an additional data entry',
+    tags: ['Password Manager - Credentials'],
+    parameters: [
+        new OA\Parameter(name: 'advid', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Value data',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'value', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class GetValue implements RequestHandlerInterface {
 
     public function __construct(

@@ -23,6 +23,7 @@ namespace KSA\Settings\Api\Organization;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\User\UserNotFoundException;
+use OpenApi\Attributes as OA;
 use KSA\Settings\Event\Organization\UserChangedEvent;
 use KSA\Settings\Exception\SettingsException;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -34,6 +35,31 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/organizations/user/change',
+    operationId: 'organizationsUserChange',
+    summary: 'Add or remove a user from an organization',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['mode', 'organization_id', 'user_id'],
+            properties: [
+                new OA\Property(property: 'mode', type: 'string', enum: ['add.mode', 'remove.mode']),
+                new OA\Property(property: 'organization_id', type: 'integer'),
+                new OA\Property(property: 'user_id', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User membership changed',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class User implements RequestHandlerInterface {
 
     public const MODE_ADD    = 'add.mode';

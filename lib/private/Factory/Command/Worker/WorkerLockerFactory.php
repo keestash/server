@@ -23,7 +23,7 @@ namespace Keestash\Factory\Command\Worker;
 
 use Keestash\Command\Worker\WorkerLocker;
 use Keestash\Core\Builder\Data\DataServiceBuilder;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

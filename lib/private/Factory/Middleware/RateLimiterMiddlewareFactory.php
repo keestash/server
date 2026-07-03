@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Middleware;
 
 use Keestash\Middleware\RateLimiterMiddleware;
+use KSP\Core\Service\Config\IConfigService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use RateLimit\RateLimiter;
@@ -36,6 +37,7 @@ class RateLimiterMiddlewareFactory implements FactoryInterface {
     ): RateLimiterMiddleware {
         return new RateLimiterMiddleware(
             $container->get(RateLimiter::class)
+            , $container->get(IConfigService::class)
         );
     }
 

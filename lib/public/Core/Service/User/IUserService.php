@@ -31,6 +31,14 @@ interface IUserService extends IService {
 
     public function verifyPassword(string $password, string $hash): bool;
 
+    /**
+     * Whether the given stored hash should be re-hashed with the current
+     * preferred algorithm/parameters (e.g. a legacy bcrypt hash after the
+     * move to Argon2id). Call after a successful verifyPassword() and, if
+     * true, re-hash the plaintext and persist it.
+     */
+    public function needsRehash(string $hash): bool;
+
     public function passwordHasMinimumRequirements(string $password): bool;
 
     public function validEmail(string $email): bool;

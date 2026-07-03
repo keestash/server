@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Command\Permission;
 
 use DateTimeImmutable;
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\RBAC\NullPermission;
 use Keestash\Core\DTO\RBAC\Permission;
@@ -36,7 +36,7 @@ class Add extends KeestashCommand {
 
     public function __construct(
         private readonly RBACRepositoryInterface $rbacRepository
-        , private readonly IDateTimeService      $dateTimeService
+        , private readonly DateTimeServiceInterface      $dateTimeService
     ) {
         parent::__construct();
     }

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Command\Worker\Queue;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\KeestashCommand;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\DTO\Queue\IMessage;
@@ -37,7 +37,7 @@ class QueueList extends KeestashCommand {
 
     public function __construct(
         private readonly IQueueService      $queueService
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
     ) {
         parent::__construct();
     }

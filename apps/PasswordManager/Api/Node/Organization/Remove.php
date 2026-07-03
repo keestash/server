@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Organization;
 
 use KSA\PasswordManager\Entity\Edge\Edge;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\Event\Node\NodeRemovedFromOrganizationEvent;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\Node\OrganizationRepository as OrganizationNodeRepository;
@@ -32,6 +33,34 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Delete(
+    path: '/password_manager/organization/node/remove',
+    operationId: 'passwordManagerOrganizationNodeRemove',
+    summary: 'Remove a node from its organization',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['node_id', 'organization_id'],
+            properties: [
+                new OA\Property(property: 'node_id', type: 'integer'),
+                new OA\Property(property: 'organization_id', type: 'integer'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Node removed from organization',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'type', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Remove implements RequestHandlerInterface {
 
     public function __construct(private readonly NodeRepository               $nodeRepository, private readonly OrganizationNodeRepository $organizationNodeRepository, private readonly IEventService              $eventManager)

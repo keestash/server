@@ -20,7 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use doganoo\DI\Encryption\User\IUserService;
+use doganoo\DI\Encryption\User\UserServiceInterface;
 use doganoo\DIP\Encryption\User\UserService;
 use Keestash\ConfigProvider;
 use KSA\Instance\Factory\Repository\DemoUsersRepositoryFactory;
@@ -129,7 +129,7 @@ return [
     , ConfigProvider::ALIASES => [
         IOrganizationRepository::class       => OrganizationRepository::class
         , IOrganizationUserRepository::class => OrganizationUserRepository::class
-        , IUserService::class                => UserService::class
+        , UserServiceInterface::class        => UserService::class
         , IOrganizationService::class        => OrganizationService::class
         , ISettingsService::class            => SettingsService::class
         , IUserSettingRepository::class      => UserSettingRepository::class

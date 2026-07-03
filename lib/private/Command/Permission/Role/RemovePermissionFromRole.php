@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Command\Permission\Role;
 
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\RBAC\NullPermission;
 use Keestash\Core\DTO\RBAC\NullRole;

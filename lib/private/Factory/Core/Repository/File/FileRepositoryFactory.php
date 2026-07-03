@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\File;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\File\FileRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\File\IFileRepository;
@@ -35,7 +35,7 @@ class FileRepositoryFactory {
         return new FileRepository(
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

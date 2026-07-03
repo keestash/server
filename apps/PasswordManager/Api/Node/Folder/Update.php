@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Exception\Node\NodeNotUpdatedException;
@@ -34,6 +35,30 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/password_manager/node/folder/update',
+    operationId: 'passwordManagerFolderUpdate',
+    summary: 'Update a folder node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['node_id', 'name'],
+            properties: [
+                new OA\Property(property: 'node_id', type: 'integer'),
+                new OA\Property(property: 'name', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Nodes'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Folder updated',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Update implements RequestHandlerInterface {
 
     public function __construct(

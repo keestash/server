@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Test\Integration\Api\Node\Pwned;
 
 use DateTimeImmutable;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
 use KSA\PasswordManager\Repository\Node\PwnedPasswordsRepository;

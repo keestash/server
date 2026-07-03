@@ -25,7 +25,7 @@ use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\App\Config\App;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

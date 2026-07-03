@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Api\User;
 
-use doganoo\SimpleRBAC\Service\RBACServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Service\RBACServiceInterface;
 use Keestash\Core\Service\User\UserService;
 use KSA\Settings\Api\User\UserEdit;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;

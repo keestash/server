@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\DTO\Event\Listener;
 
 use DateTimeImmutable;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\MailLog\MailLog;
 use Keestash\Exception\KeestashException;
 use Keestash\Exception\Repository\NoRowsFoundException;
@@ -101,7 +101,7 @@ class SendSummaryMail implements IListener {
             $body = $body . sprintf(
                     "user %s created on %s"
                     , $user->getName()
-                    , $user->getCreateTs()->format(IDateTimeService::FORMAT_DMY_HIS)
+                    , $user->getCreateTs()->format(DateTimeServiceInterface::FORMAT_DMY_HIS)
                 );
         }
 
@@ -110,7 +110,7 @@ class SendSummaryMail implements IListener {
         }
 
         $this->emailService->setSubject(
-            sprintf('Summary Mail [%s]', $now->format(IDateTimeService::FORMAT_DMY_HIS))
+            sprintf('Summary Mail [%s]', $now->format(DateTimeServiceInterface::FORMAT_DMY_HIS))
         );
 
         $this->emailService->setBody(

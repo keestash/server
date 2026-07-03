@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Event\Listener;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use KSA\PasswordManager\Event\Listener\OrganizationChangeListener;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;

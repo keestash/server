@@ -23,7 +23,7 @@ final class RolesPermissions extends KeestashMigration {
                 , KeestashMigration::STRING
                 , [
                     "comment"  => "The role's name"
-                    , 'length' => '100'
+                    , 'length' => 100
                     , 'null'   => false
                     , 'after'  => 'id'
                 ]
@@ -46,7 +46,7 @@ final class RolesPermissions extends KeestashMigration {
                 , KeestashMigration::STRING
                 , [
                     "comment"  => "The permissions's name"
-                    , 'length' => '100'
+                    , 'length' => 100
                     , 'null'   => false
                     , 'after'  => 'id'
                 ]

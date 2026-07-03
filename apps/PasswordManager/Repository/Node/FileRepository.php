@@ -23,7 +23,7 @@ namespace KSA\PasswordManager\Repository\Node;
 
 use DateTime;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Common\Exception\NodeNotFoundException;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\File\FileList;
@@ -46,7 +46,7 @@ class FileRepository {
     public function __construct(
         private readonly IBackend             $backend
         , private readonly NodeRepository     $nodeRepository
-        , private readonly IDateTimeService   $dateTimeService
+        , private readonly DateTimeServiceInterface   $dateTimeService
         , private readonly CoreFileRepository $fileRepository
         , private readonly LoggerInterface    $logger
         , private readonly IJWTService        $jwtService

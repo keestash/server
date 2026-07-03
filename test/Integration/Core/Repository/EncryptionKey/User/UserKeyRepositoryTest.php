@@ -44,6 +44,7 @@ class UserKeyRepositoryTest extends TestCase {
 
         $key = new Key();
         $key->setCreateTs(new DateTimeImmutable());
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($user);
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
@@ -66,6 +67,7 @@ class UserKeyRepositoryTest extends TestCase {
 
         $key = new Key();
         $key->setCreateTs(new DateTimeImmutable());
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($user);
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
@@ -90,6 +92,7 @@ class UserKeyRepositoryTest extends TestCase {
 
         $key = new Key();
         $key->setCreateTs(new DateTimeImmutable());
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($user);
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))

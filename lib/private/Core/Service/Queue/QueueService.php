@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Queue;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonException;
 use Keestash\Core\DTO\Queue\EventMessage;
@@ -35,7 +35,7 @@ use Psr\Log\LoggerInterface;
 
 class QueueService implements IQueueService {
 
-    public function __construct(private readonly IQueueRepository $queueRepository, private readonly IDateTimeService $dateTimeService, private readonly IBase64Service $base64Service, private readonly LoggerInterface $logger) {
+    public function __construct(private readonly IQueueRepository $queueRepository, private readonly DateTimeServiceInterface $dateTimeService, private readonly IBase64Service $base64Service, private readonly LoggerInterface $logger) {
     }
 
     #[\Override]

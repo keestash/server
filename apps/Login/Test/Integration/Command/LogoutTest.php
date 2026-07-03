@@ -35,11 +35,7 @@ class LogoutTest extends TestCase {
         );
         $headers  = $this->login($user, $password);
         $command  = $this->getCommandTester("login:logout");
-        $command->setInputs(
-            [
-                'username' => $user->getName()
-            ]
-        );
+        $command->setInputs([$user->getName()]);
         $command->execute([]);
         $this->assertTrue(IKeestashCommand::RETURN_CODE_RAN_SUCCESSFUL === $command->getStatusCode());
         $this->logout($headers, $user);
@@ -48,11 +44,7 @@ class LogoutTest extends TestCase {
 
     public function testNonExistingUser(): void {
         $command = $this->getCommandTester("login:logout");
-        $command->setInputs(
-            [
-                'username' => Uuid::uuid4()->toString()
-            ]
-        );
+        $command->setInputs([Uuid::uuid4()->toString()]);
         $result = $command->execute([]);
         $this->assertTrue($result === IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL);
     }

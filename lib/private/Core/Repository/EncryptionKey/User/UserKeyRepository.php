@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\EncryptionKey\User;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
 use KSA\PasswordManager\Exception\KeyNotFoundException;
@@ -39,13 +39,13 @@ use Psr\Log\LoggerInterface;
  */
 class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
 
-    private readonly IDateTimeService $dateTimeService;
+    private readonly DateTimeServiceInterface $dateTimeService;
     private readonly IBackend         $backend;
     private readonly LoggerInterface          $logger;
 
     public function __construct(
         IBackend           $backend
-        , IDateTimeService $dateTimeService
+        , DateTimeServiceInterface $dateTimeService
         , LoggerInterface          $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
@@ -95,6 +95,7 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
             [
                 'k.`id`'
                 , 'k.`value`'
+                , 'k.`kdf_version`'
                 , 'k.`create_ts`'
             ]
         )
@@ -111,7 +112,8 @@ class UserKeyRepository extends KeyRepository implements IUserKeyRepository {
             $key = new Key();
             $key->setId((int) $row[0]);
             $key->setSecret((string) $row[1]);
-            $key->setCreateTs($this->dateTimeService->fromFormat((string) $row[2]));
+            $key->setKdfVersion((string) $row[2]);
+            $key->setCreateTs($this->dateTimeService->fromFormat((string) $row[3]));
             $key->setKeyHolder($user);
         }
 

@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Environment;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\Environment\ListEnvironment;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -37,7 +37,7 @@ class ListEnvironmentFactory implements FactoryInterface {
     ): ListEnvironment {
         return new ListEnvironment(
             $container->get(InstanceDB::class)
-            ,$container->get(IDateTimeService::class)
+            ,$container->get(DateTimeServiceInterface::class)
         );
     }
 

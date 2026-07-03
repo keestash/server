@@ -67,7 +67,7 @@ class PublicShareSingleTest extends TestCase {
         $c->setSecret($password);
         $publicShare = $shareService->createPublicShare(
             $node,
-            new \DateTimeImmutable(),
+            new \DateTimeImmutable('+1 day'),
             $userService->hashPassword($password),
             base64_encode($encryptionService->encrypt($c, (string) json_encode(['username' => Uuid::uuid4(), 'password' => Uuid::uuid4()])))
         );

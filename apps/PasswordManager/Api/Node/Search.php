@@ -25,11 +25,33 @@ use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/search/{search}',
+    operationId: 'passwordManagerSearch',
+    summary: 'Search for nodes by name',
+    tags: ['Password Manager - Nodes'],
+    parameters: [
+        new OA\Parameter(name: 'search', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Search results',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'result', type: 'array', items: new OA\Items()),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Search implements RequestHandlerInterface {
 
     public function __construct(
@@ -46,7 +68,6 @@ final readonly class Search implements RequestHandlerInterface {
         // TODO how to search with encrypted values?
         $nodes = $this->nodeRepository->search($search, $token->getUser());
 
-        $this->logger->error('nodes', ['nodes' => $nodes->toArray()]);
         return new JsonResponse(
             [
                 'result' => $nodes->toArray()

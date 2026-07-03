@@ -23,7 +23,7 @@ namespace Keestash\Core\Repository\Queue;
 
 use DateTime;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use JsonException;
 use Keestash\Core\Backend\SQLBackend\BulkInsert;
@@ -41,7 +41,7 @@ class QueueRepository implements IQueueRepository {
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly LoggerInterface  $logger
     ) {
     }

@@ -20,7 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ConfigAggregator\ConfigAggregator;
 use Laminas\ServiceManager\ServiceManager;
 

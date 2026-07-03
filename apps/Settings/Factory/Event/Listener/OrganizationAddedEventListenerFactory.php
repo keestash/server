@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Event\Listener;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Laminas\ServiceManager\Factory\FactoryInterface;

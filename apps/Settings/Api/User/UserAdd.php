@@ -28,12 +28,41 @@ use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\User\UserNotCreatedException;
 use KSP\Api\IResponse;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use TypeError;
 
+#[OA\Post(
+    path: '/users/add',
+    operationId: 'usersAdd',
+    summary: 'Add a new user (admin)',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['first_name', 'last_name', 'name', 'email', 'password', 'password_repeat'],
+            properties: [
+                new OA\Property(property: 'first_name', type: 'string'),
+                new OA\Property(property: 'last_name', type: 'string'),
+                new OA\Property(property: 'name', type: 'string'),
+                new OA\Property(property: 'email', type: 'string', format: 'email'),
+                new OA\Property(property: 'password', type: 'string', format: 'password'),
+                new OA\Property(property: 'password_repeat', type: 'string', format: 'password'),
+            ]
+        )
+    ),
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User created',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class UserAdd implements RequestHandlerInterface {
 
     public function __construct(private readonly UserService              $userService, private readonly IUserRepositoryService $userRepositoryService, private readonly LoggerInterface        $logger)

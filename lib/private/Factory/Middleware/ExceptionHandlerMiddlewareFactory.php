@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Middleware;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Middleware\ExceptionHandlerMiddleware;
 use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
 use Laminas\ServiceManager\Factory\FactoryInterface;

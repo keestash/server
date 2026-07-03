@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Password;
 
-use doganoo\DI\Object\String\IStringService;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\Encryption\Password\Password;
 use Keestash\Exception\KeestashException;
@@ -30,9 +29,9 @@ use KSP\Core\Service\Encryption\Password\IPasswordService;
 
 class PasswordService implements IPasswordService {
 
-    private readonly HashTable      $characterTable;
+    private readonly HashTable $characterTable;
 
-    public function __construct(private readonly IStringService $stringService) {
+    public function __construct() {
         $this->characterTable = new HashTable();
         $this->initCharTable();
     }
@@ -44,16 +43,16 @@ class PasswordService implements IPasswordService {
     #[\Override]
     public function findCharacterSet(string $password): array {
         $characterSet = [];
-        if (strlen($this->stringService->intersect($password, IPasswordService::DIGITS)) > 0) {
+        if (false !== strpbrk($password, IPasswordService::DIGITS)) {
             $characterSet[] = IPasswordService::DIGITS;
         }
-        if (strlen($this->stringService->intersect($password, IPasswordService::SPECIAL_CHARACTERS)) > 0) {
+        if (false !== strpbrk($password, IPasswordService::SPECIAL_CHARACTERS)) {
             $characterSet[] = IPasswordService::SPECIAL_CHARACTERS;
         }
-        if (strlen($this->stringService->intersect($password, IPasswordService::LOWER_CASE_CHARACTERS)) > 0) {
+        if (false !== strpbrk($password, IPasswordService::LOWER_CASE_CHARACTERS)) {
             $characterSet[] = IPasswordService::LOWER_CASE_CHARACTERS;
         }
-        if (strlen($this->stringService->intersect($password, IPasswordService::UPPER_CASE_CHARACTERS)) > 0) {
+        if (false !== strpbrk($password, IPasswordService::UPPER_CASE_CHARACTERS)) {
             $characterSet[] = IPasswordService::UPPER_CASE_CHARACTERS;
         }
         return $characterSet;

@@ -23,6 +23,7 @@ namespace KSA\Register\Api\User;
 
 use DateTime;
 use Keestash\Core\DTO\User\NullUserState;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\User\UserStateName;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Event\ResetPasswordConfirmEvent;
@@ -40,6 +41,30 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/register/reset-password/confirm',
+    operationId: 'registerResetPasswordConfirm',
+    summary: 'Confirm password reset with hash and new password',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['hash', 'password', 'key'],
+            properties: [
+                new OA\Property(property: 'hash', type: 'string'),
+                new OA\Property(property: 'password', type: 'string', format: 'password'),
+                new OA\Property(property: 'key', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Registration'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Password reset confirmed',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ]
+)]
 readonly final class ResetPasswordConfirm implements RequestHandlerInterface {
 
     public function __construct(

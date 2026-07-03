@@ -22,7 +22,7 @@ namespace Keestash\Core\Repository\User;
 
 use DateTimeImmutable;
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Common\Exception\InvalidKeyTypeException;
 use doganoo\PHPAlgorithms\Common\Exception\UnsupportedKeyTypeException;
 use Keestash\Core\DTO\User\NullUserState;
@@ -43,7 +43,7 @@ final readonly class UserStateRepository implements IUserStateRepository {
     public function __construct(
         private IBackend           $backend
         , private IUserRepository  $userRepository
-        , private IDateTimeService $dateTimeService
+        , private DateTimeServiceInterface $dateTimeService
         , private LoggerInterface  $logger
     ) {
     }

@@ -26,10 +26,37 @@ use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/users/update-password',
+    operationId: 'usersUpdatePassword',
+    summary: 'Update the authenticated user\'s password',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['userId', 'oldPassword', 'password', 'key'],
+            properties: [
+                new OA\Property(property: 'userId', type: 'integer'),
+                new OA\Property(property: 'oldPassword', type: 'string', format: 'password'),
+                new OA\Property(property: 'password', type: 'string', format: 'password'),
+                new OA\Property(property: 'key', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Password updated',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class UpdatePassword implements RequestHandlerInterface {
 
     public function __construct(

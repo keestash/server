@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Repository;
 
 use DateTime;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\Settings\Exception\SettingsException;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\DTO\Organization\IOrganization;
@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
 
 class OrganizationUserRepository implements IOrganizationUserRepository {
 
-    public function __construct(private readonly IUserRepository    $userRepository, private readonly IBackend         $backend, private readonly LoggerInterface          $logger, private readonly IDateTimeService $dateTimeService)
+    public function __construct(private readonly IUserRepository    $userRepository, private readonly IBackend         $backend, private readonly LoggerInterface          $logger, private readonly DateTimeServiceInterface $dateTimeService)
     {
     }
 

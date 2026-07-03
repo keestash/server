@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Test\Integration\Api\User;
 
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use KSA\Settings\ConfigProvider;
 use KSA\Settings\Test\Integration\TestCase;
 use KSP\Api\IResponse;

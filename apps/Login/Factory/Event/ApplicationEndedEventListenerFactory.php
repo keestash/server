@@ -5,7 +5,7 @@ namespace KSA\Login\Factory\Event;
 use KSA\Login\Event\ApplicationEndedEventListener;
 use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Router\ApiLogServiceInterface;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

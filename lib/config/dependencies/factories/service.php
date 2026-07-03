@@ -122,6 +122,8 @@ use Keestash\Factory\ThirdParty\doganoo\DateTimeServiceFactory;
 use Keestash\Factory\ThirdParty\nikolaposa\RateLimit\FileRateLimiterFactory;
 use Keestash\Queue\Handler\EventHandler;
 use Keestash\ThirdParty\nikolaposa\RateLimit\FileRateLimiter;
+use Keestash\ThirdParty\SimpleRbac\Factory\Service\RBACServiceFactory;
+use Keestash\ThirdParty\SimpleRbac\Service\RBACServiceInterface;
 use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
@@ -178,7 +180,7 @@ return [
     // ThirdParty
     , DateTimeService::class                                  => DateTimeServiceFactory::class
     , Connection::class                                       => ConnectionFactory::class
-    , \doganoo\DIP\HTTP\HTTPService::class                    => InvokableFactory::class
+    , \doganoo\DIP\Http\HttpService::class                    => InvokableFactory::class
     , Client::class                                           => InvokableFactory::class
     , FileRateLimiter::class                                  => FileRateLimiterFactory::class
     , ProjectConfiguration::class                             => ProjectConfigurationFactory::class
@@ -200,4 +202,5 @@ return [
 
     , ScheduleUserStateEventListener::class                   => ScheduleUserStateEventListenerListenerFactory::class
     , CollectorService::class                                 => CollectorFactory::class
+    , RBACServiceInterface::class                             => RBACServiceFactory::class
 ];

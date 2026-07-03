@@ -47,7 +47,7 @@ class CSVService implements ICSVService {
         if (false === file_exists($path) || false === is_file($path)) {
             throw new FileNotFoundException();
         }
-        $csv = Reader::createFromPath($path);
+        $csv = Reader::from($path);
 
         if (true === $hasOffset) {
             $csv->setHeaderOffset(0);
@@ -70,7 +70,7 @@ class CSVService implements ICSVService {
         , bool   $hasOffset = true
         , string $delimiter = ','
     ): array {
-        $csv = Reader::createFromString($content);
+        $csv = Reader::fromString($content);
 
         if (true === $hasOffset) {
             $csv->setHeaderOffset(0);

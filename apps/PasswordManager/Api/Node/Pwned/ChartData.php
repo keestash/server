@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Pwned;
 
 use doganoo\PHPAlgorithms\Datastructure\Set\HashSet;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use Keestash\Api\Response\NotFoundResponse;
 use KSA\PasswordManager\Entity\Node\Pwned\Breaches;
 use KSA\PasswordManager\Entity\Node\Pwned\Passwords;
@@ -40,6 +41,26 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/node/pwned/chart/all',
+    operationId: 'passwordManagerPwnedChartData',
+    summary: 'Get pwned password chart data for the current user',
+    tags: ['Password Manager - Pwned'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Pwned chart data',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'passwords', type: 'object'),
+                    new OA\Property(property: 'breaches', type: 'object'),
+                    new OA\Property(property: 'totalAmount', type: 'integer'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class ChartData implements RequestHandlerInterface {
 
     public function __construct(

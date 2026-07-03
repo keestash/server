@@ -73,6 +73,7 @@ final readonly class KeyService implements IKeyService {
 
         $key = new Key();
         $key->setSecret($secret);
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($keyHolder);
         $key->setCreateTs(new DateTime());
 
@@ -121,9 +122,10 @@ final readonly class KeyService implements IKeyService {
      * @throws UnsupportedKeyException
      */
     #[Override]
-    public function createAndStoreKey(IKeyHolder $keyHolder, string $secret): IKey {
+    public function createAndStoreKey(IKeyHolder $keyHolder, string $secret, string $kdfVersion): IKey {
         $key = new Key();
         $key->setSecret($secret);
+        $key->setKdfVersion($kdfVersion);
         $key->setKeyHolder($keyHolder);
         $key->setCreateTs(new DateTimeImmutable());
         return $this->storeKey($keyHolder, $key);
@@ -138,8 +140,11 @@ final readonly class KeyService implements IKeyService {
     public function remove(IKeyHolder $keyHolder): void {
         if ($keyHolder instanceof IUser) {
             $this->userKeyRepository->remove($keyHolder);
-        } else if ($keyHolder instanceof IOrganization) {
+            return;
+        }
+        if ($keyHolder instanceof IOrganization) {
             $this->organizationKeyRepository->remove($keyHolder);
+            return;
         }
         throw new UnsupportedKeyException();
     }

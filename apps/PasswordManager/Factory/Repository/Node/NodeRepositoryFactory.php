@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Repository\Node;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSA\PasswordManager\Repository\PublicShareRepository;
 use KSA\Settings\Repository\IOrganizationRepository;
@@ -39,7 +39,7 @@ class NodeRepositoryFactory {
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
             , $container->get(PublicShareRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IOrganizationRepository::class)
             , $container->get(IJWTService::class)

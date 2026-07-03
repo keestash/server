@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node;
 
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Exception\InvalidNodeTypeException;
+use OpenApi\Attributes as OA;
 use KSA\PasswordManager\Exception\Node\NodeNotRemovedException;
 use KSA\PasswordManager\Exception\PasswordManagerException;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -39,6 +40,29 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @package KSA\PasswordManager\Api\Node
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Delete(
+    path: '/password_manager/node/delete',
+    operationId: 'passwordManagerNodeDelete',
+    summary: 'Delete a password manager node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['node_id'],
+            properties: [
+                new OA\Property(property: 'node_id', type: 'integer'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Nodes'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Node deleted',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Delete implements RequestHandlerInterface {
 
     public function __construct(

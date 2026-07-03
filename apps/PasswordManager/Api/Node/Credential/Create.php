@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential;
 
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
@@ -47,6 +48,37 @@ use Throwable;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Post(
+    path: '/password_manager/node/credential/create',
+    operationId: 'passwordManagerCredentialCreate',
+    summary: 'Create a new credential node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['name', 'username', 'password', 'parent'],
+            properties: [
+                new OA\Property(property: 'name', type: 'string'),
+                new OA\Property(property: 'username', type: 'string', format: 'byte', description: 'Base64-encoded username'),
+                new OA\Property(property: 'password', type: 'string', format: 'byte', description: 'Base64-encoded password'),
+                new OA\Property(property: 'parent', type: 'string', description: 'Parent node ID'),
+                new OA\Property(property: 'url', type: 'string', format: 'byte', description: 'Base64-encoded URL'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Credentials'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Credential created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'edge', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Create implements RequestHandlerInterface {
 
     public function __construct(

@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Get;
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\Api\Version\IVersion;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -34,6 +35,29 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Get(
+    path: '/password_manager/node/get/{node_id}',
+    operationId: 'passwordManagerNodeGet',
+    summary: 'Get a password manager node by ID',
+    tags: ['Password Manager - Nodes'],
+    parameters: [
+        new OA\Parameter(name: 'node_id', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Node data',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'breadCrumb', type: 'array', items: new OA\Items()),
+                    new OA\Property(property: 'node', type: 'object'),
+                    new OA\Property(property: 'pwned', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Get implements RequestHandlerInterface {
 
     public function __construct(private Beta $beta) {

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Command\Security;
 
 use DateTimeImmutable;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Exception\File\FileNotFoundException;
 use KSP\Command\IKeestashCommand;
@@ -38,7 +38,7 @@ class Cors extends KeestashCommand {
     public const ARGUMENT_NAME_HOSTS           = 'hosts';
 
     public function __construct(
-        private readonly IDateTimeService $dateTimeService
+        private readonly DateTimeServiceInterface $dateTimeService
     ) {
         parent::__construct();
     }

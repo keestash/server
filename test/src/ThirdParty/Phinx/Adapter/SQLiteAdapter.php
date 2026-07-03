@@ -29,7 +29,7 @@ use Phinx\Util\Literal;
 
 class SQLiteAdapter extends ParentAdapter {
 
-    protected static $supportedColumnTypes = [
+    protected static array $supportedColumnTypes = [
         AdapterInterface::PHINX_TYPE_BIG_INTEGER   => 'biginteger',
         AdapterInterface::PHINX_TYPE_BINARY        => 'binary_blob',
         AdapterInterface::PHINX_TYPE_BLOB          => 'blob',

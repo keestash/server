@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Worker\Queue;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\Worker\Queue\QueueList;
 use Keestash\Core\Service\Queue\QueueService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -37,7 +37,7 @@ class QueueListFactory implements FactoryInterface {
     ): QueueList {
         return new QueueList(
             $container->get(QueueService::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
         );
     }
 

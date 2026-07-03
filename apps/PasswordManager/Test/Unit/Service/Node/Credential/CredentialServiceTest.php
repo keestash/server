@@ -26,7 +26,6 @@ use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
 use KSA\PasswordManager\Entity\Node\Node;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
-use KSA\PasswordManager\Service\Encryption\EncryptionService;
 use KSA\PasswordManager\Service\Node\Credential\CredentialService;
 use KSA\PasswordManager\Test\Unit\TestCase;
 use KSP\Core\DTO\User\IUser;
@@ -36,7 +35,6 @@ use Ramsey\Uuid\Uuid;
 class CredentialServiceTest extends TestCase {
 
     private CredentialService $credentialService;
-    private EncryptionService $encryptionService;
     private KeyService        $keyService;
     private NodeRepository    $nodeRepository;
 
@@ -44,7 +42,6 @@ class CredentialServiceTest extends TestCase {
     protected function setUp(): void {
         parent::setUp();
         $this->credentialService = $this->getServiceManager()->get(CredentialService::class);
-        $this->encryptionService = $this->getServiceManager()->get(EncryptionService::class);
         $this->keyService        = $this->getServiceManager()->get(KeyService::class);
         $this->nodeRepository    = $this->getServiceManager()->get(NodeRepository::class);
     }

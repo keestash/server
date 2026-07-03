@@ -22,8 +22,9 @@ declare(strict_types=1);
 namespace KSA\Register\Api\User;
 
 use DateTimeImmutable;
-use doganoo\DI\Object\String\IStringService;
+use doganoo\DI\Object\String\StringServiceInterface;
 use Exception;
+use OpenApi\Attributes as OA;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Core\DTO\Payment\Log;
@@ -45,13 +46,49 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/register/add',
+    operationId: 'registerAdd',
+    summary: 'Register a new user account',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['first_name', 'last_name', 'user_name', 'email', 'password', 'password_repeat'],
+            properties: [
+                new OA\Property(property: 'first_name', type: 'string'),
+                new OA\Property(property: 'last_name', type: 'string'),
+                new OA\Property(property: 'user_name', type: 'string'),
+                new OA\Property(property: 'email', type: 'string', format: 'email'),
+                new OA\Property(property: 'password', type: 'string', format: 'password'),
+                new OA\Property(property: 'password_repeat', type: 'string', format: 'password'),
+                new OA\Property(property: 'phone', type: 'string'),
+                new OA\Property(property: 'terms_and_conditions', type: 'string'),
+                new OA\Property(property: 'website', type: 'string', format: 'uri'),
+                new OA\Property(property: 'key', type: 'string'),
+                new OA\Property(property: 'kdf_version', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Registration'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User registration result',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'responseCode', type: 'integer'),
+                ]
+            )
+        ),
+    ]
+)]
 readonly final class Add implements RequestHandlerInterface {
 
     public function __construct(
         private UserService              $userService
         , private LoggerInterface        $logger
         , private IUserRepositoryService $userRepositoryService
-        , private IStringService         $stringService
+        , private StringServiceInterface         $stringService
         , private IPaymentService        $paymentService
         , private IPaymentLogRepository  $paymentLogRepository
         , private Application            $application
@@ -81,6 +118,7 @@ readonly final class Add implements RequestHandlerInterface {
         $termsAndConditions = $this->getParameter("terms_and_conditions", $request);
         $website            = $this->getParameter("website", $request);
         $key                = $this->getParameter("key", $request);
+        $kdfVersion         = $this->getParameter("kdf_version", $request);
         // TODO fix
         $phone   = '00000000000';
         $website = $this->application->getMetaData()->get('web');
@@ -206,6 +244,7 @@ readonly final class Add implements RequestHandlerInterface {
             new UserRegisteredEvent(
                 $user,
                 $key,
+                $kdfVersion,
                 Type::REGULAR,
                 1
             )

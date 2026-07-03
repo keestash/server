@@ -24,6 +24,7 @@ namespace KSA\Register\Api\User;
 use DateTime;
 use DateTimeImmutable;
 use Keestash\Api\Response\OkResponse;
+use OpenApi\Attributes as OA;
 use Keestash\Core\DTO\User\NullUserState;
 use KSA\Register\Entity\IResponseCodes;
 use KSP\Api\IResponse;
@@ -35,6 +36,32 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Get(
+    path: '/register/reset-password/retrieve/{hash}',
+    operationId: 'registerResetPasswordRetrieve',
+    summary: 'Retrieve user info for a password reset hash',
+    tags: ['Registration'],
+    parameters: [
+        new OA\Parameter(name: 'hash', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User info retrieved',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(
+                        property: 'user',
+                        properties: [
+                            new OA\Property(property: 'name', type: 'string'),
+                        ],
+                        type: 'object'
+                    ),
+                ]
+            )
+        ),
+    ]
+)]
 class ResetPasswordRetrieve implements RequestHandlerInterface {
 
     public function __construct(

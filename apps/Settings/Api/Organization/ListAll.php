@@ -27,10 +27,33 @@ use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\Repository\User\IUserRepository;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Get(
+    path: '/organizations/all',
+    operationId: 'organizationsListAll',
+    summary: 'List all organizations',
+    tags: ['Organizations'],
+    parameters: [
+        new OA\Parameter(name: 'includeInactive', in: 'query', required: false, schema: new OA\Schema(type: 'boolean')),
+        new OA\Parameter(name: 'userHash', in: 'query', required: false, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'List of organizations',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'organizations', type: 'array', items: new OA\Items(type: 'object')),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class ListAll implements RequestHandlerInterface {
 
     public function __construct(private readonly IOrganizationRepository $organizationRepository, private readonly IUserRepository       $userRepository)

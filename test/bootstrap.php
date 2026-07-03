@@ -31,7 +31,7 @@ use KSP\Core\Service\Phinx\IMigrator;
 use KST\Service\Exception\WarningException;
 use KST\Service\Service\UserService;
 use KST\Service\ThirdParty\Phinx\Adapter\SQLiteAdapter;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Phinx\Db\Adapter\AdapterFactory;
 use Psr\Container\ContainerInterface;
 use KSP\Core\Service\Instance\IInstallerService;

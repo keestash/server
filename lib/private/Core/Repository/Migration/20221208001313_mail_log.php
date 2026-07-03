@@ -22,7 +22,7 @@ final class MailLog extends KeestashMigration {
                 "id"
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "100"
+                    'length' => 100
                     , "comment" => "The logs's id"
                     , "null"    => false
                 ]
@@ -31,7 +31,7 @@ final class MailLog extends KeestashMigration {
                 'subject'
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "100"
+                    'length' => 100
                     , "comment" => "The summary of the mail"
                     , "null"    => false
                 ]

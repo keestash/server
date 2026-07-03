@@ -21,9 +21,9 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\User;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
-use Interop\Container\ContainerInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
+use Psr\Container\ContainerInterface;
 use Keestash\Core\Repository\User\UserRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\LDAP\ILDAPUserRepository;
@@ -35,7 +35,7 @@ class UserRepositoryFactory {
     public function __invoke(ContainerInterface $container): IUserRepository {
         return new UserRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
             , $container->get(RBACRepositoryInterface::class)
             , $container->get(ILDAPUserRepository::class)

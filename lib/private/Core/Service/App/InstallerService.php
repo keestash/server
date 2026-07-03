@@ -24,7 +24,6 @@ namespace Keestash\Core\Service\App;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use KSP\Core\DTO\App\Config\IApp;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use KSP\Core\Repository\Job\IJobRepository;
 use KSP\Core\Service\App\IAppService;
 use KSP\Core\Service\Phinx\IMigrator;
 
@@ -35,7 +34,6 @@ final readonly class InstallerService {
     public function __construct(
         private IMigrator      $migrator,
         private IAppRepository $appRepository,
-        private IJobRepository $jobRepository,
         private IAppService    $appService
     ) {
     }
@@ -61,7 +59,6 @@ final readonly class InstallerService {
     public function install(IApp $app): bool {
         $apps = $this->appRepository->replace($app);
         if (false === $apps) return false;
-        $this->jobRepository->replaceJobs($app->getBackgroundJobs());
         return true;
     }
 

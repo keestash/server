@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Repository\Node\Credential\AdditionalData;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
 use KSA\PasswordManager\Entity\Node\Node;
@@ -32,7 +32,7 @@ class AdditionalDataRepository {
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
     ) {
     }
 

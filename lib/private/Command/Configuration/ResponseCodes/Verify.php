@@ -26,7 +26,7 @@ use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
 use Keestash\Exception\KeestashException;
 use KSP\Command\IKeestashCommand;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

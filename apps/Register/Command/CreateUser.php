@@ -32,6 +32,7 @@ use KSA\Register\Event\UserRegisteredEvent;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\IEncryptionService;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -138,6 +139,7 @@ class CreateUser extends KeestashCommand {
             new UserRegisteredEvent(
                 $user
                 , base64_encode($key) // TODO add key
+                , IKey::KDF_VERSION_SCRYPT_AES_GCM_V1
                 , Type::CLI
                 , 1
             )

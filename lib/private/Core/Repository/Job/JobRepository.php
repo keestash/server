@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\Job;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\BackgroundJob\Job;
 use Keestash\Core\DTO\BackgroundJob\JobList;
 use Keestash\Exception\Job\JobNotCreatedException;
@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
 
 class JobRepository implements IJobRepository {
 
-    public function __construct(private readonly IBackend           $backend, private readonly IDateTimeService $dateTimeService, private readonly LoggerInterface          $logger)
+    public function __construct(private readonly IBackend           $backend, private readonly DateTimeServiceInterface $dateTimeService, private readonly LoggerInterface          $logger)
     {
     }
 

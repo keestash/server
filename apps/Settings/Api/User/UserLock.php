@@ -23,6 +23,7 @@ namespace KSA\Settings\Api\User;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\User\UserStateName;
+use OpenApi\Attributes as OA;
 use Keestash\Core\Service\User\Event\UserStateLockEvent;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\UserNotFoundException;
@@ -36,6 +37,29 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/users/lock',
+    operationId: 'usersLock',
+    summary: 'Lock a user account',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['user_id'],
+            properties: [
+                new OA\Property(property: 'user_id', type: 'integer'),
+            ]
+        )
+    ),
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User locked',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 readonly class UserLock implements RequestHandlerInterface {
 
     public function __construct(

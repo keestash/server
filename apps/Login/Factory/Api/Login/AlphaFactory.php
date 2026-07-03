@@ -29,7 +29,6 @@ use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
@@ -57,7 +56,6 @@ class AlphaFactory implements FactoryInterface {
             , $container->get(LoggerInterface::class)
             , $container->get(ILDAPService::class)
             , $container->get(IConnectionRepository::class)
-            , $container->get(IDerivationService::class)
             , $container->get(IResponseService::class)
             , $container->get(IKeyService::class)
         );

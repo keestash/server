@@ -22,6 +22,7 @@ declare(strict_types=1);
 namespace KSA\PasswordManager\Api\Node\Credential\AdditionalData;
 
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Exception\Node\NotFoundException;
@@ -35,6 +36,23 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Delete(
+    path: '/password_manager/credential/additional_data/delete/{advid}',
+    operationId: 'passwordManagerAdditionalDataDelete',
+    summary: 'Delete an additional data entry',
+    tags: ['Password Manager - Credentials'],
+    parameters: [
+        new OA\Parameter(name: 'advid', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Additional data deleted',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Delete implements RequestHandlerInterface {
 
     public function __construct(

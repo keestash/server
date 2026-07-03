@@ -24,6 +24,7 @@ namespace KSA\PasswordManager\Api\Node\Credential\Update;
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\Api\Version\IVersion;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -37,6 +38,33 @@ use Psr\Http\Server\RequestHandlerInterface;
  *      handle non existent parameters
  *      handle more fields
  */
+#[OA\Post(
+    path: '/password_manager/credential/update',
+    operationId: 'passwordManagerCredentialUpdate',
+    summary: 'Update a credential node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['nodeId'],
+            properties: [
+                new OA\Property(property: 'nodeId', type: 'integer'),
+                new OA\Property(property: 'name', type: 'string'),
+                new OA\Property(property: 'username', type: 'string', format: 'byte', description: 'Base64-encoded username'),
+                new OA\Property(property: 'password', type: 'string', format: 'byte', description: 'Base64-encoded password'),
+                new OA\Property(property: 'url', type: 'string', format: 'byte', description: 'Base64-encoded URL'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Credentials'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Credential updated',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Update implements RequestHandlerInterface {
 
     public function __construct(private Beta $beta) {

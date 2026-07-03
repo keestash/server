@@ -24,6 +24,7 @@ namespace KSA\Register\Api\User;
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\User\NullUserState;
+use OpenApi\Attributes as OA;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSP\Api\IResponse;
 use KSP\Core\Repository\User\IUserStateRepository;
@@ -34,6 +35,28 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/register/confirm',
+    operationId: 'registerConfirm',
+    summary: 'Confirm a user registration via email token',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['token'],
+            properties: [
+                new OA\Property(property: 'token', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Registration'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Registration confirmed',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ]
+)]
 readonly final class Confirm implements RequestHandlerInterface {
 
     public function __construct(

@@ -5,7 +5,7 @@ namespace Keestash\Core\DTO\RBAC;
 
 use DateTimeInterface;
 use doganoo\PHPAlgorithms\Common\Interfaces\IComparable;
-use doganoo\SimpleRBAC\Entity\PermissionInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\PermissionInterface;
 use KSP\Core\DTO\RBAC\IPermission;
 
 class Permission implements IPermission {

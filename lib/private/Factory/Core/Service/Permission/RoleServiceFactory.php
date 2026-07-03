@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\Permission;
 
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Core\Service\Permission\RoleService;
 use KSP\Core\Service\Permission\IRoleService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

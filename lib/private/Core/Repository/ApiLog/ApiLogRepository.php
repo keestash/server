@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Repository\ApiLog;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Instance\Request\ApiLog;
 use KSP\Core\Backend\IBackend;
@@ -32,7 +32,7 @@ final readonly class ApiLogRepository implements IApiLogRepository {
 
     public function __construct(
         private IBackend         $backend,
-        private IDateTimeService $dateTimeService
+        private DateTimeServiceInterface $dateTimeService
     ) {
     }
 

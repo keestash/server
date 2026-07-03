@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Repository;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\Settings\Repository\SettingsRepository;
 use KSP\Core\Backend\IBackend;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -38,7 +38,7 @@ class SettingsRepositoryFactory implements FactoryInterface {
     ): SettingsRepository {
         return new SettingsRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

@@ -26,11 +26,30 @@ use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Repository\IUserSettingRepository;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Token\IToken;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/node/pwned/is_active',
+    operationId: 'passwordManagerPwnedIsActive',
+    summary: 'Check whether pwned password checking is active for the current user',
+    tags: ['Password Manager - Pwned'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Active state',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'active', type: 'boolean'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class IsActive implements RequestHandlerInterface {
 
     public function __construct(

@@ -25,10 +25,25 @@ use Keestash\Api\Response\OkResponse;
 use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Service\Metric\ICollectorService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/logout/submit',
+    operationId: 'logoutSubmit',
+    summary: 'Invalidate the current session token',
+    tags: ['Authentication'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Logout successful',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Logout implements RequestHandlerInterface {
 
     public function __construct(

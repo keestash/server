@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\PasswordManager\Factory\Repository\Node;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\File\FileRepository as CoreFileRepository;
 use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
@@ -36,7 +36,7 @@ class FileRepositoryFactory {
         return new FileRepository(
             $container->get(IBackend::class)
             , $container->get(NodeRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(CoreFileRepository::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IJWTService::class)

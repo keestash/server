@@ -23,8 +23,8 @@ namespace Keestash\Core\Service\User;
 
 use DateTime;
 use DateTimeImmutable;
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\DI\Object\String\IStringService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use doganoo\DI\Object\String\StringServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash;
@@ -37,7 +37,7 @@ use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\Validator\EmailAddress as EmailValidator;
 use Laminas\Validator\Uri as UriValidator;
@@ -47,8 +47,8 @@ final readonly class UserService implements IUserService {
 
     public function __construct(
         private Application              $legacy
-        , private IDateTimeService       $dateTimeService
-        , private IStringService         $stringService
+        , private DateTimeServiceInterface       $dateTimeService
+        , private StringServiceInterface         $stringService
         , private IUserRepositoryService $userRepositoryService
         , private EmailValidator         $emailValidator
         , private PhoneValidator         $phoneValidator
@@ -62,6 +62,11 @@ final readonly class UserService implements IUserService {
     #[\Override]
     public function verifyPassword(string $password, string $hash): bool {
         return true === password_verify($password, $hash);
+    }
+
+    #[\Override]
+    public function needsRehash(string $hash): bool {
+        return true === password_needs_rehash($hash, PASSWORD_ARGON2ID);
     }
 
     #[\Override]
@@ -170,7 +175,7 @@ final readonly class UserService implements IUserService {
     #[\Override]
     public function hashPassword(string $plain): string {
         /** @var string|false|null $hashed */
-        $hashed = password_hash($plain, PASSWORD_BCRYPT);
+        $hashed = password_hash($plain, PASSWORD_ARGON2ID);
         if (false === is_string($hashed)) {
             throw new KeestashException();
         }

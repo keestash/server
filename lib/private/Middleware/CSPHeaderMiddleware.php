@@ -77,6 +77,7 @@ class CSPHeaderMiddleware implements MiddlewareInterface {
             $value = $value . $this->generateValue(
                     $name
                     , [
+                        "'self'",
                         $backendUrl,
                         $frontendUrl
                     ]
@@ -92,10 +93,11 @@ class CSPHeaderMiddleware implements MiddlewareInterface {
                 , ["'script'"]
             );
 
-        return $handler->handle($request)->withHeader(
-            IResponse::HEADER_CONTENT_SECURITY_POLICY
-            , $value
-        );
+        return $handler->handle($request)
+            ->withHeader(IResponse::HEADER_CONTENT_SECURITY_POLICY, $value)
+            ->withHeader('X-Frame-Options', 'DENY')
+            ->withHeader('X-Content-Type-Options', 'nosniff')
+            ->withHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     }
 
     private function generateValue(string $name, array $values): string {

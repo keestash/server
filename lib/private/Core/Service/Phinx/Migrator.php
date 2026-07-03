@@ -27,7 +27,7 @@ use Keestash\Exception\KeestashException;
 use KSP\Core\Service\Config\IConfigService;
 use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Phinx\IMigrator;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Phinx\Console\PhinxApplication;
 use Phinx\Wrapper\TextWrapper;
 

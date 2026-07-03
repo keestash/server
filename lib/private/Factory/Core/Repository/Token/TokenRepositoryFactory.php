@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\Token;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\Token\TokenRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Token\ITokenRepository;
@@ -35,7 +35,7 @@ class TokenRepositoryFactory {
         return new TokenRepository(
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

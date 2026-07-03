@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Credential\AdditionalData;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\AdditionalData\AdditionalData;
@@ -38,6 +39,35 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
+#[OA\Post(
+    path: '/password_manager/credential/additional_data/add',
+    operationId: 'passwordManagerAdditionalDataAdd',
+    summary: 'Add an additional data entry to a credential',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['credentialId', 'key', 'value'],
+            properties: [
+                new OA\Property(property: 'credentialId', type: 'integer'),
+                new OA\Property(property: 'key', type: 'string'),
+                new OA\Property(property: 'value', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Credentials'],
+    responses: [
+        new OA\Response(
+            response: 201,
+            description: 'Additional data created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'data', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Add implements RequestHandlerInterface {
 
     public function __construct(

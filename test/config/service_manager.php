@@ -21,7 +21,7 @@ declare(strict_types=1);
  */
 
 use Keestash\ConfigProvider;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\ServiceManager;
 
 require __DIR__ . '/../../vendor/autoload.php';

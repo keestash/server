@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Attachment;
 
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\File\FileNotDeletedException;
+use OpenApi\Attributes as OA;
 use Keestash\Exception\File\FileNotFoundException;
 use Keestash\Exception\Repository\NoRowsFoundException;
 use KSA\Activity\Service\IActivityService;
@@ -41,6 +42,37 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Delete(
+    path: '/password_manager/attachments/remove',
+    operationId: 'passwordManagerAttachmentRemove',
+    summary: 'Remove an attachment from a node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: 'node',
+                    properties: [new OA\Property(property: 'id', type: 'integer')],
+                    type: 'object'
+                ),
+                new OA\Property(
+                    property: 'file',
+                    properties: [new OA\Property(property: 'id', type: 'integer')],
+                    type: 'object'
+                ),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Attachments'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Attachment removed',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Remove implements RequestHandlerInterface {
 
     public const CONTEXT = "node_attachments";

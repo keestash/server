@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Repository;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSA\Settings\Repository\IOrganizationUserRepository;
 use KSA\Settings\Repository\OrganizationRepository;
@@ -34,7 +34,7 @@ class OrganizationRepositoryFactory {
     public function __invoke(ContainerInterface $container): IOrganizationRepository {
         return new OrganizationRepository(
             $container->get(IOrganizationUserRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(IBackend::class)
             , $container->get(LoggerInterface::class)
         );

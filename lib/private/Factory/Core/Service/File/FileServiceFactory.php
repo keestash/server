@@ -25,7 +25,7 @@ use Keestash\Core\Service\File\FileService;
 use Keestash\Core\Service\File\RawFile\RawFileService;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\IFileService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class FileServiceFactory {

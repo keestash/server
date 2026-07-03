@@ -25,7 +25,7 @@ use DateTime;
 use doganoo\PHPUtil\Util\DateTimeUtil;
 use Keestash;
 use Keestash\ConfigProvider;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use PDO;
 
 class InstanceDB {

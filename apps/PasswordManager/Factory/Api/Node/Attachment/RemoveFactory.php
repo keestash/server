@@ -29,7 +29,7 @@ use KSA\PasswordManager\Repository\Node\FileRepository;
 use KSA\PasswordManager\Service\AccessService;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\L10N\IL10N;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 

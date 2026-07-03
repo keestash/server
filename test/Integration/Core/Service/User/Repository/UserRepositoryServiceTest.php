@@ -21,6 +21,7 @@ declare(strict_types=1);
 
 namespace KST\Integration\Core\Service\User\Repository;
 
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
 use KSP\Core\Service\Encryption\Key\IKeyService;
@@ -63,7 +64,7 @@ class UserRepositoryServiceTest extends TestCase {
                 ]
             )
         );
-        $this->keyService->createAndStoreKey($user, base64_encode(uniqid()));
+        $this->keyService->createAndStoreKey($user, base64_encode(uniqid()), IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
 
         $this->assertInstanceOf(IUser::class, $user);
         $this->assertTrue(

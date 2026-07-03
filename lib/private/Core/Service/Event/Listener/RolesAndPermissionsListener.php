@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Event\Listener;
 
-use doganoo\SimpleRBAC\Entity\RoleInterface;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Core\Service\User\Event\UserCreatedEvent;
 use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;

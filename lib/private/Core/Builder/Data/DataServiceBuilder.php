@@ -24,7 +24,7 @@ namespace Keestash\Core\Builder\Data;
 use Keestash\Core\Service\Core\Data\DataService;
 use KSP\Core\Builder\Data\IDataServiceBuilder;
 use KSP\Core\Service\Core\Data\IDataService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 
 class DataServiceBuilder implements IDataServiceBuilder {
 

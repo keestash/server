@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Permission;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\Permission\Get;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
@@ -37,7 +37,7 @@ class GetFactory implements FactoryInterface {
     ):Get {
         return new Get(
             $container->get(RBACRepositoryInterface::class)
-            ,$container->get(IDateTimeService::class)
+            ,$container->get(DateTimeServiceInterface::class)
         );
     }
 

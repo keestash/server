@@ -24,10 +24,34 @@ namespace KSA\PasswordManager\Api\Node\Share\Regular;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Repository\Node\NodeRepository;
 use KSP\Api\IResponse;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/password_manager/share/remove',
+    operationId: 'passwordManagerShareRemove',
+    summary: 'Remove a regular share',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['shareId'],
+            properties: [
+                new OA\Property(property: 'shareId', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Sharing'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Share removed',
+            content: new OA\JsonContent(type: 'object')
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Remove implements RequestHandlerInterface {
 
     public function __construct(

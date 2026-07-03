@@ -26,7 +26,7 @@ use Keestash\Core\Builder\Data\DataServiceBuilder;
 use KSP\Core\Repository\Queue\IQueueRepository;
 use KSP\Core\Service\Queue\IQueueService;
 use KSP\Queue\Handler\IEventHandler;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

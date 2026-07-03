@@ -28,7 +28,7 @@ final class UserSettings extends KeestashMigration {
                 "key"
                 , KeestashMigration::STRING
                 , [
-                    "length"    => "100"
+                    'length' => 100
                     , "comment" => "The setting name"
                     , "null"    => false
                 ]

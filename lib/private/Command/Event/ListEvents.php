@@ -23,7 +23,7 @@ namespace Keestash\Command\Event;
 
 use Keestash\Command\KeestashCommand;
 use Keestash\ConfigProvider;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

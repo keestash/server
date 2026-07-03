@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTime;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Folder\Folder;
@@ -42,6 +43,34 @@ use Psr\Http\Server\RequestHandlerInterface;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Post(
+    path: '/password_manager/node/folder/create',
+    operationId: 'passwordManagerFolderCreate',
+    summary: 'Create a new folder node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['name', 'node_id'],
+            properties: [
+                new OA\Property(property: 'name', type: 'string'),
+                new OA\Property(property: 'node_id', type: 'string'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Nodes'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Folder created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'edge', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Create implements RequestHandlerInterface {
 
     public function __construct(

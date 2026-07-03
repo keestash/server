@@ -43,7 +43,7 @@ class Organizations extends KeestashMigration {
                 "password"
                 , "string"
                 , [
-                    "length"    => "500"
+                    'length' => 500
                     , "comment" => "The organizations's password"
                     , "null"    => false
                     , "after"   => "name"

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\EncryptionKey\Organization;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Core\Repository\EncryptionKey\KeyRepository;
 use Keestash\Exception\KeestashException;
@@ -37,7 +37,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly LoggerInterface  $logger
     ) {
         parent::__construct($backend, $dateTimeService, $logger);
@@ -92,6 +92,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             [
                 'k.id'
                 , 'k.value'
+                , 'k.kdf_version'
                 , 'k.create_ts'
             ]
         )
@@ -108,6 +109,7 @@ class OrganizationKeyRepository extends KeyRepository implements IOrganizationKe
             $key = new Key();
             $key->setId((int) $row['id']);
             $key->setSecret((string) $row['value']);
+            $key->setKdfVersion((string) $row['kdf_version']);
             $key->setCreateTs($this->dateTimeService->fromFormat((string) $row['create_ts']));
             $key->setKeyHolder($organization);
         }

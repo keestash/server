@@ -25,6 +25,7 @@ use DateTime;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Api\Response\NotFoundResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
+use OpenApi\Attributes as OA;
 use Keestash\Exception\File\FileNotCreatedException;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
@@ -43,13 +44,45 @@ use KSP\Core\Service\Core\Data\IDataService;
 use KSP\Core\Service\File\Upload\IFileService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/password_manager/attachments/add',
+    operationId: 'passwordManagerAttachmentAdd',
+    summary: 'Upload attachments to a credential node',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\MediaType(
+            mediaType: 'multipart/form-data',
+            schema: new OA\Schema(
+                properties: [
+                    new OA\Property(property: 'node_id', type: 'string'),
+                    new OA\Property(property: 'name', type: 'string'),
+                    new OA\Property(property: 'files', type: 'array', items: new OA\Items(type: 'string', format: 'binary')),
+                ]
+            )
+        )
+    ),
+    tags: ['Password Manager - Attachments'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Attachment upload result',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'files', type: 'array', items: new OA\Items()),
+                    new OA\Property(property: 'error', type: 'array', items: new OA\Items()),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Add implements RequestHandlerInterface {
 
     public const string FIELD_NAME_NAME     = "name";

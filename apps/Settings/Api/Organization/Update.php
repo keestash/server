@@ -24,6 +24,7 @@ namespace KSA\Settings\Api\Organization;
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Exception\OrganizationNotUpdatedException;
+use OpenApi\Attributes as OA;
 use KSA\Settings\Event\Organization\OrganizationUpdatedEvent;
 use KSA\Settings\Repository\IOrganizationRepository;
 use KSP\Api\IResponse;
@@ -34,6 +35,35 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+#[OA\Post(
+    path: '/organizations/update',
+    operationId: 'organizationsUpdate',
+    summary: 'Update an organization',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['id', 'name'],
+            properties: [
+                new OA\Property(property: 'id', type: 'integer'),
+                new OA\Property(property: 'name', type: 'string'),
+                new OA\Property(property: 'active', type: 'boolean'),
+            ]
+        )
+    ),
+    tags: ['Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Organization updated',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'organization', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Update implements RequestHandlerInterface {
 
     public function __construct(private readonly IOrganizationService      $organizationService, private readonly IOrganizationRepository $organizationRepository, private readonly LoggerInterface                 $logger, private readonly IEventService           $eventManager)

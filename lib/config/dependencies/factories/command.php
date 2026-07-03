@@ -130,5 +130,6 @@ return [
     , TestEmail::class                        => TestEmailFactory::class
     , ResponseCodeListAll::class              => ResponseCodeListAllFactory::class
     , Verify::class                           => VerifyFactory::class
-    , \Keestash\Command\ApiLog\ListAll::class => \Keestash\Factory\Command\ApiLog\ListAllFactory::class
+    , \Keestash\Command\ApiLog\ListAll::class    => \Keestash\Factory\Command\ApiLog\ListAllFactory::class
+    , \Keestash\Command\GenerateOpenApi::class   => \Keestash\Factory\Command\GenerateOpenApiFactory::class
 ];

@@ -22,9 +22,9 @@ declare(strict_types=1);
 namespace Keestash\Command\Role;
 
 use DateTimeImmutable;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Command\KeestashCommand;
 use Keestash\Core\DTO\RBAC\NullRole;
 use Keestash\Core\DTO\RBAC\Role;
@@ -37,7 +37,7 @@ class Add extends KeestashCommand {
 
     public function __construct(
         private readonly RBACRepositoryInterface $rbacRepository
-        , private readonly IDateTimeService      $dateTimeService
+        , private readonly DateTimeServiceInterface      $dateTimeService
     ) {
         parent::__construct();
     }

@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace KSA\Settings\Repository;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Lists\ArrayList\ArrayList;
 use Keestash\Core\DTO\Organization\Organization;
 use Keestash\Exception\OrganizationNotUpdatedException;
@@ -36,7 +36,7 @@ use Psr\Log\LoggerInterface;
 
 class OrganizationRepository implements IOrganizationRepository {
 
-    public function __construct(private readonly IOrganizationUserRepository $organizationUserRepository, private readonly IDateTimeService          $dateTimeService, private readonly IBackend                  $backend, private readonly LoggerInterface                   $logger)
+    public function __construct(private readonly IOrganizationUserRepository $organizationUserRepository, private readonly DateTimeServiceInterface          $dateTimeService, private readonly IBackend                  $backend, private readonly LoggerInterface                   $logger)
     {
     }
 

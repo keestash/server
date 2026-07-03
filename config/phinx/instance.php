@@ -23,7 +23,7 @@ declare(strict_types=1);
 use Doctrine\DBAL\Connection;
 use Keestash\ConfigProvider;
 use Keestash\Core\Repository\Migration\Base\KeestashMigration;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 
 require realpath(__DIR__ . '/../config.php');

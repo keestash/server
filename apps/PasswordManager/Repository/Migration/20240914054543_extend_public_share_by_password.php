@@ -22,7 +22,7 @@ final class ExtendPublicShareByPassword extends KeestashMigration {
                 "password"
                 , "string"
                 , [
-                    "length"    => "500"
+                    'length' => 500
                     , "comment" => "The password to protect the share"
                     , "null"    => false
                     , "after"   => "hash"

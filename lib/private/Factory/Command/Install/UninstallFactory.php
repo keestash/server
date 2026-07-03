@@ -23,7 +23,7 @@ namespace Keestash\Factory\Command\Install;
 
 use Keestash\Command\Install\Uninstall;
 use Keestash\Core\Repository\Instance\InstanceRepository;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Container\ContainerInterface;
 
 class UninstallFactory {

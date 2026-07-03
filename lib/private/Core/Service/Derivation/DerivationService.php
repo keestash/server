@@ -22,8 +22,8 @@ declare(strict_types=1);
 namespace Keestash\Core\Service\Derivation;
 
 use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\Derivation\Scrypt;
 use KSP\Core\Service\Derivation\IDerivationService;
-use Laminas\Crypt\Key\Derivation\Scrypt;
 use Psr\Log\LoggerInterface;
 
 final readonly class DerivationService implements IDerivationService {
@@ -40,7 +40,7 @@ final readonly class DerivationService implements IDerivationService {
             $raw
             , (string) $this->instanceDb->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
             , 2048
-            , 2
+            , 8
             , 1
             , 32
         );

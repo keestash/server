@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Core\Repository\AppRepository;
 
 use Doctrine\DBAL\Exception;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\Core\DTO\App\Config\App;
 use Keestash\Exception\App\AppNotFoundException;
@@ -36,7 +36,7 @@ class AppRepository implements IAppRepository {
 
     public function __construct(
         private readonly IBackend           $backend
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly LoggerInterface  $logger
     ) {
     }

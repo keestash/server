@@ -21,15 +21,15 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Service\User;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\DI\Object\String\IStringService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use doganoo\DI\Object\String\StringServiceInterface;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\I18n\Validator\PhoneNumber;
 use Laminas\Validator\EmailAddress;
 use Laminas\Validator\Uri;
@@ -40,8 +40,8 @@ class UserServiceFactory {
     public function __invoke(ContainerInterface $container): IUserService {
         return new UserService(
             $container->get(Application::class)
-            , $container->get(IDateTimeService::class)
-            , $container->get(IStringService::class)
+            , $container->get(DateTimeServiceInterface::class)
+            , $container->get(StringServiceInterface::class)
             , $container->get(IUserRepositoryService::class)
             , $container->get(EmailAddress::class)
             , $container->get(PhoneNumber::class)

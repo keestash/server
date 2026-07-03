@@ -23,7 +23,6 @@ namespace KSA\PasswordManager\Api\Node\Credential\Update;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
-use Keestash\Core\DTO\Encryption\Password\Password;
 use KSA\Activity\Service\IActivityService;
 use KSA\PasswordManager\ConfigProvider;
 use KSA\PasswordManager\Entity\Node\Credential\Credential;
@@ -80,7 +79,7 @@ final readonly class Beta implements RequestHandlerInterface {
         }
 
         if (null !== $url) {
-            $node->setUrl(base64_decode($username));
+            $node->setUrl(base64_decode($url));
             $node->setUpdateTs(new DateTimeImmutable());
             $hasChanges = true;
         }
@@ -88,12 +87,8 @@ final readonly class Beta implements RequestHandlerInterface {
         if (null !== $password) {
             $node->setPassword(base64_decode($password));
 
-            $corePassword = new Password();
-            $corePassword->setValue((string) $node->getPassword());
-            $corePassword->setCharacterSet([]);
-
-            // todo currently, there is no entropy measured
-            $node->setEntropy(base64_decode(''));
+            // Credential fields are encrypted on the client; entropy is a client concern.
+            $node->setEntropy('');
 
             $node->setUpdateTs(new DateTimeImmutable());
             $hasChanges = true;

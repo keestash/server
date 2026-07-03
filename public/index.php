@@ -25,7 +25,7 @@ use Keestash\Core\DTO\Event\ApplicationStartedEvent;
 use KSP\Api\IVerb;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use KSP\Core\Service\Event\IEventService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Mezzio\Application;
 use Psr\Container\ContainerInterface;
 

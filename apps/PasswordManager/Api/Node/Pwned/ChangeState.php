@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Pwned;
 
 use DateTimeImmutable;
 use Keestash\Api\Response\JsonResponse;
+use OpenApi\Attributes as OA;
 use KSA\Settings\Entity\UserSetting;
 use KSA\Settings\Exception\SettingNotFoundException;
 use KSA\Settings\Repository\IUserSettingRepository;
@@ -34,6 +35,33 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/password_manager/node/pwned/change_state',
+    operationId: 'passwordManagerPwnedChangeState',
+    summary: 'Activate or deactivate pwned password checking',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['activate'],
+            properties: [
+                new OA\Property(property: 'activate', type: 'boolean'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Pwned'],
+    responses: [
+        new OA\Response(
+            response: 201,
+            description: 'State changed',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'active', type: 'boolean'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class ChangeState implements RequestHandlerInterface {
 
     public const USER_SETTING_PWNED_ACTIVE = 'active.pwned.setting.user';

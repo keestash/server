@@ -29,7 +29,7 @@ use KSP\Core\DTO\Event\IEvent;
 use KSP\Core\Service\Event\Listener\IListener;
 use KSP\Core\Service\Metric\ICollectorService;
 use KSP\Core\Service\Router\ApiLogServiceInterface;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 

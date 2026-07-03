@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\User;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\User\UserStateRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\User\IUserRepository;
@@ -35,7 +35,7 @@ class UserStateRepositoryFactory {
         return new UserStateRepository(
             $container->get(IBackend::class)
             , $container->get(IUserRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

@@ -36,7 +36,6 @@ use KSP\Core\Repository\Token\ITokenRepository;
 use KSP\Core\Repository\User\IUserRepository;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\HTTP\IJWTService;
 use KSP\Core\Service\HTTP\IResponseService;
@@ -58,7 +57,6 @@ final readonly class Alpha {
         , private LoggerInterface       $logger
         , private ILDAPService          $ldapService
         , private IConnectionRepository $connectionRepository
-        , private IDerivationService    $derivationService
         , private IResponseService      $responseService
         , private IKeyService           $keyService
     ) {
@@ -73,17 +71,12 @@ final readonly class Alpha {
         $user = $this->userRepository->getUser($userName);
 
         if ($user instanceof NullUser) {
-            $this->logger->error(
-                'error retrieving user',
-                [
-                    'userName' => $userName
-                ]
-            );
+            $this->logger->error('error retrieving user');
             return new JsonResponse(
                 [
-                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_NOT_FOUND)
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_INVALID_CREDENTIALS)
                 ]
-                , IResponse::NOT_FOUND
+                , IResponse::UNAUTHORIZED
             );
         }
 
@@ -112,6 +105,13 @@ final readonly class Alpha {
         } else {
             $this->logger->debug('verifying regular user');
             $verified = $this->userService->verifyPassword($password, $user->getPassword());
+
+            // Lazily upgrade legacy password hashes (e.g. bcrypt -> Argon2id)
+            // now that we hold the plaintext and the check succeeded.
+            if (true === $verified && true === $this->userService->needsRehash($user->getPassword())) {
+                $user->setPassword($this->userService->hashPassword($password));
+                $this->userRepository->update($user);
+            }
         }
 
         if (false === $verified) {
@@ -144,8 +144,8 @@ final readonly class Alpha {
                     "isSaas"   => true === $isSaas
                 ],
                 "user"       => $user,
-                'derivation' => base64_encode($this->derivationService->derive($user->getPassword())),
-                'key'        => base64_encode($key->getSecret())
+                'key'        => base64_encode($key->getSecret()),
+                'kdf_version' => $key->getKdfVersion(),
             ],
             statusCode: IResponse::OK,
             headers: [

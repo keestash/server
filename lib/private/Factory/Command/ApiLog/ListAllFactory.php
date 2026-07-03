@@ -2,7 +2,7 @@
 
 namespace Keestash\Factory\Command\ApiLog;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\ApiLog\ListAll;
 use KSP\Core\Repository\ApiLog\IApiLogRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -18,7 +18,7 @@ class ListAllFactory implements FactoryInterface {
     ): ListAll {
         return new ListAll(
             $container->get(IApiLogRepository::class),
-            $container->get(IDateTimeService::class)
+            $container->get(DateTimeServiceInterface::class)
         );
     }
 

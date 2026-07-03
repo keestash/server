@@ -27,7 +27,6 @@ use Keestash\Core\Repository\EncryptionKey\Organization\OrganizationKeyRepositor
 use Keestash\Core\Repository\EncryptionKey\User\UserKeyRepository;
 use Keestash\Core\Repository\File\FileRepository;
 use Keestash\Core\Repository\Instance\InstanceRepository;
-use Keestash\Core\Repository\Job\JobRepository;
 use Keestash\Core\Repository\LDAP\DefaultConnectionRepository;
 use Keestash\Core\Repository\LDAP\DefaultLDAPRepository;
 use Keestash\Core\Repository\MailLog\MailLogRepository;
@@ -44,7 +43,6 @@ use Keestash\Factory\Core\Repository\EncryptionKey\Organization\OrganizationKeyR
 use Keestash\Factory\Core\Repository\EncryptionKey\User\UserKeyRepositoryFactory;
 use Keestash\Factory\Core\Repository\File\FileRepositoryFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceRepositoryFactory;
-use Keestash\Factory\Core\Repository\Job\JobRepositoryFactory;
 use Keestash\Factory\Core\Repository\MailLog\MailLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\Queue\QueueRepositoryFactory;
 use Keestash\Factory\Core\Repository\RBAC\PermissionRepositoryFactory;
@@ -70,5 +68,4 @@ return [
     , DefaultConnectionRepository::class => InvokableFactory::class
     , DefaultPaymentLogRepository::class => InvokableFactory::class
     , MailLogRepository::class           => MailLogRepositoryFactory::class
-    , JobRepository::class               => JobRepositoryFactory::class
 ];

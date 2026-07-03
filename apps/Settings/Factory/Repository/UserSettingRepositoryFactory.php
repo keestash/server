@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Settings\Factory\Repository;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\Settings\Repository\IUserSettingRepository;
 use KSA\Settings\Repository\UserSettingRepository;
 use KSP\Core\Backend\IBackend;
@@ -40,7 +40,7 @@ class UserSettingRepositoryFactory implements FactoryInterface {
     ): IUserSettingRepository {
         return new UserSettingRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
             , $container->get(IUserRepository::class)
         );

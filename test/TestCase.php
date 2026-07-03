@@ -27,6 +27,7 @@ use Keestash\Core\DTO\Organization\Organization;
 use KSA\Register\Entity\Register\Event\Type;
 use KSA\Register\Event\UserRegisteredEvent;
 use KSA\Settings\Service\IOrganizationService;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
@@ -36,7 +37,7 @@ use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use KST\Integration\Core\Service\User\Repository\UserRepositoryServiceTest;
 use KST\Service\Event\TestStartedEvent;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\ServiceManager;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 use Ramsey\Uuid\Uuid;
@@ -112,6 +113,7 @@ class TestCase extends FrameworkTestCase {
             new UserRegisteredEvent(
                 $user,
                 base64_encode($key),
+                IKey::KDF_VERSION_SCRYPT_AES_GCM_V1,
                 Type::CLI,
                 1
             )

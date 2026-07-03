@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace Keestash\Middleware;
 
-use GuzzleHttp\Psr7\Utils;
 use KSP\Core\Service\Payment\IPaymentService;
 use KSP\Core\Service\Router\IRouterService;
 use Psr\Http\Message\ResponseInterface;
@@ -31,6 +30,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 final readonly class SanitizeInputMiddleware implements MiddlewareInterface {
+
+    private const array SKIP_KEYS = ['password', 'password_repeat', 'secret', 'key', 'token', 'hash'];
 
     public function __construct(
         private LoggerInterface  $logger
@@ -53,11 +54,26 @@ final readonly class SanitizeInputMiddleware implements MiddlewareInterface {
         }
         $request = $request->withQueryParams($newQueryParams);
 
-        $body    = (string) $request->getBody();
-        $body    = $this->sanitize($body);
-        $request = $request->withBody(Utils::streamFor($body));
+        $parsedBody = $request->getParsedBody();
+        if (is_array($parsedBody)) {
+            $request = $request->withParsedBody($this->sanitizeArray($parsedBody));
+        }
 
         return $handler->handle($request);
+    }
+
+    private function sanitizeArray(array $data): array {
+        $result = [];
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $result[$key] = $this->sanitizeArray($value);
+            } elseif (is_string($value) && !in_array($key, self::SKIP_KEYS, true)) {
+                $result[$key] = $this->sanitize($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 
     private function sanitize(string $raw): string {

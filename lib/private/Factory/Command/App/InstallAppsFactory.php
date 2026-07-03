@@ -23,7 +23,7 @@ namespace Keestash\Factory\Command\App;
 
 use Keestash\Command\App\InstallApps;
 use KSP\Core\Repository\AppRepository\IAppRepository;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

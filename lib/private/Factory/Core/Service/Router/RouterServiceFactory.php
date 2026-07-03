@@ -25,7 +25,7 @@ use Keestash\Core\Service\Router\RouterService;
 use KSP\Core\Service\Core\Environment\IEnvironmentService;
 use Psr\Log\LoggerInterface;
 use KSP\Core\Service\Router\IRouterService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Mezzio\Router\RouterInterface;
 use Psr\Container\ContainerInterface;
 

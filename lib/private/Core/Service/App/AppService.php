@@ -25,7 +25,6 @@ use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\App\App;
-use Keestash\Core\DTO\BackgroundJob\JobList;
 use KSP\Core\DTO\App\Config\IApp as InstalledApp;
 use KSP\Core\DTO\App\IApp;
 use KSP\Core\Service\App\IAppService;
@@ -49,9 +48,6 @@ class AppService implements IAppService {
         $configApp->setEnabled(true);
         $configApp->setCreateTs(new DateTimeImmutable());
         $configApp->setVersion($app->getVersion());
-        $configApp->setBackgroundJobs(
-            new JobList()
-        );
         return $configApp;
     }
 

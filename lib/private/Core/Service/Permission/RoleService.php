@@ -23,14 +23,14 @@ namespace Keestash\Core\Service\Permission;
 
 use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
-use doganoo\SimpleRBAC\Entity\RoleInterface;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\ConfigProvider;
 use Keestash\Core\DTO\RBAC\NullPermission;
 use Keestash\Core\DTO\RBAC\NullRole;
 use Keestash\Core\DTO\RBAC\Role;
 use KSP\Core\Service\Permission\IRoleService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Log\LoggerInterface;
 
 class RoleService implements IRoleService {

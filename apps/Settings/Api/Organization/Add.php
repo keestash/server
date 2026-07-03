@@ -22,23 +22,51 @@ declare(strict_types=1);
 namespace KSA\Settings\Api\Organization;
 
 use DateTimeImmutable;
-use doganoo\DI\Encryption\User\IUserService;
+use doganoo\DI\Encryption\User\UserServiceInterface;
 use Exception;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Organization\Organization;
 use KSA\Settings\Service\IOrganizationService;
 use KSP\Api\IResponse;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/organizations/add',
+    operationId: 'organizationsAdd',
+    summary: 'Create a new organization',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['organization'],
+            properties: [
+                new OA\Property(property: 'organization', type: 'string', description: 'Organization name'),
+            ]
+        )
+    ),
+    tags: ['Organizations'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Organization created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'organization', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class Add implements RequestHandlerInterface {
 
     public function __construct(
         private readonly IOrganizationService $organizationService
         , private readonly LoggerInterface    $logger
-        , private readonly IUserService       $userService
+        , private readonly UserServiceInterface $userService
     ) {
 
     }

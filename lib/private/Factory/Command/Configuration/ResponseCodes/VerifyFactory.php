@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Factory\Command\Configuration\ResponseCodes;
 
 use Keestash\Command\Configuration\ResponseCodes\Verify;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

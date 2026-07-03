@@ -53,6 +53,7 @@ class OrganizationKeyRepositoryTest extends TestCase {
 
         $key = new Key();
         $key->setCreateTs(new DateTimeImmutable());
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($organization);
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
@@ -87,6 +88,7 @@ class OrganizationKeyRepositoryTest extends TestCase {
 
         $key = new Key();
         $key->setCreateTs(new DateTimeImmutable());
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($organization);
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))
@@ -120,6 +122,7 @@ class OrganizationKeyRepositoryTest extends TestCase {
 
         $key = new Key();
         $key->setCreateTs(new DateTimeImmutable());
+        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
         $key->setKeyHolder($organization);
         $key->setSecret(
             $userService->hashPassword(md5((string) time()))

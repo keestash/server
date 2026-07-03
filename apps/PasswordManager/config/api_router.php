@@ -38,7 +38,6 @@ return [
             []
         ),
     CoreConfigProvider::PUBLIC_ROUTES => [
-        ConfigProvider::PASSWORD_MANAGER_ATTACHMENTS_DOWNLOAD,
         ConfigProvider::PASSWORD_MANAGER_PUBLIC_SHARE_DECRYPT,
     ]
 ];

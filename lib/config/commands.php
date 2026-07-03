@@ -94,4 +94,5 @@ return [
     , Verify::class
     , WorkerSingleShow::class
     , \Keestash\Command\ApiLog\ListAll::class
+    , \Keestash\Command\GenerateOpenApi::class
 ];

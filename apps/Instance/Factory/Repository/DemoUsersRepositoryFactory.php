@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace KSA\Instance\Factory\Repository;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSA\Instance\Repository\DemoUsersRepository;
 use KSP\Core\Backend\IBackend;
 use Psr\Container\ContainerInterface;
@@ -31,7 +31,7 @@ class DemoUsersRepositoryFactory {
     public function __invoke(ContainerInterface $container): DemoUsersRepository {
         return new DemoUsersRepository(
             $container->get(IBackend::class),
-            $container->get(IDateTimeService::class)
+            $container->get(DateTimeServiceInterface::class)
         );
     }
 

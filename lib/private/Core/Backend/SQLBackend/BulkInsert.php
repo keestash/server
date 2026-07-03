@@ -59,7 +59,7 @@ class BulkInsert implements IBulkInsert {
         $platform    = $this->connection->getDatabasePlatform();
         $columns     = $this->quote(
             $platform
-            , $this->extract($data)
+            , $this->extractColumnNames($data)
         );
         $columnCount = count($columns);
 
@@ -79,7 +79,7 @@ class BulkInsert implements IBulkInsert {
             static fn(string $column): string => (new Identifier($column))->getQuotedName($platform), $columns);
     }
 
-    function extract(array $data): array {
+    private function extractColumnNames(array $data): array {
         $dataCount = count($data);
         if (0 === $dataCount) {
             return [];

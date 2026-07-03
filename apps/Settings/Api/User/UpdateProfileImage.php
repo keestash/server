@@ -24,6 +24,7 @@ namespace KSA\Settings\Api\User;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\Http\JWT\Audience;
 use Keestash\Core\Service\File\FileService;
+use OpenApi\Attributes as OA;
 use Keestash\Exception\File\FileNotCreatedException;
 use Keestash\Exception\File\FileNotFoundException;
 use KSA\Settings\ConfigProvider;
@@ -35,7 +36,7 @@ use KSP\Core\DTO\Token\IToken;
 use KSP\Core\Repository\File\IFileRepository;
 use KSP\Core\Service\File\Upload\IFileService as UploadFileService;
 use KSP\Core\Service\HTTP\IJWTService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -43,6 +44,36 @@ use Psr\Http\Server\RequestHandlerInterface;
 /**
  * TODO 1. check the name in DB vs on file system
  */
+#[OA\Post(
+    path: '/users/profile_image/update',
+    operationId: 'usersUpdateProfileImage',
+    summary: 'Update the profile image for a user',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\MediaType(
+            mediaType: 'multipart/form-data',
+            schema: new OA\Schema(
+                properties: [
+                    new OA\Property(property: 'user_hash', type: 'string'),
+                    new OA\Property(property: 'file', type: 'string', format: 'binary'),
+                ]
+            )
+        )
+    ),
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Profile image updated',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'jwt', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class UpdateProfileImage implements RequestHandlerInterface {
 
     public function __construct(

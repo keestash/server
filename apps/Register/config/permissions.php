@@ -20,7 +20,7 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use doganoo\SimpleRBAC\Entity\RoleInterface;
+use Keestash\ThirdParty\SimpleRbac\Entity\RoleInterface;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Register\ConfigProvider;
 use KSP\Core\DTO\RBAC\IPermission;

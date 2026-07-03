@@ -23,6 +23,7 @@ namespace KSA\PasswordManager\Api\Node\Folder;
 
 use DateTimeImmutable;
 use doganoo\PHPAlgorithms\Datastructure\Table\HashTable;
+use OpenApi\Attributes as OA;
 use Keestash\Api\Response\JsonResponse;
 use KSA\PasswordManager\Entity\Edge\Edge;
 use KSA\PasswordManager\Entity\Folder\Folder;
@@ -43,6 +44,36 @@ use Psr\Log\LoggerInterface;
  * @package KSA\PasswordManager\Api
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
+#[OA\Post(
+    path: '/password_manager/node/folder/create/path',
+    operationId: 'passwordManagerFolderCreateByPath',
+    summary: 'Create folders from a path string',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['path', 'delimiter'],
+            properties: [
+                new OA\Property(property: 'path', type: 'string'),
+                new OA\Property(property: 'delimiter', type: 'string'),
+                new OA\Property(property: 'parentNodeId', type: 'string'),
+                new OA\Property(property: 'forceCreate', type: 'boolean'),
+            ]
+        )
+    ),
+    tags: ['Password Manager - Nodes'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Folders created',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'edge', type: 'object'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 class CreateByPath implements RequestHandlerInterface {
 
     public const VALID_DELIMITERS = ['/'];

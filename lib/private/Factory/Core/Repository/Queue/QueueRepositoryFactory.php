@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\Queue;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Core\Repository\Queue\QueueRepository;
 use KSP\Core\Backend\IBackend;
 use KSP\Core\Repository\Queue\IQueueRepository;
@@ -39,7 +39,7 @@ class QueueRepositoryFactory implements FactoryInterface {
     ): IQueueRepository {
         return new QueueRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }

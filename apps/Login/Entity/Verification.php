@@ -21,10 +21,10 @@ declare(strict_types=1);
 
 namespace KSA\Login\Entity;
 
-use doganoo\DI\Entity\IJsonEntity;
+use doganoo\DI\Entity\JsonEntityInterface;
 use KSP\Core\DTO\User\IUser;
 
-readonly final class Verification implements IJsonEntity {
+readonly final class Verification implements JsonEntityInterface {
 
     public const int REASON_NO_INPUT_DATA_GIVEN = 1;
     public const int REASON_USER_NOT_FOUND      = 2;

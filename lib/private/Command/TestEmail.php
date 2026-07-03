@@ -22,7 +22,7 @@ declare(strict_types=1);
 namespace Keestash\Command;
 
 use DateTimeImmutable;
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use KSP\Command\IKeestashCommand;
 use KSP\Core\Service\Config\IConfigService;
 use KSP\Core\Service\Email\IEmailService;
@@ -33,7 +33,7 @@ class TestEmail extends KeestashCommand {
 
     public function __construct(
         private readonly IEmailService      $emailService
-        , private readonly IDateTimeService $dateTimeService
+        , private readonly DateTimeServiceInterface $dateTimeService
         , private readonly IConfigService   $configService
     ) {
         parent::__construct();

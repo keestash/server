@@ -26,6 +26,7 @@ use Keestash\Core\System\Application;
 use KSA\Register\Event\UserRegistrationConfirmedEvent;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
+use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
@@ -144,7 +145,7 @@ final class UserService {
             $user               = $this->userService->toNewUser($data);
             $user               = $this->userRepositoryService->createUser($user);
 
-            $this->keyService->createAndStoreKey($user, base64_encode(uniqid()));
+            $this->keyService->createAndStoreKey($user, base64_encode(uniqid()), IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
 
             $this->eventService->execute(
                 new UserRegistrationConfirmedEvent(

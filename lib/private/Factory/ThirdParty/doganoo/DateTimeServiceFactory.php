@@ -21,13 +21,13 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\ThirdParty\doganoo;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use doganoo\DIP\DateTime\DateTimeService;
 use Psr\Container\ContainerInterface;
 
 class DateTimeServiceFactory {
 
-    public function __invoke(ContainerInterface $container): IDateTimeService {
+    public function __invoke(ContainerInterface $container): DateTimeServiceInterface {
         return new DateTimeService();
     }
 

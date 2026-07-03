@@ -24,11 +24,37 @@ namespace KSA\PasswordManager\Api\Node\Credential\Generate;
 use Keestash\Api\Response\JsonResponse;
 use KSP\Api\IResponse;
 use KSP\Core\Service\Encryption\Password\IPasswordService;
+use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Get(
+    path: '/password_manager/generate_password/{length}/{upperCase}/{lowerCase}/{digit}/{specialChars}',
+    operationId: 'passwordManagerGeneratePassword',
+    summary: 'Generate a random password',
+    tags: ['Password Manager - Credentials'],
+    parameters: [
+        new OA\Parameter(name: 'length', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        new OA\Parameter(name: 'upperCase', in: 'path', required: true, schema: new OA\Schema(type: 'string', enum: ['true', 'false'])),
+        new OA\Parameter(name: 'lowerCase', in: 'path', required: true, schema: new OA\Schema(type: 'string', enum: ['true', 'false'])),
+        new OA\Parameter(name: 'digit', in: 'path', required: true, schema: new OA\Schema(type: 'string', enum: ['true', 'false'])),
+        new OA\Parameter(name: 'specialChars', in: 'path', required: true, schema: new OA\Schema(type: 'string', enum: ['true', 'false'])),
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'Generated password',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'password', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class Generate implements RequestHandlerInterface {
 
     public function __construct(

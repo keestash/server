@@ -23,7 +23,7 @@ namespace Keestash\Factory\Core\Service\HTTP;
 
 use Keestash\Core\Service\HTTP\ResponseService;
 use KSP\Core\Service\HTTP\IResponseService;
-use Laminas\Config\Config;
+use Keestash\Config\Config;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 

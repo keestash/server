@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Command\Role;
 
-use doganoo\DI\DateTime\IDateTimeService;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
 use Keestash\Command\Role\RolesByUser;
 use KSP\Core\Repository\User\IUserRepository;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -37,7 +37,7 @@ class RolesByUserFactory implements FactoryInterface {
     ): RolesByUser {
         return new RolesByUser(
             $container->get(IUserRepository::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
         );
     }
 

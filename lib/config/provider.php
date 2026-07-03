@@ -20,7 +20,6 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use doganoo\SimpleRBAC\ConfigProvider as SimpleRBACConfigProvider;
 use Keestash\ConfigProvider as CoreConfigProvider;
 use KSA\Activity\ConfigProvider as ActivityConfigProvider;
 use KSA\LDAP\ConfigProvider as LDAPConfigProvider;
@@ -84,7 +83,4 @@ return [
         }
     , ActivityConfigProvider::class
     , InstanceConfigProvider::class
-
-    // Third Party libs
-    , SimpleRBACConfigProvider::class
 ];

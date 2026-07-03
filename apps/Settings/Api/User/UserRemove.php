@@ -24,6 +24,7 @@ namespace KSA\Settings\Api\User;
 use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\DTO\User\UserStateName;
 use Keestash\Core\Service\User\Event\UserStateDeleteEvent;
+use OpenApi\Attributes as OA;
 use Keestash\Exception\User\State\UserStateException;
 use Keestash\Exception\User\UserNotFoundException;
 use KSP\Api\IResponse;
@@ -36,6 +37,33 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 
+#[OA\Post(
+    path: '/users/remove',
+    operationId: 'usersRemove',
+    summary: 'Remove (soft-delete) a user account',
+    requestBody: new OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            required: ['user_id'],
+            properties: [
+                new OA\Property(property: 'user_id', type: 'integer'),
+            ]
+        )
+    ),
+    tags: ['Users'],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: 'User removed',
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'message', type: 'string'),
+                ]
+            )
+        ),
+    ],
+    security: [['tokenAuth' => [], 'userAuth' => []]]
+)]
 final readonly class UserRemove implements RequestHandlerInterface {
 
     public function __construct(

@@ -21,9 +21,8 @@ declare(strict_types=1);
 
 namespace Keestash\Factory\Core\Repository\RBAC;
 
-use doganoo\DI\DateTime\IDateTimeService;
-use doganoo\SimpleRBAC\Repository\PermissionRepositoryInterface;
-use doganoo\SimpleRBAC\Repository\RBACRepositoryInterface;
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\ThirdParty\SimpleRbac\Repository\RBACRepositoryInterface;
 use Keestash\Core\Repository\RBAC\RBACRepository;
 use KSP\Core\Backend\IBackend;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -40,7 +39,7 @@ class PermissionRepositoryFactory implements FactoryInterface {
     ): RBACRepositoryInterface {
         return new RBACRepository(
             $container->get(IBackend::class)
-            , $container->get(IDateTimeService::class)
+            , $container->get(DateTimeServiceInterface::class)
             , $container->get(LoggerInterface::class)
         );
     }
