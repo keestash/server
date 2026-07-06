@@ -24,15 +24,12 @@ namespace KSA\Register\Command;
 use Exception;
 use JsonException;
 use Keestash\Command\KeestashCommand;
-use Keestash\Core\DTO\Encryption\Credential\Credential;
+use Keestash\Core\Service\Encryption\KDF\MasterKeyWrapService;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Exception\KeestashException;
 use KSA\Register\Entity\Register\Event\Type;
 use KSA\Register\Event\UserRegisteredEvent;
 use KSP\Command\IKeestashCommand;
-use KSP\Core\Service\Derivation\IDerivationService;
-use KSP\Core\Service\Encryption\IEncryptionService;
-use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,8 +49,7 @@ class CreateUser extends KeestashCommand {
         private readonly UserService              $userService
         , private readonly IUserRepositoryService $userRepositoryService
         , private readonly IEventService          $eventService
-        , private readonly IDerivationService     $derivationService
-        , private readonly IEncryptionService     $encryptionService
+        , private readonly MasterKeyWrapService   $masterKeyWrapService
     ) {
         parent::__construct();
     }
@@ -125,21 +121,21 @@ class CreateUser extends KeestashCommand {
             return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
         }
 
-        $secret  = openssl_random_pseudo_bytes(32);
-        $derived = $this->derivationService->derive((string) $password);
+        // Wrap the master key with the shared scrypt-aes-gcm-v1 scheme so a
+        // CLI-created user can unlock their vault in the browser. All KDF/cipher
+        // details live in MasterKeyWrapService (single source of truth).
+        try {
+            $wrappedKey = $this->masterKeyWrapService->generateAndWrap((string) $password);
+        } catch (Exception $exception) {
+            $this->writeError("Could not encrypt master key for $name: " . $exception->getMessage(), $output);
+            return IKeestashCommand::RETURN_CODE_NOT_RAN_SUCCESSFUL;
+        }
 
-        $c = new Credential();
-        $c->setSecret($derived);
-
-        $key = $this->encryptionService->encrypt(
-            $c,
-            $secret
-        );
         $this->eventService->execute(
             new UserRegisteredEvent(
                 $user
-                , base64_encode($key) // TODO add key
-                , IKey::KDF_VERSION_SCRYPT_AES_GCM_V1
+                , $wrappedKey
+                , $this->masterKeyWrapService->getKdfVersion()
                 , Type::CLI
                 , 1
             )

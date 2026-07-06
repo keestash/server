@@ -22,24 +22,11 @@ declare(strict_types=1);
 namespace KSP\Core\Service\Encryption\Key;
 
 use Keestash\Exception\KeestashException;
-use Keestash\Exception\Key\KeyNotCreatedException;
 use Keestash\Exception\Key\UnsupportedKeyException;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 
 interface IKeyService {
-
-    /**
-     * Returns an instance of IKey
-     *
-     * @param ICredential $credential
-     * @param IKeyHolder  $keyHolder
-     *
-     * @return IKey
-     * @throws KeyNotCreatedException
-     */
-    public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey;
 
     /**
      * Stores a given key

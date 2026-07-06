@@ -37,7 +37,7 @@ use Keestash\Core\Service\Core\Exception\ExceptionHandlerService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
-use Keestash\Core\Service\Derivation\DerivationService;
+use Keestash\Core\Service\Encryption\KDF\MasterKeyWrapService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
@@ -67,7 +67,6 @@ use Keestash\Core\Service\Phinx\Migrator;
 use Keestash\Core\Service\Queue\QueueService;
 use Keestash\Core\Service\ReflectionService;
 use Keestash\Core\Service\Router\ApiLogService;
-use Keestash\Core\Service\Router\ApiLogServiceInterface;
 use Keestash\Core\Service\Router\RouterService;
 use Keestash\Core\Service\Router\VerificationService;
 use Keestash\Core\Service\User\Event\Listener\ScheduleUserStateEventListener;
@@ -88,7 +87,7 @@ use Keestash\Factory\Core\Service\Config\ConfigServiceFactory;
 use Keestash\Factory\Core\Service\Core\Exception\ExceptionHandlerServiceFactory;
 use Keestash\Factory\Core\Service\Core\Language\LanguageServiceFactory;
 use Keestash\Factory\Core\Service\CSV\CSVServiceFactory;
-use Keestash\Factory\Core\Service\Derivation\DerivationServiceFactory;
+use Keestash\Factory\Core\Service\Encryption\KDF\MasterKeyWrapServiceFactory;
 use Keestash\Factory\Core\Service\Email\EmailServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\Credential\CredentialServiceFactory;
 use Keestash\Factory\Core\Service\Encryption\KeestashEncryptionServiceFactory;
@@ -169,7 +168,7 @@ return [
     , LDAPService::class                                      => LDAPServiceFactory::class
     , Base64Service::class                                    => InvokableFactory::class
     , DefaultPaymentService::class                            => InvokableFactory::class
-    , DerivationService::class                                => DerivationServiceFactory::class
+    , MasterKeyWrapService::class                             => MasterKeyWrapServiceFactory::class
     , PermissionService::class                                => PermissionServiceFactory::class
     , RoleService::class                                      => RoleServiceFactory::class
     , StringMaskService::class                                => InvokableFactory::class

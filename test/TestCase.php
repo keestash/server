@@ -30,8 +30,7 @@ use KSA\Settings\Service\IOrganizationService;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KSP\Core\Service\Encryption\IEncryptionService;
+use Keestash\Core\Service\Encryption\KDF\MasterKeyWrapService;
 use KSP\Core\Service\Event\IEventService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -79,10 +78,8 @@ class TestCase extends FrameworkTestCase {
         $userService = $this->getService(IUserService::class);
         /** @var IEventService $eventService */
         $eventService = $this->getService(IEventService::class);
-        /** @var IEncryptionService $encryptionService */
-        $encryptionService = $this->getService(IEncryptionService::class);
-        /** @var ICredentialService $credentialService */
-        $credentialService = $this->getService(ICredentialService::class);
+        /** @var MasterKeyWrapService $masterKeyWrapService */
+        $masterKeyWrapService = $this->getService(MasterKeyWrapService::class);
 
         if ($email === '') {
             $email = Uuid::uuid4() . '@keestash.com';
@@ -104,16 +101,14 @@ class TestCase extends FrameworkTestCase {
             )
         );
 
-        $secret = openssl_random_pseudo_bytes(32);
-
-        // encrypting secret with user derivation
-        $c   = $credentialService->createCredentialFromDerivation($user);
-        $key = $encryptionService->encrypt($c, $secret);
+        // Wrap the master key with the shared scrypt-aes-gcm-v1 scheme, exactly
+        // like the real CLI/web flows, so the created user is browser-decryptable.
+        $wrappedKey = $masterKeyWrapService->generateAndWrap($password);
         $eventService->execute(
             new UserRegisteredEvent(
                 $user,
-                base64_encode($key),
-                IKey::KDF_VERSION_SCRYPT_AES_GCM_V1,
+                $wrappedKey,
+                $masterKeyWrapService->getKdfVersion(),
                 Type::CLI,
                 1
             )

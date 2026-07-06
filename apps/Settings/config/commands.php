@@ -23,11 +23,9 @@ declare(strict_types=1);
 use KSA\Settings\Command\Get;
 use KSA\Settings\Command\ListSettings;
 use KSA\Settings\Command\Lock;
-use KSA\Settings\Command\UpdatePassword;
 
 return [
-    UpdatePassword::class
-    , Get::class
+    Get::class
     , Lock::class
     , ListSettings::class
 ];

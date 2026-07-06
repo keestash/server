@@ -22,7 +22,8 @@ declare(strict_types=1);
 namespace KST\Unit\Core\Service\Encryption\Key;
 
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
+use Keestash\Core\DTO\Encryption\Credential\Key\Key;
+use Keestash\Core\Service\Encryption\KDF\MasterKeyWrapService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use KSP\Core\Service\User\IUserService;
 use KSP\Core\Service\User\Repository\IUserRepositoryService;
@@ -32,39 +33,38 @@ use Ramsey\Uuid\Uuid;
 
 class KeyServiceTest extends TestCase {
 
+    /**
+     * Builds a Key wrapped with the shared scrypt-aes-gcm-v1 scheme — the same
+     * format the web/CLI clients use, so it is decryptable in the browser.
+     */
+    private function wrapKeyFor(\KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder $keyHolder, string $password): IKey {
+        /** @var MasterKeyWrapService $wrapService */
+        $wrapService = $this->getService(MasterKeyWrapService::class);
+        $key = new Key();
+        $key->setSecret(base64_decode($wrapService->generateAndWrap($password)));
+        $key->setKdfVersion($wrapService->getKdfVersion());
+        $key->setKeyHolder($keyHolder);
+        $key->setCreateTs(new \DateTimeImmutable());
+        return $key;
+    }
+
     public function testCreateKey(): void {
-        /** @var IKeyService $keyService */
-        $keyService = $this->getService(IKeyService::class);
-        /** @var ICredentialService $credentialService */
-        $credentialService = $this->getService(ICredentialService::class);
-        $keyHolder         = $this->createUser(
+        $keyHolder = $this->createUser(
             Uuid::uuid4()->toString()
             , Uuid::uuid4()->toString()
         );
-        $key               = $keyService->createKey(
-            $credentialService->createCredentialFromDerivation(
-                $keyHolder
-            )
-            , $keyHolder
-        );
+        $key = $this->wrapKeyFor($keyHolder, 'test-password');
         $this->assertInstanceOf(IKey::class, $key);
     }
 
     public function testStoreKey(): void {
         /** @var IKeyService $keyService */
         $keyService = $this->getService(IKeyService::class);
-        /** @var ICredentialService $credentialService */
-        $credentialService = $this->getService(ICredentialService::class);
-        $keyHolder         = $this->createUser(
+        $keyHolder  = $this->createUser(
             Uuid::uuid4()->toString()
             , Uuid::uuid4()->toString()
         );
-        $key               = $keyService->createKey(
-            $credentialService->createCredentialFromDerivation(
-                $keyHolder
-            )
-            , $keyHolder
-        );
+        $key = $this->wrapKeyFor($keyHolder, 'test-password');
 
         $this->assertInstanceOf(IKey::class, $key);
 

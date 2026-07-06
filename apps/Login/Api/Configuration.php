@@ -25,6 +25,7 @@ use Keestash\Api\Response\JsonResponse;
 use Keestash\Core\Repository\Instance\InstanceDB;
 use KSP\Api\IResponse;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
+use KSP\Core\Service\Encryption\KDF\KdfConfig;
 use OpenApi\Attributes as OA;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -71,12 +72,12 @@ readonly final class Configuration implements RequestHandlerInterface {
                 , "registerEnabled"       => true && !$isDemoMode
                 , "forgotPasswordEnabled" => true && !$isDemoMode
                 , "kdf"                   => [
-                    "algorithm" => "scrypt"
+                    "algorithm" => KdfConfig::ALGORITHM
                     , "params"  => [
-                        "N"       => 32768
-                        , "r"     => 8
-                        , "p"     => 1
-                        , "dkLen" => 32
+                        "N"       => KdfConfig::N
+                        , "r"     => KdfConfig::R
+                        , "p"     => KdfConfig::P
+                        , "dkLen" => KdfConfig::DK_LEN
                     ]
                     , "salt"    => $this->instanceDB->getOption(InstanceDB::OPTION_NAME_INSTANCE_HASH)
                     , "version" => IKey::KDF_VERSION_SCRYPT_AES_GCM_V1

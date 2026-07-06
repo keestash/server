@@ -24,8 +24,6 @@ namespace Keestash\Factory\Core\Service\Encryption\Key;
 use Keestash\Core\Service\Encryption\Key\KeyService;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Psr\Container\ContainerInterface;
 
@@ -34,9 +32,7 @@ class KeyServiceFactory {
     public function __invoke(ContainerInterface $container): IKeyService {
         return new KeyService(
             $container->get(IUserKeyRepository::class)
-            , $container->get(IEncryptionService::class)
             , $container->get(IOrganizationKeyRepository::class)
-            , $container->get(ICredentialService::class)
         );
     }
 

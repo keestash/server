@@ -21,7 +21,6 @@ declare(strict_types=1);
 
 namespace KST\Service\Factory\Core\Service\Encryption\Credential;
 
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KST\Service\Core\Service\Encryption\Credential\CredentialService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
@@ -34,9 +33,7 @@ class CredentialServiceFactory implements FactoryInterface {
                            $requestedName,
         ?array             $options = null
     ): ICredentialService {
-        return new CredentialService(
-            $container->get(IDerivationService::class)
-        );
+        return new CredentialService();
     }
 
 }

@@ -21,21 +21,16 @@ declare(strict_types=1);
 
 namespace Keestash\Core\Service\Encryption\Key;
 
-use DateTime;
 use DateTimeImmutable;
 use Keestash\Core\DTO\Encryption\Credential\Key\Key;
 use Keestash\Exception\KeestashException;
-use Keestash\Exception\Key\KeyNotCreatedException;
 use Keestash\Exception\Key\UnsupportedKeyException;
-use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\Credential\Key\IKey;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
 use KSP\Core\DTO\Organization\IOrganization;
 use KSP\Core\DTO\User\IUser;
 use KSP\Core\Repository\EncryptionKey\Organization\IOrganizationKeyRepository;
 use KSP\Core\Repository\EncryptionKey\User\IUserKeyRepository;
-use KSP\Core\Service\Encryption\Credential\ICredentialService;
-use KSP\Core\Service\Encryption\IEncryptionService;
 use KSP\Core\Service\Encryption\Key\IKeyService;
 use Override;
 
@@ -43,41 +38,8 @@ final readonly class KeyService implements IKeyService {
 
     public function __construct(
         private IUserKeyRepository           $userKeyRepository
-        , private IEncryptionService         $encryptionService
         , private IOrganizationKeyRepository $organizationKeyRepository
-        , private ICredentialService         $credentialService
     ) {
-    }
-
-    /**
-     * Returns an instance of IKey
-     *
-     * @param ICredential $credential
-     * @param IKeyHolder  $keyHolder
-     *
-     * @return IKey
-     * @throws KeyNotCreatedException
-     */
-    #[Override]
-    public function createKey(ICredential $credential, IKeyHolder $keyHolder): IKey {
-        // Step 1: we create a random secret
-        $secret = openssl_random_pseudo_bytes(4096);
-
-        // Step 2: we encrypt the data with our base encryption
-        $secret = $this->encryptionService->encrypt($credential, $secret);
-        // Step 3: we add the data to the database
-
-        if ("" === $secret) {
-            throw new KeyNotCreatedException();
-        }
-
-        $key = new Key();
-        $key->setSecret($secret);
-        $key->setKdfVersion(IKey::KDF_VERSION_SCRYPT_AES_GCM_V1);
-        $key->setKeyHolder($keyHolder);
-        $key->setCreateTs(new DateTime());
-
-        return $key;
     }
 
     /**

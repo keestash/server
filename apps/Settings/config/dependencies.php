@@ -39,7 +39,6 @@ use KSA\Settings\Api\User\UserLock;
 use KSA\Settings\Api\User\UserRemove;
 use KSA\Settings\Command\ListSettings;
 use KSA\Settings\Command\Lock;
-use KSA\Settings\Command\UpdatePassword;
 use KSA\Settings\Event\Listener\OrganizationAddedEventListener;
 use KSA\Settings\Event\Listener\PostStateChange;
 use KSA\Settings\Event\Listener\UpdateSettingsListener;
@@ -58,7 +57,6 @@ use KSA\Settings\Factory\Api\User\UserLockFactory;
 use KSA\Settings\Factory\Api\User\UserRemoveFactory;
 use KSA\Settings\Factory\Command\ListSettingsFactory;
 use KSA\Settings\Factory\Command\LockFactory;
-use KSA\Settings\Factory\Command\UpdatePasswordFactory;
 use KSA\Settings\Factory\Event\Listener\OrganizationAddedEventListenerFactory;
 use KSA\Settings\Factory\Event\Listener\PostStateChangeFactory;
 use KSA\Settings\Factory\Event\Listener\UpdateSettingsListenerFactory;
@@ -118,7 +116,6 @@ return [
         , UpdateSettingsListener::class                              => UpdateSettingsListenerFactory::class
 
         // command
-        , UpdatePassword::class                                      => UpdatePasswordFactory::class
         , \KSA\Settings\Command\Get::class                           => \KSA\Settings\Factory\Command\GetFactory::class
         , Lock::class                                                => LockFactory::class
         , ListSettings::class                                        => ListSettingsFactory::class

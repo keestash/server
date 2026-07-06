@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace KST\Unit\Core\Service\Encryption\Credential;
 
+use DateTimeImmutable;
+use Keestash\Core\DTO\Derivation\Derivation;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KST\Unit\TestCase;
@@ -37,7 +39,14 @@ class CredentialServiceTest extends TestCase {
             , Uuid::uuid4()->toString()
         );
 
-        $credential = $credentialService->createCredentialFromDerivation($user);
+        $derivation = new Derivation(
+            Uuid::uuid4()->toString()
+            , $user
+            , 'derived-secret-bytes'
+            , new DateTimeImmutable()
+        );
+
+        $credential = $credentialService->createCredentialFromCustomDerivation($user, $derivation);
         $this->assertTrue($credential instanceof ICredential);
         $this->assertTrue($credential->getKeyHolder()->getId() === $user->getId());
     }

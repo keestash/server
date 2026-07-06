@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2026> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,10 +19,18 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\Service\Derivation;
+namespace Keestash\Factory\Core\Service\Encryption\KDF;
 
-interface IDerivationService {
+use Keestash\Core\Repository\Instance\InstanceDB;
+use Keestash\Core\Service\Encryption\KDF\MasterKeyWrapService;
+use Psr\Container\ContainerInterface;
 
-    public function derive(string $raw): string;
+class MasterKeyWrapServiceFactory {
+
+    public function __invoke(ContainerInterface $container): MasterKeyWrapService {
+        return new MasterKeyWrapService(
+            $container->get(InstanceDB::class)
+        );
+    }
 
 }

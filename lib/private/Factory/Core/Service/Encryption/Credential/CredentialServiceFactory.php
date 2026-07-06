@@ -22,16 +22,13 @@ declare(strict_types=1);
 namespace Keestash\Factory\Core\Service\Encryption\Credential;
 
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
-use KSP\Core\Service\Derivation\IDerivationService;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Psr\Container\ContainerInterface;
 
 final readonly class CredentialServiceFactory implements FactoryInterface {
 
     public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null): CredentialService {
-        return new CredentialService(
-            $container->get(IDerivationService::class)
-        );
+        return new CredentialService();
     }
 
 }

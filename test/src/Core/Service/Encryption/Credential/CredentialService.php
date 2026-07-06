@@ -21,16 +21,12 @@ declare(strict_types=1);
 
 namespace KST\Service\Core\Service\Encryption\Credential;
 
-use DateTimeImmutable;
-use Keestash\Core\DTO\Derivation\Derivation;
 use Keestash\Core\DTO\Encryption\Credential\Credential;
 use KSP\Core\DTO\Derivation\IDerivation;
 use KSP\Core\DTO\Encryption\Credential\ICredential;
 use KSP\Core\DTO\Encryption\KeyHolder\IKeyHolder;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use Override;
-use Ramsey\Uuid\Uuid;
 
 /**
  * Class CredentialService
@@ -39,23 +35,6 @@ use Ramsey\Uuid\Uuid;
  * @author  Dogan Ucar <dogan@dogan-ucar.de>
  */
 final readonly class CredentialService implements ICredentialService {
-
-    public function __construct(
-        private IDerivationService $derivationService
-    ) {
-    }
-
-    #[Override]
-    public function createCredentialFromDerivation(IKeyHolder $keyHolder): ICredential {
-        return $this->createCredentialFromCustomDerivation(
-            $keyHolder,
-            new Derivation(
-                Uuid::uuid4()->toString()
-                , $keyHolder
-                , $this->derivationService->derive($keyHolder->getPassword())
-                , new DateTimeImmutable()
-            ));
-    }
 
     #[Override]
     public function createCredentialFromCustomDerivation(IKeyHolder $keyHolder, IDerivation $derivation): ICredential {

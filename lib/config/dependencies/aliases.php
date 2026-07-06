@@ -54,7 +54,6 @@ use Keestash\Core\Service\Core\Exception\ExceptionHandlerService;
 use Keestash\Core\Service\Core\Language\LanguageService;
 use Keestash\Core\Service\Core\Locale\LocaleService;
 use Keestash\Core\Service\CSV\CSVService;
-use Keestash\Core\Service\Derivation\DerivationService;
 use Keestash\Core\Service\Email\EmailService;
 use Keestash\Core\Service\Encryption\Base64Service;
 use Keestash\Core\Service\Encryption\Credential\CredentialService;
@@ -118,7 +117,6 @@ use KSP\Core\Service\Core\Exception\IExceptionHandlerService;
 use KSP\Core\Service\Core\Language\ILanguageService;
 use KSP\Core\Service\Core\Locale\ILocaleService;
 use KSP\Core\Service\CSV\ICSVService;
-use KSP\Core\Service\Derivation\IDerivationService;
 use KSP\Core\Service\Email\IEmailService;
 use KSP\Core\Service\Encryption\Credential\ICredentialService;
 use KSP\Core\Service\Encryption\IBase64Service;
@@ -217,7 +215,6 @@ return [
     , ILDAPService::class                               => LDAPService::class
     , IBase64Service::class                             => Base64Service::class
     , IPaymentService::class                            => DefaultPaymentService::class
-    , IDerivationService::class                         => DerivationService::class
     , IPermissionService::class                         => PermissionService::class
     , IRoleService::class                               => RoleService::class
     , IStringMaskService::class                         => StringMaskService::class
