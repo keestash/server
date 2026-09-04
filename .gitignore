@@ -303,3 +303,4 @@ test.php
 /.mysql_history
 /.bash_history
 /data/image/*
+log.txt

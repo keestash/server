@@ -20,7 +20,9 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Api\Payment\Webhook;
 use Keestash\Api\PingHandler;
+use Keestash\Factory\Api\Payment\WebhookFactory;
 use Keestash\Factory\Api\PingHandlerFactory;
 use Keestash\Factory\Core\Service\Metric\RegistryFactory;
 use Prometheus\CollectorRegistry;
@@ -34,6 +36,7 @@ return
         , require __DIR__ . '/factories/middleware.php'
         , [
             PingHandler::class       => PingHandlerFactory::class,
+            Webhook::class           => WebhookFactory::class,
             CollectorRegistry::class => RegistryFactory::class
         ]
     );

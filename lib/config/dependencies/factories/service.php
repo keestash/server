@@ -61,6 +61,8 @@ use Keestash\Core\Service\LDAP\LDAPService;
 use Keestash\Core\Service\Metric\CollectorService;
 use Keestash\Core\Service\Organization\OrganizationService;
 use Keestash\Core\Service\Payment\DefaultPaymentService;
+use Keestash\Core\Service\Payment\DefaultPaymentServiceFactory;
+use Keestash\Core\Service\Payment\MollieApiClientFactory;
 use Keestash\Core\Service\Permission\PermissionService;
 use Keestash\Core\Service\Permission\RoleService;
 use Keestash\Core\Service\Phinx\Migrator;
@@ -127,6 +129,7 @@ use KSA\PasswordManager\Service\Node\Edge\EdgeService;
 use Laminas\I18n\Validator\PhoneNumber as PhoneValidator;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 use Laminas\Validator\EmailAddress as EmailValidator;
+use Mollie\Api\MollieApiClient;
 use Laminas\Validator\Uri as UriValidator;
 use Psr\Log\LoggerInterface;
 
@@ -167,7 +170,8 @@ return [
     , RouteService::class                                     => InvokableFactory::class
     , LDAPService::class                                      => LDAPServiceFactory::class
     , Base64Service::class                                    => InvokableFactory::class
-    , DefaultPaymentService::class                            => InvokableFactory::class
+    , DefaultPaymentService::class                            => DefaultPaymentServiceFactory::class
+    , MollieApiClient::class                                  => MollieApiClientFactory::class
     , MasterKeyWrapService::class                             => MasterKeyWrapServiceFactory::class
     , PermissionService::class                                => PermissionServiceFactory::class
     , RoleService::class                                      => RoleServiceFactory::class

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2026> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,22 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Payment;
+namespace Keestash\Factory\Core\Repository\Payment;
 
-/**
- * Mollie payment statuses. The backing values match the strings Mollie sends
- * on a payment resource (see \Mollie\Api\Types\PaymentStatus), so a status can
- * be mapped directly with Type::from($payment->status).
- */
-enum Type: string {
+use doganoo\DI\DateTime\DateTimeServiceInterface;
+use Keestash\Core\Repository\Payment\DefaultPaymentLogRepository;
+use KSP\Core\Backend\IBackend;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
-    case OPEN = 'open';
-    case PENDING = 'pending';
-    case AUTHORIZED = 'authorized';
-    case PAID = 'paid';
-    case CANCELED = 'canceled';
-    case EXPIRED = 'expired';
-    case FAILED = 'failed';
+class DefaultPaymentLogRepositoryFactory {
+
+    public function __invoke(ContainerInterface $container): DefaultPaymentLogRepository {
+        return new DefaultPaymentLogRepository(
+            $container->get(IBackend::class),
+            $container->get(DateTimeServiceInterface::class),
+            $container->get(LoggerInterface::class)
+        );
+    }
 
 }

@@ -21,42 +21,71 @@ declare(strict_types=1);
 
 namespace KSP\Core\Service\Payment;
 
-use Psr\Http\Message\ServerRequestInterface;
-use Stripe\Checkout\Session;
-use Stripe\Customer;
-use Stripe\Event;
-use Stripe\Exception\ApiErrorException;
-use Stripe\Exception\SignatureVerificationException;
-use Stripe\Subscription;
+use Keestash\Exception\Payment\PaymentException;
+use KSP\Core\DTO\Payment\ICheckout;
+use KSP\Core\DTO\Payment\IPayment;
 
 interface IPaymentService {
 
     public const string PAYMENT_WEBHOOK_ENDPOINT = '/payment/webhook';
 
     /**
-     * @throws ApiErrorException
+     * Creates a Mollie customer and a first (mandate establishing) payment for
+     * the given plan and returns the checkout information the client needs to
+     * redirect the user to Mollie's payment screen.
+     *
+     * @param string $planName  a key present in the mollie_plans config
+     * @param string $email     the registering user's email address
+     * @param string $sessionId correlation id shared with the payment metadata
+     * @param string $lang      two letter language code used in the redirect url
+     * @throws PaymentException
      */
-    public function createSubscription(string $priceId): Session;
+    public function createSubscription(
+        string $planName,
+        string $email,
+        string $sessionId,
+        string $lang
+    ): ICheckout;
 
     /**
-     * @throws SignatureVerificationException
+     * Fetches the payment from Mollie and returns it as a DTO carrying the
+     * verified status, the correlation metadata and the full payload. Fetching
+     * the payment from the API is how a webhook notification is verified: the
+     * webhook only carries an id, the trusted state comes from this call.
+     *
+     * @throws PaymentException
      */
-    public function constructWebhookEvent(ServerRequestInterface $request): Event;
+    public function getPayment(string $paymentId): IPayment;
 
     /**
-     * @param string $subscriptionId
-     * @return Subscription
-     * @throws ApiErrorException
+     * Creates the Mollie subscription that drives the recurring charges, using
+     * the mandate the (already paid) first payment established for the customer.
+     * A first payment alone only creates a mandate; without a subscription
+     * Mollie never charges again. This is therefore called once the first
+     * payment is confirmed paid (from the webhook), and returns the Mollie
+     * subscription id needed to cancel it later.
+     *
+     * @param string $customerId the Mollie customer the mandate belongs to
+     * @param string $planName   a key present in the mollie_plans config
+     * @param string $email      the subscribing user's email address
+     * @param string $sessionId  correlation id shared with the subscription metadata
+     * @throws PaymentException
      */
-    public function cancelSubscriptionImmediately(string $subscriptionId): Subscription;
+    public function startRecurringBilling(
+        string $customerId,
+        string $planName,
+        string $email,
+        string $sessionId
+    ): string;
 
     /**
-     * @param string $subscriptionId
-     * @return Subscription
-     * @throws ApiErrorException
+     * @throws PaymentException
      */
-    public function cancelSubscriptionToTheEndOfThePeriod(string $subscriptionId): Subscription;
+    public function cancelSubscriptionImmediately(string $customerId, string $subscriptionId): void;
 
-    public function getCustomer(string $id): Customer;
+    /**
+     * @throws PaymentException
+     */
+    public function cancelSubscriptionToTheEndOfThePeriod(string $customerId, string $subscriptionId): void;
 
 }

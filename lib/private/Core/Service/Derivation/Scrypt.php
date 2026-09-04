@@ -49,6 +49,15 @@ abstract class Scrypt
             return hex2bin(scrypt($password, $salt, $n, $r, $p, $length));
         }
 
+        // The pure-PHP fallback below produces output byte-identical to the
+        // native extension for the same parameters (this is a hard client
+        // compatibility requirement — see CRYPTO_MIGRATION.md), but it runs the
+        // memory-hard mixing in userland: it is far slower and not
+        // constant-time. Production deployments should install the native
+        // scrypt extension; surface the fallback so a misconfiguration is not
+        // silent.
+        error_log('Keestash: native scrypt extension not loaded, using slow pure-PHP fallback for key derivation');
+
         $b = Pbkdf2::calc('sha256', $password, $salt, 1, $p * 128 * $r);
 
         $s = '';

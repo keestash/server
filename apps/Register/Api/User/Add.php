@@ -30,6 +30,7 @@ use Keestash\ConfigProvider as CoreConfigProvider;
 use Keestash\Core\DTO\Payment\Log;
 use Keestash\Core\Service\User\UserService;
 use Keestash\Core\System\Application;
+use Keestash\Exception\Payment\PaymentException;
 use KSA\Register\Entity\IResponseCodes;
 use KSA\Register\Entity\Register\Event\Type;
 use KSA\Register\Event\UserRegisteredEvent;
@@ -45,6 +46,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 #[OA\Post(
     path: '/register/add',
@@ -202,8 +204,7 @@ readonly final class Add implements RequestHandlerInterface {
 
             return new JsonResponse(
                 [
-                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_ERROR_CREATING_USER),
-                    'results'      => $exception->getMessage()
+                    'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_ERROR_CREATING_USER)
                 ]
                 , IResponse::INTERNAL_SERVER_ERROR
             );
@@ -211,20 +212,54 @@ readonly final class Add implements RequestHandlerInterface {
 
         if (true === $isSaas) {
             $this->logger->debug('saas mode - creating subscription');
-            $session = $this->paymentService->createSubscription(
-                (string) $this->configService->getValue('stripe_price_id')
-            );
-            $log     = new Log(
-                key: $session->id,
+            $sessionId = Uuid::uuid4()->toString();
+            $plan      = $this->getParameter('plan', $request);
+            if (true === $this->stringService->isEmpty($plan)) {
+                $plan = (string) $this->configService->getValue('mollie_default_plan', '');
+            }
+            $language = $this->getParameter('language', $request);
+            if (true === $this->stringService->isEmpty($language)) {
+                $language = 'en';
+            }
+
+            try {
+                $checkout = $this->paymentService->createSubscription(
+                    $plan,
+                    $email,
+                    $sessionId,
+                    $language
+                );
+            } catch (PaymentException $exception) {
+                $this->logger->error('saas mode - error creating subscription', ['exception' => $exception]);
+                $this->collectorService->addCounter(
+                    name: 'invalidRegister'
+                    , labels: ['subscriptionCreationFailed']
+                );
+                return new JsonResponse(
+                    [
+                        'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_ERROR_CREATING_USER)
+                    ]
+                    , IResponse::INTERNAL_SERVER_ERROR
+                );
+            }
+
+            $log = new Log(
+                key: $sessionId,
                 log: [
-                    'session' => $session->toArray(),
-                    'user'    => $user
+                    'checkoutUrl' => $checkout->getCheckoutUrl(),
+                    'paymentId'   => $checkout->getPaymentId(),
+                    'customerId'  => $checkout->getCustomerId(),
+                    'plan'        => $plan,
+                    'user'        => ['id' => $user->getId(), 'email' => $email]
                 ],
+                // The registration row already records the Mollie customer id
+                // (getCustomerId above); the webhook reads it back from here to
+                // start recurring billing once the first payment is confirmed.
                 createTs: new DateTimeImmutable()
             );
 
             $this->paymentLogRepository->insert($log);
-            $this->logger->debug('saas mode - responding session id');
+            $this->logger->debug('saas mode - responding checkout url');
 
             $this->collectorService->addCounter(
                 name: 'invalidRegister'
@@ -233,7 +268,8 @@ readonly final class Add implements RequestHandlerInterface {
 
             return new JsonResponse(
                 [
-                    'session'      => $session,
+                    'checkoutUrl'  => $checkout->getCheckoutUrl(),
+                    'session'      => $sessionId,
                     'responseCode' => $this->responseService->getResponseCode(IResponseCodes::RESPONSE_NAME_USER_SUBSCRIPTION_CREATED)
                 ]
                 , IResponse::OK

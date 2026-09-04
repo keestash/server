@@ -20,10 +20,12 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Keestash\Api\Payment\Webhook;
 use Keestash\Api\PingHandler;
 use Keestash\ConfigProvider;
 use KSP\Api\IRoute;
 use KSP\Api\IVerb;
+use KSP\Core\Service\Payment\IPaymentService;
 
 return [
     ConfigProvider::ROUTES        => [
@@ -33,8 +35,15 @@ return [
             , IRoute::NAME       => PingHandler::class
             , IRoute::METHOD     => IVerb::GET
         ]
+        , [
+            IRoute::PATH         => IPaymentService::PAYMENT_WEBHOOK_ENDPOINT
+            , IRoute::MIDDLEWARE => Webhook::class
+            , IRoute::NAME       => Webhook::class
+            , IRoute::METHOD     => IVerb::POST
+        ]
     ],
     ConfigProvider::PUBLIC_ROUTES => [
         ConfigProvider::PING_ROUTE
+        , IPaymentService::PAYMENT_WEBHOOK_ENDPOINT
     ]
 ];

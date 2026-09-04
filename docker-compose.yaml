@@ -12,8 +12,8 @@ services:
       - ./config/docker/web/apache/cert.pem:/etc/apache2/ssl/cert.pem
       - ./config/docker/web/apache/cert-key.pem:/etc/apache2/ssl/cert-key.pem
     ports:
-      - '8000:80'
-      - '8080:443'
+      - '8002:80'
+      - '8081:443'
     networks:
       - keestash-network
   keestash-db:
@@ -38,7 +38,7 @@ services:
   keestash-redis:
     image: redis:latest
     ports:
-      - "6379:6379"
+      - "6380:6379"
     networks:
       - keestash-network
 
@@ -68,16 +68,6 @@ services:
       - keestash-prometheus
     networks:
       - keestash-network
-
-  keestash-stripe-cli:
-    build:
-      context: ./config/docker/stripe
-      dockerfile: Dockerfile
-    environment:
-      STRIPE_CLI_TELEMETRY_OPTOUT: true
-    networks:
-      - keestash-network
-    tty: true
 
 volumes:
   keestash_db:

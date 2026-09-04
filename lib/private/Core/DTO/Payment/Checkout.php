@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2026> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,21 +19,32 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace KSP\Core\DTO\Payment;
+namespace Keestash\Core\DTO\Payment;
 
-/**
- * Mollie payment statuses. The backing values match the strings Mollie sends
- * on a payment resource (see \Mollie\Api\Types\PaymentStatus), so a status can
- * be mapped directly with Type::from($payment->status).
- */
-enum Type: string {
+use KSP\Core\DTO\Payment\ICheckout;
 
-    case OPEN = 'open';
-    case PENDING = 'pending';
-    case AUTHORIZED = 'authorized';
-    case PAID = 'paid';
-    case CANCELED = 'canceled';
-    case EXPIRED = 'expired';
-    case FAILED = 'failed';
+final readonly class Checkout implements ICheckout {
+
+    public function __construct(
+        private string $checkoutUrl,
+        private string $paymentId,
+        private string $customerId
+    ) {
+    }
+
+    #[\Override]
+    public function getCheckoutUrl(): string {
+        return $this->checkoutUrl;
+    }
+
+    #[\Override]
+    public function getPaymentId(): string {
+        return $this->paymentId;
+    }
+
+    #[\Override]
+    public function getCustomerId(): string {
+        return $this->customerId;
+    }
 
 }

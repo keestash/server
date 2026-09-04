@@ -44,6 +44,7 @@ use Keestash\Factory\Core\Repository\EncryptionKey\User\UserKeyRepositoryFactory
 use Keestash\Factory\Core\Repository\File\FileRepositoryFactory;
 use Keestash\Factory\Core\Repository\Instance\InstanceRepositoryFactory;
 use Keestash\Factory\Core\Repository\MailLog\MailLogRepositoryFactory;
+use Keestash\Factory\Core\Repository\Payment\DefaultPaymentLogRepositoryFactory;
 use Keestash\Factory\Core\Repository\Queue\QueueRepositoryFactory;
 use Keestash\Factory\Core\Repository\RBAC\PermissionRepositoryFactory;
 use Keestash\Factory\Core\Repository\Token\TokenRepositoryFactory;
@@ -66,6 +67,6 @@ return [
     , RBACRepository::class              => PermissionRepositoryFactory::class
     , DefaultLDAPRepository::class       => InvokableFactory::class
     , DefaultConnectionRepository::class => InvokableFactory::class
-    , DefaultPaymentLogRepository::class => InvokableFactory::class
+    , DefaultPaymentLogRepository::class => DefaultPaymentLogRepositoryFactory::class
     , MailLogRepository::class           => MailLogRepositoryFactory::class
 ];

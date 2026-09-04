@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2022> <Dogan Ucar>
+ * Copyright (C) <2026> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -19,8 +19,24 @@ declare(strict_types=1);
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace Keestash\Exception\Payment;
+namespace Keestash\Core\Service\Payment;
 
-class ServiceNotImplementedException extends PaymentException {
+use KSP\Core\Service\Config\IConfigService;
+use Mollie\Api\MollieApiClient;
+use Psr\Container\ContainerInterface;
+
+class MollieApiClientFactory {
+
+    public function __invoke(ContainerInterface $container): MollieApiClient {
+        /** @var IConfigService $configService */
+        $configService = $container->get(IConfigService::class);
+        $apiKey        = (string) $configService->getValue('mollie_api_key', '');
+
+        $client = new MollieApiClient();
+        if ('' !== $apiKey) {
+            $client->setApiKey($apiKey);
+        }
+        return $client;
+    }
 
 }

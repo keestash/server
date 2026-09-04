@@ -131,21 +131,47 @@ $CONFIG =
         , 'sentry_dsn'            => 'your-sentry-api-key-goes-here'
 
         /*
-         * The api key for stripe
+         * The api key for Mollie
          * Used for Payment
          */
-        , 'stripe_api_key'        => 'your-stripe-api-key-goes-here'
+        , 'mollie_api_key'        => 'your-mollie-api-key-goes-here'
 
         /*
-         * The secret for stripe webhook request
-         * Used for Payment
+         * The plan selected when no plan is passed on registration.
+         * Must be a key present in mollie_plans below.
          */
-        , 'stripe_webhook_secret' => 'your-stripe-wh-secret-goes-here'
+        , 'mollie_default_plan'   => 'personal'
 
         /*
-         * The price id charged for keestash
+         * The URL the customer returns to after paying on Mollie.
+         * %1$s is replaced with the language, %2$s with the payment session id.
          */
-        , 'stripe_price_id'       => 'your-stripe-price-id-goes-here'
+        , 'mollie_redirect_url'   => 'https://app.keestash.com/%1$s/subscribed?session=%2$s'
+
+        /*
+         * The publicly reachable URL Mollie calls to notify about payment status
+         * changes. Must point to the /payment/webhook endpoint of this instance.
+         */
+        , 'mollie_webhook_url'    => 'https://api.keestash.com/payment/webhook'
+
+        /*
+         * Optional signing secret for Mollie's signed ("next-gen") webhooks,
+         * taken from the Mollie dashboard. When set, webhook requests that carry
+         * an X-Mollie-Signature header are HMAC-verified and rejected on
+         * mismatch. Legacy payment webhooks (no signature) are unaffected and
+         * remain verified by re-fetching the payment from the API. Leave empty
+         * to disable signature verification.
+         */
+        , 'mollie_webhook_secret' => ''
+
+        /*
+         * Config driven subscription plans. Each plan defines the price, the
+         * currency and the billing interval used for the first (mandate
+         * establishing) payment.
+         */
+        , 'mollie_plans'          => [
+            'personal' => ['price' => 4.99, 'currency' => 'EUR', 'interval' => '1 month'],
+        ]
 
         /*
          * The frontend url

@@ -3,7 +3,7 @@ declare(strict_types=1);
 /**
  * Keestash
  *
- * Copyright (C) <2023> <Dogan Ucar>
+ * Copyright (C) <2026> <Dogan Ucar>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
@@ -22,18 +22,16 @@ declare(strict_types=1);
 namespace KSP\Core\DTO\Payment;
 
 /**
- * Mollie payment statuses. The backing values match the strings Mollie sends
- * on a payment resource (see \Mollie\Api\Types\PaymentStatus), so a status can
- * be mapped directly with Type::from($payment->status).
+ * Result of creating a Mollie first payment for a subscription. Holds the
+ * checkout URL the client is redirected to as well as the Mollie payment and
+ * customer identifiers required to correlate later webhook notifications.
  */
-enum Type: string {
+interface ICheckout {
 
-    case OPEN = 'open';
-    case PENDING = 'pending';
-    case AUTHORIZED = 'authorized';
-    case PAID = 'paid';
-    case CANCELED = 'canceled';
-    case EXPIRED = 'expired';
-    case FAILED = 'failed';
+    public function getCheckoutUrl(): string;
+
+    public function getPaymentId(): string;
+
+    public function getCustomerId(): string;
 
 }
